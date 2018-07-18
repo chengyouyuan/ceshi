@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--<parent>-->
+    <!--<artifactId>service-projects</artifactId>-->
+    <!--<groupId>com.winhxd.b2c</groupId>-->
+    <!--<version>1.0.0</version>-->
+    <!--</parent>-->
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.winhxd.b2c</groupId>
+    <artifactId>mybatis-generator</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.5</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.7</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <overwrite>true</overwrite>
+                    <includeAllDependencies>true</includeAllDependencies>
+                    <verbose>true</verbose>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.microsoft.sqlserver</groupId>
+                        <artifactId>mssql-jdbc</artifactId>
+                        <version>6.1.0.jre8</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>

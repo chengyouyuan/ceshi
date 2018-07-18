@@ -11,3 +11,4 @@ build/
 classes/
 dist
 .gitignore
+service-projects/mybatis-generator/src/main/java/**

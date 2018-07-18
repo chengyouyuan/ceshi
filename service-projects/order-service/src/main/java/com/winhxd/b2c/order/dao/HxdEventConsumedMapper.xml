@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.order.dao.HxdEventConsumedMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.order.model.HxdEventConsumed">
+    <id column="EVENT_NAME" jdbcType="VARCHAR" property="eventName" />
+    <id column="EVENT_KEY" jdbcType="VARCHAR" property="eventKey" />
+    <id column="EVENT_CONSUMER_GROUP_ID" jdbcType="VARCHAR" property="eventConsumerGroupId" />
+    <result column="ID" jdbcType="BIGINT" property="id" />
+    <result column="EVENT_TIME" jdbcType="TIMESTAMP" property="eventTime" />
+    <result column="EVENT_DATA" jdbcType="VARCHAR" property="eventData" />
+    <result column="EVENT_CONSUME_TIME" jdbcType="TIMESTAMP" property="eventConsumeTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    EVENT_NAME, EVENT_KEY, EVENT_CONSUMER_GROUP_ID, ID, EVENT_TIME, EVENT_DATA, EVENT_CONSUME_TIME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from HXD_EVENT_CONSUMED
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+      and EVENT_CONSUMER_GROUP_ID = #{eventConsumerGroupId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from HXD_EVENT_CONSUMED
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+      and EVENT_CONSUMER_GROUP_ID = #{eventConsumerGroupId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.order.model.HxdEventConsumed">
+    insert into HXD_EVENT_CONSUMED (EVENT_NAME, EVENT_KEY, EVENT_CONSUMER_GROUP_ID, 
+      ID, EVENT_TIME, EVENT_DATA, 
+      EVENT_CONSUME_TIME)
+    values (#{eventName,jdbcType=VARCHAR}, #{eventKey,jdbcType=VARCHAR}, #{eventConsumerGroupId,jdbcType=VARCHAR}, 
+      #{id,jdbcType=BIGINT}, #{eventTime,jdbcType=TIMESTAMP}, #{eventData,jdbcType=VARCHAR}, 
+      #{eventConsumeTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.order.model.HxdEventConsumed">
+    insert into HXD_EVENT_CONSUMED
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eventName != null">
+        EVENT_NAME,
+      </if>
+      <if test="eventKey != null">
+        EVENT_KEY,
+      </if>
+      <if test="eventConsumerGroupId != null">
+        EVENT_CONSUMER_GROUP_ID,
+      </if>
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="eventTime != null">
+        EVENT_TIME,
+      </if>
+      <if test="eventData != null">
+        EVENT_DATA,
+      </if>
+      <if test="eventConsumeTime != null">
+        EVENT_CONSUME_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eventName != null">
+        #{eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="eventKey != null">
+        #{eventKey,jdbcType=VARCHAR},
+      </if>
+      <if test="eventConsumerGroupId != null">
+        #{eventConsumerGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="eventTime != null">
+        #{eventTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eventData != null">
+        #{eventData,jdbcType=VARCHAR},
+      </if>
+      <if test="eventConsumeTime != null">
+        #{eventConsumeTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.order.model.HxdEventConsumed">
+    update HXD_EVENT_CONSUMED
+    <set>
+      <if test="id != null">
+        ID = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="eventTime != null">
+        EVENT_TIME = #{eventTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eventData != null">
+        EVENT_DATA = #{eventData,jdbcType=VARCHAR},
+      </if>
+      <if test="eventConsumeTime != null">
+        EVENT_CONSUME_TIME = #{eventConsumeTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+      and EVENT_CONSUMER_GROUP_ID = #{eventConsumerGroupId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.order.model.HxdEventConsumed">
+    update HXD_EVENT_CONSUMED
+    set ID = #{id,jdbcType=BIGINT},
+      EVENT_TIME = #{eventTime,jdbcType=TIMESTAMP},
+      EVENT_DATA = #{eventData,jdbcType=VARCHAR},
+      EVENT_CONSUME_TIME = #{eventConsumeTime,jdbcType=TIMESTAMP}
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+      and EVENT_CONSUMER_GROUP_ID = #{eventConsumerGroupId,jdbcType=VARCHAR}
+  </update>
+</mapper>

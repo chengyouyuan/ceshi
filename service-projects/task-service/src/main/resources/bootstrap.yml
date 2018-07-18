@@ -1,0 +1,13 @@
+server:
+  port: 3901
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: task-service
+
+eureka:
+  instance:
+    prefer-ip-address: true
+

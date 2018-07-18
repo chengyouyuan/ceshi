@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.order.dao.HxdEventMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.order.model.HxdEvent">
+    <id column="EVENT_NAME" jdbcType="VARCHAR" property="eventName" />
+    <id column="EVENT_KEY" jdbcType="VARCHAR" property="eventKey" />
+    <result column="ID" jdbcType="BIGINT" property="id" />
+    <result column="EVENT_TIME" jdbcType="TIMESTAMP" property="eventTime" />
+    <result column="EVENT_DATA" jdbcType="VARCHAR" property="eventData" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    EVENT_NAME, EVENT_KEY, ID, EVENT_TIME, EVENT_DATA
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from HXD_EVENT
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from HXD_EVENT
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.order.model.HxdEvent">
+    insert into HXD_EVENT (EVENT_NAME, EVENT_KEY, ID, 
+      EVENT_TIME, EVENT_DATA)
+    values (#{eventName,jdbcType=VARCHAR}, #{eventKey,jdbcType=VARCHAR}, #{id,jdbcType=BIGINT}, 
+      #{eventTime,jdbcType=TIMESTAMP}, #{eventData,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.order.model.HxdEvent">
+    insert into HXD_EVENT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="eventName != null">
+        EVENT_NAME,
+      </if>
+      <if test="eventKey != null">
+        EVENT_KEY,
+      </if>
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="eventTime != null">
+        EVENT_TIME,
+      </if>
+      <if test="eventData != null">
+        EVENT_DATA,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="eventName != null">
+        #{eventName,jdbcType=VARCHAR},
+      </if>
+      <if test="eventKey != null">
+        #{eventKey,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="eventTime != null">
+        #{eventTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eventData != null">
+        #{eventData,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.order.model.HxdEvent">
+    update HXD_EVENT
+    <set>
+      <if test="id != null">
+        ID = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="eventTime != null">
+        EVENT_TIME = #{eventTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eventData != null">
+        EVENT_DATA = #{eventData,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.order.model.HxdEvent">
+    update HXD_EVENT
+    set ID = #{id,jdbcType=BIGINT},
+      EVENT_TIME = #{eventTime,jdbcType=TIMESTAMP},
+      EVENT_DATA = #{eventData,jdbcType=VARCHAR}
+    where EVENT_NAME = #{eventName,jdbcType=VARCHAR}
+      and EVENT_KEY = #{eventKey,jdbcType=VARCHAR}
+  </update>
+</mapper>

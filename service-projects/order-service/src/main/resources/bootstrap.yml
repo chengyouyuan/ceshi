@@ -1,0 +1,24 @@
+server:
+  port: 3101
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: developer
+    password: 123#abc
+    url: jdbc:sqlserver://192.168.60.6:1433;DatabaseName=CRM_RETAIL_DEV6
+  cloud:
+    config:
+      label: order
+      discovery:
+        enabled: true
+        service-id: config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true
+

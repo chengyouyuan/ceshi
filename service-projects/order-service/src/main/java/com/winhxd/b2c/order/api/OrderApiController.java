@@ -23,4 +23,10 @@ public class OrderApiController {
         Page<HxdEventHistory> all = hxdEventHistoryMapper.findAll();
         return all;
     }
+
+    @GetMapping("api-order/ss")
+    @ApiOperation(value = "aaaa")
+    public Object tt() {
+        return true;
+    }
 }

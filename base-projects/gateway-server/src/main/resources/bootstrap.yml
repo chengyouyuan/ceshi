@@ -6,7 +6,20 @@ spring:
     active: dev
   application:
     name: gateway-server
+  cloud:
+    config:
+      label: gateway
+      discovery:
+        enabled: true
+        service-id: config-server
+    gateway:
+      default-filters:
+      - StripPrefix=1
+      routes:
+      - uri: lb://order-service
+        predicates:
+        - Path=/api-order/**
 
 eureka:
   instance:
-    prefer-ip-address: true #注册时使用ip地址
+    prefer-ip-address: true

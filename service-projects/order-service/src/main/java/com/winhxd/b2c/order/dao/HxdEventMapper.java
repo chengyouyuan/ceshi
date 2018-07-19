@@ -1,6 +1,6 @@
 package com.winhxd.b2c.order.dao;
 
-import com.winhxd.b2c.order.model.HxdEvent;
+import com.winhxd.b2c.common.domain.order.model.HxdEvent;
 import org.apache.ibatis.annotations.Param;
 
 public interface HxdEventMapper {

@@ -1,17 +1,21 @@
-package com.winhxd.b2c.order.model;
+package com.winhxd.b2c.common.domain.order.model;
 
 import java.util.Date;
 
-public class HxdEvent {
+public class HxdEventConsumed {
     private String eventName;
 
     private String eventKey;
+
+    private String eventConsumerGroupId;
 
     private Long id;
 
     private Date eventTime;
 
     private String eventData;
+
+    private Date eventConsumeTime;
 
     public String getEventName() {
         return eventName;
@@ -27,6 +31,14 @@ public class HxdEvent {
 
     public void setEventKey(String eventKey) {
         this.eventKey = eventKey;
+    }
+
+    public String getEventConsumerGroupId() {
+        return eventConsumerGroupId;
+    }
+
+    public void setEventConsumerGroupId(String eventConsumerGroupId) {
+        this.eventConsumerGroupId = eventConsumerGroupId;
     }
 
     public Long getId() {
@@ -51,5 +63,13 @@ public class HxdEvent {
 
     public void setEventData(String eventData) {
         this.eventData = eventData;
+    }
+
+    public Date getEventConsumeTime() {
+        return eventConsumeTime;
+    }
+
+    public void setEventConsumeTime(Date eventConsumeTime) {
+        this.eventConsumeTime = eventConsumeTime;
     }
 }

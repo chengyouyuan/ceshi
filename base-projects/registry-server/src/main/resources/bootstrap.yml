@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: registry-server
+    admin:
+      enabled: true
+  boot:
+    admin:
+      context-path: admin
 
 eureka:
   instance:
@@ -18,3 +23,4 @@ eureka:
     enable-self-preservation: false
     # 清理间隔（单位毫秒，默认是60*1000）
     eviction-interval-timer-in-ms: 4000
+

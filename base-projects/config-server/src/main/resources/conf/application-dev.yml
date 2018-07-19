@@ -1,0 +1,7 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:1111/admin/
+        instance:
+          prefer-ip: true

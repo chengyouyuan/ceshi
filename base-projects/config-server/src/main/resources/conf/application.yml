@@ -1,0 +1,12 @@
+spring:
+  boot:
+    admin:
+      client:
+        instance:
+          prefer-ip: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

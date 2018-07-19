@@ -21,15 +21,15 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="${targetPackage}.model" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="${modelTargetPackage}" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="${targetPackage}.dao" targetProject="src/main/java">
+        <sqlMapGenerator targetPackage="${mapperTargetPackage}" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="${targetPackage}.dao"
+        <javaClientGenerator type="XMLMAPPER" targetPackage="${mapperTargetPackage}"
                              targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>

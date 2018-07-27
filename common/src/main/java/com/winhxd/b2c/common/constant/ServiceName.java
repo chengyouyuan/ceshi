@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.constant;
 
-public final class ServiceNameConstant {
+/**
+ * @author lixiaodong
+ */
+public final class ServiceName {
     public static final String ORDER_SERVICE = "order-service";
 }

@@ -1,8 +1,8 @@
 package com.winhxd.b2c.common.feign.order;
 
-import com.winhxd.b2c.common.constant.ServiceNameConstant;
+import com.winhxd.b2c.common.constant.ServiceName;
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(value = ServiceNameConstant.ORDER_SERVICE)
+@FeignClient(value = ServiceName.ORDER_SERVICE)
 public interface OrderService {
 }

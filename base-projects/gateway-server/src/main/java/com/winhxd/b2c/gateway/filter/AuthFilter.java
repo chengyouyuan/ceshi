@@ -1,17 +1,12 @@
-package com.winhxd.b2c.gatewayserver.filter;
+package com.winhxd.b2c.gateway.filter;
 
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyResponseBodyGatewayFilterFactory;
 import org.springframework.core.Ordered;
-import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.HttpMessageReader;
-import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;

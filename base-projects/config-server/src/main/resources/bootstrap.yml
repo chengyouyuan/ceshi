@@ -5,8 +5,20 @@ spring:
   profiles:
     active: native,dev
   application:
-    name: config-server
+    name: b2c-config-server
+  boot:
+    admin:
+      client:
+        instance:
+          prefer-ip: true
 
 eureka:
   instance:
     prefer-ip-address: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

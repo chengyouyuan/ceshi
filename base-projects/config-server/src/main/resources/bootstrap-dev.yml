@@ -4,6 +4,10 @@ spring:
       server:
         native:
           searchLocations: classpath:/conf/
+  boot:
+    admin:
+      client:
+        url: http://localhost:1111/admin/
 
 eureka:
   client:

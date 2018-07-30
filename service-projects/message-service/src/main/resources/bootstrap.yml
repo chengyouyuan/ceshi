@@ -5,13 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: message-service
+    name: b2c-message-service
   cloud:
     config:
       label: message
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: b2c-config-server
 
 eureka:
   instance:

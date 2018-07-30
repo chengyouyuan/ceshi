@@ -5,7 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: task-service
+    name: b2c-task-service
+  cloud:
+    config:
+      label: task
+      discovery:
+        enabled: true
+        service-id: b2c-config-server
 
 eureka:
   instance:

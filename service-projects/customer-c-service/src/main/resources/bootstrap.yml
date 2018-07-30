@@ -5,13 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: customer-c-service
+    name: b2c-customer-c-service
   cloud:
     config:
       label: customer-c
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: b2c-config-server
 
 eureka:
   instance:

@@ -5,13 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: pay-service
+    name: b2c-pay-service
   cloud:
     config:
       label: pay
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: b2c-config-server
 
 eureka:
   instance:

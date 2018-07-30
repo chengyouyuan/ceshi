@@ -5,13 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: promotion-service
+    name: b2c-promotion-service
   cloud:
     config:
       label: promotion
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: b2c-config-server
 
 eureka:
   instance:

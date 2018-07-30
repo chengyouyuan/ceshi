@@ -1,4 +1,4 @@
-package com.winhxd.b2c.gatewayserver;
+package com.winhxd.b2c.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

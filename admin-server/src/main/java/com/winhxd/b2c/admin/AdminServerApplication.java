@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class WebServerApplication {
+public class AdminServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WebServerApplication.class, args);
+        SpringApplication.run(AdminServerApplication.class, args);
     }
 
     @Bean

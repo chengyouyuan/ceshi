@@ -5,13 +5,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: system-service
+    name: b2c-system-service
   cloud:
     config:
       label: system
       discovery:
         enabled: true
-        service-id: config-server
+        service-id: b2c-config-server
 
 eureka:
   instance:

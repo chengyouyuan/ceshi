@@ -1,0 +1,18 @@
+server:
+  port: 3101
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: message-service
+  cloud:
+    config:
+      label: message
+      discovery:
+        enabled: true
+        service-id: config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true

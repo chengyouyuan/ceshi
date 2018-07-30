@@ -20,7 +20,8 @@
         <module>message-service</module>
         <module>promotion-service</module>
         <module>pay-service</module>
-        <module>customer-service</module>
+        <module>customer-c-service</module>
+        <module>customer-b-service</module>
     </modules>
 
     <dependencies>

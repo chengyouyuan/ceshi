@@ -13,9 +13,14 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>order-service</module>
         <module>mybatis-generator</module>
+        <module>order-service</module>
         <module>task-service</module>
+        <module>system-service</module>
+        <module>message-service</module>
+        <module>promotion-service</module>
+        <module>pay-service</module>
+        <module>customer-service</module>
     </modules>
 
     <dependencies>

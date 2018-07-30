@@ -10,7 +10,7 @@
         <module>base-projects</module>
         <module>service-projects</module>
         <module>common</module>
-        <module>web-server</module>
+        <module>admin-server</module>
     </modules>
     <packaging>pom</packaging>
 

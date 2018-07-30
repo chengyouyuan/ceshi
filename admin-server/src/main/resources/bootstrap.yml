@@ -1,0 +1,19 @@
+server:
+  port: 3050
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: admin-server
+  cloud:
+    config:
+      label: admin
+      discovery:
+        enabled: true
+        service-id: config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true
+

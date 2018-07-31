@@ -3,7 +3,7 @@ spring:
     config:
       server:
         native:
-          searchLocations: classpath:/conf/
+          searchLocations: classpath:/conf/,classpath:/conf/hsc/
   boot:
     admin:
       client:

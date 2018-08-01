@@ -1,0 +1,38 @@
+wms: 
+  datasource: 
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.60.115:3306/hph
+    username: hph_user
+    password: eOSyqdPwBm1SQ8Q3HgGF1sbYWOvEi8IGoqdWv//avQ60cCALR+zlXffBdtZkZiEZAW/cUtjIoW9nC49dmlIEAg==
+    initialSize: 5 
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    connection-properties: druid.stat.mergeSql:true;druid.stat.slowSqlMillis:5000
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙   
+    filters: stat,wall,config
+    
+redis:
+  cluster:
+    address: 192.168.60.241:7000,192.168.60.241:7001,192.168.60.241:7002,192.168.60.241:7003,192.168.60.241:7004,192.168.60.241:7005
+    maxRedirections: 6
+  sentinel:
+    master: redis-master
+    nodes: 192.168.60.102:25379
+  single:
+    ip: 192.168.60.102
+    port: 6379
+  expire: 3600
+  max-active: 500
+  max-idle: 5000
+  max-wait: 10000
+  password: foobared
+  testOnBorrow: true
+  timeout: 60000

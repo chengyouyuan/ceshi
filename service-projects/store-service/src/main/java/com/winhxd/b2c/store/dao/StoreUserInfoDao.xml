@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.winhxd.b2c.store.dao.StoreUserInfoDao" >
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.login.model.StoreUserInfo" >
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     <id column="business_id" property="businessId" jdbcType="BIGINT" />
     <result column="id" property="id" jdbcType="BIGINT" />
     <result column="store_name" property="storeName" jdbcType="VARCHAR" />
@@ -38,7 +38,7 @@
     delete from store_user_info
     where business_id = #{businessId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.login.model.StoreUserInfo" >
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     insert into store_user_info (business_id, id, store_name, 
       store_id, store_mobile, store_address, 
       store_region_code, store_password, shopkeeper, 
@@ -54,7 +54,7 @@
       #{openid,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, 
       #{source,jdbcType=CHAR}, #{storeStatus,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.login.model.StoreUserInfo" >
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     insert into store_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="businessId != null" >
@@ -181,7 +181,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.login.model.StoreUserInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     update store_user_info
     <set >
       <if test="id != null" >
@@ -244,7 +244,7 @@
     </set>
     where business_id = #{businessId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.login.model.StoreUserInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     update store_user_info
     set id = #{id,jdbcType=BIGINT},
       store_name = #{storeName,jdbcType=VARCHAR},

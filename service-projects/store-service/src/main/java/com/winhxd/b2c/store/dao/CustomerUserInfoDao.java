@@ -1,6 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.login.model.CustomerUserInfo;
+import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 
 public interface CustomerUserInfoDao {
     int deleteByPrimaryKey(Long customerId);

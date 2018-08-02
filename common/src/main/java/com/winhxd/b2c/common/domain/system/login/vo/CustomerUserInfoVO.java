@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.login.vo;
+package com.winhxd.b2c.common.domain.system.login.vo;
 
 import java.io.Serializable;
 

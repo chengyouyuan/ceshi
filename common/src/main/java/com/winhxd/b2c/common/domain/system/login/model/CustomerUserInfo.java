@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.login.model;
+package com.winhxd.b2c.common.domain.system.login.model;
 
 import java.io.Serializable;
 import java.util.Date;

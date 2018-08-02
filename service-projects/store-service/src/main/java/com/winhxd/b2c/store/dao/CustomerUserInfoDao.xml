@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.winhxd.b2c.store.dao.CustomerUserInfoDao" >
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.login.model.CustomerUserInfo" >
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     <id column="customer_id" property="customerId" jdbcType="BIGINT" />
     <result column="customer_mobile" property="customerMobile" jdbcType="CHAR" />
     <result column="open_id" property="openId" jdbcType="CHAR" />
@@ -27,7 +27,7 @@
     delete from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.login.model.CustomerUserInfo" >
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info (customer_id, customer_mobile, open_id, 
       lat, lon, nick_name, headUrl, 
       created, updated, session_key
@@ -37,7 +37,7 @@
       #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{sessionKey,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.login.model.CustomerUserInfo" >
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >
@@ -104,7 +104,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.login.model.CustomerUserInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     update customer_user_info
     <set >
       <if test="customerMobile != null" >
@@ -137,7 +137,7 @@
     </set>
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.login.model.CustomerUserInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     update customer_user_info
     set customer_mobile = #{customerMobile,jdbcType=CHAR},
       open_id = #{openId,jdbcType=CHAR},

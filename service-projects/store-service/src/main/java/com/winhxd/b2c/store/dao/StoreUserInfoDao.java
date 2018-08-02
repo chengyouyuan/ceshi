@@ -1,6 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 
 public interface StoreUserInfoDao {
     int deleteByPrimaryKey(Long businessId);

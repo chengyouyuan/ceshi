@@ -1,7 +1,11 @@
 package com.winhxd.b2c.common.domain.shopcar.model;
 
 import java.util.Date;
-
+/**
+ * @auther: wangbaokuo
+ * @date: 2018/8/2 19:16
+ * @description: 购物车
+ */
 public class ShopCar {
     private Long id;
 
@@ -9,7 +13,7 @@ public class ShopCar {
 
     private Long storeId;
 
-    private Long prodId;
+    private String skuCode;
 
     private Integer prodNum;
 
@@ -41,12 +45,12 @@ public class ShopCar {
         this.storeId = storeId;
     }
 
-    public Long getProdId() {
-        return prodId;
+    public String getSkuCode() {
+        return skuCode;
     }
 
-    public void setProdId(Long prodId) {
-        this.prodId = prodId;
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
     }
 
     public Integer getProdNum() {

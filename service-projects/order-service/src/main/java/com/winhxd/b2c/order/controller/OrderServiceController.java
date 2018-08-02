@@ -15,7 +15,7 @@ public class OrderServiceController implements OrderService {
 
     @Override
     public ResponseResult<OrderVO> getOrderVo(@RequestParam("orderNo") String orderNo) {
-        cache.setex("1", 120, "1");
+        cache.setex("11111", 120, "111111");
         OrderVO vo = new OrderVO();
         vo.setOrderNo(orderNo);
         vo.setStoreId(10L);

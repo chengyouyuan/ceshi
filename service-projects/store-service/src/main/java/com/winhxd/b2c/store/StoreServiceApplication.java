@@ -8,9 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @MapperScan("com.winhxd.b2c.message.dao")
 @ComponentScan(basePackages = "com.winhxd.b2c")
-public class CustomerBServiceApplication {
+public class StoreServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CustomerBServiceApplication.class, args);
+        SpringApplication.run(StoreServiceApplication.class, args);
     }
 }

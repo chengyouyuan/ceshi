@@ -1,105 +1,55 @@
 package com.winhxd.b2c.common.domain.system.sys.model;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+import java.util.Date;
+import java.util.List;
+
+@ApiModel("系统管理用户")
+@Data
 public class SysUser {
+    @ApiModelProperty(value = "编号")
     private Long id;
 
+    @ApiModelProperty(value = "账号")
     private String userCode;
 
+    @ApiModelProperty(value = "姓名")
     private String userName;
 
+    @ApiModelProperty(value = "手机")
     private String mobile;
 
+    @ApiModelProperty(value = "状态（0：未启用，1：启用）")
     private Short status;
 
+    @ApiModelProperty(value = "密码")
     private String password;
 
+    @ApiModelProperty("创建人")
     private String createdBy;
 
+    @ApiModelProperty("创建时间")
     private Date created;
 
+    @ApiModelProperty("更新人")
     private String updatedBy;
 
+    @ApiModelProperty("更新时间")
     private Date updated;
 
-    public Long getId() {
-        return id;
-    }
+    @ApiModelProperty(value = "新密码", required = true)
+    private String newPassword;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @ApiModelProperty(value = "角色编号")
+    private Long ruleId;
 
-    public String getUserCode() {
-        return userCode;
-    }
+    @ApiModelProperty(value = "角色名称")
+    private String ruleName;
 
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
+    @ApiModelProperty(value = "权限列表")
+    private List<String> permissions;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
 }

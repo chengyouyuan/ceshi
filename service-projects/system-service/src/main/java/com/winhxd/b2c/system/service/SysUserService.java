@@ -2,8 +2,7 @@ package com.winhxd.b2c.system.service;
 
 import com.winhxd.b2c.common.domain.page.GenericPage;
 import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
 import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
 
 public interface SysUserService {
@@ -15,7 +14,7 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int addSysUser(SysUserDTO sysUser);
+    int addSysUser(SysUser sysUser);
 
     /**
      * 修改用户
@@ -24,16 +23,16 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int updateSysUser(SysUserDTO sysUser);
+    int updateSysUser(SysUser sysUser);
 
     /**
      * 修改密码
      * @author zhangzhengyang
      * @date 2018/8/1
-     * @param sysUserPasswordDTO
+     * @param sysUser
      * @return void
      */
-    void updatePassword(SysUserPasswordDTO sysUserPasswordDTO);
+    void updatePassword(SysUser sysUser);
 
     /**
      * 查询用户列表

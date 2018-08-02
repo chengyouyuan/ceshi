@@ -4,8 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.page.GenericPage;
 import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
 import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
 import com.winhxd.b2c.system.service.SysUserService;
 import io.swagger.annotations.Api;
@@ -49,7 +48,7 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> add(@RequestBody SysUserDTO sysUser){
+    public ResponseResult<Long> add(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -75,7 +74,7 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult update(@RequestBody SysUserDTO sysUser){
+    public ResponseResult update(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -91,7 +90,7 @@ public class SysUserController {
      * 修改密码
      * @author zhangzhengyang
      * @date 2018/8/2
-     * @param sysUserPasswordDTO
+     * @param sysUser
      * @return
      */
     @ApiOperation(value = "修改密码")
@@ -102,14 +101,14 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_301202, message = "新密码与原密码相同")
     })
     @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUserPasswordDTO){
-        logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUserPasswordDTO);
+    public ResponseResult updatePassword(@RequestBody SysUser sysUser){
+        logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            sysUserService.updatePassword(sysUserPasswordDTO);
+            sysUserService.updatePassword(sysUser);
             return result;
         } catch (Exception e){
-            logger.error("{} - 修改密码失败, 参数：{}", MODULE_NAME, sysUserPasswordDTO);
+            logger.error("{} - 修改密码失败, 参数：{}", MODULE_NAME, sysUser);
             throw e;
         }
     }

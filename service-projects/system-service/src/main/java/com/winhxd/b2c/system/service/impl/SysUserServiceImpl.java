@@ -5,17 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.page.GenericPage;
 import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUserRule;
 import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.dao.SysRulePermissionMapper;
 import com.winhxd.b2c.system.dao.SysUserMapper;
 import com.winhxd.b2c.system.dao.SysUserRuleMapper;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUserRule;
 import com.winhxd.b2c.system.service.SysUserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -40,46 +37,42 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int addSysUser(SysUserDTO sysUserDTO) {
-        SysUser sysUser = new SysUser();
-        BeanUtils.copyProperties(sysUserDTO,sysUser);
+    public int addSysUser(SysUser sysUser) {
         int count = sysUserMapper.insertSelective(sysUser);
         SysUserRule sysUserRule = new SysUserRule();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUserDTO.getRuleId());
+        sysUserRule.setRuleId(sysUser.getRuleId());
         sysUserRuleMapper.insertSelective(sysUserRule);
         return count;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateSysUser(SysUserDTO sysUserDTO) {
-        SysUser sysUser = new SysUser();
-        BeanUtils.copyProperties(sysUserDTO,sysUser);
+    public int updateSysUser(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
         sysUserRuleMapper.deleteByUserId(sysUser.getId());
         SysUserRule sysUserRule = new SysUserRule();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUserDTO.getRuleId());
+        sysUserRule.setRuleId(sysUser.getRuleId());
         sysUserRuleMapper.insertSelective(sysUserRule);
         return count;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePassword(SysUserPasswordDTO passwordDTO) {
-        SysUser sysUser = sysUserMapper.selectByPrimaryKey(passwordDTO.getId());
-        if(!sysUser.getPassword().equals(passwordDTO.getPassword())){
+    public void updatePassword(SysUser newSysUser) {
+        SysUser sysUser = sysUserMapper.selectByPrimaryKey(newSysUser.getId());
+        if(!sysUser.getPassword().equals(newSysUser.getPassword())){
             // 原密码输入错误
             throw new BusinessException(BusinessCode.CODE_301201);
         }
-        if(sysUser.getPassword().equals(passwordDTO.getNewPassword())){
+        if(sysUser.getPassword().equals(newSysUser.getNewPassword())){
             // 新密码与原密码相同
             throw new BusinessException(BusinessCode.CODE_301202);
         }
-        sysUser.setPassword(passwordDTO.getNewPassword());
-        sysUser.setUpdated(passwordDTO.getUpdated());
-        sysUser.setUpdatedBy(passwordDTO.getUpdatedBy());
+        sysUser.setPassword(newSysUser.getNewPassword());
+        sysUser.setUpdated(newSysUser.getUpdated());
+        sysUser.setUpdatedBy(newSysUser.getUpdatedBy());
         sysUserMapper.updateByPrimaryKeySelective(sysUser);
     }
 

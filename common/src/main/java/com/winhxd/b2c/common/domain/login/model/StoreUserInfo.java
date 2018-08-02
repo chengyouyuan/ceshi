@@ -9,7 +9,7 @@ import java.util.Date;
  * @Description b端用户信息
  * @version
  */
-public class businessUserInfo implements Serializable {
+public class StoreUserInfo implements Serializable {
 	/**
      * 主键
      */

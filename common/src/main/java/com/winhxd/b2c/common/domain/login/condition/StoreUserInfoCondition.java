@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("惠小店用户请求参数")
 @Data
-public class businessUserInfoCondition implements Serializable {
+public class StoreUserInfoCondition implements Serializable {
 	@ApiModelProperty(value = "用户账号")
     private String storeMobile;
 	@ApiModelProperty(value = "密码")

@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("小程序登录返参")
 @Data
-public class customerUserInfoVO implements Serializable {
+public class CustomerUserInfoVO implements Serializable {
 	@ApiModelProperty(value = "用户主键")
     private Long customerId;
 	@ApiModelProperty(value = "账号")

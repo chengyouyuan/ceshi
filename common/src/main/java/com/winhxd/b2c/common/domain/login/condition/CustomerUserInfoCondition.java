@@ -1,51 +1,35 @@
-package com.winhxd.b2c.common.domain.login.model;
+package com.winhxd.b2c.common.domain.login.condition;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 /**
  * @author wufuyun
- * @date  2018年8月2日 下午3:44:27
- * @Description c端用户信息
+ * @date  2018年8月2日 下午3:58:36
+ * @Description 
  * @version
  */
-public class customerUserInfo implements Serializable {
-	/**
-	 * 用户主键
-	 */
+@ApiModel("小程序用户请求参数")
+@Data
+public class CustomerUserInfoCondition implements Serializable {
+	@ApiModelProperty(value = "用户主键")
     private Long customerId;
-    /**
-     * 用户账号
-     */
+	@ApiModelProperty(value = "账号")
     private String customerMobile;
-    /**
-     * 微信openId
-     */
-    private String openId;
-    /**
-     * 纬度
-     */
+	@ApiModelProperty(value = "微信code")
+    private String code;
+	@ApiModelProperty(value = "纬度")
     private Double lat;
-    /**
-     * 经度
-     */
+	@ApiModelProperty(value = "经度")
     private Double lon;
-    /**
-     * 昵称
-     */
+	@ApiModelProperty(value = "昵称")
     private String nickName;
-    /**
-     * 头像
-     */
+	@ApiModelProperty(value = "头像")
     private String headurl;
-    
-    private Date created;
 
-    private Date updated;
-    /**
-     * 会话秘钥
-     */
-    private String  sessionKey;
+
     private static final long serialVersionUID = 1L;
 
     public Long getCustomerId() {
@@ -64,13 +48,6 @@ public class customerUserInfo implements Serializable {
         this.customerMobile = customerMobile == null ? null : customerMobile.trim();
     }
 
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId == null ? null : openId.trim();
-    }
 
     public Double getLat() {
         return lat;
@@ -104,28 +81,12 @@ public class customerUserInfo implements Serializable {
         this.headurl = headurl == null ? null : headurl.trim();
     }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-	public String getSessionKey() {
-		return sessionKey;
+	public String getCode() {
+		return code;
 	}
 
-	public void setSessionKey(String sessionKey) {
-		this.sessionKey = sessionKey;
+	public void setCode(String code) {
+		this.code = code;
 	}
     
 }

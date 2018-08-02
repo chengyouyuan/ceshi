@@ -1,13 +1,7 @@
 package com.winhxd.b2c.customer.api;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar;
-import com.winhxd.b2c.customer.service.CustomerShopCarService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -16,7 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.shopcar.model.ShopCar;
+import com.winhxd.b2c.customer.service.ShopCarService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @auther: wangbaokuo
@@ -25,12 +27,12 @@ import javax.annotation.Resource;
  */
 @Api(value = "购物车Controller", tags = "api_shop_car")
 @RestController
-public class CustomerShopCarController {
+public class ShopCarController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomerShopCarController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShopCarController.class);
 
     @Resource
-    private CustomerShopCarService customerShopCarService;
+    private ShopCarService shopCarService;
 
     /**
      * @auther: wangbaokuo
@@ -45,10 +47,10 @@ public class CustomerShopCarController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/2010/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> saveCustomerShopCar(@RequestBody CustomerShopCar customerShopCar){
+    public ResponseResult<Long> saveShopCar(@RequestBody ShopCar ShopCar){
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            customerShopCarService.saveCustomerShopCar(customerShopCar);
+        	shopCarService.saveShopCar(ShopCar);
             return result;
         } catch (Exception e){
             logger.error("ShopCarController -> saveShopCar异常, 异常信息{}" + e.getMessage(), e);

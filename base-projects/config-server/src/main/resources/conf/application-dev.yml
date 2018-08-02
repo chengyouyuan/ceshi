@@ -5,6 +5,11 @@ spring:
         url: http://localhost:1111/admin/
         instance:
           prefer-ip: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: retail2C_user
+    password: tNB9gLJ42hwguHLK
+    url: jdbc:mysql://192.168.60.115:3306/retail2C?useSSL=false
 
 # 缓存配置
 redis:

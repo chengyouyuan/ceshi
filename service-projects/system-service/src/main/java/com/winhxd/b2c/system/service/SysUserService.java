@@ -1,10 +1,8 @@
 package com.winhxd.b2c.system.service;
 
-import com.winhxd.b2c.common.domain.page.GenericPage;
-import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
-import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.system.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.model.SysUser;
 
 public interface SysUserService {
 
@@ -15,7 +13,7 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int addSysUser(SysUserDTO sysUser);
+    int addSysUser(SysUser sysUser);
 
     /**
      * 修改用户
@@ -24,16 +22,16 @@ public interface SysUserService {
      * @param sysUser
      * @return int
      */
-    int updateSysUser(SysUserDTO sysUser);
+    int updateSysUser(SysUser sysUser);
 
     /**
      * 修改密码
      * @author zhangzhengyang
      * @date 2018/8/1
-     * @param sysUserPasswordDTO
+     * @param sysUser
      * @return void
      */
-    void updatePassword(SysUserPasswordDTO sysUserPasswordDTO);
+    void updatePassword(SysUser sysUser);
 
     /**
      * 查询用户列表
@@ -42,7 +40,7 @@ public interface SysUserService {
      * @param condition
      * @return java.util.List<com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO>
      */
-    GenericPage<SysUserVO> selectSysUser(SysUserCondition condition);
+    Page<SysUser> selectSysUser(SysUserCondition condition);
 
     /**
      * 根据登录账号获取用户信息
@@ -51,7 +49,7 @@ public interface SysUserService {
      * @param userCode
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUserVO getSysUserByUserCode(String userCode);
+    SysUser getSysUserByUserCode(String userCode);
 
     /**
      * 根据主键获取用户信息
@@ -60,6 +58,6 @@ public interface SysUserService {
      * @param id
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUserVO getSysUserById(Long id);
+    SysUser getSysUserById(Long id);
 
 }

@@ -1,0 +1,18 @@
+server:
+  port: 3102
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: b2c-customer-service
+  cloud:
+    config:
+      label: customer
+      discovery:
+        enabled: true
+        service-id: b2c-config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true

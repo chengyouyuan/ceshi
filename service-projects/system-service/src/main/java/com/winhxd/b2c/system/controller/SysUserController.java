@@ -1,12 +1,10 @@
 package com.winhxd.b2c.system.controller;
 
+import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.page.GenericPage;
-import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
-import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
-import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
+import com.winhxd.b2c.common.domain.system.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.model.SysUser;
 import com.winhxd.b2c.system.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +47,7 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> add(@RequestBody SysUserDTO sysUser){
+    public ResponseResult<Long> add(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -75,7 +73,7 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult update(@RequestBody SysUserDTO sysUser){
+    public ResponseResult update(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -91,7 +89,7 @@ public class SysUserController {
      * 修改密码
      * @author zhangzhengyang
      * @date 2018/8/2
-     * @param sysUserPasswordDTO
+     * @param sysUser
      * @return
      */
     @ApiOperation(value = "修改密码")
@@ -102,14 +100,14 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_301202, message = "新密码与原密码相同")
     })
     @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUserPasswordDTO){
-        logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUserPasswordDTO);
+    public ResponseResult updatePassword(@RequestBody SysUser sysUser){
+        logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            sysUserService.updatePassword(sysUserPasswordDTO);
+            sysUserService.updatePassword(sysUser);
             return result;
         } catch (Exception e){
-            logger.error("{} - 修改密码失败, 参数：{}", MODULE_NAME, sysUserPasswordDTO);
+            logger.error("{} - 修改密码失败, 参数：{}", MODULE_NAME, sysUser);
             throw e;
         }
     }
@@ -127,11 +125,11 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<GenericPage<SysUserVO>> list(@RequestBody SysUserCondition condition){
+    public ResponseResult<Page<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：{}", MODULE_NAME, condition);
-        ResponseResult<GenericPage<SysUserVO>> result = new ResponseResult<>();
+        ResponseResult<Page<SysUser>> result = new ResponseResult<>();
         try {
-            GenericPage<SysUserVO> page = sysUserService.selectSysUser(condition);
+            Page<SysUser> page = sysUserService.selectSysUser(condition);
             result.setData(page);
             return result;
         } catch (Exception e){
@@ -154,12 +152,12 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_301401, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<SysUserVO> getByUserCode(@PathVariable("userCode") String userCode){
+    public ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode){
         logger.info("{} - 根据登录账号获取用户信息, 参数：{}", MODULE_NAME, userCode);
-        ResponseResult<SysUserVO> result = new ResponseResult<>();
+        ResponseResult<SysUser> result = new ResponseResult<>();
         try {
-            SysUserVO sysUserVO = sysUserService.getSysUserByUserCode(userCode);
-            result.setData(sysUserVO);
+            SysUser sysUser = sysUserService.getSysUserByUserCode(userCode);
+            result.setData(sysUser);
             return result;
         } catch (Exception e){
             logger.error("{} - 根据登录账号获取用户信息失败, 参数：{}", MODULE_NAME, userCode);
@@ -180,12 +178,12 @@ public class SysUserController {
             @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3015/v1/get/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<SysUserVO> getById(Long userId){
+    public ResponseResult<SysUser> getById(Long userId){
         logger.info("{} - 根据主键获取用户信息, 参数：{}", MODULE_NAME, userId);
-        ResponseResult<SysUserVO> result = new ResponseResult<>();
+        ResponseResult<SysUser> result = new ResponseResult<>();
         try {
-            SysUserVO sysUserVO = sysUserService.getSysUserById(userId);
-            result.setData(sysUserVO);
+            SysUser sysUser = sysUserService.getSysUserById(userId);
+            result.setData(sysUser);
             return result;
         } catch (Exception e){
             logger.error("{} - 根据主键获取用户信息失败, 参数：{}", MODULE_NAME, userId);

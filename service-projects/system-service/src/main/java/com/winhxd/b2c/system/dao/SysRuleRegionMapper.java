@@ -1,6 +1,6 @@
 package com.winhxd.b2c.system.dao;
 
-import com.winhxd.b2c.common.domain.system.sys.model.SysRuleRegion;
+import com.winhxd.b2c.common.domain.system.model.SysRuleRegion;
 
 public interface SysRuleRegionMapper {
     int deleteByPrimaryKey(Long id);

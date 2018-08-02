@@ -3,12 +3,31 @@ package com.winhxd.b2c.order.model;
 import java.util.Date;
 
 /**
- * 订单状态流转实体
+ * 订单流转记录实体
  * @author wangbin
- * @date  2018年8月2日 上午11:23:58
+ * @date  2018年8月2日 下午1:43:58
  * @version 
  */
 public class OrderChangeLog {
+    
+    public OrderChangeLog() {
+        super();
+    }
+
+    public OrderChangeLog(String orderNo, Short originalOrderStatus, Short newOrderStatus, String changeMsg,
+            Short mainPoint, Date created, String createdBy, String originalJson, String newJson) {
+        super();
+        this.orderNo = orderNo;
+        this.originalOrderStatus = originalOrderStatus;
+        this.newOrderStatus = newOrderStatus;
+        this.changeMsg = changeMsg;
+        this.mainPoint = mainPoint;
+        this.created = created;
+        this.createdBy = createdBy;
+        this.originalJson = originalJson;
+        this.newJson = newJson;
+    }
+
     private Long id;
 
     private String orderNo;
@@ -18,6 +37,8 @@ public class OrderChangeLog {
     private Short newOrderStatus;
 
     private String changeMsg;
+
+    private Short mainPoint;
 
     private Date created;
 
@@ -67,6 +88,14 @@ public class OrderChangeLog {
         this.changeMsg = changeMsg;
     }
 
+    public Short getMainPoint() {
+        return mainPoint;
+    }
+
+    public void setMainPoint(Short mainPoint) {
+        this.mainPoint = mainPoint;
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -97,5 +126,13 @@ public class OrderChangeLog {
 
     public void setNewJson(String newJson) {
         this.newJson = newJson;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderChangeLog [id=" + id + ", orderNo=" + orderNo + ", originalOrderStatus=" + originalOrderStatus
+                + ", newOrderStatus=" + newOrderStatus + ", changeMsg=" + changeMsg + ", mainPoint=" + mainPoint
+                + ", created=" + created + ", createdBy=" + createdBy + ", originalJson=" + originalJson + ", newJson="
+                + newJson + "]";
     }
 }

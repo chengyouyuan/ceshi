@@ -1,10 +1,9 @@
 package com.winhxd.b2c.common.domain.condition;
 
-import com.winhxd.b2c.common.domain.base.BaseDomain;
 import lombok.Data;
 
 @Data
-public abstract class BaseCondition extends BaseDomain {
+public abstract class BaseCondition {
 
 	/**
 	 * 页号

@@ -17,13 +17,13 @@ public enum OrderStatusEnum {
      */
     RECEIVED((short)3, "订单待商铺确认"),
     /**
-     * 待计价
+     * 待商铺确认价格
      */
-    WAIT_QUOTA_VALUATION((short)5, "待商铺确认价格"),
+    WAIT_VALUATION((short)5, "待商铺确认价格"),
     /**
      * 商铺已确认价格，待用户确认
      */
-    ALREADY_QUOTA_VALUATION((short)7, "商铺已确认价格，待用户确认"),
+    ALREADY_VALUATION((short)7, "商铺已确认价格，待用户确认"),
     /**
      * 待自提（已确认）
      */

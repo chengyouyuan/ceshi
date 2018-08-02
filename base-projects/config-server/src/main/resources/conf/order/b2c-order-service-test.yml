@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    username: developer
-    password: 123#abc
-    url: jdbc:sqlserver://192.168.60.6:1433;DatabaseName=CRM_RETAIL_DEV6

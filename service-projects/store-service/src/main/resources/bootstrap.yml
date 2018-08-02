@@ -1,0 +1,18 @@
+server:
+  port: 3101
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: b2c-store-service
+  cloud:
+    config:
+      label: store
+      discovery:
+        enabled: true
+        service-id: b2c-config-server
+
+eureka:
+  instance:
+    prefer-ip-address: true

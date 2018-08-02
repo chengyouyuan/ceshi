@@ -20,8 +20,8 @@
         <module>message-service</module>
         <module>promotion-service</module>
         <module>pay-service</module>
-        <module>customer-c-service</module>
-        <module>customer-b-service</module>
+        <module>store-service</module>
+        <module>customer-service</module>
     </modules>
 
     <dependencies>
@@ -66,11 +66,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
-        <!--测试用sqlserver-->
-        <!--<dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>

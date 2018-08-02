@@ -2,6 +2,7 @@ package com.winhxd.b2c.order.api;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.model.AsyncEvent;
 import com.winhxd.b2c.order.dao.AsyncEventMapper;
@@ -18,6 +19,9 @@ import java.util.List;
 public class OrderApiController {
     @Autowired
     private AsyncEventMapper asyncEventMapper;
+
+    @Autowired
+    private Cache cache;
 
     @GetMapping("/api-order/order/663/v1/getAsyncEvents")
     @ApiOperation(value = "aaaa")

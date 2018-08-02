@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.order.dao.OrderDetailMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderDetail">
+<mapper namespace="com.winhxd.b2c.order.dao.OrderItemMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderItem">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
-    <result column="sku" jdbcType="CHAR" property="sku" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -15,31 +15,27 @@
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, sku, amount, price, created, created_by, updated, updated_by, updated_by_name, 
-    created_by_name
+    id, order_no, sku_code, amount, price, created, created_by, updated, updated_by, 
+    updated_by_name, created_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from order_detail
+    from order_item
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from order_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderDetail">
-    insert into order_detail (id, order_no, sku, amount, 
-      price, created, created_by, 
-      updated, updated_by, updated_by_name, 
-      created_by_name)
-    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{sku,jdbcType=CHAR}, #{amount,jdbcType=INTEGER}, 
-      #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
-      #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
-      #{createdByName,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
+    insert into order_item (id, order_no, sku_code, 
+      amount, price, created, 
+      created_by, updated, updated_by, 
+      updated_by_name, created_by_name)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{skuCode,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderDetail">
-    insert into order_detail
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
+    insert into order_item
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -47,8 +43,8 @@
       <if test="orderNo != null">
         order_no,
       </if>
-      <if test="sku != null">
-        sku,
+      <if test="skuCode != null">
+        sku_code,
       </if>
       <if test="amount != null">
         amount,
@@ -82,8 +78,8 @@
       <if test="orderNo != null">
         #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="sku != null">
-        #{sku,jdbcType=CHAR},
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
       </if>
       <if test="amount != null">
         #{amount,jdbcType=INTEGER},
@@ -111,14 +107,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderDetail">
-    update order_detail
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
+    update order_item
     <set>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="sku != null">
-        sku = #{sku,jdbcType=CHAR},
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=INTEGER},
@@ -147,10 +143,10 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderDetail">
-    update order_detail
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
+    update order_item
     set order_no = #{orderNo,jdbcType=CHAR},
-      sku = #{sku,jdbcType=CHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL},
       created = #{created,jdbcType=TIMESTAMP},

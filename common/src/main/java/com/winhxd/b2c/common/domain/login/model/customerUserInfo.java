@@ -3,25 +3,49 @@ package com.winhxd.b2c.common.domain.login.model;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author wufuyun
+ * @date  2018年8月2日 下午3:44:27
+ * @Description c端用户信息
+ * @version
+ */
 public class customerUserInfo implements Serializable {
+	/**
+	 * 用户主键
+	 */
     private Long customerId;
-
+    /**
+     * 用户账号
+     */
     private String customerMobile;
-
+    /**
+     * 微信openId
+     */
     private String openId;
-
+    /**
+     * 纬度
+     */
     private Double lat;
-
+    /**
+     * 经度
+     */
     private Double lon;
-
+    /**
+     * 昵称
+     */
     private String nickName;
-
+    /**
+     * 头像
+     */
     private String headurl;
-
+    
     private Date created;
 
     private Date updated;
-
+    /**
+     * 会话秘钥
+     */
+    private String  sessionKey;
     private static final long serialVersionUID = 1L;
 
     public Long getCustomerId() {
@@ -95,4 +119,13 @@ public class customerUserInfo implements Serializable {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
+	}
+    
 }

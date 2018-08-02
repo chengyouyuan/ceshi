@@ -1,26 +1,34 @@
 package com.winhxd.b2c.common.domain.login.condition;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+/**
+ * @author wufuyun
+ * @date  2018年8月2日 下午3:58:36
+ * @Description 
+ * @version
+ */
+@ApiModel("小程序用户请求参数")
+@Data
 public class customerUserInfoCondition implements Serializable {
+	@ApiModelProperty(value = "用户主键")
     private Long customerId;
-
+	@ApiModelProperty(value = "账号")
     private String customerMobile;
-
-    private String openId;
-
+	@ApiModelProperty(value = "微信code")
+    private String code;
+	@ApiModelProperty(value = "纬度")
     private Double lat;
-
+	@ApiModelProperty(value = "经度")
     private Double lon;
-
+	@ApiModelProperty(value = "昵称")
     private String nickName;
-
+	@ApiModelProperty(value = "头像")
     private String headurl;
 
-    private Date created;
-
-    private Date updated;
 
     private static final long serialVersionUID = 1L;
 
@@ -40,13 +48,6 @@ public class customerUserInfoCondition implements Serializable {
         this.customerMobile = customerMobile == null ? null : customerMobile.trim();
     }
 
-    public String getOpenId() {
-        return openId;
-    }
-
-    public void setOpenId(String openId) {
-        this.openId = openId == null ? null : openId.trim();
-    }
 
     public Double getLat() {
         return lat;
@@ -80,19 +81,12 @@ public class customerUserInfoCondition implements Serializable {
         this.headurl = headurl == null ? null : headurl.trim();
     }
 
-    public Date getCreated() {
-        return created;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
+    
 }

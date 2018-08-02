@@ -1,198 +1,90 @@
 package com.winhxd.b2c.common.domain.login.condition;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+/**
+ * @author wufuyun
+ * @date  2018年8月2日 下午4:38:38
+ * @Description 
+ * @version
+ */
+@ApiModel("惠小店用户请求参数")
+@Data
 public class businessUserInfoCondition implements Serializable {
-    private Long businessId;
-
-    private String storeName;
-
-    private Long storeId;
-
+	@ApiModelProperty(value = "用户账号")
     private String storeMobile;
-
-    private String storeAddress;
-
-    private String storeRegionCode;
-
+	@ApiModelProperty(value = "密码")
     private String storePassword;
-
-    private String shopkeeper;
-
+	@ApiModelProperty(value = "头像")
     private String shopOwnerUrl;
-
-    private Byte pickupWay;
-
-    private Byte paymentWay;
-
-    private String contactMobile;
-
+	@ApiModelProperty(value = "纬度")
     private Double lat;
-
+	@ApiModelProperty(value = "经度")
     private Double lon;
-
+	@ApiModelProperty(value = "微信openid")
     private String openid;
-
-    private Date created;
-
-    private Date updated;
-
+	@ApiModelProperty(value = "来源")
     private String source;
-
-    private Byte storeStatus;
 
     private static final long serialVersionUID = 1L;
 
-    public Long getBusinessId() {
-        return businessId;
-    }
+	public String getStoreMobile() {
+		return storeMobile;
+	}
 
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
-    }
+	public void setStoreMobile(String storeMobile) {
+		this.storeMobile = storeMobile;
+	}
 
-    public String getStoreName() {
-        return storeName;
-    }
+	public String getStorePassword() {
+		return storePassword;
+	}
 
-    public void setStoreName(String storeName) {
-        this.storeName = storeName == null ? null : storeName.trim();
-    }
+	public void setStorePassword(String storePassword) {
+		this.storePassword = storePassword;
+	}
 
-    public Long getStoreId() {
-        return storeId;
-    }
+	public String getShopOwnerUrl() {
+		return shopOwnerUrl;
+	}
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+	public void setShopOwnerUrl(String shopOwnerUrl) {
+		this.shopOwnerUrl = shopOwnerUrl;
+	}
 
-    public String getStoreMobile() {
-        return storeMobile;
-    }
+	public Double getLat() {
+		return lat;
+	}
 
-    public void setStoreMobile(String storeMobile) {
-        this.storeMobile = storeMobile == null ? null : storeMobile.trim();
-    }
+	public void setLat(Double lat) {
+		this.lat = lat;
+	}
 
-    public String getStoreAddress() {
-        return storeAddress;
-    }
+	public Double getLon() {
+		return lon;
+	}
 
-    public void setStoreAddress(String storeAddress) {
-        this.storeAddress = storeAddress == null ? null : storeAddress.trim();
-    }
+	public void setLon(Double lon) {
+		this.lon = lon;
+	}
 
-    public String getStoreRegionCode() {
-        return storeRegionCode;
-    }
+	public String getOpenid() {
+		return openid;
+	}
 
-    public void setStoreRegionCode(String storeRegionCode) {
-        this.storeRegionCode = storeRegionCode == null ? null : storeRegionCode.trim();
-    }
+	public void setOpenid(String openid) {
+		this.openid = openid;
+	}
 
-    public String getStorePassword() {
-        return storePassword;
-    }
+	public String getSource() {
+		return source;
+	}
 
-    public void setStorePassword(String storePassword) {
-        this.storePassword = storePassword == null ? null : storePassword.trim();
-    }
+	public void setSource(String source) {
+		this.source = source;
+	}
 
-    public String getShopkeeper() {
-        return shopkeeper;
-    }
-
-    public void setShopkeeper(String shopkeeper) {
-        this.shopkeeper = shopkeeper == null ? null : shopkeeper.trim();
-    }
-
-    public String getShopOwnerUrl() {
-        return shopOwnerUrl;
-    }
-
-    public void setShopOwnerUrl(String shopOwnerUrl) {
-        this.shopOwnerUrl = shopOwnerUrl == null ? null : shopOwnerUrl.trim();
-    }
-
-    public Byte getPickupWay() {
-        return pickupWay;
-    }
-
-    public void setPickupWay(Byte pickupWay) {
-        this.pickupWay = pickupWay;
-    }
-
-    public Byte getPaymentWay() {
-        return paymentWay;
-    }
-
-    public void setPaymentWay(Byte paymentWay) {
-        this.paymentWay = paymentWay;
-    }
-
-    public String getContactMobile() {
-        return contactMobile;
-    }
-
-    public void setContactMobile(String contactMobile) {
-        this.contactMobile = contactMobile == null ? null : contactMobile.trim();
-    }
-
-    public Double getLat() {
-        return lat;
-    }
-
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
-    public Double getLon() {
-        return lon;
-    }
-
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
-
-    public String getOpenid() {
-        return openid;
-    }
-
-    public void setOpenid(String openid) {
-        this.openid = openid == null ? null : openid.trim();
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source == null ? null : source.trim();
-    }
-
-    public Byte getStoreStatus() {
-        return storeStatus;
-    }
-
-    public void setStoreStatus(Byte storeStatus) {
-        this.storeStatus = storeStatus;
-    }
 }

@@ -1,45 +1,90 @@
 package com.winhxd.b2c.common.domain.login.model;
 
 import java.io.Serializable;
+
 import java.util.Date;
-
+/**
+ * @author wufuyun
+ * @date  2018年8月2日 下午3:43:57
+ * @Description b端用户信息
+ * @version
+ */
 public class businessUserInfo implements Serializable {
+	/**
+     * 主键
+     */
+	private Long id;
+	/**
+     * 门店用户id
+     */
     private Long businessId;
-
+    /**
+     * 门店名称
+     */
     private String storeName;
-
+    /**
+     * 门店编码
+     */
     private Long storeId;
-
+    /**
+     * 用户账号
+     */
     private String storeMobile;
-
+    /**
+     * 门店地址
+     */
     private String storeAddress;
-
+    /**
+     * 区域编码
+     */
     private String storeRegionCode;
-
+    /**
+     * 密码
+     */
     private String storePassword;
-
+    /**
+     * 店主名称
+     */
     private String shopkeeper;
-
+    /**
+     * 店主头像
+     */
     private String shopOwnerUrl;
-
+    /**
+     * 取货方式（1、自提）
+     */
     private Byte pickupWay;
-
+    /**
+     * 支付方式（1、微信在线付款2、微信扫码付款）
+     */
     private Byte paymentWay;
-
+    /**
+     * 联系方式 
+     */
     private String contactMobile;
-
+    /**
+     * 纬度
+     */
     private Double lat;
-
+    /**
+     * 经度
+     */
     private Double lon;
-
+    /**
+     * 微信openid
+     */
     private String openid;
 
     private Date created;
 
     private Date updated;
-
+    /**
+     * 来源
+     */
     private String source;
-
+    /**
+     * 0有效，1无效
+     */
     private Byte storeStatus;
 
     private static final long serialVersionUID = 1L;
@@ -195,4 +240,13 @@ public class businessUserInfo implements Serializable {
     public void setStoreStatus(Byte storeStatus) {
         this.storeStatus = storeStatus;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+    
 }

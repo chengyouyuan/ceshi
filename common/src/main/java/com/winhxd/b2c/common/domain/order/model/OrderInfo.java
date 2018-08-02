@@ -111,6 +111,10 @@ public class OrderInfo {
      * 下单所用设备
      */
     private String imie;
+    /**
+     * 下单门店区域编码
+     */
+    private String regionCode;
     private Date updated;
     private Long createdBy;
     private Long updatedBy;

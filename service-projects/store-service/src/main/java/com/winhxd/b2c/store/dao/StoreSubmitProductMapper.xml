@@ -16,16 +16,17 @@
     <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
     <result column="prod_info_text" jdbcType="VARCHAR" property="prodInfoText" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
   </resultMap>
   <sql id="Base_Column_List">
     id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3, 
-    prod_size, prod_status, audit_remark, prod_info_voice, prod_info_text, updated, update_by, 
-    created
+    prod_size, prod_status, audit_remark, prod_info_voice, prod_info_text, updated, updated_by, 
+    updated_by_name, created
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from store_submit_product
     where id = #{id,jdbcType=BIGINT}
@@ -35,18 +36,18 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
-    insert into store_submit_product (id, store_id, store_name, 
-      prod_name, prod_code, prod_image1, 
-      prod_image2, prod_image3, prod_size, 
-      prod_status, audit_remark, prod_info_voice, 
-      prod_info_text, updated, update_by, 
-      created)
-    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, 
-      #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR}, 
-      #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{prodSize,jdbcType=VARCHAR}, 
-      #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR}, 
-      #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{created,jdbcType=TIMESTAMP})
+    insert into store_submit_product (id, store_id, store_name,
+    prod_name, prod_code, prod_image1,
+    prod_image2, prod_image3, prod_size,
+    prod_status, audit_remark, prod_info_voice,
+    prod_info_text, updated, updated_by,
+    updated_by_name, created)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR},
+    #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR},
+    #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{prodSize,jdbcType=VARCHAR},
+    #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR},
+    #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+    #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
     insert into store_submit_product
@@ -93,8 +94,11 @@
       <if test="updated != null">
         updated,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
       </if>
       <if test="created != null">
         created,
@@ -143,8 +147,11 @@
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=VARCHAR},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -193,8 +200,11 @@
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -217,7 +227,8 @@
       prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
       prod_info_text = #{prodInfoText,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -15,12 +15,23 @@ import java.util.Date;
 public class OrderDetail {
     private Long id;
 
+    /**
+     * 订单编号
+     */
     private String orderNo;
-
+    /**
+     * 商品SKU
+     */
     private String sku;
 
+    /**
+     * 商品数量
+     */
     private Integer amount;
 
+    /**
+     * 商品价格
+     */
     private BigDecimal price;
 
     private Date created;

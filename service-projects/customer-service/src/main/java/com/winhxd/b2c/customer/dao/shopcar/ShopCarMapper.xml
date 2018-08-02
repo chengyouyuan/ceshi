@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.customer.dao.shopcar.ShopCarMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="prod_id" jdbcType="BIGINT" property="prodId" />
+    <result column="prod_num" jdbcType="INTEGER" property="prodNum" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, store_id, prod_id, prod_num, created, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from shop_car
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from shop_car
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    insert into shop_car (id, customer_id, store_id, 
+      prod_id, prod_num, created, 
+      updated)
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
+      #{prodId,jdbcType=BIGINT}, #{prodNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    insert into shop_car
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="prodId != null">
+        prod_id,
+      </if>
+      <if test="prodNum != null">
+        prod_num,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="prodId != null">
+        #{prodId,jdbcType=BIGINT},
+      </if>
+      <if test="prodNum != null">
+        #{prodNum,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    update shop_car
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="prodId != null">
+        prod_id = #{prodId,jdbcType=BIGINT},
+      </if>
+      <if test="prodNum != null">
+        prod_num = #{prodNum,jdbcType=INTEGER},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    update shop_car
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      store_id = #{storeId,jdbcType=BIGINT},
+      prod_id = #{prodId,jdbcType=BIGINT},
+      prod_num = #{prodNum,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

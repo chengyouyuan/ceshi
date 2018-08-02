@@ -9,14 +9,16 @@ import com.winhxd.b2c.common.domain.system.sys.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.system.dao.SysRulePermissionMapper;
 import com.winhxd.b2c.system.dao.SysUserMapper;
 import com.winhxd.b2c.system.dao.SysUserRuleMapper;
-import com.winhxd.b2c.system.model.SysUser;
-import com.winhxd.b2c.system.model.SysUserRule;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUserRule;
 import com.winhxd.b2c.system.service.SysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -33,6 +35,8 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserMapper sysUserMapper;
     @Resource
     private SysUserRuleMapper sysUserRuleMapper;
+    @Resource
+    private SysRulePermissionMapper sysRulePermissionMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -66,10 +70,12 @@ public class SysUserServiceImpl implements SysUserService {
     public void updatePassword(SysUserPasswordDTO passwordDTO) {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(passwordDTO.getId());
         if(!sysUser.getPassword().equals(passwordDTO.getPassword())){
-            throw new BusinessException(BusinessCode.CODE_301);
+            // 原密码输入错误
+            throw new BusinessException(BusinessCode.CODE_301201);
         }
         if(sysUser.getPassword().equals(passwordDTO.getNewPassword())){
-            throw new BusinessException(BusinessCode.CODE_302);
+            // 新密码与原密码相同
+            throw new BusinessException(BusinessCode.CODE_301202);
         }
         sysUser.setPassword(passwordDTO.getNewPassword());
         sysUser.setUpdated(passwordDTO.getUpdated());
@@ -93,13 +99,25 @@ public class SysUserServiceImpl implements SysUserService {
     public SysUserVO getSysUserByUserCode(String userCode) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserCode(userCode);
-        return sysUserMapper.selectSysUser(condition).get(0);
+        List<SysUserVO> sysUserVOList = sysUserMapper.selectSysUser(condition);
+        if(CollectionUtils.isEmpty(sysUserVOList)){
+            // 该用户不存在
+            throw new BusinessException(BusinessCode.CODE_301401);
+        }
+        SysUserVO sysUserVO = sysUserVOList.get(0);
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUserVO.getId());
+        sysUserVO.setPermissions(permissionList);
+        return sysUserVO;
     }
 
     @Override
     public SysUserVO getSysUserById(Long id) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserId(id);
-        return sysUserMapper.selectSysUser(condition).get(0);
+        List<SysUserVO> sysUserVOList = sysUserMapper.selectSysUser(condition);
+        if(CollectionUtils.isEmpty(sysUserVOList)){
+            return null;
+        }
+        return sysUserVOList.get(0);
     }
 }

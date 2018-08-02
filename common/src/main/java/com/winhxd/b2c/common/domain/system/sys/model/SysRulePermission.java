@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.model;
+package com.winhxd.b2c.common.domain.system.sys.model;
 
 public class SysRulePermission {
     private Long id;

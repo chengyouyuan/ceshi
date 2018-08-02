@@ -1,6 +1,6 @@
 package com.winhxd.b2c.system.dao;
 
-import com.winhxd.b2c.system.model.SysUserRule;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUserRule;
 
 public interface SysUserRuleMapper {
     int deleteByPrimaryKey(Long id);

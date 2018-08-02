@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.system.dao.SysRulePermissionMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.system.model.SysRulePermission">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
@@ -19,13 +19,13 @@
     delete from sys_rule_permission
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.system.model.SysRulePermission">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission">
     insert into sys_rule_permission (id, rule_id, permission
       )
     values (#{id,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{permission,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.system.model.SysRulePermission">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission">
     insert into sys_rule_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.system.model.SysRulePermission">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission">
     update sys_rule_permission
     <set>
       <if test="ruleId != null">
@@ -62,10 +62,17 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.system.model.SysRulePermission">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission">
     update sys_rule_permission
     set rule_id = #{ruleId,jdbcType=BIGINT},
       permission = #{permission,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectPermissionByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
+    select
+      permission
+    from sys_rule_permission
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
 </mapper>

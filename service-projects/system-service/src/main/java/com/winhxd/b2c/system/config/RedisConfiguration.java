@@ -50,7 +50,9 @@ public class RedisConfiguration {
      */
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        return RedisCacheManager.builder(connectionFactory).transactionAware().build();
+        return RedisCacheManager.builder(connectionFactory)
+//                .transactionAware()
+                .build();
     }
 
 

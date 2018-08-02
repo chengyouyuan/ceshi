@@ -3,7 +3,7 @@ package com.winhxd.b2c.system.dao;
 import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.sys.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
-import com.winhxd.b2c.system.model.SysUser;
+import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
 
 import java.util.List;
 

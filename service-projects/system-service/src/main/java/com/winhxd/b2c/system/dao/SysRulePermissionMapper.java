@@ -1,6 +1,8 @@
 package com.winhxd.b2c.system.dao;
 
-import com.winhxd.b2c.system.model.SysRulePermission;
+import com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission;
+
+import java.util.List;
 
 public interface SysRulePermissionMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +16,6 @@ public interface SysRulePermissionMapper {
     int updateByPrimaryKeySelective(SysRulePermission record);
 
     int updateByPrimaryKey(SysRulePermission record);
+
+    List<String> selectPermissionByUserId(Long userId);
 }

@@ -35,15 +35,9 @@
         </javaClientGenerator>
 
 
-        <!--<table tableName="hxd_event_consumed" domainObjectName="HxdEventConsumed"
-               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false"/>-->
         <table tableName="${tableName}"
                enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false"/>
-        <!--<table tableName="%"
-               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false"/>-->
 
     </context>
 </generatorConfiguration>

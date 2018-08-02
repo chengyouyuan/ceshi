@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - uri: lb://b2c-order-service
+        predicates:
+        - Path=/api-order/**

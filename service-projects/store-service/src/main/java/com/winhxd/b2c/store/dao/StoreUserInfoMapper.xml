@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.winhxd.b2c.store.dao.StoreUserInfoMapper" >
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
-    <id column="business_id" property="businessId" jdbcType="BIGINT" />
-    <result column="id" property="id" jdbcType="BIGINT" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="store_name" property="storeName" jdbcType="VARCHAR" />
     <result column="store_id" property="storeId" jdbcType="BIGINT" />
     <result column="store_mobile" property="storeMobile" jdbcType="CHAR" />
@@ -11,7 +10,7 @@
     <result column="store_region_code" property="storeRegionCode" jdbcType="CHAR" />
     <result column="store_password" property="storePassword" jdbcType="CHAR" />
     <result column="shopkeeper" property="shopkeeper" jdbcType="VARCHAR" />
-    <result column="shop_owner_url" property="shopOwnerUrl" jdbcType="VARCHAR" />
+    <result column="shop_owner_img" property="shopOwnerImg" jdbcType="VARCHAR" />
     <result column="pickup_way" property="pickupWay" jdbcType="TINYINT" />
     <result column="payment_way" property="paymentWay" jdbcType="TINYINT" />
     <result column="contact_mobile" property="contactMobile" jdbcType="CHAR" />
@@ -19,47 +18,51 @@
     <result column="lon" property="lon" jdbcType="DOUBLE" />
     <result column="openId" property="openid" jdbcType="CHAR" />
     <result column="created" property="created" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="created_by_name" property="createdByName" jdbcType="VARCHAR" />
     <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+    <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
+    <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="source" property="source" jdbcType="CHAR" />
     <result column="store_status" property="storeStatus" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    business_id, id, store_name, store_id, store_mobile, store_address, store_region_code, 
-    store_password, shopkeeper, shop_owner_url, pickup_way, payment_way, contact_mobile, 
-    lat, lon, openId, created, updated, source, store_status
+    id, store_name, store_id, store_mobile, store_address, store_region_code, store_password, 
+    shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, openId, 
+    created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
+    store_status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from store_user_info
-    where business_id = #{businessId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from store_user_info
-    where business_id = #{businessId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
-    insert into store_user_info (business_id, id, store_name, 
-      store_id, store_mobile, store_address, 
-      store_region_code, store_password, shopkeeper, 
-      shop_owner_url, pickup_way, payment_way, 
-      contact_mobile, lat, lon, 
-      openId, created, updated, 
-      source, store_status)
-    values (#{businessId,jdbcType=BIGINT}, #{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, 
-      #{storeId,jdbcType=BIGINT}, #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, 
-      #{storeRegionCode,jdbcType=CHAR}, #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, 
-      #{shopOwnerUrl,jdbcType=VARCHAR}, #{pickupWay,jdbcType=TINYINT}, #{paymentWay,jdbcType=TINYINT}, 
-      #{contactMobile,jdbcType=CHAR}, #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, 
-      #{openid,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, 
-      #{source,jdbcType=CHAR}, #{storeStatus,jdbcType=TINYINT})
+    insert into store_user_info (id, store_name, store_id, 
+      store_mobile, store_address, store_region_code, 
+      store_password, shopkeeper, shop_owner_img, 
+      pickup_way, payment_way, contact_mobile, 
+      lat, lon, openId, created, 
+      created_by, created_by_name, updated, 
+      updated_by, updated_by_name, source, 
+      store_status)
+    values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeId,jdbcType=BIGINT}, 
+      #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
+      #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
+      #{pickupWay,jdbcType=TINYINT}, #{paymentWay,jdbcType=TINYINT}, #{contactMobile,jdbcType=CHAR}, 
+      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
+      #{storeStatus,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     insert into store_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="businessId != null" >
-        business_id,
-      </if>
       <if test="id != null" >
         id,
       </if>
@@ -84,8 +87,8 @@
       <if test="shopkeeper != null" >
         shopkeeper,
       </if>
-      <if test="shopOwnerUrl != null" >
-        shop_owner_url,
+      <if test="shopOwnerImg != null" >
+        shop_owner_img,
       </if>
       <if test="pickupWay != null" >
         pickup_way,
@@ -108,8 +111,20 @@
       <if test="created != null" >
         created,
       </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="createdByName != null" >
+        created_by_name,
+      </if>
       <if test="updated != null" >
         updated,
+      </if>
+      <if test="updatedBy != null" >
+        updated_by,
+      </if>
+      <if test="updatedByName != null" >
+        updated_by_name,
       </if>
       <if test="source != null" >
         source,
@@ -119,9 +134,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="businessId != null" >
-        #{businessId,jdbcType=BIGINT},
-      </if>
       <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
@@ -146,8 +158,8 @@
       <if test="shopkeeper != null" >
         #{shopkeeper,jdbcType=VARCHAR},
       </if>
-      <if test="shopOwnerUrl != null" >
-        #{shopOwnerUrl,jdbcType=VARCHAR},
+      <if test="shopOwnerImg != null" >
+        #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
       <if test="pickupWay != null" >
         #{pickupWay,jdbcType=TINYINT},
@@ -170,8 +182,20 @@
       <if test="created != null" >
         #{created,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null" >
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
       <if test="updated != null" >
         #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null" >
+        #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="source != null" >
         #{source,jdbcType=CHAR},
@@ -184,9 +208,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     update store_user_info
     <set >
-      <if test="id != null" >
-        id = #{id,jdbcType=BIGINT},
-      </if>
       <if test="storeName != null" >
         store_name = #{storeName,jdbcType=VARCHAR},
       </if>
@@ -208,8 +229,8 @@
       <if test="shopkeeper != null" >
         shopkeeper = #{shopkeeper,jdbcType=VARCHAR},
       </if>
-      <if test="shopOwnerUrl != null" >
-        shop_owner_url = #{shopOwnerUrl,jdbcType=VARCHAR},
+      <if test="shopOwnerImg != null" >
+        shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
       <if test="pickupWay != null" >
         pickup_way = #{pickupWay,jdbcType=TINYINT},
@@ -232,8 +253,20 @@
       <if test="created != null" >
         created = #{created,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null" >
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
       <if test="updated != null" >
         updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null" >
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="source != null" >
         source = #{source,jdbcType=CHAR},
@@ -242,19 +275,18 @@
         store_status = #{storeStatus,jdbcType=TINYINT},
       </if>
     </set>
-    where business_id = #{businessId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     update store_user_info
-    set id = #{id,jdbcType=BIGINT},
-      store_name = #{storeName,jdbcType=VARCHAR},
+    set store_name = #{storeName,jdbcType=VARCHAR},
       store_id = #{storeId,jdbcType=BIGINT},
       store_mobile = #{storeMobile,jdbcType=CHAR},
       store_address = #{storeAddress,jdbcType=VARCHAR},
       store_region_code = #{storeRegionCode,jdbcType=CHAR},
       store_password = #{storePassword,jdbcType=CHAR},
       shopkeeper = #{shopkeeper,jdbcType=VARCHAR},
-      shop_owner_url = #{shopOwnerUrl,jdbcType=VARCHAR},
+      shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
       pickup_way = #{pickupWay,jdbcType=TINYINT},
       payment_way = #{paymentWay,jdbcType=TINYINT},
       contact_mobile = #{contactMobile,jdbcType=CHAR},
@@ -262,9 +294,13 @@
       lon = #{lon,jdbcType=DOUBLE},
       openId = #{openid,jdbcType=CHAR},
       created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       source = #{source,jdbcType=CHAR},
       store_status = #{storeStatus,jdbcType=TINYINT}
-    where business_id = #{businessId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

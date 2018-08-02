@@ -1,7 +1,5 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
-import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +11,7 @@ import lombok.Data;
  */
 @ApiModel("小程序用户请求参数")
 @Data
-public class CustomerUserInfoCondition implements Serializable {
+public class CustomerUserInfoCondition{
 	@ApiModelProperty(value = "用户主键")
     private Long customerId;
 	@ApiModelProperty(value = "账号")
@@ -29,64 +27,5 @@ public class CustomerUserInfoCondition implements Serializable {
 	@ApiModelProperty(value = "头像")
     private String headurl;
 
-
-    private static final long serialVersionUID = 1L;
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
-
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile == null ? null : customerMobile.trim();
-    }
-
-
-    public Double getLat() {
-        return lat;
-    }
-
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
-    public Double getLon() {
-        return lon;
-    }
-
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName == null ? null : nickName.trim();
-    }
-
-    public String getHeadurl() {
-        return headurl;
-    }
-
-    public void setHeadurl(String headurl) {
-        this.headurl = headurl == null ? null : headurl.trim();
-    }
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
     
 }

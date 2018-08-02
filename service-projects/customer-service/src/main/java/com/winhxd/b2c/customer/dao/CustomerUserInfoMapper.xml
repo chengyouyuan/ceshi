@@ -8,14 +8,18 @@
     <result column="lat" property="lat" jdbcType="DOUBLE" />
     <result column="lon" property="lon" jdbcType="DOUBLE" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
-    <result column="headUrl" property="headurl" jdbcType="VARCHAR" />
+    <result column="head_img" property="headImg" jdbcType="VARCHAR" />
     <result column="created" property="created" jdbcType="TIMESTAMP" />
+    <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+    <result column="created_by_name" property="createdByName" jdbcType="VARCHAR" />
     <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+    <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
+    <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="session_key" property="sessionKey" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    customer_id, customer_mobile, open_id, lat, lon, nick_name, headUrl, created, updated, 
-    session_key
+    customer_id, customer_mobile, open_id, lat, lon, nick_name, head_img, created, created_by, 
+    created_by_name, updated, updated_by, updated_by_name, session_key
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -29,13 +33,15 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info (customer_id, customer_mobile, open_id, 
-      lat, lon, nick_name, headUrl, 
-      created, updated, session_key
-      )
+      lat, lon, nick_name, head_img, 
+      created, created_by, created_by_name, 
+      updated, updated_by, updated_by_name, 
+      session_key)
     values (#{customerId,jdbcType=BIGINT}, #{customerMobile,jdbcType=CHAR}, #{openId,jdbcType=CHAR}, 
-      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{nickName,jdbcType=VARCHAR}, #{headurl,jdbcType=VARCHAR}, 
-      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{sessionKey,jdbcType=VARCHAR}
-      )
+      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{nickName,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
+      #{sessionKey,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info
@@ -58,14 +64,26 @@
       <if test="nickName != null" >
         nick_name,
       </if>
-      <if test="headurl != null" >
-        headUrl,
+      <if test="headImg != null" >
+        head_img,
       </if>
       <if test="created != null" >
         created,
       </if>
+      <if test="createdBy != null" >
+        created_by,
+      </if>
+      <if test="createdByName != null" >
+        created_by_name,
+      </if>
       <if test="updated != null" >
         updated,
+      </if>
+      <if test="updatedBy != null" >
+        updated_by,
+      </if>
+      <if test="updatedByName != null" >
+        updated_by_name,
       </if>
       <if test="sessionKey != null" >
         session_key,
@@ -90,14 +108,26 @@
       <if test="nickName != null" >
         #{nickName,jdbcType=VARCHAR},
       </if>
-      <if test="headurl != null" >
-        #{headurl,jdbcType=VARCHAR},
+      <if test="headImg != null" >
+        #{headImg,jdbcType=VARCHAR},
       </if>
       <if test="created != null" >
         #{created,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdBy != null" >
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null" >
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
       <if test="updated != null" >
         #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null" >
+        #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="sessionKey != null" >
         #{sessionKey,jdbcType=VARCHAR},
@@ -122,14 +152,26 @@
       <if test="nickName != null" >
         nick_name = #{nickName,jdbcType=VARCHAR},
       </if>
-      <if test="headurl != null" >
-        headUrl = #{headurl,jdbcType=VARCHAR},
+      <if test="headImg != null" >
+        head_img = #{headImg,jdbcType=VARCHAR},
       </if>
       <if test="created != null" >
         created = #{created,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdBy != null" >
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null" >
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
       <if test="updated != null" >
         updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null" >
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null" >
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
       <if test="sessionKey != null" >
         session_key = #{sessionKey,jdbcType=VARCHAR},
@@ -144,9 +186,13 @@
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},
       nick_name = #{nickName,jdbcType=VARCHAR},
-      headUrl = #{headurl,jdbcType=VARCHAR},
+      head_img = #{headImg,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       session_key = #{sessionKey,jdbcType=VARCHAR}
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>

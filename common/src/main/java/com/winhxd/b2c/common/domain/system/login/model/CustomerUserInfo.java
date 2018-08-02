@@ -37,11 +37,14 @@ public class CustomerUserInfo implements Serializable {
     /**
      * 头像
      */
-    private String headurl;
+    private String headImg;
     
     private Date created;
-
+    private Long createdBy;
+    private String createdByName;
     private Date updated;
+    private Long updatedBy;
+    private String updatedByName;
     /**
      * 会话秘钥
      */
@@ -96,20 +99,28 @@ public class CustomerUserInfo implements Serializable {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getHeadurl() {
-        return headurl;
-    }
-
-    public void setHeadurl(String headurl) {
-        this.headurl = headurl == null ? null : headurl.trim();
-    }
-
     public Date getCreated() {
         return created;
     }
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName == null ? null : createdByName.trim();
     }
 
     public Date getUpdated() {
@@ -119,6 +130,29 @@ public class CustomerUserInfo implements Serializable {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedByName() {
+        return updatedByName;
+    }
+
+    public void setUpdatedByName(String updatedByName) {
+        this.updatedByName = updatedByName == null ? null : updatedByName.trim();
+    }
+    public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
 
 	public String getSessionKey() {
 		return sessionKey;

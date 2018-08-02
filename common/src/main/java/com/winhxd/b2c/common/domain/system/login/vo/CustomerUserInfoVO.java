@@ -1,7 +1,5 @@
 package com.winhxd.b2c.common.domain.system.login.vo;
 
-import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,28 +11,9 @@ import lombok.Data;
  */
 @ApiModel("小程序登录返参")
 @Data
-public class CustomerUserInfoVO implements Serializable {
+public class CustomerUserInfoVO {
 	@ApiModelProperty(value = "用户主键")
     private Long customerId;
 	@ApiModelProperty(value = "账号")
     private String customerMobile;
-    
-    private static final long serialVersionUID = 1L;
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
-
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile == null ? null : customerMobile.trim();
-    }
-
 }

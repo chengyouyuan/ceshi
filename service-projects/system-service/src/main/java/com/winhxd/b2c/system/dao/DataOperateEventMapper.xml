@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.system.dao.DataOperateEventMapper">
+
+  <insert id="insertDataOperateEvent" parameterType="com.winhxd.b2c.system.model.DataOperateEvent">
+    insert into DATA_OPERATE_EVENT (
+      EVENT_TYPE, EVENT_DESC,
+      OPER_BY, OPER_TIME, REL_TABLE, REL_ID,
+      ORIGINAL_VALUE,
+      ORIGINAL_VALUE_DESC,
+      NEW_VALUE,
+      NEW_VALUE_DESC
+    ) values (
+      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    )
+  </insert>
+
+</mapper>

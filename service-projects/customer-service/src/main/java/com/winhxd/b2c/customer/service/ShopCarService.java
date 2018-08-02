@@ -1,12 +1,12 @@
 package com.winhxd.b2c.customer.service;
 
-import com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar;
+import com.winhxd.b2c.common.domain.shopcar.model.ShopCar;
 /**
  * @auther: wangbaokuo
  * @date: 2018/8/2 20:19
  * @description:
  */
-public interface CustomerShopCarService {
+public interface ShopCarService {
     /**
      * @auther: wangbaokuo
      * @date: 2018/8/2 20:25
@@ -14,5 +14,5 @@ public interface CustomerShopCarService {
      * @param: CustomerShopCar
      * @return: int
      */
-    int saveCustomerShopCar(CustomerShopCar customerShopCar);
+    int saveShopCar(ShopCar shopCar);
 }

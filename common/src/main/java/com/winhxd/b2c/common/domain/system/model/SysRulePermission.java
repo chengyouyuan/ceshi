@@ -1,11 +1,11 @@
-package com.winhxd.b2c.common.domain.system.sys.model;
+package com.winhxd.b2c.common.domain.system.model;
 
-public class SysRuleRegion {
+public class SysRulePermission {
     private Long id;
 
     private Long ruleId;
 
-    private String regionCode;
+    private String permission;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class SysRuleRegion {
         this.ruleId = ruleId;
     }
 
-    public String getRegionCode() {
-        return regionCode;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setRegionCode(String regionCode) {
-        this.regionCode = regionCode;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 }

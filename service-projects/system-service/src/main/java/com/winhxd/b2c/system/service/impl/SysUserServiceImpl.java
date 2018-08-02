@@ -3,11 +3,9 @@ package com.winhxd.b2c.system.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.page.GenericPage;
-import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUserRule;
-import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
+import com.winhxd.b2c.common.domain.system.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.model.SysUser;
+import com.winhxd.b2c.common.domain.system.model.SysUserRule;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.dao.SysRulePermissionMapper;
 import com.winhxd.b2c.system.dao.SysUserMapper;
@@ -77,40 +75,34 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public GenericPage<SysUserVO> selectSysUser(SysUserCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<SysUserVO> sysUserVOList = sysUserMapper.selectSysUser(condition);
-        GenericPage<SysUserVO> genericPage = new GenericPage<>();
-        genericPage.setData(sysUserVOList);
-        genericPage.setPageNo(condition.getPageNo());
-        genericPage.setPageSize(condition.getPageSize());
-        genericPage.setTotalRows(page.getTotal());
-        return genericPage;
+    public Page<SysUser> selectSysUser(SysUserCondition condition) {
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        return sysUserMapper.selectSysUser(condition);
     }
 
     @Override
-    public SysUserVO getSysUserByUserCode(String userCode) {
+    public SysUser getSysUserByUserCode(String userCode) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserCode(userCode);
-        List<SysUserVO> sysUserVOList = sysUserMapper.selectSysUser(condition);
-        if(CollectionUtils.isEmpty(sysUserVOList)){
+        List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
+        if(CollectionUtils.isEmpty(sysUserList)){
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_301401);
         }
-        SysUserVO sysUserVO = sysUserVOList.get(0);
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUserVO.getId());
-        sysUserVO.setPermissions(permissionList);
-        return sysUserVO;
+        SysUser sysUser = sysUserList.get(0);
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
+        sysUser.setPermissions(permissionList);
+        return sysUser;
     }
 
     @Override
-    public SysUserVO getSysUserById(Long id) {
+    public SysUser getSysUserById(Long id) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserId(id);
-        List<SysUserVO> sysUserVOList = sysUserMapper.selectSysUser(condition);
-        if(CollectionUtils.isEmpty(sysUserVOList)){
+        List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
+        if(CollectionUtils.isEmpty(sysUserList)){
             return null;
         }
-        return sysUserVOList.get(0);
+        return sysUserList.get(0);
     }
 }

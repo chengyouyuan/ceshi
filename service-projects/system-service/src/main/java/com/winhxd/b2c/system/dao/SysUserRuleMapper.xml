@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.system.dao.SysUserRuleMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.sys.model.SysUserRule">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.model.SysUserRule">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
@@ -19,13 +19,13 @@
     delete from sys_user_rule
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysUserRule">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.model.SysUserRule">
     insert into sys_user_rule (id, user_id, rule_id
       )
     values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysUserRule">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.model.SysUserRule">
     insert into sys_user_rule
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysUserRule">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.model.SysUserRule">
     update sys_user_rule
     <set>
       <if test="userId != null">
@@ -62,7 +62,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.sys.model.SysUserRule">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.model.SysUserRule">
     update sys_user_rule
     set user_id = #{userId,jdbcType=BIGINT},
       rule_id = #{ruleId,jdbcType=BIGINT}

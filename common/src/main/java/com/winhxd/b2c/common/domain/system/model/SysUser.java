@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.sys.model;
+package com.winhxd.b2c.common.domain.system.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +10,7 @@ import java.util.List;
 @ApiModel("系统管理用户")
 @Data
 public class SysUser {
+
     @ApiModelProperty(value = "编号")
     private Long id;
 
@@ -40,7 +41,7 @@ public class SysUser {
     @ApiModelProperty("更新时间")
     private Date updated;
 
-    @ApiModelProperty(value = "新密码", required = true)
+    @ApiModelProperty(value = "新密码")
     private String newPassword;
 
     @ApiModelProperty(value = "角色编号")

@@ -1,9 +1,8 @@
 package com.winhxd.b2c.system.service;
 
-import com.winhxd.b2c.common.domain.page.GenericPage;
-import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
-import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.system.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.model.SysUser;
 
 public interface SysUserService {
 
@@ -41,7 +40,7 @@ public interface SysUserService {
      * @param condition
      * @return java.util.List<com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO>
      */
-    GenericPage<SysUserVO> selectSysUser(SysUserCondition condition);
+    Page<SysUser> selectSysUser(SysUserCondition condition);
 
     /**
      * 根据登录账号获取用户信息
@@ -50,7 +49,7 @@ public interface SysUserService {
      * @param userCode
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUserVO getSysUserByUserCode(String userCode);
+    SysUser getSysUserByUserCode(String userCode);
 
     /**
      * 根据主键获取用户信息
@@ -59,6 +58,6 @@ public interface SysUserService {
      * @param id
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUserVO getSysUserById(Long id);
+    SysUser getSysUserById(Long id);
 
 }

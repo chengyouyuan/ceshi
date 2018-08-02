@@ -67,10 +67,10 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
         <!--测试用sqlserver-->
-        <dependency>
+        <!--<dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>

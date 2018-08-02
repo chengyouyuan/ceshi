@@ -18,11 +18,11 @@ public enum OrderStatusEnum {
     /**
      * 待计价
      */
-    WAIT_QUOTA_VALUATION(5, "待计价"),
+    WAIT_VALUATION(5, "待计价"),
     /**
      * 已计价
      */
-    ALREADY_QUOTA_VALUATION(7, "已计价"),
+    ALREADY_VALUATION(7, "已计价"),
     /**
      * 待自提（已确认）
      */

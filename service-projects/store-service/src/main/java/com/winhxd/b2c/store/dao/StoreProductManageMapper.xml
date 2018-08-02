@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.store.dao.StoreProductManageMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="prod_id" jdbcType="VARCHAR" property="prodId" />
+    <result column="prod_range" jdbcType="INTEGER" property="prodRange" />
+    <result column="sell_money" jdbcType="DECIMAL" property="sellMoney" />
+    <result column="recommend" jdbcType="TINYINT" property="recommend" />
+    <result column="prod_status" jdbcType="TINYINT" property="prodStatus" />
+    <result column="prod_spu" jdbcType="VARCHAR" property="prodSpu" />
+    <result column="prod_sku" jdbcType="VARCHAR" property="prodSku" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_id, prod_id, prod_range, sell_money, recommend, prod_status, prod_spu, 
+    prod_sku, created_by, created_by_name, created, updated_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_product_manage
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from store_product_manage
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    insert into store_product_manage (id, store_id, prod_id, 
+      prod_range, sell_money, recommend, 
+      prod_status, prod_spu, prod_sku, 
+      created_by, created_by_name, created, 
+      updated_by, updated_by_name, updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodId,jdbcType=VARCHAR}, 
+      #{prodRange,jdbcType=INTEGER}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT}, 
+      #{prodStatus,jdbcType=TINYINT}, #{prodSpu,jdbcType=VARCHAR}, #{prodSku,jdbcType=VARCHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    insert into store_product_manage
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="prodId != null">
+        prod_id,
+      </if>
+      <if test="prodRange != null">
+        prod_range,
+      </if>
+      <if test="sellMoney != null">
+        sell_money,
+      </if>
+      <if test="recommend != null">
+        recommend,
+      </if>
+      <if test="prodStatus != null">
+        prod_status,
+      </if>
+      <if test="prodSpu != null">
+        prod_spu,
+      </if>
+      <if test="prodSku != null">
+        prod_sku,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="prodId != null">
+        #{prodId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodRange != null">
+        #{prodRange,jdbcType=INTEGER},
+      </if>
+      <if test="sellMoney != null">
+        #{sellMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="recommend != null">
+        #{recommend,jdbcType=TINYINT},
+      </if>
+      <if test="prodStatus != null">
+        #{prodStatus,jdbcType=TINYINT},
+      </if>
+      <if test="prodSpu != null">
+        #{prodSpu,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSku != null">
+        #{prodSku,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    update store_product_manage
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="prodId != null">
+        prod_id = #{prodId,jdbcType=VARCHAR},
+      </if>
+      <if test="prodRange != null">
+        prod_range = #{prodRange,jdbcType=INTEGER},
+      </if>
+      <if test="sellMoney != null">
+        sell_money = #{sellMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="recommend != null">
+        recommend = #{recommend,jdbcType=TINYINT},
+      </if>
+      <if test="prodStatus != null">
+        prod_status = #{prodStatus,jdbcType=TINYINT},
+      </if>
+      <if test="prodSpu != null">
+        prod_spu = #{prodSpu,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSku != null">
+        prod_sku = #{prodSku,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    update store_product_manage
+    set store_id = #{storeId,jdbcType=BIGINT},
+      prod_id = #{prodId,jdbcType=VARCHAR},
+      prod_range = #{prodRange,jdbcType=INTEGER},
+      sell_money = #{sellMoney,jdbcType=DECIMAL},
+      recommend = #{recommend,jdbcType=TINYINT},
+      prod_status = #{prodStatus,jdbcType=TINYINT},
+      prod_spu = #{prodSpu,jdbcType=VARCHAR},
+      prod_sku = #{prodSku,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

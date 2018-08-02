@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.store.dao.StoreSubmitProductMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="prod_name" jdbcType="VARCHAR" property="prodName" />
+    <result column="prod_code" jdbcType="VARCHAR" property="prodCode" />
+    <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
+    <result column="prod_image2" jdbcType="VARCHAR" property="prodImage2" />
+    <result column="prod_image3" jdbcType="VARCHAR" property="prodImage3" />
+    <result column="prod_size" jdbcType="VARCHAR" property="prodSize" />
+    <result column="prod_status" jdbcType="INTEGER" property="prodStatus" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
+    <result column="prod_info_text" jdbcType="VARCHAR" property="prodInfoText" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3, 
+    prod_size, prod_status, audit_remark, prod_info_voice, prod_info_text, updated, update_by, 
+    created
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_submit_product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from store_submit_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
+    insert into store_submit_product (id, store_id, store_name, 
+      prod_name, prod_code, prod_image1, 
+      prod_image2, prod_image3, prod_size, 
+      prod_status, audit_remark, prod_info_voice, 
+      prod_info_text, updated, update_by, 
+      created)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, 
+      #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR}, 
+      #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{prodSize,jdbcType=VARCHAR}, 
+      #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR}, 
+      #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
+    insert into store_submit_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="storeName != null">
+        store_name,
+      </if>
+      <if test="prodName != null">
+        prod_name,
+      </if>
+      <if test="prodCode != null">
+        prod_code,
+      </if>
+      <if test="prodImage1 != null">
+        prod_image1,
+      </if>
+      <if test="prodImage2 != null">
+        prod_image2,
+      </if>
+      <if test="prodImage3 != null">
+        prod_image3,
+      </if>
+      <if test="prodSize != null">
+        prod_size,
+      </if>
+      <if test="prodStatus != null">
+        prod_status,
+      </if>
+      <if test="auditRemark != null">
+        audit_remark,
+      </if>
+      <if test="prodInfoVoice != null">
+        prod_info_voice,
+      </if>
+      <if test="prodInfoText != null">
+        prod_info_text,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeName != null">
+        #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodName != null">
+        #{prodName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodCode != null">
+        #{prodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage1 != null">
+        #{prodImage1,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage2 != null">
+        #{prodImage2,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage3 != null">
+        #{prodImage3,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSize != null">
+        #{prodSize,jdbcType=VARCHAR},
+      </if>
+      <if test="prodStatus != null">
+        #{prodStatus,jdbcType=INTEGER},
+      </if>
+      <if test="auditRemark != null">
+        #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="prodInfoVoice != null">
+        #{prodInfoVoice,jdbcType=VARCHAR},
+      </if>
+      <if test="prodInfoText != null">
+        #{prodInfoText,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
+    update store_submit_product
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeName != null">
+        store_name = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodName != null">
+        prod_name = #{prodName,jdbcType=VARCHAR},
+      </if>
+      <if test="prodCode != null">
+        prod_code = #{prodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage1 != null">
+        prod_image1 = #{prodImage1,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage2 != null">
+        prod_image2 = #{prodImage2,jdbcType=VARCHAR},
+      </if>
+      <if test="prodImage3 != null">
+        prod_image3 = #{prodImage3,jdbcType=VARCHAR},
+      </if>
+      <if test="prodSize != null">
+        prod_size = #{prodSize,jdbcType=VARCHAR},
+      </if>
+      <if test="prodStatus != null">
+        prod_status = #{prodStatus,jdbcType=INTEGER},
+      </if>
+      <if test="auditRemark != null">
+        audit_remark = #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="prodInfoVoice != null">
+        prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
+      </if>
+      <if test="prodInfoText != null">
+        prod_info_text = #{prodInfoText,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
+    update store_submit_product
+    set store_id = #{storeId,jdbcType=BIGINT},
+      store_name = #{storeName,jdbcType=VARCHAR},
+      prod_name = #{prodName,jdbcType=VARCHAR},
+      prod_code = #{prodCode,jdbcType=VARCHAR},
+      prod_image1 = #{prodImage1,jdbcType=VARCHAR},
+      prod_image2 = #{prodImage2,jdbcType=VARCHAR},
+      prod_image3 = #{prodImage3,jdbcType=VARCHAR},
+      prod_size = #{prodSize,jdbcType=VARCHAR},
+      prod_status = #{prodStatus,jdbcType=INTEGER},
+      audit_remark = #{auditRemark,jdbcType=VARCHAR},
+      prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
+      prod_info_text = #{prodInfoText,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

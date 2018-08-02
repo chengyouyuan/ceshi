@@ -5,4 +5,5 @@ package com.winhxd.b2c.common.constant;
  */
 public final class ServiceName {
     public static final String ORDER_SERVICE = "b2c-order-service";
+    public static final String SYSTEM_SERVICE = "system-service";
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.customer.dao.ShopCarMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+<mapper namespace="com.winhxd.b2c.customer.dao.shopcar.CustomerShopCarMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
@@ -9,30 +9,34 @@
     <result column="prod_num" jdbcType="INTEGER" property="prodNum" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="createdby" jdbcType="BIGINT" property="createdby" />
+    <result column="updatedby" jdbcType="BIGINT" property="updatedby" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, customer_id, store_id, sku_code, prod_num, created, updated
+    id, customer_id, store_id, sku_code, prod_num, created, updated, createdby, updatedby
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
-    from shop_car
+    from customer_shop_car
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from shop_car
+    delete from customer_shop_car
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
-    insert into shop_car (id, customer_id, store_id,
-    sku_code, prod_num, created,
-    updated)
-    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT},
-    #{skuCode,jdbcType=VARCHAR}, #{prodNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP},
-    #{updated,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar">
+    insert into customer_shop_car (id, customer_id, store_id, 
+      sku_code, prod_num, created, 
+      updated, createdby, updatedby
+      )
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
+      #{skuCode,jdbcType=VARCHAR}, #{prodNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP}, #{createdby,jdbcType=BIGINT}, #{updatedby,jdbcType=BIGINT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
-    insert into shop_car
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar">
+    insert into customer_shop_car
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -54,6 +58,12 @@
       </if>
       <if test="updated != null">
         updated,
+      </if>
+      <if test="createdby != null">
+        createdby,
+      </if>
+      <if test="updatedby != null">
+        updatedby,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -78,10 +88,16 @@
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdby != null">
+        #{createdby,jdbcType=BIGINT},
+      </if>
+      <if test="updatedby != null">
+        #{updatedby,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
-    update shop_car
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar">
+    update customer_shop_car
     <set>
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
@@ -101,17 +117,25 @@
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="createdby != null">
+        createdby = #{createdby,jdbcType=BIGINT},
+      </if>
+      <if test="updatedby != null">
+        updatedby = #{updatedby,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
-    update shop_car
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.shopcar.model.CustomerShopCar">
+    update customer_shop_car
     set customer_id = #{customerId,jdbcType=BIGINT},
-    store_id = #{storeId,jdbcType=BIGINT},
-    sku_code = #{skuCode,jdbcType=VARCHAR},
-    prod_num = #{prodNum,jdbcType=INTEGER},
-    created = #{created,jdbcType=TIMESTAMP},
-    updated = #{updated,jdbcType=TIMESTAMP}
+      store_id = #{storeId,jdbcType=BIGINT},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      prod_num = #{prodNum,jdbcType=INTEGER},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      createdby = #{createdby,jdbcType=BIGINT},
+      updatedby = #{updatedby,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

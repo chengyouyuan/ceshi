@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.sys.vo;
+package com.winhxd.b2c.common.domain.system.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

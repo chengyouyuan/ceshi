@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.sys.condition;
+package com.winhxd.b2c.common.domain.system.condition;
 
 import com.winhxd.b2c.common.domain.condition.BaseCondition;
 import io.swagger.annotations.ApiModel;

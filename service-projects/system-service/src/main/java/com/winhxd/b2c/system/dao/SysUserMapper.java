@@ -1,10 +1,8 @@
 package com.winhxd.b2c.system.dao;
 
-import com.winhxd.b2c.common.domain.system.sys.condition.SysUserCondition;
-import com.winhxd.b2c.common.domain.system.sys.model.SysUser;
-import com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO;
-
-import java.util.List;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.system.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.model.SysUser;
 
 public interface SysUserMapper {
     int deleteByPrimaryKey(Long id);
@@ -13,7 +11,7 @@ public interface SysUserMapper {
 
     int insertSelective(SysUser record);
 
-    List<SysUserVO> selectSysUser(SysUserCondition condition);
+    Page<SysUser> selectSysUser(SysUserCondition condition);
 
     SysUser selectByPrimaryKey(Long id);
 

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.system.dao;
 
-import com.winhxd.b2c.common.domain.system.sys.model.SysRulePermission;
+import com.winhxd.b2c.common.domain.system.model.SysRulePermission;
 
 import java.util.List;
 

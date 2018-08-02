@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.sys.model;
+package com.winhxd.b2c.common.domain.system.model;
 
 import java.util.Date;
 

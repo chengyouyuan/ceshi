@@ -2,7 +2,7 @@ package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 
-public interface StoreUserInfoDao {
+public interface StoreUserInfoMapper {
     int deleteByPrimaryKey(Long businessId);
 
     int insert(StoreUserInfo record);

@@ -13,8 +13,16 @@ spring:
 
 # 缓存配置
 redis:
-  cluster:
-    jedisClusterNode: 192.168.60.241:7000,192.168.60.241:7001,192.168.60.241:7002,192.168.60.241:7003,192.168.60.241:7004,192.168.60.241:7005
+#  cluster:
+#    jedisClusterNode: 192.168.60.241:7000,192.168.60.241:7001
+#    maxTotal: 500
+#    maxIdle: 5000
+#    maxWaitMillis: 10000
+#    testOnBorrow: true
+  sentinel:
+    master: redis-master
+    nodes: 192.168.60.241:25379
+    password: foobared
     maxTotal: 500
     maxIdle: 5000
     maxWaitMillis: 10000

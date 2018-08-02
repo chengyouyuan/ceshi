@@ -9,7 +9,7 @@
     <result column="valuation_type" jdbcType="SMALLINT" property="valuationType" />
     <result column="order_status" jdbcType="SMALLINT" property="orderStatus" />
     <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode" />
-    <result column="random_reduction" jdbcType="DECIMAL" property="randomReduction" />
+    <result column="random_reduction_money" jdbcType="DECIMAL" property="randomReductionMoney" />
     <result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney" />
     <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney" />
     <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney" />
@@ -17,10 +17,10 @@
     <result column="pay_type" jdbcType="SMALLINT" property="payType" />
     <result column="pay_status" jdbcType="SMALLINT" property="payStatus" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDatetime" />
-    <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDatetime" />
-    <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDatetime" />
-    <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDatetime" />
+    <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime" />
+    <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime" />
+    <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime" />
+    <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime" />
     <result column="pickup_type" jdbcType="SMALLINT" property="pickupType" />
     <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
@@ -33,7 +33,7 @@
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction, 
+    id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
     coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, pay_type, 
     pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, 
     pickup_type, inviter_code, updated, cancel_reason, remark, imie, created_by, updated_by, 
@@ -45,14 +45,16 @@
     from order_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from order_info
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+  <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_info
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+  </select>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
     insert into order_info (id, order_no, customer_id, 
       store_id, valuation_type, order_status, 
-      pickup_code, random_reduction, coupon_hxd_money, 
+      pickup_code, random_reduction_money, coupon_hxd_money,
       coupon_brand_money, order_total_money, real_payment_money, 
       pay_type, pay_status, created, 
       pay_finish_datetime, pickup_datetime, 
@@ -63,11 +65,11 @@
       )
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{customerId,jdbcType=BIGINT}, 
       #{storeId,jdbcType=BIGINT}, #{valuationType,jdbcType=SMALLINT}, #{orderStatus,jdbcType=SMALLINT}, 
-      #{pickupCode,jdbcType=VARCHAR}, #{randomReduction,jdbcType=DECIMAL}, #{couponHxdMoney,jdbcType=DECIMAL}, 
+      #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponHxdMoney,jdbcType=DECIMAL},
       #{couponBrandMoney,jdbcType=DECIMAL}, #{orderTotalMoney,jdbcType=DECIMAL}, #{realPaymentMoney,jdbcType=DECIMAL}, 
       #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP}, 
-      #{payFinishDatetime,jdbcType=TIMESTAMP}, #{pickupDatetime,jdbcType=TIMESTAMP}, 
-      #{finishDatetime,jdbcType=TIMESTAMP}, #{cancelDatetime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT}, 
+      #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
+      #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
       #{inviterCode,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{cancelReason,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR}
@@ -97,8 +99,8 @@
       <if test="pickupCode != null">
         pickup_code,
       </if>
-      <if test="randomReduction != null">
-        random_reduction,
+      <if test="randomReductionMoney != null">
+        random_reduction_money,
       </if>
       <if test="couponHxdMoney != null">
         coupon_hxd_money,
@@ -121,16 +123,16 @@
       <if test="created != null">
         created,
       </if>
-      <if test="payFinishDatetime != null">
+      <if test="payFinishDateTime != null">
         pay_finish_datetime,
       </if>
-      <if test="pickupDatetime != null">
+      <if test="pickupDateTime != null">
         pickup_datetime,
       </if>
-      <if test="finishDatetime != null">
+      <if test="finishDateTime != null">
         finish_datetime,
       </if>
-      <if test="cancelDatetime != null">
+      <if test="cancelDateTime != null">
         cancel_datetime,
       </if>
       <if test="pickupType != null">
@@ -186,8 +188,8 @@
       <if test="pickupCode != null">
         #{pickupCode,jdbcType=VARCHAR},
       </if>
-      <if test="randomReduction != null">
-        #{randomReduction,jdbcType=DECIMAL},
+      <if test="randomReductionMoney != null">
+        #{randomReductionMoney,jdbcType=DECIMAL},
       </if>
       <if test="couponHxdMoney != null">
         #{couponHxdMoney,jdbcType=DECIMAL},
@@ -210,17 +212,17 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="payFinishDatetime != null">
-        #{payFinishDatetime,jdbcType=TIMESTAMP},
+      <if test="payFinishDateTime != null">
+        #{payFinishDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="pickupDatetime != null">
-        #{pickupDatetime,jdbcType=TIMESTAMP},
+      <if test="pickupDateTime != null">
+        #{pickupDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="finishDatetime != null">
-        #{finishDatetime,jdbcType=TIMESTAMP},
+      <if test="finishDateTime != null">
+        #{finishDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="cancelDatetime != null">
-        #{cancelDatetime,jdbcType=TIMESTAMP},
+      <if test="cancelDateTime != null">
+        #{cancelDateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="pickupType != null">
         #{pickupType,jdbcType=SMALLINT},
@@ -257,15 +259,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
     update order_info
     <set>
-      <if test="orderNo != null">
-        order_no = #{orderNo,jdbcType=CHAR},
-      </if>
-      <if test="customerId != null">
-        customer_id = #{customerId,jdbcType=BIGINT},
-      </if>
-      <if test="storeId != null">
-        store_id = #{storeId,jdbcType=BIGINT},
-      </if>
       <if test="valuationType != null">
         valuation_type = #{valuationType,jdbcType=SMALLINT},
       </if>
@@ -275,8 +268,8 @@
       <if test="pickupCode != null">
         pickup_code = #{pickupCode,jdbcType=VARCHAR},
       </if>
-      <if test="randomReduction != null">
-        random_reduction = #{randomReduction,jdbcType=DECIMAL},
+      <if test="randomReductionMoney != null">
+        random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
       </if>
       <if test="couponHxdMoney != null">
         coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
@@ -299,17 +292,17 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="payFinishDatetime != null">
-        pay_finish_datetime = #{payFinishDatetime,jdbcType=TIMESTAMP},
+      <if test="payFinishDateTime != null">
+        pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="pickupDatetime != null">
-        pickup_datetime = #{pickupDatetime,jdbcType=TIMESTAMP},
+      <if test="pickupDateTime != null">
+        pickup_datetime = #{pickupDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="finishDatetime != null">
-        finish_datetime = #{finishDatetime,jdbcType=TIMESTAMP},
+      <if test="finishDateTime != null">
+        finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="cancelDatetime != null">
-        cancel_datetime = #{cancelDatetime,jdbcType=TIMESTAMP},
+      <if test="cancelDateTime != null">
+        cancel_datetime = #{cancelDateTime,jdbcType=TIMESTAMP},
       </if>
       <if test="pickupType != null">
         pickup_type = #{pickupType,jdbcType=SMALLINT},
@@ -346,13 +339,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
     update order_info
-    set order_no = #{orderNo,jdbcType=CHAR},
-      customer_id = #{customerId,jdbcType=BIGINT},
-      store_id = #{storeId,jdbcType=BIGINT},
-      valuation_type = #{valuationType,jdbcType=SMALLINT},
+    set valuation_type = #{valuationType,jdbcType=SMALLINT},
       order_status = #{orderStatus,jdbcType=SMALLINT},
       pickup_code = #{pickupCode,jdbcType=VARCHAR},
-      random_reduction = #{randomReduction,jdbcType=DECIMAL},
+      random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
       coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
       coupon_brand_money = #{couponBrandMoney,jdbcType=DECIMAL},
       order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
@@ -360,10 +350,10 @@
       pay_type = #{payType,jdbcType=SMALLINT},
       pay_status = #{payStatus,jdbcType=SMALLINT},
       created = #{created,jdbcType=TIMESTAMP},
-      pay_finish_datetime = #{payFinishDatetime,jdbcType=TIMESTAMP},
-      pickup_datetime = #{pickupDatetime,jdbcType=TIMESTAMP},
-      finish_datetime = #{finishDatetime,jdbcType=TIMESTAMP},
-      cancel_datetime = #{cancelDatetime,jdbcType=TIMESTAMP},
+      pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
+      pickup_datetime = #{pickupDateTime,jdbcType=TIMESTAMP},
+      finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
+      cancel_datetime = #{cancelDateTime,jdbcType=TIMESTAMP},
       pickup_type = #{pickupType,jdbcType=SMALLINT},
       inviter_code = #{inviterCode,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},

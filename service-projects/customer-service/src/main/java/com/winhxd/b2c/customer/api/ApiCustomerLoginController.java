@@ -1,5 +1,6 @@
 package com.winhxd.b2c.customer.api;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
@@ -30,11 +32,13 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "CustomerLogin Controller", tags = "C-Login")
 @RestController
-public class CustomerLoginController {
-	private static final Logger logger = LoggerFactory.getLogger(CustomerLoginController.class);
+public class ApiCustomerLoginController {
+	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerLoginController.class);
 
 	@Autowired
 	private CustomerLoginService customerLoginService;
+	@Autowired
+	private Cache cache;
 
 	/**
 	 * @author wufuyun
@@ -60,10 +64,10 @@ public class CustomerLoginController {
 			result.setData(customerUserInfo.getCustomerId());
 			return result;
 		} catch (BusinessException e) {
-			logger.error("CustomerLoginController -> saveWeChatLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			logger.error("ApiCustomerLoginController -> saveWeChatLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
 		} catch (Exception e) {
-			logger.error("CustomerLoginController -> saveWeChatLogin异常, 异常信息{}" + e.getMessage(), e);
+			logger.error("ApiCustomerLoginController -> saveWeChatLogin异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		return result;
@@ -83,17 +87,26 @@ public class CustomerLoginController {
 	public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
+			if(!customerUserInfoCondition.getVerificationCode().equals(cache.get(customerUserInfoCondition.getCustomerMobile()))){
+				
+			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
-			customerUserInfo.setCustomerId(customerUserInfoCondition.getCustomerId());
-			customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
-			customerLoginService.updateCustomerInfo(customerUserInfo);
-			result.setData(customerUserInfo.getCustomerId());
+			customerUserInfo = customerLoginService.getCustomerUserInfoById(customerUserInfoCondition.getCustomerId());
+			/**
+			 * 数据库手机号为空则，绑定手机号
+			 */
+			if(StringUtils.isBlank(customerUserInfo.getCustomerMobile())){
+				customerUserInfo.setCustomerId(customerUserInfoCondition.getCustomerId());
+				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
+				customerLoginService.updateCustomerInfo(customerUserInfo);
+			}
+//			result.setData(customerUserInfo.getCustomerId());
 			return result;
 		} catch (BusinessException e) {
-			logger.error("CustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
 		} catch (Exception e) {
-			logger.error("CustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e);
+			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		return result;
@@ -116,10 +129,10 @@ public class CustomerLoginController {
 			// TODO:调用massage 发送短信smsCode
 			return result;
 		} catch (BusinessException e) {
-			logger.error("CustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
 		} catch (Exception e) {
-			logger.error("CustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
+			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		return result;

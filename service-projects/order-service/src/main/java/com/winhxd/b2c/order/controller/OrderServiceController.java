@@ -1,15 +1,16 @@
 package com.winhxd.b2c.order.controller;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.vo.OrderVO;
-import com.winhxd.b2c.common.feign.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.vo.OrderVO;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+
 @RestController
-public class OrderServiceController implements OrderService {
+public class OrderServiceController implements OrderServiceClient {
     @Autowired
     private Cache cache;
 

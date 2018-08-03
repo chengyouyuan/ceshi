@@ -15,7 +15,7 @@ public class OrderChangeLog {
     }
 
     public OrderChangeLog(String orderNo, Short originalOrderStatus, Short newOrderStatus, String changeMsg,
-            Short mainPoint, Date created, String createdBy, String originalJson, String newJson) {
+            Short mainPoint, Date created, Long createdBy, String createdByName, String originalJson, String newJson) {
         super();
         this.orderNo = orderNo;
         this.originalOrderStatus = originalOrderStatus;
@@ -24,9 +24,12 @@ public class OrderChangeLog {
         this.mainPoint = mainPoint;
         this.created = created;
         this.createdBy = createdBy;
+        this.createdByName = createdByName;
         this.originalJson = originalJson;
         this.newJson = newJson;
     }
+
+
 
     private Long id;
 
@@ -42,7 +45,9 @@ public class OrderChangeLog {
 
     private Date created;
 
-    private String createdBy;
+    private Long createdBy;
+
+    private String createdByName;
 
     private String originalJson;
 
@@ -104,12 +109,20 @@ public class OrderChangeLog {
         this.created = created;
     }
 
-    public String getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
     }
 
     public String getOriginalJson() {
@@ -132,7 +145,8 @@ public class OrderChangeLog {
     public String toString() {
         return "OrderChangeLog [id=" + id + ", orderNo=" + orderNo + ", originalOrderStatus=" + originalOrderStatus
                 + ", newOrderStatus=" + newOrderStatus + ", changeMsg=" + changeMsg + ", mainPoint=" + mainPoint
-                + ", created=" + created + ", createdBy=" + createdBy + ", originalJson=" + originalJson + ", newJson="
-                + newJson + "]";
+                + ", created=" + created + ", createdBy=" + createdBy + ", createdByName=" + createdByName
+                + ", originalJson=" + originalJson + ", newJson=" + newJson + "]";
     }
+
 }

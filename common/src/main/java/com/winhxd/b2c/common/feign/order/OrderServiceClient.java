@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = ServiceName.ORDER_SERVICE, fallbackFactory = OrderServiceFallback.class)
-public interface OrderService {
+public interface OrderServiceClient {
     @RequestMapping(value = "/order/v1/getOrderVo/", method = RequestMethod.GET)
     ResponseResult<OrderVO> getOrderVo(@RequestParam("orderNo") String orderNo);
 }
 
-class OrderServiceFallback implements OrderService, FallbackFactory<OrderService> {
+class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceFallback.class);
     private Throwable throwable;
 
@@ -36,7 +36,7 @@ class OrderServiceFallback implements OrderService, FallbackFactory<OrderService
     }
 
     @Override
-    public OrderService create(Throwable throwable) {
+    public OrderServiceClient create(Throwable throwable) {
         return new OrderServiceFallback(throwable);
     }
 }

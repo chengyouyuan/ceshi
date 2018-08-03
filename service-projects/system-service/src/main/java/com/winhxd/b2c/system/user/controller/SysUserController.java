@@ -48,6 +48,11 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "新增用户", response = Long.class)
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> add(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
@@ -71,6 +76,11 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "修改用户")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult update(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
@@ -98,7 +108,14 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "修改密码")
-    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_301201, message = "原密码输入错误"),
+            @ApiResponse(code = BusinessCode.CODE_301202, message = "新密码与原密码相同")
+    })
+    @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult updatePassword(@RequestBody SysUser sysUser){
         logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -119,7 +136,12 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "查询用户列表")
-    public ResponsePageResult<List<SysUser>> list(@RequestBody SysUserCondition condition){
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Page<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：{}", MODULE_NAME, condition);
         ResponsePageResult<List<SysUser>> result = new ResponsePageResult<>();
         try {
@@ -144,6 +166,12 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "根据登录账号获取用户信息")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_301401, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode){
         logger.info("{} - 根据登录账号获取用户信息, 参数：{}", MODULE_NAME, userCode);
         ResponseResult<SysUser> result = new ResponseResult<>();
@@ -166,6 +194,11 @@ public class SysUserController implements UserService {
      */
     @Override
     @ApiOperation(value = "根据主键获取用户信息")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/api/user/3015/v1/get/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getById(Long userId){
         logger.info("{} - 根据主键获取用户信息, 参数：{}", MODULE_NAME, userId);
         ResponseResult<SysUser> result = new ResponseResult<>();

@@ -23,8 +23,6 @@ import java.util.HashSet;
 public class SecurityAspect {
     @Autowired
     private SecurityConfig securityConfig;
-    @Autowired
-    private MessageHelper messageHelper;
 
     @Around(value = "@annotation(com.winhxd.b2c.admin.common.security.annotation.CheckPermission)")
     public Object checkPermission(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -37,8 +35,7 @@ public class SecurityAspect {
             return joinPoint.proceed();
         } else {
             ResponseResult responseResult = new ResponseResult();
-            responseResult.setCode(BusinessCode.CODE_10010);
-            responseResult.setMessage(messageHelper.getMessage(String.valueOf(BusinessCode.CODE_10010)));
+            responseResult.setCode(BusinessCode.CODE_1002);
             return responseResult;
         }
     }

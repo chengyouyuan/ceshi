@@ -1,43 +1,50 @@
 package com.winhxd.b2c.common.domain.store.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
- /**
-  * @description: 门店提报商品信息类
-  * @author: lvsen
-  * @date: 2018/8/2 14:34
-  */
+/**
+ * @description: 门店提报商品信息类
+ * @author: lvsen
+ * @date: 2018/8/2 14:34
+ */
+@ApiModel("门店提报商品")
 public class StoreSubmitProduct {
+    @ApiModelProperty("id主键")
     private Long id;
-
+    @ApiModelProperty("门店id")
     private Long storeId;
-
+    @ApiModelProperty("门店名称")
     private String storeName;
-
+    @ApiModelProperty("商品名称")
     private String prodName;
-
+    @ApiModelProperty("商品code")
     private String prodCode;
-
+    @ApiModelProperty("商品图片1")
     private String prodImage1;
-
+    @ApiModelProperty("商品图片2")
     private String prodImage2;
-
+    @ApiModelProperty("商品图片3")
     private String prodImage3;
-
+    @ApiModelProperty("商品规则")
     private String prodSize;
-
+    @ApiModelProperty("商品规则")
     private Integer prodStatus;
-
+    @ApiModelProperty("审核备注")
     private String auditRemark;
-
+    @ApiModelProperty("商品信息（语音）")
     private String prodInfoVoice;
-
+    @ApiModelProperty("商品信息（文字）")
     private String prodInfoText;
-
+    @ApiModelProperty("更新时间")
     private Date updated;
-
-    private String updateBy;
-
+    @ApiModelProperty("更新人id")
+    private Long updatedBy;
+    @ApiModelProperty("更新人名称")
+    private String updatedByName;
+    @ApiModelProperty("创建时间")
     private Date created;
 
     public Long getId() {
@@ -152,19 +159,27 @@ public class StoreSubmitProduct {
         this.updated = updated;
     }
 
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
     public Date getCreated() {
         return created;
     }
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedByName() {
+        return updatedByName;
+    }
+
+    public void setUpdatedByName(String updatedByName) {
+        this.updatedByName = updatedByName;
     }
 }

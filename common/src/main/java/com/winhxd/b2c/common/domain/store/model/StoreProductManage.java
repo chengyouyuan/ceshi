@@ -1,42 +1,48 @@
 package com.winhxd.b2c.common.domain.store.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * @description: 门店商品管理类
+ * @description: 门店管理商品类
  * @author: lvsen
  * @date: 2018/8/2 14:34
  */
+@ApiModel("门店管理商品")
 public class StoreProductManage {
+
+    @ApiModelProperty("id主键")
     private Long id;
-
+    @ApiModelProperty("门店id")
     private Long storeId;
-
+    @ApiModelProperty("商品id")
     private String prodId;
-
+    @ApiModelProperty("商品规则")
     private Integer prodRange;
-
+    @ApiModelProperty("售卖价格")
     private BigDecimal sellMoney;
-
+    @ApiModelProperty("是否推荐 0不推荐 1推荐")
     private Byte recommend;
-
+    @ApiModelProperty("商品状态 0下架1上架2已删除")
     private Byte prodStatus;
-
+    @ApiModelProperty("商品sku")
     private String prodSpu;
-
+    @ApiModelProperty("商品spu")
     private String prodSku;
-
+    @ApiModelProperty("创建人id")
     private Long createdBy;
-
+    @ApiModelProperty("创建人名称")
     private String createdByName;
-
+    @ApiModelProperty("创建时间")
     private Date created;
-
+    @ApiModelProperty("更新人id")
     private Long updatedBy;
-
+    @ApiModelProperty("更新人名称")
     private String updatedByName;
-
+    @ApiModelProperty("更新时间")
     private Date updated;
 
     public Long getId() {

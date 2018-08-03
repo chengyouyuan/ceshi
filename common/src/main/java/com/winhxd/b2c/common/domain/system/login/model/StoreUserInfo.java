@@ -1,56 +1,91 @@
-package com.winhxd.b2c.common.domain.login.model;
+package com.winhxd.b2c.common.domain.system.login.model;
 
 import java.io.Serializable;
+
 import java.util.Date;
-
-public class businessUserInfo implements Serializable {
-    private Long businessId;
-
+/**
+ * @author wufuyun
+ * @date  2018年8月2日 下午3:43:57
+ * @Description b端用户信息
+ * @version
+ */
+public class StoreUserInfo implements Serializable {
+	/**
+     * 主键
+     */
+	private Long id;
+    /**
+     * 门店名称
+     */
     private String storeName;
-
+    /**
+     * 门店编码
+     */
     private Long storeId;
-
+    /**
+     * 用户账号
+     */
     private String storeMobile;
-
+    /**
+     * 门店地址
+     */
     private String storeAddress;
-
+    /**
+     * 区域编码
+     */
     private String storeRegionCode;
-
+    /**
+     * 密码
+     */
     private String storePassword;
-
+    /**
+     * 店主名称
+     */
     private String shopkeeper;
-
+    /**
+     * 店主头像
+     */
     private String shopOwnerUrl;
-
+    /**
+     * 取货方式（1、自提）
+     */
     private Byte pickupWay;
-
+    /**
+     * 支付方式（1、微信在线付款2、微信扫码付款）
+     */
     private Byte paymentWay;
-
+    /**
+     * 联系方式 
+     */
     private String contactMobile;
-
+    /**
+     * 纬度
+     */
     private Double lat;
-
+    /**
+     * 经度
+     */
     private Double lon;
-
+    /**
+     * 微信openid
+     */
     private String openid;
-
     private Date created;
-
+    private Long createdBy;
+    private String createdByName;
     private Date updated;
-
+    private Long updatedBy;
+    private String updatedByName;
+    /**
+     * 来源
+     */
     private String source;
-
+    /**
+     * 0有效，1无效
+     */
     private Byte storeStatus;
 
     private static final long serialVersionUID = 1L;
-
-    public Long getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(Long businessId) {
-        this.businessId = businessId;
-    }
 
     public String getStoreName() {
         return storeName;
@@ -163,7 +198,6 @@ public class businessUserInfo implements Serializable {
     public void setOpenid(String openid) {
         this.openid = openid == null ? null : openid.trim();
     }
-
     public Date getCreated() {
         return created;
     }
@@ -172,12 +206,44 @@ public class businessUserInfo implements Serializable {
         this.created = created;
     }
 
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName == null ? null : createdByName.trim();
+    }
+
     public Date getUpdated() {
         return updated;
     }
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedByName() {
+        return updatedByName;
+    }
+
+    public void setUpdatedByName(String updatedByName) {
+        this.updatedByName = updatedByName == null ? null : updatedByName.trim();
     }
 
     public String getSource() {
@@ -195,4 +261,15 @@ public class businessUserInfo implements Serializable {
     public void setStoreStatus(Byte storeStatus) {
         this.storeStatus = storeStatus;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	
+    
 }

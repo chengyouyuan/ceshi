@@ -10,9 +10,9 @@ import org.springframework.context.annotation.ComponentScan;
 @MapperScan("com.winhxd.b2c.message.dao")
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableFeignClients(basePackages = "com.winhxd.b2c.common.feign")
-public class CustomerCServiceApplication {
+public class CustomerServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CustomerCServiceApplication.class, args);
+        SpringApplication.run(CustomerServiceApplication.class, args);
     }
 }

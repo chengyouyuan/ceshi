@@ -3,12 +3,34 @@ package com.winhxd.b2c.order.model;
 import java.util.Date;
 
 /**
- * 订单状态流转实体
+ * 订单流转记录实体
  * @author wangbin
- * @date  2018年8月2日 上午11:23:58
+ * @date  2018年8月2日 下午1:43:58
  * @version 
  */
 public class OrderChangeLog {
+    
+    public OrderChangeLog() {
+        super();
+    }
+
+    public OrderChangeLog(String orderNo, Short originalOrderStatus, Short newOrderStatus, String changeMsg,
+            Short mainPoint, Date created, Long createdBy, String createdByName, String originalJson, String newJson) {
+        super();
+        this.orderNo = orderNo;
+        this.originalOrderStatus = originalOrderStatus;
+        this.newOrderStatus = newOrderStatus;
+        this.changeMsg = changeMsg;
+        this.mainPoint = mainPoint;
+        this.created = created;
+        this.createdBy = createdBy;
+        this.createdByName = createdByName;
+        this.originalJson = originalJson;
+        this.newJson = newJson;
+    }
+
+
+
     private Long id;
 
     private String orderNo;
@@ -19,9 +41,13 @@ public class OrderChangeLog {
 
     private String changeMsg;
 
+    private Short mainPoint;
+
     private Date created;
 
-    private String createdBy;
+    private Long createdBy;
+
+    private String createdByName;
 
     private String originalJson;
 
@@ -67,6 +93,14 @@ public class OrderChangeLog {
         this.changeMsg = changeMsg;
     }
 
+    public Short getMainPoint() {
+        return mainPoint;
+    }
+
+    public void setMainPoint(Short mainPoint) {
+        this.mainPoint = mainPoint;
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -75,12 +109,20 @@ public class OrderChangeLog {
         this.created = created;
     }
 
-    public String getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
     }
 
     public String getOriginalJson() {
@@ -98,4 +140,13 @@ public class OrderChangeLog {
     public void setNewJson(String newJson) {
         this.newJson = newJson;
     }
+
+    @Override
+    public String toString() {
+        return "OrderChangeLog [id=" + id + ", orderNo=" + orderNo + ", originalOrderStatus=" + originalOrderStatus
+                + ", newOrderStatus=" + newOrderStatus + ", changeMsg=" + changeMsg + ", mainPoint=" + mainPoint
+                + ", created=" + created + ", createdBy=" + createdBy + ", createdByName=" + createdByName
+                + ", originalJson=" + originalJson + ", newJson=" + newJson + "]";
+    }
+
 }

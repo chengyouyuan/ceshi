@@ -7,15 +7,18 @@
     <result column="original_order_status" jdbcType="SMALLINT" property="originalOrderStatus" />
     <result column="new_order_status" jdbcType="SMALLINT" property="newOrderStatus" />
     <result column="change_msg" jdbcType="VARCHAR" property="changeMsg" />
+    <result column="main_point" jdbcType="SMALLINT" property="mainPoint" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.winhxd.b2c.order.model.OrderChangeLog">
     <result column="original_json" jdbcType="LONGVARCHAR" property="originalJson" />
     <result column="new_json" jdbcType="LONGVARCHAR" property="newJson" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, original_order_status, new_order_status, change_msg, created, created_by
+    id, order_no, original_order_status, new_order_status, change_msg, main_point, created, 
+    created_by, created_by_name
   </sql>
   <sql id="Blob_Column_List">
     original_json, new_json
@@ -34,13 +37,13 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
     insert into order_change_log (id, order_no, original_order_status, 
-      new_order_status, change_msg, created, 
-      created_by, original_json, new_json
-      )
+      new_order_status, change_msg, main_point, 
+      created, created_by, created_by_name, 
+      original_json, new_json)
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{originalOrderStatus,jdbcType=SMALLINT}, 
-      #{newOrderStatus,jdbcType=SMALLINT}, #{changeMsg,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{createdBy,jdbcType=VARCHAR}, #{originalJson,jdbcType=LONGVARCHAR}, #{newJson,jdbcType=LONGVARCHAR}
-      )
+      #{newOrderStatus,jdbcType=SMALLINT}, #{changeMsg,jdbcType=VARCHAR}, #{mainPoint,jdbcType=SMALLINT}, 
+      #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{originalJson,jdbcType=LONGVARCHAR}, #{newJson,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
     insert into order_change_log
@@ -59,6 +62,187 @@
       </if>
       <if test="changeMsg != null">
         change_msg,
+      </if>
+      <if test="mainPoint != null">
+        main_point,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="originalJson != null">
+        original_json,
+      </if>
+      <if test="newJson != null">
+        new_json,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalOrderStatus != null">
+        #{originalOrderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="newOrderStatus != null">
+        #{newOrderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="changeMsg != null">
+        #{changeMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="mainPoint != null">
+        #{mainPoint,jdbcType=SMALLINT},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="originalJson != null">
+        #{originalJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="newJson != null">
+        #{newJson,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
+    update order_change_log
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="originalOrderStatus != null">
+        original_order_status = #{originalOrderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="newOrderStatus != null">
+        new_order_status = #{newOrderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="changeMsg != null">
+        change_msg = #{changeMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="mainPoint != null">
+        main_point = #{mainPoint,jdbcType=SMALLINT},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="originalJson != null">
+        original_json = #{originalJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="newJson != null">
+        new_json = #{newJson,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
+    update order_change_log
+    set order_no = #{orderNo,jdbcType=VARCHAR},
+      original_order_status = #{originalOrderStatus,jdbcType=SMALLINT},
+      new_order_status = #{newOrderStatus,jdbcType=SMALLINT},
+      change_msg = #{changeMsg,jdbcType=VARCHAR},
+      main_point = #{mainPoint,jdbcType=SMALLINT},
+      created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      original_json = #{originalJson,jdbcType=LONGVARCHAR},
+      new_json = #{newJson,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
+    update order_change_log
+    set order_no = #{orderNo,jdbcType=VARCHAR},
+      original_order_status = #{originalOrderStatus,jdbcType=SMALLINT},
+      new_order_status = #{newOrderStatus,jdbcType=SMALLINT},
+      change_msg = #{changeMsg,jdbcType=VARCHAR},
+      main_point = #{mainPoint,jdbcType=SMALLINT},
+      created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.order.model.OrderChangeLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="original_order_status" jdbcType="SMALLINT" property="originalOrderStatus" />
+    <result column="new_order_status" jdbcType="SMALLINT" property="newOrderStatus" />
+    <result column="change_msg" jdbcType="VARCHAR" property="changeMsg" />
+    <result column="main_point" jdbcType="SMALLINT" property="mainPoint" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.winhxd.b2c.order.model.OrderChangeLog">
+    <result column="original_json" jdbcType="LONGVARCHAR" property="originalJson" />
+    <result column="new_json" jdbcType="LONGVARCHAR" property="newJson" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, original_order_status, new_order_status, change_msg, main_point, created, 
+    created_by
+  </sql>
+  <sql id="Blob_Column_List">
+    original_json, new_json
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from order_change_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from order_change_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
+    insert into order_change_log (id, order_no, original_order_status, 
+      new_order_status, change_msg, main_point, 
+      created, created_by, original_json, 
+      new_json)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{originalOrderStatus,jdbcType=SMALLINT}, 
+      #{newOrderStatus,jdbcType=SMALLINT}, #{changeMsg,jdbcType=VARCHAR}, #{mainPoint,jdbcType=SMALLINT}, 
+      #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{originalJson,jdbcType=LONGVARCHAR}, 
+      #{newJson,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.order.model.OrderChangeLog">
+    insert into order_change_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="originalOrderStatus != null">
+        original_order_status,
+      </if>
+      <if test="newOrderStatus != null">
+        new_order_status,
+      </if>
+      <if test="changeMsg != null">
+        change_msg,
+      </if>
+      <if test="mainPoint != null">
+        main_point,
       </if>
       <if test="created != null">
         created,
@@ -89,6 +273,9 @@
       <if test="changeMsg != null">
         #{changeMsg,jdbcType=VARCHAR},
       </if>
+      <if test="mainPoint != null">
+        #{mainPoint,jdbcType=SMALLINT},
+      </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
@@ -118,6 +305,9 @@
       <if test="changeMsg != null">
         change_msg = #{changeMsg,jdbcType=VARCHAR},
       </if>
+      <if test="mainPoint != null">
+        main_point = #{mainPoint,jdbcType=SMALLINT},
+      </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
@@ -139,6 +329,7 @@
       original_order_status = #{originalOrderStatus,jdbcType=SMALLINT},
       new_order_status = #{newOrderStatus,jdbcType=SMALLINT},
       change_msg = #{changeMsg,jdbcType=VARCHAR},
+      main_point = #{mainPoint,jdbcType=SMALLINT},
       created = #{created,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=VARCHAR},
       original_json = #{originalJson,jdbcType=LONGVARCHAR},
@@ -151,6 +342,7 @@
       original_order_status = #{originalOrderStatus,jdbcType=SMALLINT},
       new_order_status = #{newOrderStatus,jdbcType=SMALLINT},
       change_msg = #{changeMsg,jdbcType=VARCHAR},
+      main_point = #{mainPoint,jdbcType=SMALLINT},
       created = #{created,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}

@@ -12,9 +12,8 @@ import java.util.Date;
  * @date 2018/8/2 14:50
  */
 @Data
-public class OrderDetail {
+public class OrderItem {
     private Long id;
-
     /**
      * 订单编号
      */
@@ -22,13 +21,11 @@ public class OrderDetail {
     /**
      * 商品SKU
      */
-    private String sku;
-
+    private String skuCode;
     /**
      * 商品数量
      */
     private Integer amount;
-
     /**
      * 商品价格
      */
@@ -45,4 +42,5 @@ public class OrderDetail {
     private String updatedByName;
 
     private String createdByName;
+
 }

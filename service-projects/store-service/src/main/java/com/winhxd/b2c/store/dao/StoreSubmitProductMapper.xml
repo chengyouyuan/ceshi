@@ -10,7 +10,7 @@
     <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
     <result column="prod_image2" jdbcType="VARCHAR" property="prodImage2" />
     <result column="prod_image3" jdbcType="VARCHAR" property="prodImage3" />
-    <result column="prod_size" jdbcType="VARCHAR" property="prodSize" />
+    <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption" />
     <result column="prod_status" jdbcType="INTEGER" property="prodStatus" />
     <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
     <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
@@ -22,11 +22,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3, 
-    prod_size, prod_status, audit_remark, prod_info_voice, prod_info_text, updated, updated_by, 
-    updated_by_name, created
+    sku_attribute_option, prod_status, audit_remark, prod_info_voice, prod_info_text, 
+    updated, updated_by, updated_by_name, created
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from store_submit_product
     where id = #{id,jdbcType=BIGINT}
@@ -36,18 +36,18 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
-    insert into store_submit_product (id, store_id, store_name,
-    prod_name, prod_code, prod_image1,
-    prod_image2, prod_image3, prod_size,
-    prod_status, audit_remark, prod_info_voice,
-    prod_info_text, updated, updated_by,
-    updated_by_name, created)
-    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR},
-    #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR},
-    #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{prodSize,jdbcType=VARCHAR},
-    #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR},
-    #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-    #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
+    insert into store_submit_product (id, store_id, store_name, 
+      prod_name, prod_code, prod_image1, 
+      prod_image2, prod_image3, sku_attribute_option, 
+      prod_status, audit_remark, prod_info_voice, 
+      prod_info_text, updated, updated_by, 
+      updated_by_name, created)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, 
+      #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR}, 
+      #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{skuAttributeOption,jdbcType=VARCHAR}, 
+      #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR}, 
+      #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
     insert into store_submit_product
@@ -76,8 +76,8 @@
       <if test="prodImage3 != null">
         prod_image3,
       </if>
-      <if test="prodSize != null">
-        prod_size,
+      <if test="skuAttributeOption != null">
+        sku_attribute_option,
       </if>
       <if test="prodStatus != null">
         prod_status,
@@ -129,8 +129,8 @@
       <if test="prodImage3 != null">
         #{prodImage3,jdbcType=VARCHAR},
       </if>
-      <if test="prodSize != null">
-        #{prodSize,jdbcType=VARCHAR},
+      <if test="skuAttributeOption != null">
+        #{skuAttributeOption,jdbcType=VARCHAR},
       </if>
       <if test="prodStatus != null">
         #{prodStatus,jdbcType=INTEGER},
@@ -182,8 +182,8 @@
       <if test="prodImage3 != null">
         prod_image3 = #{prodImage3,jdbcType=VARCHAR},
       </if>
-      <if test="prodSize != null">
-        prod_size = #{prodSize,jdbcType=VARCHAR},
+      <if test="skuAttributeOption != null">
+        sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       </if>
       <if test="prodStatus != null">
         prod_status = #{prodStatus,jdbcType=INTEGER},
@@ -221,7 +221,7 @@
       prod_image1 = #{prodImage1,jdbcType=VARCHAR},
       prod_image2 = #{prodImage2,jdbcType=VARCHAR},
       prod_image3 = #{prodImage3,jdbcType=VARCHAR},
-      prod_size = #{prodSize,jdbcType=VARCHAR},
+      sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       prod_status = #{prodStatus,jdbcType=INTEGER},
       audit_remark = #{auditRemark,jdbcType=VARCHAR},
       prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},

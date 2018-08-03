@@ -29,7 +29,7 @@ public class StoreSubmitProduct {
     @ApiModelProperty("商品图片3")
     private String prodImage3;
     @ApiModelProperty("商品规则")
-    private String prodSize;
+    private String skuAttributeOption;
     @ApiModelProperty("商品规则")
     private Integer prodStatus;
     @ApiModelProperty("审核备注")
@@ -111,12 +111,12 @@ public class StoreSubmitProduct {
         this.prodImage3 = prodImage3;
     }
 
-    public String getProdSize() {
-        return prodSize;
+    public String getSkuAttributeOption() {
+        return skuAttributeOption;
     }
 
-    public void setProdSize(String prodSize) {
-        this.prodSize = prodSize;
+    public void setSkuAttributeOption(String skuAttributeOption) {
+        this.skuAttributeOption = skuAttributeOption;
     }
 
     public Integer getProdStatus() {

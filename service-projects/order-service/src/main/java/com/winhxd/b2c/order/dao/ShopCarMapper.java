@@ -1,6 +1,6 @@
 package com.winhxd.b2c.order.dao;
 
-import com.winhxd.b2c.common.domain.shopcar.model.ShopCar;
+import com.winhxd.b2c.common.domain.order.model.ShopCar;
 
 import java.util.List;
 

@@ -1,6 +1,4 @@
-package com.winhxd.b2c.common.exception.order;
-
-import com.winhxd.b2c.common.exception.BusinessException;
+package com.winhxd.b2c.common.exception;
 
 public class OrderCreateExcepton extends BusinessException {
 

@@ -1,6 +1,9 @@
 package com.winhxd.b2c.order.dao;
 
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+
+import java.util.List;
 
 /**
  * 订单主表
@@ -57,4 +60,20 @@ public interface OrderInfoMapper {
      * @return 插入
      */
     int updateByPrimaryKey(OrderInfo orderInfo);
+
+    /**
+     * 获取用户的订单
+     *
+     * @param customerId 用户ID
+     * @return {@link OrderInfo}
+     */
+    List<OrderInfo> selectOrderByCustomerId(Long customerId);
+
+    /**
+     * 获取用户的订单和订单商品内容
+     *
+     * @param customerId
+     * @return
+     */
+    List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(Long customerId);
 }

@@ -2,36 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.order.dao.OrderInfoMapper">
     <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderInfo">
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="order_no" jdbcType="CHAR" property="orderNo" />
-        <result column="customer_id" jdbcType="BIGINT" property="customerId" />
-        <result column="store_id" jdbcType="BIGINT" property="storeId" />
-        <result column="valuation_type" jdbcType="SMALLINT" property="valuationType" />
-        <result column="order_status" jdbcType="SMALLINT" property="orderStatus" />
-        <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode" />
-        <result column="random_reduction_money" jdbcType="DECIMAL" property="randomReductionMoney" />
-        <result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney" />
-        <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney" />
-        <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney" />
-        <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney" />
-        <result column="pay_type" jdbcType="SMALLINT" property="payType" />
-        <result column="pay_status" jdbcType="SMALLINT" property="payStatus" />
-        <result column="created" jdbcType="TIMESTAMP" property="created" />
-        <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime" />
-        <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime" />
-        <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime" />
-        <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime" />
-        <result column="pickup_type" jdbcType="SMALLINT" property="pickupType" />
-        <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode" />
-        <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-        <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
-        <result column="remark" jdbcType="VARCHAR" property="remark" />
-        <result column="region_code" jdbcType="VARCHAR" property="regionCode" />
-        <result column="imie" jdbcType="VARCHAR" property="imie" />
-        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-        <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
-        <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="order_no" jdbcType="CHAR" property="orderNo"/>
+        <result column="customer_id" jdbcType="BIGINT" property="customerId"/>
+        <result column="store_id" jdbcType="BIGINT" property="storeId"/>
+        <result column="valuation_type" jdbcType="SMALLINT" property="valuationType"/>
+        <result column="order_status" jdbcType="SMALLINT" property="orderStatus"/>
+        <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode"/>
+        <result column="random_reduction_money" jdbcType="DECIMAL" property="randomReductionMoney"/>
+        <result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney"/>
+        <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney"/>
+        <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney"/>
+        <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney"/>
+        <result column="pay_type" jdbcType="SMALLINT" property="payType"/>
+        <result column="pay_status" jdbcType="SMALLINT" property="payStatus"/>
+        <result column="created" jdbcType="TIMESTAMP" property="created"/>
+        <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime"/>
+        <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime"/>
+        <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime"/>
+        <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime"/>
+        <result column="pickup_type" jdbcType="SMALLINT" property="pickupType"/>
+        <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode"/>
+        <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
+        <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="region_code" jdbcType="VARCHAR" property="regionCode"/>
+        <result column="imie" jdbcType="VARCHAR" property="imie"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
+        <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName"/>
+        <result column="created_by_name" jdbcType="VARCHAR" property="createdByName"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
@@ -42,15 +42,22 @@
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from order_info
         where id = #{id,jdbcType=BIGINT}
     </select>
     <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from order_info
         where order_no = #{orderNo,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOrderByCustomerId" resultType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where customer_id = #{customerId,jdbcType=BIGINT}
+        order by created desc
     </select>
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
         insert into order_info (id, order_no, customer_id,
@@ -389,4 +396,25 @@
       created_by_name = #{createdByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+    <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
+        <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
+            <result column="order_no" property="orderNo"/>
+            <result column="sku_code" property="skuCode"/>
+            <result column="amount" property="amount"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+    <sql id="Order_Info_List">
+        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, pay_type,
+        pay_status, created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pickup_type, cancel_reason, remark
+    </sql>
+    <select id="selectOrderInfoListByCustomerId" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        select
+        <include refid="Order_Info_List"/>
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.customer_id = #{customerId,jdbcType=BIGINT}
+        order by info.created desc
+    </select>
 </mapper>

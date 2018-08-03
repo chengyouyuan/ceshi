@@ -162,9 +162,11 @@
 
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
     select
-    u.id, user_code, user_name, mobile, status, created_by, created, updated_by,
-    updated,ur.id rule_id,ur.rule_name
-    from sys_user u left join sys_user_rule ur on u.id=ur.user_id
+    u.id, user_code, user_name, mobile, u.status, u.created_by, u.created, u.updated_by,
+    u.updated,ur.id rule_id,r.rule_name
+    from sys_user u
+      left join sys_user_rule ur on u.id=ur.user_id
+      left join sys_rule r on r.id=ur.rule_id
     <where>
       <if test="userId != null">
         and u.id = #{userId}
@@ -185,5 +187,15 @@
         and rule_name like #{ruleName,jdbcType=VARCHAR}
       </if>
     </where>
+  </select>
+
+  <select id="getByUserCode" resultMap="voMap" parameterType="string">
+    select
+    u.id, user_code, user_name, password, mobile, u.status, u.created_by, u.created, u.updated_by,
+    u.updated,ur.id rule_id,r.rule_name
+    from sys_user u
+    left join sys_user_rule ur on u.id=ur.user_id
+    left join sys_rule r on r.id=ur.rule_id
+    where u.user_code = #{userCode}
   </select>
 </mapper>

@@ -89,15 +89,12 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUser getSysUserByUserCode(String userCode) {
-        SysUserCondition condition = new SysUserCondition();
-        condition.setUserCode(userCode);
-        List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
-        if(CollectionUtils.isEmpty(sysUserList)){
+        SysUser sysUser = sysUserMapper.getByUserCode(userCode);
+        if(null == sysUser){
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        SysUser sysUser = sysUserList.get(0);
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByRuleId(sysUser.getRuleId());
         sysUser.setPermissions(permissionList);
         return sysUser;
     }

@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
 
-@Api(value = "系统用户管理")
+@Api(tags = "系统用户管理")
 @RestController("/user")
 public class UserController {
 

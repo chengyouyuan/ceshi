@@ -1,6 +1,5 @@
 package com.winhxd.b2c.system.user.service;
 
-import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;

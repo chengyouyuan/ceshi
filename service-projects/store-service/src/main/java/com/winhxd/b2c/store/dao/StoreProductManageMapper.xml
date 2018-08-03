@@ -5,12 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="prod_id" jdbcType="VARCHAR" property="prodId" />
-    <result column="prod_range" jdbcType="INTEGER" property="prodRange" />
+    <result column="sku_attribute_option" jdbcType="INTEGER" property="skuAttributeOption" />
     <result column="sell_money" jdbcType="DECIMAL" property="sellMoney" />
     <result column="recommend" jdbcType="TINYINT" property="recommend" />
     <result column="prod_status" jdbcType="TINYINT" property="prodStatus" />
-    <result column="prod_spu" jdbcType="VARCHAR" property="prodSpu" />
-    <result column="prod_sku" jdbcType="VARCHAR" property="prodSku" />
+    <result column="prod_code" jdbcType="VARCHAR" property="prodCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -19,8 +19,9 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, prod_id, prod_range, sell_money, recommend, prod_status, prod_spu, 
-    prod_sku, created_by, created_by_name, created, updated_by, updated_by_name, updated
+    id, store_id, prod_id, sku_attribute_option, sell_money, recommend, prod_status, 
+    prod_code, sku_code, created_by, created_by_name, created, updated_by, updated_by_name, 
+    updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,14 +35,14 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
     insert into store_product_manage (id, store_id, prod_id, 
-      prod_range, sell_money, recommend, 
-      prod_status, prod_spu, prod_sku, 
+      sku_attribute_option, sell_money, recommend, 
+      prod_status, prod_code, sku_code, 
       created_by, created_by_name, created, 
       updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodId,jdbcType=VARCHAR}, 
-      #{prodRange,jdbcType=INTEGER}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT}, 
-      #{prodStatus,jdbcType=TINYINT}, #{prodSpu,jdbcType=VARCHAR}, #{prodSku,jdbcType=VARCHAR}, 
+      #{skuAttributeOption,jdbcType=INTEGER}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT}, 
+      #{prodStatus,jdbcType=TINYINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
@@ -58,8 +59,8 @@
       <if test="prodId != null">
         prod_id,
       </if>
-      <if test="prodRange != null">
-        prod_range,
+      <if test="skuAttributeOption != null">
+        sku_attribute_option,
       </if>
       <if test="sellMoney != null">
         sell_money,
@@ -70,11 +71,11 @@
       <if test="prodStatus != null">
         prod_status,
       </if>
-      <if test="prodSpu != null">
-        prod_spu,
+      <if test="prodCode != null">
+        prod_code,
       </if>
-      <if test="prodSku != null">
-        prod_sku,
+      <if test="skuCode != null">
+        sku_code,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -105,8 +106,8 @@
       <if test="prodId != null">
         #{prodId,jdbcType=VARCHAR},
       </if>
-      <if test="prodRange != null">
-        #{prodRange,jdbcType=INTEGER},
+      <if test="skuAttributeOption != null">
+        #{skuAttributeOption,jdbcType=INTEGER},
       </if>
       <if test="sellMoney != null">
         #{sellMoney,jdbcType=DECIMAL},
@@ -117,11 +118,11 @@
       <if test="prodStatus != null">
         #{prodStatus,jdbcType=TINYINT},
       </if>
-      <if test="prodSpu != null">
-        #{prodSpu,jdbcType=VARCHAR},
+      <if test="prodCode != null">
+        #{prodCode,jdbcType=VARCHAR},
       </if>
-      <if test="prodSku != null">
-        #{prodSku,jdbcType=VARCHAR},
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -152,8 +153,8 @@
       <if test="prodId != null">
         prod_id = #{prodId,jdbcType=VARCHAR},
       </if>
-      <if test="prodRange != null">
-        prod_range = #{prodRange,jdbcType=INTEGER},
+      <if test="skuAttributeOption != null">
+        sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
       </if>
       <if test="sellMoney != null">
         sell_money = #{sellMoney,jdbcType=DECIMAL},
@@ -164,11 +165,11 @@
       <if test="prodStatus != null">
         prod_status = #{prodStatus,jdbcType=TINYINT},
       </if>
-      <if test="prodSpu != null">
-        prod_spu = #{prodSpu,jdbcType=VARCHAR},
+      <if test="prodCode != null">
+        prod_code = #{prodCode,jdbcType=VARCHAR},
       </if>
-      <if test="prodSku != null">
-        prod_sku = #{prodSku,jdbcType=VARCHAR},
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
@@ -195,12 +196,12 @@
     update store_product_manage
     set store_id = #{storeId,jdbcType=BIGINT},
       prod_id = #{prodId,jdbcType=VARCHAR},
-      prod_range = #{prodRange,jdbcType=INTEGER},
+      sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
       sell_money = #{sellMoney,jdbcType=DECIMAL},
       recommend = #{recommend,jdbcType=TINYINT},
       prod_status = #{prodStatus,jdbcType=TINYINT},
-      prod_spu = #{prodSpu,jdbcType=VARCHAR},
-      prod_sku = #{prodSku,jdbcType=VARCHAR},
+      prod_code = #{prodCode,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},

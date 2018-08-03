@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain;
 
+import com.winhxd.b2c.common.i18n.MessageHelper;
+
 /**
  * @author lixiaodong
  */
@@ -14,6 +16,7 @@ public class ResponseResult<T> {
 
     public ResponseResult(int code) {
         this.code = code;
+        this.message = MessageHelper.getInstance().getMessage(String.valueOf(code));
     }
 
     public ResponseResult(int code, String message) {

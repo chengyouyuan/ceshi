@@ -21,7 +21,7 @@ public class StoreProductManage {
     @ApiModelProperty("商品id")
     private String prodId;
     @ApiModelProperty("商品规则")
-    private Integer prodRange;
+    private Integer skuAttributeOption;
     @ApiModelProperty("售卖价格")
     private BigDecimal sellMoney;
     @ApiModelProperty("是否推荐 0不推荐 1推荐")
@@ -29,9 +29,9 @@ public class StoreProductManage {
     @ApiModelProperty("商品状态 0下架1上架2已删除")
     private Byte prodStatus;
     @ApiModelProperty("商品sku")
-    private String prodSpu;
-    @ApiModelProperty("商品spu")
-    private String prodSku;
+    private String prodCode;
+    @ApiModelProperty("商品sku")
+    private String skuCode;
     @ApiModelProperty("创建人id")
     private Long createdBy;
     @ApiModelProperty("创建人名称")
@@ -69,14 +69,6 @@ public class StoreProductManage {
         this.prodId = prodId;
     }
 
-    public Integer getProdRange() {
-        return prodRange;
-    }
-
-    public void setProdRange(Integer prodRange) {
-        this.prodRange = prodRange;
-    }
-
     public BigDecimal getSellMoney() {
         return sellMoney;
     }
@@ -101,20 +93,28 @@ public class StoreProductManage {
         this.prodStatus = prodStatus;
     }
 
-    public String getProdSpu() {
-        return prodSpu;
+    public Integer getSkuAttributeOption() {
+        return skuAttributeOption;
     }
 
-    public void setProdSpu(String prodSpu) {
-        this.prodSpu = prodSpu;
+    public void setSkuAttributeOption(Integer skuAttributeOption) {
+        this.skuAttributeOption = skuAttributeOption;
     }
 
-    public String getProdSku() {
-        return prodSku;
+    public String getProdCode() {
+        return prodCode;
     }
 
-    public void setProdSku(String prodSku) {
-        this.prodSku = prodSku;
+    public void setProdCode(String prodCode) {
+        this.prodCode = prodCode;
+    }
+
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
     }
 
     public Long getCreatedBy() {

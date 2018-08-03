@@ -8,21 +8,21 @@ public enum PayStatusEnum {
     /**
      * 未支付
      */
-    UNPAID(0, "未支付"),
+    UNPAID((short) 0, "未支付"),
     /**
      * 已支付支付
      */
-    PAID(0, "已支付");
+    PAID((short) 0, "已支付");
 
-    private int statusCode;
+    private short statusCode;
     private String statusDes;
 
-    PayStatusEnum(int statusCode, String statusDes) {
+    PayStatusEnum(short statusCode, String statusDes) {
         this.statusCode = statusCode;
         this.statusDes = statusDes;
     }
 
-    public int getStatusCode() {
+    public short getStatusCode() {
         return statusCode;
     }
 

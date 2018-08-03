@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -18,6 +21,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.alibaba.druid.support.json.JSONUtils;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
@@ -41,6 +46,10 @@ import com.winhxd.b2c.order.service.OrderService;
 @Service
 public class CommonOrderServiceImpl implements OrderService {
     
+    private static final int QUEUE_CAPACITY = 1000;
+    private static final int KEEP_ALIVE_TIME = 50;
+    private static final int MAXIMUM_POOL_SIZE = 20;
+    private static final int CORE_POOL_SIZE = 5;
     private static final int ORDER_MONEY_SCALE = 2;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
     
@@ -64,6 +73,8 @@ public class CommonOrderServiceImpl implements OrderService {
     
     @Autowired
     private OrderChangeLogService orderChangeLogService;
+    
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
 
     @Override
     @Transactional(rollbackFor=Exception.class, propagation=Propagation.REQUIRES_NEW)
@@ -90,7 +101,31 @@ public class CommonOrderServiceImpl implements OrderService {
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateProcess(orderInfo);
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
+        //注册订单创建成功事物提交后相关事件
+        registerProcessAfterOrderSubmitSuccess(orderInfo);
         return orderInfo.getOrderNo();
+    }
+
+    /**
+     * 订单成功创建成功
+     * @author wangbin
+     * @date  2018年8月3日 下午4:50:11
+     * @param orderInfo
+     */
+    private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                threadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO 调用 顾客门店绑定接口
+                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
+                    }
+                });
+            }
+        }
+       );
     }
 
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
@@ -114,6 +149,8 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setRemark(orderCreateCondition.getRemark());
         orderInfo.setPickupType((short)PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
         orderInfo.setOrderNo(generateOrderNo());
+        // TODO 获取门店地理区域信息
+        orderInfo.setRegionCode("regionCode");
         //组装订单商品信息
         aseembleOrderItems(orderCreateCondition, orderInfo);
         //优惠券相关优惠计算

@@ -15,7 +15,7 @@ public enum OrderStatusEnum {
     /**
      * 订单待商铺确认/待接单
      */
-    RECEIVED((short) 3, "订单待商铺确认", "待接单"),
+    UNRECEIVED((short) 3, "订单待商铺确认", "待接单"),
     /**
      * 待商铺确认价格/待计价
      */

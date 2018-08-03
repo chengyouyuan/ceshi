@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.List;
-
-@FeignClient(value = ServiceName.SYSTEM_SERVICE, fallbackFactory = UserServiceFallback.class)
-public interface UserService {
+@FeignClient(value = ServiceName.SYSTEM_SERVICE, fallbackFactory = UserServiceClientFallback.class)
+public interface UserServiceClient {
 
     /**
      * 新增用户
@@ -90,14 +88,14 @@ public interface UserService {
 }
 
 @Component
-class UserServiceFallback implements UserService, FallbackFactory<UserService> {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceFallback.class);
+class UserServiceClientFallback implements UserServiceClient, FallbackFactory<UserServiceClient> {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceClientFallback.class);
     private Throwable throwable;
 
-    public UserServiceFallback() {
+    public UserServiceClientFallback() {
     }
 
-    private UserServiceFallback(Throwable throwable) {
+    private UserServiceClientFallback(Throwable throwable) {
         this.throwable = throwable;
     }
 
@@ -138,7 +136,7 @@ class UserServiceFallback implements UserService, FallbackFactory<UserService> {
     }
 
     @Override
-    public UserService create(Throwable throwable) {
-        return new UserServiceFallback(throwable);
+    public UserServiceClient create(Throwable throwable) {
+        return new UserServiceClientFallback(throwable);
     }
 }

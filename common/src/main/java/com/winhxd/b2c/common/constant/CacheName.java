@@ -5,6 +5,6 @@ package com.winhxd.b2c.common.constant;
  */
 public class CacheName {
 
-    String CACHE_KEY_USER_TOKEN = "user:token:";
+    public static final String CACHE_KEY_USER_TOKEN = "USER:TOKEN:";
 
 }

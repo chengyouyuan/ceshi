@@ -1,14 +1,13 @@
 package com.winhxd.b2c.system.user.controller;
 
-import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponsePageResult;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
-import com.winhxd.b2c.common.feign.system.UserService;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import com.winhxd.b2c.system.user.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author zhangzhengyang
@@ -32,7 +30,7 @@ import java.util.List;
 @Api(value = "系统用户管理", tags = "api_user")
 @RestController
 @RequestMapping("/")
-public class SysUserController implements UserService {
+public class SysUserController implements UserServiceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SysUserController.class);
 
@@ -56,17 +54,20 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> add(@RequestBody SysUser sysUser){
-        logger.info("{} - 新增用户, 参数：{}", MODULE_NAME, sysUser);
+        logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             sysUser.setPassword(MD5Encoder.encode(sysUser.getPassword().getBytes()));
             sysUserService.addSysUser(sysUser);
             result.setData(sysUser.getId());
-            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 新增用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
+            result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 新增用户失败, 参数：{}", MODULE_NAME, sysUser);
-            throw e;
+            logger.error("{} - 新增用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
+            result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
     /**
@@ -84,7 +85,7 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult update(@RequestBody SysUser sysUser){
-        logger.info("{} - 修改用户, 参数：{}", MODULE_NAME, sysUser);
+        logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             String password = sysUser.getPassword();
@@ -94,11 +95,14 @@ public class SysUserController implements UserService {
                 sysUser.setPassword(null);
             }
             sysUserService.updateSysUser(sysUser);
-            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 修改用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
+            result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 修改用户失败, 参数：{}", MODULE_NAME, sysUser);
-            throw e;
+            logger.error("{} - 修改用户失败, 参数：sysUser={}", MODULE_NAME, sysUser);
+            result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
     /**
@@ -118,15 +122,18 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
-        logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUser);
+        logger.info("{} - 修改密码, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             sysUserService.updatePassword(sysUser);
-            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 修改密码失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
+            result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 修改密码失败, 参数：{}", MODULE_NAME, sysUser);
-            throw e;
+            logger.error("{} - 修改密码失败, 参数：sysUser={}", MODULE_NAME, sysUser);
+            result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
     /**
@@ -144,16 +151,19 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
-        logger.info("{} - 查询用户列表, 参数：{}", MODULE_NAME, condition);
-        ResponsePageResult<PagedList<SysUser>> result = new ResponsePageResult<>();
+        logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
+        ResponseResult<PagedList<SysUser>> result = new ResponseResult<>();
         try {
             PagedList<SysUser> page = sysUserService.selectSysUser(condition);
             result.setData(page);
-            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 查询用户列表失败, 参数：condition={}", MODULE_NAME, condition, e);
+            result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 查询用户列表失败, 参数：{}", MODULE_NAME, condition);
-            throw e;
+            logger.error("{} - 查询用户列表失败, 参数：condition={}", MODULE_NAME, condition);
+            result = new ResponseResult(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
     /**
@@ -172,16 +182,19 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode){
-        logger.info("{} - 根据登录账号获取用户信息, 参数：{}", MODULE_NAME, userCode);
+        logger.info("{} - 根据登录账号获取用户信息, 参数：userCode={}", MODULE_NAME, userCode);
         ResponseResult<SysUser> result = new ResponseResult<>();
         try {
             SysUser sysUser = sysUserService.getSysUserByUserCode(userCode);
             result.setData(sysUser);
-            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userCode={}", MODULE_NAME, userCode, e);
+            result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：{}", MODULE_NAME, userCode);
-            throw e;
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userCode={}", MODULE_NAME, userCode);
+            result = new ResponseResult(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
     /**
@@ -199,16 +212,20 @@ public class SysUserController implements UserService {
     })
     @RequestMapping(value = "/api/user/3015/v1/get/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getById(Long userId){
-        logger.info("{} - 根据主键获取用户信息, 参数：{}", MODULE_NAME, userId);
+        logger.info("{} - 根据主键获取用户信息, 参数：userId={}", MODULE_NAME, userId);
         ResponseResult<SysUser> result = new ResponseResult<>();
         try {
             SysUser sysUser = sysUserService.getSysUserById(userId);
             result.setData(sysUser);
             return result;
+        } catch (BusinessException e){
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, userId, e);
+            result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 根据主键获取用户信息失败, 参数：{}", MODULE_NAME, userId);
-            throw e;
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, userId);
+            result = new ResponseResult(BusinessCode.CODE_1001);
         }
+        return result;
     }
 
 }

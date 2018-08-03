@@ -5,6 +5,9 @@ package com.winhxd.b2c.common.domain.system.security.enums;
  * @author lixiaodong
  */
 public enum PermissionEnum {
+
+    AUTHENTICATED("已登录验证"),
+
     /**
      * 订单管理
      */
@@ -15,7 +18,10 @@ public enum PermissionEnum {
 
     SYSTEM_MANAGEMENT("系统管理"),
     SYSTEM_MANAGEMENT_ROLE("角色管理", SYSTEM_MANAGEMENT),
-    SYSTEM_MANAGEMENT_USER("用户管理", SYSTEM_MANAGEMENT);
+    SYSTEM_MANAGEMENT_USER("用户管理", SYSTEM_MANAGEMENT),
+    SYSTEM_MANAGEMENT_USER_ADD("新增用户", SYSTEM_MANAGEMENT_USER),
+    SYSTEM_MANAGEMENT_USER_EDIT("编辑用户", SYSTEM_MANAGEMENT_USER),
+    SYSTEM_MANAGEMENT_USER_REMOVE("删除用户", SYSTEM_MANAGEMENT_USER);
 
     private String name;
     private PermissionEnum parent;

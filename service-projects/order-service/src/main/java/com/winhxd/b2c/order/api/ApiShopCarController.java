@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * @auther: wangbaokuo
+ * @author: wangbaokuo
  * @date: 2018/8/2 19:32
  * @description:
  */
@@ -36,9 +36,9 @@ public class ApiShopCarController {
     private ShopCarService shopCarService;
 
     /**
-     * @auther: wangbaokuo
+     * 商品加购
+     * @author: wangbaokuo
      * @date: 2018/8/2 19:43
-     * @deprecated:
      * @param: [shopCar]
      * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Long>
      */
@@ -62,9 +62,9 @@ public class ApiShopCarController {
     }
 
     /**
-     * @auther: wangbaokuo
+     * 查询购物车
+     * @author: wangbaokuo
      * @date: 2018/8/3 11:29
-     * @deprecated:
      * @param: [condition]
      * @return: com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO>>
      */
@@ -91,9 +91,9 @@ public class ApiShopCarController {
     }
 
     /**
-     * @auther: wangbaokuo
+     * 验参
+     * @author: wangbaokuo
      * @date: 2018/8/3 13:25
-     * @deprecated: 验参
      * @param: [condition]
      * @return: void
      */

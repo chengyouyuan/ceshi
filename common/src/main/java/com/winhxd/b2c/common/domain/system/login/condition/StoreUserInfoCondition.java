@@ -26,5 +26,6 @@ public class StoreUserInfoCondition{
     private String openid;
 	@ApiModelProperty(value = "来源")
     private String source;
-
+	@ApiModelProperty(value = "短信验证码")
+	private String verificationCode;
 }

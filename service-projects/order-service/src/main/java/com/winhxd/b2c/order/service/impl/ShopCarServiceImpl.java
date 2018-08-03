@@ -8,6 +8,7 @@ import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @auther: wangbaokuo
+ * @author: wangbaokuo
  * @date: 2018/8/2 20:20
  * @description:
  */
@@ -33,6 +34,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Transactional(rollbackFor= {Exception.class})
     @Override
     public int saveShopCar(ShopCarCondition condition){
+        // TODO 校验产品状态，库存，上下架等
         // 加购：1、存在，则删除再保存，2、不存在，直接保存
         ShopCar shopCar = new ShopCar();
         // TODO TOCKEN获取当前用户信息
@@ -61,16 +63,17 @@ public class ShopCarServiceImpl implements ShopCarService {
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
+        List<ShopCarVO> resultList = new ArrayList<>(shopCars.size());
         if (CollectionUtils.isNotEmpty(shopCars)) {
-//            List<ShopCarVO> resultList = new ArrayList<>(shopCar.size());
             ShopCarVO vo;
             for(Iterator it = shopCars.iterator(); it.hasNext();){
                 vo = new ShopCarVO();
-                it.next();
+                // TODO 需要验证商品库存，上下架状态并返回给用户
+                BeanUtils.copyProperties(it.next(), vo);
+                resultList.add(vo);
             }
         }
-        return null;
+        return resultList;
     }
-
 
 }

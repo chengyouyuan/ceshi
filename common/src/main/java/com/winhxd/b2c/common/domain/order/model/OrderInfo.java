@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单主表
@@ -120,4 +121,9 @@ public class OrderInfo {
     private Long updatedBy;
     private String updatedByName;
     private String createdByName;
+    
+    /**
+     * 订单商品项
+     */
+    private List<OrderItem> orderItems;
 }

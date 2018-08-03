@@ -406,8 +406,8 @@
         </collection>
     </resultMap>
     <sql id="Order_Info_List">
-        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, pay_type,
-        pay_status, created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, pay_type,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remark
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">

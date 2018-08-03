@@ -31,6 +31,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition) {
+        //TODO 待添加获取当前用户的接口
         Long customerId = 1L;
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();

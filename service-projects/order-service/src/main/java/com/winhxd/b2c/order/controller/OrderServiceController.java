@@ -1,21 +1,24 @@
 package com.winhxd.b2c.order.controller;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.order.service.OrderService;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+
 @RestController
-public class OrderServiceController implements OrderService {
-    /**
-     * 订单提交接口
-     *
-     * @param orderCreateCondition
-     * @return 订单号
-     * @author wangbin
-     * @date 2018年8月2日 下午5:51:46
-     */
+public class OrderServiceController implements OrderServiceClient {
+
     @Override
-    public String submitOrder(OrderCreateCondition orderCreateCondition) {
+    public ResponseResult<String> submitOrder(OrderCreateCondition orderCreateCondition) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResponseResult<OrderInfo> getOrderVo(String orderNo) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

@@ -4,8 +4,9 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.i18n.MessageHelper;
 import com.winhxd.b2c.store.service.StoreService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,19 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private StoreService storeService;
-    @Autowired
-    private MessageHelper messageHelper;
+    private Logger logger = LoggerFactory.getLogger(StoreService.class);
     @Override
     public ResponseResult<Void> bindCustomer(Long customerId,Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
-        if(customerId == null)
-            throw new BusinessException(BusinessCode.CODE_20001,messageHelper.getMessage("200001",null));
-
-        if (storeUserId == null)
-            throw new BusinessException(BusinessCode.CODE_20002,messageHelper.getMessage("200002",null));
-
+        if(customerId == null) {
+            logger.error("用户id参数为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        if (storeUserId == null) {
+            logger.error("门店id参数为空");
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
         int status = storeService.bindCustomer(customerId,storeUserId);
-        result.setCode(status == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_2003);
+        result.setCode(status == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200003);
         return result;
     }
 }

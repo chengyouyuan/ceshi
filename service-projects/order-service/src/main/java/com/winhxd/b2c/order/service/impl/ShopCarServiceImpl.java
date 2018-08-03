@@ -1,8 +1,10 @@
 package com.winhxd.b2c.order.service.impl;
 
-import com.winhxd.b2c.common.domain.shopcar.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.shopcar.model.ShopCar;
-import com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.model.ShopCar;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +36,10 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Transactional(rollbackFor= {Exception.class})
     @Override
     public int saveShopCar(ShopCarCondition condition){
-        // TODO 校验产品状态，库存，上下架等
+        if (!checkShelves(condition.getSkuCode())) {
+            logger.error("商品加购异常{}  商品下架");
+            throw new BusinessException(BusinessCode.CODE_402010);
+        }
         // 加购：1、存在，则删除再保存，2、不存在，直接保存
         ShopCar shopCar = new ShopCar();
         // TODO TOCKEN获取当前用户信息
@@ -68,12 +73,39 @@ public class ShopCarServiceImpl implements ShopCarService {
             ShopCarVO vo;
             for(Iterator it = shopCars.iterator(); it.hasNext();){
                 vo = new ShopCarVO();
-                // TODO 需要验证商品库存，上下架状态并返回给用户
                 BeanUtils.copyProperties(it.next(), vo);
+                // TODO 需要获取商品名称,图片,商品单价等信息返回给用户
+                vo.setProdName(null);
+                vo.setProdImg(null);
+                vo.setProdPrice(null);
+                vo.setProdStatus(checkShelves(vo.getSkuCode()) ? StoreProductStatusEnum.PUTAWAY.getStatusCode() : StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
                 resultList.add(vo);
             }
         }
         return resultList;
     }
 
+    /**
+     * 校验商品上下架
+     * @author: wangbaokuo
+     * @date: 2018/8/3 15:27
+     * @param: [skuCode]
+     * @return: java.lang.Boolean
+     */
+    @Override
+    public Boolean checkShelves(String skuCode){
+        Boolean flag = false;
+        // TODO 校验上下架
+        return flag;
+    }
+
+    @Override
+    public int removeShopCar(ShopCarCondition condition) {
+        ShopCar shopCar = new ShopCar();
+        // TODO TOCKEN获取当前用户信息
+        Long customerId = null;
+        shopCar.setCustomerId(customerId);
+        shopCar.setStoreId(condition.getStoreId());
+        return shopCarMapper.deleteShopCars(shopCar);
+    }
 }

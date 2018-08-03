@@ -19,6 +19,7 @@
     </modules>
 
     <build>
+        <finalName>b2c-${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.exception.order;
+package com.winhxd.b2c.common.exception;
 
 import io.swagger.annotations.ApiModelProperty;
 

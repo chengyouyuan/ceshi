@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.customer.dao.shopcar.ShopCarMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+<mapper namespace="com.winhxd.b2c.order.dao.ShopCarMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.ShopCar">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
@@ -25,7 +25,7 @@
     delete from shop_car
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     insert into shop_car (id, customer_id, store_id, 
       sku_code, prod_num, created, 
       updated, createdby, updatedby
@@ -35,7 +35,7 @@
       #{updated,jdbcType=TIMESTAMP}, #{createdby,jdbcType=BIGINT}, #{updatedby,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     insert into shop_car
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -96,7 +96,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     update shop_car
     <set>
       <if test="customerId != null">
@@ -126,7 +126,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     update shop_car
     set customer_id = #{customerId,jdbcType=BIGINT},
       store_id = #{storeId,jdbcType=BIGINT},
@@ -139,7 +139,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectShopCars" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar" resultMap="BaseResultMap">
+  <select id="selectShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
     from shop_car
@@ -152,7 +152,7 @@
     </if>
     order by create
   </select>
-  <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+  <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     delete from shop_car
     where
     <if test="customerId != null">

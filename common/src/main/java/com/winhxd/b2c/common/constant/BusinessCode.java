@@ -10,6 +10,7 @@ public final class BusinessCode {
     public static final int CODE_1001 = 1001;
     /** 登录凭证无效 */
     public static final int CODE_1002 = 1002;
+
     /** 没有权限 */
     public static final int CODE_1003 = 1003;
     /** 账号无效 */
@@ -20,6 +21,7 @@ public final class BusinessCode {
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
+
 
     /** 原密码输入错误 */
     public static final int CODE_301201 = 301201;
@@ -38,8 +40,20 @@ public final class BusinessCode {
     public static final int CODE_402005 = 402005;
     /** 购物车:支付方式*/
     public static final int CODE_402006 = 402006;
-    /** 购物车:金额*/
+    /** 购物车:订单金额*/
     public static final int CODE_402007 = 402007;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
+    /**用户id参数为空*/
+    public static final int CODE_200001 = 200001;
+    /**门店id参数为空*/
+    public static final int CODE_200002 = 200002;
+    /**门店用户绑定失败*/
+    public static final int CODE_200003 = 200003;
+    /**门店信息不存在*/
+    public  static final int CODE_200004 = 200004;
+
+    public static final int CODE_2003 = 200003;
+    /** 购物车:商品下架*/
+    public static final int CODE_402010 = 402010;
 }

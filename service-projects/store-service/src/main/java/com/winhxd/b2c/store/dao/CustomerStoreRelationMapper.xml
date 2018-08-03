@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.store.dao.CustomerStoreRelationMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="store_user_id" jdbcType="BIGINT" property="storeUserId" />
+    <result column="binding_time" jdbcType="TIMESTAMP" property="bindingTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, store_user_id, binding_time
+  </sql>
+
+  <select id="selectByCondition" resultType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    select <include refid="Base_Column_List"/> from customer_store_relation
+    <where>
+      <if test="customerId != null and customerId != ''">
+        and customer_id = #{customerId}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer_store_relation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_store_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    insert into customer_store_relation (id, customer_id, store_user_id, 
+      binding_time)
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeUserId,jdbcType=BIGINT}, 
+      #{bindingTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    insert into customer_store_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="storeUserId != null">
+        store_user_id,
+      </if>
+      <if test="bindingTime != null">
+        binding_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeUserId != null">
+        #{storeUserId,jdbcType=BIGINT},
+      </if>
+      <if test="bindingTime != null">
+        #{bindingTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    update customer_store_relation
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeUserId != null">
+        store_user_id = #{storeUserId,jdbcType=BIGINT},
+      </if>
+      <if test="bindingTime != null">
+        binding_time = #{bindingTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+    update customer_store_relation
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      store_user_id = #{storeUserId,jdbcType=BIGINT},
+      binding_time = #{bindingTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

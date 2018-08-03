@@ -33,5 +33,9 @@ public class CustomerLoginServiceImpl implements CustomerLoginService{
 		int cont = customerUserInfoMapper.updateByPrimaryKeySelective(customerUserInfo);
 		return cont;
 	}
+	@Override
+	public CustomerUserInfo getCustomerUserInfoById(Long customerId) {
+		return customerUserInfoMapper.selectByPrimaryKey(customerId);
+	}
 
 }

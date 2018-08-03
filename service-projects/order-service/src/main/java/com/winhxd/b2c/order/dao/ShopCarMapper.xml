@@ -138,4 +138,28 @@
       updatedby = #{updatedby,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectShopCars" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from shop_car
+    where
+    <if test="customerId != null">
+      customer_id = #{customerId,jdbcType=BIGINT},
+    </if>
+    <if test="storeId != null">
+      store_id = #{storeId,jdbcType=BIGINT},
+    </if>
+    order by create
+  </select>
+  <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.shopcar.model.ShopCar">
+    delete from shop_car
+    where
+    <if test="customerId != null">
+      customer_id = #{customerId,jdbcType=BIGINT},
+    </if>
+    <if test="storeId != null">
+      store_id = #{storeId,jdbcType=BIGINT},
+    </if>
+  </delete>
 </mapper>

@@ -1,6 +1,9 @@
 package com.winhxd.b2c.order.service;
 
-import com.winhxd.b2c.common.domain.shopcar.model.ShopCar;
+import com.winhxd.b2c.common.domain.shopcar.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO;
+
+import java.util.List;
 
 /**
  * @auther: wangbaokuo
@@ -15,5 +18,14 @@ public interface ShopCarService {
      * @param: CustomerShopCar
      * @return: int
      */
-    int saveShopCar(ShopCar shopCar);
+    int saveShopCar(ShopCarCondition shopCar);
+
+    /**
+     * @auther: wangbaokuo
+     * @date: 2018/8/3 14:05
+     * @deprecated: 查询购物车
+     * @param: condition
+     * @return: List<ShopCarVO>
+     */
+    List<ShopCarVO> findShopCar(ShopCarCondition condition);
 }

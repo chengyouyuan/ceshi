@@ -53,8 +53,7 @@ public class ApiShopCarController {
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             shopCarParam(condition);
-            // 加购：1、存在，则删除再保存，2、不存在，直接保存
-//        	shopCarService.saveShopCar(null);
+        	shopCarService.saveShopCar(condition);
             return result;
         } catch (Exception e){
             logger.error("ShopCarController -> saveShopCar异常, 异常信息{}" + e.getMessage(), e);
@@ -77,12 +76,13 @@ public class ApiShopCarController {
     @RequestMapping(value = "/api/order/4021/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ShopCarVO>> findShopCar(@RequestBody ShopCarCondition condition){
         ResponseResult<List<ShopCarVO>> result = new ResponseResult<>();
-        List<ShopCarVO> resultList;
         try {
             if (null == condition || null == condition.getStoreId()) {
                 logger.error("查询购物车异常{}  参数storeId为空");
                 throw new BusinessException(BusinessCode.CODE_402001);
             }
+            List<ShopCarVO> resultList = shopCarService.findShopCar(condition);
+            result.setData(resultList);
             return result;
         } catch (Exception e){
             logger.error("ShopCarController -> findShopCar异常, 异常信息{}" + e.getMessage(), e);
@@ -90,6 +90,13 @@ public class ApiShopCarController {
         }
     }
 
+    /**
+     * @auther: wangbaokuo
+     * @date: 2018/8/3 13:25
+     * @deprecated: 验参
+     * @param: [condition]
+     * @return: void
+     */
     private void shopCarParam(ShopCarCondition condition){
         if (null == condition) {
             logger.error("商品加购异常{}  参数错误");

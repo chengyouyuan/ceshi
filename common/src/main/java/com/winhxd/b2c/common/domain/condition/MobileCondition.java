@@ -20,9 +20,6 @@ public class MobileCondition implements Serializable {
     @ApiModelProperty(value = "did号")
     private String did;
 
-    @ApiModelProperty(value = "租户ID")
-    private String grp;
-
     @ApiModelProperty(value = "门店下单时所用设备")
     private String imei;
 
@@ -47,14 +44,6 @@ public class MobileCondition implements Serializable {
 
     public void setPlatform(String platform) {
         this.platform = platform;
-    }
-
-    public String getGrp() {
-        return grp;
-    }
-
-    public void setGrp(String grp) {
-        this.grp = grp;
     }
 
     public String getImei() {

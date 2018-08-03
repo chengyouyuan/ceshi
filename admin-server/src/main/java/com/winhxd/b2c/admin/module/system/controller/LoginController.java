@@ -2,6 +2,7 @@ package com.winhxd.b2c.admin.module.system.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.module.system.constant.Constant;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -11,10 +12,7 @@ import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +51,13 @@ public class LoginController {
             @ApiImplicitParam(name = "userCode", value = "账号", required =true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "form")
     })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+            @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
+            @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用")
+    })
     @PostMapping(value = "/login")
     public ResponseResult<Boolean> login(String userCode, String password, HttpServletRequest request, HttpServletResponse response) {
         logger.info("{} - 用户登录, 参数：userCode={}", MODULE_NAME, userCode);
@@ -76,11 +81,12 @@ public class LoginController {
             result.setCode(BusinessCode.CODE_1006);
         }
 
-        String uuid = UUID.randomUUID().toString().replaceAll("-","");
+        String token = UUID.randomUUID().toString().replaceAll("-","");
+        String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
         try {
             UserInfo userInfo = new UserInfo();
             BeanUtils.copyProperties(sysUser,userInfo);
-            cache.setex(CacheName.CACHE_KEY_USER_TOKEN + uuid,30 * 60, new ObjectMapper().writeValueAsString(userInfo));
+            cache.setex(cacheKey,30 * 60, new ObjectMapper().writeValueAsString(userInfo));
         } catch (JsonProcessingException e) {
             logger.error("账号信息转json异常，账号信息：{}", sysUser);
             result.setCode(BusinessCode.CODE_1001);
@@ -96,9 +102,9 @@ public class LoginController {
             }
         }
         if(null == tokenCookie){
-            tokenCookie = new Cookie(Constant.TOKEN_NAME, uuid);
+            tokenCookie = new Cookie(Constant.TOKEN_NAME, token);
         } else {
-            tokenCookie.setValue(uuid);
+            tokenCookie.setValue(token);
         }
         // 设置为30min
         tokenCookie.setMaxAge(30 * 60);
@@ -106,28 +112,31 @@ public class LoginController {
         response.addCookie(tokenCookie);
 
         // 登录成功
-        result.setData(true);
-
         logger.info("{} - 用户登录成功, 参数：userCode={}", MODULE_NAME, userCode);
+        result.setData(true);
         return result;
     }
 
     @ApiOperation("注销")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
     @GetMapping(value = "/logout")
     public ResponseResult<Boolean> login(HttpServletRequest request, HttpServletResponse response) {
-
+        UserInfo userInfo = UserManager.getCurrentUser();
+        logger.info("{} - 用户注销, 参数：userInfo={}", MODULE_NAME, userInfo);
 
         ResponseResult<Boolean> result = new ResponseResult<>(false);
 
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){
             for(Cookie cookie : requestCookies){
-                if(cookie.getName().equals("token")){
+                if(cookie.getName().equals(Constant.TOKEN_NAME)){
                     String token = cookie.getValue();
+                    String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 
-//                    logger.info("{} - 用户注销, 参数：userCode={}", MODULE_NAME, userCode);
-
-                    cache.del(CacheName.CACHE_KEY_USER_TOKEN + token);
+                    cache.del(cacheKey);
                     cookie.setValue(null);
                     cookie.setMaxAge(0);
                     cookie.setPath("/");
@@ -136,6 +145,7 @@ public class LoginController {
             }
         }
         // 注销成功
+        logger.info("{} - 用户注销成功, 参数：userInfo={}", MODULE_NAME, userInfo);
         result.setData(true);
         return result;
     }

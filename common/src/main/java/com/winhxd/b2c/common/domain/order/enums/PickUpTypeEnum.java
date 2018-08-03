@@ -9,22 +9,22 @@ public enum PickUpTypeEnum {
     /**
      * 自提
      */
-    SELF_PICK_UP(1, "自提"),
+    SELF_PICK_UP((short)1, "自提"),
 
     /**
      * 配送
      */
-    DELIVERY(2, "配送");
+    DELIVERY((short)2, "配送");
 
-    private int typeCode;
+    private short typeCode;
     private String typeDesc;
 
-    PickUpTypeEnum(int typeCode, String typeDesc) {
+    PickUpTypeEnum(short typeCode, String typeDesc) {
         this.typeCode = typeCode;
         this.typeDesc = typeDesc;
     }
 
-    public int getTypeCode() {
+    public short getTypeCode() {
         return typeCode;
     }
 

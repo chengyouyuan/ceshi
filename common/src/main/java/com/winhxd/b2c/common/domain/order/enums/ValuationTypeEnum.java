@@ -10,21 +10,21 @@ public enum ValuationTypeEnum {
     /**
      * 线上计价
      */
-    ONLINE_VALUATION(1, "线上计价"),
+    ONLINE_VALUATION((short) 1, "线上计价"),
     /**
      * 线下计价
      */
-    OFFLINE_VALUATION(2, "线下计价");
+    OFFLINE_VALUATION((short) 2, "线下计价");
 
-    private int typeCode;
+    private short typeCode;
     private String typeDesc;
 
-    ValuationTypeEnum(int typeCode, String typeDesc) {
+    ValuationTypeEnum(short typeCode, String typeDesc) {
         this.typeCode = typeCode;
         this.typeDesc = typeDesc;
     }
 
-    public int getTypeCode() {
+    public short getTypeCode() {
         return typeCode;
     }
 

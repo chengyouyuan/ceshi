@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.service;
 
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 
 /**
  * 订单流转状态记录服务
@@ -36,5 +37,5 @@ public interface OrderChangeLogService {
         }
     }
     
-    void orderChange(String orderNo, String originalJson, String newJson, OrderStatusEnum originalStatus, OrderStatusEnum newStatus, Long createdBy, String createdByName, String changeMsg);
+    void orderChange(String orderNo, String originalJson, String newJson, Short originalStatus, Short newStatus, Long createdBy, String createdByName, String changeMsg, MainPointEnum pointType);
 }

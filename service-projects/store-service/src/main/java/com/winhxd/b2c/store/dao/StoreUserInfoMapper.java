@@ -1,7 +1,9 @@
 package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface StoreUserInfoMapper {
     int deleteByPrimaryKey(Long businessId);
 

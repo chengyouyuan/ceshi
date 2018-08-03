@@ -1,4 +1,7 @@
 package com.winhxd.b2c.store.service;
+
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+
 /**
  * @Description: 门店服务接口类
  * @author chengyy
@@ -14,4 +17,12 @@ public interface StoreService {
      * @return 绑定状态码(0绑定失败,1绑定成功,-1用户已经和当前门店存在绑定关系，-2用户已经和其他门店存在绑定关系)
      */
     int bindCustomer(Long customerId, Long storeUserId);
+    /**
+     * @author chengyy
+     * @date 2018/8/3 16:09
+     * @Description 根据门店的id查询门店信息
+     * @param storeUserId 门店id
+     * @return  StoreUserInfoVO 门店VO
+     */
+    StoreUserInfoVO findStoreUserInfo(Long storeUserId);
 }

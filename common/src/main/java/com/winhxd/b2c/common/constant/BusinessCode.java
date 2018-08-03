@@ -45,10 +45,12 @@ public final class BusinessCode {
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
     /**用户id参数为空*/
-    public static final int CODE_20001 = 200001;
+    public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
-    public static final int CODE_20002 = 200002;
+    public static final int CODE_200002 = 200002;
     /**门店用户绑定失败*/
-    public static final int CODE_2003 = 200003;
+    public static final int CODE_200003 = 200003;
+    /**门店信息不存在*/
+    public  static final int CODE_200004 = 200004;
 
 }

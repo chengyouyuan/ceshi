@@ -1,12 +1,12 @@
 package com.winhxd.b2c.common.domain.shopcar.condition;
 
-import com.winhxd.b2c.common.domain.condition.BaseCondition;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @auther: wangbaokuo

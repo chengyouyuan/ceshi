@@ -30,4 +30,7 @@ public class OrderCreateExceptonCodes {
     
     @ApiModelProperty("订单创建商品sku为空")
     public static final int CODE_401007 = 401007;
+    
+    @ApiModelProperty("订单创建不支持订单类型")
+    public static final int CODE_401008 = 401008;
 }

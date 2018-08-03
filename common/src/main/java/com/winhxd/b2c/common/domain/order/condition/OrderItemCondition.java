@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date  2018年8月2日 下午5:44:28
  * @version 
  */
-public class OrderDetailCondition {
+public class OrderItemCondition {
     
     @ApiModelProperty(value = "商品id", required=true)
     private String skuCode;

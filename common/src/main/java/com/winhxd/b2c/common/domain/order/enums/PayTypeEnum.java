@@ -28,4 +28,13 @@ public enum PayTypeEnum {
     public String getTypeDesc() {
         return typeDesc;
     }
+    
+    public static PayTypeEnum getPayTypeEnumByTypeCode(int typeCode) {
+        for (int i = 0; i < PayTypeEnum.values().length; i++) {
+            if (PayTypeEnum.values()[i].getTypeCode() == typeCode) {
+                return PayTypeEnum.values()[i];
+            }
+        }
+        return null;
+    }
 }

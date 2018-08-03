@@ -1,5 +1,5 @@
 server:
-  port: 3102
+  port: 3100
 
 spring:
   profiles:

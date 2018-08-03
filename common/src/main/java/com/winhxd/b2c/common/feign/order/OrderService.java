@@ -32,7 +32,7 @@ class OrderServiceFallback implements OrderService, FallbackFactory<OrderService
     @Override
     public ResponseResult<OrderVO> getOrderVo(String orderNo) {
         logger.error("OrderServiceFallback -> getOrderVo", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_401);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override

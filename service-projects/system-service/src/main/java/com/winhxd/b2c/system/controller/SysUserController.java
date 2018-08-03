@@ -44,7 +44,7 @@ public class SysUserController {
     @ApiOperation(value = "新增用户", response = Long.class)
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> add(@RequestBody SysUser sysUser){
@@ -70,7 +70,7 @@ public class SysUserController {
     @ApiOperation(value = "修改用户")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult update(@RequestBody SysUser sysUser){
@@ -95,7 +95,7 @@ public class SysUserController {
     @ApiOperation(value = "修改密码")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_301201, message = "原密码输入错误"),
             @ApiResponse(code = BusinessCode.CODE_301202, message = "新密码与原密码相同")
     })
@@ -122,7 +122,7 @@ public class SysUserController {
     @ApiOperation(value = "查询用户列表")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Page<SysUser>> list(@RequestBody SysUserCondition condition){
@@ -148,7 +148,7 @@ public class SysUserController {
     @ApiOperation(value = "根据登录账号获取用户信息")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_301401, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -175,7 +175,7 @@ public class SysUserController {
     @ApiOperation(value = "根据主键获取用户信息")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_500, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3015/v1/get/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getById(Long userId){

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.controller;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderVO;
 import com.winhxd.b2c.common.feign.order.OrderService;
@@ -19,6 +20,6 @@ public class OrderServiceController implements OrderService {
         OrderVO vo = new OrderVO();
         vo.setOrderNo(orderNo);
         vo.setStoreId(10L);
-        return new ResponseResult<>(vo);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

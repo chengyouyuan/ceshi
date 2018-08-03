@@ -1,6 +1,8 @@
 package com.winhxd.b2c.system.user.controller;
 
 import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponsePageResult;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
@@ -10,14 +12,14 @@ import com.winhxd.b2c.common.feign.system.UserService;
 import com.winhxd.b2c.system.user.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -115,7 +117,7 @@ public class SysUserController implements UserService {
             @ApiResponse(code = BusinessCode.CODE_301202, message = "新密码与原密码相同")
     })
     @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult updatePassword(@RequestBody SysUser sysUser){
+    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
         logger.info("{} - 修改密码, 参数：{}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -141,15 +143,12 @@ public class SysUserController implements UserService {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Page<SysUser>> list(@RequestBody SysUserCondition condition){
+    public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：{}", MODULE_NAME, condition);
-        ResponsePageResult<List<SysUser>> result = new ResponsePageResult<>();
+        ResponsePageResult<PagedList<SysUser>> result = new ResponsePageResult<>();
         try {
-            Page<SysUser> page = sysUserService.selectSysUser(condition);
+            PagedList<SysUser> page = sysUserService.selectSysUser(condition);
             result.setData(page);
-            result.setPageNum(condition.getPageNo());
-            result.setPageSize(condition.getPageSize());
-            result.setTotal(page.getTotal());
             return result;
         } catch (Exception e){
             logger.error("{} - 查询用户列表失败, 参数：{}", MODULE_NAME, condition);
@@ -169,7 +168,7 @@ public class SysUserController implements UserService {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_301401, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效")
     })
     @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode){

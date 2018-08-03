@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.feign.system;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponsePageResult;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
@@ -62,7 +63,7 @@ public interface UserService {
      * @return
      */
     @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponsePageResult<List<SysUser>> list(@RequestBody SysUserCondition condition);
+    ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
 
     /**
      * 根据登录账号获取用户信息
@@ -103,37 +104,37 @@ class UserServiceFallback implements UserService, FallbackFactory<UserService> {
     @Override
     public ResponseResult<Long> add(SysUser sysUser) {
         logger.error("UserServiceFallback -> add", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_10000);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult update(SysUser sysUser) {
         logger.error("UserServiceFallback -> update", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_10000);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
         logger.error("UserServiceFallback -> updatePassword", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_10000);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponsePageResult<List<SysUser>> list(SysUserCondition condition) {
+    public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition) {
         logger.error("UserServiceFallback -> list", throwable);
-        return new ResponsePageResult<>(BusinessCode.CODE_10000);
+        return new ResponsePageResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<SysUser> getByUserCode(String userCode) {
         logger.error("UserServiceFallback -> getByUserCode", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_10000);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<SysUser> getById(Long userId) {
         logger.error("UserServiceFallback -> getById", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_10000);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override

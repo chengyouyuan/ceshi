@@ -3,6 +3,7 @@ package com.winhxd.b2c.system.user.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
@@ -76,9 +77,14 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public Page<SysUser> selectSysUser(SysUserCondition condition) {
-        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        return sysUserMapper.selectSysUser(condition);
+    public PagedList<SysUser> selectSysUser(SysUserCondition condition) {
+        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        PagedList<SysUser> pagedList = new PagedList();
+        pagedList.setData(sysUserMapper.selectSysUser(condition));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
     }
 
     @Override
@@ -88,7 +94,7 @@ public class SysUserServiceImpl implements SysUserService {
         List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
         if(CollectionUtils.isEmpty(sysUserList)){
             // 该用户不存在
-            throw new BusinessException(BusinessCode.CODE_301401);
+            throw new BusinessException(BusinessCode.CODE_1004);
         }
         SysUser sysUser = sysUserList.get(0);
         List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());

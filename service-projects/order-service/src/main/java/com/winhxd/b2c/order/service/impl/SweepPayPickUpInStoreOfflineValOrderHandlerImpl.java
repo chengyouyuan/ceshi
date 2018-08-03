@@ -12,9 +12,9 @@ import com.winhxd.b2c.order.service.OrderHandler;
  * @date  2018年8月3日 上午9:36:33
  * @version 
  */
-@Service("SweepPayPickUpInStoreOnlineValOrderHandler")
-public class SweepPayPickUpInStoreOnlineValOrderHandlerImpl  extends SweepPayPickUpInStoreOrderHandlerImpl implements OrderHandler {
+@Service("SweepPayPickUpInStoreOfflineValOrderHandler")
+public class SweepPayPickUpInStoreOfflineValOrderHandlerImpl extends SweepPayPickUpInStoreOrderHandlerImpl implements OrderHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(SweepPayPickUpInStoreOnlineValOrderHandlerImpl.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(SweepPayPickUpInStoreOfflineValOrderHandlerImpl.class);
+
 }

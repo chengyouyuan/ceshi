@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.order.service.OrderHandler;
@@ -31,6 +30,11 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     @Override
     public void orderInfoAfterCreateProcess(OrderInfo orderInfo) {
         logger.info("在线支付自提订单 创建后无处理逻辑");
+    }
+
+    @Override
+    public void orderInfoAfterCreateSuccessProcess(OrderInfo orderInfo) {
+        logger.info("在线支付自提订单 成功提交后无处理逻辑");
     }
 
 }

@@ -26,6 +26,7 @@ public class CustomerUserInfoCondition{
     private String nickName;
 	@ApiModelProperty(value = "头像")
     private String headurl;
-
+	@ApiModelProperty(value = "短信验证码")
+	private String verificationCode;
     
 }

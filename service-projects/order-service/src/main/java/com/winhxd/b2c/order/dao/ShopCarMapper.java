@@ -18,19 +18,19 @@ public interface ShopCarMapper {
     int updateByPrimaryKey(ShopCar record);
 
     /**
-     * @auther: wangbaokuo
+     * 根据条件查询ShopCar
+     * @author: wangbaokuo
      * @date: 2018/8/3 13:33
-     * @deprecated: 根据条件查询ShopCar
-     * @param: condition
+     * @param: shopCar
      * @return: List<ShopCar>
      */
     List<ShopCar> selectShopCars(ShopCar shopCar);
 
     /**
-     * @auther: wangbaokuo
+     * 根据条件删除ShopCar
+     * @author: wangbaokuo
      * @date: 2018/8/3 13:35
-     * @deprecated: 根据条件删除ShopCar
-     * @param: condition
+     * @param: shopCar
      * @return: int
      */
     int deleteShopCars(ShopCar shopCar);

@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @auther: wangbaokuo
+ * @author: wangbaokuo
  * @date: 2018/8/2 19:16
  * @description: 购物车
  */

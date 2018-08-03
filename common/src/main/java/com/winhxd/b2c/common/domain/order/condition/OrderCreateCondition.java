@@ -27,7 +27,7 @@ public class OrderCreateCondition {
     private String remark;
     
     @ApiModelProperty(value = "订单商品明细", required=true)
-    private List<OrderDetailCondition> orderDetailConditions;
+    private List<OrderItemCondition> orderItemConditions;
 
     public Long getStoreId() {
         return storeId;
@@ -77,18 +77,18 @@ public class OrderCreateCondition {
         this.remark = remark;
     }
 
-    public List<OrderDetailCondition> getOrderDetailConditions() {
-        return orderDetailConditions;
+    public List<OrderItemCondition> getOrderItemConditions() {
+        return orderItemConditions;
     }
 
-    public void setOrderDetailConditions(List<OrderDetailCondition> orderDetailConditions) {
-        this.orderDetailConditions = orderDetailConditions;
+    public void setOrderItemConditions(List<OrderItemCondition> orderItemConditions) {
+        this.orderItemConditions = orderItemConditions;
     }
 
     @Override
     public String toString() {
         return "OrderCreateCondition [storeId=" + storeId + ", customerId=" + customerId + ", payType=" + payType
                 + ", couponIds=" + Arrays.toString(couponIds) + ", pickupDateTime=" + pickupDateTime + ", remark="
-                + remark + ", orderDetailConditions=" + orderDetailConditions + "]";
+                + remark + ", orderItemConditions=" + orderItemConditions + "]";
     }
 }

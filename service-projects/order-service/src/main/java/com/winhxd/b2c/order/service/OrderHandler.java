@@ -1,9 +1,14 @@
 package com.winhxd.b2c.order.service;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 
 public interface OrderHandler {
 
-    OrderInfo generateOrderInfo(OrderCreateCondition orderCreateCondition);
+    /**
+     * 订单创建相关业务逻辑
+     * @author wangbin
+     * @date  2018年8月3日 下午2:29:39
+     * @param orderInfo
+     */
+    void orderInfoBeforeCreateProcess(OrderInfo orderInfo);
 }

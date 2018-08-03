@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.vo.OrderVO;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 
 @RestController
@@ -14,8 +14,8 @@ public class CustomerCController {
     private OrderServiceClient orderService;
 
     @RequestMapping("ss")
-    public ResponseResult<OrderVO> getCustomerOrder(String orderNo) {
-        ResponseResult<OrderVO> orderVo = orderService.getOrderVo(orderNo);
+    public ResponseResult<OrderInfo> getCustomerOrder(String orderNo) {
+        ResponseResult<OrderInfo> orderVo = orderService.getOrderVo(orderNo);
         return orderVo;
     }
 }

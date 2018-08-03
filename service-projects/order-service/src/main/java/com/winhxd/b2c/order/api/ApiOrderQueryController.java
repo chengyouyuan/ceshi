@@ -42,7 +42,6 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/api-order/api/order/410/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody OrderListCondition orderListCondition) {
         LOGGER.info("=/api-order/api/order/410/v1/orderListByCustomer订单列表查询接口=--开始--{}");
-        Long customerId = 1L;
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             //返回对象

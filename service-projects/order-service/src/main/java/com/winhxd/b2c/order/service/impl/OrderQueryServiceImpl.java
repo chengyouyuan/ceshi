@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author pangjianhua
  * @date 2018/8/3 15:02
  */
+@Service
 public class OrderQueryServiceImpl implements OrderQueryService {
 
     @Resource

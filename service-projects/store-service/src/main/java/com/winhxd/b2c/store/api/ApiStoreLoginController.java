@@ -17,8 +17,8 @@ import io.swagger.annotations.Api;
  */
 @Api(value = "StoreLoginController Controller", tags = "B-Login")
 @RestController
-public class StoreLoginController {
-	private static final Logger logger = LoggerFactory.getLogger(StoreLoginController.class);
+public class ApiStoreLoginController {
+	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 
 	@Autowired
 	private StoreLoginService storeLoginService;

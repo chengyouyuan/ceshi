@@ -51,11 +51,11 @@ public class ApiOrderQueryController {
             LOGGER.error("=/api-order/api/order/410/v1/orderListByCustomer订单列表查询接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("=/api-order/api/order/410/v1/orderListByCustomer订单列表查询接口=--结束 result={}", result);
+        LOGGER.info("=/api-order/api/order/410/v1/orderListByCustomer订单列表查询接口=--结束");
         return result;
     }
 
-    @ApiOperation(value = "订单列表查询接口", response = OrderInfoDetailVO.class, notes = "订单列表查询接口")
+    @ApiOperation(value = "订单详情查询接口", response = OrderInfoDetailVO.class, notes = "订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")

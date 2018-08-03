@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -112,13 +113,14 @@ public class ApiShopCarController {
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             shopCarParam(condition);
-            // TODO 校验门店上下架，库存
+            // 校验门店上下架，库存
             if (!shopCarService.checkShelves(condition.getSkuCode())) {
                 logger.error("商品加购异常{}  商品下架");
                 throw new BusinessException(BusinessCode.CODE_402010);
             }
             // 保存订单
             OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
+            BeanUtils.copyProperties(condition, orderCreateCondition);
             orderService.submitOrder(orderCreateCondition);
 
             // 保存成功删除此用户门店的购物车
@@ -150,8 +152,8 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数extractAddress为空");
             throw new BusinessException(BusinessCode.CODE_402002);
         }
-        if (null == condition.getExtractTime()){
-            logger.error("商品加购异常{}  参数extractTime为空");
+        if (null == condition.getPickupDateTime()){
+            logger.error("商品加购异常{}  参数pickupDateTime为空");
             throw new BusinessException(BusinessCode.CODE_402003);
         }
         if (null == condition.getSkuCode()){
@@ -167,7 +169,7 @@ public class ApiShopCarController {
             throw new BusinessException(BusinessCode.CODE_402006);
         }
         if (null == condition.getCouponIds() || condition.getCouponIds().length == 0){
-            logger.error("商品加购异常{}  参数couponId为空");
+            logger.error("商品加购异常{}  参数couponIds为空");
             throw new BusinessException(BusinessCode.CODE_402007);
         }
         if (null == condition.getOrderTotalMoney()){

@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,7 +25,7 @@ public class ShopCarCondition extends BaseCondition{
     private String extractAddress;
 
     @ApiModelProperty(value = "自提时间")
-    private Date extractTime;
+    private Date pickupDateTime;
 
     @ApiModelProperty(value = "商品sku")
     private String skuCode;

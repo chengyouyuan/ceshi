@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.shopcar.vo;
+package com.winhxd.b2c.common.domain.order.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -43,11 +43,8 @@ public class ShopCarVO {
     @ApiModelProperty(value = "更新人")
     private Long updatedby;
 
-    @ApiModelProperty(value = "库存状态(0无货,1有货)")
-    private Byte prodRepertory;
-
     @ApiModelProperty(value = "上下架状态(0下架,1上架)")
-    private Byte prodStatus;
+    private Short prodStatus;
 
     @ApiModelProperty(value = "商品图片")
     private String prodImg;

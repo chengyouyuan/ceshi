@@ -17,13 +17,13 @@ import com.winhxd.b2c.order.service.OrderChangeLogService;
 public class OrderChangeLogServiceImpl implements OrderChangeLogService {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderChangeLogServiceImpl.class);
-    
+
     @Autowired
     private OrderChangeLogMapper orderChangeLogMapper;
 
     @Override
-    public void orderChange(String orderNo, String originalJson, String newJson, OrderStatusEnum originalStatus,
-            OrderStatusEnum newStatus, Long createdBy, String createdByName, String changeMsg) {
+    public void orderChange(String orderNo, String originalJson, String newJson, Short originalStatus, Short newStatus,
+            Long createdBy, String createdByName, String changeMsg, MainPointEnum pointType) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单号不能为空");
         }
@@ -36,17 +36,14 @@ public class OrderChangeLogServiceImpl implements OrderChangeLogService {
         if (StringUtils.isBlank(createdByName) || createdBy == null) {
             throw new NullPointerException("操作人不能为空");
         }
-        MainPointEnum pointType = MainPointEnum.MAIN;
-        // 如果订单状态没有改变，则为非主要节点
-        if (originalStatus != null && originalStatus.getStatusCode() == newStatus.getStatusCode()) {
+        if (pointType == null) {
             pointType = MainPointEnum.NOT_MAIN;
         }
         if (StringUtils.isBlank(changeMsg)) {
-            changeMsg = newStatus.getStatusDes();
+            throw new NullPointerException("changeMsg不能为空");
         }
-        OrderChangeLog orderChangeLog = new OrderChangeLog(orderNo,
-                originalStatus == null ? null : originalStatus.getStatusCode(), newStatus.getStatusCode(),
-                changeMsg, pointType.getCode(), new Date(), createdBy, "" + createdByName, originalJson, newJson);
+        OrderChangeLog orderChangeLog = new OrderChangeLog(orderNo, originalStatus, newStatus, changeMsg,
+                pointType.getCode(), new Date(), createdBy, createdByName, originalJson, newJson);
         orderChangeLogMapper.insertSelective(orderChangeLog);
         logger.info("订单流转变化：", orderChangeLog);
 

@@ -1,8 +1,7 @@
-package com.winhxd.b2c.common.domain.shopcar.model;
+package com.winhxd.b2c.common.domain.order.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.util.Date;
 

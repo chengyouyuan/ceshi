@@ -34,6 +34,24 @@
       #{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR})
   </insert>
+  <!-- 批量保存订单明细 -->
+  <insert id="insertItems"
+	parameterType="java.util.List">
+	insert into order_item (id, order_no, sku_code,
+	amount, price, created,
+	created_by, updated, updated_by,
+	updated_by_name, created_by_name)
+	values
+	<foreach collection="list" item="item" index="index" separator=",">
+		(
+		#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{skuCode,jdbcType=VARCHAR},
+		#{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL},
+		#{created,jdbcType=TIMESTAMP},
+		#{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+		#{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR}
+		)
+	</foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
     insert into order_item
     <trim prefix="(" suffix=")" suffixOverrides=",">

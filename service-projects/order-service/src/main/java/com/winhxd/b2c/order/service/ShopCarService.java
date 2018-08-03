@@ -1,7 +1,7 @@
 package com.winhxd.b2c.order.service;
 
-import com.winhxd.b2c.common.domain.shopcar.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 
 import java.util.List;
 
@@ -28,4 +28,22 @@ public interface ShopCarService {
      * @return: List<ShopCarVO>
      */
     List<ShopCarVO> findShopCar(ShopCarCondition condition);
+
+    /**
+     * 校验商品上下架
+     * @author: wangbaokuo
+     * @date: 2018/8/3 16:06
+     * @param: skuCode
+     * @return: Boolean
+     */
+    Boolean checkShelves(String skuCode);
+
+    /**
+     * 删除购物车
+     * @author: wangbaokuo
+     * @date: 2018/8/3 16:20
+     * @param: condition
+     * @return: int
+     */
+    int removeShopCar(ShopCarCondition condition);
 }

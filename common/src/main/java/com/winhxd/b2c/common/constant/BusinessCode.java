@@ -40,7 +40,7 @@ public final class BusinessCode {
     public static final int CODE_402005 = 402005;
     /** 购物车:支付方式*/
     public static final int CODE_402006 = 402006;
-    /** 购物车:金额*/
+    /** 购物车:订单金额*/
     public static final int CODE_402007 = 402007;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
@@ -53,4 +53,7 @@ public final class BusinessCode {
     /**门店信息不存在*/
     public  static final int CODE_200004 = 200004;
 
+    public static final int CODE_2003 = 200003;
+    /** 购物车:商品下架*/
+    public static final int CODE_402010 = 402010;
 }

@@ -48,13 +48,13 @@ public class ApiShopCarController {
      * @param: [shopCar]
      * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Long>
      */
-    @ApiOperation(value = "商品加购")
+    @ApiOperation(value = "商品加购", response = Long.class, notes = "商品加购")
     @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Long.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-
-    @RequestMapping(value = "/api/order/4020/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/430/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
         ResponseResult<Long> result = new ResponseResult<>();
         try {
@@ -74,12 +74,13 @@ public class ApiShopCarController {
      * @param: [condition]
      * @return: com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO>>
      */
-    @ApiOperation(value = "查询购物车")
+    @ApiOperation(value = "查询购物车", response = ShopCarVO.class, notes = "查询购物车")
     @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ShopCarVO.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @RequestMapping(value = "/api/order/4021/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ShopCarVO>> findShopCar(@RequestBody ShopCarCondition condition){
         ResponseResult<List<ShopCarVO>> result = new ResponseResult<>();
         try {
@@ -103,12 +104,13 @@ public class ApiShopCarController {
      * @param: [condition]
      * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Long>
      */
-    @ApiOperation(value = "预订单")
+    @ApiOperation(value = "预订单", response = Long.class, notes = "预订单")
     @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Long.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @RequestMapping(value = "/api/order/4022/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/432/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> readyOrder(@RequestBody ShopCarCondition condition){
         ResponseResult<Long> result = new ResponseResult<>();
         try {

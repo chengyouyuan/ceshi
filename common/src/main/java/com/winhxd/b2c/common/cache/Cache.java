@@ -10,5 +10,4 @@ import redis.clients.jedis.JedisCommands;
  * @author lixiaodong
  */
 public interface Cache extends JedisCommands {
-
 }

@@ -17,4 +17,9 @@ public final class BusinessCode {
     public static final int CODE_301202 = 301202;
     /** 该用户不存在 */
     public static final int CODE_301401 = 301401;
+
+    /**用户id参数为空*/
+    public static final int CODE_20001 = 20001;
+    /**门店id参数为空*/
+    public static final int CODE_20002 = 20002;
 }

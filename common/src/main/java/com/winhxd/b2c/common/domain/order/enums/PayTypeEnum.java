@@ -8,27 +8,27 @@ public enum PayTypeEnum {
     /**
      * 微信扫码付款
      */
-    WECHAT_SCAN_CODE_PAYMENT(1, "微信扫码付款"),
+    WECHAT_SCAN_CODE_PAYMENT((short) 1, "微信扫码付款"),
     /**
      * 微信在线付款
      */
-    WECHAT_ONLINE_PAYMENT(2, "微信在线付款");
-    private int typeCode;
+    WECHAT_ONLINE_PAYMENT((short) 2, "微信在线付款");
+    private short typeCode;
     private String typeDesc;
 
-    PayTypeEnum(int typeCode, String typeDesc) {
+    PayTypeEnum(short typeCode, String typeDesc) {
         this.typeCode = typeCode;
         this.typeDesc = typeDesc;
     }
 
-    public int getTypeCode() {
+    public short getTypeCode() {
         return typeCode;
     }
 
     public String getTypeDesc() {
         return typeDesc;
     }
-    
+
     public static PayTypeEnum getPayTypeEnumByTypeCode(int typeCode) {
         for (int i = 0; i < PayTypeEnum.values().length; i++) {
             if (PayTypeEnum.values()[i].getTypeCode() == typeCode) {

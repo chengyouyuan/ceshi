@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.system.user.dao.SysRuleRegionMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRuleRegion">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
+    <result column="region_code" jdbcType="VARCHAR" property="regionCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, rule_id, region_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_rule_region
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_rule_region
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRuleRegion">
+    insert into sys_rule_region (id, rule_id, region_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{regionCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRuleRegion">
+    insert into sys_rule_region
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="ruleId != null">
+        rule_id,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="ruleId != null">
+        #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRuleRegion">
+    update sys_rule_region
+    <set>
+      <if test="ruleId != null">
+        rule_id = #{ruleId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRuleRegion">
+    update sys_rule_region
+    set rule_id = #{ruleId,jdbcType=BIGINT},
+      region_code = #{regionCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

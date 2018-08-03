@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@MapperScan("com.winhxd.b2c.system.dao")
+@MapperScan("com.winhxd.b2c.system.*.dao")
 @ComponentScan(basePackages = "com.winhxd.b2c")
 public class SystemServiceApplication {
 

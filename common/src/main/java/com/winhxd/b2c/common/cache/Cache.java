@@ -11,4 +11,6 @@ import redis.clients.jedis.JedisCommands;
  */
 public interface Cache extends JedisCommands {
 
+    String CACHE_KEY_USER_TOKEN = "user:token:";
+
 }

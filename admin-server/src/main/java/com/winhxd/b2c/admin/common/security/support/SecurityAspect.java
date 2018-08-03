@@ -37,8 +37,8 @@ public class SecurityAspect {
             return joinPoint.proceed();
         } else {
             ResponseResult responseResult = new ResponseResult();
-            responseResult.setCode(BusinessCode.CODE_401);
-            responseResult.setMessage(messageHelper.getMessage(String.valueOf(BusinessCode.CODE_401)));
+            responseResult.setCode(BusinessCode.CODE_10010);
+            responseResult.setMessage(messageHelper.getMessage(String.valueOf(BusinessCode.CODE_10010)));
             return responseResult;
         }
     }

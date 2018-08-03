@@ -3,7 +3,6 @@ package com.winhxd.b2c.common.feign.system;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponsePageResult;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
@@ -120,7 +119,7 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     @Override
     public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition) {
         logger.error("UserServiceFallback -> list", throwable);
-        return new ResponsePageResult<>(BusinessCode.CODE_1001);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override

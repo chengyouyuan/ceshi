@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,6 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.exception.order.OrderCreateExcepton;
 import com.winhxd.b2c.common.exception.order.OrderCreateExceptonCodes;
-import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
 
@@ -213,6 +213,6 @@ public class CommonOrderServiceImpl implements OrderService {
         // 9 代表长度为4       
         // d 代表参数为正数型 
         String randomFormat = "%09d";
-        return "C" + DateUtil.dateTime2Str(LocalDateTime.now(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
+        return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
     }
 }

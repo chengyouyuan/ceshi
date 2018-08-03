@@ -12,6 +12,12 @@ spring:
       discovery:
         enabled: true
         service-id: b2c-config-server
+    gateway:
+      default-filters:
+      - name: Hystrix
+        args:
+          name: fallbackcmd
+          fallbackUri: forward:/fallback
 
 eureka:
   instance:

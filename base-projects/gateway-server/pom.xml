@@ -13,6 +13,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.winhxd.b2c</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
@@ -23,6 +27,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
         <dependency>
             <groupId>de.codecentric</groupId>

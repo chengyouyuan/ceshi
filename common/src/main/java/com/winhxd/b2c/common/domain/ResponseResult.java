@@ -19,11 +19,6 @@ public class ResponseResult<T> {
         this.message = MessageHelper.getInstance().getMessage(String.valueOf(code));
     }
 
-    public ResponseResult(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
     public ResponseResult(T data) {
         this.data = data;
     }

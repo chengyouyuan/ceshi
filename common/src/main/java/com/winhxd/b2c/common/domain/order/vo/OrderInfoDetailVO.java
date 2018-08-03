@@ -5,13 +5,16 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author pangjianhua
  * @date 2018/8/3 9:52
  */
 @Data
-public class OrderDetailVO {
+public class OrderInfoDetailVO {
+    @ApiModelProperty(value = "订单商品详情", required = true)
+    private List<OrderItemVO> orderItemVoList;
     @ApiModelProperty(value = "主键", required = true)
     private Long id;
     @ApiModelProperty(value = "订单编号", required = true)

@@ -14,7 +14,6 @@ import java.util.Date;
  * @description:
  */
 @ApiModel("用户加购传参")
-@Data
 public class ShopCarCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店ID")
@@ -43,4 +42,76 @@ public class ShopCarCondition extends BaseCondition{
 
     @ApiModelProperty(value = "金额")
     private BigDecimal orderTotalMoney;
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getExtractAddress() {
+        return extractAddress;
+    }
+
+    public void setExtractAddress(String extractAddress) {
+        this.extractAddress = extractAddress;
+    }
+
+    public Date getExtractTime() {
+        return extractTime;
+    }
+
+    public void setExtractTime(Date extractTime) {
+        this.extractTime = extractTime;
+    }
+
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
+    }
+
+    public Integer getProdNum() {
+        return prodNum;
+    }
+
+    public void setProdNum(Integer prodNum) {
+        this.prodNum = prodNum;
+    }
+
+    public Byte getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Byte payType) {
+        this.payType = payType;
+    }
+
+    public Long getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Long couponId) {
+        this.couponId = couponId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public BigDecimal getOrderTotalMoney() {
+        return orderTotalMoney;
+    }
+
+    public void setOrderTotalMoney(BigDecimal orderTotalMoney) {
+        this.orderTotalMoney = orderTotalMoney;
+    }
 }

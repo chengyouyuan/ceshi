@@ -81,7 +81,7 @@ public class StoreUserInfo implements Serializable {
      */
     private String source;
     /**
-     * 0有效，1无效
+     * 惠小店状态（0、未开店，1、有效，2、无效）
      */
     private Byte storeStatus;
 

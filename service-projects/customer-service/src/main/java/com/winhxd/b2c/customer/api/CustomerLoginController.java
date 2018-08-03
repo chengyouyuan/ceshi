@@ -82,7 +82,7 @@ public class CustomerLoginController {
 	            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	    })
-	    @RequestMapping(value = "/api/weChatRegister/2022/v1/weChatRegister", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    @RequestMapping(value = "/api/weChatRegister/2023/v1/weChatRegister", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition){
 	        ResponseResult<Long> result = new ResponseResult<>();
 	        try {
@@ -101,5 +101,32 @@ public class CustomerLoginController {
 	        }
 			return result;
 	    }
-	  
+	   
+	     /**
+		   * @author wufuyun
+		   * @date  2018年8月3日 下午1:31:45
+		   * @Description 通过账号发送验证码
+		   * @param customerUserInfoCondition
+		   * @return 验证码
+		   */
+		   @ApiOperation(value = "通过账号发送验证码")
+		    @ApiResponses({
+		            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+		            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+		    })
+		    @RequestMapping(value = "/api/weChatRegister/2022/v1/sendVerification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+		    public ResponseResult<String> sendVerification(@RequestBody CustomerUserInfoCondition customerUserInfoCondition){
+		        ResponseResult<String> result = new ResponseResult<>();
+		        try {
+		        	//TODO:调用massage 发送短信smsCode
+		            return result;
+		        }catch (BusinessException e){
+		            logger.error("CustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+		            result = new ResponseResult<>(e.getErrorCode());
+		        }catch (Exception e){
+		            logger.error("CustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
+		            result = new ResponseResult<>(BusinessCode.CODE_1001);
+		        }
+				return result;
+		    }
 }

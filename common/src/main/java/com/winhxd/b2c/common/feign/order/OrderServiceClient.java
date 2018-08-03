@@ -3,11 +3,13 @@ package com.winhxd.b2c.common.feign.order;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface OrderServiceClient {
     @RequestMapping(value = "/order/v1/getOrderVo/", method = RequestMethod.GET)
     ResponseResult<OrderVO> getOrderVo(@RequestParam("orderNo") String orderNo);
+    
+    @RequestMapping(value = "/order/4001/v1/getOrderVo/", method = RequestMethod.POST)
+    ResponseResult<OrderVO> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
 }
 
 class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderServiceClient> {
@@ -38,5 +43,11 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public OrderServiceClient create(Throwable throwable) {
         return new OrderServiceFallback(throwable);
+    }
+
+    @Override
+    public ResponseResult<OrderVO> submitOrder(OrderCreateCondition orderCreateCondition) {
+        logger.error("OrderServiceFallback -> submitOrder", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_500);
     }
 }

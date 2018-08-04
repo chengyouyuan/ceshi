@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2018/8/4 11:27
  */
 @Component
-public class HttpClientUtils implements ApplicationContextAware {
+public class HttpClientUtil implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     public CloseableHttpClient getHttpClient(){
@@ -38,7 +38,7 @@ public class HttpClientUtils implements ApplicationContextAware {
     * @return  请求的结果
     * @exception
     */
-    private String doGet(String url, List<NameValuePair> params) throws URISyntaxException, IOException {
+    public String doGet(String url, List<NameValuePair> params) throws URISyntaxException, IOException {
         URIBuilder uriBuilder = new URIBuilder(url);
         if(params != null && params.size() > 0){
             uriBuilder.setParameters(params);

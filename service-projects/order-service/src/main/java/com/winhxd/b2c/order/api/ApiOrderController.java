@@ -29,12 +29,11 @@ public class ApiOrderController {
 
     @ApiOperation(value = "B端退款订单处理接口", response = Boolean.class, notes = "B端退款订单处理接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/422/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundCondition orderRefundCondition) {
-        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}");
+        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}", orderRefundCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             //返回对象
@@ -49,12 +48,11 @@ public class ApiOrderController {
 
     @ApiOperation(value = "C端订单退款接口", response = Boolean.class, notes = "C端订单退款接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/421/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
-        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}");
+        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}", orderRefundCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             //返回对象
@@ -69,12 +67,11 @@ public class ApiOrderController {
 
     @ApiOperation(value = "订单取消接口", response = OrderInfoListVO.class, notes = "订单取消接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoListVO.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/420/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoListVO> orderCancel(@RequestBody OrderCancelCondition orderCancelCondition) {
-        LOGGER.info("=/api-order/order/420/v1/orderCancel订单取消接口=--开始--{}");
+        LOGGER.info("=/api-order/order/420/v1/orderCancel订单取消接口=--开始--{}", orderCancelCondition);
         Long customerId = 1L;
         ResponseResult<OrderInfoListVO> result = new ResponseResult<>();
         try {

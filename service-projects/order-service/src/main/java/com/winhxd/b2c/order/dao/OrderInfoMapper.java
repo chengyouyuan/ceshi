@@ -101,4 +101,14 @@ public interface OrderInfoMapper {
      * @return
      */
     Integer getStoreOrderCustomerNum(long storeId, Date startDateTime, Date endDateTime);
+
+    /**
+     * 取消订单（只能取消customerId的订单）
+     *
+     * @param customerId 用户ID
+     * @param orderNo    订单编号
+     * @param reason     取消原因
+     * @return 更新数量
+     */
+    int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
 }

@@ -23,10 +23,10 @@ public class ProductMsgVO {
 	private List<BrandVO> brands;
 	
 	@ApiModelProperty(value = "商品")
-	private PagedList<ProductVO> products;
+	private List<ProductVO> products;
 	
 	@ApiModelProperty(value = "商品sku")
-	private PagedList<ProductSkuVO> productSkus;
+	private List<ProductSkuVO> productSkus;
 
 	public List<BrandVO> getBrands() {
 		return brands;
@@ -44,20 +44,20 @@ public class ProductMsgVO {
 		this.categorys = categorys;
 	}
 
-	public PagedList<ProductVO> getProducts() {
+	public List<ProductVO> getProducts() {
 		return products;
 	}
 
-	public void setProducts(PagedList<ProductVO> products) {
+	public void setProducts(List<ProductVO> products) {
 		this.products = products;
 	}
 
-	public PagedList<ProductSkuVO> getProductSkus() {
+	public List<ProductSkuVO> getProductSkus() {
 		return productSkus;
 	}
 
-	public void setProductSkus(PagedList<ProductSkuVO> productSkus) {
+	public void setProductSkus(List<ProductSkuVO> productSkus) {
 		this.productSkus = productSkus;
 	}
-	
+
 }

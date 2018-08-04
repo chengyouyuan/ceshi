@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author liutong
  * @date 2018-08-04 16:32:19
  */
-public class ShopBaseInfoVO {
+public class StoreBaseInfoVO {
 
     @ApiModelProperty(value = "门店编码", required = true)
     private Long storeId;

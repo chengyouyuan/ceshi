@@ -13,7 +13,7 @@ import lombok.Data;
 @ApiModel("惠小店管理首页数据查询返参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class ShopManageInfoVO {
+public class StoreManageInfoVO {
 
     @ApiModelProperty(value = "门店编码", required = true)
     private Long storeId;

@@ -16,10 +16,10 @@ import java.util.List;
 @ApiModel("惠小店开店验证返参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class OpenShopVO {
+public class OpenStoreVO {
 
     @ApiModelProperty(value = "是否创建过了惠小店，0未创建，1已创建", required = true)
-    private Byte shopStatus;
+    private Byte storeStatus;
 
     @ApiModelProperty(value = "门店是否完善全部信息，0未完善，1已完善", required = true)
     private Byte perfectStatus;

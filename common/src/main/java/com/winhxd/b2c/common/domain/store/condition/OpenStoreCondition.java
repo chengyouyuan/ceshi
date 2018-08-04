@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel("惠小店开店验证入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class OpenShopCondition {
+public class OpenStoreCondition {
     @ApiModelProperty(value = "门店编码", required = true)
     private Long storeId;
 

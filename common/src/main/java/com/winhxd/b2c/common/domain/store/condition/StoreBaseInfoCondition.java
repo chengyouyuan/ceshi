@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel("惠小店基础信息保存入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class ShopBaseInfoCondition {
+public class StoreBaseInfoCondition {
 
     @ApiModelProperty(value = "用户编码", required = true)
     private Long customerId;

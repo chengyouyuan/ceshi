@@ -73,7 +73,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(summaryInfoStr)) {
             logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}");
             orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
-        }else {
+        } else {
             logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算");
             orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
         }
@@ -117,6 +117,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 lock.lock();
                 List<String> pickUpCodeList;
                 do {
+                    //批量生成50个提货码
                     pickUpCodeList = generatePickUpCodeList(50);
                     if (!this.orderInfoMapper.getPickUpCodeByStoreId(pickUpCodeList, storeId)) {
                         logger.info("提货码生成 storeId={},pickUpList={}", storeId, pickUpCodeList);

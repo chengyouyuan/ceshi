@@ -100,5 +100,5 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    int getStoreOrderCustomerNum(long storeId, Date startDateTime, Date endDateTime);
+    Integer getStoreOrderCustomerNum(long storeId, Date startDateTime, Date endDateTime);
 }

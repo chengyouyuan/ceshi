@@ -420,13 +420,13 @@
     
     <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
         <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
-        <result column="dailyOrderNum" jdbcType="DECIMAL" property="dailyOrderNum"/>
+        <result column="dailyOrderNum" jdbcType="INT" property="dailyOrderNum"/>
         <result column="storeId" jdbcType="BIGINT" property="storeId"/>
     </resultMap>
     <select id="getStoreOrderTurnover" resultMap="StoreOrderSalesSummaryMap">
         select
-        	IFNULL(sum(order_total_money),0) dailyTurnover,
-        	IFNULL(count(*),0) dailyOrderNum,
+        	ifnull(sum(order_total_money),0) dailyTurnover,
+        	ifnull(count(*),0) dailyOrderNum,
         	store_id storeId
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
@@ -436,9 +436,9 @@
         and order_status not in (33, 77, 99)
         group by store_id
     </select>
-    <select id="getStoreOrderCustomerNum" resultType="int">
+    <select id="getStoreOrderCustomerNum" resultType="INTEGER">
         select
-        	IFNULL(count(distinct customer_id),0) dailyCustomerNum
+        	ifnull(count(distinct customer_id),0) dailyCustomerNum
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
         and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}

@@ -37,18 +37,18 @@
   <!-- 批量保存订单明细 -->
   <insert id="insertItems"
 	parameterType="java.util.List">
-	insert into order_item (id, order_no, sku_code,
+	insert into order_item (order_no, sku_code,
 	amount, price, created,
 	created_by, updated, updated_by,
 	updated_by_name, created_by_name)
 	values
 	<foreach collection="list" item="item" index="index" separator=",">
 		(
-		#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{skuCode,jdbcType=VARCHAR},
-		#{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL},
-		#{created,jdbcType=TIMESTAMP},
-		#{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
-		#{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR}
+		#{item.orderNo,jdbcType=CHAR}, #{item.skuCode,jdbcType=VARCHAR},
+		#{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
+		#{item.created,jdbcType=TIMESTAMP},
+		#{item.createdBy,jdbcType=BIGINT}, #{item.updated,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+		#{item.updatedByName,jdbcType=VARCHAR}, #{item.createdByName,jdbcType=VARCHAR}
 		)
 	</foreach>
   </insert>

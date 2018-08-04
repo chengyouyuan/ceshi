@@ -428,7 +428,7 @@
     
     <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
         <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
-        <result column="dailyOrderNum" jdbcType="INT" property="dailyOrderNum"/>
+        <result column="dailyOrderNum" jdbcType="INTEGER" property="dailyOrderNum"/>
         <result column="storeId" jdbcType="BIGINT" property="storeId"/>
     </resultMap>
     <select id="getStoreOrderTurnover" resultMap="StoreOrderSalesSummaryMap">

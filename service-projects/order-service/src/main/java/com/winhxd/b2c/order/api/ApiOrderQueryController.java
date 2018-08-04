@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoListVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +42,7 @@ public class ApiOrderQueryController {
     })
     @RequestMapping(value = "/410/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody OrderQueryByCustomerCondition orderListCondition) {
-        LOGGER.info("=/api-orderorder/410/v1/orderListByCustomer订单列表查询接口=--开始--{}");
+        LOGGER.info("=/api-order/order/410/v1/orderListByCustomer订单列表查询接口=--开始--{}");
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             //返回对象
@@ -52,10 +53,10 @@ public class ApiOrderQueryController {
             }
             result.setData(list);
         } catch (Exception e) {
-            LOGGER.error("=/api-orderorder/410/v1/orderListByCustomer订单列表查询接口=--异常" + e.getMessage(), e);
+            LOGGER.error("=/api-order/order/410/v1/orderListByCustomer订单列表查询接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("=/api-orderorder/410/v1/orderListByCustomer订单列表查询接口=--结束");
+        LOGGER.info("=/api-order/order/410/v1/orderListByCustomer订单列表查询接口=--结束");
         return result;
     }
 
@@ -65,18 +66,22 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
     @RequestMapping(value = "/411/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo() {
-        LOGGER.info("=/api-orderorder/411/v1/getOrderDetailByOrderNo订单详情查询接口=--开始--{}");
+    public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
+        LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo订单详情查询接口=--开始--{}");
         Long customerId = 1L;
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
         try {
+            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);
             //返回对象
-            result.setData(null);
+            result.setData(orderVO);
+        } catch (BusinessException e) {
+            LOGGER.error("=/api-order/order/410/v1/orderListByCustomer订单列表查询接口=--业务异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
         } catch (Exception e) {
-            LOGGER.error("=/api-orderorder/411/v1/getOrderDetailByOrderNo订单详情查询接口=--异常" + e.getMessage(), e);
+            LOGGER.error("=/api-order/order/411/v1/getOrderDetailByOrderNo订单详情查询接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("=/api-orderorder/411/v1/getOrderDetailByOrderNo订单详情查询接口=--结束 result={}", result);
+        LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo订单详情查询接口=--结束 result={}", result);
         return result;
     }
 }

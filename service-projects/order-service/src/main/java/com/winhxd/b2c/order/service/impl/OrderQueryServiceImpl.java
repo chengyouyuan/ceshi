@@ -10,7 +10,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -72,6 +74,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
+        }
         //TODO 待添加获取当前用户的接口
         Long customerId = 1L;
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());

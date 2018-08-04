@@ -61,4 +61,10 @@ public final class BusinessCode {
 
     /** 购物车:商品下架*/
     public static final int CODE_402010 = 402010;
+
+
+    /** 查询订单参数异常*/
+    public static final int CODE_411001 = 411001;
+
+
 }

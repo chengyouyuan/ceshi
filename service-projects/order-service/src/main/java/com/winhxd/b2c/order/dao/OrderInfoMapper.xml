@@ -420,12 +420,22 @@
         where info.customer_id = #{customerId,jdbcType=BIGINT}
         order by info.created desc
     </select>
+    <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        limit 1
+    </select>
     <update id="updateOrderStatusForCancel">
         update order_info
         set order_status=33,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now()
         where order_no=#{orderNo,jdbcType=VARCHAR}
     </update>
-    
+
     <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
         <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
         <result column="dailyOrderNum" jdbcType="INTEGER" property="dailyOrderNum"/>

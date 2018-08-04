@@ -80,6 +80,14 @@ public interface OrderInfoMapper {
      * @return
      */
     List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(Long customerId);
+
+    /**
+     * 获取用户的订单和订单商品内容
+     *
+     * @param orderNo 订单编号
+     * @return
+     */
+    OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
     
     /**
      * 获取门店销售汇总信息

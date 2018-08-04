@@ -65,8 +65,8 @@ public class ApiOrderController {
         return result;
     }
 
-    @ApiOperation(value = "订单取消接口", response = OrderInfoListVO.class, notes = "订单取消接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoListVO.class),
+    @ApiOperation(value = "订单取消接口", response = Boolean.class, notes = "订单取消接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/420/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

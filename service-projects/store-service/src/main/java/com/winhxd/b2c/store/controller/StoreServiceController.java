@@ -2,14 +2,12 @@ package com.winhxd.b2c.store.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,21 +33,6 @@ public class StoreServiceController implements StoreServiceClient {
         }
         int status = storeService.bindCustomer(customerId,storeUserId);
         result.setCode(status == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200003);
-        return result;
-    }
-
-    @Override
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId) {
-        ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if(storeUserId == null){
-            logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
-            throw new BusinessException(BusinessCode.CODE_200002);
-        }
-        StoreUserInfoVO data = storeService.findStoreUserInfo(storeUserId);
-        if(data == null){
-            result.setCode(BusinessCode.CODE_200004);
-        }
-        result.setData(data);
         return result;
     }
 }

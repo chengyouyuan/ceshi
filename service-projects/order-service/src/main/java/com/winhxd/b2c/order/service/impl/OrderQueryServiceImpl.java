@@ -28,13 +28,11 @@ import com.winhxd.b2c.order.service.OrderQueryService;
  */
 @Service
 public class OrderQueryServiceImpl implements OrderQueryService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
 
     @Resource
     private OrderInfoMapper orderInfoMapper;
-    
-    private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
-    
-    @Autowired
+    @Resource
     private Cache cache;
 
     /**

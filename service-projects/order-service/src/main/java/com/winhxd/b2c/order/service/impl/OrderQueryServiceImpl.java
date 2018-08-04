@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -23,7 +24,6 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.OrderListCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -50,7 +50,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
-    public PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition) {
+    public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(OrderQueryByCustomerCondition condition) {
         //TODO 待添加获取当前用户的接口
         Long customerId = 1L;
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -61,6 +61,22 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
+    }
+
+    /**
+     * 根据用户ID查询订单
+     *
+     * @param condition 入参
+     * @return
+     * @author pangjianhua
+     */
+    @Override
+    public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
+        //TODO 待添加获取当前用户的接口
+        Long customerId = 1L;
+        OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+        //TODO 调用商品仓库添加商品图片URL和商品名称
+        return detailVO;
     }
 
     @Override

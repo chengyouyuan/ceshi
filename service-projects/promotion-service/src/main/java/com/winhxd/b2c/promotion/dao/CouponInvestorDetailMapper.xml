@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="investor_id" jdbcType="BIGINT" property="investorId" />
+    <result column="investor" jdbcType="INTEGER" property="investor" />
+    <result column="percent" jdbcType="REAL" property="percent" />
+    <result column="ids" jdbcType="VARCHAR" property="ids" />
+    <result column="names" jdbcType="VARCHAR" property="names" />
+    <result column="investor_type" jdbcType="SMALLINT" property="investorType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, investor_id, investor, percent, ids, names, investor_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_investor_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupon_investor_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    insert into coupon_investor_detail (id, investor_id, investor, 
+      percent, ids, names, investor_type
+      )
+    values (#{id,jdbcType=INTEGER}, #{investorId,jdbcType=BIGINT}, #{investor,jdbcType=INTEGER}, 
+      #{percent,jdbcType=REAL}, #{ids,jdbcType=VARCHAR}, #{names,jdbcType=VARCHAR}, #{investorType,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    insert into coupon_investor_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="investorId != null">
+        investor_id,
+      </if>
+      <if test="investor != null">
+        investor,
+      </if>
+      <if test="percent != null">
+        percent,
+      </if>
+      <if test="ids != null">
+        ids,
+      </if>
+      <if test="names != null">
+        names,
+      </if>
+      <if test="investorType != null">
+        investor_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="investorId != null">
+        #{investorId,jdbcType=BIGINT},
+      </if>
+      <if test="investor != null">
+        #{investor,jdbcType=INTEGER},
+      </if>
+      <if test="percent != null">
+        #{percent,jdbcType=REAL},
+      </if>
+      <if test="ids != null">
+        #{ids,jdbcType=VARCHAR},
+      </if>
+      <if test="names != null">
+        #{names,jdbcType=VARCHAR},
+      </if>
+      <if test="investorType != null">
+        #{investorType,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    update coupon_investor_detail
+    <set>
+      <if test="investorId != null">
+        investor_id = #{investorId,jdbcType=BIGINT},
+      </if>
+      <if test="investor != null">
+        investor = #{investor,jdbcType=INTEGER},
+      </if>
+      <if test="percent != null">
+        percent = #{percent,jdbcType=REAL},
+      </if>
+      <if test="ids != null">
+        ids = #{ids,jdbcType=VARCHAR},
+      </if>
+      <if test="names != null">
+        names = #{names,jdbcType=VARCHAR},
+      </if>
+      <if test="investorType != null">
+        investor_type = #{investorType,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    update coupon_investor_detail
+    set investor_id = #{investorId,jdbcType=BIGINT},
+      investor = #{investor,jdbcType=INTEGER},
+      percent = #{percent,jdbcType=REAL},
+      ids = #{ids,jdbcType=VARCHAR},
+      names = #{names,jdbcType=VARCHAR},
+      investor_type = #{investorType,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -24,9 +24,9 @@ public interface OrderQueryService {
     PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition);
 
     /**
+     * 获取门店销售数据
      * @author wangbin
      * @date  2018年8月4日 上午10:51:59
-     * @Description
      * @param storeId
      * @param startDateTime
      * @param endDateTime
@@ -34,6 +34,17 @@ public interface OrderQueryService {
      */
     StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
 
+    /**
+     * 计算并缓存门店销售数据 
+     * @author wangbin
+     * @date  2018年8月4日 下午3:38:46
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime,
+            Date endDateTime);
     /**
      * 根据门店ID获取门店提货码
      * @author pangjianhua

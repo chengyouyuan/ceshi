@@ -33,7 +33,7 @@ public class OrderChangeLogServiceImpl implements OrderChangeLogService {
         if (newStatus == null) {
             throw new NullPointerException("变化后订单状态不能为空");
         }
-        if (StringUtils.isBlank(createdByName) || createdBy == null) {
+        if (createdBy == null) {
             throw new NullPointerException("操作人不能为空");
         }
         if (pointType == null) {

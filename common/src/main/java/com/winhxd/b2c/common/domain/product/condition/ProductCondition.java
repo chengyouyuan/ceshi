@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * 查询商品信息 condition
@@ -13,12 +14,14 @@ import io.swagger.annotations.ApiModelProperty;
  * @date:   2018年8月4日 下午1:06:11   
  *
  */
+
+@Data
 public class ProductCondition {
 	
     @ApiModelProperty(value = "门店在惠下单购买过商品sku")
     private List<String> hxdProductSkus;
     
-    @ApiModelProperty(value = "门店已上架商品sku", required = true)
+    @ApiModelProperty(value = "门店已上架商品sku")
     private List<String> productSkus;
     
     @ApiModelProperty(value = "品牌编码")
@@ -33,53 +36,10 @@ public class ProductCondition {
     @ApiModelProperty(value = "商品名称")
     private String productName;
 
-	public List<String> getHxdProductSkus() {
-		return hxdProductSkus;
-	}
+	@ApiModelProperty(value = "商品排序 1最新到货 2价格排序 3销量排序")
+	private Integer prodSort;
 
-	public void setHxdProductSkus(List<String> hxdProductSkus) {
-		this.hxdProductSkus = hxdProductSkus;
-	}
+	@ApiModelProperty(value = "门店编号")
+	private Integer storeId;
 
-	public List<String> getProductSkus() {
-		return productSkus;
-	}
-
-	public void setProductSkus(List<String> productSkus) {
-		this.productSkus = productSkus;
-	}
-
-	public List<String> getBrandCodes() {
-		return brandCodes;
-	}
-
-	public void setBrandCodes(List<String> brandCodes) {
-		this.brandCodes = brandCodes;
-	}
-
-	public String getCategoryCode() {
-		return categoryCode;
-	}
-
-	public void setCategoryCode(String categoryCode) {
-		this.categoryCode = categoryCode;
-	}
-
-	public List<String> getCategoryCodes() {
-		return categoryCodes;
-	}
-
-	public void setCategoryCodes(List<String> categoryCodes) {
-		this.categoryCodes = categoryCodes;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-    
-    
 }

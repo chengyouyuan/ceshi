@@ -11,6 +11,27 @@ import lombok.Data;
 @Data
 public class StoreCondition {
 
-    @ApiModelProperty(value = "编号")
-    private Long userId;
+    @ApiModelProperty(value = "门店有效状态 1有效 2无效")
+    private Integer storeStatus;
+
+    @ApiModelProperty(value = "门店账号")
+    private String storeMobile;
+
+    @ApiModelProperty(value = "门店名称")
+    private String storeName;
+
+    @ApiModelProperty(value = "省code")
+    private String provinceCode;
+
+    @ApiModelProperty(value = "市code")
+    private String cityCode;
+
+    @ApiModelProperty(value = "县code")
+    private String countyCode;
+
+    @ApiModelProperty(value = "乡/镇code")
+    private String townCode;
+
+    @ApiModelProperty(value = "村code")
+    private String villageCode;
 }

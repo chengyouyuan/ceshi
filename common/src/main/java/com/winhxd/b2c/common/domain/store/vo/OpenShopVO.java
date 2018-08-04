@@ -18,37 +18,40 @@ import java.util.List;
 @Data
 public class OpenShopVO {
 
-    @ApiModelProperty(value = "是否创建过了惠小店，0未创建，1已创建")
+    @ApiModelProperty(value = "是否创建过了惠小店，0未创建，1已创建", required = true)
     private Byte shopStatus;
 
-    @ApiModelProperty(value = "门店是否完善全部信息，0未完善，1已完善")
+    @ApiModelProperty(value = "门店是否完善全部信息，0未完善，1已完善", required = true)
     private Byte perfectStatus;
 
     @ApiModelProperty(value = "未完善信息时，提示列表")
-    private List perfectMessage;
+    private List<String> noPerfectMessage;
+
+    @ApiModelProperty(value = "门店编码", required = true)
+    private Long storeId;
 
     @ApiModelProperty(value = "门店头像")
     private String storePhoto;
 
-    @ApiModelProperty(value = "门店名称")
+    @ApiModelProperty(value = "门店名称", required = true)
     private String storeName;
 
-    @ApiModelProperty(value = "店主姓名")
+    @ApiModelProperty(value = "店主姓名", required = true)
     private String shopkeeper;
 
     @ApiModelProperty(value = "店主头像")
     private String shopOwnerImg;
 
-    @ApiModelProperty(value = "省")
+    @ApiModelProperty(value = "省", required = true)
     private String province;
 
-    @ApiModelProperty(value = "市")
+    @ApiModelProperty(value = "市", required = true)
     private String city;
 
-    @ApiModelProperty(value = "区县")
+    @ApiModelProperty(value = "区县", required = true)
     private String county;
 
-    @ApiModelProperty(value = "区域编码")
+    @ApiModelProperty(value = "区域编码", required = true)
     private String regionCode;
 
 }

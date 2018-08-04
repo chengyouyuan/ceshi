@@ -54,8 +54,11 @@ public final class BusinessCode {
     public static final int CODE_200003 = 200003;
     /**门店信息不存在*/
     public  static final int CODE_200004 = 200004;
+    /**门店基础信息保存参数错误*/
+    public  static final int CODE_200005 = 200005;
+    /**店铺营业信息保存参数错误*/
+    public  static final int CODE_200006 = 200006;
 
-    public static final int CODE_2003 = 200003;
     /** 购物车:商品下架*/
     public static final int CODE_402010 = 402010;
 }

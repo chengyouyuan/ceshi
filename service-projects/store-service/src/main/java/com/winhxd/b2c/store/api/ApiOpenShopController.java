@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.OpenShopCondition;
 import com.winhxd.b2c.common.domain.store.condition.SaveShopCondition;
 import com.winhxd.b2c.common.domain.store.vo.OpenShopVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import sun.net.www.http.HttpClient;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 /**
@@ -89,5 +92,21 @@ public class ApiOpenShopController {
         }
         return responseResult;
     }
+
+    @ApiOperation(value = "惠小店信息查询接口",response = ResponseResult.class,notes = "惠小店信息查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "门店id为空"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
+    @GetMapping(value="1003/v1/findStoreUserInfo/{storeUserId}")
+    public void findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId, HttpServletResponse response) {
+        if (storeUserId == null){
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
+        try {
+            //转发到内部获取门店信息的接口
+            response.sendRedirect("/store/2002/v1/findStoreUserInfo/"+storeUserId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

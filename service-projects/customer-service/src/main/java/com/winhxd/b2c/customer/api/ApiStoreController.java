@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018/8/3 16:03
  */
 @RestController
-@RequestMapping("/api/store")
 public class ApiStoreController {
     private Logger logger = LoggerFactory.getLogger(ApiStoreController.class);
     @Autowired
@@ -31,7 +30,7 @@ public class ApiStoreController {
      * @param  storeUserId 门店id
      * @return StoreUserInfoVO 返回当前门店信息数据
      */
-    @RequestMapping(value = "/2002/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/api-store/store/2002/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.GET)
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId){
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         if(storeUserId == null){

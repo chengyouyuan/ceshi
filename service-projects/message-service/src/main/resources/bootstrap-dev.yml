@@ -2,3 +2,13 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka/
+
+
+
+
+httpClient:
+  maxTotal: 200
+  maxPerRoute: 40
+  requestTimeout: 500
+  socketTimeout: 10000
+

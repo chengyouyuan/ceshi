@@ -69,14 +69,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new NullPointerException(MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
         }
         logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
-        StoreOrderSalesSummaryVO orderSalesSummaryVO = null; 
+        StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
         // 从缓存中获取
         String summaryInfoStr = cache.hget(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
                 String.valueOf(storeId));
         if (StringUtils.isNotBlank(summaryInfoStr)) {
             logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
             orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
-        }else {
+        } else {
             logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算", storeId, startDateTime, endDateTime);
             orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
         }
@@ -114,7 +114,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Override
     public String getPickUpCode(long storeId) {
         String getCodeKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_QUEUE + storeId;
-        if (this.cache.llen(getCodeKey) < 1) {
+        String code = this.cache.lpop(getCodeKey);
+        if (StringUtils.isBlank(code)) {
             String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
             Lock lock = new RedisLock(cache, lockKey, 1000);
             try {
@@ -132,11 +133,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 this.cache.lpush(getCodeKey, pickUpCodeList.toArray(new String[pickUpCodeList.size()]));
                 //设置过期时间
                 this.cache.expire(getCodeKey, 7200);
+                code = this.cache.lpop(getCodeKey);
             } finally {
                 lock.unlock();
             }
         }
-        return this.cache.lpop(getCodeKey);
+        return code;
     }
 
     /**

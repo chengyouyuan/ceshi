@@ -2,21 +2,44 @@ package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.math.BigDecimal;
 
+/**
+ *
+ *@Deccription  坎级明细类
+ *@User  wl
+ *@Date   2018/8/4 17:30
+ */
 public class CouponGradeDetail {
+    /**
+     * 主键
+     */
     private Long id;
-
+    /**
+     * 坎级ID 编码
+     */
     private Long gradeId;
-
+    /**
+     * 满减金额
+     */
     private BigDecimal reducedAmt;
-
+    /**
+     * 满减优惠类型 1-金额 2-折扣
+     */
     private Short reducedType;
-
+    /**
+     * 优惠金额
+     */
     private BigDecimal discountedAmt;
-
+    /**
+     * 满减优惠折扣
+     */
     private BigDecimal discounted;
-
+    /**
+     * 优惠最大限额
+     */
     private BigDecimal discountedMaxAmt;
-
+    /**
+     * 成本
+     */
     private BigDecimal cost;
 
     public Long getId() {

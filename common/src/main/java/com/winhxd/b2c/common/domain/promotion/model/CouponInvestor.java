@@ -1,28 +1,56 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
-
+/**
+ *
+ *@Deccription 出资方规则
+ *@User  wl
+ *@Date   2018/8/4 17:22
+ */
 public class CouponInvestor {
+    /**
+     * 主键
+     */
     private Integer id;
-
+    /**
+     * 出资方规则编码
+     */
     private String code;
-
+    /**
+     * 出资方名称
+     */
     private String name;
-
+    /**
+     * 备注
+     */
     private String remarks;
-
+    /**
+     * 状态 0有效 1无效
+     */
     private Short status;
-
+    /**
+     * 创建人id
+     */
     private Long createdBy;
-
+    /**
+     * 创建人
+     */
     private String createdByName;
-
+    /**
+     * 创建时间(使用时间)
+     */
     private Date created;
-
+    /**
+     * 修改人id
+     */
     private Long updateBy;
-
+    /**
+     * 修改人
+     */
     private String updatedByName;
-
+    /**
+     * 修改时间
+     */
     private Date updated;
 
     public Integer getId() {

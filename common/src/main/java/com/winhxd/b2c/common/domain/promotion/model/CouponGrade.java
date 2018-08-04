@@ -1,30 +1,60 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
-
+/**
+ *
+ *@Deccription
+ *@User  wl
+ *@Date   2018/8/4 17:33
+ */
 public class CouponGrade {
+    /**
+     * 主键
+     */
     private Integer id;
-
+    /**
+     * 坎级规则编码
+     */
     private String code;
-
+    /**
+     * 坎级名称
+     */
     private String name;
-
+    /**
+     * 备注
+     */
     private String remarks;
-
+    /**
+     * 0有效 1无效
+     */
     private Short status;
-
+    /**
+     * 类型(1-满减/2-满赠/3-按件减阶梯/4-按件减翻倍/5-按件增阶梯/6-按件增翻倍)
+     */
     private Short type;
-
+    /**
+     * 创建人id
+     */
     private Long createdBy;
-
+    /**
+     * 创建人
+     */
     private String createdByName;
-
+    /**
+     * 创建时间(使用时间)
+     */
     private Date created;
-
+    /**
+     * 修改人id
+     */
     private Long updateBy;
-
+    /**
+     * 修改人
+     */
     private String updatedByName;
-
+    /**
+     * 修改时间
+     */
     private Date updated;
 
     public Integer getId() {

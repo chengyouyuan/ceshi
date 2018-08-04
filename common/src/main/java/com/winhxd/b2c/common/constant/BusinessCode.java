@@ -21,6 +21,8 @@ public final class BusinessCode {
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
+    /** 验证码错误 */
+    public static final int CODE_1008 = 1008;
 
 
     /** 原密码输入错误 */

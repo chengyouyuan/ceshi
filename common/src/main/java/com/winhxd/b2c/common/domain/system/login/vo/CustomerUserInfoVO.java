@@ -16,4 +16,5 @@ public class CustomerUserInfoVO {
     private Long customerId;
 	@ApiModelProperty(value = "账号")
     private String customerMobile;
+
 }

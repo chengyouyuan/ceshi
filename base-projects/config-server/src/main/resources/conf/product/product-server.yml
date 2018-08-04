@@ -1,0 +1,27 @@
+redis:
+  sentinel:
+    master: redis-master
+    nodes: 192.168.60.102:25379
+  maxRedirections: 6
+  timeout: 60000
+  password: foobared
+  max-active: 500
+  max-idle: 5000
+  max-wait: 10000
+  testOnBorrow: true
+  expire: 3600
+  
+ 
+##################### product服务 数据源配置在文件服务器上 #####################
+jdbc:
+  url: file:E:/gitHuiStore/jdbc-mysql.properties
+
+##################### cas #####################
+cas: 
+  server: 
+    url: http://192.168.60.241:8080
+  client: 
+    url: http://localhost:3998
+    
+########品牌logo上传图片 所在cdn地址########  
+domain: http://cdn.winhxd.com

@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.product.condition;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.product.enums.CallClientEnums;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,9 @@ import lombok.Data;
 
 @Data
 public class ProductCondition {
+	
+	@ApiModelProperty(value = "调用方 B端 或 C端")
+	private CallClientEnums client;
 	
     @ApiModelProperty(value = "门店在惠下单购买过商品sku")
     private List<String> hxdProductSkus;
@@ -42,4 +46,9 @@ public class ProductCondition {
 	@ApiModelProperty(value = "门店编号")
 	private Integer storeId;
 
+	@ApiModelProperty(value = "每页显示条数")
+    private Integer pageSize;
+    
+	@ApiModelProperty(value = "页号")
+    private Integer pageNo;
 }

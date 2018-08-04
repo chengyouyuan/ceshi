@@ -49,6 +49,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         Long customerId = 1L;
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
+        //TODO 调用商品仓库添加商品图片URL和商品名称
         pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());

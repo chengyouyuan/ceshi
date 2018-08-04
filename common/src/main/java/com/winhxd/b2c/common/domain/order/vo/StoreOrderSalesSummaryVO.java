@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * 门店每日订单销售数据汇总
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @version 
  */
 @ApiModel("门店每日订单销售数据汇总")
+@Data
 public class StoreOrderSalesSummaryVO {
     
     @ApiModelProperty(value = "今日营业额：统计当日24h内小店付款金额（=当面付款金额+微信在线付款金额-退款金额）")

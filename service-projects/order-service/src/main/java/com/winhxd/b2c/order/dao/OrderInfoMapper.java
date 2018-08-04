@@ -112,4 +112,12 @@ public interface OrderInfoMapper {
      * @return 更新数量
      */
     int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
+
+    /**
+     * 查询门店下的提货码是否重复
+     * @param pickUpCodes 提货码列表
+     * @param storeId 门店ID
+     * @return true 有重复记录，false 不重复
+     */
+    boolean getPickUpCodeByStoreId(@Param("pickUpCodes")List<String> pickUpCodes, @Param("storeId")long storeId);
 }

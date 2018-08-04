@@ -17,11 +17,12 @@ public interface OrderQueryService {
     /**
      * 根据用户ID查询所有订单
      *
-     * @param condition
+     * @author pangjianhua
+     * @param condition 入参
      * @return
      */
     PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition);
-    
+
     /**
      * 获取门店销售数据
      * @author wangbin
@@ -44,4 +45,11 @@ public interface OrderQueryService {
      */
     StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime,
             Date endDateTime);
+    /**
+     * 根据门店ID获取门店提货码
+     * @author pangjianhua
+     * @param storeId 门店ID
+     * @return
+     */
+    String getPickUpCode(long storeId);
 }

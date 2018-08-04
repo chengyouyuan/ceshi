@@ -3,7 +3,10 @@ package com.winhxd.b2c.order.service.impl;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderListCondition;
@@ -97,5 +102,69 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         cache.expire(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
-    
+
+
+    /**
+     * 根据门店ID获取门店提货码
+     *
+     * @param storeId 门店ID
+     * @return 门店提货码（不重复）
+     * @author pangjianhua
+     */
+    @Override
+    public String getPickUpCode(long storeId) {
+        String getCodeKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_QUEUE + storeId;
+        if (this.cache.llen(getCodeKey) < 1) {
+            String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
+            Lock lock = new RedisLock(cache, lockKey, 1000);
+            try {
+                lock.lock();
+                List<String> pickUpCodeList;
+                do {
+                    //批量生成50个提货码
+                    pickUpCodeList = generatePickUpCodeList(50);
+                    if (!this.orderInfoMapper.getPickUpCodeByStoreId(pickUpCodeList, storeId)) {
+                        logger.info("提货码生成 storeId={},pickUpList={}", storeId, pickUpCodeList);
+                        break;
+                    }
+                } while (true);
+                //添加到redis 队列
+                this.cache.lpush(getCodeKey, pickUpCodeList.toArray(new String[pickUpCodeList.size()]));
+                //设置过期时间
+                this.cache.expire(getCodeKey, 7200);
+            } finally {
+                lock.unlock();
+            }
+        }
+        return this.cache.lpop(getCodeKey);
+    }
+
+    /**
+     * 一次生成多个个提货码
+     *
+     * @return 提货码列表
+     */
+    private List<String> generatePickUpCodeList(int size) {
+        List<String> pickUpList = new ArrayList<>();
+        do {
+            for (int i = 0; i < size; i++) {
+                String pickUpCode = (int) ((Math.random() * 9 + 1) * 1000) + "";
+                pickUpList.add(pickUpCode);
+            }
+        } while (!hasSame(pickUpList));
+        return pickUpList;
+    }
+
+    /**
+     * 判断list中是否有重复字符串
+     *
+     * @param list
+     * @return true为不重复，false为重复
+     */
+    private boolean hasSame(List<String> list) {
+        if (null == list) {
+            return false;
+        }
+        return list.size() == new HashSet<Object>(list).size();
+    }
 }

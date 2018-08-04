@@ -1,7 +1,5 @@
 package com.winhxd.b2c.common.domain.product.vo;
 
-import java.util.List;
-
 import io.swagger.annotations.ApiModelProperty;
 
 public class ProductSkuVO {

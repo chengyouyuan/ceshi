@@ -20,11 +20,8 @@ public class ProductVO {
 	@ApiModelProperty(value = "商品名称")
 	private String productName;
 	
-	@ApiModelProperty(value = "商品图片")
-	private String productImage;
-	
-	@ApiModelProperty(value = "商品规格")
-	private List<String> skuAttributeOption;
+	@ApiModelProperty(value = "商品sku")
+	private List<ProductSkuVO> productSkus;
 
 	public String getProductCode() {
 		return productCode;
@@ -42,20 +39,14 @@ public class ProductVO {
 		this.productName = productName;
 	}
 
-	public String getProductImage() {
-		return productImage;
+	public List<ProductSkuVO> getProductSkus() {
+		return productSkus;
 	}
 
-	public void setProductImage(String productImage) {
-		this.productImage = productImage;
+	public void setProductSkus(List<ProductSkuVO> productSkus) {
+		this.productSkus = productSkus;
 	}
 
-	public List<String> getSkuAttributeOption() {
-		return skuAttributeOption;
-	}
 
-	public void setSkuAttributeOption(List<String> skuAttributeOption) {
-		this.skuAttributeOption = skuAttributeOption;
-	}
 
 }

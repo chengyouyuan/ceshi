@@ -1,5 +1,8 @@
 package com.winhxd.b2c.order.service.impl;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -10,6 +13,8 @@ import javax.annotation.Resource;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -72,9 +77,32 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(summaryInfoStr)) {
             logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}");
             orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
+        }else {
+            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算");
+            orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
         }
         return orderSalesSummaryVO;
     }
+
+    private StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime, Date endDateTime) {
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreOrderTurnover(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO == null) {
+            storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
+        }
+        Integer dailyCustomerNum = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
+        if (dailyCustomerNum == null) {
+            dailyCustomerNum = 0;
+        }
+        storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
+        storeOrderSalesSummaryVO.setStoreId(storeId);
+        cache.hset(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        //获取当天最后一秒
+        long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
+        //当天有效
+        cache.expire(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        return storeOrderSalesSummaryVO;
+    }
+
 
     /**
      * 根据门店ID获取门店提货码

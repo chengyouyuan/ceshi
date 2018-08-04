@@ -2,6 +2,8 @@ package com.winhxd.b2c.common.domain.product.vo;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.PagedList;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -21,15 +23,11 @@ public class ProductMsgVO {
 	private List<BrandVO> brands;
 	
 	@ApiModelProperty(value = "商品")
-	private List<ProductVO> products;
+	private PagedList<ProductVO> products;
 	
 	@ApiModelProperty(value = "商品sku")
-	private List<ProductSkuVO> productSkus;
+	private PagedList<ProductSkuVO> productSkus;
 
-	private Integer pageSize;
-	
-	private Integer pageNo;
-	
 	public List<BrandVO> getBrands() {
 		return brands;
 	}
@@ -46,37 +44,20 @@ public class ProductMsgVO {
 		this.categorys = categorys;
 	}
 
-	public List<ProductVO> getProducts() {
+	public PagedList<ProductVO> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<ProductVO> products) {
+	public void setProducts(PagedList<ProductVO> products) {
 		this.products = products;
 	}
 
-	public List<ProductSkuVO> getProductSkus() {
+	public PagedList<ProductSkuVO> getProductSkus() {
 		return productSkus;
 	}
 
-	public void setProductSkus(List<ProductSkuVO> productSkus) {
+	public void setProductSkus(PagedList<ProductSkuVO> productSkus) {
 		this.productSkus = productSkus;
 	}
-
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	public Integer getPageNo() {
-		return pageNo;
-	}
-
-	public void setPageNo(Integer pageNo) {
-		this.pageNo = pageNo;
-	}
-	
 	
 }

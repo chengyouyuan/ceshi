@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -27,10 +27,10 @@ public interface ProductServiceClient {
 	 ResponseResult<ProductMsgVO> getProductMsg(@RequestBody ProductCondition condition);
 	 
 	 @RequestMapping(value = "/product/v1/getProducts/", method = RequestMethod.GET)
-	 ResponseResult<List<ProductVO>> getProducts(@RequestBody ProductCondition condition);
+	 ResponseResult<PagedList<ProductVO>> getProducts(@RequestBody ProductCondition condition);
 	 
 	 @RequestMapping(value = "/product/v1/getProductSkus/", method = RequestMethod.GET)
-	 ResponseResult<List<ProductSkuVO>> getProductSkus(@RequestBody ProductCondition condition);
+	 ResponseResult<PagedList<ProductSkuVO>> getProductSkus(@RequestBody ProductCondition condition);
 	 
 }
 
@@ -58,13 +58,13 @@ class ProductServiceFallback implements ProductServiceClient, FallbackFactory<Pr
 	}
 
 	@Override
-	public ResponseResult<List<ProductVO>> getProducts(ProductCondition condition) {
+	public ResponseResult<PagedList<ProductVO>> getProducts(ProductCondition condition) {
 		logger.error("ProductServiceClient -> getProducts", throwable);
 		return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
 	@Override
-	public ResponseResult<List<ProductSkuVO>> getProductSkus(ProductCondition condition) {
+	public ResponseResult<PagedList<ProductSkuVO>> getProductSkus(ProductCondition condition) {
 		logger.error("ProductServiceClient -> getProductSkus", throwable);
 		return new ResponseResult<>(BusinessCode.CODE_1001);
 	}

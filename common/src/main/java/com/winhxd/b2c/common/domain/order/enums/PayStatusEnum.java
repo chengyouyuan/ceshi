@@ -12,7 +12,7 @@ public enum PayStatusEnum {
     /**
      * 已支付支付
      */
-    PAID((short) 0, "已支付");
+    PAID((short) 1, "已支付");
 
     private short statusCode;
     private String statusDes;

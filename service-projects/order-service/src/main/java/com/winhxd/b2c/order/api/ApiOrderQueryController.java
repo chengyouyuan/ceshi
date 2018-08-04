@@ -26,7 +26,7 @@ import javax.annotation.Resource;
  * @date 2018/8/3 11:16
  */
 @RestController
-@Api(tags = "OrderQuery")
+@Api(tags = "ApiOrderQuery")
 @RequestMapping(value = "")
 public class ApiOrderQueryController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiOrderQueryController.class);

@@ -453,6 +453,15 @@
         and finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
         and order_status = 22
     </select>
-    
-    
+    <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
+        select count(*) from order_info info
+        where info.store_id=#{storeId,jdbcType=BIGINT}
+        and info.pickup_code in
+        <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
+            #{pickUpCodes}
+        </foreach>
+        limit 1
+    </select>
+
+
 </mapper>

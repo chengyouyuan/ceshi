@@ -1,12 +1,12 @@
 package com.winhxd.b2c.order.dao;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 订单主表
@@ -111,4 +111,12 @@ public interface OrderInfoMapper {
      * @return 更新数量
      */
     int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
+
+    /**
+     * 查询门店下的提货码是否重复
+     * @param pickUpCodes 提货码列表
+     * @param storeId 门店ID
+     * @return true 有重复记录，false 不重复
+     */
+    boolean getPickUpCodeByStoreId(@Param("pickUpCodes")List<String> pickUpCodes, @Param("storeId")long storeId);
 }

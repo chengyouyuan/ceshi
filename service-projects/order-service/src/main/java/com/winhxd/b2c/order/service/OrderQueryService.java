@@ -17,19 +17,28 @@ public interface OrderQueryService {
     /**
      * 根据用户ID查询所有订单
      *
-     * @param condition
+     * @author pangjianhua
+     * @param condition 入参
      * @return
      */
     PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition);
-    
+
     /**
      * @author wangbin
      * @date  2018年8月4日 上午10:51:59
-     * @Description 
+     * @Description
      * @param storeId
      * @param startDateTime
      * @param endDateTime
      * @return
      */
     StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
+
+    /**
+     * 根据门店ID获取门店提货码
+     * @author pangjianhua
+     * @param storeId 门店ID
+     * @return
+     */
+    String getPickUpCode(long storeId);
 }

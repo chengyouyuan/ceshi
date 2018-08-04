@@ -46,6 +46,10 @@ public class ApiOrderQueryController {
         try {
             //返回对象
             PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderByCustomerId(orderListCondition);
+            for (int i = 0; i < 10; i++) {
+                String s = this.orderQueryService.getPickUpCode(1);
+                LOGGER.info("取货码：{}", s);
+            }
             result.setData(list);
         } catch (Exception e) {
             LOGGER.error("=/api-orderorder/410/v1/orderListByCustomer订单列表查询接口=--异常" + e.getMessage(), e);

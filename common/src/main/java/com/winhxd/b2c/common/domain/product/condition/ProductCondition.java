@@ -21,7 +21,7 @@ public class ProductCondition {
     @ApiModelProperty(value = "门店已上架商品sku", required = true)
     private List<String> productSkus;
     
-    @ApiModelProperty(value = "商品标准款sku")
+    @ApiModelProperty(value = "品牌编码")
     private List<String> brandCodes;
     
     @ApiModelProperty(value = "一级品类编码")

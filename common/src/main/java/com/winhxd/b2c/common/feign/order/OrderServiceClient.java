@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 
 import feign.hystrix.FallbackFactory;
 
@@ -21,8 +22,11 @@ public interface OrderServiceClient {
     @RequestMapping(value = "/order/v1/getOrderVo/", method = RequestMethod.GET)
     ResponseResult<OrderInfo> getOrderVo(@RequestParam("orderNo") String orderNo);
     
-    @RequestMapping(value = "/order/4001/v1/getOrderVo/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/451/v1/submitOrder/", method = RequestMethod.POST)
     ResponseResult<String> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
+    
+    @RequestMapping(value = "/order/452/v1/queryStoreOrderSalesSummary/", method = RequestMethod.POST)
+    ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary();
 }
 
 class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderServiceClient> {
@@ -50,6 +54,12 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<String> submitOrder(OrderCreateCondition orderCreateCondition) {
         logger.error("OrderServiceFallback -> submitOrder", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary() {
+        logger.error("OrderServiceFallback -> queryStoreOrderSalesSummary", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

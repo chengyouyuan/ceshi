@@ -1,9 +1,12 @@
 package com.winhxd.b2c.order.dao;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-
-import java.util.List;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 
 /**
  * 订单主表
@@ -76,4 +79,26 @@ public interface OrderInfoMapper {
      * @return
      */
     List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(Long customerId);
+    
+    /**
+     * 获取门店销售汇总信息
+     * @author wangbin
+     * @date  2018年8月4日 上午11:13:37
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreOrderTurnover(long storeId, Date startDateTime, Date endDateTime);
+    
+    /**
+     * @author wangbin
+     * @date  2018年8月4日 上午11:53:22
+     * @Description 
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    int getStoreOrderCustomerNum(long storeId, Date startDateTime, Date endDateTime);
 }

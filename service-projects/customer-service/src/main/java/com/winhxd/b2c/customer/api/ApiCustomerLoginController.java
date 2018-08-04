@@ -54,14 +54,19 @@ public class ApiCustomerLoginController {
 	public ResponseResult<Long> saveWeChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
-			if (null != customerUserInfoCondition.getCustomerId()) {
-				// TODO:那code去换session_key更新到数据库
-			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
-			BeanUtils.copyProperties(customerUserInfoCondition, customerUserInfo);
-			// TODO: 通过code调用微信接口返回openid和session_key保存到数据库
-			customerLoginService.saveLoginInfo(customerUserInfo);
-			result.setData(customerUserInfo.getCustomerId());
+			if (null != customerUserInfoCondition.getCustomerId()) {
+				// TODO:调用金彪服务拿code去换session_key更新到数据库
+				customerUserInfo.setSessionKey("");
+				customerLoginService.updateCustomerInfo(customerUserInfo);
+			} else {
+				BeanUtils.copyProperties(customerUserInfoCondition, customerUserInfo);
+				// TODO: 通过code调用微信接口返回openid和session_key保存到数据库
+				customerUserInfo.setOpenId("");
+				customerUserInfo.setSessionKey("");
+				customerLoginService.saveLoginInfo(customerUserInfo);
+				result.setData(customerUserInfo.getCustomerId());
+			}
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> saveWeChatLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
@@ -76,31 +81,37 @@ public class ApiCustomerLoginController {
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月3日 下午1:31:45
-	 * @Description
+	 * @Description 通过账号验证码登录
 	 * @param customerUserInfoCondition
 	 * @return
 	 */
-	@ApiOperation(value = "通过账号验证码注册小程序")
+	@ApiOperation(value = "通过账号验证码登录")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
+
 	@RequestMapping(value = "/api/weChatRegister/2023/v1/weChatRegister", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
-			if(!customerUserInfoCondition.getVerificationCode().equals(cache.get(customerUserInfoCondition.getCustomerMobile()))){
-				
+			/**
+			 * 根据手机号去code对比是否一致
+			 */
+			if (!customerUserInfoCondition.getVerificationCode()
+					.equals(cache.get(customerUserInfoCondition.getCustomerMobile()))) {
+				return new ResponseResult<>(BusinessCode.CODE_1008);
 			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 			customerUserInfo = customerLoginService.getCustomerUserInfoById(customerUserInfoCondition.getCustomerId());
 			/**
 			 * 数据库手机号为空则，绑定手机号
 			 */
-			if(StringUtils.isBlank(customerUserInfo.getCustomerMobile())){
+			if (StringUtils.isBlank(customerUserInfo.getCustomerMobile())) {
 				customerUserInfo.setCustomerId(customerUserInfoCondition.getCustomerId());
 				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
 			}
-//			result.setData(customerUserInfo.getCustomerId());
+			// result.setData(customerUserInfo.getCustomerId());
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

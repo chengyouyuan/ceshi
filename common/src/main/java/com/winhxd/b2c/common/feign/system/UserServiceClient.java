@@ -29,7 +29,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> add(@RequestBody SysUser sysUser);
 
     /**
@@ -39,7 +39,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult update(@RequestBody SysUser sysUser);
 
     /**
@@ -49,7 +49,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
@@ -59,7 +59,7 @@ public interface UserServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
 
     /**
@@ -69,7 +69,7 @@ public interface UserServiceClient {
      * @param userCode
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3014/v1/get/{userCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/system/user/3014/v1/get/{userCode}", method = RequestMethod.GET)
     ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode);
 
     /**
@@ -79,7 +79,7 @@ public interface UserServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/api-system/system/user/3015/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/system/user/3015/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysUser> getById(@PathVariable("id") Long id);
 
 }

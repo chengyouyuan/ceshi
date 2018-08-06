@@ -48,7 +48,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "新增用户", response = Long.class)
     public ResponseResult<Long> add(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>();
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.addSysUser(sysUser);
             result.setData(sysUser.getId());
@@ -73,7 +73,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "修改用户")
     public ResponseResult update(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>();
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.updateSysUser(sysUser);
         } catch (BusinessException e){
@@ -97,7 +97,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "修改密码")
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
         logger.info("{} - 修改密码, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>();
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.updatePassword(sysUser);
         } catch (BusinessException e){
@@ -121,7 +121,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "查询用户列表")
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
-        ResponseResult<PagedList<SysUser>> result = new ResponseResult<>();
+        ResponseResult<PagedList<SysUser>> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             PagedList<SysUser> page = sysUserService.selectSysUser(condition);
             result.setData(page);
@@ -146,7 +146,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "根据登录账号获取用户信息")
     public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
-        ResponseResult<SysUser> result = new ResponseResult<>();
+        ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             SysUser sysUser = sysUserService.getByAccount(account);
             result.setData(sysUser);
@@ -164,23 +164,23 @@ public class SysUserController implements UserServiceClient {
      * 根据主键获取用户信息
      * @author zhangzhengyang
      * @date 2018/8/2
-     * @param userId
+     * @param id
      * @return
      */
     @Override
     @ApiOperation(value = "根据主键获取用户信息")
-    public ResponseResult<SysUser> getById(@PathVariable("userId") Long userId){
-        logger.info("{} - 根据主键获取用户信息, 参数：userId={}", MODULE_NAME, userId);
-        ResponseResult<SysUser> result = new ResponseResult<>();
+    public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
+        logger.info("{} - 根据主键获取用户信息, 参数：userId={}", MODULE_NAME, id);
+        ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            SysUser sysUser = sysUserService.getSysUserById(userId);
+            SysUser sysUser = sysUserService.getSysUserById(id);
             result.setData(sysUser);
             return result;
         } catch (BusinessException e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, userId, e);
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, id, e);
             result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, userId, e);
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, id, e);
             result = new ResponseResult(BusinessCode.CODE_1001);
         }
         return result;

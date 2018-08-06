@@ -26,9 +26,9 @@ public final class BusinessCode {
 
 
     /** 原密码输入错误 */
-    public static final int CODE_301201 = 301201;
+    public static final int CODE_300021 = 302001;
     /** 新密码与原密码相同 */
-    public static final int CODE_301202 = 301202;
+    public static final int CODE_302002 = 302002;
 
     /** 购物车:门店ID为空*/
     public static final int CODE_402001 = 402001;

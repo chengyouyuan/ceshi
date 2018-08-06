@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="accid" jdbcType="VARCHAR" property="accid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="props" jdbcType="VARCHAR" property="props" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="mobile" jdbcType="CHAR" property="mobile" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, accid, name, props, icon, token, mobile, created
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_netease_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from message_netease_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount">
+    insert into message_netease_account (id, customer_id, accid, 
+      name, props, icon, 
+      token, mobile, created
+      )
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{accid,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{props,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}, 
+      #{token,jdbcType=VARCHAR}, #{mobile,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount">
+    insert into message_netease_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="accid != null">
+        accid,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="props != null">
+        props,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="token != null">
+        token,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="accid != null">
+        #{accid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="props != null">
+        #{props,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null">
+        #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount">
+    update message_netease_account
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="accid != null">
+        accid = #{accid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="props != null">
+        props = #{props,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="token != null">
+        token = #{token,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount">
+    update message_netease_account
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      accid = #{accid,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      props = #{props,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      token = #{token,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=CHAR},
+      created = #{created,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

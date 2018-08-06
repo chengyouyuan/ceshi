@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-@MapperScan("com.winhxd.b2c.system.user.dao")
+@MapperScan({"com.winhxd.b2c.system.*.dao","com.winhxd.b2c.system.*.*.dao"})
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableFeignClients(basePackages = "com.winhxd.b2c.common.feign")
 public class SystemServiceApplication {

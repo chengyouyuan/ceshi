@@ -42,4 +42,12 @@ public class CustomerServiceImpl implements CustomerService {
         record.setStatus(condition.getStatus());
         return customerUserInfoMapper.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public List<CustomerUserInfoVO1> findCustomerUserByIds(List<Long> ids) {
+        if(ids == null || ids.size() == 0){
+            return null;
+        }
+        return customerUserInfoMapper.selectCustomerUserByIds(ids);
+    }
 }

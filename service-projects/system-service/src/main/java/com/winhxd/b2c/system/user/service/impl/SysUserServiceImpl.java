@@ -64,11 +64,11 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(newSysUser.getId());
         if(!sysUser.getPassword().equals(newSysUser.getPassword())){
             // 原密码输入错误
-            throw new BusinessException(BusinessCode.CODE_301201);
+            throw new BusinessException(BusinessCode.CODE_300021);
         }
         if(sysUser.getPassword().equals(newSysUser.getNewPassword())){
             // 新密码与原密码相同
-            throw new BusinessException(BusinessCode.CODE_301202);
+            throw new BusinessException(BusinessCode.CODE_302002);
         }
         sysUser.setPassword(newSysUser.getNewPassword());
         sysUser.setUpdated(newSysUser.getUpdated());
@@ -94,7 +94,7 @@ public class SysUserServiceImpl implements SysUserService {
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByRuleId(sysUser.getRuleId());
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
         sysUser.setPermissions(permissionList);
         return sysUser;
     }

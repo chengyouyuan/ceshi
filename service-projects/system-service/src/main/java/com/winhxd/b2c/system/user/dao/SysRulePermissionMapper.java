@@ -17,5 +17,5 @@ public interface SysRulePermissionMapper {
 
     int updateByPrimaryKey(SysRulePermission record);
 
-    List<String> selectPermissionByRuleId(Long ruleId);
+    List<String> selectPermissionByUserId(Long userId);
 }

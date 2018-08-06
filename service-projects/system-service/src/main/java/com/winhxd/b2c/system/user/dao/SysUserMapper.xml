@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysUser">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="account" jdbcType="VARCHAR" property="account" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="CHAR" property="mobile" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="password" jdbcType="VARCHAR" property="password" />
@@ -19,7 +19,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, account, user_name, mobile, status, password, created_by, created, updated_by, 
+    id, account, username, mobile, status, password, created_by, created, updated_by, 
     updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,11 +33,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_user (id, account, user_name, 
+    insert into sys_user (id, account, username, 
       mobile, status, password, 
       created_by, created, updated_by, 
       updated)
-    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=CHAR}, #{status,jdbcType=SMALLINT}, #{password,jdbcType=VARCHAR}, 
       #{createdBy,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP})
@@ -51,8 +51,8 @@
       <if test="account != null">
         account,
       </if>
-      <if test="userName != null">
-        user_name,
+      <if test="username != null">
+        username,
       </if>
       <if test="mobile != null">
         mobile,
@@ -83,8 +83,8 @@
       <if test="account != null">
         #{account,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=CHAR},
@@ -115,8 +115,8 @@
       <if test="account != null">
         account = #{account,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
       </if>
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=CHAR},
@@ -145,7 +145,7 @@
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
     update sys_user
     set account = #{account,jdbcType=VARCHAR},
-      user_name = #{userName,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
       mobile = #{mobile,jdbcType=CHAR},
       status = #{status,jdbcType=SMALLINT},
       password = #{password,jdbcType=VARCHAR},
@@ -162,7 +162,7 @@
 
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
     select
-    u.id, account, user_name, mobile, u.status, u.created_by, u.created, u.updated_by,
+    u.id, account, username, mobile, u.status, u.created_by, u.created, u.updated_by,
     u.updated,ur.id rule_id,r.rule_name
     from sys_user u
       left join sys_user_rule ur on u.id=ur.user_id
@@ -174,9 +174,9 @@
       <if test="account != null and account != ''">
         and u.account = #{account}
       </if>
-      <if test="userName != null and userName != ''">
-        <bind name="userName" value="'%' + userName + '%'" />
-        and user_name like #{userName,jdbcType=VARCHAR}
+      <if test="username != null and username != ''">
+        <bind name="username" value="'%' + username + '%'" />
+        and username like #{username,jdbcType=VARCHAR}
       </if>
       <if test="mobile != null and mobile != ''">
         <bind name="mobile" value="'%' + mobile + '%'" />
@@ -191,7 +191,7 @@
 
   <select id="getByAccount" resultMap="voMap" parameterType="string">
     select
-    u.id, account, user_name, password, mobile, u.status, u.created_by, u.created, u.updated_by,
+    u.id, account, username, password, mobile, u.status, u.created_by, u.created, u.updated_by,
     u.updated,ur.id rule_id,r.rule_name
     from sys_user u
     left join sys_user_rule ur on u.id=ur.user_id

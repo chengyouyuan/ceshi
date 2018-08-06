@@ -37,6 +37,21 @@
     from coupon_activity
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity
+    where 1=1
+    <if test="couponType != null">
+       AND coupon_type = #{couponType,jdbcType=SMALLINT}
+    </if>
+    <if test="status != null">
+       AND status = #{status,jdbcType=SMALLINT}
+    </if>
+
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity
     where id = #{id,jdbcType=BIGINT}

@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.feign.promotion.ApiCouponServiceClient;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,12 +31,13 @@ import java.util.List;
 @RestController
 @Api(tags = "ApiCoupon")
 @RequestMapping(value = "/api-coupon/coupon")
-public class ApiCouponController {
+public class ApiCouponController implements ApiCouponServiceClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiCouponController.class);
 
     @Resource
     private CouponService couponService;
 
+    @Override
     @ApiOperation(value = "新人专享优惠列表", response = Boolean.class, notes = "新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
@@ -55,6 +57,7 @@ public class ApiCouponController {
         return result;
     }
 
+    @Override
     @ApiOperation(value = "待领取优惠券列表", response = Boolean.class, notes = "待领取优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
@@ -73,6 +76,7 @@ public class ApiCouponController {
         return null;
     }
 
+    @Override
     @ApiOperation(value = "我的优惠券列表", response = Boolean.class, notes = "我的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
@@ -92,6 +96,7 @@ public class ApiCouponController {
     }
 
 
+    @Override
     @ApiOperation(value = "用户领取优惠券", response = Boolean.class, notes = "用户领取优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
@@ -111,6 +116,7 @@ public class ApiCouponController {
         return result;
     }
 
+    @Override
     @ApiOperation(value = "根据订单查询优惠券列表", response = Boolean.class, notes = "根据订单查询优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")

@@ -11,7 +11,11 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +50,8 @@ import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
 
+import javax.annotation.Resource;
+
 @Service
 public class CommonOrderServiceImpl implements OrderService {
     
@@ -76,7 +82,10 @@ public class CommonOrderServiceImpl implements OrderService {
     
     @Autowired
     private OrderChangeLogService orderChangeLogService;
-    
+    @Resource
+    private Cache cache;
+
+
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
 
     @Override
@@ -146,33 +155,43 @@ public class CommonOrderServiceImpl implements OrderService {
 
 
     /**
-     * 订单取消接口
+     * 订单取消service
      *
-     * @param orderCancelCondition 入参
-     * @return true 成功，false不成功
      * @author pangjianhua
      * @date 2018年8月2日 下午5:51:46
+     * @param orderCancelCondition 入参
+     * @return true 成功，false不成功
      */
     @Override
-    @Transactional(rollbackFor=Exception.class)
-    public boolean cancelOrder(OrderCancelCondition orderCancelCondition) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException {
         boolean result = true;
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.CODE_411001, "订单号不能未空");
+            throw new BusinessException(BusinessCode.CODE_411001, "订单号不能为空");
         }
-        //获取order对象
-        OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
-        //判断是否支付成功,支付成功不让取消
-        if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
-            logger.info("订单已支付成功不能取消，请走退款接口 订单号={}", orderNo);
-            throw new BusinessException(BusinessCode.CODE_411001, "订单已支付成功不能取消");
-        }
-        //把提货码置为null、取消原因、取消状态等
-        int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, orderCancelCondition.getCancelReason());
-        if (updateRowNum < 1) {
-            logger.info("订单取消更新不成功 订单号={}", orderNo);
-            result = false;
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
+            try {
+                //获取order对象
+                OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                //判断是否支付成功,支付成功不让取消
+                if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
+                    logger.info("订单已支付成功不能取消，请走退款接口 订单号={}", orderNo);
+                    throw new BusinessException(BusinessCode.CODE_411001, "订单已支付成功不能取消");
+                }
+                //把提货码置为null、取消原因、取消状态等
+                int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, orderCancelCondition.getCancelReason());
+                if (updateRowNum < 1) {
+                    logger.info("订单取消更新不成功 订单号={}", orderNo);
+                    result = false;
+                }
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            throw new BusinessException(BusinessCode.CODE_411001, "订单正在修改中");
         }
         return result;
     }

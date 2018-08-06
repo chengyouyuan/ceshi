@@ -15,7 +15,7 @@ import lombok.Data;
 @ApiModel("后台门店账户管理请求参数")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreInfoCondition extends BaseCondition{
+public class BackStageStoreInfoCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Byte storeStatus;

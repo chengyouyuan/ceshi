@@ -1,28 +1,22 @@
 package com.winhxd.b2c.store.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description: 门店服务控制器
@@ -52,13 +46,6 @@ public class StoreServiceController implements StoreServiceClient {
         return result;
     }
 
-    @Override
-    public ResponseResult<PagedList<StoreVO>> storeList(StoreInfoCondition storeCondition) {
-        ResponseResult<PagedList<StoreVO>> responseResult = new ResponseResult<>();
-        PagedList<StoreVO> storeVOPagedList = storeService.findStoreUserInfo(storeCondition);
-        responseResult.setData(storeVOPagedList);
-        return responseResult;
-    }
 
 	@Override
 	public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes, Long storeId) {

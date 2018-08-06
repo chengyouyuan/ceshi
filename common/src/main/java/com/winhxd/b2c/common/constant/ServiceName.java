@@ -16,4 +16,6 @@ public final class ServiceName {
     //优惠券服务
     public static final String COUPON_SERVICE = "coupon-service";
 
+    /**用户服务*/
+    public static final String CUSTOMER_SERVICE = "b2c-customer-service";
 }

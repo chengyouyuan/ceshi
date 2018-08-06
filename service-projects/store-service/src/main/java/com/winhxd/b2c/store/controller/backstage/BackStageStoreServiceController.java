@@ -1,10 +1,10 @@
-package com.winhxd.b2c.store.controller.backStage;
+package com.winhxd.b2c.store.controller.backstage;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
-import com.winhxd.b2c.common.feign.store.backStage.BackStageStoreServiceClient;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.StoreVO;
+import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.store.service.StoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

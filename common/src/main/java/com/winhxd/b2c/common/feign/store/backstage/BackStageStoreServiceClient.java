@@ -1,12 +1,11 @@
-package com.winhxd.b2c.common.feign.store.backStage;
+package com.winhxd.b2c.common.feign.store.backstage;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.StoreVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

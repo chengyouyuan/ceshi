@@ -377,7 +377,7 @@
   </resultMap>
 
   <!-- 优惠券列表多条件分页查询sql -->
-  <select id="getCouponTemplatePageByCondition"  resultMap="selectResultVOMap">
+  <select id="getCouponTemplatePageByCondition"  resultMap="selectResultVOMap" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition">
     select
     <include refid="Select_CouponTemplate_Column_List" />
     from coupon_template a
@@ -385,7 +385,7 @@
     left join coupon_grade c on a.grade_id = c.id
     left join coupon_apply d on a.apply_rule_id = d.id
     where 1=1
-    <!--
+
     <if test="condition.createdBegin!=null and  condition.createdBegin!=''">
       and a.created <![CDATA[ >= ]]> #{condition.createdBegin}
     </if>
@@ -423,7 +423,6 @@
     <if test="condition.applyRuleType!=null and condition.applyRuleType!=''">
       and d.apply_rule_type = #{condition.applyRuleType}
     </if>
-    -->
 
   </select>
 

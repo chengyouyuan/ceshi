@@ -1,5 +1,8 @@
 package com.winhxd.b2c.store.service;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
+import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 /**
@@ -25,4 +28,11 @@ public interface StoreService {
      * @return  StoreUserInfoVO 门店VO
      */
     StoreUserInfoVO findStoreUserInfo(Long storeUserId);
+
+    /**
+     * 根据参数查询门店列表
+     * @param storeCondition
+     * @return
+     */
+    PagedList<StoreVO> findStoreUserInfo(StoreInfoCondition storeCondition);
 }

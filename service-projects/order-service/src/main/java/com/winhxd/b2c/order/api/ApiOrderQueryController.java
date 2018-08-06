@@ -63,7 +63,7 @@ public class ApiOrderQueryController {
     @ApiOperation(value = "订单详情查询接口", response = OrderInfoDetailVO.class, notes = "订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_411001, message = "参数异常")
     })
     @RequestMapping(value = "/411/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {

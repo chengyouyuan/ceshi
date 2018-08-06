@@ -134,13 +134,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public String getPickUpCode(long storeId) {
+        String code;
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
         String getCodeKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_QUEUE + storeId;
-        String code = this.cache.lpop(getCodeKey);
-        if (StringUtils.isBlank(code)) {
-            String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
-            Lock lock = new RedisLock(cache, lockKey, 1000);
-            try {
-                lock.lock();
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        try {
+            lock.lock();
+            code = this.cache.lpop(getCodeKey);
+            if (StringUtils.isBlank(code)) {
                 List<String> pickUpCodeList;
                 do {
                     //批量生成50个提货码
@@ -155,9 +156,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 //设置过期时间
                 this.cache.expire(getCodeKey, 7200);
                 code = this.cache.lpop(getCodeKey);
-            } finally {
-                lock.unlock();
             }
+        } finally {
+            lock.unlock();
         }
         return code;
     }

@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
@@ -26,11 +27,14 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 
 /**
@@ -45,6 +49,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderInfoMapper orderInfoMapper;
     @Resource
     private Cache cache;
+    
+    @Autowired
+    private OrderChangeLogService orderChangeLogService;
 
     /**
      * 根据用户ID查询所有订单
@@ -176,6 +183,25 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         return pagedList;
     }
 
+    @Override
+    public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单编号不能为空");
+        }
+        OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
+        OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
+        if (orderInfoDetailVO == null) {
+            logger.info("订单 orderNo={} 未找到相关订单信息", orderNo);
+            return orderInfoDetailVO4Management;
+        }
+        orderInfoDetailVO4Management = new OrderInfoDetailVO4Management();
+        List<OrderChangeVO> orderChangeVoList = orderChangeLogService.listOrderChanges(orderNo);
+        orderInfoDetailVO4Management.setOrderInfoDetailVO(orderInfoDetailVO);
+        orderInfoDetailVO4Management.setOrderChangeVoList(orderChangeVoList);
+        logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
+        return orderInfoDetailVO4Management;
+    }
+
     /**
      * 一次生成多个个提货码
      *
@@ -204,5 +230,4 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
-
 }

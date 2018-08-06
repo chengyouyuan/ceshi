@@ -61,4 +61,9 @@ public class OrderServiceTest {
         
         System.out.println(orderService.submitOrder(createCondition));
     }
+    
+    @Test
+    public void testOrderPayNotify() {
+        orderService.orderPaySuccessNotify("C18080417612761795");
+    }
 }

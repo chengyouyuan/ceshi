@@ -128,4 +128,27 @@ public interface OrderInfoMapper {
      * @return true 有重复记录，false 不重复
      */
     boolean getPickUpCodeByStoreId(@Param("pickUpCodes")List<String> pickUpCodes, @Param("storeId")long storeId);
+
+    /**
+     * 更新订单支付状态
+     * @author wangbin
+     * @date  2018年8月6日 上午11:12:13
+     * @param statusCode
+     * @param payFinishDateTime
+     * @param orderId
+     * @return 更新数量
+     */
+    int updateOrderPayStatus(@Param("payStatus")short payStatus, @Param("payFinishDateTime")Date payFinishDateTime, @Param("orderId")long orderId);
+    
+    /**
+     * 订单状态修改接口
+     * @author wangbin
+     * @date  2018年8月6日 下午1:48:10
+     * @Description 
+     * @param expectOrderStatus 期望更改时订单状态
+     * @param newOrderStatus 需要更改的订单状态
+     * @param orderId 订单Id
+     * @return 更新数量
+     */
+    int updateOrderStatus(@Param("expectOrderStatus")Short expectOrderStatus, @Param("newOrderStatus")short newOrderStatus, @Param("orderId")Long orderId);
 }

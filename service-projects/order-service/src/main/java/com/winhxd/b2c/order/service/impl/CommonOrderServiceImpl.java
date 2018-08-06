@@ -33,8 +33,8 @@ import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.exception.OrderCreateExcepton;
-import com.winhxd.b2c.common.exception.OrderCreateExceptonCodes;
+import com.winhxd.b2c.common.exception.OrderExcepton;
+import com.winhxd.b2c.common.exception.OrderExceptonCodes;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.dao.OrderItemMapper;
@@ -105,9 +105,44 @@ public class CommonOrderServiceImpl implements OrderService {
         registerProcessAfterOrderSubmitSuccess(orderInfo);
         return orderInfo.getOrderNo();
     }
+    
+
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public void orderPaySuccessNotify(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单支付通知orderNo不能为空");
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+        if (orderInfo == null) {
+            throw new OrderExcepton(OrderExceptonCodes.WRONG_ORDERNO);
+        }
+        if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus().shortValue()) {
+            throw new OrderExcepton(OrderExceptonCodes.ORDER_ALREADY_PAID);
+        }
+        logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
+        Date payFinishDateTime = new Date();
+        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), payFinishDateTime, orderInfo.getId());
+        if (updNum != 1) {
+            throw new OrderExcepton(OrderExceptonCodes.ORDER_ALREADY_PAID);
+        }
+        // 生产订单流转日志
+        String oldOrderJsonString = JsonUtil.toJSONString(orderInfo);
+        orderInfo.setPayStatus(PayStatusEnum.PAID.getStatusCode());
+        orderInfo.setPayFinishDateTime(payFinishDateTime);
+        String newOrderJsonString = JsonUtil.toJSONString(orderInfo);
+        String orderPayMsg = "订单支付";
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJsonString, newOrderJsonString, orderInfo.getOrderStatus(),
+                orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
+                orderPayMsg, MainPointEnum.NOT_MAIN);
+        logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
+        logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
+        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
+    }
 
     /**
-     * 订单成功创建成功
+     * 订单成功创建成功 业务操作
      * @author wangbin
      * @date  2018年8月3日 下午4:50:11
      * @param orderInfo
@@ -186,7 +221,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             return sweepPayPickUpInStoreOnlineValOrderHandler;
         }
-        throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401008);
+        throw new OrderExcepton(OrderExceptonCodes.CODE_401008);
     }
 
     private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
@@ -212,27 +247,27 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void validateOrderCreateCondition(OrderCreateCondition orderCreateCondition) {
         if (orderCreateCondition.getCustomerId() == null) {
-            throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401001);
+            throw new OrderExcepton(OrderExceptonCodes.CODE_401001);
         }
         if (orderCreateCondition.getStoreId() == null) {
-            throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401002);
+            throw new OrderExcepton(OrderExceptonCodes.CODE_401002);
         }
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
-            throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401003);
+            throw new OrderExcepton(OrderExceptonCodes.CODE_401003);
         }
         if (orderCreateCondition.getPickupDateTime() == null) {
-            throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401004);
+            throw new OrderExcepton(OrderExceptonCodes.CODE_401004);
         }
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
-            throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401005);
+            throw new OrderExcepton(OrderExceptonCodes.CODE_401005);
         }
         for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext();) {
             OrderItemCondition condition = (OrderItemCondition) iterator.next();
             if (condition.getAmount() == null || condition.getAmount().intValue() < 1) {
-                throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401006);
+                throw new OrderExcepton(OrderExceptonCodes.CODE_401006);
             }
             if (StringUtils.isBlank(condition.getSkuCode())) {
-                throw new OrderCreateExcepton(OrderCreateExceptonCodes.CODE_401007);
+                throw new OrderExcepton(OrderExceptonCodes.CODE_401007);
             }
         }
     }

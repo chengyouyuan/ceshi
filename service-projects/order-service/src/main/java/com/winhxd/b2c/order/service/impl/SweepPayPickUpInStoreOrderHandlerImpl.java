@@ -65,5 +65,11 @@ public abstract class SweepPayPickUpInStoreOrderHandlerImpl implements OrderHand
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
     }
+    
+    @Override
+    public void orderFinishPayProcess(OrderInfo orderInfo) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

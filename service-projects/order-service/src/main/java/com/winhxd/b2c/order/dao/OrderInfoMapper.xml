@@ -473,5 +473,20 @@
         limit 1
     </select>
 
+    <update id="updateOrderPayStatus">
+        update order_info
+        set pay_status=#{payStatus,jdbcType=SMALLINT}, 
+        pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+        and pay_status=0
+    </update>
+    <update id="updateOrderStatus">
+        update order_info
+        set order_status=#{newOrderStatus,jdbcType=SMALLINT}, 
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+        and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
+    </update>
 
 </mapper>

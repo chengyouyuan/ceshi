@@ -1,10 +1,11 @@
 package com.winhxd.b2c.promotion.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
@@ -40,7 +41,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
     @Override
     public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         /**
-         * 判断必填参数
+         * 校验必填参数
          */
         ResponseResult responseResult = new ResponseResult();
         try {
@@ -87,9 +88,10 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@Date   2018/8/6 17:53
      */
     @Override
-    public ResponseResult<Object> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
         logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:" + JsonUtil.toJSONString(couponTemplateCondition));
-         return null;
+        ResponseResult<PagedList<CouponTemplateVO>> responseResult =  couponTemplateService.findCouponTemplatePageByCondition(couponTemplateCondition);
+        return responseResult;
     }
 
 

@@ -1,5 +1,9 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponTemplate;
@@ -10,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author wl
@@ -41,6 +47,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
         couponTemplate.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
         couponTemplate.setCalType(couponTemplateCondition.getCalType());
         couponTemplate.setPayType(couponTemplateCondition.getPayType());
+        couponTemplate.setCode(getUUID());
         couponTemplate.setCreated(new Date());
         couponTemplate.setCreatedByName("lidabenshi");
         couponTemplate.setCreatedBy(100102L);
@@ -68,7 +75,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
            vo.setCouponLabel(CouponTemplate.getCouponLabel());
            vo.setId(CouponTemplate.getId());
            vo.setExolian(CouponTemplate.getExolian());
-           vo.setUseRangeName(CouponTemplate.getGradeName());
+           vo.setGradeName(CouponTemplate.getGradeName());
            vo.setGradeId(CouponTemplate.getGradeId());
            vo.setTitle(CouponTemplate.getTitle());
            vo.setInvestorId(CouponTemplate.getInvestorId());
@@ -78,5 +85,36 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
         return vo;
     }
 
+    /**
+     *
+     *@Deccription  多条件分页查询优惠券分页列表
+     *@Params  couponTemplateCondition
+     *@Return
+     *@User  wl
+     *@Date   2018/8/6 18:29
+     */
+    @Override
+    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+        ResponseResult<PagedList<CouponTemplateVO>> result= new ResponseResult<PagedList<CouponTemplateVO>>();
+        PagedList<CouponTemplateVO> pagedList = new PagedList<>();
+        PageHelper.startPage(couponTemplateCondition.getPageNo(),couponTemplateCondition.getPageSize());
+        List<CouponTemplateVO> customers = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);
+        PageInfo<CouponTemplateVO> pageInfo = new PageInfo<>(customers);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
+
+    /**
+     * 自动生成32位的UUid，对应数据库的主键id进行插入用。
+     * @return
+     */
+    public String getUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 
 }

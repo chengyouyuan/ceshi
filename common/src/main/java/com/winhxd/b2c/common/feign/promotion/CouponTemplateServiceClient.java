@@ -2,8 +2,10 @@ package com.winhxd.b2c.common.feign.promotion;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -54,7 +56,7 @@ public ResponseResult toEditCouponTemplate(@RequestParam("id") String id);
   *@Date   2018/8/6 17:53
   */
 @RequestMapping(value = "/promotion/v1/findCouponTemplatePageByCondition", method = RequestMethod.POST)
-public ResponseResult<Object> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition);
+public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
 }
 
@@ -102,9 +104,9 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
      *@Date   2018/8/6 17:53
      */
     @Override
-    public ResponseResult<Object> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> findCouponTemplatePageByCondition", throwable);
-        return new ResponseResult<Object>(BusinessCode.CODE_1001);
+        return new ResponseResult<PagedList<CouponTemplateVO>>(BusinessCode.CODE_1001);
     }
 
 }

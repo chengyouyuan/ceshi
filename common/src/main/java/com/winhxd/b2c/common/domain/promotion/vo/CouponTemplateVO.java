@@ -102,12 +102,17 @@ public class CouponTemplateVO {
     /**
      * 优惠券优惠方式名称
      */
-    private String useRangeName;
+    private String gradeName;
 
     /**
      * 优惠券类型规则名称
      */
     private String applyRuleName;
+    /**
+     * 优惠券类型规则类型
+     */
+    private Short applyRuleType;
+
 
     public Long getId() {
         return id;
@@ -285,12 +290,12 @@ public class CouponTemplateVO {
         this.investorName = investorName;
     }
 
-    public String getUseRangeName() {
-        return useRangeName;
+    public String getGradeName() {
+        return gradeName;
     }
 
-    public void setUseRangeName(String useRangeName) {
-        this.useRangeName = useRangeName;
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
     }
 
     public String getApplyRuleName() {
@@ -299,5 +304,13 @@ public class CouponTemplateVO {
 
     public void setApplyRuleName(String applyRuleName) {
         this.applyRuleName = applyRuleName;
+    }
+
+    public Short getApplyRuleType() {
+        return applyRuleType;
+    }
+
+    public void setApplyRuleType(Short applyRuleType) {
+        this.applyRuleType = applyRuleType;
     }
 }

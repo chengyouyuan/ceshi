@@ -62,7 +62,10 @@ public class CouponTemplate {
     private String applyRuleName;
 
 
-
+    /**
+     * 优惠券类型规则类型
+     */
+    private Short applyRuleType;
 
 
     public Long getId() {
@@ -256,5 +259,13 @@ public class CouponTemplate {
 
     public void setApplyRuleName(String applyRuleName) {
         this.applyRuleName = applyRuleName;
+    }
+
+    public Short getApplyRuleType() {
+        return applyRuleType;
+    }
+
+    public void setApplyRuleType(Short applyRuleType) {
+        this.applyRuleType = applyRuleType;
     }
 }

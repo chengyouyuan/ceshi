@@ -14,4 +14,6 @@ public interface StoreUserInfoMapper {
     int updateByPrimaryKeySelective(StoreUserInfo record);
 
     int updateByPrimaryKey(StoreUserInfo record);
+    
+    StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeMobile);
 }

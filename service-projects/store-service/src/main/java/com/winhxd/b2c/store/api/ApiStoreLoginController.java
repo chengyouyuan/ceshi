@@ -50,11 +50,18 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
-			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误")})
+			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/storeLogin/3021/v1/saveWeChatLogin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Long> saveStoreLogin(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
+			if(null == storeUserInfoCondition){
+				result = new ResponseResult<>(BusinessCode.CODE_1007);
+			}
+			
+			
+		
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> saveStoreLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
@@ -75,13 +82,30 @@ public class ApiStoreLoginController {
 	 */
 	@ApiOperation(value = "通过账号发送验证码")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/storeLogin/3022/v1/sendVerification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> sendVerification(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
 			// TODO:调用massage 发送短信smsCode
-			return result;
+			StoreUserInfo storeUserInfo = new StoreUserInfo();
+			StoreUserInfo DB = null;
+				/**
+				 * 验证码登录
+				 * 拿手机号去惠小店表里面查询是否存在
+				 */
+					 storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+					 DB = storeLoginService.getstoreUserInfoByMobile(storeUserInfo);
+					 if(DB == null){
+					  //TODO:掉惠下单服务查询门店用户信息
+					  //如果存在   发送验证码
+					  //同步登录信息到惠小店 如果用微信登录  存头像 和openid	 
+					  //否则  不发送验证码
+					  return  new ResponseResult<>(BusinessCode.CODE_1004);
+					 }else{
+						 //发送验证码
+					 }
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
@@ -101,7 +125,8 @@ public class ApiStoreLoginController {
 	 */
 	@ApiOperation(value = "登录成功查看惠小店有误未填写商品价格")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/storeLogin/3023/v1/verificationProductPrice", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> verificationProductPrice(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
@@ -127,12 +152,19 @@ public class ApiStoreLoginController {
 	 */
 	@ApiOperation(value = "忘记密码,修改密码")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误")})
 	@RequestMapping(value = "/api/storeLogin/3023/v1/modifyPassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> modifyPassword(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		StoreUserInfo storeUserInfo = new StoreUserInfo();
 		try {
+			if(null == storeUserInfoCondition){
+				result = new ResponseResult<>(BusinessCode.CODE_1007);
+			}
 			String cacheVerificationCode = cache.get(storeUserInfoCondition.getStoreMobile());
 			/**
 			 * 验证App端传过的验证码是否和服务器一致

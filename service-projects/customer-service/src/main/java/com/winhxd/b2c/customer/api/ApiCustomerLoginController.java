@@ -95,7 +95,7 @@ public class ApiCustomerLoginController {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
 			/**
-			 * 根据手机号去code对比是否一致
+			 * 根据手机号去取缓存verificationCode对比是否一致
 			 */
 			if (!customerUserInfoCondition.getVerificationCode()
 					.equals(cache.get(customerUserInfoCondition.getCustomerMobile()))) {
@@ -111,8 +111,8 @@ public class ApiCustomerLoginController {
 				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
 			}
-			// result.setData(customerUserInfo.getCustomerId());
-			return result;
+			 result.setData(customerUserInfo.getCustomerId());
+			 return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
@@ -138,6 +138,58 @@ public class ApiCustomerLoginController {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
 			// TODO:调用massage 发送短信smsCode
+			return result;
+		} catch (BusinessException e) {
+			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			result = new ResponseResult<>(e.getErrorCode());
+		} catch (Exception e) {
+			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
+			result = new ResponseResult<>(BusinessCode.CODE_1001);
+		}
+		return result;
+	}
+	
+	/**
+	 * @author wufuyun
+	 * @date  2018年8月6日 上午9:53:18
+	 * @Description 小程序打礼包列表
+	 * @param customerUserInfoCondition
+	 * @return
+	 */
+	@ApiOperation(value = "查询大礼包列表")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+	@RequestMapping(value = "/api/weChatRegister/2022/v1/findBigGiftBagList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<String> findBigGiftBagList(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+		ResponseResult<String> result = new ResponseResult<>();
+		try {
+			// TODO:掉寒宁服务
+			return result;
+		} catch (BusinessException e) {
+			logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			result = new ResponseResult<>(e.getErrorCode());
+		} catch (Exception e) {
+			logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}" + e.getMessage(), e);
+			result = new ResponseResult<>(BusinessCode.CODE_1001);
+		}
+		return result;
+	}
+	
+	/**
+	 * @author wufuyun
+	 * @date  2018年8月6日 上午9:56:37
+	 * @Description 用户领取礼包
+	 * @param customerUserInfoCondition
+	 * @return
+	 */
+	@ApiOperation(value = "领取礼包")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+	@RequestMapping(value = "/api/weChatRegister/2022/v1/customerEasy", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<String> customerEasy(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+		ResponseResult<String> result = new ResponseResult<>();
+		try {
+			// TODO:掉寒宁服务
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

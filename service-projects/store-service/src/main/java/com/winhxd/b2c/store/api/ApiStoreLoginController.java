@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.api;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,15 +127,18 @@ public class ApiStoreLoginController {
 				}else{
 					StoreUserInfo info = new StoreUserInfo();
 					info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+					/**
+					 * 如果是微信登录获取昵称头像
+					 */
 					if(1==storeUserInfoCondition.getLoginFlag()){
-						
+						info.setCreated(new Date());
+						info.setOpenid(storeUserInfoCondition.getOpenid());
+						info.setSource(storeUserInfoCondition.getSource());
+						info.setStorePassword(String.valueOf(map.get("storePassword")));
+						storeLoginService.saveStoreInfo(info);
 					}
 					messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(),content);
 				}
-				// 如果存在 发送验证码
-				// 同步登录信息到惠小店 如果用微信登录 存头像 和openid
-				// 否则 不发送验证码
-				
 			}else{
 				messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(),content);
 			}

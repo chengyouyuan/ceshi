@@ -11,4 +11,6 @@ public interface StoreLoginService {
 
 	StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile);
 
+	int saveStoreInfo(StoreUserInfo info);
+
 }

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.backStage.store.condition;
+package com.winhxd.b2c.common.domain.backstage.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.backStage.store.vo;
+package com.winhxd.b2c.common.domain.backstage.store.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import lombok.Data;
 @ApiModel("后台-门店账户管理返参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreVO {
+public class BackStageStoreVO {
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Integer storeStatus;
@@ -46,7 +46,7 @@ public class StoreVO {
     @ApiModelProperty(value = "联系人")
     private String shopkeeper;
 
-    @ApiModelProperty(value = "支付方式 1微信在线 2微信扫码")
+    @ApiModelProperty(value = "支付方式（返回汉字，多个以逗号分隔）")
     private String paymentWay;
 
 }

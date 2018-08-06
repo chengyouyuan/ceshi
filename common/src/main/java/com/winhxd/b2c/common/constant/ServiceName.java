@@ -16,4 +16,7 @@ public final class ServiceName {
     //优惠券服务
     public static final String COUPON_SERVICE = "coupon-service";
 
+    //消息服务
+    public static final String MESSAGE_SERVICE = "message-service";
+
 }

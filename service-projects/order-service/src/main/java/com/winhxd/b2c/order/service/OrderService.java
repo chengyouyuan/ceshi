@@ -18,4 +18,12 @@ public interface OrderService {
      * @return 订单号
      */
     String submitOrder(OrderCreateCondition orderCreateCondition);
+    
+    /**
+     * 订单支付成功通知接口
+     * @author wangbin
+     * @date  2018年8月6日 上午10:44:23
+     * @param orderNo
+     */
+    void orderPaySuccessNotify(String orderNo);
 }

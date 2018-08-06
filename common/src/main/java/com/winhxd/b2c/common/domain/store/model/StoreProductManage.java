@@ -44,6 +44,10 @@ public class StoreProductManage {
     private String updatedByName;
     @ApiModelProperty("更新时间")
     private Date updated;
+    /**
+     * 上架时间
+     */
+    private Date putawayTime;
 
     public Long getId() {
         return id;
@@ -163,5 +167,13 @@ public class StoreProductManage {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Date getPutawayTime() {
+        return putawayTime;
+    }
+
+    public void setPutawayTime(Date putawayTime) {
+        this.putawayTime = putawayTime;
     }
 }

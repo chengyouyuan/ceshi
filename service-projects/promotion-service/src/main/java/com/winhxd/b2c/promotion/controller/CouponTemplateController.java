@@ -36,7 +36,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         /**
          * 判断必填参数
          */
-
         ResponseResult responseResult = new ResponseResult();
         try {
             int count = couponTemplateService.saveCouponTemplate(couponTemplateCondition);
@@ -48,11 +47,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         }catch (Exception e){
           e.printStackTrace();
         }
-
-
-
-
-        return null;
+        return responseResult;
     }
 
 

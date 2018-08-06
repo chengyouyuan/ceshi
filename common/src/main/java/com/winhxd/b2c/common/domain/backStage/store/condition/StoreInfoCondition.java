@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.backStage.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.Data;
 @ApiModel("后台门店账户管理请求参数")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreInfoCondition {
+public class StoreInfoCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Byte storeStatus;
@@ -54,5 +55,8 @@ public class StoreInfoCondition {
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
     private Byte paymentWay;
+
+    @ApiModelProperty(value = "筛选的最小级别reginCode")
+    private String reginCode;
 
 }

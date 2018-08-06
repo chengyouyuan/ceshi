@@ -38,7 +38,27 @@
     from store_user_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    <select id="findStoreUserInfo" resultType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo">
+      SELECT
+        <include refid="Base_Column_List" />
+      FROM
+          store_user_info
+      <where>
+        <if test="storeMobile != null and storeMobile != ''">
+          AND store_mobile LIKE '%${storeMobile}%'
+        </if>
+        <if test="storeName != null and storeName != ''">
+          AND store_name LIKE '%${storeName}%'
+        </if>
+        <if test="storeRegionCode != null and storeRegionCode != ''">
+          AND store_region_code LIKE '${storeRegionCode}%'
+        </if>
+        <if test="storeStatus != null and storeStatus != ''">
+          AND store_status = #{storeStatus}
+        </if>
+      </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from store_user_info
     where id = #{id,jdbcType=BIGINT}
   </delete>

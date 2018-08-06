@@ -26,7 +26,7 @@ public class CouponTemplateCondition {
     @ApiModelProperty(value = "优惠券金额计算方式  1订单金额 2商品金额")
     private Short calType;
     @ApiModelProperty(value = "支付方式 1扫码支付 2线上支付")
-    private String payType;
+    private Short payType;
 
     public String getTitle() {
         return title;
@@ -92,11 +92,11 @@ public class CouponTemplateCondition {
         this.calType = calType;
     }
 
-    public String getPayType() {
+    public Short getPayType() {
         return payType;
     }
 
-    public void setPayType(String payType) {
+    public void setPayType(Short payType) {
         this.payType = payType;
     }
 }

@@ -49,7 +49,8 @@ public class ApiCustomerLoginController {
 	 */
 	@ApiOperation(value = "通过code获取openid和session_key")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/weChatLogin/2021/v1/saveWeChatLogin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Long> saveWeChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
@@ -88,7 +89,9 @@ public class ApiCustomerLoginController {
 	@ApiOperation(value = "通过账号验证码登录")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
+			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 
 	@RequestMapping(value = "/api/weChatRegister/2023/v1/weChatRegister", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
@@ -101,8 +104,11 @@ public class ApiCustomerLoginController {
 					.equals(cache.get(customerUserInfoCondition.getCustomerMobile()))) {
 				return new ResponseResult<>(BusinessCode.CODE_1008);
 			}
-			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+			CustomerUserInfo customerUserInfo = null;;
 			customerUserInfo = customerLoginService.getCustomerUserInfoById(customerUserInfoCondition.getCustomerId());
+			if(null == customerUserInfo){
+				return new ResponseResult<>(BusinessCode.CODE_1004);
+			}
 			/**
 			 * 数据库手机号为空则，绑定手机号
 			 */
@@ -132,7 +138,8 @@ public class ApiCustomerLoginController {
 	 */
 	@ApiOperation(value = "通过账号发送验证码")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/weChatRegister/2022/v1/sendVerification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> sendVerification(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
@@ -158,7 +165,8 @@ public class ApiCustomerLoginController {
 	 */
 	@ApiOperation(value = "查询大礼包列表")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/weChatRegister/2022/v1/findBigGiftBagList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> findBigGiftBagList(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
@@ -182,9 +190,10 @@ public class ApiCustomerLoginController {
 	 * @param customerUserInfoCondition
 	 * @return
 	 */
-	@ApiOperation(value = "领取礼包")
+	@ApiOperation(value = "领取礼包,返回列表")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
 	@RequestMapping(value = "/api/weChatRegister/2022/v1/customerEasy", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> customerEasy(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();

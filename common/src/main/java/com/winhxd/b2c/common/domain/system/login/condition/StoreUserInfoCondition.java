@@ -26,10 +26,10 @@ public class StoreUserInfoCondition{
     private String source;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
-	@ApiModelProperty(value = "登录标识1、手机账号登录，2、微信登录")
-	private String loginFlag;
+	@ApiModelProperty(value = "1、微信登录")
+	private Integer loginFlag;
 	@ApiModelProperty(value = "1、验证码登录，2、密码登录")
-	private String loginPasswordFlag;
+	private Integer loginPasswordFlag;
 	@ApiModelProperty(value = "确认密码")
 	private String confirmPassword;
 }

@@ -15,7 +15,6 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class LoginController {
 
     private static final String MODULE_NAME = "登录管理";
 
-    @Autowired
+    @Resource
     private Cache cache;
     @Resource
     private UserServiceClient userServiceClient;
@@ -67,26 +66,30 @@ public class LoginController {
         ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userCode);
         if(responseResult.getCode() != BusinessCode.CODE_OK){
             logger.error("{}，账号：{}", responseResult.getMessage(), userCode);
-            result.setCode(responseResult.getCode());
+            result = new ResponseResult<>(responseResult.getCode());
+            result.setData(false);
             return result;
         }
         SysUser sysUser = responseResult.getData();
         if(null == sysUser){
             logger.error("登录账号无效，账号：{}", userCode);
-            result.setCode(BusinessCode.CODE_1004);
+            result = new ResponseResult<>(BusinessCode.CODE_1004);
+            result.setData(false);
             return result;
         }
 
         String encodePassword = DigestUtils.md5DigestAsHex(password.getBytes());
         if(!sysUser.getPassword().equals(encodePassword)){
             logger.error("登录密码错误，账号：{}", userCode);
-            result.setCode(BusinessCode.CODE_1005);
+            result = new ResponseResult<>(BusinessCode.CODE_1005);
+            result.setData(false);
             return result;
         }
 
         if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
             logger.error("账号未启用，账号：{}", userCode);
-            result.setCode(BusinessCode.CODE_1006);
+            result = new ResponseResult<>(BusinessCode.CODE_1006);
+            result.setData(false);
             return result;
         }
 

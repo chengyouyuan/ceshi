@@ -14,4 +14,6 @@ public interface CouponTemplateMapper {
     int updateByPrimaryKeySelective(CouponTemplate record);
 
     int updateByPrimaryKey(CouponTemplate record);
+
+    CouponTemplate selectCouponTemplateById(long id);
 }

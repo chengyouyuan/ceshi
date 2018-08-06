@@ -5,7 +5,6 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoListVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import io.swagger.annotations.Api;
@@ -35,8 +34,8 @@ public class ApiOrderQueryController {
     @Resource
     private OrderQueryService orderQueryService;
 
-    @ApiOperation(value = "订单列表查询接口", response = OrderInfoListVO.class, notes = "订单列表查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoListVO.class),
+    @ApiOperation(value = "订单列表查询接口", response = OrderInfoDetailVO.class, notes = "订单列表查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })

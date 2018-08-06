@@ -1,11 +1,12 @@
 package com.winhxd.b2c.order.service;
 
+import java.util.Date;
+
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-
-import java.util.Date;
 
 /**
  * 订单查询接口,提供订单查询方法
@@ -61,4 +62,13 @@ public interface OrderQueryService {
      * @return
      */
     String getPickUpCode(long storeId);
+    
+    /**
+     * 根据用户ID、门店ID 查询订单列表，后台管理系统用
+     *
+     * @author wangbin
+     * @param condition 入参
+     * @return
+     */
+    PagedList<OrderInfoDetailVO> listOrder4Management(OrderInfoQuery4ManagementCondition condition);
 }

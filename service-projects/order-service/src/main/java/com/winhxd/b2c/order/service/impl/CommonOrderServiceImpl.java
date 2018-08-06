@@ -208,6 +208,8 @@ public class CommonOrderServiceImpl implements OrderService {
         //TODO 调用促销系统
         orderInfo.setCouponHxdMoney(BigDecimal.ZERO);
         orderInfo.setCouponBrandMoney(BigDecimal.ZERO);
+        orderInfo.setRandomReductionMoney(BigDecimal.ZERO);
+        orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney()).subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney()));
     }
 
     private OrderHandler getOrderHandler(short payType, short valuationType) {

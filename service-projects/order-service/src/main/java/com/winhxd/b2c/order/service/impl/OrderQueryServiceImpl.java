@@ -10,9 +10,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -24,10 +21,14 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderQueryService;
@@ -162,6 +163,18 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return code;
     }
+    
+    @Override
+    public PagedList<OrderInfoDetailVO> listOrder4Management(
+            OrderInfoQuery4ManagementCondition condition) {
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList();
+        pagedList.setData(this.orderInfoMapper.listOrder4Management(condition));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+    }
 
     /**
      * 一次生成多个个提货码
@@ -191,4 +204,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -151,4 +152,13 @@ public interface OrderInfoMapper {
      * @return 更新数量
      */
     int updateOrderStatus(@Param("expectOrderStatus")Short expectOrderStatus, @Param("newOrderStatus")short newOrderStatus, @Param("orderId")Long orderId);
+
+    /**
+     * 查询管理平台订单列表
+     * @author wangbin
+     * @date  2018年8月6日 下午3:29:26
+     * @param condition
+     * @return
+     */
+    List<OrderInfoDetailVO> listOrder4Management(@Param("condition")OrderInfoQuery4ManagementCondition condition);
 }

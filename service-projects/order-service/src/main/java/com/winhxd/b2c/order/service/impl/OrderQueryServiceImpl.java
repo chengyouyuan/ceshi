@@ -10,6 +10,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -50,9 +53,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderInfoMapper orderInfoMapper;
     @Resource
     private Cache cache;
-    
+
     @Autowired
     private OrderChangeLogService orderChangeLogService;
+    @Resource
+    private CustomerServiceClient customerServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -62,12 +67,30 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
-        //TODO 待添加获取当前用户的接口
+        //TODO 待添加获取当前用户的接口 获取customerId查找所有该用户的订单
         Long customerId = 1L;
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
-        //TODO 调用商品仓库添加商品图片URL和商品名称
-        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId,condition.getPickUpCode()));
+        List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
+        List<Long> customerIds = new ArrayList<>();
+        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
+            customerId = orderInfoDetailVO.getCustomerId();
+            customerIds.add(customerId);
+        }
+        ResponseResult<List<CustomerUserInfoVO1>> customersResult = this.customerServiceClient.findCustomerUserByIds(customerIds);
+        List<CustomerUserInfoVO1> customers = customersResult.getData();
+        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
+            customerId = orderInfoDetailVO.getCustomerId();
+            for (CustomerUserInfoVO1 customer : customers) {
+                if (customerId.equals(customer.getCustomerId())) {
+                    orderInfoDetailVO.setCustomerMobile(customer.getCustomerMobile());
+                    orderInfoDetailVO.setNickName(customer.getNickName());
+                }
+            }
+        }
+
+        //TODO 调用商品仓库添加商品图片URL和商品名称 待订
+        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -171,7 +194,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return code;
     }
-    
+
     @Override
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {

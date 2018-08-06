@@ -2,45 +2,32 @@ package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.math.BigDecimal;
 
-/**
- *
- *@Deccription  坎级明细类
- *@User  wl
- *@Date   2018/8/4 17:30
- */
 public class CouponGradeDetail {
-    /**
-     * 主键
-     */
     private Long id;
-    /**
-     * 坎级ID 编码
-     */
+
     private Long gradeId;
-    /**
-     * 满减金额
-     */
+
     private BigDecimal reducedAmt;
-    /**
-     * 满减优惠类型 1-金额 2-折扣
-     */
+
     private Short reducedType;
-    /**
-     * 优惠金额
-     */
+
     private BigDecimal discountedAmt;
-    /**
-     * 满减优惠折扣
-     */
+
     private BigDecimal discounted;
-    /**
-     * 优惠最大限额
-     */
+
     private BigDecimal discountedMaxAmt;
-    /**
-     * 成本
-     */
+
+    private BigDecimal fullGiveAmt;
+
+    private BigDecimal increaseAmt;
+
     private BigDecimal cost;
+
+    private Integer count;
+
+    private Integer times;
+
+    private String remarks;
 
     public Long getId() {
         return id;
@@ -98,11 +85,51 @@ public class CouponGradeDetail {
         this.discountedMaxAmt = discountedMaxAmt;
     }
 
+    public BigDecimal getFullGiveAmt() {
+        return fullGiveAmt;
+    }
+
+    public void setFullGiveAmt(BigDecimal fullGiveAmt) {
+        this.fullGiveAmt = fullGiveAmt;
+    }
+
+    public BigDecimal getIncreaseAmt() {
+        return increaseAmt;
+    }
+
+    public void setIncreaseAmt(BigDecimal increaseAmt) {
+        this.increaseAmt = increaseAmt;
+    }
+
     public BigDecimal getCost() {
         return cost;
     }
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

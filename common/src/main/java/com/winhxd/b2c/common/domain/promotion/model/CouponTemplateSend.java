@@ -1,24 +1,25 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
-public class CouponTemplateUse {
+public class CouponTemplateSend {
     private Long id;
 
     private Long templateId;
 
-    private String customerMonbile;
-
     private Long customerId;
 
-    private Long sendId;
+    private String customerMobile;
 
-    private String orderNo;
+    private Integer count;
 
-    private BigDecimal couponPrice;
+    private Integer sendRole;
 
-    private BigDecimal orderPrice;
+    private Date startTime;
+
+    private Date endTime;
+
+    private Integer source;
 
     private Short status;
 
@@ -50,14 +51,6 @@ public class CouponTemplateUse {
         this.templateId = templateId;
     }
 
-    public String getCustomerMonbile() {
-        return customerMonbile;
-    }
-
-    public void setCustomerMonbile(String customerMonbile) {
-        this.customerMonbile = customerMonbile;
-    }
-
     public Long getCustomerId() {
         return customerId;
     }
@@ -66,36 +59,52 @@ public class CouponTemplateUse {
         this.customerId = customerId;
     }
 
-    public Long getSendId() {
-        return sendId;
+    public String getCustomerMobile() {
+        return customerMobile;
     }
 
-    public void setSendId(Long sendId) {
-        this.sendId = sendId;
+    public void setCustomerMobile(String customerMobile) {
+        this.customerMobile = customerMobile;
     }
 
-    public String getOrderNo() {
-        return orderNo;
+    public Integer getCount() {
+        return count;
     }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
-    public BigDecimal getCouponPrice() {
-        return couponPrice;
+    public Integer getSendRole() {
+        return sendRole;
     }
 
-    public void setCouponPrice(BigDecimal couponPrice) {
-        this.couponPrice = couponPrice;
+    public void setSendRole(Integer sendRole) {
+        this.sendRole = sendRole;
     }
 
-    public BigDecimal getOrderPrice() {
-        return orderPrice;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setOrderPrice(BigDecimal orderPrice) {
-        this.orderPrice = orderPrice;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
     }
 
     public Short getStatus() {

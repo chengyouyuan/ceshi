@@ -2,18 +2,18 @@ package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
 
-public class CouponGrade {
+public class CouponDict {
     private Integer id;
 
-    private String code;
+    private Short type;
 
-    private String name;
+    private String typeName;
 
-    private String remarks;
+    private Integer code;
 
     private Short status;
 
-    private Short type;
+    private String value;
 
     private Long createdBy;
 
@@ -35,28 +35,28 @@ public class CouponGrade {
         this.id = id;
     }
 
-    public String getCode() {
+    public Short getType() {
+        return type;
+    }
+
+    public void setType(Short type) {
+        this.type = type;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Integer code) {
         this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
     }
 
     public Short getStatus() {
@@ -67,12 +67,12 @@ public class CouponGrade {
         this.status = status;
     }
 
-    public Short getType() {
-        return type;
+    public String getValue() {
+        return value;
     }
 
-    public void setType(Short type) {
-        this.type = type;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Long getCreatedBy() {

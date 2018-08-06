@@ -50,7 +50,7 @@ public interface SysUserService {
      * @param userCode
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUser getSysUserByUserCode(String userCode);
+    SysUser getByAccount(String userCode);
 
     /**
      * 根据主键获取用户信息

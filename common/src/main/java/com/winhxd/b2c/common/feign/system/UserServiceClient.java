@@ -69,8 +69,8 @@ public interface UserServiceClient {
      * @param userCode
      * @return
      */
-    @RequestMapping(value = "/system/user/3014/v1/get/{userCode}", method = RequestMethod.GET)
-    ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode);
+    @RequestMapping(value = "/system/user/3014/v1/get/{account}", method = RequestMethod.GET)
+    ResponseResult<SysUser> getByAccount(@PathVariable("account") String account);
 
     /**
      * 根据主键获取用户信息
@@ -121,7 +121,7 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<SysUser> getByUserCode(String userCode) {
+    public ResponseResult<SysUser> getByAccount(String account) {
         logger.error("UserServiceFallback -> getByUserCode", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

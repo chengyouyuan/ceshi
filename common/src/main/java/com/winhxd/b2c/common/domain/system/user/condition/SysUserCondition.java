@@ -18,7 +18,7 @@ public class SysUserCondition extends BaseCondition {
     private Long userId;
 
     @ApiModelProperty(value = "账号")
-    private String userCode;
+    private String account;
 
     @ApiModelProperty(value = "姓名")
     private String userName;

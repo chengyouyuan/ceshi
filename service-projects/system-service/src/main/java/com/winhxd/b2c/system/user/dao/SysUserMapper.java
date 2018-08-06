@@ -22,5 +22,5 @@ public interface SysUserMapper {
 
     int updatePassword(SysUser record);
 
-    SysUser getByUserCode(@Param("userCode") String userCode);
+    SysUser getByAccount(@Param("userCode") String userCode);
 }

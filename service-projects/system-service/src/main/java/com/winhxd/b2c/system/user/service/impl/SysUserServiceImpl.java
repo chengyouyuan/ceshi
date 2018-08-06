@@ -88,8 +88,8 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser getSysUserByUserCode(String userCode) {
-        SysUser sysUser = sysUserMapper.getByUserCode(userCode);
+    public SysUser getByAccount(String account) {
+        SysUser sysUser = sysUserMapper.getByAccount(account);
         if(null == sysUser){
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);

@@ -53,7 +53,12 @@ public class SysUserController implements UserServiceClient {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            sysUser.setPassword(DigestUtils.md5DigestAsHex(sysUser.getPassword().getBytes()));
+            if(StringUtils.isNotBlank(sysUser.getPassword())){
+                sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(sysUser.getPassword()).getBytes()));
+            } else {
+                sysUser.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+            }
+
             sysUserService.addSysUser(sysUser);
             result.setData(sysUser.getId());
         } catch (BusinessException e){
@@ -81,7 +86,7 @@ public class SysUserController implements UserServiceClient {
         try {
             String password = sysUser.getPassword();
             if(StringUtils.isNotBlank(password)){
-                sysUser.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
+                sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(password).getBytes()));
             }else{
                 sysUser.setPassword(null);
             }
@@ -149,22 +154,22 @@ public class SysUserController implements UserServiceClient {
      * 根据登录账号获取用户信息
      * @author zhangzhengyang
      * @date 2018/8/2
-     * @param userCode
+     * @param account
      * @return
      */
     @Override
     @ApiOperation(value = "根据登录账号获取用户信息")
-    public ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode){
-        logger.info("{} - 根据登录账号获取用户信息, 参数：userCode={}", MODULE_NAME, userCode);
+    public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
+        logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
         ResponseResult<SysUser> result = new ResponseResult<>();
         try {
-            SysUser sysUser = sysUserService.getSysUserByUserCode(userCode);
+            SysUser sysUser = sysUserService.getByAccount(account);
             result.setData(sysUser);
         } catch (BusinessException e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userCode={}", MODULE_NAME, userCode, e);
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：account={}", MODULE_NAME, account, e);
             result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userCode={}", MODULE_NAME, userCode, e);
+            logger.error("{} - 根据登录账号获取用户信息失败, 参数：account={}", MODULE_NAME, account, e);
             result = new ResponseResult(BusinessCode.CODE_1001);
         }
         return result;

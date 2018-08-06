@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2018/8/6
  * @Description 优惠券活动相关接口
  */
-@FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = CouponActivityServiceFallback.class)
+@FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponActivityServiceFallback.class)
 public interface CouponActivityServiceClient {
     @RequestMapping(value = "/promotion/v1/queryPullCouponActivity/", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(@RequestBody CouponActivityCondition condition);

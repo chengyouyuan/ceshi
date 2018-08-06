@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Description  出资方管理相关接口
  **/
 
-@FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = CouponInvestorServiceFallback.class)
+@FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponInvestorServiceFallback.class)
 public interface CouponInvestorServiceClient {
     @RequestMapping(value = "/promotion/v1/addCouponInvestor/", method = RequestMethod.GET)
     public int addCouponInvestor();

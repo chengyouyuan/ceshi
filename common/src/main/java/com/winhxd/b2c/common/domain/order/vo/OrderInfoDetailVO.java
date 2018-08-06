@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.domain.order.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.List;
  * @date 2018/8/3 9:52
  */
 @Data
-public class OrderInfoDetailVO {
+public class OrderInfoDetailVO implements Serializable {
+    private static final long serialVersionUID = -2960449858467596227L;
     @ApiModelProperty(value = "订单商品详情", required = true)
     private List<OrderItemVO> orderItemVoList;
     @ApiModelProperty(value = "主键", required = true)
@@ -38,7 +40,7 @@ public class OrderInfoDetailVO {
      * 订单状态 1:已提交;3:待接单;5:待计价;7:已计价;
      * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
      */
-    @ApiModelProperty(value = "订单状态 1:已提交;3:待接单;5:待计价;7:已计价;9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    @ApiModelProperty(value = "订单状态 1:已提交;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
     private Short orderStatus;
     /**
      * 提货码

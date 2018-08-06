@@ -23,6 +23,58 @@
     prod_code, sku_code, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
+  <select id="selectSkusByConditon" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition" resultType="java.lang.String">
+    select 
+     prod.sku_code as skuCode
+    from store_product_manage prod
+    where 1=1 
+    <if test="condition.prodStatus != null">
+       and prod.prod_status=#{condition.prodStatus,jdbcType=TINYINT}
+    </if>
+    <if test="condition.storeId != null">
+       and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+    </if>
+    <if test="condition.recommend != null">
+       and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+    </if>
+    <choose>
+    	<!-- 加排序字段目前支持，价格和创建时间升降序 -->
+    	 <when test="condition.orderBy != null">
+    	 	<choose>
+    	 		<when test="condition.orderBy==1">
+    	 				<choose>
+			                <when test="condition.descAsc != null and condition.descAsc==1">
+			                   order by sell_money desc
+			                </when>
+			                <otherwise>
+			                    order by sell_money asc
+			                </otherwise>
+           				 </choose>
+    	 		</when>
+    	 		<when test="condition.orderBy==0">
+    	 				<choose>
+			                <when test="condition.descAsc != null and condition.descAsc==1">
+			                   order by created desc
+			                </when>
+			                <otherwise>
+			                   order by created asc
+			                </otherwise>
+           				 </choose>
+    	 		</when>
+    	 		<otherwise>
+    	 			order by created desc
+    	 		</otherwise>
+    	 	</choose>
+    	  
+    	 </when>
+    	 <!-- 默认创建时间 desc -->
+    	 <otherwise>
+    	  order by created desc
+    	 </otherwise>
+    </choose>
+ 
+    
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

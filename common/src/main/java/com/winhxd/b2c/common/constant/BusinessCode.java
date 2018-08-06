@@ -66,5 +66,4 @@ public final class BusinessCode {
     /** 查询订单参数异常*/
     public static final int CODE_411001 = 411001;
 
-
 }

@@ -45,8 +45,21 @@ public class CustomerUserInfo implements Serializable {
     private Date updated;
     private Long updatedBy;
     private String updatedByName;
+
+    /**用户状态,默认有效1，无效(黑名单)0,默认是有效*/
+    private Integer status = 1;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     /**
      * 会话秘钥
+
      */
     private String  sessionKey;
     private static final long serialVersionUID = 1L;

@@ -16,10 +16,11 @@
     <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
     <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="session_key" property="sessionKey" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT"/>
   </resultMap>
   <sql id="Base_Column_List" >
     customer_id, customer_mobile, open_id, lat, lon, nick_name, head_img, created, created_by, 
-    created_by_name, updated, updated_by, updated_by_name, session_key
+    created_by_name, updated, updated_by, updated_by_name, session_key, status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -31,17 +32,47 @@
     delete from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
   </delete>
+  <resultMap id="customerUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1">
+      <result property="customerId" column="customer_id"/>
+      <result property="customerMobile" column="customer_mobile"/>
+      <result property="openId" column="open_id"/>
+      <result property="status" column="status"/>
+      <result property="storeName" column="store_name"/>
+      <result property="nickName" column="nick_name"/>
+  </resultMap>
+  <select id="selectCustomer" resultMap="customerUserInfoVO1">
+    select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.open_id,cui.status,sui.store_name from customer_user_info cui left join customer_store_relation csr
+    on cui.customer_id = csr.customer_id left join store_user_info sui on csr.store_user_id = sui.id
+    <where>
+      <if test="nickName != null and nickName != ''">
+        cui.nick_name =  #{nickName,jdbcType=VARCHAR} and
+      </if>
+      <if test="customerMobile != null and customerMobile != ''">
+        cui.customer_mobile =  #{customerMobile,jdbcType=VARCHAR} and
+      </if>
+      <if test="openId != null and openId != ''">
+        cui.open_id = #{openId,jdbcType=CHAR} and
+      </if>
+      <if test="status != null and status != ''">
+        cui.status = #{status,jdbcType=TINYINT} and
+      </if>
+      <if test="storeName != null and storeName != ''">
+        sui.store_name = #{storeName,jdbcType=VARCHAR} and
+      </if>
+    </where>
+  </select>
+
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info (customer_id, customer_mobile, open_id, 
       lat, lon, nick_name, head_img, 
       created, created_by, created_by_name, 
       updated, updated_by, updated_by_name, 
-      session_key)
+      session_key, status)
     values (#{customerId,jdbcType=BIGINT}, #{customerMobile,jdbcType=CHAR}, #{openId,jdbcType=CHAR}, 
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{nickName,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
-      #{sessionKey,jdbcType=VARCHAR})
+      #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info
@@ -88,6 +119,9 @@
       <if test="sessionKey != null" >
         session_key,
       </if>
+      <if test="status != null" >
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >
@@ -131,6 +165,9 @@
       </if>
       <if test="sessionKey != null" >
         #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -176,6 +213,9 @@
       <if test="sessionKey != null" >
         session_key = #{sessionKey,jdbcType=VARCHAR},
       </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
     </set>
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
@@ -193,7 +233,8 @@
       updated = #{updated,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
-      session_key = #{sessionKey,jdbcType=VARCHAR}
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT}
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
 </mapper>

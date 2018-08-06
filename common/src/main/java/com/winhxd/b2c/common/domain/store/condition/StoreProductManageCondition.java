@@ -1,20 +1,30 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
- * 门店管理商品condition
+ * 
  * @ClassName: StoreProductManageCondition 
- * @Description: TODO
+ * @Description: 门店管理商品condition
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午1:31:17
  */
-public class StoreProductManageCondition extends BaseCondition{
+@ApiModel("B端门店商品基本操作入参")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+public class StoreProductManageCondition extends BaseCondition implements Serializable{
 	
+	
+	private static final long serialVersionUID = 1L;
+
 	@ApiModelProperty("门店id")
 	private Long storeId;
 	
@@ -39,10 +49,11 @@ public class StoreProductManageCondition extends BaseCondition{
 	@ApiModelProperty("更新时间")
 	private Date updated;
 	
-	@ApiModelProperty("排序条件")
-	private String orderBy;
+	@ApiModelProperty("排序条件,0创建时间，1价格")
+	private Integer orderBy;
 	
-	@ApiModelProperty("升序或者降序 0 降序 1升序")
+	@ApiModelProperty("升序或者降序，如果默认升序 1 降序 0升序")
 	private Byte descAsc;
+	
 
 }

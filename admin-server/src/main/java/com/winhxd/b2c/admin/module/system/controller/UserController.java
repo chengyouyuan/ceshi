@@ -18,13 +18,14 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
 
-@Api(value = "系统用户管理")
+@Api(tags = "系统用户管理")
 @RestController("/user")
 public class UserController {
 
@@ -42,7 +43,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
     public ResponseResult add(SysUser sysUser) {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
@@ -65,7 +66,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/edit")
+    @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
     public ResponseResult edit(SysUser sysUser) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUser);
@@ -85,7 +86,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PutMapping(value = "/updatePassword")
+    @PutMapping(value = "/updatePassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -112,7 +113,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);

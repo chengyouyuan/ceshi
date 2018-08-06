@@ -58,7 +58,7 @@ public class StoreServiceImpl implements StoreService {
         PagedList<StoreVO> pagedList = new PagedList<>();
         String reginCode = null;
         if (storeCondition.getReginCode() != null){
-            reginCode = reginCode.replaceAll("0+$", "");
+            reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
         }
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
         StoreUserInfo storeUserInfo = new StoreUserInfo();

@@ -1,7 +1,5 @@
 package com.winhxd.b2c.admin.module.system.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.module.system.constant.Constant;
 import com.winhxd.b2c.common.cache.Cache;
@@ -12,12 +10,14 @@ import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.*;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,14 +32,14 @@ import java.util.UUID;
  * @date 2018/8/2
  */
 
-@Api(value = "系统用户管理")
+@Api(tags = "登录管理")
 @RestController
 @RequestMapping("/")
 public class LoginController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    private static final String MODULE_NAME = "登录/注销管理";
+    private static final String MODULE_NAME = "登录管理";
 
     @Autowired
     private Cache cache;
@@ -48,7 +48,7 @@ public class LoginController {
 
     @ApiOperation("登录")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userCode", value = "账号", required =true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "userCode", value = "账号", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "form")
     })
     @ApiResponses({
@@ -58,39 +58,43 @@ public class LoginController {
             @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
             @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用")
     })
-    @PostMapping(value = "/login")
-    public ResponseResult<Boolean> login(String userCode, String password, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseResult<Boolean> login(@RequestParam String userCode, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
         logger.info("{} - 用户登录, 参数：userCode={}", MODULE_NAME, userCode);
 
         ResponseResult<Boolean> result = new ResponseResult<>(false);
 
-        SysUser sysUser = userServiceClient.getByUserCode(userCode).getData();
+        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userCode);
+        if(responseResult.getCode() != BusinessCode.CODE_OK){
+            logger.error("{}，账号：{}", responseResult.getMessage(), userCode);
+            result.setCode(responseResult.getCode());
+            return result;
+        }
+        SysUser sysUser = responseResult.getData();
         if(null == sysUser){
             logger.error("登录账号无效，账号：{}", userCode);
             result.setCode(BusinessCode.CODE_1004);
+            return result;
         }
 
-        String encodePassword = MD5Encoder.encode(password.getBytes());
+        String encodePassword = DigestUtils.md5DigestAsHex(password.getBytes());
         if(!sysUser.getPassword().equals(encodePassword)){
             logger.error("登录密码错误，账号：{}", userCode);
             result.setCode(BusinessCode.CODE_1005);
+            return result;
         }
 
-        if(!sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
+        if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
             logger.error("账号未启用，账号：{}", userCode);
             result.setCode(BusinessCode.CODE_1006);
+            return result;
         }
 
         String token = UUID.randomUUID().toString().replaceAll("-","");
         String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
-        try {
-            UserInfo userInfo = new UserInfo();
-            BeanUtils.copyProperties(sysUser,userInfo);
-            cache.setex(cacheKey,30 * 60, new ObjectMapper().writeValueAsString(userInfo));
-        } catch (JsonProcessingException e) {
-            logger.error("账号信息转json异常，账号信息：{}", sysUser);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(sysUser,userInfo);
+        cache.setex(cacheKey,30 * 60, JsonUtil.toJSONString(userInfo));
 
         Cookie tokenCookie = null;
         Cookie[] requestCookies = request.getCookies();

@@ -1,8 +1,5 @@
 package com.winhxd.b2c.common.domain.base.condition;
 
-import lombok.Data;
-
-@Data
 public abstract class BaseCondition {
 
 	/**
@@ -15,4 +12,19 @@ public abstract class BaseCondition {
 	 */
 	protected int pageSize = 10;
 
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 }

@@ -29,7 +29,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> add(@RequestBody SysUser sysUser);
 
     /**
@@ -39,7 +39,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult update(@RequestBody SysUser sysUser);
 
     /**
@@ -49,7 +49,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/api/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3012/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
@@ -59,7 +59,7 @@ public interface UserServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/api/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/system/user/3013/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
 
     /**
@@ -69,9 +69,8 @@ public interface UserServiceClient {
      * @param userCode
      * @return
      */
-    @ApiOperation(value = "根据登录账号获取用户信息")
-    @RequestMapping(value = "/api/user/3014/v1/get/{userCode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<SysUser> getByUserCode(@PathVariable("userCode") String userCode);
+    @RequestMapping(value = "/system/user/3014/v1/get/{account}", method = RequestMethod.GET)
+    ResponseResult<SysUser> getByAccount(@PathVariable("account") String account);
 
     /**
      * 根据主键获取用户信息
@@ -80,9 +79,8 @@ public interface UserServiceClient {
      * @param id
      * @return
      */
-    @ApiOperation(value = "根据主键获取用户信息")
-    @RequestMapping(value = "/api/user/3015/v1/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<SysUser> getById(@PathVariable("id")Long id);
+    @RequestMapping(value = "/system/user/3015/v1/get/{id}", method = RequestMethod.GET)
+    ResponseResult<SysUser> getById(@PathVariable("id") Long id);
 
 }
 
@@ -123,7 +121,7 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<SysUser> getByUserCode(String userCode) {
+    public ResponseResult<SysUser> getByAccount(String account) {
         logger.error("UserServiceFallback -> getByUserCode", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

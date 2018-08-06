@@ -69,10 +69,10 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectPermissionByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
+  <select id="selectPermissionByRuleId" parameterType="java.lang.Long" resultType="java.lang.String">
     select
       permission
     from sys_rule_permission
-    where user_id = #{userId,jdbcType=BIGINT}
+    where rule_id = #{ruleId,jdbcType=BIGINT}
   </select>
 </mapper>

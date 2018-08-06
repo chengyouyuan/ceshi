@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
 import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,22 +23,24 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(value = "后台门店账户管理")
 @RestController
-@RequestMapping("/")
+@RequestMapping("/store")
 public class StoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreController.class);
 
     private static final String MODULE_NAME = "后台-门店管理";
 
+    @Autowired
+    private StoreServiceClient storeServiceClient;
+
     @ApiOperation("门店账户列表")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @GetMapping(value = "/storeList")
-    public ResponseResult<PagedList<StoreVO>> login(@RequestBody StoreInfoCondition storeInfoCondition) {
-        ResponseResult<PagedList<StoreVO>> responseResult = new ResponseResult<>();
-
+    @PostMapping(value = "/1000/v1/storeList")
+    public ResponseResult<PagedList<StoreVO>> storeList(@RequestBody StoreInfoCondition storeInfoCondition) {
+        ResponseResult<PagedList<StoreVO>> responseResult = storeServiceClient.storeList(storeInfoCondition);
         logger.info("{} - #后台-门店##门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition);
         return responseResult;
     }

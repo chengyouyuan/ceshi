@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.order.service.OrderHandler;
 
 /**

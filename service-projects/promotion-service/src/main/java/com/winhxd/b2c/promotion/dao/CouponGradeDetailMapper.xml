@@ -9,11 +9,16 @@
     <result column="discounted_amt" jdbcType="DECIMAL" property="discountedAmt" />
     <result column="discounted" jdbcType="DECIMAL" property="discounted" />
     <result column="discounted_max_amt" jdbcType="DECIMAL" property="discountedMaxAmt" />
+    <result column="full_give_amt" jdbcType="DECIMAL" property="fullGiveAmt" />
+    <result column="increase_amt" jdbcType="DECIMAL" property="increaseAmt" />
     <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="times" jdbcType="INTEGER" property="times" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Base_Column_List">
     id, grade_id, reduced_amt, reduced_type, discounted_amt, discounted, discounted_max_amt, 
-    cost
+    full_give_amt, increase_amt, cost, count, times, remarks
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -28,10 +33,14 @@
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail">
     insert into coupon_grade_detail (id, grade_id, reduced_amt, 
       reduced_type, discounted_amt, discounted, 
-      discounted_max_amt, cost)
+      discounted_max_amt, full_give_amt, increase_amt, 
+      cost, count, times, 
+      remarks)
     values (#{id,jdbcType=BIGINT}, #{gradeId,jdbcType=BIGINT}, #{reducedAmt,jdbcType=DECIMAL}, 
       #{reducedType,jdbcType=SMALLINT}, #{discountedAmt,jdbcType=DECIMAL}, #{discounted,jdbcType=DECIMAL}, 
-      #{discountedMaxAmt,jdbcType=DECIMAL}, #{cost,jdbcType=DECIMAL})
+      #{discountedMaxAmt,jdbcType=DECIMAL}, #{fullGiveAmt,jdbcType=DECIMAL}, #{increaseAmt,jdbcType=DECIMAL}, 
+      #{cost,jdbcType=DECIMAL}, #{count,jdbcType=INTEGER}, #{times,jdbcType=INTEGER}, 
+      #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail">
     insert into coupon_grade_detail
@@ -57,8 +66,23 @@
       <if test="discountedMaxAmt != null">
         discounted_max_amt,
       </if>
+      <if test="fullGiveAmt != null">
+        full_give_amt,
+      </if>
+      <if test="increaseAmt != null">
+        increase_amt,
+      </if>
       <if test="cost != null">
         cost,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="times != null">
+        times,
+      </if>
+      <if test="remarks != null">
+        remarks,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -83,8 +107,23 @@
       <if test="discountedMaxAmt != null">
         #{discountedMaxAmt,jdbcType=DECIMAL},
       </if>
+      <if test="fullGiveAmt != null">
+        #{fullGiveAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="increaseAmt != null">
+        #{increaseAmt,jdbcType=DECIMAL},
+      </if>
       <if test="cost != null">
         #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="times != null">
+        #{times,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -109,8 +148,23 @@
       <if test="discountedMaxAmt != null">
         discounted_max_amt = #{discountedMaxAmt,jdbcType=DECIMAL},
       </if>
+      <if test="fullGiveAmt != null">
+        full_give_amt = #{fullGiveAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="increaseAmt != null">
+        increase_amt = #{increaseAmt,jdbcType=DECIMAL},
+      </if>
       <if test="cost != null">
         cost = #{cost,jdbcType=DECIMAL},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="times != null">
+        times = #{times,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -123,7 +177,12 @@
       discounted_amt = #{discountedAmt,jdbcType=DECIMAL},
       discounted = #{discounted,jdbcType=DECIMAL},
       discounted_max_amt = #{discountedMaxAmt,jdbcType=DECIMAL},
-      cost = #{cost,jdbcType=DECIMAL}
+      full_give_amt = #{fullGiveAmt,jdbcType=DECIMAL},
+      increase_amt = #{increaseAmt,jdbcType=DECIMAL},
+      cost = #{cost,jdbcType=DECIMAL},
+      count = #{count,jdbcType=INTEGER},
+      times = #{times,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

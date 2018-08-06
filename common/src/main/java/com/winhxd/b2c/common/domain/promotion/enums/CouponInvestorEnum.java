@@ -5,6 +5,6 @@ package com.winhxd.b2c.common.domain.promotion.enums;
  * @Date 2018/8/4 14:27
  * @Description
  **/
-public class CouponInvestorEnum {
+public enum CouponInvestorEnum {
 
 }

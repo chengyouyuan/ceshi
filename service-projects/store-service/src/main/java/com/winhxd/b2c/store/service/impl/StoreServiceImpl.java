@@ -1,5 +1,9 @@
 package com.winhxd.b2c.store.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
+import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -10,8 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Description: 门店服务的实现类
@@ -48,5 +51,34 @@ public class StoreServiceImpl implements StoreService {
         StoreUserInfoVO userInfoVO = new StoreUserInfoVO();
         BeanUtils.copyProperties(userInfo,userInfoVO);
         return userInfoVO;
+    }
+
+    @Override
+    public PagedList<StoreVO> findStoreUserInfo(StoreInfoCondition storeCondition) {
+        PagedList<StoreVO> pagedList = new PagedList<>();
+        String reginCode = null;
+        if (storeCondition.getReginCode() != null){
+            reginCode = reginCode.replaceAll("0+$", "");
+        }
+        PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
+        StoreUserInfo storeUserInfo = new StoreUserInfo();
+        storeUserInfo.setStoreRegionCode(reginCode);
+        storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
+        storeUserInfo.setStoreName(storeCondition.getStoreName());
+        storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
+        List<StoreUserInfo> userInfoList = storeUserInfoMapper.findStoreUserInfo(storeUserInfo);
+        //TODO 根据reginCode获取 省市县名称
+        List<StoreVO> storeVOS = new ArrayList<>();
+        Set<String> codes = new HashSet<>();
+        userInfoList.stream().forEach(storeUserInfo1 -> {
+            StoreVO storeVO = new StoreVO();
+            BeanUtils.copyProperties(storeUserInfo1,storeVO);
+            storeVOS.add(storeVO);
+            codes.add(storeUserInfo1.getStoreRegionCode());
+        });
+
+        pagedList.setTotalRows(userInfoList.size());
+        pagedList.setData(storeVOS);
+        return pagedList;
     }
 }

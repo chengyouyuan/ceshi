@@ -7,6 +7,8 @@ public class SysRulePermission {
 
     private String permission;
 
+    private String permissionname;
+
     public Long getId() {
         return id;
     }
@@ -29,5 +31,13 @@ public class SysRulePermission {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public String getPermissionname() {
+        return permissionname;
+    }
+
+    public void setPermissionname(String permissionname) {
+        this.permissionname = permissionname;
     }
 }

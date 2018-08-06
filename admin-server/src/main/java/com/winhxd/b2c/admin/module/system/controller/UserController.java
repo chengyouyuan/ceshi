@@ -158,4 +158,25 @@ public class UserController {
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.getById(id);
     }
+
+    @ApiOperation("验证用户是否已存在")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @PostMapping(value = "/existsAccount", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
+    public ResponseResult<Boolean> add(String account) {
+        logger.info("{} - 验证用户是否已存在, 参数：account={}", MODULE_NAME, account);
+
+        SysUser sysUser = userServiceClient.getByAccount(account).getData();
+        if(null != sysUser){
+            return new ResponseResult<>(true);
+        }
+
+        return new ResponseResult<>(false);
+    }
+
 }

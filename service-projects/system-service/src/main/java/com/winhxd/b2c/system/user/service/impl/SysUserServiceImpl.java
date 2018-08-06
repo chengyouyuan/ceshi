@@ -94,7 +94,7 @@ public class SysUserServiceImpl implements SysUserService {
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByRuleId(sysUser.getRuleId());
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
         sysUser.setPermissions(permissionList);
         return sysUser;
     }

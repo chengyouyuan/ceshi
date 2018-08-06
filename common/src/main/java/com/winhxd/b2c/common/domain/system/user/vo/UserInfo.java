@@ -18,7 +18,7 @@ public class UserInfo {
     private String account;
 
     @ApiModelProperty(value = "姓名")
-    private String userName;
+    private String username;
 
     @ApiModelProperty(value = "手机")
     private String mobile;

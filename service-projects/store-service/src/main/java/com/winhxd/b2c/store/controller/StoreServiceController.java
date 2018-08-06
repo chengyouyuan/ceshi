@@ -53,22 +53,6 @@ public class StoreServiceController implements StoreServiceClient {
     }
 
     @Override
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId) {
-        ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if(storeUserId == null){
-            logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
-            throw new BusinessException(BusinessCode.CODE_200002);
-        }
-        StoreUserInfoVO data = storeService.findStoreUserInfo(storeUserId);
-        if(data == null){
-            result.setCode(BusinessCode.CODE_200004);
-        }
-        result.setData(data);
-        return result;
-    }
-
-
-    @Override
     public ResponseResult<PagedList<StoreVO>> storeList(StoreInfoCondition storeCondition) {
         ResponseResult<PagedList<StoreVO>> responseResult = new ResponseResult<>();
         PagedList<StoreVO> storeVOPagedList = storeService.findStoreUserInfo(storeCondition);

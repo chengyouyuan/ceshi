@@ -68,7 +68,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         if(sysUser.getPassword().equals(newSysUser.getNewPassword())){
             // 新密码与原密码相同
-            throw new BusinessException(BusinessCode.CODE_300022);
+            throw new BusinessException(BusinessCode.CODE_302002);
         }
         sysUser.setPassword(newSysUser.getNewPassword());
         sysUser.setUpdated(newSysUser.getUpdated());

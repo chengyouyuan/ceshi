@@ -29,7 +29,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/system/user/30000/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/300/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> add(@RequestBody SysUser sysUser);
 
     /**
@@ -39,7 +39,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/system/user/30001/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult update(@RequestBody SysUser sysUser);
 
     /**
@@ -49,7 +49,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/system/user/30002/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/302/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
@@ -59,7 +59,7 @@ public interface UserServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/system/user/30003/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/303/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
 
     /**
@@ -69,7 +69,7 @@ public interface UserServiceClient {
      * @param account
      * @return
      */
-    @RequestMapping(value = "/system/user/30004/v1/get/{account}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/304/v1/get/{account}", method = RequestMethod.GET)
     ResponseResult<SysUser> getByAccount(@PathVariable("account") String account);
 
     /**
@@ -79,7 +79,7 @@ public interface UserServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/system/user/30005/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/305/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysUser> getById(@PathVariable("id") Long id);
 
 }
@@ -98,37 +98,37 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
 
     @Override
     public ResponseResult<Long> add(SysUser sysUser) {
-        logger.error("UserServiceFallback -> add", throwable);
+        logger.error("UserServiceClientFallback -> add", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult update(SysUser sysUser) {
-        logger.error("UserServiceFallback -> update", throwable);
+        logger.error("UserServiceClientFallback -> update", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
-        logger.error("UserServiceFallback -> updatePassword", throwable);
+        logger.error("UserServiceClientFallback -> updatePassword", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition) {
-        logger.error("UserServiceFallback -> list", throwable);
+        logger.error("UserServiceClientFallback -> list", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<SysUser> getByAccount(String account) {
-        logger.error("UserServiceFallback -> getByUserCode", throwable);
+        logger.error("UserServiceClientFallback -> getByUserCode", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<SysUser> getById(Long userId) {
-        logger.error("UserServiceFallback -> getById", throwable);
+        logger.error("UserServiceClientFallback -> getById", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Service
 public class CouponServiceImpl implements CouponService {
-    
+
     @Override
     public List<CouponVO> getNewUserCouponList(CouponCondition couponCondition) {
         return null;

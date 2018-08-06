@@ -2,6 +2,8 @@ package com.winhxd.b2c.system.user.dao;
 
 import com.winhxd.b2c.common.domain.system.user.model.SysRule;
 
+import java.util.List;
+
 public interface SysRuleMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,5 @@ public interface SysRuleMapper {
     int updateByPrimaryKeySelective(SysRule record);
 
     int updateByPrimaryKey(SysRule record);
+
 }

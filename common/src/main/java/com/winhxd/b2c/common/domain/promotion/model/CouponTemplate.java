@@ -2,96 +2,47 @@ package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
 
-/**
- *
- *@Deccription 优惠券模板类
- *@User  wl
- *@Date   2018/8/4 17:09
- */
 public class CouponTemplate {
-    /**
-     * 主键
-     */
     private Long id;
-    /**
-     * 优惠券标题
-     */
+
     private String title;
-    /**
-     * 优惠券说明
-     */
+
     private String exolian;
-    /**
-     * 备注
-     */
+
     private String remarks;
-    /**
-     * 出资方规则ID
-     */
+
     private Long investorId;
-    /**
-     * 使用范围规则ID
-     */
+
     private Long useRangeId;
-    /**
-     * 适用对象规则ID
-     */
+
     private Long applyRuleId;
-    /**
-     * 角标
-     */
+
     private String corner;
-    /**
-     * 优惠券标签
-     */
+
     private String couponLabel;
-    /**
-     * 优惠券标签颜色
-     */
+
     private Integer couponLabelColor;
-    /**
-     * 是否有效 0有效1无效
-     */
+
     private Short status;
-    /**
-     * 无效原因
-     */
+
     private String reason;
-    /**
-     * 优惠券模板编码(UUID）
-     */
+
     private String code;
-    /**
-     * 优惠券金额计算方式  1订单金额 2商品金额
-     */
+
     private Short calType;
-    /**
-     *支付方式 1扫码支付 2线上支付
-     */
-    private String payType;
-    /**
-     * '创建人id
-     */
+
+    private Short payType;
+
     private Long createdBy;
-    /**
-     * 创建人
-     */
+
     private String createdByName;
-    /**
-     * 创建时间(使用时间)
-     */
+
     private Date created;
-    /**
-     * 修改人id
-     */
+
     private Long updateBy;
-    /**
-     * 修改人
-     */
+
     private String updatedByName;
-    /**
-     * 修改时间
-     */
+
     private Date updated;
 
     public Long getId() {
@@ -206,11 +157,11 @@ public class CouponTemplate {
         this.calType = calType;
     }
 
-    public String getPayType() {
+    public Short getPayType() {
         return payType;
     }
 
-    public void setPayType(String payType) {
+    public void setPayType(Short payType) {
         this.payType = payType;
     }
 

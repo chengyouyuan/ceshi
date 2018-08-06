@@ -3,97 +3,49 @@ package com.winhxd.b2c.common.domain.promotion.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * @author shijinxing
- */
-public class CouponStayReceive {
-    /**
-     * 优惠券待领取表ID
-     */
+public class CouponActivity {
     private Long id;
-    /**
-     * 发券名称
-     */
+
     private String name;
-    /**
-     * 发券编码
-     */
+
     private String code;
-    /**
-     * 发券说明
-     */
+
     private String exolian;
-    /**
-     * 发券备注
-     */
+
     private Short remarks;
-    /**
-     * 1领券 2推券
-     */
+
     private Short type;
-    /**
-     * 优惠券类型 1新用户注册 2老用户活动
-     */
+
     private Short couponType;
-    /**
-     * 活动开始时间
-     */
+
     private Date activityStart;
-    /**
-     * 活动结束时间
-     */
+
     private Date activityEnd;
-    /**
-     * 优惠券数量的限制 1优惠券总数2每个门店优惠券数
-     */
+
     private Short couponNumType;
-    /**
-     * 数量
-     */
+
     private BigDecimal couponNum;
-    /**
-     * 用户领券限制 1不限制 2每个门店可领取数量
-     */
+
     private Short customerVoucherLimitType;
-    /**
-     * 用户可领取数量
-     */
+
     private Long customerVoucherLimitNum;
-    /**
-     * 推送数量
-     */
+
     private BigDecimal sendNum;
-    /**
-     * 发券时间
-     */
+
     private Date sendTime;
-    /**
-     * 是否有效0有效1无效
-     */
+
     private Short status;
-    /**
-     * 创建人id
-     */
+
     private Long createdBy;
-    /**
-     * 创建人
-     */
+
     private String createdByName;
-    /**
-     * 创建时间(使用时间)
-     */
+
     private Date created;
-    /**
-     * 修改人id
-     */
+
     private Long updateBy;
-    /**
-     * 修改人
-     */
+
     private String updatedByName;
-    /**
-     * 修改时间
-     */
+
     private Date updated;
 
     public Long getId() {

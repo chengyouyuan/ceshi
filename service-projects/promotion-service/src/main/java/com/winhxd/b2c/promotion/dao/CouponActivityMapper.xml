@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.promotion.dao.CouponStayReceiveMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponStayReceive">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponActivityMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -34,15 +34,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from coupon_stay_receive
+    from coupon_activity
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from coupon_stay_receive
+    delete from coupon_activity
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponStayReceive">
-    insert into coupon_stay_receive (id, name, code, 
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    insert into coupon_activity (id, name, code, 
       exolian, remarks, type, 
       coupon_type, activity_start, activity_end, 
       coupon_num_type, coupon_num, customer_voucher_limit_type, 
@@ -59,8 +59,8 @@
       #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponStayReceive">
-    insert into coupon_stay_receive
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    insert into coupon_activity
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -198,8 +198,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponStayReceive">
-    update coupon_stay_receive
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    update coupon_activity
     <set>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -267,8 +267,8 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponStayReceive">
-    update coupon_stay_receive
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    update coupon_activity
     set name = #{name,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
       exolian = #{exolian,jdbcType=VARCHAR},

@@ -2,49 +2,25 @@ package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
 
-/**
- * @author shijinxing
- */
-public class CouponStayReceiveDetail {
-    /**
-     * 优惠券待领取详情表ID
-     */
+public class CouponActivityDetail {
     private Long id;
-    /**
-     * 优惠券待领取表ID
-     */
-    private Long couponSendId;
-    /**
-     * 模板ID
-     */
+
+    private Long couponActivityId;
+
     private Long templateId;
-    /**
-     * 门店ID
-     */
+
     private Long storeId;
-    /**
-     * 门店手机号
-     */
+
     private String storeMobile;
-    /**
-     * 用户编码
-     */
+
     private Long customerId;
-    /**
-     * 用户手机号
-     */
+
     private String customerMobile;
-    /**
-     * 数量
-     */
+
     private Integer count;
-    /**
-     * 优惠券开始时间
-     */
+
     private Date startTime;
-    /**
-     * 优惠券结束时间
-     */
+
     private Date endTime;
 
     public Long getId() {
@@ -55,12 +31,12 @@ public class CouponStayReceiveDetail {
         this.id = id;
     }
 
-    public Long getCouponSendId() {
-        return couponSendId;
+    public Long getCouponActivityId() {
+        return couponActivityId;
     }
 
-    public void setCouponSendId(Long couponSendId) {
-        this.couponSendId = couponSendId;
+    public void setCouponActivityId(Long couponActivityId) {
+        this.couponActivityId = couponActivityId;
     }
 
     public Long getTemplateId() {

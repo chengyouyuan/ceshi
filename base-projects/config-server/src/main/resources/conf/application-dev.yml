@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: retail2C_user
     password: tNB9gLJ42hwguHLK
-    url: jdbc:mysql://192.168.60.115:3306/retail2C?useSSL=false
+    url: jdbc:mysql://192.168.60.115:3306/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 
 # 缓存配置
 redis:

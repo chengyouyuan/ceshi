@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyProducCatgorytListMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProducCatgorytList">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyProductCatgoryListMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="apply_id" jdbcType="BIGINT" property="applyId" />
+    <result column="apply_produt_catgory_id" jdbcType="BIGINT" property="applyProdutCatgoryId" />
     <result column="cat_code" jdbcType="VARCHAR" property="catCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, apply_id, cat_code, status
+    id, apply_produt_catgory_id, cat_code, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from coupon_apply_produc_catgoryt_list
+    from coupon_apply_product_catgory_list
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from coupon_apply_produc_catgoryt_list
+    delete from coupon_apply_product_catgory_list
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProducCatgorytList">
-    insert into coupon_apply_produc_catgoryt_list (id, apply_id, cat_code, 
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
+    insert into coupon_apply_product_catgory_list (id, apply_produt_catgory_id, cat_code, 
       status)
-    values (#{id,jdbcType=INTEGER}, #{applyId,jdbcType=BIGINT}, #{catCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{applyProdutCatgoryId,jdbcType=BIGINT}, #{catCode,jdbcType=VARCHAR}, 
       #{status,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProducCatgorytList">
-    insert into coupon_apply_produc_catgoryt_list
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
+    insert into coupon_apply_product_catgory_list
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="applyId != null">
-        apply_id,
+      <if test="applyProdutCatgoryId != null">
+        apply_produt_catgory_id,
       </if>
       <if test="catCode != null">
         cat_code,
@@ -46,8 +46,8 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="applyId != null">
-        #{applyId,jdbcType=BIGINT},
+      <if test="applyProdutCatgoryId != null">
+        #{applyProdutCatgoryId,jdbcType=BIGINT},
       </if>
       <if test="catCode != null">
         #{catCode,jdbcType=VARCHAR},
@@ -57,11 +57,11 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProducCatgorytList">
-    update coupon_apply_produc_catgoryt_list
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
+    update coupon_apply_product_catgory_list
     <set>
-      <if test="applyId != null">
-        apply_id = #{applyId,jdbcType=BIGINT},
+      <if test="applyProdutCatgoryId != null">
+        apply_produt_catgory_id = #{applyProdutCatgoryId,jdbcType=BIGINT},
       </if>
       <if test="catCode != null">
         cat_code = #{catCode,jdbcType=VARCHAR},
@@ -72,9 +72,9 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProducCatgorytList">
-    update coupon_apply_produc_catgoryt_list
-    set apply_id = #{applyId,jdbcType=BIGINT},
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
+    update coupon_apply_product_catgory_list
+    set apply_produt_catgory_id = #{applyProdutCatgoryId,jdbcType=BIGINT},
       cat_code = #{catCode,jdbcType=VARCHAR},
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}

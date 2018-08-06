@@ -3,12 +3,15 @@ package com.winhxd.b2c.promotion.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,8 +34,9 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 10:45
      */
+    @ApiOperation(value = "添加优惠换模板", notes = "添加优惠换模板")
     @Override
-    public ResponseResult addCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         /**
          * 判断必填参数
          */
@@ -46,6 +50,25 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
             }
         }catch (Exception e){
           e.printStackTrace();
+        }
+        return responseResult;
+    }
+
+    /**
+     *
+     *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
+     *@Params   id  模板id
+     *@Return   ResponseResult
+     *@User     wl
+     *@Date   2018/8/6 14:41
+     */
+    @Override
+    public ResponseResult toEditCouponTemplate(String id) {
+        ResponseResult responseResult = new ResponseResult();
+        CouponTemplateVO couponTemplateVO = couponTemplateService.getCouponTemplate(id);
+        if(couponTemplateVO!=null){
+            responseResult.setData(couponTemplateVO);
+            responseResult.setCode(BusinessCode.CODE_OK);
         }
         return responseResult;
     }

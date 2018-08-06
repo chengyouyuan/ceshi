@@ -377,7 +377,7 @@
   </resultMap>
 
   <!-- 优惠券列表多条件分页查询sql -->
-  <select id="getCouponTemplatePageByCondition" parameterType="condition" resultMap="selectResultVOMap">
+  <select id="getCouponTemplatePageByCondition"  resultMap="selectResultVOMap">
     select
     <include refid="Select_CouponTemplate_Column_List" />
     from coupon_template a

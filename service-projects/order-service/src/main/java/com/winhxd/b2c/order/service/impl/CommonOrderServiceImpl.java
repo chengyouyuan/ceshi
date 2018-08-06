@@ -11,6 +11,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -139,6 +142,39 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
+    }
+
+
+    /**
+     * 订单取消接口
+     *
+     * @param orderCancelCondition 入参
+     * @return true 成功，false不成功
+     * @author pangjianhua
+     * @date 2018年8月2日 下午5:51:46
+     */
+    @Override
+    @Transactional(rollbackFor=Exception.class)
+    public boolean cancelOrder(OrderCancelCondition orderCancelCondition) {
+        boolean result = true;
+        String orderNo = orderCancelCondition.getOrderNo();
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.CODE_411001, "订单号不能未空");
+        }
+        //获取order对象
+        OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+        //判断是否支付成功,支付成功不让取消
+        if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
+            logger.info("订单已支付成功不能取消，请走退款接口 订单号={}", orderNo);
+            throw new BusinessException(BusinessCode.CODE_411001, "订单已支付成功不能取消");
+        }
+        //把提货码置为null、取消原因、取消状态等
+        int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, orderCancelCondition.getCancelReason());
+        if (updateRowNum < 1) {
+            logger.info("订单取消更新不成功 订单号={}", orderNo);
+            result = false;
+        }
+        return result;
     }
 
     /**

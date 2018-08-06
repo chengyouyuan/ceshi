@@ -45,6 +45,26 @@ public class CouponTemplate {
 
     private Date updated;
 
+
+    /**
+     * 出资方规则名称
+     */
+    private String investorName;
+
+    /**
+     * 优惠券优惠方式名称
+     */
+    private String useRangeName;
+
+    /**
+     * 优惠券类型规则名称
+     */
+    private String applyRuleName;
+
+
+
+
+
     public Long getId() {
         return id;
     }
@@ -211,5 +231,30 @@ public class CouponTemplate {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+
+    public String getInvestorName() {
+        return investorName;
+    }
+
+    public void setInvestorName(String investorName) {
+        this.investorName = investorName;
+    }
+
+    public String getUseRangeName() {
+        return useRangeName;
+    }
+
+    public void setUseRangeName(String useRangeName) {
+        this.useRangeName = useRangeName;
+    }
+
+    public String getApplyRuleName() {
+        return applyRuleName;
+    }
+
+    public void setApplyRuleName(String applyRuleName) {
+        this.applyRuleName = applyRuleName;
     }
 }

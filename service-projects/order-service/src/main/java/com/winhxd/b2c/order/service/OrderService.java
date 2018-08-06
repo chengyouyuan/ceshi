@@ -1,5 +1,6 @@
 package com.winhxd.b2c.order.service;
 
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 
 /**
@@ -26,4 +27,13 @@ public interface OrderService {
      * @param orderNo
      */
     void orderPaySuccessNotify(String orderNo);
+
+    /**
+     * 订单取消接口
+     * @author pangjianhua
+     * @date  2018年8月2日 下午5:51:46
+     * @param orderCancelCondition 入参
+     * @return true 成功，false不成功
+     */
+    boolean cancelOrder(OrderCancelCondition orderCancelCondition);
 }

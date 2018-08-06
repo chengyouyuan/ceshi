@@ -112,14 +112,13 @@ public interface OrderInfoMapper {
     Integer getStoreOrderCustomerNum(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
 
     /**
-     * 取消订单（只能取消customerId的订单）
+     * 取消订单
      *
-     * @param customerId 用户ID
      * @param orderNo    订单编号
      * @param reason     取消原因
      * @return 更新数量
      */
-    int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
+    int updateOrderStatusForCancel(String orderNo, String reason);
 
     /**
      * 查询门店下的提货码是否重复

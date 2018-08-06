@@ -1,26 +1,25 @@
 package com.winhxd.b2c.common.feign.store;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.ReginCondition;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import feign.hystrix.FallbackFactory;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
+import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
 
@@ -53,7 +52,7 @@ public interface StoreServiceClient {
     * @date 2018年8月6日上午9:23:34
      */
     @RequestMapping(value = "/store/2003/v1/findShopCarProd",method = RequestMethod.GET)
-    ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus,Long storeId);
+    ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes,Long storeId);
 
     /**
      * B端登入时校验改门店下上架商品未设置价格信息

@@ -1,11 +1,9 @@
 package com.winhxd.b2c.store.dao;
 
-import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 
 import java.util.List;
 
-@Repository
 public interface StoreUserInfoMapper {
     int deleteByPrimaryKey(Long businessId);
 

@@ -46,7 +46,7 @@ public interface StoreServiceClient {
     * @date 2018年8月6日上午9:23:34
      */
     @RequestMapping(value = "/store/2003/v1/findShopCarProd",method = RequestMethod.GET)
-    ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus,Long storeId);
+    ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes,Long storeId);
     
     /**
      * B端登入时校验改门店下上架商品未设置价格信息

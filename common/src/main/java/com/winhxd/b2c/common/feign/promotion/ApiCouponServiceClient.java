@@ -22,7 +22,7 @@ import java.util.List;
  * @Date 2018/8/6 15 20
  * @Description
  */
-@FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = ApiCouponServiceFallback.class)
+@FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = ApiCouponServiceFallback.class)
 public interface ApiCouponServiceClient {
 
     /**

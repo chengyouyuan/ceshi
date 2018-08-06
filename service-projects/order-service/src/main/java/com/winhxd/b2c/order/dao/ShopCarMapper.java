@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.dao;
 
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 
 import java.util.List;
 
@@ -34,4 +35,13 @@ public interface ShopCarMapper {
      * @return: int
      */
     int deleteShopCars(ShopCar shopCar);
+
+    /**
+     * 批量新增
+     * @author: wangbaokuo
+     * @date: 2018/8/6 19:03
+     * @param:
+     * @return:
+     */
+    int insertByBatch(List<ShopCar> shopCars);
 }

@@ -19,14 +19,15 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3, 
-    sku_attribute_option, prod_status, audit_remark, prod_info_voice, prod_info_text, 
-    updated, updated_by, updated_by_name, created
+    id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3,
+    sku_attribute_option, prod_status, audit_remark, prod_info_voice, prod_info_text,
+    updated, updated_by, updated_by_name, created, sku_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from store_submit_product
     where id = #{id,jdbcType=BIGINT}
@@ -36,18 +37,20 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
-    insert into store_submit_product (id, store_id, store_name, 
-      prod_name, prod_code, prod_image1, 
-      prod_image2, prod_image3, sku_attribute_option, 
-      prod_status, audit_remark, prod_info_voice, 
-      prod_info_text, updated, updated_by, 
-      updated_by_name, created)
-    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, 
-      #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR}, 
-      #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{skuAttributeOption,jdbcType=VARCHAR}, 
-      #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR}, 
-      #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
+    insert into store_submit_product (id, store_id, store_name,
+    prod_name, prod_code, prod_image1,
+    prod_image2, prod_image3, sku_attribute_option,
+    prod_status, audit_remark, prod_info_voice,
+    prod_info_text, updated, updated_by,
+    updated_by_name, created, sku_code
+    )
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR},
+    #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR},
+    #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{skuAttributeOption,jdbcType=VARCHAR},
+    #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR},
+    #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+    #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{skuCode,jdbcType=VARCHAR}
+    )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
     insert into store_submit_product
@@ -103,6 +106,9 @@
       <if test="created != null">
         created,
       </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -155,6 +161,9 @@
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -209,27 +218,31 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct">
     update store_submit_product
     set store_id = #{storeId,jdbcType=BIGINT},
-      store_name = #{storeName,jdbcType=VARCHAR},
-      prod_name = #{prodName,jdbcType=VARCHAR},
-      prod_code = #{prodCode,jdbcType=VARCHAR},
-      prod_image1 = #{prodImage1,jdbcType=VARCHAR},
-      prod_image2 = #{prodImage2,jdbcType=VARCHAR},
-      prod_image3 = #{prodImage3,jdbcType=VARCHAR},
-      sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
-      prod_status = #{prodStatus,jdbcType=INTEGER},
-      audit_remark = #{auditRemark,jdbcType=VARCHAR},
-      prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
-      prod_info_text = #{prodInfoText,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=BIGINT},
-      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
-      created = #{created,jdbcType=TIMESTAMP}
+    store_name = #{storeName,jdbcType=VARCHAR},
+    prod_name = #{prodName,jdbcType=VARCHAR},
+    prod_code = #{prodCode,jdbcType=VARCHAR},
+    prod_image1 = #{prodImage1,jdbcType=VARCHAR},
+    prod_image2 = #{prodImage2,jdbcType=VARCHAR},
+    prod_image3 = #{prodImage3,jdbcType=VARCHAR},
+    sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
+    prod_status = #{prodStatus,jdbcType=INTEGER},
+    audit_remark = #{auditRemark,jdbcType=VARCHAR},
+    prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
+    prod_info_text = #{prodInfoText,jdbcType=VARCHAR},
+    updated = #{updated,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+    created = #{created,jdbcType=TIMESTAMP},
+    sku_code = #{skuCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

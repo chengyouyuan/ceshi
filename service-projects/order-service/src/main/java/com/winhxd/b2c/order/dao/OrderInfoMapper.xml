@@ -419,6 +419,9 @@
         ,item.price AS price
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
+        <if test="pickUpCode != null and pickUpCode !=''">
+           and info.pickup_code = #{pickUpCode,jdbcType=VARCHAR}
+        </if>
         order by info.created desc
     </select>
     <select id="listOrder4Management" resultMap="OrderInfoListResultMap">

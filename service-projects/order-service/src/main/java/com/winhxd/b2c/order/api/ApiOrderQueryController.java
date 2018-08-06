@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.api;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -40,12 +41,12 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
     @RequestMapping(value = "/410/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody OrderQueryByCustomerCondition orderListCondition) {
+    public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
         LOGGER.info("=/api-order/order/410/v1/orderListByCustomer订单列表查询接口=--开始--{}");
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             //返回对象
-            PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(orderListCondition);
+            PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(condition);
             for (int i = 0; i < 10; i++) {
                 String s = this.orderQueryService.getPickUpCode(1);
                 LOGGER.info("取货码：{}", s);

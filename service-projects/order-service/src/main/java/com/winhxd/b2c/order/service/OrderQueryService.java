@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.service;
 import java.util.Date;
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -22,7 +23,7 @@ public interface OrderQueryService {
      * @param condition 入参
      * @return
      */
-    PagedList<OrderInfoDetailVO> findOrderListByCustomerId(OrderQueryByCustomerCondition condition);
+    PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition);
 
     /**
      * 根据用户ID查询所有订单

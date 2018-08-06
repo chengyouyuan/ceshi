@@ -64,7 +64,7 @@ public class LoginController {
 
         ResponseResult<Boolean> result = new ResponseResult<>(false);
 
-        ResponseResult<SysUser> responseResult = userServiceClient.getByUserCode(userCode);
+        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userCode);
         if(responseResult.getCode() != BusinessCode.CODE_OK){
             logger.error("{}，账号：{}", responseResult.getMessage(), userCode);
             result.setCode(responseResult.getCode());

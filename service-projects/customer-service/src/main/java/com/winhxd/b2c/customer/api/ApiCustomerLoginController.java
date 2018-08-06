@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
 
 import io.swagger.annotations.Api;
@@ -40,6 +42,8 @@ public class ApiCustomerLoginController {
 	private CustomerLoginService customerLoginService;
 	@Autowired
 	private Cache cache;
+	@Autowired
+	MessageServiceClient messageServiceClient;
 
 	/**
 	 * @author wufuyun
@@ -55,22 +59,34 @@ public class ApiCustomerLoginController {
 	@RequestMapping(value = "2021/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<Long> saveWeChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
+		ResponseResult<MiniOpenId> object = null;
+		MiniOpenId mini = null;
 		try {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 			if (null != customerUserInfoCondition.getCustomerId()) {
-				// TODO:调用金彪服务拿code去换session_key更新到数据库
-				customerUserInfo.setSessionKey("");
-				customerLoginService.updateCustomerInfo(customerUserInfo);
+				/**
+				 * 拿code去换session_key
+				 */
+				object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
+				if (object.getCode() == 0) {
+					mini = object.getData();
+					customerUserInfo.setSessionKey(mini.getSessionKey());
+					customerUserInfo.setCustomerId(customerUserInfoCondition.getCustomerId());
+					customerLoginService.updateCustomerInfo(customerUserInfo);
+				}
 			} else {
 				BeanUtils.copyProperties(customerUserInfoCondition, customerUserInfo);
-				// TODO: 通过code调用微信接口返回openid和session_key保存到数据库
-				customerUserInfo.setOpenId("");
-				customerUserInfo.setSessionKey("");
-				customerLoginService.saveLoginInfo(customerUserInfo);
-				result.setData(customerUserInfo.getCustomerId());
+				object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
+				if (object.getCode() == 0) {
+					mini = object.getData();
+					customerUserInfo.setOpenId(mini.getOpenId());
+					customerUserInfo.setSessionKey(mini.getSessionKey());
+					customerLoginService.saveLoginInfo(customerUserInfo);
+					result.setData(customerUserInfo.getCustomerId());
+				}
 			}
 			return result;
 		} catch (BusinessException e) {
@@ -155,7 +171,11 @@ public class ApiCustomerLoginController {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-			// TODO:调用massage 发送短信smsCode
+			/**
+			 * 发送模板内容
+			 */
+			String content = "";
+			 messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),content);
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Date 2018/8/6 09:51
  * @Description  优惠券模板接口
  **/
-@FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = CouponTemplateServiceFallback.class)
+@FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponTemplateServiceFallback.class)
 public interface CouponTemplateServiceClient {
 
 /**

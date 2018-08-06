@@ -162,4 +162,68 @@
       store_id = #{storeId,jdbcType=BIGINT},
     </if>
   </delete>
+  <insert id="insertByBatch" parameterType="java.util.List">
+    insert into shop_car
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="prodNum != null">
+        prod_num,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="createdby != null">
+        createdby,
+      </if>
+      <if test="updatedby != null">
+        updatedby,
+      </if>
+    </trim>
+    values
+    <foreach collection="shopCars" item="item" index="index" separator=",">
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{id,jdbcType=BIGINT},
+        </if>
+        <if test="item.customerId != null">
+          #{customerId,jdbcType=BIGINT},
+        </if>
+        <if test="item.storeId != null">
+          #{storeId,jdbcType=BIGINT},
+        </if>
+        <if test="item.skuCode != null">
+          #{skuCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.prodNum != null">
+          #{prodNum,jdbcType=INTEGER},
+        </if>
+        <if test="item.created != null">
+          #{created,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.updated != null">
+          #{updated,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.createdby != null">
+          #{createdby,jdbcType=BIGINT},
+        </if>
+        <if test="item.updatedby != null">
+          #{updatedby,jdbcType=BIGINT},
+        </if>
+      </trim>
+    </foreach>
+  </insert>
 </mapper>

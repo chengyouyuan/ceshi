@@ -7,12 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.feign.hxd.StoreServiceClient.StoreServiceClientFallBack;
+import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient.StoreServiceClientFallBack;
 
 import feign.hystrix.FallbackFactory;
 /**
@@ -21,25 +19,25 @@ import feign.hystrix.FallbackFactory;
  * @Description 调用惠下单服务
  * @version
  */
-@FeignClient(value = ServiceName.STORE_SERVICE, fallbackFactory = StoreServiceClientFallBack.class)
-public interface StoreServiceClient {
+@FeignClient(name = "RETAIL-REST-SERVICE", path = "/restapi", fallbackFactory = StoreServiceClientFallBack.class)
+public interface StoreHxdServiceClient {
 
 	@RequestMapping(value = "/store/getStotrUserInfo", method = RequestMethod.GET)
     ResponseResult<Map<String,Object>> getStotrUserInfo(Map<String, Object> request);
 	
-	class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<StoreServiceClient> {
+	class StoreServiceClientFallBack implements StoreHxdServiceClient, FallbackFactory<StoreHxdServiceClient> {
 
 	    Throwable throwable;
 
 	    Logger logger = LoggerFactory.getLogger(StoreServiceClientFallBack.class);
 		@Override
-		public StoreServiceClient create(Throwable throwable) {
+		public StoreHxdServiceClient create(Throwable throwable) {
 	        this.throwable = throwable;
 	        return new StoreServiceClientFallBack();
 		}
 		@Override
 		public ResponseResult<Map<String, Object>> getStotrUserInfo(Map<String, Object> request) {
-			 logger.error("惠下单 StoreServiceClientFallBack -> getStotrUserInfo报错，错误信息为{}", throwable);
+			 logger.error("惠下单 StoreHxdServiceClientFallBack -> getStotrUserInfo报错，错误信息为{}", throwable);
 		     return new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		

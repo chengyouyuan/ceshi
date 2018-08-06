@@ -43,4 +43,7 @@ public class OrderExceptonCodes {
     @ApiModelProperty("订单状态修改失败")
     public static final int ORDER_STATUS_CHANGE_FAILURE = 400002;
     
+    @ApiModelProperty("订单号为空")
+    public static final int ORDER_NO_EMPTY = 400003;
+    
 }

@@ -406,7 +406,8 @@
         </collection>
     </resultMap>
     <sql id="Order_Info_List">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, pay_type,
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
+        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remark
     </sql>
@@ -418,6 +419,25 @@
         ,item.price AS price
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
+        <if test="pickUpCode != null and pickUpCode !=''">
+           and info.pickup_code = #{pickUpCode,jdbcType=VARCHAR}
+        </if>
+        order by info.created desc
+    </select>
+    <select id="listOrder4Management" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        <if test="condition.storeId != null">
+            and store_id = #{condition.storeId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.customerId != null">
+            and customer_id = #{condition.customerId,jdbcType=BIGINT}
+        </if>
         order by info.created desc
     </select>
     <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
@@ -454,7 +474,7 @@
         and order_status not in (33, 77, 99)
         group by store_id
     </select>
-    <select id="getStoreOrderCustomerNum" resultType="INTEGER">
+    <select id="getStoreOrderCustomerNum" resultType="java.lang.Integer">
         select
         	ifnull(count(distinct customer_id),0) dailyCustomerNum
         from order_info

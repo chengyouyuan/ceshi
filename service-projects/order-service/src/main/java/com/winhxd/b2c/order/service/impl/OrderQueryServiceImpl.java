@@ -10,13 +10,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
@@ -24,12 +22,20 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 
 /**
@@ -44,6 +50,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderInfoMapper orderInfoMapper;
     @Resource
     private Cache cache;
+    
+    @Autowired
+    private OrderChangeLogService orderChangeLogService;
 
     /**
      * 根据用户ID查询所有订单
@@ -52,13 +61,13 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
-    public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(OrderQueryByCustomerCondition condition) {
+    public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         //TODO 待添加获取当前用户的接口
         Long customerId = 1L;
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
         //TODO 调用商品仓库添加商品图片URL和商品名称
-        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId));
+        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId,condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -161,6 +170,37 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             lock.unlock();
         }
         return code;
+    }
+    
+    @Override
+    public PagedList<OrderInfoDetailVO> listOrder4Management(
+            OrderInfoQuery4ManagementCondition condition) {
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList();
+        pagedList.setData(this.orderInfoMapper.listOrder4Management(condition));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+    }
+
+    @Override
+    public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单编号不能为空");
+        }
+        OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
+        OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
+        if (orderInfoDetailVO == null) {
+            logger.info("订单 orderNo={} 未找到相关订单信息", orderNo);
+            return orderInfoDetailVO4Management;
+        }
+        orderInfoDetailVO4Management = new OrderInfoDetailVO4Management();
+        List<OrderChangeVO> orderChangeVoList = orderChangeLogService.listOrderChanges(orderNo);
+        orderInfoDetailVO4Management.setOrderInfoDetailVO(orderInfoDetailVO);
+        orderInfoDetailVO4Management.setOrderChangeVoList(orderChangeVoList);
+        logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
+        return orderInfoDetailVO4Management;
     }
 
     /**

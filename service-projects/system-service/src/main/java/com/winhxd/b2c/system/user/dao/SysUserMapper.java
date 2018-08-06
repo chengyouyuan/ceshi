@@ -3,6 +3,7 @@ package com.winhxd.b2c.system.user.dao;
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
+import org.apache.ibatis.annotations.Param;
 
 public interface SysUserMapper {
     int deleteByPrimaryKey(Long id);
@@ -20,4 +21,6 @@ public interface SysUserMapper {
     int updateByPrimaryKey(SysUser record);
 
     int updatePassword(SysUser record);
+
+    SysUser getByAccount(@Param("userCode") String userCode);
 }

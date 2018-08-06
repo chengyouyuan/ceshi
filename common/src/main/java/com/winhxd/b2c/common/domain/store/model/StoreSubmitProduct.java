@@ -46,6 +46,10 @@ public class StoreSubmitProduct {
     private String updatedByName;
     @ApiModelProperty("创建时间")
     private Date created;
+    /**
+     * sku编码
+     */
+    private String skuCode;
 
     public Long getId() {
         return id;
@@ -181,5 +185,13 @@ public class StoreSubmitProduct {
 
     public void setUpdatedByName(String updatedByName) {
         this.updatedByName = updatedByName;
+    }
+
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
     }
 }

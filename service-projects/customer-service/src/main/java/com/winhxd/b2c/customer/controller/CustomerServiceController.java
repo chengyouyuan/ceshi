@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.customer.service.CustomerService;
 import org.slf4j.Logger;
@@ -33,6 +34,20 @@ public class CustomerServiceController implements CustomerServiceClient {
             e.printStackTrace();
             responseResult.setCode(BusinessCode.CODE_1001);
         }
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult<Void> updateStatus(CustomerUserInfoCondition1 condition) {
+        ResponseResult<Void> responseResult = new ResponseResult<>();
+        if(condition.getCustomerId() == null){
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        if(condition.getStatus() == null){
+            throw new BusinessException(BusinessCode.CODE_200007);
+        }
+        int line = customerService.modifyCustomerStatus(condition);
+        responseResult.setCode(line == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200008);
         return responseResult;
     }
 }

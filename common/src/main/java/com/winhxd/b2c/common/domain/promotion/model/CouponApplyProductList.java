@@ -1,34 +1,16 @@
 package com.winhxd.b2c.common.domain.promotion.model;
-/**
- *
- *@Deccription 优惠券适用商品范围
- *@User  wl
- *@Date   2018/8/4 17:43
- */
+
 public class CouponApplyProductList {
-    /**
-     * 主键
-     */
     private Integer id;
-    /**
-     * 优惠券适用对象ID
-     */
-    private Long applyId;
-    /**
-     * 品牌编码
-     */
+
+    private Long applyProductId;
+
     private String brandCode;
-    /**
-     * 商品SKU
-     */
+
     private String skuCode;
-    /**
-     * 是否有效 0有效1无效
-     */
+
     private Short status;
-    /**
-     * 商品ID
-     */
+
     private String prodId;
 
     public Integer getId() {
@@ -39,12 +21,12 @@ public class CouponApplyProductList {
         this.id = id;
     }
 
-    public Long getApplyId() {
-        return applyId;
+    public Long getApplyProductId() {
+        return applyProductId;
     }
 
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
+    public void setApplyProductId(Long applyProductId) {
+        this.applyProductId = applyProductId;
     }
 
     public String getBrandCode() {

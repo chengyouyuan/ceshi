@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyProductMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="apply_id" jdbcType="INTEGER" property="applyId" />
+    <result column="appoint_min_total" jdbcType="DECIMAL" property="appointMinTotal" />
+    <result column="appoint_min_number" jdbcType="INTEGER" property="appointMinNumber" />
+    <result column="must_min_number" jdbcType="INTEGER" property="mustMinNumber" />
+    <result column="must_min_total" jdbcType="DECIMAL" property="mustMinTotal" />
+    <result column="spare_min_number" jdbcType="INTEGER" property="spareMinNumber" />
+    <result column="spare_min_total" jdbcType="DECIMAL" property="spareMinTotal" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, apply_id, appoint_min_total, appoint_min_number, must_min_number, must_min_total, 
+    spare_min_number, spare_min_total
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_apply_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupon_apply_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+    insert into coupon_apply_product (id, apply_id, appoint_min_total, 
+      appoint_min_number, must_min_number, must_min_total, 
+      spare_min_number, spare_min_total)
+    values (#{id,jdbcType=INTEGER}, #{applyId,jdbcType=INTEGER}, #{appointMinTotal,jdbcType=DECIMAL}, 
+      #{appointMinNumber,jdbcType=INTEGER}, #{mustMinNumber,jdbcType=INTEGER}, #{mustMinTotal,jdbcType=DECIMAL}, 
+      #{spareMinNumber,jdbcType=INTEGER}, #{spareMinTotal,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+    insert into coupon_apply_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="applyId != null">
+        apply_id,
+      </if>
+      <if test="appointMinTotal != null">
+        appoint_min_total,
+      </if>
+      <if test="appointMinNumber != null">
+        appoint_min_number,
+      </if>
+      <if test="mustMinNumber != null">
+        must_min_number,
+      </if>
+      <if test="mustMinTotal != null">
+        must_min_total,
+      </if>
+      <if test="spareMinNumber != null">
+        spare_min_number,
+      </if>
+      <if test="spareMinTotal != null">
+        spare_min_total,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="applyId != null">
+        #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="appointMinTotal != null">
+        #{appointMinTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="appointMinNumber != null">
+        #{appointMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="mustMinNumber != null">
+        #{mustMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="mustMinTotal != null">
+        #{mustMinTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="spareMinNumber != null">
+        #{spareMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="spareMinTotal != null">
+        #{spareMinTotal,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+    update coupon_apply_product
+    <set>
+      <if test="applyId != null">
+        apply_id = #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="appointMinTotal != null">
+        appoint_min_total = #{appointMinTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="appointMinNumber != null">
+        appoint_min_number = #{appointMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="mustMinNumber != null">
+        must_min_number = #{mustMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="mustMinTotal != null">
+        must_min_total = #{mustMinTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="spareMinNumber != null">
+        spare_min_number = #{spareMinNumber,jdbcType=INTEGER},
+      </if>
+      <if test="spareMinTotal != null">
+        spare_min_total = #{spareMinTotal,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+    update coupon_apply_product
+    set apply_id = #{applyId,jdbcType=INTEGER},
+      appoint_min_total = #{appointMinTotal,jdbcType=DECIMAL},
+      appoint_min_number = #{appointMinNumber,jdbcType=INTEGER},
+      must_min_number = #{mustMinNumber,jdbcType=INTEGER},
+      must_min_total = #{mustMinTotal,jdbcType=DECIMAL},
+      spare_min_number = #{spareMinNumber,jdbcType=INTEGER},
+      spare_min_total = #{spareMinTotal,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

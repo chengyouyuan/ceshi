@@ -15,10 +15,10 @@ public class UserInfo {
     private Long id;
 
     @ApiModelProperty(value = "账号")
-    private String userCode;
+    private String account;
 
     @ApiModelProperty(value = "姓名")
-    private String userName;
+    private String username;
 
     @ApiModelProperty(value = "手机")
     private String mobile;

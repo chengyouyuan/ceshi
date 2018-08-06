@@ -26,4 +26,12 @@ public interface OrderHandler {
      * @param orderInfo
      */
     void orderInfoAfterCreateSuccessProcess(OrderInfo orderInfo);
+    
+    /**
+     * 订单支付后相关业务逻辑
+     * @author wangbin
+     * @date  2018年8月6日 下午1:32:16
+     * @param orderInfo
+     */
+    void orderFinishPayProcess(OrderInfo orderInfo);
 }

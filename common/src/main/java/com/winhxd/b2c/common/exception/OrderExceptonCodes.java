@@ -2,9 +2,9 @@ package com.winhxd.b2c.common.exception;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class OrderCreateExceptonCodes {
+public class OrderExceptonCodes {
 
-    private OrderCreateExceptonCodes() {
+    private OrderExceptonCodes() {
     }
     
     @ApiModelProperty("服务器内部错误")
@@ -33,4 +33,14 @@ public class OrderCreateExceptonCodes {
     
     @ApiModelProperty("订单创建不支持订单类型")
     public static final int CODE_401008 = 401008;
+    
+    @ApiModelProperty("订单号错误")
+    public static final int WRONG_ORDERNO = 400000;
+    
+    @ApiModelProperty("订单已支付")
+    public static final int ORDER_ALREADY_PAID = 400001;
+    
+    @ApiModelProperty("订单状态修改失败")
+    public static final int ORDER_STATUS_CHANGE_FAILURE = 400002;
+    
 }

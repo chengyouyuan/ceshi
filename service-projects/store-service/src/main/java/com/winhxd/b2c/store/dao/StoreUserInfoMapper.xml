@@ -11,8 +11,8 @@
     <result column="store_password" property="storePassword" jdbcType="CHAR" />
     <result column="shopkeeper" property="shopkeeper" jdbcType="VARCHAR" />
     <result column="shop_owner_img" property="shopOwnerImg" jdbcType="VARCHAR" />
-    <result column="pickup_way" property="pickupWay" jdbcType="TINYINT" />
-    <result column="payment_way" property="paymentWay" jdbcType="TINYINT" />
+    <result column="pickup_way" property="pickupWay" jdbcType="VARCHAR" />
+    <result column="payment_way" property="paymentWay" jdbcType="VARCHAR" />
     <result column="contact_mobile" property="contactMobile" jdbcType="CHAR" />
     <result column="lat" property="lat" jdbcType="DOUBLE" />
     <result column="lon" property="lon" jdbcType="DOUBLE" />
@@ -38,7 +38,27 @@
     from store_user_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    <select id="findStoreUserInfo" resultType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo">
+      SELECT
+        <include refid="Base_Column_List" />
+      FROM
+          store_user_info
+      <where>
+        <if test="storeMobile != null and storeMobile != ''">
+          AND store_mobile LIKE '%${storeMobile}%'
+        </if>
+        <if test="storeName != null and storeName != ''">
+          AND store_name LIKE '%${storeName}%'
+        </if>
+        <if test="storeRegionCode != null and storeRegionCode != ''">
+          AND store_region_code LIKE '${storeRegionCode}%'
+        </if>
+        <if test="storeStatus != null and storeStatus != ''">
+          AND store_status = #{storeStatus}
+        </if>
+      </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from store_user_info
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -54,7 +74,7 @@
     values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
-      #{pickupWay,jdbcType=TINYINT}, #{paymentWay,jdbcType=TINYINT}, #{contactMobile,jdbcType=CHAR}, 
+      #{pickupWay,jdbcType=VARCHAR}, #{paymentWay,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
@@ -162,10 +182,10 @@
         #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
       <if test="pickupWay != null" >
-        #{pickupWay,jdbcType=TINYINT},
+        #{pickupWay,jdbcType=VARCHAR},
       </if>
       <if test="paymentWay != null" >
-        #{paymentWay,jdbcType=TINYINT},
+        #{paymentWay,jdbcType=VARCHAR},
       </if>
       <if test="contactMobile != null" >
         #{contactMobile,jdbcType=CHAR},
@@ -233,10 +253,10 @@
         shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
       <if test="pickupWay != null" >
-        pickup_way = #{pickupWay,jdbcType=TINYINT},
+        pickup_way = #{pickupWay,jdbcType=VARCHAR},
       </if>
       <if test="paymentWay != null" >
-        payment_way = #{paymentWay,jdbcType=TINYINT},
+        payment_way = #{paymentWay,jdbcType=VARCHAR},
       </if>
       <if test="contactMobile != null" >
         contact_mobile = #{contactMobile,jdbcType=CHAR},
@@ -287,8 +307,8 @@
       store_password = #{storePassword,jdbcType=CHAR},
       shopkeeper = #{shopkeeper,jdbcType=VARCHAR},
       shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
-      pickup_way = #{pickupWay,jdbcType=TINYINT},
-      payment_way = #{paymentWay,jdbcType=TINYINT},
+      pickup_way = #{pickupWay,jdbcType=VARCHAR},
+      payment_way = #{paymentWay,jdbcType=VARCHAR},
       contact_mobile = #{contactMobile,jdbcType=CHAR},
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},

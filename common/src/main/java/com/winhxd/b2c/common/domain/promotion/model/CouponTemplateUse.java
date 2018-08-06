@@ -12,7 +12,7 @@ public class CouponTemplateUse {
 
     private Long customerId;
 
-    private Long sendDetailId;
+    private Long sendId;
 
     private String orderNo;
 
@@ -66,12 +66,12 @@ public class CouponTemplateUse {
         this.customerId = customerId;
     }
 
-    public Long getSendDetailId() {
-        return sendDetailId;
+    public Long getSendId() {
+        return sendId;
     }
 
-    public void setSendDetailId(Long sendDetailId) {
-        this.sendDetailId = sendDetailId;
+    public void setSendId(Long sendId) {
+        this.sendId = sendId;
     }
 
     public String getOrderNo() {

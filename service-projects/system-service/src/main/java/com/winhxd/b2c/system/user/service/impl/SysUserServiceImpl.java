@@ -64,11 +64,11 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(newSysUser.getId());
         if(!sysUser.getPassword().equals(newSysUser.getPassword())){
             // 原密码输入错误
-            throw new BusinessException(BusinessCode.CODE_301201);
+            throw new BusinessException(BusinessCode.CODE_300021);
         }
         if(sysUser.getPassword().equals(newSysUser.getNewPassword())){
             // 新密码与原密码相同
-            throw new BusinessException(BusinessCode.CODE_301202);
+            throw new BusinessException(BusinessCode.CODE_300022);
         }
         sysUser.setPassword(newSysUser.getNewPassword());
         sysUser.setUpdated(newSysUser.getUpdated());
@@ -88,16 +88,13 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser getSysUserByUserCode(String userCode) {
-        SysUserCondition condition = new SysUserCondition();
-        condition.setUserCode(userCode);
-        List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
-        if(CollectionUtils.isEmpty(sysUserList)){
+    public SysUser getByAccount(String account) {
+        SysUser sysUser = sysUserMapper.getByAccount(account);
+        if(null == sysUser){
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        SysUser sysUser = sysUserList.get(0);
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
+        List<String> permissionList = sysRulePermissionMapper.selectPermissionByRuleId(sysUser.getRuleId());
         sysUser.setPermissions(permissionList);
         return sysUser;
     }

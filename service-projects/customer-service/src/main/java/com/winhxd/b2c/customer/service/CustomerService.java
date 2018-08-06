@@ -18,4 +18,13 @@ public interface CustomerService {
      * @return 分页数据
      */
     PagedList<CustomerUserInfoVO1> findCustomerPageInfo(CustomerUserInfoCondition1 condition);
+
+    /**
+     * @author chengyy
+     * @date 2018/8/6 13:54
+     * @Description 跟新用户的状态，有效，无效
+     * @param condition  参数对象
+     * @return  sql语句执行之后影响的行数
+     */
+    int modifyCustomerStatus(CustomerUserInfoCondition1 condition);
 }

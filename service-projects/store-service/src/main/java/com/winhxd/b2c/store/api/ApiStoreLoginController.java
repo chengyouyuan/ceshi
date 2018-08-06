@@ -77,7 +77,7 @@ public class ApiStoreLoginController {
 	 * @author wufuyun
 	 * @date  2018年8月4日 上午11:10:34
 	 * @Description 通过账号发送验证码
-	 * @param customerUserInfoCondition
+	 * @param storeUserInfoCondition
 	 * @return
 	 */
 	@ApiOperation(value = "通过账号发送验证码")

@@ -24,6 +24,10 @@ wechat:
     autoColor: true
     isHyaline: true
 
-
+  miniProgram:
+      appid: wxdbbbd5e596ab6f4d
+      secret: 0361d3faa4e51758343f6e7043210cf9
+      grantType: authorization_code
+      openidUrl: https://api.weixin.qq.com/sns/jscode2session
 
 

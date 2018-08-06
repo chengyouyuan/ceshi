@@ -24,6 +24,51 @@
     prod_code, sku_code, putaway_time, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
+  
+  	<select id="countSkusByConditon"  
+  			parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition" 
+  			resultType="java.lang.Long">
+  		select
+  		 count(*)
+  		from store_product_manage prod
+  		where 1=1
+  		<if test="condition.prodStatus != null">
+            and prod.prod_status=#{condition.prodStatus,jdbcType=TINYINT}
+        </if>
+        <if test="condition.storeId != null">
+            and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.recommend != null">
+            and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+        </if>
+        <if test="condition.priceStatus != null">
+        	<choose>
+        		<!-- 设置价格 -->
+        		<when test="condition.priceStatus==1">
+        			and prod.sell_money  <![CDATA[ >= ]]> 0
+        		</when>
+        		<otherwise>
+        		<!-- 未设置价格 -->
+        		and (prod.sell_money  <![CDATA[ < ]]> 0 or prod.sell_money is null)
+        		</otherwise>
+        	</choose>
+            
+        </if> 
+  	
+  	</select>
+  	
+  	<select id="selectPutawayProdBySkuCodes" resultMap="BaseResultMap">
+  	 	select
+  	 	<include refid="Base_Column_List"/>
+  	 	from store_product_manage prod 
+  	 	where prod.store_id=#{storeId,jdbcType=BIGINT}
+  	 	and prod.prod_status=1 
+  	 	and prod.sku_code in
+		<foreach item="skuCode" index="index" collection="skuCodes" open="(" separator="," close=")">
+			#{skuCode}
+		</foreach>  
+
+  	</select>
     <select id="selectSkusByConditon"
             parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"
             resultType="java.lang.String">

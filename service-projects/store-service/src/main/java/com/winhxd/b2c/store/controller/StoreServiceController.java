@@ -7,7 +7,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -15,10 +14,12 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
 import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -36,6 +37,8 @@ public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private StoreProductManageService storeProductManageService;
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
+//    @Autowired
+//    private ProductServiceClient productServiceClient;
     @Override
     public ResponseResult<Void> bindCustomer(Long customerId,Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
@@ -69,16 +72,8 @@ public class StoreServiceController implements StoreServiceClient {
 	          throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		//查询门店下商品信息集合--判断数据权限
-		StringBuilder skus=new StringBuilder();
-		for(int i=0;i<skuCodes.size();i++){
-			skus.append(skuCodes.get(i));
-			if(i!=skuCodes.size()-1){
-				skus.append(",");
-			}	
-		}
-		logger.info("StoreServiceController -> findShopCarProd查询商品skus："+skus.toString());
 		//查询有权限的数据
-		List<StoreProductManage> storeProds=null;
+		List<StoreProductManage> storeProds=this.storeProductManageService.findProdBySkuCodes(storeId, (String[])skuCodes.toArray());
 		
 		//查询结果不为空
 		if(CollectionUtils.isEmpty(storeProds)){
@@ -87,21 +82,61 @@ public class StoreServiceController implements StoreServiceClient {
 				authSkuCode.add(spm.getSkuCode());
 			}
 			//调用商品feigin查询商品基本信息
+			List<ProductSkuVO> productSkuList=null;
+			//productServiceClient.
+			List<ShopCarProdVO> shopCarProdList=new ArrayList<>();
+			if(CollectionUtils.isEmpty(productSkuList)){
+				 logger.error("StoreServiceController -> findShopCarProd 调用ProductServiceClient 异常！");
+		         throw new BusinessException(BusinessCode.CODE_1001);
+			}
+			for(int i=0;i<productSkuList.size();i++){
+				ShopCarProdVO spVO=new ShopCarProdVO();
+				//sku信息
+				ProductSkuVO current=productSkuList.get(i);
+				//门店与sku关系
+				StoreProductManage spManage=storeProds.get(i);
+				spVO.setSkuCode(current.getSkuCode());
+				spVO.setProdImage(current.getSkuImage());
+				spVO.setProdStatus(spManage.getProdStatus());
+				spVO.setSellMoney(spManage.getSellMoney());
+				shopCarProdList.add(spVO);
+			}
 			
+			result.setData(shopCarProdList);
 		}
-		//storeProductManageService.selectSkusByConditon(condition)
+		
 		return result;
 	}
 
 	@Override
 	public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
 		ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
+		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
 		//参数检验
 		if(storeId==null){
 			logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
 	         throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		return null;
+		vo.setStoreId(storeId);
+		//查询上架未设置价格商品
+		StoreProductManageCondition condition=new StoreProductManageCondition();
+		condition.setStoreId(storeId);
+		//未设置价格
+		condition.setPriceStatus((byte)0);
+		//上架商品
+		condition.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+		int count=storeProductManageService.countSkusByConditon(condition);
+		//设置是否有未设置价格的商品
+		if(count>0){
+			vo.setCheckResult(true);	
+		}else{
+			vo.setCheckResult(false);
+		}
+		//设置为设置价格商品的数量
+		vo.setNoSetPriceCount(count);
+		
+		result.setData(vo);
+		return result;
 	}
 
 }

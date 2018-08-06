@@ -55,5 +55,8 @@ public class StoreProductManageCondition extends BaseCondition implements Serial
 	@ApiModelProperty("升序或者降序，如果默认升序 1 降序 0升序")
 	private Byte descAsc;
 	
+	@ApiModelProperty("价格状态，0表示未设置价格，1表示已经设置价格")
+	private Byte priceStatus;
+	
 
 }

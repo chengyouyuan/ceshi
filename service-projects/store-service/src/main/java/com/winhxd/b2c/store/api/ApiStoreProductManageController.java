@@ -1,7 +1,9 @@
 package com.winhxd.b2c.store.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
 import com.winhxd.b2c.common.domain.store.condition.AllowPutawayProdCondition;
+import com.winhxd.b2c.common.domain.store.condition.ProdOperateCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreProdOperateEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 
 import io.swagger.annotations.Api;
@@ -61,6 +69,7 @@ public class ApiStoreProductManageController {
 	            if(!checkParam(condition)){
 	            	responseResult.setCode(BusinessCode.CODE_1007);
 	            	responseResult.setMessage("参数错误");
+	            	return responseResult;
 	            }
 	            //账号信息校验
 	            
@@ -87,33 +96,135 @@ public class ApiStoreProductManageController {
 //	            if(condition.getFirst()){
 //	            	 productServiceClient.getProductMsg(prodCondition);
 //	            }
-//	            productServiceClient.getProducts(prodCondition);
-	            responseResult.setData(null);
+//	            responseResult=productServiceClient.getProductMsg(prodCondition);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 	        return responseResult;
+	    }
+	    
+	    @ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", response = ResponseResult.class, notes = "B端商品操作接口")
+	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+	    @PostMapping(value = "1000/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
+	    	 ResponseResult<Void> responseResult = new ResponseResult<>();
+	    	 try{
+	    		 logger.info("B端商品操作接口入参为：{}", condition);
+	    		 //参数校验
+		         if(!checkParam(condition)){
+		            responseResult.setCode(BusinessCode.CODE_1007);
+		            responseResult.setMessage("参数错误");
+		            return responseResult;
+		         }
+		         //操作类型
+		         Byte operateType=condition.getOperateType();
+		         //门店id
+		         Long storeId=condition.getStoreId();
+		         //skuCode数组
+		         String skuCodes[]=condition.getSkuCode();
+		         //获取sku信息
+		         List<StoreProductManage> spms=storeProductManageService.findProdBySkuCodes(storeId,skuCodes);
+		         //判断数据权限
+		         if(CollectionUtils.isEmpty(spms)&&spms.size()==skuCodes.length){
+		        	 //判断操作类型
+			         if(StoreProdOperateEnum.PUTAWAY.getOperateCode()==operateType){
+			        	 //上架操作
+			        	 //表示还没上架过
+			        	 if(spms==null||spms.size()==0){
+			        		 
+			        	 }
+			        	 
+			         }else if(StoreProdOperateEnum.UNPUTAWAY.getOperateCode()==operateType){
+			        	//下架操作
+			        	 
+			         }else if(StoreProdOperateEnum.DELETE.getOperateCode()==operateType){
+			        	 //删除操作
+			        	 
+			         }else if(StoreProdOperateEnum.EDIT.getOperateCode()==operateType){
+			        	//编辑
+			        	 
+			         }
+		         }else{
+			            responseResult.setCode(BusinessCode.CODE_1003);
+			            responseResult.setMessage("没有权限");
+			            return responseResult; 
+		         }
+		        
+	    		 
+	    	 }catch(Exception e){
+	    		 e.printStackTrace();
+	    	 }
+	    	 
+	    	 return responseResult;
+	    }
+	    
+	    @ApiOperation(value = "B端添加门店提报商品接口", response = ResponseResult.class, notes = "B端添加门店提报商品接口")
+	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+	    @PostMapping(value = "1000/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
+	    	 ResponseResult<Void> responseResult = new ResponseResult<>();
+	    	 try{
+	    		 
+	    	 }catch(Exception e){
+	    		 e.printStackTrace();
+	    	 }
+	    	 
+	    	 return responseResult;
+	    }
+	    
+	    @ApiOperation(value = "B端门店提报商品列表接口", response = ResponseResult.class, notes = "B端门店提报商品列表接口")
+	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+	    @PostMapping(value = "1000/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(@RequestBody StoreSubmitProductCondition condition) {
+	    	 ResponseResult<PagedList<StoreSubmitProductVO>> responseResult = new ResponseResult<>();
+	    	 try{
+	    		 
+	    	 }catch(Exception e){
+	    		 e.printStackTrace();
+	    	 }
+	    	 
+	    	 return responseResult;
 	    }
 	    
 	    @PostMapping(value = "1111/test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	    public ResponseResult<List<String>> test(@RequestBody StoreProductManageCondition condition) {
-	        ResponseResult<List<String>> responseResult = new ResponseResult<>();
+	    public ResponseResult<Object> test(@RequestBody StoreProductManageCondition condition) {
+	        ResponseResult<Object> responseResult = new ResponseResult<>();
 	        try {
 	            logger.info("B端获取可上架商品数据接口入参为：{}", condition);
-	            responseResult.setData(storeProductManageService.selectSkusByConditon(condition));
+	            List<String> list=new ArrayList<>();
+	            list.add("987654321");
+	            list.add("123456789");
+	            responseResult.setData(storeProductManageService.findProdBySkuCodes(1L, (String[])list.toArray()));
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 	        return responseResult;
 	    }
 	    
-	    private boolean checkParam(AllowPutawayProdCondition condition){
+	    private boolean checkParam(Object condition){
 	    	boolean flag=false;
 	    	if(condition!=null){
-	    		if(condition.getStoreId()!=null&&condition.getProdType()!=null){
-	    			flag=true;
-	    		}
+	    		//AllowPutawayProdCondition 必须传参数校验
+	    		if(condition instanceof AllowPutawayProdCondition){
+		    		AllowPutawayProdCondition c=(AllowPutawayProdCondition)condition;
+			    		if(c.getStoreId()!=null&&c.getProdType()!=null){
+			    			flag=true;
+			    		}	
+		    	}
+	    		//AllowPutawayProdCondition 必须传参数校验
+		    	if(condition instanceof ProdOperateCondition){
+		    		ProdOperateCondition c=(ProdOperateCondition)condition;
+		    		if(c.getStoreId()!=null&&c.getOperateType()!=null
+		    				&&c.getSkuCode()!=null&&c.getSkuCode().length>0){
+		    			flag=true;
+		    		}
+		    	}
 	    	}
+	    	
+	    	
 	    	return flag;
 	    }
 

@@ -27,5 +27,7 @@ public interface CouponTemplateService {
      *@User     wl
      *@Date   2018/8/6 14:41
      */
-    CouponTemplateVO getCouponTemplate(String id);
+    CouponTemplateVO getCouponTemplateById(String id);
+
+
 }

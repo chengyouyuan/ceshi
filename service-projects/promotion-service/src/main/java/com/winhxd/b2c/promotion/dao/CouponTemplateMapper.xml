@@ -7,7 +7,7 @@
     <result column="exolian" jdbcType="VARCHAR" property="exolian" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="investor_id" jdbcType="BIGINT" property="investorId" />
-    <result column="use_range_id" jdbcType="BIGINT" property="useRangeId" />
+    <result column="grade_id" jdbcType="BIGINT" property="gradeId" />
     <result column="apply_rule_id" jdbcType="BIGINT" property="applyRuleId" />
     <result column="corner" jdbcType="VARCHAR" property="corner" />
     <result column="coupon_label" jdbcType="VARCHAR" property="couponLabel" />
@@ -23,7 +23,41 @@
     <result column="update_by" jdbcType="BIGINT" property="updateBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
+    <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
+    <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
   </resultMap>
+
+
+  <!-- 关联获取坎级  使用规则 和出资方名称的结果集 -->
+  <resultMap id="selectResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="exolian" jdbcType="VARCHAR" property="exolian" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="investor_id" jdbcType="BIGINT" property="investorId" />
+    <result column="grade_id" jdbcType="BIGINT" property="gradeId" />
+    <result column="apply_rule_id" jdbcType="BIGINT" property="applyRuleId" />
+    <result column="corner" jdbcType="VARCHAR" property="corner" />
+    <result column="coupon_label" jdbcType="VARCHAR" property="couponLabel" />
+    <result column="coupon_label_color" jdbcType="INTEGER" property="couponLabelColor" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="cal_type" jdbcType="SMALLINT" property="calType" />
+    <result column="pay_type" jdbcType="SMALLINT" property="payType" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
+    <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
+    <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
+  </resultMap>
+
+
   <sql id="Base_Column_List">
     id, title, exolian, remarks, investor_id, use_range_id, apply_rule_id, corner, coupon_label, 
     coupon_label_color, status, reason, code, cal_type, pay_type, created_by, created_by_name, 
@@ -36,6 +70,29 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
+
+  <!-- 跳转到修改时获取模板以及关联信息返回字段 -->
+  <sql id="Select_CouponTemplate_Column_List">
+      a.id,a.title,a.exolian,
+      a.remarks,a.investor_id,a.grade_id,a.apply_rule_id,
+      a.corner,a.coupon_label,
+      a.coupon_label_color,
+      a.STATUS,a.reason,a.CODE,a.cal_type,a.pay_type,a.created_by,
+      a.created_by_name,a.created,a.update_by,a.updated_by_name,
+      a.updated,b.`name` as investor_name,b.`name` as grade_name,
+      c.`name` as apply_rule_name
+  </sql>
+
+  <!-- 跳转到修改时获取模板以及关联信息sql -->
+  <select id="selectCouponTemplateById" parameterType="java.lang.Long" resultMap="selectResultMap">
+    select
+    <include refid="Select_CouponTemplate_Column_List" />
+    from coupon_template a
+    left join coupon_investor b on a.investor_id = b.id
+    left join coupon_grade c on a.grade_id = c.id
+    left join coupon_apply d on a.apply_rule_id = d.id
+    where a.id =  #{id,jdbcType=BIGINT}
+  </select>
 
 
 

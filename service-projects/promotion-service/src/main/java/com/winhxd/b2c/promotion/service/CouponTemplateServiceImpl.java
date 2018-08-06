@@ -35,7 +35,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
         couponTemplate.setExolian(couponTemplateCondition.getExolian());
         couponTemplate.setRemarks(couponTemplateCondition.getRemarks());
         couponTemplate.setInvestorId(couponTemplateCondition.getInvestorId());
-        couponTemplate.setUseRangeId(couponTemplateCondition.getUseRangeId());
+        couponTemplate.setGradeId(couponTemplateCondition.getGradeId());
         couponTemplate.setApplyRuleId(couponTemplateCondition.getApplyRuleId());
         couponTemplate.setCouponLabel(couponTemplateCondition.getCouponLabel());
         couponTemplate.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
@@ -57,12 +57,26 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
      *@Date   2018/8/6 14:41
      */
     @Override
-    public CouponTemplateVO getCouponTemplate(String id) {
+    public CouponTemplateVO getCouponTemplateById(String id) {
         CouponTemplateVO vo = new CouponTemplateVO();
         CouponTemplate CouponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
         if(CouponTemplate!=null){
-            //vo.setXXX();
+           vo.setApplyRuleId(CouponTemplate.getApplyRuleId());
+           vo.setApplyRuleName(CouponTemplate.getApplyRuleName());
+           vo.setCalType(CouponTemplate.getCalType());
+           vo.setPayType(CouponTemplate.getPayType());
+           vo.setCouponLabel(CouponTemplate.getCouponLabel());
+           vo.setId(CouponTemplate.getId());
+           vo.setExolian(CouponTemplate.getExolian());
+           vo.setUseRangeName(CouponTemplate.getGradeName());
+           vo.setGradeId(CouponTemplate.getGradeId());
+           vo.setTitle(CouponTemplate.getTitle());
+           vo.setInvestorId(CouponTemplate.getInvestorId());
+           vo.setInvestorName(CouponTemplate.getInvestorName());
+            vo.setStatus(CouponTemplate.getStatus());
         }
         return vo;
     }
+
+
 }

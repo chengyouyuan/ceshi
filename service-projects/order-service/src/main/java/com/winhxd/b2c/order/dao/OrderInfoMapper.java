@@ -115,10 +115,10 @@ public interface OrderInfoMapper {
      * 取消订单
      *
      * @param orderNo    订单编号
-     * @param reason     取消原因
+     * @param cancelReason     取消原因
      * @return 更新数量
      */
-    int updateOrderStatusForCancel(String orderNo, String reason);
+    int updateOrderStatusForCancel(@Param("orderNo")String orderNo, @Param("cancelReason")String cancelReason);
 
     /**
      * 查询门店下的提货码是否重复

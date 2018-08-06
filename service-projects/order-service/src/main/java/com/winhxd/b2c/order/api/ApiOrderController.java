@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.order.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
 /**
  * @author pangjianhua
  * @date 2018/8/3 11:16
@@ -25,6 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api-order/order")
 public class ApiOrderController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiOrderController.class);
+
+    @Resource
+    private OrderService orderService;
 
     @ApiOperation(value = "B端退款订单处理接口", response = Boolean.class, notes = "B端退款订单处理接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
@@ -72,7 +78,8 @@ public class ApiOrderController {
         LOGGER.info("=/api-order/order/420/v1/cancelOrder-订单取消接口=--开始--{}", orderCancelCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
-            result.setData(null);
+            boolean modifyResult = this.orderService.cancelOrder(orderCancelCondition);
+            result.setData(modifyResult);
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/420/v1/cancelOrder-订单取消接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
@@ -52,7 +52,7 @@ public abstract class SweepPayPickUpInStoreOrderHandlerImpl implements OrderHand
         }
         logger.info("扫码支付下单后状态直接流转到待接单");
         // 生产订单流转日志
-        orderChangeLogService.orderChange(orderInfo.getOrderNo(), null, JSONUtils.toJSONString(orderInfo), orderInfo.getOrderStatus(),
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), null, JsonUtil.toJSONString(orderInfo), orderInfo.getOrderStatus(),
                 orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 OrderStatusEnum.UNRECEIVED.getStatusDes(), MainPointEnum.MAIN);
     }

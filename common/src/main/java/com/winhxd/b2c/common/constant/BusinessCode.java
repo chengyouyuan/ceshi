@@ -21,6 +21,8 @@ public final class BusinessCode {
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
+    /** 验证码错误 */
+    public static final int CODE_1008 = 1008;
 
 
     /** 原密码输入错误 */
@@ -52,8 +54,21 @@ public final class BusinessCode {
     public static final int CODE_200003 = 200003;
     /**门店信息不存在*/
     public  static final int CODE_200004 = 200004;
+    /**门店基础信息保存参数错误*/
+    public  static final int CODE_200005 = 200005;
+    /**店铺营业信息保存参数错误*/
+    public  static final int CODE_200006 = 200006;
+    /**缺少用户状态status参数*/
+    public static final int CODE_200007 = 200007;
+    /**更新用户状态失败*/
+    public static final int CODE_200008 = 200008;
 
-    public static final int CODE_2003 = 200003;
+
     /** 购物车:商品下架*/
     public static final int CODE_402010 = 402010;
+
+
+    /** 查询订单参数异常*/
+    public static final int CODE_411001 = 411001;
+
 }

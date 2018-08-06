@@ -2,3 +2,28 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka/
+
+
+
+
+httpClient:
+  maxTotal: 200
+  maxPerRoute: 40
+  requestTimeout: 500
+  socketTimeout: 10000
+
+wechat:
+  share:
+    tokenUrl: https://api.weixin.qq.com/cgi-bin/token
+    grantType: client_credential
+    appid: xxxx
+    secret: xxxxx
+    codeUrl: https://api.weixin.qq.com/wxa/getwxacode
+    pageUrl: pages/index/xxx
+    width: 430
+    autoColor: true
+    isHyaline: true
+
+
+
+

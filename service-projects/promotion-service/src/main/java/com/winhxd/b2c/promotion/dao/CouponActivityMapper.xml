@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponActivityMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="exolian" jdbcType="VARCHAR" property="exolian" />
+    <result column="remarks" jdbcType="SMALLINT" property="remarks" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="coupon_type" jdbcType="SMALLINT" property="couponType" />
+    <result column="activity_start" jdbcType="TIMESTAMP" property="activityStart" />
+    <result column="activity_end" jdbcType="TIMESTAMP" property="activityEnd" />
+    <result column="coupon_num_type" jdbcType="SMALLINT" property="couponNumType" />
+    <result column="coupon_num" jdbcType="DECIMAL" property="couponNum" />
+    <result column="customer_voucher_limit_type" jdbcType="SMALLINT" property="customerVoucherLimitType" />
+    <result column="customer_voucher_limit_num" jdbcType="DECIMAL" property="customerVoucherLimitNum" />
+    <result column="send_num" jdbcType="DECIMAL" property="sendNum" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, code, exolian, remarks, type, coupon_type, activity_start, activity_end, 
+    coupon_num_type, coupon_num, customer_voucher_limit_type, customer_voucher_limit_num, 
+    send_num, send_time, status, created_by, created_by_name, created, update_by, updated_by_name, 
+    updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_activity
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_activity
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    insert into coupon_activity (id, name, code, 
+      exolian, remarks, type, 
+      coupon_type, activity_start, activity_end, 
+      coupon_num_type, coupon_num, customer_voucher_limit_type, 
+      customer_voucher_limit_num, send_num, send_time, 
+      status, created_by, created_by_name, 
+      created, update_by, updated_by_name, 
+      updated)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{exolian,jdbcType=VARCHAR}, #{remarks,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, 
+      #{couponType,jdbcType=SMALLINT}, #{activityStart,jdbcType=TIMESTAMP}, #{activityEnd,jdbcType=TIMESTAMP}, 
+      #{couponNumType,jdbcType=SMALLINT}, #{couponNum,jdbcType=DECIMAL}, #{customerVoucherLimitType,jdbcType=SMALLINT}, 
+      #{customerVoucherLimitNum,jdbcType=DECIMAL}, #{sendNum,jdbcType=DECIMAL}, #{sendTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
+      #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    insert into coupon_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="exolian != null">
+        exolian,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="couponType != null">
+        coupon_type,
+      </if>
+      <if test="activityStart != null">
+        activity_start,
+      </if>
+      <if test="activityEnd != null">
+        activity_end,
+      </if>
+      <if test="couponNumType != null">
+        coupon_num_type,
+      </if>
+      <if test="couponNum != null">
+        coupon_num,
+      </if>
+      <if test="customerVoucherLimitType != null">
+        customer_voucher_limit_type,
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        customer_voucher_limit_num,
+      </if>
+      <if test="sendNum != null">
+        send_num,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="exolian != null">
+        #{exolian,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="couponType != null">
+        #{couponType,jdbcType=SMALLINT},
+      </if>
+      <if test="activityStart != null">
+        #{activityStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityEnd != null">
+        #{activityEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponNumType != null">
+        #{couponNumType,jdbcType=SMALLINT},
+      </if>
+      <if test="couponNum != null">
+        #{couponNum,jdbcType=DECIMAL},
+      </if>
+      <if test="customerVoucherLimitType != null">
+        #{customerVoucherLimitType,jdbcType=SMALLINT},
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        #{customerVoucherLimitNum,jdbcType=DECIMAL},
+      </if>
+      <if test="sendNum != null">
+        #{sendNum,jdbcType=DECIMAL},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    update coupon_activity
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="exolian != null">
+        exolian = #{exolian,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=SMALLINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="couponType != null">
+        coupon_type = #{couponType,jdbcType=SMALLINT},
+      </if>
+      <if test="activityStart != null">
+        activity_start = #{activityStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityEnd != null">
+        activity_end = #{activityEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="couponNumType != null">
+        coupon_num_type = #{couponNumType,jdbcType=SMALLINT},
+      </if>
+      <if test="couponNum != null">
+        coupon_num = #{couponNum,jdbcType=DECIMAL},
+      </if>
+      <if test="customerVoucherLimitType != null">
+        customer_voucher_limit_type = #{customerVoucherLimitType,jdbcType=SMALLINT},
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        customer_voucher_limit_num = #{customerVoucherLimitNum,jdbcType=DECIMAL},
+      </if>
+      <if test="sendNum != null">
+        send_num = #{sendNum,jdbcType=DECIMAL},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity">
+    update coupon_activity
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      exolian = #{exolian,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=SMALLINT},
+      type = #{type,jdbcType=SMALLINT},
+      coupon_type = #{couponType,jdbcType=SMALLINT},
+      activity_start = #{activityStart,jdbcType=TIMESTAMP},
+      activity_end = #{activityEnd,jdbcType=TIMESTAMP},
+      coupon_num_type = #{couponNumType,jdbcType=SMALLINT},
+      coupon_num = #{couponNum,jdbcType=DECIMAL},
+      customer_voucher_limit_type = #{customerVoucherLimitType,jdbcType=SMALLINT},
+      customer_voucher_limit_num = #{customerVoucherLimitNum,jdbcType=DECIMAL},
+      send_num = #{sendNum,jdbcType=DECIMAL},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=SMALLINT},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

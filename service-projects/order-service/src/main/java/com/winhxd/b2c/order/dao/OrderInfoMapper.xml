@@ -399,8 +399,8 @@
 
     <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
         <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
-            <result column="order_no" property="orderNo"/>
-            <result column="sku_code" property="skuCode"/>
+            <id column="order_no" property="orderNo"/>
+            <result column="skuCode" property="skuCode"/>
             <result column="amount" property="amount"/>
             <result column="price" property="price"/>
         </collection>
@@ -410,11 +410,68 @@
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remark
     </sql>
-    <select id="selectOrderInfoListByCustomerId" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+    <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
         order by info.created desc
     </select>
+    <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <update id="updateOrderStatusForCancel">
+        update order_info
+        set order_status=33,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now()
+        where order_no=#{orderNo,jdbcType=VARCHAR}
+    </update>
+
+    <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
+        <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
+        <result column="dailyOrderNum" jdbcType="INTEGER" property="dailyOrderNum"/>
+        <result column="storeId" jdbcType="BIGINT" property="storeId"/>
+    </resultMap>
+    <select id="getStoreOrderTurnover" resultMap="StoreOrderSalesSummaryMap">
+        select
+        	ifnull(sum(order_total_money),0) dailyTurnover,
+        	ifnull(count(*),0) dailyOrderNum,
+        	store_id storeId
+        from order_info
+        where store_id = #{storeId,jdbcType=BIGINT}
+        and pay_status = 1
+        and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status not in (33, 77, 99)
+        group by store_id
+    </select>
+    <select id="getStoreOrderCustomerNum" resultType="INTEGER">
+        select
+        	ifnull(count(distinct customer_id),0) dailyCustomerNum
+        from order_info
+        where store_id = #{storeId,jdbcType=BIGINT}
+        and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status = 22
+    </select>
+    <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
+        select count(*) from order_info info
+        where info.store_id=#{storeId,jdbcType=BIGINT}
+        and info.pickup_code in
+        <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
+            #{pickUpCodes}
+        </foreach>
+        limit 1
+    </select>
+
+
 </mapper>

@@ -1,9 +1,13 @@
 package com.winhxd.b2c.order.dao;
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-
-import java.util.List;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 
 /**
  * 订单主表
@@ -76,4 +80,52 @@ public interface OrderInfoMapper {
      * @return
      */
     List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(Long customerId);
+
+    /**
+     * 获取用户的订单和订单商品内容
+     *
+     * @param orderNo 订单编号
+     * @return
+     */
+    OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
+    
+    /**
+     * 获取门店销售汇总信息
+     * @author wangbin
+     * @date  2018年8月4日 上午11:13:37
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreOrderTurnover(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+    
+    /**
+     * @author wangbin
+     * @date  2018年8月4日 上午11:53:22
+     * @Description 
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    Integer getStoreOrderCustomerNum(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+
+    /**
+     * 取消订单（只能取消customerId的订单）
+     *
+     * @param customerId 用户ID
+     * @param orderNo    订单编号
+     * @param reason     取消原因
+     * @return 更新数量
+     */
+    int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
+
+    /**
+     * 查询门店下的提货码是否重复
+     * @param pickUpCodes 提货码列表
+     * @param storeId 门店ID
+     * @return true 有重复记录，false 不重复
+     */
+    boolean getPickUpCodeByStoreId(@Param("pickUpCodes")List<String> pickUpCodes, @Param("storeId")long storeId);
 }

@@ -1,10 +1,10 @@
 package com.winhxd.b2c.admin.common.context;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winhxd.b2c.admin.module.system.constant.Constant;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
+import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 /**
  * @author lixiaodong
@@ -43,18 +42,16 @@ public class UserManager implements ApplicationContextAware {
                     String token = cookie.getValue();
 
                     String json = cache.get(CacheName.CACHE_KEY_USER_TOKEN + token);
+                    logger.info("根据token获取用户信息{} ---> {}", token, json );
+
                     if(StringUtils.isNotBlank(json)){
-                        try {
-                            UserInfo userInfo = new ObjectMapper().readValue(json,UserInfo.class);
-                            return userInfo;
-                        } catch (IOException e) {
-                            logger.error("转换用户信息失败{}", json, e);
-                        }
+                        UserInfo userInfo = JsonUtil.parseJSONObject(json, UserInfo.class);
+                        return userInfo;
                     }
+                    break;
                 }
             }
         }
-
         return null;
     }
 

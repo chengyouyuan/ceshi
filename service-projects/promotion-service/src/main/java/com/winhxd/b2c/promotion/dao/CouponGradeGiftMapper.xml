@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponGradeGiftMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponGradeGift">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="grade_detail_id" jdbcType="BIGINT" property="gradeDetailId" />
+    <result column="gift_name" jdbcType="VARCHAR" property="giftName" />
+    <result column="gift_sku" jdbcType="VARCHAR" property="giftSku" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+    <result column="gift_id" jdbcType="VARCHAR" property="giftId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, grade_detail_id, gift_name, gift_sku, count, unit_price, gift_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_grade_gift
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from coupon_grade_gift
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeGift">
+    insert into coupon_grade_gift (id, grade_detail_id, gift_name, 
+      gift_sku, count, unit_price, 
+      gift_id)
+    values (#{id,jdbcType=INTEGER}, #{gradeDetailId,jdbcType=BIGINT}, #{giftName,jdbcType=VARCHAR}, 
+      #{giftSku,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{unitPrice,jdbcType=DECIMAL}, 
+      #{giftId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeGift">
+    insert into coupon_grade_gift
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gradeDetailId != null">
+        grade_detail_id,
+      </if>
+      <if test="giftName != null">
+        gift_name,
+      </if>
+      <if test="giftSku != null">
+        gift_sku,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="unitPrice != null">
+        unit_price,
+      </if>
+      <if test="giftId != null">
+        gift_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="gradeDetailId != null">
+        #{gradeDetailId,jdbcType=BIGINT},
+      </if>
+      <if test="giftName != null">
+        #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftSku != null">
+        #{giftSku,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="unitPrice != null">
+        #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="giftId != null">
+        #{giftId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeGift">
+    update coupon_grade_gift
+    <set>
+      <if test="gradeDetailId != null">
+        grade_detail_id = #{gradeDetailId,jdbcType=BIGINT},
+      </if>
+      <if test="giftName != null">
+        gift_name = #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftSku != null">
+        gift_sku = #{giftSku,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="unitPrice != null">
+        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="giftId != null">
+        gift_id = #{giftId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeGift">
+    update coupon_grade_gift
+    set grade_detail_id = #{gradeDetailId,jdbcType=BIGINT},
+      gift_name = #{giftName,jdbcType=VARCHAR},
+      gift_sku = #{giftSku,jdbcType=VARCHAR},
+      count = #{count,jdbcType=INTEGER},
+      unit_price = #{unitPrice,jdbcType=DECIMAL},
+      gift_id = #{giftId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

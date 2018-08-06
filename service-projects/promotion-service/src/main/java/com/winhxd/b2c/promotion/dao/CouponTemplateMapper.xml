@@ -16,7 +16,7 @@
     <result column="reason" jdbcType="VARCHAR" property="reason" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="cal_type" jdbcType="SMALLINT" property="calType" />
-    <result column="pay_type" jdbcType="CHAR" property="payType" />
+    <result column="pay_type" jdbcType="SMALLINT" property="payType" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -52,7 +52,7 @@
       #{remarks,jdbcType=VARCHAR}, #{investorId,jdbcType=BIGINT}, #{useRangeId,jdbcType=BIGINT}, 
       #{applyRuleId,jdbcType=BIGINT}, #{corner,jdbcType=VARCHAR}, #{couponLabel,jdbcType=VARCHAR}, 
       #{couponLabelColor,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, #{reason,jdbcType=VARCHAR}, 
-      #{code,jdbcType=VARCHAR}, #{calType,jdbcType=SMALLINT}, #{payType,jdbcType=CHAR}, 
+      #{code,jdbcType=VARCHAR}, #{calType,jdbcType=SMALLINT}, #{payType,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
@@ -168,7 +168,7 @@
         #{calType,jdbcType=SMALLINT},
       </if>
       <if test="payType != null">
-        #{payType,jdbcType=CHAR},
+        #{payType,jdbcType=SMALLINT},
       </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
@@ -233,7 +233,7 @@
         cal_type = #{calType,jdbcType=SMALLINT},
       </if>
       <if test="payType != null">
-        pay_type = #{payType,jdbcType=CHAR},
+        pay_type = #{payType,jdbcType=SMALLINT},
       </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
@@ -271,7 +271,7 @@
       reason = #{reason,jdbcType=VARCHAR},
       code = #{code,jdbcType=VARCHAR},
       cal_type = #{calType,jdbcType=SMALLINT},
-      pay_type = #{payType,jdbcType=CHAR},
+      pay_type = #{payType,jdbcType=SMALLINT},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},

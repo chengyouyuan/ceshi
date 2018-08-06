@@ -6,7 +6,7 @@
     <result column="template_id" jdbcType="BIGINT" property="templateId" />
     <result column="customer_monbile" jdbcType="VARCHAR" property="customerMonbile" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
-    <result column="send_detail_id" jdbcType="BIGINT" property="sendDetailId" />
+    <result column="send_id" jdbcType="BIGINT" property="sendId" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
     <result column="coupon_price" jdbcType="DECIMAL" property="couponPrice" />
     <result column="order_price" jdbcType="DECIMAL" property="orderPrice" />
@@ -19,7 +19,7 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, template_id, customer_monbile, customer_id, send_detail_id, order_no, coupon_price, 
+    id, template_id, customer_monbile, customer_id, send_id, order_no, coupon_price, 
     order_price, status, created_by, created_by_name, created, update_by, updated_by_name, 
     updated
   </sql>
@@ -35,13 +35,13 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplateUse">
     insert into coupon_template_use (id, template_id, customer_monbile, 
-      customer_id, send_detail_id, order_no, 
+      customer_id, send_id, order_no, 
       coupon_price, order_price, status, 
       created_by, created_by_name, created, 
       update_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{customerMonbile,jdbcType=VARCHAR}, 
-      #{customerId,jdbcType=BIGINT}, #{sendDetailId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
+      #{customerId,jdbcType=BIGINT}, #{sendId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
       #{couponPrice,jdbcType=DECIMAL}, #{orderPrice,jdbcType=DECIMAL}, #{status,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
@@ -62,8 +62,8 @@
       <if test="customerId != null">
         customer_id,
       </if>
-      <if test="sendDetailId != null">
-        send_detail_id,
+      <if test="sendId != null">
+        send_id,
       </if>
       <if test="orderNo != null">
         order_no,
@@ -109,8 +109,8 @@
       <if test="customerId != null">
         #{customerId,jdbcType=BIGINT},
       </if>
-      <if test="sendDetailId != null">
-        #{sendDetailId,jdbcType=BIGINT},
+      <if test="sendId != null">
+        #{sendId,jdbcType=BIGINT},
       </if>
       <if test="orderNo != null">
         #{orderNo,jdbcType=CHAR},
@@ -156,8 +156,8 @@
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
       </if>
-      <if test="sendDetailId != null">
-        send_detail_id = #{sendDetailId,jdbcType=BIGINT},
+      <if test="sendId != null">
+        send_id = #{sendId,jdbcType=BIGINT},
       </if>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
@@ -197,7 +197,7 @@
     set template_id = #{templateId,jdbcType=BIGINT},
       customer_monbile = #{customerMonbile,jdbcType=VARCHAR},
       customer_id = #{customerId,jdbcType=BIGINT},
-      send_detail_id = #{sendDetailId,jdbcType=BIGINT},
+      send_id = #{sendId,jdbcType=BIGINT},
       order_no = #{orderNo,jdbcType=CHAR},
       coupon_price = #{couponPrice,jdbcType=DECIMAL},
       order_price = #{orderPrice,jdbcType=DECIMAL},

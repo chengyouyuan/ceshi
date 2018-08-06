@@ -13,6 +13,8 @@ import lombok.Data;
 @Data
 @ApiModel(value = "用户请求参数",description = "后台用户列表请求参数")
 public class CustomerUserInfoCondition1 extends BaseCondition {
+    /**用户id*/
+    private Long customerId;
     /**用户账号*/
     @ApiModelProperty("用户账号")
     private String customerMobile;
@@ -30,6 +32,6 @@ public class CustomerUserInfoCondition1 extends BaseCondition {
 
     /**用户状态,默认有效true，无效(黑名单)false,默认是有效*/
     @ApiModelProperty("用户状态,默认有效1，无效(黑名单)0,默认是有效")
-    private Integer status = 1;
+    private Integer status;
 
 }

@@ -3,12 +3,12 @@
 <mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyBrandListMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="apply_id" jdbcType="INTEGER" property="applyId" />
+    <result column="apply_brand_id" jdbcType="INTEGER" property="applyBrandId" />
     <result column="brand_code" jdbcType="VARCHAR" property="brandCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, apply_id, brand_code, status
+    id, apply_brand_id, brand_code, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,9 +21,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
-    insert into coupon_apply_brand_list (id, apply_id, brand_code, 
+    insert into coupon_apply_brand_list (id, apply_brand_id, brand_code, 
       status)
-    values (#{id,jdbcType=INTEGER}, #{applyId,jdbcType=INTEGER}, #{brandCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{applyBrandId,jdbcType=INTEGER}, #{brandCode,jdbcType=VARCHAR}, 
       #{status,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
@@ -32,8 +32,8 @@
       <if test="id != null">
         id,
       </if>
-      <if test="applyId != null">
-        apply_id,
+      <if test="applyBrandId != null">
+        apply_brand_id,
       </if>
       <if test="brandCode != null">
         brand_code,
@@ -46,8 +46,8 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="applyId != null">
-        #{applyId,jdbcType=INTEGER},
+      <if test="applyBrandId != null">
+        #{applyBrandId,jdbcType=INTEGER},
       </if>
       <if test="brandCode != null">
         #{brandCode,jdbcType=VARCHAR},
@@ -60,8 +60,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
     update coupon_apply_brand_list
     <set>
-      <if test="applyId != null">
-        apply_id = #{applyId,jdbcType=INTEGER},
+      <if test="applyBrandId != null">
+        apply_brand_id = #{applyBrandId,jdbcType=INTEGER},
       </if>
       <if test="brandCode != null">
         brand_code = #{brandCode,jdbcType=VARCHAR},
@@ -74,7 +74,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
     update coupon_apply_brand_list
-    set apply_id = #{applyId,jdbcType=INTEGER},
+    set apply_brand_id = #{applyBrandId,jdbcType=INTEGER},
       brand_code = #{brandCode,jdbcType=VARCHAR},
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=INTEGER}

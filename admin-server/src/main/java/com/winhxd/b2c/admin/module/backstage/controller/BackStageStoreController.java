@@ -1,10 +1,11 @@
 package com.winhxd.b2c.admin.module.backstage.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.StoreVO;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -39,8 +40,8 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @PostMapping(value = "/1000/v1/storeList")
-    public ResponseResult<PagedList<StoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
-        ResponseResult<PagedList<StoreVO>> responseResult = storeServiceClient.storeList(storeInfoCondition);
+    public ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
+        ResponseResult<PagedList<BackStageStoreVO>> responseResult = storeServiceClient.storeList(storeInfoCondition);
         logger.info("{} - #后台-门店##门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition);
         return responseResult;
     }

@@ -2,19 +2,23 @@ package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
+
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.StoreVO;
+import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description: 门店服务的实现类
@@ -54,8 +58,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public PagedList<StoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
-        PagedList<StoreVO> pagedList = new PagedList<>();
+    public PagedList<BackStageStoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
+        PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         String reginCode = null;
         if (storeCondition.getReginCode() != null){
             reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
@@ -68,13 +72,19 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
         List<StoreUserInfo> userInfoList = storeUserInfoMapper.findStoreUserInfo(storeUserInfo);
         //TODO 根据reginCode获取 省市县名称
-        List<StoreVO> storeVOS = new ArrayList<>();
+        List<BackStageStoreVO> storeVOS = new ArrayList<>();
         Set<String> codes = new HashSet<>();
         userInfoList.stream().forEach(storeUserInfo1 -> {
-            StoreVO storeVO = new StoreVO();
+            BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1,storeVO);
             storeVOS.add(storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
+            if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())){
+                String[] codeArr = storeUserInfo1.getPaymentWay().split(",");
+                String paymentWayStr = Arrays.asList(codeArr).stream().map(s -> BackStageStorPaymentWayeEnum.codeOf(s).getStatusDes())
+                        .collect(Collectors.joining(","));
+                storeVO.setPaymentWay(paymentWayStr);
+            }
         });
 
         pagedList.setTotalRows(userInfoList.size());

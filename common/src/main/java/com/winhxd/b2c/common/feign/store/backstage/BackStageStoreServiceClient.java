@@ -5,7 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.StoreVO;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public interface BackStageStoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/2003/v1/storeList",method = RequestMethod.GET)
-    ResponseResult<PagedList<StoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeCondition);
+    ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeCondition);
 }
 /**
  * @Description: 熔断回调
@@ -47,7 +47,7 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
     }
 
     @Override
-    public ResponseResult<PagedList<StoreVO>> storeList(BackStageStoreInfoCondition storeCondition) {
+    public ResponseResult<PagedList<BackStageStoreVO>> storeList(BackStageStoreInfoCondition storeCondition) {
         logger.error("StoreServiceClientFallBack -> storeList报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

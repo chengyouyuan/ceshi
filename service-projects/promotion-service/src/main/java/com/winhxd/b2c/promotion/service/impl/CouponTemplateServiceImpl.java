@@ -1,4 +1,4 @@
-package com.winhxd.b2c.promotion.service;
+package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.promotion.dao.CouponTemplateMapper;
+import com.winhxd.b2c.promotion.service.CouponTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ import java.util.UUID;
  * @Description 优惠券模板服务接口 实现类
  **/
 @Service
-public class CouponTemplateServiceImpl implements CouponTemplateService{
+public class CouponTemplateServiceImpl implements CouponTemplateService {
      @Autowired
      private CouponTemplateMapper couponTemplateMapper;
     /**
@@ -66,21 +67,21 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
     @Override
     public CouponTemplateVO getCouponTemplateById(String id) {
         CouponTemplateVO vo = new CouponTemplateVO();
-        CouponTemplate CouponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
-        if(CouponTemplate!=null){
-           vo.setApplyRuleId(CouponTemplate.getApplyRuleId());
-           vo.setApplyRuleName(CouponTemplate.getApplyRuleName());
-           vo.setCalType(CouponTemplate.getCalType());
-           vo.setPayType(CouponTemplate.getPayType());
-           vo.setCouponLabel(CouponTemplate.getCouponLabel());
-           vo.setId(CouponTemplate.getId());
-           vo.setExolian(CouponTemplate.getExolian());
-           vo.setGradeName(CouponTemplate.getGradeName());
-           vo.setGradeId(CouponTemplate.getGradeId());
-           vo.setTitle(CouponTemplate.getTitle());
-           vo.setInvestorId(CouponTemplate.getInvestorId());
-           vo.setInvestorName(CouponTemplate.getInvestorName());
-            vo.setStatus(CouponTemplate.getStatus());
+        CouponTemplate couponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
+        if(couponTemplate!=null){
+           vo.setApplyRuleId(couponTemplate.getApplyRuleId());
+           vo.setApplyRuleName(couponTemplate.getApplyRuleName());
+           vo.setCalType(couponTemplate.getCalType());
+           vo.setPayType(couponTemplate.getPayType());
+           vo.setCouponLabel(couponTemplate.getCouponLabel());
+           vo.setId(couponTemplate.getId());
+           vo.setExolian(couponTemplate.getExolian());
+           vo.setGradeName(couponTemplate.getGradeName());
+           vo.setGradeId(couponTemplate.getGradeId());
+           vo.setTitle(couponTemplate.getTitle());
+           vo.setInvestorId(couponTemplate.getInvestorId());
+           vo.setInvestorName(couponTemplate.getInvestorName());
+           vo.setStatus(couponTemplate.getStatus());
         }
         return vo;
     }
@@ -106,6 +107,28 @@ public class CouponTemplateServiceImpl implements CouponTemplateService{
         pagedList.setTotalRows(pageInfo.getTotal());
         result.setData(pagedList);
         return result;
+    }
+
+    @Override
+    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetailById(String id) {
+        CouponTemplateVO vo = new CouponTemplateVO();
+        CouponTemplate couponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
+        if(couponTemplate!=null){
+            vo.setApplyRuleId(couponTemplate.getApplyRuleId());
+            vo.setApplyRuleName(couponTemplate.getApplyRuleName());
+            vo.setCalType(couponTemplate.getCalType());
+            vo.setPayType(couponTemplate.getPayType());
+            vo.setCouponLabel(couponTemplate.getCouponLabel());
+            vo.setId(couponTemplate.getId());
+            vo.setExolian(couponTemplate.getExolian());
+            vo.setGradeName(couponTemplate.getGradeName());
+            vo.setGradeId(couponTemplate.getGradeId());
+            vo.setTitle(couponTemplate.getTitle());
+            vo.setInvestorId(couponTemplate.getInvestorId());
+            vo.setInvestorName(couponTemplate.getInvestorName());
+            vo.setStatus(couponTemplate.getStatus());
+        }
+        return null;
     }
 
 

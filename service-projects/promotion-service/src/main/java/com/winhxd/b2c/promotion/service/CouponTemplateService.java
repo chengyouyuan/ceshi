@@ -33,4 +33,6 @@ public interface CouponTemplateService {
 
 
     ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition);
+
+    ResponseResult<CouponTemplateVO> viewCouponTemplateDetailById(String id);
 }

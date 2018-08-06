@@ -94,5 +94,17 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         return responseResult;
     }
 
+    @Override
+    public ResponseResult updateCouponTemplateToValid(String ids) {
+        return null;
+    }
+
+
+    @Override
+    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(String id) {
+        ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);
+        return responseResult;
+    }
+
 
 }

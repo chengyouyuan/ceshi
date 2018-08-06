@@ -110,7 +110,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     }
 
     @Override
-    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetailById(String id) {
+    public ResponseResult viewCouponTemplateDetailById(String id) {
+        ResponseResult responseResult = new ResponseResult();
         CouponTemplateVO vo = new CouponTemplateVO();
         CouponTemplate couponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
         if(couponTemplate!=null){
@@ -128,7 +129,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
             vo.setInvestorName(couponTemplate.getInvestorName());
             vo.setStatus(couponTemplate.getStatus());
         }
-        return null;
+        responseResult.setData(vo);
+        return responseResult;
     }
 
 

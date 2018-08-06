@@ -18,14 +18,14 @@ public class StoreUserInfoCondition{
     private String storePassword;
 	@ApiModelProperty(value = "头像")
     private String shopOwnerUrl;
-	@ApiModelProperty(value = "纬度")
-    private Double lat;
-	@ApiModelProperty(value = "经度")
-    private Double lon;
 	@ApiModelProperty(value = "微信openid")
     private String openid;
 	@ApiModelProperty(value = "来源")
     private String source;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
+	@ApiModelProperty(value = "登录标识1、手机账号登录，2、微信登录")
+	private String loginFlag;
+	@ApiModelProperty(value = "1、验证码登录，2、密码登录")
+	private String loginPassword;
 }

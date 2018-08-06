@@ -1,11 +1,11 @@
 package com.winhxd.b2c.order.service;
 
-import java.util.Date;
-
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.OrderListCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+
+import java.util.Date;
 
 /**
  * 订单查询接口,提供订单查询方法
@@ -21,12 +21,21 @@ public interface OrderQueryService {
      * @param condition 入参
      * @return
      */
-    PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition);
+    PagedList<OrderInfoDetailVO> findOrderListByCustomerId(OrderQueryByCustomerCondition condition);
 
     /**
+     * 根据用户ID查询所有订单
+     *
+     * @author pangjianhua
+     * @param condition 入参
+     * @return
+     */
+    OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition);
+
+    /**
+     * 获取门店销售数据
      * @author wangbin
      * @date  2018年8月4日 上午10:51:59
-     * @Description
      * @param storeId
      * @param startDateTime
      * @param endDateTime
@@ -34,6 +43,17 @@ public interface OrderQueryService {
      */
     StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
 
+    /**
+     * 计算并缓存门店销售数据 
+     * @author wangbin
+     * @date  2018年8月4日 下午3:38:46
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime,
+            Date endDateTime);
     /**
      * 根据门店ID获取门店提货码
      * @author pangjianhua

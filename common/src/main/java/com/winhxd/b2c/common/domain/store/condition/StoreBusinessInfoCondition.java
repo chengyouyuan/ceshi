@@ -14,7 +14,7 @@ import lombok.Data;
 @ApiModel("惠小店营业信息保存入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class SaveShopCondition {
+public class StoreBusinessInfoCondition {
 
     @ApiModelProperty(value = "用户编码", required = true)
     private Long customerId;
@@ -23,7 +23,7 @@ public class SaveShopCondition {
     private Long storeId;
 
     @ApiModelProperty(value = "店铺名称", required = true)
-    private Long storeName;
+    private String storeName;
 
     @ApiModelProperty(value = "取货方式", required = true)
     private Byte pickupWay;
@@ -32,17 +32,9 @@ public class SaveShopCondition {
     private Byte paymentWay;
 
     @ApiModelProperty(value = "店主姓名", required = true)
-    private Long shopkeeper;
+    private String shopkeeper;
 
     @ApiModelProperty(value = "联系方式", required = true)
     private String contactMobile;
 
-    @ApiModelProperty(value = "区域编码", required = true)
-    private String regionCode;
-
-    @ApiModelProperty(value = "门店头像", required = true)
-    private String shopOwnerImg;
-
-    @ApiModelProperty(value = "店主头像", required = true)
-    private String storePhoto;
 }

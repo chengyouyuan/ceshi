@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
@@ -36,6 +35,7 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.exception.OrderCreateExcepton;
 import com.winhxd.b2c.common.exception.OrderCreateExceptonCodes;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.dao.OrderItemMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -93,7 +93,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfoMapper.insertSelective(orderInfo);
         orderItemMapper.insertItems(orderInfo.getOrderItems());
         // 生产订单流转日志
-        orderChangeLogService.orderChange(orderInfo.getOrderNo(), null, JSONUtils.toJSONString(orderInfo), null,
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), null, JsonUtil.toJSONString(orderInfo), null,
                 orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 OrderStatusEnum.SUBMITTED.getStatusDes(), MainPointEnum.MAIN);
         //订单创建后相关业务操作
@@ -176,7 +176,8 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     private OrderHandler getOrderHandler(short payType, short valuationType) {
-        if (payType == PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode()) {
+        if (payType == PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode()
+                && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             return onlinePayPickUpInStoreOrderHandler;
         } else if (payType == PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()
                 && valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {

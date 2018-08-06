@@ -2,8 +2,8 @@ package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.OpenShopCondition;
-import com.winhxd.b2c.common.domain.store.vo.OpenShopVO;
+import com.winhxd.b2c.common.domain.store.condition.OpenStoreCondition;
+import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,11 +31,11 @@ public class ApiProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
     @PostMapping(value = "2001/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenShopVO> checkStoreInfo(@RequestBody OpenShopCondition openShopCondition) {
-        ResponseResult<OpenShopVO> responseResult = new ResponseResult<>();
+    public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody OpenStoreCondition openStoreCondition) {
+        ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         try {
-            logger.info("惠小店开店条件验证接口入参为：{}", JsonUtil.toJSONString(openShopCondition));
-            responseResult.setData(new OpenShopVO());
+            logger.info("惠小店开店条件验证接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
+            responseResult.setData(new OpenStoreVO());
         } catch (Exception e) {
             e.printStackTrace();
         }

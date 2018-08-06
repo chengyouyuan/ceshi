@@ -1,26 +1,47 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
-import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+import java.util.Date;
+/**
+ * @author shijinxing
+ * @date: 2018-8-6
+ * @description: 优惠券活动详情
+ */
+@ApiModel("优惠券活动详情")
+@Data
 public class CouponActivityDetail {
+
+    @ApiModelProperty(value = "优惠券活动详情ID")
     private Long id;
 
+    @ApiModelProperty(value = "优惠券活动ID")
     private Long couponActivityId;
 
+    @ApiModelProperty(value = "模板ID")
     private Long templateId;
 
+    @ApiModelProperty(value = "门店ID")
     private Long storeId;
 
+    @ApiModelProperty(value = "门店手机号")
     private String storeMobile;
 
+    @ApiModelProperty(value = "用户编码")
     private Long customerId;
 
+    @ApiModelProperty(value = "用户手机号")
     private String customerMobile;
 
+    @ApiModelProperty(value = "数量")
     private Integer count;
 
+    @ApiModelProperty(value = "优惠券开始时间")
     private Date startTime;
 
+    @ApiModelProperty(value = "优惠券结束时间")
     private Date endTime;
 
     public Long getId() {

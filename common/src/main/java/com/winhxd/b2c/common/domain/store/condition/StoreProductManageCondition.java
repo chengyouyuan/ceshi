@@ -3,8 +3,10 @@ package com.winhxd.b2c.common.domain.store.condition;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +17,8 @@ import lombok.Data;
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午1:31:17
  */
+@ApiModel("B端门店商品基本操作入参")
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoreProductManageCondition extends BaseCondition implements Serializable{
 	

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.store.model;
+package com.winhxd.b2c.common.domain.store.vo;
 
 import java.math.BigDecimal;
 

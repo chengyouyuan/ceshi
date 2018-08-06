@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.model.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 
 import feign.hystrix.FallbackFactory;
 
@@ -46,7 +47,18 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/2003/v1/findShopCarProd",method = RequestMethod.GET)
     ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus,Long storeId);
-
+    
+    /**
+     * B端登入时校验改门店下上架商品未设置价格信息
+    * @Title: loginCheckSellMoney 
+    * @Description: TODO 
+    * @param storeId
+    * @return ResponseResult<LoginCheckSellMoneyVO>
+    * @author wuyuanbao
+    * @date 2018年8月6日下午1:40:49
+     */
+    @RequestMapping(value = "/store/2004/v1/findShopCarProd",method = RequestMethod.GET)
+    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId")Long storeId);
 
 }
 /**
@@ -75,6 +87,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
 	@Override
 	public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus, Long storeId) {
 		logger.error("StoreServiceClientFallBack -> findShopCarProd报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
+		logger.error("StoreServiceClientFallBack -> loginCheckSellMoney报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 

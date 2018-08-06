@@ -1,8 +1,9 @@
 package com.winhxd.b2c.order.dao;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -79,6 +80,14 @@ public interface OrderInfoMapper {
      * @return
      */
     List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(Long customerId);
+
+    /**
+     * 获取用户的订单和订单商品内容
+     *
+     * @param orderNo 订单编号
+     * @return
+     */
+    OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
     
     /**
      * 获取门店销售汇总信息
@@ -89,7 +98,7 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    StoreOrderSalesSummaryVO getStoreOrderTurnover(long storeId, Date startDateTime, Date endDateTime);
+    StoreOrderSalesSummaryVO getStoreOrderTurnover(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
     
     /**
      * @author wangbin
@@ -100,7 +109,7 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    int getStoreOrderCustomerNum(long storeId, Date startDateTime, Date endDateTime);
+    Integer getStoreOrderCustomerNum(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
 
     /**
      * 取消订单（只能取消customerId的订单）
@@ -111,4 +120,12 @@ public interface OrderInfoMapper {
      * @return 更新数量
      */
     int updateOrderStatusForCancel(Long customerId, String orderNo, String reason);
+
+    /**
+     * 查询门店下的提货码是否重复
+     * @param pickUpCodes 提货码列表
+     * @param storeId 门店ID
+     * @return true 有重复记录，false 不重复
+     */
+    boolean getPickUpCodeByStoreId(@Param("pickUpCodes")List<String> pickUpCodes, @Param("storeId")long storeId);
 }

@@ -39,5 +39,8 @@ public class AllowPutawayProdCondition extends MobileCondition {
 	
 	@ApiModelProperty(value = "商品类型默认0，0 惠下单商品，1 普通商品")
 	private Byte prodType;
+	
+	@ApiModelProperty(value = "是否是首次请求默认true，true是 false否")
+	private Boolean first=true;
 
 }

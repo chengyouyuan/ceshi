@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoListVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -65,15 +65,15 @@ public class ApiOrderController {
         return result;
     }
 
-    @ApiOperation(value = "订单取消接口", response = OrderInfoListVO.class, notes = "订单取消接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoListVO.class),
+    @ApiOperation(value = "订单取消接口", response = Boolean.class, notes = "订单取消接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/420/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OrderInfoListVO> orderCancel(@RequestBody OrderCancelCondition orderCancelCondition) {
+    public ResponseResult<Boolean> orderCancel(@RequestBody OrderCancelCondition orderCancelCondition) {
         LOGGER.info("=/api-order/order/420/v1/orderCancel订单取消接口=--开始--{}", orderCancelCondition);
         Long customerId = 1L;
-        ResponseResult<OrderInfoListVO> result = new ResponseResult<>();
+        ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             //返回对象
             result.setData(null);

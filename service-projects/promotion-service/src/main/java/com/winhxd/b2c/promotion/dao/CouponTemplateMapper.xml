@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="exolian" jdbcType="VARCHAR" property="exolian" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="investor_id" jdbcType="BIGINT" property="investorId" />
+    <result column="use_range_id" jdbcType="BIGINT" property="useRangeId" />
+    <result column="apply_rule_id" jdbcType="BIGINT" property="applyRuleId" />
+    <result column="corner" jdbcType="VARCHAR" property="corner" />
+    <result column="coupon_label" jdbcType="VARCHAR" property="couponLabel" />
+    <result column="coupon_label_color" jdbcType="INTEGER" property="couponLabelColor" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="cal_type" jdbcType="SMALLINT" property="calType" />
+    <result column="pay_type" jdbcType="CHAR" property="payType" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, exolian, remarks, investor_id, use_range_id, apply_rule_id, corner, coupon_label, 
+    coupon_label_color, status, reason, code, cal_type, pay_type, created_by, created_by_name, 
+    created, update_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_template
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    insert into coupon_template (id, title, exolian, 
+      remarks, investor_id, use_range_id, 
+      apply_rule_id, corner, coupon_label, 
+      coupon_label_color, status, reason, 
+      code, cal_type, pay_type, 
+      created_by, created_by_name, created, 
+      update_by, updated_by_name, updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{exolian,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{investorId,jdbcType=BIGINT}, #{useRangeId,jdbcType=BIGINT}, 
+      #{applyRuleId,jdbcType=BIGINT}, #{corner,jdbcType=VARCHAR}, #{couponLabel,jdbcType=VARCHAR}, 
+      #{couponLabelColor,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, #{reason,jdbcType=VARCHAR}, 
+      #{code,jdbcType=VARCHAR}, #{calType,jdbcType=SMALLINT}, #{payType,jdbcType=CHAR}, 
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    insert into coupon_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="exolian != null">
+        exolian,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="investorId != null">
+        investor_id,
+      </if>
+      <if test="useRangeId != null">
+        use_range_id,
+      </if>
+      <if test="applyRuleId != null">
+        apply_rule_id,
+      </if>
+      <if test="corner != null">
+        corner,
+      </if>
+      <if test="couponLabel != null">
+        coupon_label,
+      </if>
+      <if test="couponLabelColor != null">
+        coupon_label_color,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="calType != null">
+        cal_type,
+      </if>
+      <if test="payType != null">
+        pay_type,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="exolian != null">
+        #{exolian,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="investorId != null">
+        #{investorId,jdbcType=BIGINT},
+      </if>
+      <if test="useRangeId != null">
+        #{useRangeId,jdbcType=BIGINT},
+      </if>
+      <if test="applyRuleId != null">
+        #{applyRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="corner != null">
+        #{corner,jdbcType=VARCHAR},
+      </if>
+      <if test="couponLabel != null">
+        #{couponLabel,jdbcType=VARCHAR},
+      </if>
+      <if test="couponLabelColor != null">
+        #{couponLabelColor,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="calType != null">
+        #{calType,jdbcType=SMALLINT},
+      </if>
+      <if test="payType != null">
+        #{payType,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    update coupon_template
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="exolian != null">
+        exolian = #{exolian,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="investorId != null">
+        investor_id = #{investorId,jdbcType=BIGINT},
+      </if>
+      <if test="useRangeId != null">
+        use_range_id = #{useRangeId,jdbcType=BIGINT},
+      </if>
+      <if test="applyRuleId != null">
+        apply_rule_id = #{applyRuleId,jdbcType=BIGINT},
+      </if>
+      <if test="corner != null">
+        corner = #{corner,jdbcType=VARCHAR},
+      </if>
+      <if test="couponLabel != null">
+        coupon_label = #{couponLabel,jdbcType=VARCHAR},
+      </if>
+      <if test="couponLabelColor != null">
+        coupon_label_color = #{couponLabelColor,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="calType != null">
+        cal_type = #{calType,jdbcType=SMALLINT},
+      </if>
+      <if test="payType != null">
+        pay_type = #{payType,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
+    update coupon_template
+    set title = #{title,jdbcType=VARCHAR},
+      exolian = #{exolian,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      investor_id = #{investorId,jdbcType=BIGINT},
+      use_range_id = #{useRangeId,jdbcType=BIGINT},
+      apply_rule_id = #{applyRuleId,jdbcType=BIGINT},
+      corner = #{corner,jdbcType=VARCHAR},
+      coupon_label = #{couponLabel,jdbcType=VARCHAR},
+      coupon_label_color = #{couponLabelColor,jdbcType=INTEGER},
+      status = #{status,jdbcType=SMALLINT},
+      reason = #{reason,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      cal_type = #{calType,jdbcType=SMALLINT},
+      pay_type = #{payType,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

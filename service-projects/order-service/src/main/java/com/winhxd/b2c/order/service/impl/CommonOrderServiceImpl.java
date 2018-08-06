@@ -168,7 +168,7 @@ public class CommonOrderServiceImpl implements OrderService {
         boolean result = true;
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.CODE_411001, "订单号不能未空");
+            throw new BusinessException(BusinessCode.CODE_411001, "订单号不能为空");
         }
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);

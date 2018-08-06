@@ -51,6 +51,16 @@ public class OrderInfoDetailVO {
     @ApiModelProperty(value = "订单总金额", required = true)
     private BigDecimal orderTotalMoney;
     /**
+     * 优惠金额
+     */
+    @ApiModelProperty(value = "优惠金额", required = true)
+    private BigDecimal discountMoney;
+    /**
+     * 订单实付金额
+     */
+    @ApiModelProperty(value = "订单实付金额", required = true)
+    private BigDecimal realPaymentMoney;
+    /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */
     @ApiModelProperty(value = "支付类型:1为微信扫码付款;2为微信在线支付;", required = true)

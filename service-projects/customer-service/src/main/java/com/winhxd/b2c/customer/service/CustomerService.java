@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
 
+import java.util.List;
+
 /**
  * @Description: 小程序用户服务接口类
  * @author chengyy
@@ -27,4 +29,13 @@ public interface CustomerService {
      * @return  sql语句执行之后影响的行数
      */
     int modifyCustomerStatus(CustomerUserInfoCondition1 condition);
+
+    /**
+     * @author chengyy
+     * @date 2018/8/6 15:31
+     * @Description 根据id批量查询用户信息
+     * @param ids 用户id
+     * @return  用户信息
+     */
+    List<CustomerUserInfoVO1> findCustomerUserByIds(List<Long> ids);
 }

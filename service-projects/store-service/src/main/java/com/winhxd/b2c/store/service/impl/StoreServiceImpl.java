@@ -2,7 +2,7 @@ package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
+import com.winhxd.b2c.common.domain.backStage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
@@ -54,11 +54,11 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public PagedList<StoreVO> findStoreUserInfo(StoreInfoCondition storeCondition) {
+    public PagedList<StoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
         PagedList<StoreVO> pagedList = new PagedList<>();
         String reginCode = null;
         if (storeCondition.getReginCode() != null){
-            reginCode = reginCode.replaceAll("0+$", "");
+            reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
         }
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
         StoreUserInfo storeUserInfo = new StoreUserInfo();

@@ -31,7 +31,7 @@ public class CouponTemplateVO {
     /**
      * 使用范围规则ID
      */
-    private Long useRangeId;
+    private Long gradeId;
     /**
      * 适用对象规则ID
      */
@@ -67,7 +67,7 @@ public class CouponTemplateVO {
     /**
      *支付方式 1扫码支付 2线上支付
      */
-    private String payType;
+    private Short payType;
     /**
      * '创建人id
      */
@@ -149,12 +149,12 @@ public class CouponTemplateVO {
         this.investorId = investorId;
     }
 
-    public Long getUseRangeId() {
-        return useRangeId;
+    public Long getGradeId() {
+        return gradeId;
     }
 
-    public void setUseRangeId(Long useRangeId) {
-        this.useRangeId = useRangeId;
+    public void setGradeId(Long gradeId) {
+        this.gradeId = gradeId;
     }
 
     public Long getApplyRuleId() {
@@ -221,11 +221,11 @@ public class CouponTemplateVO {
         this.calType = calType;
     }
 
-    public String getPayType() {
+    public Short getPayType() {
         return payType;
     }
 
-    public void setPayType(String payType) {
+    public void setPayType(Short payType) {
         this.payType = payType;
     }
 

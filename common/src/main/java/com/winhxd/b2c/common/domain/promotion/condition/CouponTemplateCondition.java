@@ -1,13 +1,16 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 /**
  * @Author wl
  * @Date 2018/8/6 09:56
  * @Description
  **/
-public class CouponTemplateCondition {
+public class CouponTemplateCondition extends BaseCondition implements Serializable {
 
     @ApiModelProperty(value = "优惠券标题")
     private String title;
@@ -18,7 +21,7 @@ public class CouponTemplateCondition {
     @ApiModelProperty(value = "出资方规则ID")
     private Long investorId;
     @ApiModelProperty(value = "使用范围规则ID")
-    private Long useRangeId;
+    private Long gradeId;
     @ApiModelProperty(value = "适用对象规则ID")
     private Long applyRuleId;
     @ApiModelProperty(value = "优惠券标签")
@@ -60,12 +63,12 @@ public class CouponTemplateCondition {
         this.investorId = investorId;
     }
 
-    public Long getUseRangeId() {
-        return useRangeId;
+    public Long getGradeId() {
+        return gradeId;
     }
 
-    public void setUseRangeId(Long useRangeId) {
-        this.useRangeId = useRangeId;
+    public void setGradeId(Long gradeId) {
+        this.gradeId = gradeId;
     }
 
     public Long getApplyRuleId() {

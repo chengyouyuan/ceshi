@@ -13,7 +13,7 @@ public class CouponTemplate {
 
     private Long investorId;
 
-    private Long useRangeId;
+    private Long gradeId;
 
     private Long applyRuleId;
 
@@ -44,6 +44,26 @@ public class CouponTemplate {
     private String updatedByName;
 
     private Date updated;
+
+
+    /**
+     * 出资方规则名称
+     */
+    private String investorName;
+
+    /**
+     * 优惠券优惠方式名称
+     */
+    private String gradeName;
+
+    /**
+     * 优惠券类型规则名称
+     */
+    private String applyRuleName;
+
+
+
+
 
     public Long getId() {
         return id;
@@ -85,12 +105,12 @@ public class CouponTemplate {
         this.investorId = investorId;
     }
 
-    public Long getUseRangeId() {
-        return useRangeId;
+    public Long getGradeId() {
+        return gradeId;
     }
 
-    public void setUseRangeId(Long useRangeId) {
-        this.useRangeId = useRangeId;
+    public void setGradeId(Long gradeId) {
+        this.gradeId = gradeId;
     }
 
     public Long getApplyRuleId() {
@@ -211,5 +231,30 @@ public class CouponTemplate {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+
+    public String getInvestorName() {
+        return investorName;
+    }
+
+    public void setInvestorName(String investorName) {
+        this.investorName = investorName;
+    }
+
+    public String getGradeName() {
+        return gradeName;
+    }
+
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
+    }
+
+    public String getApplyRuleName() {
+        return applyRuleName;
+    }
+
+    public void setApplyRuleName(String applyRuleName) {
+        this.applyRuleName = applyRuleName;
     }
 }

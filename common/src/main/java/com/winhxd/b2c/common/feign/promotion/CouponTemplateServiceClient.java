@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Author wl
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  **/
 @FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = CouponTemplateServiceFallback.class)
 public interface CouponTemplateServiceClient {
-@RequestMapping(value = "/promotion/v1/addCouponTemplate", method = RequestMethod.POST)
+
 /**
  *
  *@Deccription 添加优惠换模板
@@ -28,9 +29,36 @@ public interface CouponTemplateServiceClient {
  *@User  wl
  *@Date   2018/8/6 10:42
  */
+@RequestMapping(value = "/promotion/v1/addCouponTemplate", method = RequestMethod.POST)
 public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
+
+/**
+ *
+ *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
+ *@Params   id  模板id
+ *@Return   ResponseResult
+ *@User     wl
+ *@Date   2018/8/6 14:41
+ */
+@RequestMapping(value = "/promotion/v1/toEditCouponTemplate", method = RequestMethod.GET)
+public ResponseResult toEditCouponTemplate(@RequestParam("id") String id);
+
+
+ /**
+  *
+  *@Deccription 多条件分页查询 优惠券模板列表
+  *@Params  CouponTemplateCondition
+  *@Return  ResponseResult
+  *@User  wl
+  *@Date   2018/8/6 17:53
+  */
+@RequestMapping(value = "/promotion/v1/findCouponTemplatePageByCondition", method = RequestMethod.POST)
+public ResponseResult<Object> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition);
+
 }
+
+
 
 @Component
 class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
@@ -49,6 +77,34 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     public ResponseResult addCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> addCouponTemplate", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     *
+     *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
+     *@Params   id  模板id
+     *@Return   ResponseResult
+     *@User     wl
+     *@Date   2018/8/6 14:41
+     */
+    @Override
+    public ResponseResult toEditCouponTemplate(String id) {
+        logger.error("CouponTemplateServiceClient -> toEditCouponTemplate", throwable);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     *
+     *@Deccription 多条件分页查询 优惠券模板列表
+     *@Params  CouponTemplateCondition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/6 17:53
+     */
+    @Override
+    public ResponseResult<Object> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+        logger.error("CouponTemplateServiceClient -> findCouponTemplatePageByCondition", throwable);
+        return new ResponseResult<Object>(BusinessCode.CODE_1001);
     }
 
 }

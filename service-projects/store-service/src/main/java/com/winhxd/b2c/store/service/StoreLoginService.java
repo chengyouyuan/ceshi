@@ -9,4 +9,6 @@ public interface StoreLoginService {
 
 	int modifyPassword(StoreUserInfo storeUserInfo);
 
+	StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile);
+
 }

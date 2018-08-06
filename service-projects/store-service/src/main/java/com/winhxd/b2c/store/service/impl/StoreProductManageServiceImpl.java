@@ -1,8 +1,11 @@
 package com.winhxd.b2c.store.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.store.dao.StoreProductManageMapper;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 /**
@@ -16,4 +19,10 @@ import com.winhxd.b2c.store.service.StoreProductManageService;
 public class StoreProductManageServiceImpl implements StoreProductManageService {
 	@Autowired
 	private StoreProductManageMapper storeProductManageMapper;
+
+	@Override
+	public List<String> selectSkusByConditon(StoreProductManageCondition condition) {
+		
+		return storeProductManageMapper.selectSkusByConditon(condition);
+	}
 }

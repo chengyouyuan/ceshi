@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
 import com.winhxd.b2c.customer.dao.CustomerUserInfoMapper;
 import com.winhxd.b2c.customer.service.CustomerService;
@@ -32,5 +33,13 @@ public class CustomerServiceImpl implements CustomerService {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         return pagedList;
+    }
+
+    @Override
+    public int modifyCustomerStatus(CustomerUserInfoCondition1 condition) {
+        CustomerUserInfo record = new CustomerUserInfo();
+        record.setCustomerId(condition.getCustomerId());
+        record.setStatus(condition.getStatus());
+        return customerUserInfoMapper.updateByPrimaryKeySelective(record);
     }
 }

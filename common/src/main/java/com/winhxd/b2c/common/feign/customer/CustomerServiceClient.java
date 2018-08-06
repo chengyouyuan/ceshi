@@ -30,6 +30,16 @@ public interface CustomerServiceClient {
       */
      @RequestMapping(value="/customer/2005/v1/queryCustomerPageInfo",method = RequestMethod.POST)
      ResponseResult<PagedList<CustomerUserInfoVO1>> queryCustomerPageInfo(@RequestBody CustomerUserInfoCondition1 condition);
+
+     /**
+      * @author chengyy
+      * @date 2018/8/6 13:32
+      * @Description 更新用户的状态
+      * @param condition 参数条件对象
+      * @return   null
+      */
+     @RequestMapping(value = "/customer/2006/v1/updateStatus",method = RequestMethod.POST)
+     ResponseResult<Void> updateStatus(@RequestBody CustomerUserInfoCondition1 condition);
 }
 
 class CustomerServiceClientFallBack implements CustomerServiceClient,FallbackFactory<CustomerServiceClient>{
@@ -43,7 +53,13 @@ class CustomerServiceClientFallBack implements CustomerServiceClient,FallbackFac
 
     @Override
     public ResponseResult<PagedList<CustomerUserInfoVO1>> queryCustomerPageInfo(CustomerUserInfoCondition1 condition) {
-        logger.error("CustomerServiceClientFallBack -> queryCustomerPageInfo错误信息{}", throwable);
+        logger.error("CustomerServiceClientFallBack -> queryCustomerPageInfo错误信息{}", throwable.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> updateStatus(CustomerUserInfoCondition1 condition) {
+        logger.error("CustomerServiceClientFallBack -> updateStatus错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

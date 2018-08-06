@@ -11,11 +11,8 @@ import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import com.winhxd.b2c.system.user.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,12 +50,6 @@ public class SysUserController implements UserServiceClient {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            if(StringUtils.isNotBlank(sysUser.getPassword())){
-                sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(sysUser.getPassword()).getBytes()));
-            } else {
-                sysUser.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-            }
-
             sysUserService.addSysUser(sysUser);
             result.setData(sysUser.getId());
         } catch (BusinessException e){
@@ -84,12 +75,6 @@ public class SysUserController implements UserServiceClient {
         logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            String password = sysUser.getPassword();
-            if(StringUtils.isNotBlank(password)){
-                sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(password).getBytes()));
-            }else{
-                sysUser.setPassword(null);
-            }
             sysUserService.updateSysUser(sysUser);
         } catch (BusinessException e){
             logger.error("{} - 修改用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);

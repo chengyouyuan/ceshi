@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerOrderInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -17,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,5 +68,31 @@ public class CustomerUserController {
             throw new BusinessException(BusinessCode.CODE_200007);
         }
         return customerServiceClient.updateStatus(condition);
+    }
+
+    @ApiOperation(value = "根据用户id查询当前用户的信息以及订单信息",response = ResponseResult.class,notes = "点击用户详情页查询用户已经订单详情列表信息")
+    @GetMapping(value = "/2004/v1/queryCustomerUserInfoDeatil/{customerUserId}")
+    public ResponseResult<CustomerOrderInfoVO> queryCustomerUserInfoDeatil(@PathVariable("customerUserId")Long customerUserId){
+        ResponseResult<CustomerOrderInfoVO> responseResult = new ResponseResult<>();
+        CustomerOrderInfoVO result = new CustomerOrderInfoVO();
+        if(customerUserId == null){
+            throw new BusinessException(BusinessCode.CODE_200001);
+        }
+        //根据customerId查询用户信息
+        CustomerUserInfoCondition1 condition = new CustomerUserInfoCondition1();
+        condition.setCustomerId(customerUserId);
+        ResponseResult<PagedList<CustomerUserInfoVO1>>  pageListResult = customerServiceClient.queryCustomerPageInfo(condition);
+        List<CustomerUserInfoVO1>customers = pageListResult.getData().getData();
+        if(customers != null && customers.size() > 0){
+            CustomerUserInfoVO1 customer = customers.get(0);
+            result.setCustomer(customer);
+        }
+        //查询优惠券领取的总次数
+        //TODO 调用fegin查询当前用户领取的优惠券的总次数
+        //调用Fegin查询订单信息
+        //TODO 调用fegin查询当前用户关联的订单信息
+        responseResult.setData(result);
+        return  responseResult;
+
     }
 }

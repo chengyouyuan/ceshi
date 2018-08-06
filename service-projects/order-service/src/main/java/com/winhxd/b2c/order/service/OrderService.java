@@ -35,5 +35,5 @@ public interface OrderService {
      * @param orderCancelCondition 入参
      * @return true 成功，false不成功
      */
-    boolean cancelOrder(OrderCancelCondition orderCancelCondition);
+    boolean cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
 }

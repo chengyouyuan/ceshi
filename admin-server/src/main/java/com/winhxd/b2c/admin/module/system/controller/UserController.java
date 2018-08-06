@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
+import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -15,16 +16,24 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * @description 系统用户管理控制层
+ * @author zhangzhengyang
+ * @date 2018/8/6
+ */
 @Api(tags = "系统用户管理")
 @RestController("/user")
 public class UserController {
@@ -45,16 +54,23 @@ public class UserController {
     })
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
-    public ResponseResult add(SysUser sysUser) {
-        logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
+    public ResponseResult add(SysUserDTO sysUserDTO) {
+        logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();
 
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(sysUserDTO, sysUser);
+        if(StringUtils.isNotBlank(sysUser.getPassword())){
+            sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(sysUser.getPassword()).getBytes()));
+        } else {
+            sysUser.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        }
         sysUser.setCreated(date);
-        sysUser.setCreatedBy(userInfo.getUserName());
+        sysUser.setCreatedBy(userInfo.getUsername());
         sysUser.setUpdated(date);
-        sysUser.setUpdatedBy(userInfo.getUserName());
+        sysUser.setUpdatedBy(userInfo.getUsername());
 
         return userServiceClient.add(sysUser);
     }
@@ -68,14 +84,23 @@ public class UserController {
     })
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
-    public ResponseResult edit(SysUser sysUser) {
-        logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUser);
+    public ResponseResult edit(SysUserDTO sysUserDTO) {
+        logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();
 
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(sysUserDTO, sysUser);
+        String password = sysUser.getPassword();
+        if(StringUtils.isNotBlank(password)){
+            sysUser.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(password).getBytes()));
+        }else{
+            sysUser.setPassword(null);
+        }
+
         sysUser.setUpdated(date);
-        sysUser.setUpdatedBy(userInfo.getUserName());
+        sysUser.setUpdatedBy(userInfo.getUsername());
 
         return userServiceClient.update(sysUser);
     }
@@ -101,7 +126,7 @@ public class UserController {
         passwordDTO.setNewPassword(MD5Encoder.encode(passwordDTO.getNewPassword().getBytes()));
 
         passwordDTO.setUpdated(Calendar.getInstance().getTime());
-        passwordDTO.setUpdatedBy(userInfo.getUserName());
+        passwordDTO.setUpdatedBy(userInfo.getUsername());
 
         return userServiceClient.updatePassword(passwordDTO);
     }

@@ -1,12 +1,12 @@
-package com.winhxd.b2c.admin.module.backstage.controller;
+package com.winhxd.b2c.admin.module.backStage.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
+import com.winhxd.b2c.common.domain.backStage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.feign.store.backStage.BackStageStoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "后台门店账户管理")
 @RestController
 @RequestMapping("/store")
-public class StoreController {
+public class BackStageStoreController {
 
-    private static final Logger logger = LoggerFactory.getLogger(StoreController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BackStageStoreController.class);
 
     private static final String MODULE_NAME = "后台-门店管理";
 
     @Autowired
-    private StoreServiceClient storeServiceClient;
+    private BackStageStoreServiceClient storeServiceClient;
 
     @ApiOperation("门店账户列表")
     @ApiResponses({
@@ -39,7 +39,7 @@ public class StoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @PostMapping(value = "/1000/v1/storeList")
-    public ResponseResult<PagedList<StoreVO>> storeList(@RequestBody StoreInfoCondition storeInfoCondition) {
+    public ResponseResult<PagedList<StoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         ResponseResult<PagedList<StoreVO>> responseResult = storeServiceClient.storeList(storeInfoCondition);
         logger.info("{} - #后台-门店##门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition);
         return responseResult;
@@ -49,15 +49,15 @@ public class StoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
     @PostMapping(value = "1000/v1/getStoreInfoById", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreInfoCondition> getStoreInfoById(@RequestParam("id") Long id) {
+    public ResponseResult<BackStageStoreInfoCondition> getStoreInfoById(@RequestParam("id") Long id) {
         if (id == null) {
             logger.error("查看门店账户信息接口 getStoreInfoById,参数错误！");
             throw new BusinessException(BusinessCode.CODE_1001);
         }
-        ResponseResult<StoreInfoCondition> responseResult = new ResponseResult<>();
+        ResponseResult<BackStageStoreInfoCondition> responseResult = new ResponseResult<>();
         try {
             logger.info("查看门店账户信息接口入参为：{}", id);
-            responseResult.setData(new StoreInfoCondition());
+            responseResult.setData(new BackStageStoreInfoCondition());
             logger.info("查看门店账户信息接口返参为：{}", JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {
             logger.error("查看门店账户信息接口，服务器内部错误：{}", e);
@@ -74,7 +74,7 @@ public class StoreController {
             @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1000/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult modifyStoreInfo(@RequestBody StoreInfoCondition openStoreCondition) {
+    public ResponseResult modifyStoreInfo(@RequestBody BackStageStoreInfoCondition openStoreCondition) {
         if (openStoreCondition == null) {
             logger.error("编辑门店保存接口 modifyStoreInfo,参数全部为空");
             throw new BusinessException(BusinessCode.CODE_200001);

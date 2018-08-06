@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "CustomerLogin Controller", tags = "C-Login")
 @RestController
+@RequestMapping(value = "/api/weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerLoginController.class);
 
@@ -49,11 +50,15 @@ public class ApiCustomerLoginController {
 	 */
 	@ApiOperation(value = "通过code获取openid和session_key")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
-	@RequestMapping(value = "/api/weChatLogin/2021/v1/saveWeChatLogin", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+	@RequestMapping(value = "2021/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<Long> saveWeChatLogin(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
+			if (null == customerUserInfoCondition) {
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 			if (null != customerUserInfoCondition.getCustomerId()) {
 				// TODO:调用金彪服务拿code去换session_key更新到数据库
@@ -88,12 +93,17 @@ public class ApiCustomerLoginController {
 	@ApiOperation(value = "通过账号验证码登录")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
+			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
-	@RequestMapping(value = "/api/weChatRegister/2023/v1/weChatRegister", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "2023/v1/weChatRegister", method = RequestMethod.POST)
 	public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
 		try {
+			if (null == customerUserInfoCondition) {
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
 			/**
 			 * 根据手机号去取缓存verificationCode对比是否一致
 			 */
@@ -101,8 +111,12 @@ public class ApiCustomerLoginController {
 					.equals(cache.get(customerUserInfoCondition.getCustomerMobile()))) {
 				return new ResponseResult<>(BusinessCode.CODE_1008);
 			}
-			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+			CustomerUserInfo customerUserInfo = null;
+			;
 			customerUserInfo = customerLoginService.getCustomerUserInfoById(customerUserInfoCondition.getCustomerId());
+			if (null == customerUserInfo) {
+				return new ResponseResult<>(BusinessCode.CODE_1004);
+			}
 			/**
 			 * 数据库手机号为空则，绑定手机号
 			 */
@@ -111,8 +125,8 @@ public class ApiCustomerLoginController {
 				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
 			}
-			 result.setData(customerUserInfo.getCustomerId());
-			 return result;
+			result.setData(customerUserInfo.getCustomerId());
+			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
@@ -132,11 +146,15 @@ public class ApiCustomerLoginController {
 	 */
 	@ApiOperation(value = "通过账号发送验证码")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
-	@RequestMapping(value = "/api/weChatRegister/2022/v1/sendVerification", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+	@RequestMapping(value = "2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
+			if (null == customerUserInfoCondition) {
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
 			// TODO:调用massage 发送短信smsCode
 			return result;
 		} catch (BusinessException e) {
@@ -148,47 +166,57 @@ public class ApiCustomerLoginController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @author wufuyun
-	 * @date  2018年8月6日 上午9:53:18
+	 * @date 2018年8月6日 上午9:53:18
 	 * @Description 小程序打礼包列表
 	 * @param customerUserInfoCondition
 	 * @return
 	 */
-	@ApiOperation(value = "查询大礼包列表")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
-	@RequestMapping(value = "/api/weChatRegister/2022/v1/findBigGiftBagList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<String> findBigGiftBagList(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
-		ResponseResult<String> result = new ResponseResult<>();
-		try {
-			// TODO:掉寒宁服务
-			return result;
-		} catch (BusinessException e) {
-			logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
-			result = new ResponseResult<>(e.getErrorCode());
-		} catch (Exception e) {
-			logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
-	}
-	
+	/*
+	 * @ApiOperation(value = "查询大礼包列表")
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message =
+	 * "成功"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	 * 
+	 * @RequestMapping(value = "/api/weChatRegister/2022/v1/findBigGiftBagList",
+	 * method = RequestMethod.POST) public ResponseResult<String>
+	 * findBigGiftBagList(@RequestBody CustomerUserInfoCondition
+	 * customerUserInfoCondition) { ResponseResult<String> result = new
+	 * ResponseResult<>(); try { if(null == customerUserInfoCondition){ return
+	 * new ResponseResult<>(BusinessCode.CODE_1007); } // TODO:掉寒宁服务 return
+	 * result; } catch (BusinessException e) {
+	 * logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}"
+	 * + e.getMessage(), e.getErrorCode()); result = new
+	 * ResponseResult<>(e.getErrorCode()); } catch (Exception e) {
+	 * logger.error("ApiCustomerLoginController -> findBigGiftBagList异常, 异常信息{}"
+	 * + e.getMessage(), e); result = new
+	 * ResponseResult<>(BusinessCode.CODE_1001); } return result; }
+	 */
+
 	/**
 	 * @author wufuyun
-	 * @date  2018年8月6日 上午9:56:37
+	 * @date 2018年8月6日 上午9:56:37
 	 * @Description 用户领取礼包
 	 * @param customerUserInfoCondition
 	 * @return
 	 */
-	@ApiOperation(value = "领取礼包")
+	@ApiOperation(value = "领取礼包,返回列表")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") })
-	@RequestMapping(value = "/api/weChatRegister/2022/v1/customerEasy", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+	@RequestMapping(value = "2024/v1/customerEasy", method = RequestMethod.POST)
 	public ResponseResult<String> customerEasy(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
+			if (null == customerUserInfoCondition) {
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
 			// TODO:掉寒宁服务
 			return result;
 		} catch (BusinessException e) {

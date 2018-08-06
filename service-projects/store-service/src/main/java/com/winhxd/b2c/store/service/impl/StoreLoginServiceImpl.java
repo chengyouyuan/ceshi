@@ -20,5 +20,9 @@ public class StoreLoginServiceImpl implements StoreLoginService{
 	public int modifyPassword(StoreUserInfo storeUserInfo) {
 		return storeUserInfoMapper.updateByPrimaryKeySelective(storeUserInfo);
 	}
+	@Override
+	public StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile) {
+		return storeUserInfoMapper.selectByStoreUserInfo(storeMobile);
+	}
 
 }

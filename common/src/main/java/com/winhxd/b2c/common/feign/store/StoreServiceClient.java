@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.model.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 
 import feign.hystrix.FallbackFactory;
 

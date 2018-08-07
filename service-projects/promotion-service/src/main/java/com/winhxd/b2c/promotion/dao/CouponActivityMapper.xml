@@ -26,107 +26,13 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, name, code, exolian, remarks, type, coupon_type, activity_start, activity_end,
     coupon_num_type, coupon_num, customer_voucher_limit_type, customer_voucher_limit_num,
     send_num, send_time, activity_status, status, created_by, created_by_name, created,
     update_by, updated_by_name, updated
   </sql>
-
-  <select id="queryPullCouponActivity" parameterType="" resultMap="">
-    SELECT
-    ca.`code`,
-    ca.`name`,
-    (
-    SELECT
-    count(DISTINCT template_id)
-    FROM
-    coupon_activity_detail
-    WHERE
-    coupon_activity_id = ca.id
-    ) AS citeNum,
-    (
-    SELECT
-    count(DISTINCT store_id)
-    FROM
-    coupon_activity_detail
-    WHERE
-    coupon_activity_id = ca.id
-    ) AS storeNum,
-    ca.coupon_num_type,
-    ca.coupon_num,
-    (
-    SELECT
-    count(cts.id)
-    FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    WHERE
-    cts.`status` IN ('1', '2', '4')
-    AND car.coupon_activity_id = ca.id
-    ) AS getNum,
-    (
-    SELECT
-    count(cts.id)
-    FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    LEFT JOIN coupon_template_use ctu ON ctu.send_id = cts.id
-    WHERE
-    ctu.`status` = '1'
-    AND cts.`status` IN ('1', '2', '4')
-    AND car.coupon_activity_id = ca.id
-    ) AS useNum,
-    (
-    SELECT
-    count(cts.id)
-    FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    WHERE
-    cts.`status` = '5'
-    AND car.coupon_activity_id = ca.id
-    ) AS revocationNum,
-    ca.activity_start,
-    ca.activity_end,
-    (
-    SELECT
-    cad.start_time
-    FROM
-    coupon_activity_detail cad
-    WHERE
-    cad.coupon_activity_id = ca.id
-    ) AS coupon_start_time,
-    (
-    SELECT
-    cad.end_time
-    FROM
-    coupon_activity_detail cad
-    WHERE
-    cad.coupon_activity_id = ca.id
-    ) AS coupon_end_time,
-    ca.created_by_name,
-    ca.created,
-    ca.updated_by_name,
-    ca.updated
-    FROM
-    coupon_activity ca
-    LEFT JOIN coupon_activity_detail cad ON cad.coupon_activity_id = ca.id
-    LEFT JOIN coupon_template ct ON ct.id = cad.template_id
-    LEFT JOIN store_user_info sui ON sui.store_id = cad.customer_id
-    WHERE
-    1 = 1
-    AND ca.`status`='1'
-    AND ca.`code` = ''
-    AND ca.`name` = ''
-    AND ct.`code` = ''
-    AND sui.store_name = ''
-    AND ca.coupon_num_type = ''
-    AND ca.customer_voucher_limit_type = ''
-    AND ca.created_by_name = ''
-    AND ca.created < ''
-    AND ca.created > ''
-  </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select

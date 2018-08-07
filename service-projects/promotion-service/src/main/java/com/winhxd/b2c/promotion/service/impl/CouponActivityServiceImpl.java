@@ -23,8 +23,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityMapper couponActivityMapper;
 
     @Override
-    public PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition) {
-        return couponActivityMapper.queryPullCouponActivity(condition);
+    public PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition) {
+        return couponActivityMapper.queryCouponActivity(condition);
     }
 
     @Override

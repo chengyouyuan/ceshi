@@ -32,5 +32,5 @@ public interface CouponActivityMapper {
      * @param condition
      * @return
      */
-    PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition);
+    PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
 }

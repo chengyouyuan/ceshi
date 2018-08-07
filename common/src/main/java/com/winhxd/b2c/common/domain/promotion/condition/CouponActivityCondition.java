@@ -27,6 +27,9 @@ public class CouponActivityCondition {
     @ApiModelProperty(value = "优惠券编码")
     private String templateCode;
 
+    @ApiModelProperty(value = "C端用户手机号")
+    private String customerMobile;
+
     @ApiModelProperty(value = "门店编码")
     private Long storeId;
 
@@ -47,6 +50,14 @@ public class CouponActivityCondition {
 
     @ApiModelProperty(value = "创建时间结束")
     private Date createdEnd;
+
+    public String getCustomerMobile() {
+        return customerMobile;
+    }
+
+    public void setCustomerMobile(String customerMobile) {
+        this.customerMobile = customerMobile;
+    }
 
     public Long getId() {
         return id;

@@ -26,7 +26,7 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
-  <resultMap id="queryPullResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO">
+  <resultMap id="queryResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO">
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -54,7 +54,7 @@
     update_by, updated_by_name, updated
   </sql>
 
-  <select id="queryPullCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryPullResultMap">
+  <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
     ca.`code`,
@@ -150,6 +150,9 @@
     </if>
     <if test="storeId != null">
       AND cad.store_id = #{storeId,jdbcType=BIGINT},
+    </if>
+    <if test="customerMobile != null">
+      AND cad.customer_mobile = #{customerMobile,jdbcType=VARCHAR},
     </if>
     <if test="store_name != null">
       AND sui.store_name = #{store_name,jdbcType=VARCHAR},

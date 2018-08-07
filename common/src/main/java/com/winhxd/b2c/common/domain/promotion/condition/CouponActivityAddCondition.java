@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail;
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,8 +35,8 @@ public class CouponActivityAddCondition {
     @ApiModelProperty(value = "1领券 2推券")
     private Short type;
 
-    @ApiModelProperty(value = "详情集合")
-    private List<CouponActivityDetail> CouponActivityDetailList;
+    @ApiModelProperty(value = "优惠券详情")
+    private List<CouponActivityTemplate> CouponActivityTemplateList;
 
     @ApiModelProperty(value = "活动开始时间")
     private Date activityStart;
@@ -107,12 +107,12 @@ public class CouponActivityAddCondition {
         this.type = type;
     }
 
-    public List<CouponActivityDetail> getCouponActivityDetailList() {
-        return CouponActivityDetailList;
+    public List<CouponActivityTemplate> getCouponActivityTemplateList() {
+        return CouponActivityTemplateList;
     }
 
-    public void setCouponActivityDetailList(List<CouponActivityDetail> couponActivityDetailList) {
-        CouponActivityDetailList = couponActivityDetailList;
+    public void setCouponActivityTemplateList(List<CouponActivityTemplate> couponActivityTemplateList) {
+        CouponActivityTemplateList = couponActivityTemplateList;
     }
 
     public Date getActivityStart() {
@@ -161,5 +161,13 @@ public class CouponActivityAddCondition {
 
     public void setCustomerVoucherLimitNum(Integer customerVoucherLimitNum) {
         this.customerVoucherLimitNum = customerVoucherLimitNum;
+    }
+
+    public Short getCouponType() {
+        return couponType;
+    }
+
+    public void setCouponType(Short couponType) {
+        this.couponType = couponType;
     }
 }

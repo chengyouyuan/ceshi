@@ -56,7 +56,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
 
     /**
      *
-     *@Deccription 添加领券活动
+     *@Deccription 添加优惠券活动
      *@Params  condition
      *@Return  ResponseResult
      *@User  sjx
@@ -102,4 +102,33 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         return responseResult;
     }
+
+    /**
+     *
+     *@Deccription 编辑优惠券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/7
+     */
+    @Override
+    @ApiOperation(value = "编辑优惠券活动", notes = "编辑优惠券活动")
+    public ResponseResult updateCouponActivity(CouponActivityAddCondition condition) {
+        /**
+         * 判断必填参数
+         */
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponActivityService.updateCouponActivity(condition);
+            if(count > 0) {
+                responseResult.setCode(BusinessCode.CODE_OK);
+            }else{
+                responseResult.setCode(BusinessCode.CODE_1001);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
+
 }

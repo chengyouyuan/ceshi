@@ -27,4 +27,13 @@ public interface CouponActivityService {
      *@Date   2018/8/6
      */
     int saveCouponActivity(CouponActivityAddCondition condition);
+    /**
+     *
+     *@Deccription 编辑优惠券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/7
+     */
+    int updateCouponActivity(CouponActivityAddCondition condition);
 }

@@ -43,6 +43,16 @@ public interface CouponActivityServiceClient {
      */
     @RequestMapping(value = "/promotion/v1/addCouponActivity", method = RequestMethod.POST)
     public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
+    /**
+     *
+     *@Deccription 编辑优惠券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/7
+     */
+    @RequestMapping(value = "/promotion/v1/updateCouponActivity", method = RequestMethod.POST)
+    public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition);
 
 }
 
@@ -60,6 +70,12 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     @Override
     public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
         logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult updateCouponActivity(CouponActivityAddCondition condition) {
+        logger.error("CouponActivityServiceFallback -> updateCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

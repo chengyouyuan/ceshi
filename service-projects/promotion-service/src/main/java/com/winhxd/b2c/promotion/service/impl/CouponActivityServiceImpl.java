@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddConditi
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
@@ -32,6 +33,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
     @Override
     public int saveCouponActivity(CouponActivityAddCondition condition) {
+        //CouponActivity
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setName(condition.getName());
         couponActivity.setCode(getUUID());
@@ -47,18 +49,20 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         //领券
         if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
             couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
-            couponActivity.setCouponNumType(condition.getCouponNumType());
-            couponActivity.setCouponNum(condition.getCouponNum());
-            couponActivity.setCustomerVoucherLimitType(condition.getCustomerVoucherLimitType());
-            if(CouponActivityEnum.STORE_LIMITED.getCode() == condition.getCustomerVoucherLimitType()){
-                couponActivity.setCustomerVoucherLimitNum(condition.getCustomerVoucherLimitNum());
-            }
         }
         //推券
         if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
             couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
             couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
-            couponActivity.setCustomerVoucherLimitNum(condition.getCustomerVoucherLimitNum());
+        }
+        couponActivityMapper.insertSelective(couponActivity);
+
+        //CouponActivityTemplate
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+
+        for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+            couponActivityTemplate.setCouponActivityId(couponActivity.getId());
+            couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
         }
 
 
@@ -66,6 +70,12 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
         return 0;
     }
+
+    @Override
+    public int updateCouponActivity(CouponActivityAddCondition condition) {
+        return 0;
+    }
+
     /**
      * 自动生成32位的UUid，对应数据库的主键id进行插入用。
      * @return

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class CouponActivityTemplate {
     private Long id;
@@ -28,6 +29,11 @@ public class CouponActivityTemplate {
     private Integer sendNum;
 
     private Date sendTime;
+
+    /**
+     * 优惠券对应的门店用户集合
+     */
+    private List<CouponActivityStoreCustomer> couponActivityStoreCustomerList;
 
     public Long getId() {
         return id;
@@ -131,5 +137,13 @@ public class CouponActivityTemplate {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public List<CouponActivityStoreCustomer> getCouponActivityStoreCustomerList() {
+        return couponActivityStoreCustomerList;
+    }
+
+    public void setCouponActivityStoreCustomerList(List<CouponActivityStoreCustomer> couponActivityStoreCustomerList) {
+        this.couponActivityStoreCustomerList = couponActivityStoreCustomerList;
     }
 }

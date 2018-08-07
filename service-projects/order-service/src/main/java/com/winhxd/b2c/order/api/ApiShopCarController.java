@@ -2,12 +2,9 @@ package com.winhxd.b2c.order.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +13,6 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -50,7 +45,13 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效", response = ResponseResult.class)
+            @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动", response = ResponseResult.class)
     })
     @RequestMapping(value = "/api-order/order/430/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
@@ -70,13 +71,13 @@ public class ApiShopCarController {
      * @author: wangbaokuo
      * @date: 2018/8/3 11:29
      * @param: [condition]
-     * @return: com.winhxd.b2c.common.domain.ResponseResult<java.util.List<com.winhxd.b2c.common.domain.shopcar.vo.ShopCarVO>>
+     * @return: ShopCarVO
      */
     @ApiOperation(value = "查询购物车", response = ResponseResult.class, notes = "查询购物车")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效", response = ResponseResult.class)
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空", response = ResponseResult.class)
     })
     @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ShopCarVO> findShopCar(@RequestBody ShopCarCondition condition){
@@ -106,7 +107,13 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效", response = ResponseResult.class)
+            @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动", response = ResponseResult.class)
     })
     @RequestMapping(value = "/api-order/order/432/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> readyOrder(@RequestBody ShopCarCondition condition){
@@ -153,13 +160,13 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数payType为空");
             throw new BusinessException(BusinessCode.CODE_402006);
         }
-        if (null == condition.getCouponIds() || condition.getCouponIds().length == 0){
+        /*if (null == condition.getCouponIds() || condition.getCouponIds().length == 0){
             logger.error("商品加购异常{}  参数couponIds为空");
             throw new BusinessException(BusinessCode.CODE_402007);
         }
         if (null == condition.getOrderTotalMoney()){
             logger.error("商品加购异常{}  参数orderTotalMoney为空");
             throw new BusinessException(BusinessCode.CODE_402008);
-        }
+        }*/
     }
 }

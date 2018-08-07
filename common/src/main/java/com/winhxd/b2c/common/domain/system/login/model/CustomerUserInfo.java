@@ -3,6 +3,8 @@ package com.winhxd.b2c.common.domain.system.login.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author wufuyun
  * @date  2018年8月2日 下午3:44:27
@@ -45,7 +47,7 @@ public class CustomerUserInfo implements Serializable {
     private Date updated;
     private Long updatedBy;
     private String updatedByName;
-
+    private String token;
     /**用户状态,默认有效1，无效(黑名单)0,默认是有效*/
     private Integer status = 1;
 
@@ -173,6 +175,14 @@ public class CustomerUserInfo implements Serializable {
 
 	public void setSessionKey(String sessionKey) {
 		this.sessionKey = sessionKey;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
     
 }

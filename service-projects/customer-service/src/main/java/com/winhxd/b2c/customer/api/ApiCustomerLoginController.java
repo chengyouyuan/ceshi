@@ -1,6 +1,7 @@
 package com.winhxd.b2c.customer.api;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
 
 import io.swagger.annotations.Api;
@@ -61,15 +65,17 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
 	@RequestMapping(value = "2023/v1/saveWeChatLogin", method = RequestMethod.POST)
-	public ResponseResult<Long> weChatRegister(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
-		ResponseResult<Long> result = new ResponseResult<>();
+	public ResponseResult<CustomerUserInfoVO> weChatRegister(
+			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+		ResponseResult<CustomerUserInfoVO> result = new ResponseResult<>();
 		ResponseResult<MiniOpenId> object = null;
 		MiniOpenId mini = null;
+		CustomerUserInfoVO vo;
 		try {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-			if(StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())){
+			if (StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
 			/**
@@ -90,16 +96,34 @@ public class ApiCustomerLoginController {
 				customerUserInfo.setOpenId(mini.getOpenId());
 				customerUserInfo.setSessionKey(mini.getSessionKey());
 				DB = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
-				if(null == DB){
+				if (null == DB) {
 					customerUserInfo.setCreated(new Date());
+					customerUserInfo.setToken(String.valueOf(UUID.randomUUID()));
 					customerLoginService.saveLoginInfo(customerUserInfo);
-				}else{
+					vo = new CustomerUserInfoVO();
+					vo.setCustomerId(customerUserInfo.getCustomerId());
+					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
+					vo.setToken(customerUserInfo.getToken());
+					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
+							JsonUtil.toJSONString(vo));
+					cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+					result.setData(vo);
+
+				} else {
+					if (!DB.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
+						return new ResponseResult<>(BusinessCode.CODE_1004);
+					}
 					customerUserInfo.setCustomerId(DB.getCustomerId());
 					customerLoginService.updateCustomerInfo(customerUserInfo);
+					vo = new CustomerUserInfoVO();
+					vo.setCustomerId(DB.getCustomerId());
+					vo.setCustomerMobile(DB.getCustomerMobile());
+					vo.setToken(DB.getToken());
+					result.setData(vo);
 				}
+			} else {
+				return new ResponseResult<>(BusinessCode.CODE_1001);
 			}
-			result.setData(customerUserInfo.getCustomerId());
-			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
@@ -132,7 +156,7 @@ public class ApiCustomerLoginController {
 			 * 发送模板内容
 			 */
 			String content = "";
-			 messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),content);
+			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

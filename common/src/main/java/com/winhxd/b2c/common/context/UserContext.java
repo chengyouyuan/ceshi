@@ -23,14 +23,29 @@ public class UserContext {
     private static ThreadLocal<StoreUser> currentStoreUser = new ThreadLocal<>();
     private static ThreadLocal<CustomerUser> currentCustomerUser = new ThreadLocal<>();
 
+    /**
+     * 获取当前后台管理员用户信息
+     *
+     * @return
+     */
     public static AdminUser getCurrentAdminUser() {
         return currentAdminUser.get();
     }
 
+    /**
+     * 获取当前门店用户信息
+     *
+     * @return
+     */
     public static StoreUser getCurrentStoreUser() {
         return currentStoreUser.get();
     }
 
+    /**
+     * 获取当前C端用户信息
+     *
+     * @return
+     */
     public static CustomerUser getCurrentCustomerUser() {
         return currentCustomerUser.get();
     }

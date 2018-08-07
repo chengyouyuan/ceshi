@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.context;
 
+/**
+ * 后台管理员用户数据
+ */
 public class AdminUser {
     private Long id;
 

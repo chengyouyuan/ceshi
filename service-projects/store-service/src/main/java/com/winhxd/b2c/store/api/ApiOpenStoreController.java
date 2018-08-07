@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -51,20 +50,11 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200001, message = "customerId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1000/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody OpenStoreCondition openStoreCondition) {
-        if (openStoreCondition == null) {
-            logger.error("惠小店开店条件验证接口 checkStoreInfo,参数全部为空");
-            throw new BusinessException(BusinessCode.CODE_200001);
-        }
-        if (openStoreCondition.getCustomerId() == null) {
-            logger.error("惠小店开店条件验证接口 checkStoreInfo,customerId参数为空");
-            throw new BusinessException(BusinessCode.CODE_200001);
-        }
-        if (openStoreCondition.getStoreId() == null) {
+        if (openStoreCondition == null || openStoreCondition.getStoreId() == null) {
             logger.error("惠小店开店条件验证接口 checkStoreInfo,storeId参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
@@ -79,7 +69,7 @@ public class ApiOpenStoreController {
                 responseResult.setMessage("门店信息不存在");
                 return responseResult;
             }
-            if(storeUserInfo.getStoreStatus() != 0){
+            if (storeUserInfo.getStoreStatus() != 0) {
                 openStoreVO.setStoreStatus((byte) 1);
                 responseResult.setData(openStoreVO);
                 return responseResult;
@@ -87,9 +77,8 @@ public class ApiOpenStoreController {
                 openStoreVO.setStoreStatus((byte) 0);
             }
             //是否完善信息
-            ResponseResult<List<String>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(openStoreCondition.getStoreId().toString(),
-                    openStoreCondition.getCustomerId().toString());
-            if(noPerfectResult.getCode() == 1){
+            ResponseResult<List<String>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(openStoreCondition.getStoreId().toString());
+            if (noPerfectResult.getCode() == 1) {
                 List<String> list = noPerfectResult.getData();
                 if (list.size() > 0) {
                     openStoreVO.setPerfectStatus((byte) 0);
@@ -114,20 +103,11 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "惠小店开店基础信息查询接口", notes = "惠小店开店基础信息查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OpenStoreVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200001, message = "customerId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1001/v1/getStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> getStoreBaseInfo(@RequestBody OpenStoreCondition openStoreCondition) {
-        if (openStoreCondition == null) {
-            logger.error("惠小店开店基础信息查询接口 getStoreBaseInfo,参数全部为空");
-            throw new BusinessException(BusinessCode.CODE_200001);
-        }
-        if (openStoreCondition.getCustomerId() == null) {
-            logger.error("惠小店开店基础信息查询接口 getStoreBaseInfo,customerId参数为空");
-            throw new BusinessException(BusinessCode.CODE_200001);
-        }
-        if (openStoreCondition.getStoreId() == null) {
+        if (openStoreCondition == null || openStoreCondition.getStoreId() == null) {
             logger.error("惠小店开店基础信息查询接口 getStoreBaseInfo,storeId参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
@@ -149,7 +129,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200005, message = "门店基础信息保存参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "1002/v1/modifyStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult modifyStoreBaseInfo(@RequestBody StoreBaseInfoCondition storeBaseInfoCondition) {
-        if (storeBaseInfoCondition == null || storeBaseInfoCondition.getCustomerId() == null || storeBaseInfoCondition.getStoreId() == null ||
+        if (storeBaseInfoCondition == null || storeBaseInfoCondition.getStoreId() == null ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStorePhoto()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getShopOwnerImg()) || StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode())) {
@@ -174,7 +154,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "1003/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBaseInfoVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
-        if (storeBusinessInfoCondition == null || storeBusinessInfoCondition.getCustomerId() == null || storeBusinessInfoCondition.getStoreId() == null ||
+        if (storeBusinessInfoCondition == null || storeBusinessInfoCondition.getStoreId() == null ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
                 storeBusinessInfoCondition.getPaymentWay() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile())) {
@@ -223,23 +203,23 @@ public class ApiOpenStoreController {
 
 
     /**
+     * @param storeUserId 门店id
+     * @return StoreUserInfoVO 返回当前门店信息数据
      * @author chengyy
      * @date 2018/8/3 16:04
      * @Description 获取门店信息
-     * @param  storeUserId 门店id
-     * @return StoreUserInfoVO 返回当前门店信息数据
      */
     @ApiOperation(value = "通过门店id查询门店信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
-    @RequestMapping(value = "/1005/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.POST)
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId){
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002, message = "请求缺少参数门店id"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @RequestMapping(value = "/1005/v1/findStoreUserInfo/{storeUserId}", method = RequestMethod.POST)
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId") Long storeUserId) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if(storeUserId == null){
+        if (storeUserId == null) {
             logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         StoreUserInfoVO data = storeService.findStoreUserInfo(storeUserId);
-        if(data == null){
+        if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
         }
         result.setData(data);

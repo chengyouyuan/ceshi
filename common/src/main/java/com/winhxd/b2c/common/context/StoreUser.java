@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.context;
 
+/**
+ * 门店用户数据
+ */
 public class StoreUser {
     private Long storeUserId;
     private Long storeId;

@@ -31,6 +31,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -124,7 +125,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
         StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
         // 从缓存中获取
-        String summaryInfoStr = cache.hget(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
+        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
                 String.valueOf(storeId));
         if (StringUtils.isNotBlank(summaryInfoStr)) {
             logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
@@ -148,11 +149,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
         storeOrderSalesSummaryVO.setStoreId(storeId);
-        cache.hset(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
         //当天有效
-        cache.expire(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
 

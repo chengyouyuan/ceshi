@@ -42,8 +42,6 @@ public final class BusinessCode {
     public static final int CODE_402004 = 402004;
     /** 购物车:支付方式*/
     public static final int CODE_402006 = 402006;
-    /** 购物车:订单金额*/
-    public static final int CODE_402007 = 402007;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
     /**用户id参数为空*/
@@ -68,6 +66,8 @@ public final class BusinessCode {
     public static final int CODE_402010 = 402010;
     /** 购物车:商品信息不存在或获取商品数量不正确*/
     public static final int CODE_402011 = 402011;
+    /** 购物车:购物车商品价格有变动*/
+    public static final int CODE_402012 = 402012;
 
 
     /** 查询订单参数异常*/

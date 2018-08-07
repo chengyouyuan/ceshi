@@ -24,8 +24,11 @@ public interface StoreHxdServiceClient {
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.GET)
     ResponseResult<Map<String, Object>> getStoreUserInfo(Map<String, Object> request);
 
-    @RequestMapping(value = "/store/getStorePerfectInfo/", method = RequestMethod.GET)
+    @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId, @RequestParam("customerId") String customerId);
+
+    @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
+    ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") String storeId);
 
 }
 
@@ -50,6 +53,12 @@ class StoreServiceClientFallBack implements StoreHxdServiceClient, FallbackFacto
     @Override
     public ResponseResult<List<String>> getStorePerfectInfo(String storeId, String customerId) {
         logger.error("StoreHxdServiceClient -> getStorePerfectInfo", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<String>> getStoreBuyedProdSku(String storeId) {
+        logger.error("StoreHxdServiceClient -> getStoreBuyedProdSku", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

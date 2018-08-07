@@ -21,8 +21,7 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.exception.OrderExcepton;
-import com.winhxd.b2c.common.exception.OrderExceptonCodes;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.impl.OrderQueryServiceImpl;
@@ -111,10 +110,10 @@ public class OrderServiceController implements OrderServiceClient {
         ResponseResult<OrderInfoDetailVO4Management> result = new ResponseResult<>();
         try {
             if (StringUtils.isBlank(orderNo)) {
-                throw new OrderExcepton(OrderExceptonCodes.ORDER_NO_EMPTY);
+                throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
             }
             result.setData(orderQueryService.getOrderDetail4Management(orderNo));
-        } catch (OrderExcepton e) {
+        } catch (BusinessException e) {
             logger.error(logTitle + "查询=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
         } catch (Exception e) {

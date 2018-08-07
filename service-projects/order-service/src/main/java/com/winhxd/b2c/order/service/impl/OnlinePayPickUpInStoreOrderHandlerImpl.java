@@ -8,16 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.exception.OrderExcepton;
-import com.winhxd.b2c.common.exception.OrderExceptonCodes;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.dao.OrderItemMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
 
 /**
  * 在线支付自提订单处理接口
@@ -76,7 +76,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         int changeNum = orderInfoMapper.updateOrderStatus(OrderStatusEnum.SUBMITTED.getStatusCode(),
                 OrderStatusEnum.UNRECEIVED.getStatusCode(), orderInfo.getId());
         if (changeNum != 1) {
-            throw new OrderExcepton(OrderExceptonCodes.ORDER_STATUS_CHANGE_FAILURE,
+            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE,
                     MessageFormat.format("订单orderNo={0}, 订单状态修改失败", orderInfo.getOrderNo()));
         }
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);

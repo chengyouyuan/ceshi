@@ -50,14 +50,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public void saveShopCar(ShopCarCondition condition){
         List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
-        List<ShopCarProdVO> list = getShopCarProdVO(getSkuCodeListByOrderItem(orderItemConditions), condition.getStoreId());
-        for (ShopCarProdVO shopCarProdVO : list) {
-            if (StoreProductStatusEnum.PUTAWAY.getStatusCode() != shopCarProdVO.getProdStatus()) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
-        }
-
+        checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
         // 加购：1、存在，则删除再保存，2、不存在，直接保存
         ShopCar shopCar = new ShopCar();
         // TODO TOCKEN获取当前用户信息
@@ -90,9 +83,9 @@ public class ShopCarServiceImpl implements ShopCarService {
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
-        ShopCarVO ShopCarVO = new ShopCarVO();
+        ShopCarVO shopCarVO = new ShopCarVO();
         if (CollectionUtils.isNotEmpty(shopCars)) {
-            BeanUtils.copyProperties(shopCars.get(0), ShopCarVO);
+            BeanUtils.copyProperties(shopCars.get(0), shopCarVO);
             List<ShopCarProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
             List<ShopCarProdInfoVO> prodInfos = new ArrayList<>(shopCarProdVOs.size());
             ShopCarProdInfoVO shopCarProdInfoVO;
@@ -111,9 +104,9 @@ public class ShopCarServiceImpl implements ShopCarService {
                     }
                 }
             }
-            ShopCarVO.setShopCarProdInfoVOs(prodInfos);
+            shopCarVO.setShopCarProdInfoVOs(prodInfos);
         }
-        return ShopCarVO;
+        return shopCarVO;
     }
 
     @Transactional(rollbackFor= {Exception.class})
@@ -130,25 +123,18 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public void readyOrder(ShopCarCondition condition) {
         List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
-        List<ShopCarProdVO> list = getShopCarProdVO(getSkuCodeListByOrderItem(orderItemConditions), condition.getStoreId());
-        for (ShopCarProdVO shopCarProdVO : list){
-            if (StoreProductStatusEnum.PUTAWAY.getStatusCode() != shopCarProdVO.getProdStatus()) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
-        }
+        checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
         // 保存订单
         OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
         BeanUtils.copyProperties(condition, orderCreateCondition);
         orderService.submitOrder(orderCreateCondition);
-
         // 保存成功删除此用户门店的购物车
         removeShopCar(condition);
     }
 
     private List<ShopCarProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId){
         ResponseResult<List<ShopCarProdVO>> shopCarProds = storeServiceClient.findShopCarProd(skuCodes, storeId);
-        if (shopCarProds == null) {
+        if (null == shopCarProds) {
             logger.error("store-service服务调用异常{} -> StoreServiceClient");
             throw new BusinessException(BusinessCode.CODE_1001);
         }
@@ -177,4 +163,23 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
         return skuCodes;
     }
+
+    private void checkShopCarProdInfo(List<OrderItemCondition> orderItemConditions, Long storeId){
+        List<ShopCarProdVO> list = getShopCarProdVO(getSkuCodeListByOrderItem(orderItemConditions), storeId);
+        for (ShopCarProdVO shopCarProdVO : list) {
+            if (StoreProductStatusEnum.PUTAWAY.getStatusCode() != shopCarProdVO.getProdStatus()) {
+                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                throw new BusinessException(BusinessCode.CODE_402010);
+            }
+            for(OrderItemCondition orderItem : orderItemConditions) {
+                if (shopCarProdVO.getSkuCode().equals(orderItem.getSkuCode())
+                        && null != shopCarProdVO.getSellMoney() && null != orderItem.getPrice()
+                        && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
+                    logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                    throw new BusinessException(BusinessCode.CODE_402012);
+                }
+            }
+        }
+    }
+
 }

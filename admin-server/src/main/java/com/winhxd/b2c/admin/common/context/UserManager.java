@@ -50,7 +50,7 @@ public class UserManager implements ApplicationContextAware {
                     if(StringUtils.isNotBlank(json)){
                         UserInfo userInfo = JsonUtil.parseJSONObject(json, UserInfo.class);
 
-                        // 登录状态重新计时
+                        // 重置会话过期时长
                         cache.setex(cacheKey,30 * 60, json);
                         return userInfo;
                     }

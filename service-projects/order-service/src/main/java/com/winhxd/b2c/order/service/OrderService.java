@@ -48,7 +48,7 @@ public interface OrderService {
      * @param condition 入参
      * @return 是否成功，true成功，false 不成功
      */
-    boolean handleOrderRefundByStore(OrderRefundStoreHandleCondition condition);
+    void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition);
 
 
 }

@@ -27,6 +27,9 @@ public class CouponActivityCondition {
     @ApiModelProperty(value = "优惠券编码")
     private String templateCode;
 
+    @ApiModelProperty(value = "C端用户手机号")
+    private String customerMobile;
+
     @ApiModelProperty(value = "门店编码")
     private Long storeId;
 
@@ -42,8 +45,19 @@ public class CouponActivityCondition {
     @ApiModelProperty(value = "创建人")
     private String createdByName;
 
-    @ApiModelProperty(value = "创建时间(使用时间)")
-    private Date created;
+    @ApiModelProperty(value = "创建时间开始")
+    private Date createdStart;
+
+    @ApiModelProperty(value = "创建时间结束")
+    private Date createdEnd;
+
+    public String getCustomerMobile() {
+        return customerMobile;
+    }
+
+    public void setCustomerMobile(String customerMobile) {
+        this.customerMobile = customerMobile;
+    }
 
     public Long getId() {
         return id;
@@ -117,11 +131,19 @@ public class CouponActivityCondition {
         this.createdByName = createdByName;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getCreatedStart() {
+        return createdStart;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setCreatedStart(Date createdStart) {
+        this.createdStart = createdStart;
+    }
+
+    public Date getCreatedEnd() {
+        return createdEnd;
+    }
+
+    public void setCreatedEnd(Date createdEnd) {
+        this.createdEnd = createdEnd;
     }
 }

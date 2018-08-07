@@ -30,6 +30,6 @@ public class SysUserDTO {
     private String password;
 
     @ApiModelProperty(value = "角色编号")
-    private Long ruleId;
+    private Long roleId;
 
 }

@@ -12,11 +12,11 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 public interface CouponActivityService {
 
     /**
-     * @Deccription 查询优惠券领券列表
+     * @Deccription 查询优惠券领券推券列表
      * @param condition
      * @return CouponActivityVO
      */
-    PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition);
+    PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
     /**
      *
      *@Deccription 添加领券活动

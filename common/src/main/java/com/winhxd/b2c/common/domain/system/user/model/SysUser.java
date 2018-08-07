@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class SysUser {
 
-    @ApiModelProperty(value = "编号")
+    @ApiModelProperty(value = "用户编号")
     private Long id;
 
     @ApiModelProperty(value = "账号")

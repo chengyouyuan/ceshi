@@ -14,5 +14,5 @@ public class OrderRefundStoreHandleCondition {
     @ApiModelProperty(value = "订单编码", required = true)
     private String orderNo;
     @ApiModelProperty(value = "是否同意 1为同意，0为不同意", required = true)
-    private short agree;
+    private Short agree;
 }

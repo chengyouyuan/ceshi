@@ -135,6 +135,20 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
 
     /**
+     *
+     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
+     *@Params  ids  多个页面勾选的ID 用逗号","隔开
+     *@Return  ResponseResult 删除是否成功
+     *@User  wl
+     *@Date   2018/8/6 20:39
+     */
+    @Override
+    public void updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName) {
+        couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
+    }
+
+
+    /**
      * 自动生成32位的UUid，对应数据库的主键id进行插入用。
      * @return
      */

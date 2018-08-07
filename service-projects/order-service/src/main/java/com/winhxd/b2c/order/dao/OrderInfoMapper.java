@@ -174,4 +174,10 @@ public interface OrderInfoMapper {
      * @param id
      */
     int updateOrderPickupCode(String pickUpCode, Long id);
+    /**
+     * 订单退款更新状态等信息
+     * @param orderNo
+     * @return 更新成功影响条数
+     */
+    int updateOrderStatusForRefund(String orderNo);
 }

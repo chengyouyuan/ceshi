@@ -18,4 +18,6 @@ public interface SysRolePermissionMapper {
     int updateByPrimaryKey(SysRolePermission record);
 
     List<String> selectPermissionByUserId(Long userId);
+
+    int deleteByRoleId(Long roleId);
 }

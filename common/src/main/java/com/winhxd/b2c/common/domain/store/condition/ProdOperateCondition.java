@@ -38,4 +38,5 @@ public class ProdOperateCondition extends MobileCondition {
 
 	@ApiModelProperty(value = "操作类型 0下架 1上架 2删除 3编辑", required = true)
 	private Byte operateType;
+
 }

@@ -1,5 +1,8 @@
 package com.winhxd.b2c.gateway.filter;
 
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.util.JsonUtil;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,44 +33,50 @@ public class AuthFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         logger.info(request.getURI().toString());
 
+        StoreUser storeUser = new StoreUser();
+        storeUser.setStoreId(12L);
+        storeUser.setStoreUserId(1000L);
 
-        ServerHttpResponseDecorator responseDecorator = new ServerHttpResponseDecorator(exchange.getResponse()) {
-            @Override
-            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+        ServerHttpRequest.Builder requestBuilder = request.mutate().header(UserContext.HEADER_USER_STORE, JsonUtil.toJSONString(storeUser));
 
-//                ResolvableType inElementType = ResolvableType.forClass(config.getInClass());
-//                ResolvableType outElementType = ResolvableType.forClass(config.getOutClass());
-//                MediaType contentType = exchange.getResponse().getHeaders().getContentType();
-//                Optional<HttpMessageReader<?>> reader = getHttpMessageReader(codecConfigurer, inElementType, contentType);
-//                Optional<HttpMessageWriter<?>> writer = getHttpMessageWriter(codecConfigurer, outElementType, null);
 
-//                if (reader.isPresent() && writer.isPresent()) {
+//        ServerHttpResponseDecorator responseDecorator = new ServerHttpResponseDecorator(exchange.getResponse()) {
+//            @Override
+//            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
 //
-//                    ModifyResponseBodyGatewayFilterFactory.ResponseAdapter responseAdapter = new ModifyResponseBodyGatewayFilterFactory.ResponseAdapter(body, getDelegate().getHeaders());
+////                ResolvableType inElementType = ResolvableType.forClass(config.getInClass());
+////                ResolvableType outElementType = ResolvableType.forClass(config.getOutClass());
+////                MediaType contentType = exchange.getResponse().getHeaders().getContentType();
+////                Optional<HttpMessageReader<?>> reader = getHttpMessageReader(codecConfigurer, inElementType, contentType);
+////                Optional<HttpMessageWriter<?>> writer = getHttpMessageWriter(codecConfigurer, outElementType, null);
 //
-//                    Flux<?> modified = reader.get().read(inElementType, responseAdapter, config.getInHints())
-//                            .cast(inElementType.resolve())
-//                            .flatMap(originalBody -> Flux.just(config.rewriteFunction.apply(exchange, originalBody)))
-//                            .cast(outElementType.resolve());
+////                if (reader.isPresent() && writer.isPresent()) {
+////
+////                    ModifyResponseBodyGatewayFilterFactory.ResponseAdapter responseAdapter = new ModifyResponseBodyGatewayFilterFactory.ResponseAdapter(body, getDelegate().getHeaders());
+////
+////                    Flux<?> modified = reader.get().read(inElementType, responseAdapter, config.getInHints())
+////                            .cast(inElementType.resolve())
+////                            .flatMap(originalBody -> Flux.just(config.rewriteFunction.apply(exchange, originalBody)))
+////                            .cast(outElementType.resolve());
+////
+////                    return getDelegate().writeWith(
+////                            writer.get().write((Publisher) modified, outElementType, null, getDelegate(),
+////                                    config.getOutHints())
+////                    );
+////
+////                }
 //
-//                    return getDelegate().writeWith(
-//                            writer.get().write((Publisher) modified, outElementType, null, getDelegate(),
-//                                    config.getOutHints())
-//                    );
+//                return getDelegate().writeWith(body);
+//            }
 //
-//                }
+//            @Override
+//            public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+//                return writeWith(Flux.from(body).flatMapSequential(p -> p));
+//            }
+//        };
 
-                return getDelegate().writeWith(body);
-            }
-
-            @Override
-            public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
-                return writeWith(Flux.from(body).flatMapSequential(p -> p));
-            }
-        };
-
-        Mono<Void> filter = chain.filter(exchange.mutate().response(responseDecorator).build());
-
+//        Mono<Void> filter = chain.filter(exchange.mutate().response(responseDecorator).build());
+        Mono<Void> filter = chain.filter(exchange.mutate().request(requestBuilder.build()).build());
 
         return filter;
     }

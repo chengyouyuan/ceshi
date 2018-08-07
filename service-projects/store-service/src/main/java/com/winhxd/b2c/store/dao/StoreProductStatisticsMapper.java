@@ -1,8 +1,14 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
-import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 
 /**
  * @description:
@@ -22,6 +28,16 @@ public interface StoreProductStatisticsMapper {
     int updateByPrimaryKeySelective(StoreProductStatistics record);
 
     int updateByPrimaryKey(StoreProductStatistics record);
+    /**
+     * 通过condition获取门店商品统计信息
+    * @Title: selectByCondition 
+    * @Description: TODO 
+    * @param condition
+    * @return List<StoreProductStatistics>
+    * @author wuyuanbao
+    * @date 2018年8月7日上午10:11:09
+     */
+    List<StoreProductStatistics> selectByCondition(@Param("condition")StoreProductStatisticsCondition condition);
 
     /**
      * 功能描述: 修改门店售卖数量

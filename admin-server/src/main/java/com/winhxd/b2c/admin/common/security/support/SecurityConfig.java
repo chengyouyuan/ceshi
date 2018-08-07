@@ -1,5 +1,6 @@
 package com.winhxd.b2c.admin.common.security.support;
 
+import com.winhxd.b2c.admin.common.context.MenuManager;
 import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
@@ -53,6 +54,7 @@ public class SecurityConfig implements ApplicationListener<ContextRefreshedEvent
                         menuNode.setMethod(rm.toString());
                         menuNode.setPath(patterns.iterator().next());
                     }
+                    new MenuManager(menuNodeList);
                 }
             }
 
@@ -82,6 +84,7 @@ public class SecurityConfig implements ApplicationListener<ContextRefreshedEvent
                 menuNodeList.add(node);
             } else {
                 MenuNode parent = findMenuNode(menuNodeList, menu.getParent().toString());
+                node.setParent(parent);
                 parent.getChildren().add(node);
             }
         }

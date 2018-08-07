@@ -26,7 +26,7 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
-  <resultMap id="queryPullResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO">
+  <resultMap id="queryResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO">
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -54,7 +54,7 @@
     update_by, updated_by_name, updated
   </sql>
 
-  <select id="queryPullCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryPullResultMap">
+  <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
     ca.`code`,
@@ -151,6 +151,9 @@
     <if test="storeId != null">
       AND cad.store_id = #{storeId,jdbcType=BIGINT},
     </if>
+    <if test="customerMobile != null">
+      AND cad.customer_mobile = #{customerMobile,jdbcType=VARCHAR},
+    </if>
     <if test="store_name != null">
       AND sui.store_name = #{store_name,jdbcType=VARCHAR},
     </if>
@@ -176,6 +179,53 @@
     <include refid="Base_Column_List" />
     from coupon_activity
     where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity
+    where 1=1
+    <if test="couponType != null">
+      AND coupon_type = #{couponType,jdbcType=SMALLINT}
+    </if>
+    <if test="status != null">
+      AND status = #{status,jdbcType=SMALLINT}
+    </if>
+    <if test="activityStatus != null">
+      AND activity_status = #{activityStatus,jdbcType=SMALLINT}
+    </if>
+
+  </select>
+  <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+    SELECT
+    ct.STATUS,
+    ct.reason,
+    ct.pay_type payType,
+    ct.cal_type calType,
+    cg.type type,
+    cgd.reduced_type reducedType,
+    cgd.reduced_amt reducedAmt,
+    cgd.discounted_amt discountedAmt,
+    cgd.discounted discounted,
+    cgd.discounted_max_amt discountedMaxAmt,
+    cap.apply_rule_type applyRuleType,
+    ca.coupon_type couponType,
+    ca.activity_start activityStart,
+    ca.activity_end activityEnd
+    FROM
+    coupon_template_send cts
+    JOIN coupon_template ct ON cts.template_id = ct.id
+    JOIN coupon_activity_record car ON cts.id = car.send_id
+    JOIN coupon_activity ca ON car.coupon_activity_id = ca.id
+    JOIN coupon_grade cg ON ct.grade_id = cg.id
+    JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
+    JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
+    WHERE
+    cts.customer_id = #{customerId}
+    <if test="couponType != null">
+      AND ca.coupon_type = #{couponType}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity

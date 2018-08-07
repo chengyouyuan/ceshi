@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface CouponActivityServiceClient {
     /**
      *
-     *@Deccription 查询优惠券活动领券列表
+     *@Deccription 查询优惠券活动领券推券列表
      *@Params  condition
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/6
      */
-    @RequestMapping(value = "/promotion/v1/queryPullCouponActivity/", method = RequestMethod.POST)
-    ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(@RequestBody CouponActivityCondition condition);
+    @RequestMapping(value = "/promotion/v1/queryCouponActivity/", method = RequestMethod.POST)
+    ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition);
     /**
      *
      *@Deccription 添加领券活动
@@ -51,8 +51,8 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     private Throwable throwable;
 
     @Override
-    public ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> queryPullCouponActivity", throwable);
+    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+        logger.error("CouponActivityServiceFallback -> queryCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

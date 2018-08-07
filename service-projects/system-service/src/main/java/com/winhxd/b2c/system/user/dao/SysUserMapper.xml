@@ -14,7 +14,7 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <resultMap id="voMap" type="com.winhxd.b2c.common.domain.system.user.model.SysUser" extends="BaseResultMap">
-    <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
+    <result column="rule_id" jdbcType="BIGINT" property="roleId" />
     <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
   </resultMap>
 
@@ -182,9 +182,9 @@
         <bind name="mobile" value="'%' + mobile + '%'" />
         and mobile like #{mobile,jdbcType=CHAR}
       </if>
-      <if test="ruleName != null and ruleName != ''">
-        <bind name="ruleName" value="'%' + ruleName + '%'" />
-        and rule_name like #{ruleName,jdbcType=VARCHAR}
+      <if test="roleName != null and roleName != ''">
+        <bind name="roleName" value="'%' + roleName + '%'" />
+        and rule_name like #{roleName,jdbcType=VARCHAR}
       </if>
     </where>
   </select>

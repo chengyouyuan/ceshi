@@ -1,9 +1,23 @@
 package com.winhxd.b2c.promotion.controller;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.feign.promotion.CouponInvestorServiceClient;
+import com.winhxd.b2c.promotion.service.CouponInvestorService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Author wl
@@ -12,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @Api(tags = "CouponInvestor")
 @RestController
-@RequestMapping(value = "/coupon/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class CouponInvestorController {
+public class CouponInvestorController implements CouponInvestorServiceClient {
+      @Autowired
+      private CouponInvestorService couponInvestorService;
+
 
 
 }

@@ -60,7 +60,7 @@
 
 
   <sql id="Base_Column_List">
-    id, title, exolian, remarks, investor_id, use_range_id, apply_rule_id, corner, coupon_label, 
+    id, title, exolian, remarks, investor_id, grade_id, apply_rule_id, corner, coupon_label,
     coupon_label_color, status, reason, code, cal_type, pay_type, created_by, created_by_name, 
     created, update_by, updated_by_name, updated
   </sql>
@@ -104,7 +104,7 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
     insert into coupon_template (id, title, exolian, 
-      remarks, investor_id, use_range_id, 
+      remarks, investor_id, grade_id,
       apply_rule_id, corner, coupon_label, 
       coupon_label_color, status, reason, 
       code, cal_type, pay_type, 
@@ -112,7 +112,7 @@
       update_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{exolian,jdbcType=VARCHAR}, 
-      #{remarks,jdbcType=VARCHAR}, #{investorId,jdbcType=BIGINT}, #{useRangeId,jdbcType=BIGINT}, 
+      #{remarks,jdbcType=VARCHAR}, #{investorId,jdbcType=BIGINT}, #{gradeId,jdbcType=BIGINT},
       #{applyRuleId,jdbcType=BIGINT}, #{corner,jdbcType=VARCHAR}, #{couponLabel,jdbcType=VARCHAR}, 
       #{couponLabelColor,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, #{reason,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{calType,jdbcType=SMALLINT}, #{payType,jdbcType=SMALLINT}, 
@@ -138,8 +138,8 @@
       <if test="investorId != null">
         investor_id,
       </if>
-      <if test="useRangeId != null">
-        use_range_id,
+      <if test="gradeId != null">
+        grade_id,
       </if>
       <if test="applyRuleId != null">
         apply_rule_id,
@@ -203,8 +203,8 @@
       <if test="investorId != null">
         #{investorId,jdbcType=BIGINT},
       </if>
-      <if test="useRangeId != null">
-        #{useRangeId,jdbcType=BIGINT},
+      <if test="gradeId != null">
+        #{gradeId,jdbcType=BIGINT},
       </if>
       <if test="applyRuleId != null">
         #{applyRuleId,jdbcType=BIGINT},
@@ -268,8 +268,8 @@
       <if test="investorId != null">
         investor_id = #{investorId,jdbcType=BIGINT},
       </if>
-      <if test="useRangeId != null">
-        use_range_id = #{useRangeId,jdbcType=BIGINT},
+      <if test="gradeId != null">
+        grade_id = #{gradeId,jdbcType=BIGINT},
       </if>
       <if test="applyRuleId != null">
         apply_rule_id = #{applyRuleId,jdbcType=BIGINT},
@@ -325,7 +325,7 @@
       exolian = #{exolian,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR},
       investor_id = #{investorId,jdbcType=BIGINT},
-      use_range_id = #{useRangeId,jdbcType=BIGINT},
+      grade_id = #{gradeId,jdbcType=BIGINT},
       apply_rule_id = #{applyRuleId,jdbcType=BIGINT},
       corner = #{corner,jdbcType=VARCHAR},
       coupon_label = #{couponLabel,jdbcType=VARCHAR},

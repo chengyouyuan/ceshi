@@ -385,7 +385,6 @@
     left join coupon_grade c on a.grade_id = c.id
     left join coupon_apply d on a.apply_rule_id = d.id
     where 1=1
-
     <if test="condition.createdBegin!=null and  condition.createdBegin!=''">
       and a.created <![CDATA[ >= ]]> #{condition.createdBegin}
     </if>
@@ -423,8 +422,15 @@
     <if test="condition.applyRuleType!=null and condition.applyRuleType!=''">
       and d.apply_rule_type = #{condition.applyRuleType}
     </if>
-
   </select>
 
 
+  <!-- 批量（单个）设置无效或批量（单个）非物理删除 -->
+  <update id="updateCouponTemplateToValid" parameterType="java.util.List">
+      update coupon_template set status= 0 ,update_by=#{updateBy},updated_by_name=#{updateByName},updated=#{updated}
+      where id in
+    <foreach collection="idsList" index="index" item="item" open="(" separator="," close=")">
+       #{item}
+    </foreach>
+  </update>
 </mapper>

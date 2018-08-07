@@ -1,8 +1,11 @@
 package com.winhxd.b2c.common.domain.system.login.vo;
 
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Description: 用户订单信息VO
@@ -18,5 +21,8 @@ public class CustomerOrderInfoVO {
 
     @ApiModelProperty("领取的优惠卷的总次数")
     private Integer couponCount;
+
+    @ApiModelProperty("关联的用户订单分页信息")
+    private List<OrderInfoDetailVO> orderInfoDetailVOList;
 
 }

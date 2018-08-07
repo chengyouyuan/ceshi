@@ -82,6 +82,15 @@ public interface UserServiceClient {
     @RequestMapping(value = "/user/305/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysUser> getById(@PathVariable("id") Long id);
 
+    /**
+     * 根据主键获取用户信息
+     * @author zhangzhengyang
+     * @date 2018/8/7
+     * @param id
+     */
+    @RequestMapping(value = "/user/306/v1/disabled/{id}", method = RequestMethod.PUT)
+    ResponseResult disabled(@PathVariable("id") Long id);
+
 }
 
 @Component
@@ -130,6 +139,12 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     public ResponseResult<SysUser> getById(Long userId) {
         logger.error("UserServiceClientFallback -> getById", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult disabled(Long id) {
+        logger.error("UserServiceClientFallback -> disabled", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
     }
 
     @Override

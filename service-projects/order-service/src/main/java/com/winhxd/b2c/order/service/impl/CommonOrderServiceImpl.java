@@ -1,23 +1,22 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -31,26 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.exception.OrderExcepton;
-import com.winhxd.b2c.common.exception.OrderExceptonCodes;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
-
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CommonOrderServiceImpl implements OrderService {
@@ -67,17 +53,13 @@ public class CommonOrderServiceImpl implements OrderService {
     private OrderHandler onlinePayPickUpInStoreOrderHandler;
 
     @Autowired
-    @Qualifier("SweepPayPickUpInStoreOfflineValOrderHandler")
-    private OrderHandler sweepPayPickUpInStoreOfflineValOrderHandler;
+    @Qualifier("OnlinePayPickUpInStoreOfflineOrderHandler")
+    private OrderHandler onlinePayPickUpInStoreOfflineOrderHandler;
 
-    @Autowired
-    @Qualifier("SweepPayPickUpInStoreOnlineValOrderHandler")
-    private OrderHandler sweepPayPickUpInStoreOnlineValOrderHandler;
-
-    @Autowired
+    @Resource
     private OrderInfoMapper orderInfoMapper;
 
-    @Autowired
+    @Resource
     private OrderItemMapper orderItemMapper;
 
     @Autowired
@@ -127,16 +109,16 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
         if (orderInfo == null) {
-            throw new OrderExcepton(OrderExceptonCodes.WRONG_ORDERNO);
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
         if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus().shortValue()) {
-            throw new OrderExcepton(OrderExceptonCodes.ORDER_ALREADY_PAID);
+            throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
         logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
         Date payFinishDateTime = new Date();
         int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), payFinishDateTime, orderInfo.getId());
         if (updNum != 1) {
-            throw new OrderExcepton(OrderExceptonCodes.ORDER_ALREADY_PAID);
+            throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
         // 生产订单流转日志
         String oldOrderJsonString = JsonUtil.toJSONString(orderInfo);
@@ -200,6 +182,83 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
+     * 门店处理用户退款订单
+     *
+     * @param condition 入参
+     * @return 是否成功，true成功，false 不成功
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
+        if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
+            throw new BusinessException(BusinessCode.CODE_411001, "参数异常");
+        }
+        String orderNo = condition.getOrderNo();
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        if (lock.tryLock()) {
+            try {
+                short agree = condition.getAgree();
+                if (agree == 1) {
+                    OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                    if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
+                        throw new BusinessException(BusinessCode.CODE_411001, "未支付的订单不允许退款");
+                    }
+                    if (order.getOrderStatus().equals(OrderStatusEnum.FINISHED.getStatusCode())) {
+                        throw new BusinessException(BusinessCode.CODE_411001, "已完成的订单不允许退款");
+                    }
+                    //TODO 调用订单退款接口
+                    //TODO 判断退款是否成功
+                    //更新订单状态
+                    this.orderInfoMapper.updateOrderStatusForRefund(orderNo);
+                    //TODO 添加订单流转日志
+                }
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            throw new BusinessException(BusinessCode.CODE_411001, "订单正在修改中");
+        }
+    }
+
+    /**
+     * C端申请退款
+     *
+     * @param orderRefundCondition 入参
+     */
+    @Override
+    public void orderRefundByCustomer(OrderRefundCondition orderRefundCondition) {
+        String orderNo = orderRefundCondition.getOrderNo();
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.CODE_411001, "参数错误");
+        }
+        Long customerId = 1L;
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        if (lock.tryLock()) {
+            try {
+                OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                //判断订单状态是否可以申请退款
+                Short status = order.getOrderStatus();
+                if (status.equals(PayStatusEnum.UNPAID.getStatusCode())
+                        || status.equals(OrderStatusEnum.FINISHED.getStatusCode())
+                        || status.equals(OrderStatusEnum.CANCELED.getStatusCode())
+                        || status.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
+                    throw new BusinessException(BusinessCode.CODE_411001, "订单状态不允许退款");
+                }
+                //更新订单状态为待退款，并更新相关属性
+                this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId);
+                //TODO 添加订单流转日志
+            } finally {
+                lock.unlock();
+            }
+
+        } else {
+            throw new BusinessException(BusinessCode.CODE_411001, "订单正在修改中");
+        }
+    }
+
+    /**
      * 订单成功创建成功 业务操作
      *
      * @param orderInfo
@@ -208,18 +267,18 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                                                                      @Override
-                                                                      public void afterCommit() {
-                                                                          threadPoolExecutor.execute(new Runnable() {
-                                                                              @Override
-                                                                              public void run() {
-                                                                                  //TODO 调用 顾客门店绑定接口
-                                                                                  getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
-                                                                              }
-                                                                          });
-                                                                      }
-                                                                  }
-        );
+            @Override
+            public void afterCommit() {
+                threadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO 调用 顾客门店绑定接口
+                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                                .orderInfoAfterCreateSuccessProcess(orderInfo);
+                    }
+                });
+            }
+        });
     }
 
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
@@ -273,17 +332,12 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     private OrderHandler getOrderHandler(short payType, short valuationType) {
-        if (payType == PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
+        if (valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             return onlinePayPickUpInStoreOrderHandler;
-        } else if (payType == PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
-            return sweepPayPickUpInStoreOfflineValOrderHandler;
-        } else if (payType == PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
-            return sweepPayPickUpInStoreOnlineValOrderHandler;
+        } else if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+            return onlinePayPickUpInStoreOfflineOrderHandler;
         }
-        throw new OrderExcepton(OrderExceptonCodes.CODE_401008);
+        throw new BusinessException(BusinessCode.CODE_401008);
     }
 
     private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
@@ -310,27 +364,27 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void validateOrderCreateCondition(OrderCreateCondition orderCreateCondition) {
         if (orderCreateCondition.getCustomerId() == null) {
-            throw new OrderExcepton(OrderExceptonCodes.CODE_401001);
+            throw new BusinessException(BusinessCode.CODE_401001);
         }
         if (orderCreateCondition.getStoreId() == null) {
-            throw new OrderExcepton(OrderExceptonCodes.CODE_401002);
+            throw new BusinessException(BusinessCode.CODE_401002);
         }
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
-            throw new OrderExcepton(OrderExceptonCodes.CODE_401003);
+            throw new BusinessException(BusinessCode.CODE_401003);
         }
         if (orderCreateCondition.getPickupDateTime() == null) {
-            throw new OrderExcepton(OrderExceptonCodes.CODE_401004);
+            throw new BusinessException(BusinessCode.CODE_401004);
         }
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
-            throw new OrderExcepton(OrderExceptonCodes.CODE_401005);
+            throw new BusinessException(BusinessCode.CODE_401005);
         }
         for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = (OrderItemCondition) iterator.next();
             if (condition.getAmount() == null || condition.getAmount().intValue() < 1) {
-                throw new OrderExcepton(OrderExceptonCodes.CODE_401006);
+                throw new BusinessException(BusinessCode.CODE_401006);
             }
             if (StringUtils.isBlank(condition.getSkuCode())) {
-                throw new OrderExcepton(OrderExceptonCodes.CODE_401007);
+                throw new BusinessException(BusinessCode.CODE_401007);
             }
         }
     }

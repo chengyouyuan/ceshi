@@ -107,12 +107,9 @@ public class SysRegionController implements RegionServiceClient {
         logger.info("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode);
         ResponseResult<SysRegion> result = new ResponseResult<>();
         try{
-            if(StringUtils.isBlank(regisonCode)){
-                throw new BusinessException("区域编号不能为空");
+            if(StringUtils.isNotBlank(regisonCode)){
                 SysRegion sysRegion = sysRegionService.getRegionByCode(regisonCode);
                 result.setData(sysRegion);
-            }else{
-                result.setMessage("区域编号不能为空");
             }
         } catch (BusinessException e){
             logger.error("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode, e);

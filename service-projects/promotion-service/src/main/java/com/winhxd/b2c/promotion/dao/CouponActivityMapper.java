@@ -1,6 +1,9 @@
 package com.winhxd.b2c.promotion.dao;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 
 import java.util.List;
 
@@ -23,4 +26,11 @@ public interface CouponActivityMapper {
      * @return
      */
     List<CouponActivity> selectByExample(CouponActivity example);
+
+    /**
+     * 多条件查询领券列表
+     * @param condition
+     * @return
+     */
+    PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition);
 }

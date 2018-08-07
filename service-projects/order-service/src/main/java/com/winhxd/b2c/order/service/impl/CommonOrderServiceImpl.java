@@ -191,8 +191,33 @@ public class CommonOrderServiceImpl implements OrderService {
      * @return 是否成功，true成功，false 不成功
      */
     @Override
-    public boolean handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
-        return false;
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
+        if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
+            throw new BusinessException(BusinessCode.CODE_411001, "参数异常");
+        }
+        String orderNo = condition.getOrderNo();
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        if (lock.tryLock()) {
+            short agree = condition.getAgree();
+            if (agree == 1) {
+                OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
+                    throw new BusinessException(BusinessCode.CODE_411001, "未支付的订单不允许退款");
+                }
+                if (order.getOrderStatus().equals(OrderStatusEnum.FINISHED.getStatusCode())) {
+                    throw new BusinessException(BusinessCode.CODE_411001, "已完成的订单不允许退款");
+                }
+                //TODO 调用订单退款接口
+                //TODO 判断退款是否成功
+                //更新订单状态
+                this.orderInfoMapper.updateOrderStatusForRefund(orderNo);
+                //TODO 添加订单流转日志
+            }
+        } else {
+            throw new BusinessException(BusinessCode.CODE_411001, "订单正在修改中");
+        }
     }
 
     /**

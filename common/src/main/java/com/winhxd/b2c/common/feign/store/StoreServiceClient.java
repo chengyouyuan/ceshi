@@ -1,7 +1,12 @@
 package com.winhxd.b2c.common.feign.store;
 
-import java.util.List;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,16 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
-import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
-import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
-
-import feign.hystrix.FallbackFactory;
+import java.util.List;
 
 /**
  * @author chengyy
@@ -42,9 +38,9 @@ public interface StoreServiceClient {
     /**
      * 获取购物车内商品信息
      *
-     * @param skus
+     * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List                               <                               ShopCarProdVO>>
+     * @return ResponseResult<List<ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
@@ -66,19 +62,20 @@ public interface StoreServiceClient {
     @RequestMapping(value = "/store/2004/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
-
     /**
-     * 获取门店列表信息
      *
-     * @param storeCondition
-     * @return
-     * @auther caiyulong
+     * 功能描述: 统计门店商品信息
+     *
+     * @param: storeProdCondition
+     * @return: ResponseResult
+     * @auther: lvsen
+     * @date: 2018/8/6 15:10
      */
-    @RequestMapping(value = "/store/2003/v1/storeList", method = RequestMethod.GET)
-    ResponseResult<PagedList<StoreVO>> storeList(@RequestBody StoreInfoCondition storeCondition);
+    @RequestMapping(value = "/store/1005/v1/statisticsStoreProdInfo/",method = RequestMethod.GET)
+    void statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
 
 }
-
+/**
 /**
  * @author chengyy
  * @Description: 熔断回调
@@ -112,11 +109,11 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
         logger.error("StoreServiceClientFallBack -> loginCheckSellMoney报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+	}
 
     @Override
-    public ResponseResult<PagedList<StoreVO>> storeList(StoreInfoCondition storeCondition) {
-        logger.error("StoreServiceClientFallBack -> storeList报错，错误信息为{}", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
+    public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
+        logger.error("StoreServiceClientFallBack -> statisticsStoreProdInfo，错误信息为{}",throwable);
     }
+
 }

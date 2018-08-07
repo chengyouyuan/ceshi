@@ -1,3 +1,4 @@
+
 package com.winhxd.b2c.store.service.impl;
 
 import java.util.List;
@@ -5,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.store.dao.StoreProductStatisticsMapper;
@@ -18,9 +20,13 @@ import com.winhxd.b2c.store.service.StoreProductStatisticsService;
  */
 @Service
 public class StoreProductStatisticsServiceImpl implements StoreProductStatisticsService{
-	
-	@Autowired
-	private StoreProductStatisticsMapper storeProductStatisticsMapper;
+    @Autowired
+    StoreProductStatisticsMapper storeProductStatisticsMapper;
+
+    @Override
+    public int modifyQuantitySoldOutByStoreIdAndProdId(StoreProductManageCondition condition) {
+        return storeProductStatisticsMapper.updateQuantitySoldOutByStoreIdAndProdId(condition);
+    }
 
 	@Override
 	public void saveStoreProductStatistics(StoreProductStatistics record) {

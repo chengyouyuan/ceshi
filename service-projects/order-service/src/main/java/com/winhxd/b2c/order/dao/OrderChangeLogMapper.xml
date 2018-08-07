@@ -180,4 +180,13 @@
       created_by_name = #{createdByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="listOrderChanges" resultType="com.winhxd.b2c.common.domain.order.vo.OrderChangeVO">
+      select
+      change_msg changeMsg,
+      created changeDateTime
+      from order_change_log
+      where order_no = #{orderNo,jdbcType=VARCHAR}
+      and main_point=1
+      order by created desc
+  </select>
 </mapper>

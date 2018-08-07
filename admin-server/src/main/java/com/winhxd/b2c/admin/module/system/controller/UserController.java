@@ -12,10 +12,7 @@ import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
@@ -35,7 +32,7 @@ import java.util.Date;
  * @date 2018/8/6
  */
 @Api(tags = "系统用户管理")
-@RestController("/user")
+@RestController
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -52,7 +49,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/user/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
     public ResponseResult add(SysUserDTO sysUserDTO) {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
@@ -76,13 +73,16 @@ public class UserController {
     }
 
     @ApiOperation("编辑用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/user/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
     public ResponseResult edit(SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
@@ -111,7 +111,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PutMapping(value = "/updatePassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/user/updatePassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -138,7 +138,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(value = "/user/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
@@ -146,16 +146,60 @@ public class UserController {
     }
 
     @ApiOperation(value = "根据主键获取用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping("/get/{id}")
+    @GetMapping("/user/get/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.getById(id);
     }
+
+    @ApiOperation("验证用户是否已存在")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "account", value = "账号", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @PostMapping(value = "/user/existsAccount", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
+    public ResponseResult<Boolean> add(String account) {
+        logger.info("{} - 验证用户是否已存在, 参数：account={}", MODULE_NAME, account);
+
+        SysUser sysUser = userServiceClient.getByAccount(account).getData();
+        if(null != sysUser){
+            return new ResponseResult<>(true);
+        }
+
+        return new ResponseResult<>(false);
+    }
+
+    @ApiOperation(value = "根据主键获取禁用用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @GetMapping("/user/disabled/{id}")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
+    public ResponseResult<SysUser> disabled(@PathVariable("id") Long id){
+        logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
+        return userServiceClient.disabled(id);
+    }
+
 }

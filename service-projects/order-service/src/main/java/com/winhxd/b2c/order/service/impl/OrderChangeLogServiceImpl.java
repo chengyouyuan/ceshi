@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.order.dao.OrderChangeLogMapper;
 import com.winhxd.b2c.order.model.OrderChangeLog;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -47,6 +49,14 @@ public class OrderChangeLogServiceImpl implements OrderChangeLogService {
         orderChangeLogMapper.insertSelective(orderChangeLog);
         logger.info("订单流转变化：", orderChangeLog);
 
+    }
+
+    @Override
+    public List<OrderChangeVO> listOrderChanges(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单编号不能为空");
+        }
+        return orderChangeLogMapper.listOrderChanges(orderNo);
     }
 
 }

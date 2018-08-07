@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="from_accid" jdbcType="VARCHAR" property="fromAccid" />
+    <result column="to_accid" jdbcType="VARCHAR" property="toAccid" />
+    <result column="msg_type" jdbcType="INTEGER" property="msgType" />
+    <result column="msg_body" jdbcType="VARCHAR" property="msgBody" />
+    <result column="msg_attach" jdbcType="VARCHAR" property="msgAttach" />
+    <result column="msg_time_stamp" jdbcType="TIMESTAMP" property="msgTimeStamp" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="conv_type" jdbcType="INTEGER" property="convType" />
+    <result column="msg_id_server" jdbcType="VARCHAR" property="msgIdServer" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, from_accid, to_accid, msg_type, msg_body, msg_attach, msg_time_stamp, uid, conv_type, 
+    msg_id_server
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_netease_history
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from message_netease_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    insert into message_netease_history (id, from_accid, to_accid, 
+      msg_type, msg_body, msg_attach, 
+      msg_time_stamp, uid, conv_type, 
+      msg_id_server)
+    values (#{id,jdbcType=BIGINT}, #{fromAccid,jdbcType=VARCHAR}, #{toAccid,jdbcType=VARCHAR}, 
+      #{msgType,jdbcType=INTEGER}, #{msgBody,jdbcType=VARCHAR}, #{msgAttach,jdbcType=VARCHAR}, 
+      #{msgTimeStamp,jdbcType=TIMESTAMP}, #{uid,jdbcType=VARCHAR}, #{convType,jdbcType=INTEGER}, 
+      #{msgIdServer,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    insert into message_netease_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fromAccid != null">
+        from_accid,
+      </if>
+      <if test="toAccid != null">
+        to_accid,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="msgBody != null">
+        msg_body,
+      </if>
+      <if test="msgAttach != null">
+        msg_attach,
+      </if>
+      <if test="msgTimeStamp != null">
+        msg_time_stamp,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="convType != null">
+        conv_type,
+      </if>
+      <if test="msgIdServer != null">
+        msg_id_server,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="fromAccid != null">
+        #{fromAccid,jdbcType=VARCHAR},
+      </if>
+      <if test="toAccid != null">
+        #{toAccid,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=INTEGER},
+      </if>
+      <if test="msgBody != null">
+        #{msgBody,jdbcType=VARCHAR},
+      </if>
+      <if test="msgAttach != null">
+        #{msgAttach,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTimeStamp != null">
+        #{msgTimeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="convType != null">
+        #{convType,jdbcType=INTEGER},
+      </if>
+      <if test="msgIdServer != null">
+        #{msgIdServer,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    update message_netease_history
+    <set>
+      <if test="fromAccid != null">
+        from_accid = #{fromAccid,jdbcType=VARCHAR},
+      </if>
+      <if test="toAccid != null">
+        to_accid = #{toAccid,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=INTEGER},
+      </if>
+      <if test="msgBody != null">
+        msg_body = #{msgBody,jdbcType=VARCHAR},
+      </if>
+      <if test="msgAttach != null">
+        msg_attach = #{msgAttach,jdbcType=VARCHAR},
+      </if>
+      <if test="msgTimeStamp != null">
+        msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=VARCHAR},
+      </if>
+      <if test="convType != null">
+        conv_type = #{convType,jdbcType=INTEGER},
+      </if>
+      <if test="msgIdServer != null">
+        msg_id_server = #{msgIdServer,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    update message_netease_history
+    set from_accid = #{fromAccid,jdbcType=VARCHAR},
+      to_accid = #{toAccid,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=INTEGER},
+      msg_body = #{msgBody,jdbcType=VARCHAR},
+      msg_attach = #{msgAttach,jdbcType=VARCHAR},
+      msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
+      uid = #{uid,jdbcType=VARCHAR},
+      conv_type = #{convType,jdbcType=INTEGER},
+      msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

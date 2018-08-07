@@ -1,12 +1,14 @@
 package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import org.springframework.stereotype.Repository;
 
 /**
  * @description:
  * @author: lvsen
  * @date: 2018/8/6 14:37
  */
+@Repository
 public interface StoreSubmitProductMapper {
     int deleteByPrimaryKey(Long id);
 

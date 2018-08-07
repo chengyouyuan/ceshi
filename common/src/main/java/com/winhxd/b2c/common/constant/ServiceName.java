@@ -13,11 +13,14 @@ public final class ServiceName {
     public static final String PRODUCT_SERVICE = "product-service";
 
     //优惠券服务
-    public static final String COUPON_SERVICE = "coupon-service";
+    public static final String PROMOTION_SERVICE = "b2c-promotion-service";
 
     /**用户服务*/
     public static final String CUSTOMER_SERVICE = "b2c-customer-service";
 
     //系统管理服务
     public static final String SYSTEM_SERVICE = "b2c-system-service";
+
+    //系统管理服务
+    public static final String MESSAGE_SERVICE = "message-service";
 }

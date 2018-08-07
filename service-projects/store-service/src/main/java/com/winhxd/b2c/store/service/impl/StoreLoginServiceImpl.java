@@ -24,5 +24,9 @@ public class StoreLoginServiceImpl implements StoreLoginService{
 	public StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile) {
 		return storeUserInfoMapper.selectByStoreUserInfo(storeMobile);
 	}
+	@Override
+	public int saveStoreInfo(StoreUserInfo info) {
+		return storeUserInfoMapper.insertSelective(info);
+	}
 
 }

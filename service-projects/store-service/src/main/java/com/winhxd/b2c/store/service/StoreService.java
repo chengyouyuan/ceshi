@@ -1,8 +1,9 @@
 package com.winhxd.b2c.store.service;
 
+
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 /**
@@ -34,5 +35,5 @@ public interface StoreService {
      * @param storeCondition
      * @return
      */
-    PagedList<StoreVO> findStoreUserInfo(StoreInfoCondition storeCondition);
+    PagedList<BackStageStoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition);
 }

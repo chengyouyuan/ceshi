@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.system.user.dao.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRole">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+
+  <resultMap id="RoleMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRole" extends="BaseResultMap">
+    <collection property="permissions" ofType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission"
+                javaType="ArrayList" column="id" select="selectPermissions" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_name, created_by, created, updated_by, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_role (id, role_name, created_by, 
+      created, updated_by, updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR},
+      #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole">
+    update sys_role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole">
+    update sys_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectSysRole" resultMap="RoleMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role
+  </select>
+  <select id="selectPermissions" parameterType="map" resultType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
+    select
+      id, role_id roleId, permission, permission_name permissionName
+    from sys_role_permission
+    where role_id=#{id}
+  </select>
+</mapper>

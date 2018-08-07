@@ -42,7 +42,10 @@ public class StoreProductManageCondition extends BaseCondition implements Serial
 	
 	@ApiModelProperty("商品sku")
 	private String skuCode;
-	
+
+	@ApiModelProperty("更新人")
+	private Long updatedBy;
+
 	@ApiModelProperty("更新人名称")
 	private String updatedByName;
 	

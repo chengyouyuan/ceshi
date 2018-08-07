@@ -1,7 +1,9 @@
+
 package com.winhxd.b2c.store.service;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 
@@ -13,6 +15,16 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
  * @date: 2018年8月7日 上午9:55:52
  */
 public interface StoreProductStatisticsService {
+	
+	 /**
+     * 功能描述: 修改门店售卖数量
+     * @param condition
+     * @param condition
+     * @return int
+     * @auther lvsen
+     * @date 2018/8/6 17:34
+     */
+    int modifyQuantitySoldOutByStoreIdAndProdId(StoreProductManageCondition condition);
 	/**
 	 * 插入一条门店商品统计信息
 	* @Title: saveStoreProductStatistics 

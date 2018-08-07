@@ -1,19 +1,18 @@
 package com.winhxd.b2c.store.controller;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backStage.store.condition.StoreInfoCondition;
-import com.winhxd.b2c.common.domain.backStage.store.vo.StoreVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
@@ -23,6 +22,7 @@ import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
+import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreService;
 
 /**
@@ -36,6 +36,10 @@ public class StoreServiceController implements StoreServiceClient {
     private StoreService storeService;
     @Autowired
     private StoreProductManageService storeProductManageService;
+
+    @Autowired
+	private StoreProductStatisticsService storeProductStatisticsService;
+
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
 //    @Autowired
 //    private ProductServiceClient productServiceClient;
@@ -55,13 +59,6 @@ public class StoreServiceController implements StoreServiceClient {
         return result;
     }
 
-    @Override
-    public ResponseResult<PagedList<StoreVO>> storeList(StoreInfoCondition storeCondition) {
-        ResponseResult<PagedList<StoreVO>> responseResult = new ResponseResult<>();
-        PagedList<StoreVO> storeVOPagedList = storeService.findStoreUserInfo(storeCondition);
-        responseResult.setData(storeVOPagedList);
-        return responseResult;
-    }
 
 	@Override
 	public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes, Long storeId) {
@@ -109,13 +106,26 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
+	public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
+		if (condition != null) {
+			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (null != condition.getStoreId() || StringUtils.isNotBlank(condition.getProdId()) || null != condition.getUpdatedBy()) {
+			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		storeProductStatisticsService.modifyQuantitySoldOutByStoreIdAndProdId(condition);
+	}
+
+	@Override
 	public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
 		ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
 		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
 		//参数检验
-		if(storeId==null){
+		if (storeId == null) {
 			logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
-	         throw new BusinessException(BusinessCode.CODE_1007);
+			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		vo.setStoreId(storeId);
 		//查询上架未设置价格商品

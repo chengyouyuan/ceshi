@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -27,11 +28,8 @@ public class ShopCarCondition extends BaseCondition{
     @ApiModelProperty(value = "自提时间")
     private Date pickupDateTime;
 
-    @ApiModelProperty(value = "商品sku")
-    private String skuCode;
-
-    @ApiModelProperty(value = "商品数量")
-    private Integer prodNum;
+    @ApiModelProperty(value = "订单商品明细", required=true)
+    private List<OrderItemCondition> orderItemConditions;
 
     @ApiModelProperty(value = "支付方式(1:微信扫码付款,2微信在线付款)")
     private Short payType;

@@ -47,7 +47,7 @@ public class LoginController {
 
     @ApiOperation("登录")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userCode", value = "账号", required = true, dataType = "String", paramType = "form"),
+            @ApiImplicitParam(name = "account", value = "账号", required = true, dataType = "String", paramType = "form"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "form")
     })
     @ApiResponses({
@@ -58,21 +58,22 @@ public class LoginController {
             @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用")
     })
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseResult<Boolean> login(@RequestParam String userCode, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
-        logger.info("{} - 用户登录, 参数：userCode={}", MODULE_NAME, userCode);
+    public ResponseResult<Boolean> login(@RequestParam String account, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
+        logger.info("{} - 用户登录, 参数：account={}", MODULE_NAME, account);
 
         ResponseResult<Boolean> result = new ResponseResult<>(false);
 
-        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userCode);
+        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(account);
         if(responseResult.getCode() != BusinessCode.CODE_OK){
-            logger.error("{}，账号：{}", responseResult.getMessage(), userCode);
+            logger.error("{}，账号：{}", responseResult.getMessage(), account);
             result = new ResponseResult<>(responseResult.getCode());
             result.setData(false);
             return result;
         }
+
         SysUser sysUser = responseResult.getData();
         if(null == sysUser){
-            logger.error("登录账号无效，账号：{}", userCode);
+            logger.error("登录账号无效，账号：{}", account);
             result = new ResponseResult<>(BusinessCode.CODE_1004);
             result.setData(false);
             return result;
@@ -80,14 +81,14 @@ public class LoginController {
 
         String encodePassword = DigestUtils.md5DigestAsHex(password.getBytes());
         if(!sysUser.getPassword().equals(encodePassword)){
-            logger.error("登录密码错误，账号：{}", userCode);
+            logger.error("登录密码错误，账号：{}", account);
             result = new ResponseResult<>(BusinessCode.CODE_1005);
             result.setData(false);
             return result;
         }
 
         if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
-            logger.error("账号未启用，账号：{}", userCode);
+            logger.error("账号未启用，账号：{}", account);
             result = new ResponseResult<>(BusinessCode.CODE_1006);
             result.setData(false);
             return result;
@@ -97,6 +98,7 @@ public class LoginController {
         String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(sysUser,userInfo);
+
         cache.setex(cacheKey,30 * 60, JsonUtil.toJSONString(userInfo));
 
         Cookie tokenCookie = null;
@@ -119,7 +121,7 @@ public class LoginController {
         response.addCookie(tokenCookie);
 
         // 登录成功
-        logger.info("{} - 用户登录成功, 参数：userCode={}", MODULE_NAME, userCode);
+        logger.info("{} - 用户登录成功, 参数：userCode={}", MODULE_NAME, account);
         result.setData(true);
         return result;
     }

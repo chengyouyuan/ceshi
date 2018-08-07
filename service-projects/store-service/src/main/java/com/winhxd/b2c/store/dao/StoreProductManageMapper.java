@@ -6,12 +6,14 @@ import org.apache.ibatis.annotations.Param;
 
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import org.springframework.stereotype.Repository;
 
 /**
  * @description:
  * @author: lvsen
  * @date: 2018/8/6 14:30
  */
+@Repository
 public interface StoreProductManageMapper {
     int deleteByPrimaryKey(Long id);
 

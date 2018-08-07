@@ -14,7 +14,7 @@ spring:
         service-id: b2c-config-server
     gateway:
       default-filters:
-        name: Hystrix
+      - name: Hystrix
         args:
           name: fallbackcmd
           fallbackUri: forward:/fallback

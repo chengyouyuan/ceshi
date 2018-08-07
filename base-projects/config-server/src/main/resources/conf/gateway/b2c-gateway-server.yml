@@ -5,3 +5,21 @@ spring:
       - uri: lb://b2c-order-service
         predicates:
         - Path=/api-order/**
+      - uri: lb://b2c-store-service
+        predicates:
+        - Path=/api-store/**
+      - uri: lb://b2c-customer-service
+        predicates:
+        - Path=/api-customer/**
+      - uri: lb://b2c-message-service
+        predicates:
+        - Path=/api-message/**
+      - uri: lb://b2c-pay-service
+        predicates:
+        - Path=/api-pay/**
+      - uri: lb://b2c-promotion-service
+        predicates:
+        - Path=/api-promotion/**
+      - uri: lb://b2c-system-service
+        predicates:
+        - Path=/api-system/**

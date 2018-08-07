@@ -71,4 +71,11 @@ public final class BusinessCode {
     /** 查询订单参数异常*/
     public static final int CODE_411001 = 411001;
 
+    /** 不存在符合的优惠券活动*/
+    public static final int CODE_500001 = 500001;
+
+    /** 该手机号已经享受过新用户福利*/
+    public static final int CODE_500002 = 500002;
+
+
 }

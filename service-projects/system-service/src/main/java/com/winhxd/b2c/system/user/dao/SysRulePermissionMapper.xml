@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.system.user.dao.SysRulePermissionMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRulePermission">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="rule_id" jdbcType="BIGINT" property="ruleId" />
+    <result column="rule_id" jdbcType="BIGINT" property="roleId" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
-    <result column="permissionName" jdbcType="VARCHAR" property="permissionname" />
+    <result column="permission_name" jdbcType="VARCHAR" property="permissionName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rule_id, permission, permissionName
+    id, rule_id, permission, permission_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -20,25 +20,25 @@
     delete from sys_rule_permission
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRulePermission">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     insert into sys_rule_permission (id, rule_id, permission, 
-      permissionName)
-    values (#{id,jdbcType=BIGINT}, #{ruleId,jdbcType=BIGINT}, #{permission,jdbcType=VARCHAR}, 
-      #{permissionname,jdbcType=VARCHAR})
+      permission_name)
+    values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{permission,jdbcType=VARCHAR},
+      #{permissionName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRulePermission">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     insert into sys_rule_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="ruleId != null">
+      <if test="roleId != null">
         rule_id,
       </if>
       <if test="permission != null">
         permission,
       </if>
-      <if test="permissionname != null">
+      <if test="permissionName != null">
         permissionName,
       </if>
     </trim>
@@ -46,37 +46,37 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="ruleId != null">
-        #{ruleId,jdbcType=BIGINT},
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
       </if>
       <if test="permission != null">
         #{permission,jdbcType=VARCHAR},
       </if>
-      <if test="permissionname != null">
-        #{permissionname,jdbcType=VARCHAR},
+      <if test="permissionName != null">
+        #{permissionName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRulePermission">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     update sys_rule_permission
     <set>
-      <if test="ruleId != null">
-        rule_id = #{ruleId,jdbcType=BIGINT},
+      <if test="roleId != null">
+        rule_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="permission != null">
         permission = #{permission,jdbcType=VARCHAR},
       </if>
-      <if test="permissionname != null">
-        permissionName = #{permissionname,jdbcType=VARCHAR},
+      <if test="permissionName != null">
+        permissionName = #{permissionName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRulePermission">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     update sys_rule_permission
-    set rule_id = #{ruleId,jdbcType=BIGINT},
+    set rule_id = #{roleId,jdbcType=BIGINT},
       permission = #{permission,jdbcType=VARCHAR},
-      permissionName = #{permissionname,jdbcType=VARCHAR}
+      permissionName = #{permissionName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

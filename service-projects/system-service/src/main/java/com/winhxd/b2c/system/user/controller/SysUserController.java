@@ -170,20 +170,43 @@ public class SysUserController implements UserServiceClient {
     @Override
     @ApiOperation(value = "根据主键获取用户信息")
     public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
-        logger.info("{} - 根据主键获取用户信息, 参数：userId={}", MODULE_NAME, id);
+        logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             SysUser sysUser = sysUserService.getSysUserById(id);
             result.setData(sysUser);
             return result;
         } catch (BusinessException e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, id, e);
+            logger.error("{} - 根据主键获取用户信息失败, 参数：id={}", MODULE_NAME, id, e);
             result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：userId={}", MODULE_NAME, id, e);
+            logger.error("{} - 根据主键获取用户信息失败, 参数：id={}", MODULE_NAME, id, e);
             result = new ResponseResult(BusinessCode.CODE_1001);
         }
         return result;
     }
 
+    /**
+     * 根据主键禁用用户
+     * @author zhangzhengyang
+     * @date 2018/8/2
+     * @param id
+     * @return
+     */
+    @Override
+    @ApiOperation(value = "根据主键禁用用户")
+    public ResponseResult disabled(@PathVariable("id") Long id){
+        logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
+        ResponseResult result = new ResponseResult(BusinessCode.CODE_OK);
+        try {
+            sysUserService.disabled(id);
+        } catch (BusinessException e){
+            logger.error("{} - 根据主键禁用用户失败, 参数：id={}", MODULE_NAME, id, e);
+            result = new ResponseResult(e.getErrorCode());
+        } catch (Exception e){
+            logger.error("{} - 根据主键禁用用户失败, 参数：id={}", MODULE_NAME, id, e);
+            result = new ResponseResult(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
 }

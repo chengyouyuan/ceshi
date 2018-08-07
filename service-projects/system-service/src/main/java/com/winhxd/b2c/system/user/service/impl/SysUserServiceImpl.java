@@ -6,8 +6,9 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
-import com.winhxd.b2c.common.domain.system.user.model.SysUserRule;
+import com.winhxd.b2c.common.domain.system.user.model.SysUserRole;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.user.dao.SysRulePermissionMapper;
 import com.winhxd.b2c.system.user.dao.SysUserMapper;
@@ -39,9 +40,9 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public int addSysUser(SysUser sysUser) {
         int count = sysUserMapper.insertSelective(sysUser);
-        SysUserRule sysUserRule = new SysUserRule();
+        SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUser.getRuleId());
+        sysUserRule.setRoleId(sysUser.getRuleId());
         sysUserRuleMapper.insertSelective(sysUserRule);
         return count;
     }
@@ -51,9 +52,9 @@ public class SysUserServiceImpl implements SysUserService {
     public int updateSysUser(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
         sysUserRuleMapper.deleteByUserId(sysUser.getId());
-        SysUserRule sysUserRule = new SysUserRule();
+        SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUser.getRuleId());
+        sysUserRule.setRoleId(sysUser.getRuleId());
         sysUserRuleMapper.insertSelective(sysUserRule);
         return count;
     }
@@ -108,5 +109,13 @@ public class SysUserServiceImpl implements SysUserService {
             return null;
         }
         return sysUserList.get(0);
+    }
+
+    @Override
+    public int disabled(Long id) {
+        SysUser sysUser = new SysUser();
+        sysUser.setId(id);
+        sysUser.setStatus(UserStatusEnum.DISABLED.getCode());
+        return sysUserMapper.updateByPrimaryKeySelective(sysUser);
     }
 }

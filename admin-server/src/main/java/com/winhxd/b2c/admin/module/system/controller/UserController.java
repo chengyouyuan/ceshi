@@ -12,10 +12,7 @@ import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
@@ -76,6 +73,9 @@ public class UserController {
     }
 
     @ApiOperation("编辑用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -146,6 +146,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "根据主键获取用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -160,6 +163,9 @@ public class UserController {
     }
 
     @ApiOperation("验证用户是否已存在")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "account", value = "账号", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -177,6 +183,23 @@ public class UserController {
         }
 
         return new ResponseResult<>(false);
+    }
+
+    @ApiOperation(value = "根据主键获取禁用用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @GetMapping("/disabled/{id}")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
+    public ResponseResult<SysUser> disabled(@PathVariable("id") Long id){
+        logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
+        return userServiceClient.disabled(id);
     }
 
 }

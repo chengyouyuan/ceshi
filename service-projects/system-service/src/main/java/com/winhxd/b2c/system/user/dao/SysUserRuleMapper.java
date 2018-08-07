@@ -1,19 +1,19 @@
 package com.winhxd.b2c.system.user.dao;
 
-import com.winhxd.b2c.common.domain.system.user.model.SysUserRule;
+import com.winhxd.b2c.common.domain.system.user.model.SysUserRole;
 
 public interface SysUserRuleMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(SysUserRule record);
+    int insert(SysUserRole record);
 
-    int insertSelective(SysUserRule record);
+    int insertSelective(SysUserRole record);
 
-    SysUserRule selectByPrimaryKey(Long id);
+    SysUserRole selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(SysUserRule record);
+    int updateByPrimaryKeySelective(SysUserRole record);
 
-    int updateByPrimaryKey(SysUserRule record);
+    int updateByPrimaryKey(SysUserRole record);
 
     int deleteByUserId(Long userId);
 }

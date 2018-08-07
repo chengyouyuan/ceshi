@@ -34,7 +34,7 @@ public interface StoreHxdServiceClient {
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("storeId") String storeId);
 
     @RequestMapping(value = "/hxdStore/getStoreBaseInfo/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStoreBaseInfo(@RequestParam("storeId") String storeId);
+    ResponseResult<Object> getStoreBaseInfo(@RequestParam("storeId") String storeId);
 
 }
 
@@ -70,7 +70,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<String>> getStoreBaseInfo(String storeId) {
+    public ResponseResult<Object> getStoreBaseInfo(String storeId) {
         logger.error("StoreHxdServiceClient -> getStoreBaseInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

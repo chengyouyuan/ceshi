@@ -130,4 +130,9 @@ public class StoreServiceImpl implements StoreService {
     public StoreUserInfo selectByStoreId(Long storeId) {
         return storeUserInfoMapper.selectByStoreId(storeId);
     }
+
+    @Override
+    public int updateByPrimaryKeySelective(StoreUserInfo record) {
+        return storeUserInfoMapper.updateByPrimaryKeySelective(record);
+    }
 }

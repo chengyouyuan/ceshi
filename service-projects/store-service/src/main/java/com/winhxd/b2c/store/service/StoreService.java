@@ -56,4 +56,11 @@ public interface StoreService {
      * @return 门店信息
      */
     StoreUserInfo selectByStoreId(Long storeId);
+
+    /**
+     * 修改门店信息非空的字段
+     * @param record
+     * @return
+     */
+    int updateByPrimaryKeySelective(StoreUserInfo record);
 }

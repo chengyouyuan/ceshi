@@ -6,19 +6,19 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 惠小店开店验证入参
+ * C端用户浏览门店记录日志入参
  *
  * @author liutong
  * @date 2018-08-03 10:37:12
  */
-@ApiModel("惠小店开店验证入参")
+@ApiModel("C端用户浏览门店记录日志入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class OpenStoreCondition {
+public class BrowseLogCondition {
     @ApiModelProperty(value = "门店编码", required = true)
     private Long storeId;
 
-    @ApiModelProperty(value = "用户编码")
+    @ApiModelProperty(value = "C端用户编码", required = true)
     private Long customerId;
 
 

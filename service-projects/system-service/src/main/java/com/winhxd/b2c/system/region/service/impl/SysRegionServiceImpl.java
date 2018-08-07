@@ -42,7 +42,7 @@ public class SysRegionServiceImpl implements SysRegionService {
     }
 
     @Override
-    public List<SysRegion> findRegionByCodes(List<SysRegionCodeCondition> regionCodes) {
+    public List<SysRegion> findRegionByCodes(List<String> regionCodes) {
         return  sysRegionMapper.selectRegionRangeList(regionCodes);
     }
 }

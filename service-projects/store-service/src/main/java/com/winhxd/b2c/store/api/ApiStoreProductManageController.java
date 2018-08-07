@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.AllowPutawayProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
@@ -117,12 +120,14 @@ public class ApiStoreProductManageController {
 		            responseResult.setMessage("参数错误");
 		            return responseResult;
 		         }
+		         //获取当前门店用户
+		         StoreUser storeUser=UserContext.getCurrentStoreUser();
 		         //操作类型
 		         Byte operateType=condition.getOperateType();
 		         //门店id
 		         Long storeId=condition.getStoreId();
 		         //skuCode数组
-		         String skuCodes[]=condition.getSkuCode();
+		         String skuCodes[]=null;
 		         //获取sku信息
 		         List<StoreProductManage> spms=storeProductManageService.findProdBySkuCodes(storeId,skuCodes);
 		         //判断数据权限
@@ -132,7 +137,18 @@ public class ApiStoreProductManageController {
 			        	 //上架操作
 			        	 //表示还没上架过
 			        	 if(spms==null||spms.size()==0){
+			        		 //调用商品接口获取商品相关信息
+			        		 List<ProductSkuVO> prodSkuList=null;
+			        		 //保存StoreProductManage
+			        		 //初始化门店商品对应统计信息
 			        		 
+			        		 
+			        		 
+			        		 
+			        	 }else{
+			        		 //表示商品中有部分已经上架过了
+			        		 
+			        		 return responseResult;
 			        	 }
 			        	 
 			         }else if(StoreProdOperateEnum.UNPUTAWAY.getOperateCode()==operateType){
@@ -218,7 +234,7 @@ public class ApiStoreProductManageController {
 		    	if(condition instanceof ProdOperateCondition){
 		    		ProdOperateCondition c=(ProdOperateCondition)condition;
 		    		if(c.getStoreId()!=null&&c.getOperateType()!=null
-		    				&&c.getSkuCode()!=null&&c.getSkuCode().length>0){
+		    				&&c.getProducts()!=null&&c.getProducts().size()>0){
 		    			flag=true;
 		    		}
 		    	}

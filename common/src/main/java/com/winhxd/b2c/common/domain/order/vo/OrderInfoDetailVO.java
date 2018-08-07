@@ -36,12 +36,16 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "计价类型:1:线上计价;2:线下计价;", required = true)
     private Short valuationType;
+    @ApiModelProperty(value = "计价类型描述", required = true)
+    private String valuationTypeDesc;
     /**
      * 订单状态 1:已提交;2:待付款;3:待接单;5:待计价;7:已计价;
      * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
      */
     @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
     private Short orderStatus;
+    @ApiModelProperty(value = "订单状态描述", required = true)
+    private String orderStatusDesc;
     /**
      * 提货码
      */
@@ -67,11 +71,15 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "支付类型:1为微信扫码付款;2为微信在线支付;", required = true)
     private Short payType;
+    @ApiModelProperty(value = "支付类型描述", required = true)
+    private String payTypeDesc;
     /**
      * 支付状态:0为未支付;1为已支付;
      */
     @ApiModelProperty(value = "支付状态:0为未支付;1为已支付;", required = true)
     private Short payStatus;
+    @ApiModelProperty(value = "支付状态描述", required = true)
+    private String payStatusDesc;
     /**
      * 订单创建时间
      */
@@ -102,6 +110,8 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "提货方式:1自提;2配送;", required = true)
     private Short pickupType;
+    @ApiModelProperty(value = "提货方式描述", required = true)
+    private String pickupTypeDesc;
     /**
      * 取消原因
      */

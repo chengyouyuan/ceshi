@@ -61,7 +61,7 @@ public class LoginController {
     public ResponseResult<Boolean> login(@RequestParam String account, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
         logger.info("{} - 用户登录, 参数：account={}", MODULE_NAME, account);
 
-        ResponseResult<Boolean> result = new ResponseResult<>(false);
+        ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
         ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(account);
         if(responseResult.getCode() != BusinessCode.CODE_OK){
@@ -136,7 +136,7 @@ public class LoginController {
         UserInfo userInfo = UserManager.getCurrentUser();
         logger.info("{} - 用户注销, 参数：userInfo={}", MODULE_NAME, userInfo);
 
-        ResponseResult<Boolean> result = new ResponseResult<>(false);
+        ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){

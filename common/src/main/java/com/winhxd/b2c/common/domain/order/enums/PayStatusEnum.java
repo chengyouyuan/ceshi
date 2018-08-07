@@ -29,4 +29,15 @@ public enum PayStatusEnum {
     public String getStatusDes() {
         return statusDes;
     }
+
+    public static String getDesc(Short code) {
+        if (null != code) {
+            for (PayStatusEnum payStatusEnum : PayStatusEnum.values()) {
+                if (code == payStatusEnum.getStatusCode()) {
+                    return payStatusEnum.getStatusDes();
+                }
+            }
+        }
+        return null;
+    }
 }

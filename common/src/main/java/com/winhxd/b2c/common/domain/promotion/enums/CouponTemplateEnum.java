@@ -15,8 +15,8 @@ public enum CouponTemplateEnum {
     /**
      * 优惠券模板是否有效  0有效 1无效
      */
-    EFFICTIVE((short) 0, "有效"),
-    VALIDATE((short) 1, "无效"),
+    EFFICTIVE((short) 1, "有效"),
+    VALIDATE((short) 0, "无效"),
 
     /**
      * 支付方式

@@ -61,7 +61,7 @@
     <include refid="Base_Column_List" />
     from sys_region  Where active=1 AND region_code IN
     <foreach collection="list" item="item" open="(" separator="," close=")">
-      #{item.regionCode}
+      #{item}
     </foreach>
   </select>
 

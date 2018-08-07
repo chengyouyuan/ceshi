@@ -31,7 +31,7 @@ public interface RegionServiceClient {
      * @param: SysRegionCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/310/v1/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/region/320/v1/list", method = RequestMethod.POST)
     ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition);
     /**
      * 功能描述: 根据指定地理区域编码获取地理区域列表
@@ -40,8 +40,8 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/311/v1/rangeList", method = RequestMethod.POST)
-    ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<SysRegionCodeCondition> condition);
+    @RequestMapping(value = "/api/region/321/v1/rangeList", method = RequestMethod.POST)
+    ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<String> regisonCodes);
 
     /**
      * 功能描述: 根据指定地理区域编码获取单个地理区域
@@ -50,7 +50,7 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/312/v1/get/{regisonCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
     ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode);
 }
 
@@ -72,7 +72,7 @@ class RegionServiceClientFallback implements RegionServiceClient, FallbackFactor
     }
 
     @Override
-    public ResponseResult<List<SysRegion>> getRegionsByRange(List<SysRegionCodeCondition> condition) {
+    public ResponseResult<List<SysRegion>> getRegionsByRange(List<String> condition) {
         logger.error("RegionServiceClientFallback -> getRegionsByRange，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

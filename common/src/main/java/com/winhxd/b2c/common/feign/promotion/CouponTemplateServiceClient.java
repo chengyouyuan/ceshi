@@ -67,7 +67,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@Date   2018/8/6 20:39
      */
     @RequestMapping(value = "/promotion/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
-    public ResponseResult updateCouponTemplateToValid(String ids);
+    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids);
 
     /**
      *

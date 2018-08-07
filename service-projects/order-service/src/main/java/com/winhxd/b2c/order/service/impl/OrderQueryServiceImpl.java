@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -29,8 +30,6 @@ import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondi
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -101,6 +100,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @author pangjianhua
      */
     @Override
+    @OrderEnumConvertAnnotation
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");

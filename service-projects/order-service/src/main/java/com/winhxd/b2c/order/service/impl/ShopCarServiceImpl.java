@@ -1,6 +1,8 @@
 package com.winhxd.b2c.order.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
@@ -53,8 +55,8 @@ public class ShopCarServiceImpl implements ShopCarService {
         checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
         // 加购：1、存在，则删除再保存，2、不存在，直接保存
         ShopCar shopCar = new ShopCar();
-        // TODO TOCKEN获取当前用户信息
-        Long customerId = null;
+        // 获取当前用户信息
+        Long customerId = getCurrentCustomerId();
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
@@ -78,8 +80,8 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public ShopCarVO findShopCar(ShopCarCondition condition) {
         ShopCar shopCar = new ShopCar();
-        // TODO TOCKEN获取当前用户信息
-        Long customerId = null;
+        // 获取当前用户信息
+        Long customerId = getCurrentCustomerId();
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
@@ -114,7 +116,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     public int removeShopCar(ShopCarCondition condition) {
         ShopCar shopCar = new ShopCar();
         // TODO TOCKEN获取当前用户信息
-        Long customerId = null;
+        Long customerId = getCurrentCustomerId();
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         return shopCarMapper.deleteShopCars(shopCar);
@@ -173,13 +175,21 @@ public class ShopCarServiceImpl implements ShopCarService {
             }
             for(OrderItemCondition orderItem : orderItemConditions) {
                 if (shopCarProdVO.getSkuCode().equals(orderItem.getSkuCode())
-                        && null != shopCarProdVO.getSellMoney() && null != orderItem.getPrice()
-                        && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
+                        && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
                     logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                     throw new BusinessException(BusinessCode.CODE_402012);
                 }
             }
         }
+    }
+
+    private Long getCurrentCustomerId(){
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (null == customerUser) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
+        return customerUser.getCustomerId();
     }
 
 }

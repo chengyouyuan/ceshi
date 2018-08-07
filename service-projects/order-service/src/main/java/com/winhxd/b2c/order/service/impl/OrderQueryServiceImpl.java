@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -43,6 +42,9 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.support.annotation.CustomerInfoConvertAnnotation;
+import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
  * @author pangjianhua
@@ -192,6 +194,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
+    @OrderInfoConvertAnnotation
+    @CustomerInfoConvertAnnotation
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());

@@ -1,12 +1,12 @@
 package com.winhxd.b2c.common.domain.order.vo;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * @author pangjianhua
@@ -26,6 +26,7 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "下单用户ID", required = true)
     private Long customerId;
+    
     /**
      * 接单门店ID
      */

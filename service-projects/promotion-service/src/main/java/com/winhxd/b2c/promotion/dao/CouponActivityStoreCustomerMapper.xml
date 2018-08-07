@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao..CouponActivityStoreCustomerMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coupon_activity_template_id" jdbcType="BIGINT" property="couponActivityTemplateId" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coupon_activity_template_id, store_id, customer_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_activity_store_customer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_activity_store_customer
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    insert into coupon_activity_store_customer (id, coupon_activity_template_id, store_id, 
+      customer_id)
+    values (#{id,jdbcType=BIGINT}, #{couponActivityTemplateId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
+      #{customerId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    insert into coupon_activity_store_customer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="couponActivityTemplateId != null">
+        coupon_activity_template_id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="couponActivityTemplateId != null">
+        #{couponActivityTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    update coupon_activity_store_customer
+    <set>
+      <if test="couponActivityTemplateId != null">
+        coupon_activity_template_id = #{couponActivityTemplateId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    update coupon_activity_store_customer
+    set coupon_activity_template_id = #{couponActivityTemplateId,jdbcType=BIGINT},
+      store_id = #{storeId,jdbcType=BIGINT},
+      customer_id = #{customerId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

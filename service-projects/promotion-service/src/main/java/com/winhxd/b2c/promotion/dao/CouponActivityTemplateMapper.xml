@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao..CouponActivityTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coupon_activity_id" jdbcType="BIGINT" property="couponActivityId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="effective_days" jdbcType="INTEGER" property="effectiveDays" />
+    <result column="coupon_num_type" jdbcType="SMALLINT" property="couponNumType" />
+    <result column="coupon_num" jdbcType="INTEGER" property="couponNum" />
+    <result column="customer_voucher_limit_type" jdbcType="SMALLINT" property="customerVoucherLimitType" />
+    <result column="customer_voucher_limit_num" jdbcType="INTEGER" property="customerVoucherLimitNum" />
+    <result column="send_num" jdbcType="INTEGER" property="sendNum" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coupon_activity_id, template_id, count, start_time, end_time, effective_days, 
+    coupon_num_type, coupon_num, customer_voucher_limit_type, customer_voucher_limit_num, 
+    send_num, send_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_activity_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_activity_template
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    insert into coupon_activity_template (id, coupon_activity_id, template_id, 
+      count, start_time, end_time, 
+      effective_days, coupon_num_type, coupon_num, 
+      customer_voucher_limit_type, customer_voucher_limit_num, 
+      send_num, send_time)
+    values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, 
+      #{count,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{effectiveDays,jdbcType=INTEGER}, #{couponNumType,jdbcType=SMALLINT}, #{couponNum,jdbcType=INTEGER}, 
+      #{customerVoucherLimitType,jdbcType=SMALLINT}, #{customerVoucherLimitNum,jdbcType=INTEGER}, 
+      #{sendNum,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    insert into coupon_activity_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="couponActivityId != null">
+        coupon_activity_id,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="effectiveDays != null">
+        effective_days,
+      </if>
+      <if test="couponNumType != null">
+        coupon_num_type,
+      </if>
+      <if test="couponNum != null">
+        coupon_num,
+      </if>
+      <if test="customerVoucherLimitType != null">
+        customer_voucher_limit_type,
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        customer_voucher_limit_num,
+      </if>
+      <if test="sendNum != null">
+        send_num,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="couponActivityId != null">
+        #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveDays != null">
+        #{effectiveDays,jdbcType=INTEGER},
+      </if>
+      <if test="couponNumType != null">
+        #{couponNumType,jdbcType=SMALLINT},
+      </if>
+      <if test="couponNum != null">
+        #{couponNum,jdbcType=INTEGER},
+      </if>
+      <if test="customerVoucherLimitType != null">
+        #{customerVoucherLimitType,jdbcType=SMALLINT},
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        #{customerVoucherLimitNum,jdbcType=INTEGER},
+      </if>
+      <if test="sendNum != null">
+        #{sendNum,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    update coupon_activity_template
+    <set>
+      <if test="couponActivityId != null">
+        coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveDays != null">
+        effective_days = #{effectiveDays,jdbcType=INTEGER},
+      </if>
+      <if test="couponNumType != null">
+        coupon_num_type = #{couponNumType,jdbcType=SMALLINT},
+      </if>
+      <if test="couponNum != null">
+        coupon_num = #{couponNum,jdbcType=INTEGER},
+      </if>
+      <if test="customerVoucherLimitType != null">
+        customer_voucher_limit_type = #{customerVoucherLimitType,jdbcType=SMALLINT},
+      </if>
+      <if test="customerVoucherLimitNum != null">
+        customer_voucher_limit_num = #{customerVoucherLimitNum,jdbcType=INTEGER},
+      </if>
+      <if test="sendNum != null">
+        send_num = #{sendNum,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    update coupon_activity_template
+    set coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT},
+      count = #{count,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      effective_days = #{effectiveDays,jdbcType=INTEGER},
+      coupon_num_type = #{couponNumType,jdbcType=SMALLINT},
+      coupon_num = #{couponNum,jdbcType=INTEGER},
+      customer_voucher_limit_type = #{customerVoucherLimitType,jdbcType=SMALLINT},
+      customer_voucher_limit_num = #{customerVoucherLimitNum,jdbcType=INTEGER},
+      send_num = #{sendNum,jdbcType=INTEGER},
+      send_time = #{sendTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

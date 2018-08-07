@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
 
-public interface SysRuleService {
+public interface SysRoleService {
 
     /**
      * 新增角色

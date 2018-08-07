@@ -28,7 +28,7 @@ import java.util.Date;
  * @date 2018/8/7
  */
 @Api(tags = "系统权限组管理")
-@RestController("/role")
+@RestController
 public class RoleController {
 
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
@@ -45,7 +45,7 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/role/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_ADD})
     public ResponseResult add(SysRoleDTO sysRoleDTO) {
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRoleDTO);
@@ -74,7 +74,7 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/role/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_EDIT})
     public ResponseResult edit(SysRoleDTO sysRoleDTO) {
         logger.info("{} - 编辑权限组, 参数：sysRole={}", MODULE_NAME, sysRoleDTO);
@@ -98,7 +98,7 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(value = "/role/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
     public ResponseResult<PagedList<SysRole>> list(SysRoleCondition condition){
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
@@ -115,7 +115,7 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping("/get/{id}")
+    @GetMapping("/role/get/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
     public ResponseResult<SysRole> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取权限组信息, 参数：id={}", MODULE_NAME, id);

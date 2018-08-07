@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.domain.system.user.model.SysRolePermission;
 
 import java.util.List;
 
-public interface SysRulePermissionMapper {
+public interface SysRolePermissionMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(SysRolePermission record);

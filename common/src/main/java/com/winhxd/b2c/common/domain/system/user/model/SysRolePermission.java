@@ -12,7 +12,7 @@ public class SysRolePermission {
     private Long id;
 
     @ApiModelProperty("权组编号")
-    private Long ruleId;
+    private Long roleId;
 
     @ApiModelProperty("权限编码")
     private String permission;

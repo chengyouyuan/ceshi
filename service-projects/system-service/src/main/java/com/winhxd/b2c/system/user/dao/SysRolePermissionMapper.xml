@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.system.user.dao.SysRulePermissionMapper">
+<mapper namespace="com.winhxd.b2c.system.user.dao.SysRolePermissionMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="rule_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="permission" jdbcType="VARCHAR" property="permission" />
     <result column="permission_name" jdbcType="VARCHAR" property="permissionName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, rule_id, permission, permission_name
+    id, role_id, permission, permission_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sys_rule_permission
+    from sys_role_permission
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_rule_permission
+    delete from sys_role_permission
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
-    insert into sys_rule_permission (id, rule_id, permission, 
+    insert into sys_role_permission (id, role_id, permission, 
       permission_name)
     values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{permission,jdbcType=VARCHAR},
       #{permissionName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
-    insert into sys_rule_permission
+    insert into sys_role_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
       <if test="roleId != null">
-        rule_id,
+        role_id,
       </if>
       <if test="permission != null">
         permission,
@@ -58,10 +58,10 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
-    update sys_rule_permission
+    update sys_role_permission
     <set>
       <if test="roleId != null">
-        rule_id = #{roleId,jdbcType=BIGINT},
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="permission != null">
         permission = #{permission,jdbcType=VARCHAR},
@@ -73,8 +73,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
-    update sys_rule_permission
-    set rule_id = #{roleId,jdbcType=BIGINT},
+    update sys_role_permission
+    set role_id = #{roleId,jdbcType=BIGINT},
       permission = #{permission,jdbcType=VARCHAR},
       permissionName = #{permissionName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
@@ -83,8 +83,8 @@
   <select id="selectPermissionByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
     select
       permission
-    from sys_rule_permission p
-      inner join sys_user_rule ur on ur.rule_id=p.rule_id
+    from sys_role_permission p
+      inner join sys_user_rule ur on ur.role_id=p.role_id
     where ur.user_id = #{userId,jdbcType=BIGINT}
   </select>
 </mapper>

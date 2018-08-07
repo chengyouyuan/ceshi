@@ -2,7 +2,7 @@ package com.winhxd.b2c.system.user.dao;
 
 import com.winhxd.b2c.common.domain.system.user.model.SysUserRole;
 
-public interface SysUserRuleMapper {
+public interface SysUserRoleMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(SysUserRole record);

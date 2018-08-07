@@ -7,7 +7,7 @@ import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RoleServiceClient;
-import com.winhxd.b2c.system.user.service.SysRuleService;
+import com.winhxd.b2c.system.user.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class SysRoleController implements RoleServiceClient {
     private static final String MODULE_NAME = "系统权限组管理";
 
     @Resource
-    private SysRuleService sysRuleService;
+    private SysRoleService sysRoleService;
 
     /**
      * 新增权限组
@@ -49,7 +49,7 @@ public class SysRoleController implements RoleServiceClient {
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            sysRuleService.addSysRule(sysRole);
+            sysRoleService.addSysRule(sysRole);
             result.setData(sysRole.getId());
         } catch (BusinessException e){
             logger.error("{} - 新增权限组失败, 参数：sysRole={}", MODULE_NAME, sysRole, e);
@@ -74,7 +74,7 @@ public class SysRoleController implements RoleServiceClient {
         logger.info("{} - 修改权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            sysRuleService.updateSysRule(sysRole);
+            sysRoleService.updateSysRule(sysRole);
         } catch (BusinessException e){
             logger.error("{} - 修改权限组失败, 参数：sysRole={}", MODULE_NAME, sysRole, e);
             result = new ResponseResult<>(e.getErrorCode());
@@ -98,7 +98,7 @@ public class SysRoleController implements RoleServiceClient {
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysRole>> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            PagedList<SysRole> page = sysRuleService.selectSysRule(condition);
+            PagedList<SysRole> page = sysRoleService.selectSysRule(condition);
             result.setData(page);
         } catch (BusinessException e){
             logger.error("{} - 查询权限组列表失败, 参数：condition={}", MODULE_NAME, condition, e);
@@ -123,7 +123,7 @@ public class SysRoleController implements RoleServiceClient {
         logger.info("{} - 根据主键获取权限组信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysRole> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            SysRole sysRole = sysRuleService.getSysRuleById(id);
+            SysRole sysRole = sysRoleService.getSysRuleById(id);
             result.setData(sysRole);
             return result;
         } catch (BusinessException e){

@@ -6,7 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
 import com.winhxd.b2c.system.user.dao.SysRoleMapper;
-import com.winhxd.b2c.system.user.service.SysRuleService;
+import com.winhxd.b2c.system.user.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2018/8/1
  */
 @Service
-public class SysRuleServiceImpl implements SysRuleService {
+public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;

@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -116,6 +117,21 @@ public class StoreServiceController implements StoreServiceClient {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		storeProductStatisticsService.modifyQuantitySoldOutByStoreIdAndProdId(condition);
+	}
+
+	@Override
+	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+    	ResponseResult<StoreUserInfo> responseResult = new ResponseResult<>();
+		if(customerUserId == null) {
+			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
+			throw new BusinessException(BusinessCode.CODE_200001);
+		}
+		StoreUserInfo storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
+		if(storeInfo == null){
+			responseResult.setCode(BusinessCode.CODE_200009);
+		}
+		responseResult.setData(storeInfo);
+		return responseResult;
 	}
 
 	@Override

@@ -62,6 +62,8 @@ public final class BusinessCode {
     public static final int CODE_200007 = 200007;
     /**更新用户状态失败*/
     public static final int CODE_200008 = 200008;
+    /**用户没有绑定的门店不存在*/
+    public static final int CODE_200009 = 200009;
 
 
     /** 购物车:商品下架或删除*/

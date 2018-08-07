@@ -10,7 +10,9 @@ import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import com.winhxd.b2c.system.region.service.SysRegionService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,21 +84,22 @@ public class SysRegionController implements RegionServiceClient {
 
     @Override
     @ApiOperation(value = "查询指定的地理区域列表")
-    public ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<SysRegionCodeCondition> condition) {
-        logger.info("{} - 查询指定的地理区域列表, 参数：condition={}", MODULE_NAME, condition);
+    @ApiParam(name="地理区域编号数组",value="地理区域编号数组")
+    public ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<String> regisonCodes) {
+        logger.info("{} - 查询指定的地理区域列表, 参数：condition={}", MODULE_NAME, regisonCodes);
         ResponseResult<List<SysRegion>> result = new ResponseResult<>();
         try {
-             if(null == condition || condition.size() ==0 ){
+             if(null == regisonCodes || regisonCodes.size() ==0 ){
                return  result;  //返回空  
              }else {
-                 List<SysRegion> regionList = sysRegionService.findRegionByCodes(condition);
+                 List<SysRegion> regionList = sysRegionService.findRegionByCodes(regisonCodes);
                  result.setData(regionList);
              }
         } catch (BusinessException e){
-            logger.error("{} - 查询指定的地理区域列表失败, 参数：condition={}", MODULE_NAME, condition, e);
+            logger.error("{} - 查询指定的地理区域列表失败, 参数：condition={}", MODULE_NAME, regisonCodes, e);
             result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
-            logger.error("{} - 查询指定的地理区域列表失败, 参数：condition={}", MODULE_NAME, condition);
+            logger.error("{} - 查询指定的地理区域列表失败, 参数：condition={}", MODULE_NAME, regisonCodes);
             result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
         return result;

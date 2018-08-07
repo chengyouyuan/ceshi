@@ -9,12 +9,12 @@ public enum PickUpTypeEnum {
     /**
      * 自提
      */
-    SELF_PICK_UP((short)1, "自提"),
+    SELF_PICK_UP((short) 1, "自提"),
 
     /**
      * 配送
      */
-    DELIVERY((short)2, "配送");
+    DELIVERY((short) 2, "配送");
 
     private short typeCode;
     private String typeDesc;
@@ -30,5 +30,25 @@ public enum PickUpTypeEnum {
 
     public String getTypeDesc() {
         return typeDesc;
+    }
+
+    public static PickUpTypeEnum getPickUpTypeEnumByCode(short code) {
+        for (PickUpTypeEnum pickUpTypeEnum : PickUpTypeEnum.values()) {
+            if (pickUpTypeEnum.getTypeCode() == code) {
+                return pickUpTypeEnum;
+            }
+        }
+        return null;
+    }
+
+    public static String getPickUpTypeDescByCode(Short code) {
+        if (null != code) {
+            for (PickUpTypeEnum pickUpTypeEnum : PickUpTypeEnum.values()) {
+                if (pickUpTypeEnum.getTypeCode() == code) {
+                    return pickUpTypeEnum.getTypeDesc();
+                }
+            }
+        }
+        return null;
     }
 }

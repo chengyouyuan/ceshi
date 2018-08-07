@@ -11,7 +11,7 @@ public enum OrderStatusEnum {
      * 已提交 只有微信在线支付有这个状态
      */
     SUBMITTED((short) 1, "订单已提交", "已提交"),
-    
+
     /**
      * 待付款，虚拟状态,不是真实的订单流转状态
      * 1.(order_status=1 or order_status=7) and pay_stauts=0
@@ -68,5 +68,16 @@ public enum OrderStatusEnum {
 
     public String getStatusMark() {
         return statusMark;
+    }
+
+    public static String getMarkByCode(Short code) {
+        if (null != code) {
+            for (OrderStatusEnum orderStatusEnum : OrderStatusEnum.values()) {
+                if (code == orderStatusEnum.getStatusCode()) {
+                    return orderStatusEnum.getStatusMark();
+                }
+            }
+        }
+        return null;
     }
 }

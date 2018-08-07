@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  *
  * @author shijinxing
@@ -22,9 +24,104 @@ public class CouponActivityCondition {
     @ApiModelProperty(value = "发券编码")
     private String code;
 
-    @ApiModelProperty(value = "发券说明")
-    private String exolian;
+    @ApiModelProperty(value = "优惠券编码")
+    private String templateCode;
 
-    @ApiModelProperty(value = "发券备注")
-    private Short remarks;
+    @ApiModelProperty(value = "门店编码")
+    private Long storeId;
+
+    @ApiModelProperty("门店名称")
+    private String storeName;
+
+    @ApiModelProperty(value = "优惠券数量的限制 1优惠券总数2每个门店优惠券数")
+    private Short couponNumType;
+
+    @ApiModelProperty(value = "用户领券限制 1不限制 2每个门店可领取数量")
+    private Short customerVoucherLimitType;
+
+    @ApiModelProperty(value = "创建人")
+    private String createdByName;
+
+    @ApiModelProperty(value = "创建时间(使用时间)")
+    private Date created;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getTemplateCode() {
+        return templateCode;
+    }
+
+    public void setTemplateCode(String templateCode) {
+        this.templateCode = templateCode;
+    }
+
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public Short getCouponNumType() {
+        return couponNumType;
+    }
+
+    public void setCouponNumType(Short couponNumType) {
+        this.couponNumType = couponNumType;
+    }
+
+    public Short getCustomerVoucherLimitType() {
+        return customerVoucherLimitType;
+    }
+
+    public void setCustomerVoucherLimitType(Short customerVoucherLimitType) {
+        this.customerVoucherLimitType = customerVoucherLimitType;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
 }

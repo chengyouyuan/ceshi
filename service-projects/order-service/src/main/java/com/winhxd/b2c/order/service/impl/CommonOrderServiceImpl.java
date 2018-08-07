@@ -54,32 +54,32 @@ import javax.annotation.Resource;
 
 @Service
 public class CommonOrderServiceImpl implements OrderService {
-    
+
     private static final int QUEUE_CAPACITY = 1000;
     private static final int KEEP_ALIVE_TIME = 50;
     private static final int MAXIMUM_POOL_SIZE = 20;
     private static final int CORE_POOL_SIZE = 5;
     private static final int ORDER_MONEY_SCALE = 2;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
-    
+
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
     private OrderHandler onlinePayPickUpInStoreOrderHandler;
-    
+
     @Autowired
     @Qualifier("SweepPayPickUpInStoreOfflineValOrderHandler")
     private OrderHandler sweepPayPickUpInStoreOfflineValOrderHandler;
-    
+
     @Autowired
     @Qualifier("SweepPayPickUpInStoreOnlineValOrderHandler")
     private OrderHandler sweepPayPickUpInStoreOnlineValOrderHandler;
-    
+
     @Autowired
     private OrderInfoMapper orderInfoMapper;
-    
+
     @Autowired
     private OrderItemMapper orderItemMapper;
-    
+
     @Autowired
     private OrderChangeLogService orderChangeLogService;
     @Resource
@@ -89,7 +89,7 @@ public class CommonOrderServiceImpl implements OrderService {
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
 
     @Override
-    @Transactional(rollbackFor=Exception.class, propagation=Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public String submitOrder(OrderCreateCondition orderCreateCondition) {
         if (orderCreateCondition == null) {
             throw new NullPointerException("orderCreateCondition不能为空");
@@ -117,10 +117,10 @@ public class CommonOrderServiceImpl implements OrderService {
         registerProcessAfterOrderSubmitSuccess(orderInfo);
         return orderInfo.getOrderNo();
     }
-    
+
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void orderPaySuccessNotify(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单支付通知orderNo不能为空");
@@ -157,10 +157,10 @@ public class CommonOrderServiceImpl implements OrderService {
     /**
      * 订单取消service
      *
-     * @author pangjianhua
-     * @date 2018年8月2日 下午5:51:46
      * @param orderCancelCondition 入参
      * @return true 成功，false不成功
+     * @author pangjianhua
+     * @date 2018年8月2日 下午5:51:46
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -186,6 +186,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 if (updateRowNum < 1) {
                     logger.info("订单取消更新不成功 订单号={}", orderNo);
                     result = false;
+                } else {
+                    //TODO 优惠券一并退回
+                    //TODO 添加订单流转日志
                 }
             } finally {
                 lock.unlock();
@@ -198,24 +201,25 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 订单成功创建成功 业务操作
-     * @author wangbin
-     * @date  2018年8月3日 下午4:50:11
+     *
      * @param orderInfo
+     * @author wangbin
+     * @date 2018年8月3日 下午4:50:11
      */
     private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-            @Override
-            public void afterCommit() {
-                threadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        //TODO 调用 顾客门店绑定接口
-                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
-                    }
-                });
-            }
-        }
-       );
+                                                                      @Override
+                                                                      public void afterCommit() {
+                                                                          threadPoolExecutor.execute(new Runnable() {
+                                                                              @Override
+                                                                              public void run() {
+                                                                                  //TODO 调用 顾客门店绑定接口
+                                                                                  getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
+                                                                              }
+                                                                          });
+                                                                      }
+                                                                  }
+        );
     }
 
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
@@ -233,11 +237,11 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setValuationType(valuationType);
         orderInfo.setCustomerId(orderCreateCondition.getCustomerId());
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
-        orderInfo.setPayStatus((short)PayStatusEnum.UNPAID.getStatusCode());
+        orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
         orderInfo.setPayType(orderCreateCondition.getPayType());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemark(orderCreateCondition.getRemark());
-        orderInfo.setPickupType((short)PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
+        orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
         orderInfo.setOrderNo(generateOrderNo());
         // TODO 获取门店地理区域信息
         orderInfo.setRegionCode("regionCode");
@@ -250,10 +254,11 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 订单优惠计算
-     * @author wangbin
-     * @date  2018年8月3日 上午11:31:48
+     *
      * @param orderInfo
      * @param couponIds
+     * @author wangbin
+     * @date 2018年8月3日 上午11:31:48
      */
     private void calculateDiscounts(OrderInfo orderInfo, Long[] couponIds) {
         if (orderInfo.getOrderTotalMoney() == null) {
@@ -283,7 +288,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
         BigDecimal orderTotal = BigDecimal.ZERO;
-        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition detailCondition = (OrderItemCondition) iterator.next();
             // TODO 获取该经销商 产品价格,暂时使用传入价格
             BigDecimal price = detailCondition.getPrice();
@@ -298,9 +303,10 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 订单下单条件校验
-     * @author wangbin
-     * @date  2018年8月3日 上午11:31:12
+     *
      * @param orderCreateCondition
+     * @author wangbin
+     * @date 2018年8月3日 上午11:31:12
      */
     private void validateOrderCreateCondition(OrderCreateCondition orderCreateCondition) {
         if (orderCreateCondition.getCustomerId() == null) {
@@ -318,7 +324,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
             throw new OrderExcepton(OrderExceptonCodes.CODE_401005);
         }
-        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = (OrderItemCondition) iterator.next();
             if (condition.getAmount() == null || condition.getAmount().intValue() < 1) {
                 throw new OrderExcepton(OrderExceptonCodes.CODE_401006);
@@ -331,14 +337,15 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 组装订单商品项明细
-     * @author wangbin
-     * @date  2018年8月3日 上午11:30:53
+     *
      * @param orderCreateCondition
      * @param orderInfo
+     * @author wangbin
+     * @date 2018年8月3日 上午11:30:53
      */
     private void aseembleOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
         List<OrderItem> items = new ArrayList<>();
-        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext();) {
+        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = iterator.next();
             OrderItem item = new OrderItem();
             BeanUtils.copyProperties(condition, item);
@@ -350,12 +357,13 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         orderInfo.setOrderItems(items);
     }
-    
+
     /**
      * 生成订单号  格式：C+YYMMDDHH(年月日小时8位)XXXXXXXXX(9位随机吗)= 18位
-     * @author wangbin
-     * @date  2018年8月3日 上午11:34:29
+     *
      * @return
+     * @author wangbin
+     * @date 2018年8月3日 上午11:34:29
      */
     private String generateOrderNo() {
         UUID uuid = UUID.randomUUID();

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +19,7 @@ import lombok.Data;
 @ApiModel("B端门店商品基本操作入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreProductManageCondition extends BaseCondition implements Serializable{
+public class StoreProductManageCondition implements Serializable{
 	
 	
 	private static final long serialVersionUID = 1L;
@@ -57,6 +56,15 @@ public class StoreProductManageCondition extends BaseCondition implements Serial
 	
 	@ApiModelProperty("升序或者降序，如果默认升序 1 降序 0升序")
 	private Byte descAsc;
+	
+	@ApiModelProperty("价格状态，0表示未设置价格，1表示已经设置价格")
+	private Byte priceStatus;
+	
+	@ApiModelProperty(value = "页号")
+	private Integer pageNo=1;
+	
+	@ApiModelProperty(value = "页大小")
+	private Integer pageSize=10;
 	
 
 }

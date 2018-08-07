@@ -21,12 +21,12 @@ public class SysUserCondition extends BaseCondition {
     private String account;
 
     @ApiModelProperty(value = "姓名")
-    private String userName;
+    private String username;
 
     @ApiModelProperty(value = "手机")
     private String mobile;
 
     @ApiModelProperty(value = "角色名称")
-    private String ruleName;
+    private String roleName;
 
 }

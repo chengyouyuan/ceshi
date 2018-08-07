@@ -8,6 +8,6 @@ public interface CustomerLoginService {
 
 	int updateCustomerInfo(CustomerUserInfo customerUserInfo);
 
-	CustomerUserInfo getCustomerUserInfoById(Long customerId);
+	CustomerUserInfo getCustomerUserInfoByModel(CustomerUserInfo customerUserInfo);
 
 }

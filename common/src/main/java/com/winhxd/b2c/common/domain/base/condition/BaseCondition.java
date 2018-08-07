@@ -1,16 +1,17 @@
 package com.winhxd.b2c.common.domain.base.condition;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public abstract class BaseCondition {
 
-	/**
-	 * 页号
-	 */
+	@ApiModelProperty("页号")
 	protected int pageNo = 1;
 
-	/**
-	 * 每页显示行数
-	 */
+	@ApiModelProperty("每页条数")
 	protected int pageSize = 10;
+
+	@ApiModelProperty("排序字段和排序方式(例：name asc,age desc)")
+	private String orderBy;
 
 	public int getPageNo() {
 		return pageNo;
@@ -26,5 +27,13 @@ public abstract class BaseCondition {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
 	}
 }

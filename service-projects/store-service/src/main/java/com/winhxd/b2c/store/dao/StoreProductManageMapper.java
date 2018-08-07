@@ -38,4 +38,27 @@ public interface StoreProductManageMapper {
      * @date 2018年8月4日下午3:34:29
      */
     List<String> selectSkusByConditon(@Param("condition") StoreProductManageCondition condition);
+    
+    /**
+     * 查询门店对应的sku信息
+    * @Title: selectPutawayProdBySkuCodes 
+    * @Description: TODO 
+    * @param storeId
+    * @param skuCodes
+    * @return List<StoreProductManage>
+    * @author wuyuanbao
+    * @date 2018年8月6日下午8:05:24
+     */
+    List<StoreProductManage> selectPutawayProdBySkuCodes(@Param("storeId")Long storeId, @Param("skuCodes")String...skuCodes);
+    
+    /**
+     * 统计sku数量通过condition
+    * @Title: countSkusByConditon 
+    * @Description: TODO 
+    * @param condition
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月6日下午8:16:11
+     */
+    int countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
 }

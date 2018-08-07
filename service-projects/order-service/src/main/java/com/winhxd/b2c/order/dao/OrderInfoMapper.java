@@ -172,4 +172,11 @@ public interface OrderInfoMapper {
      * @return 更新成功影响条数
      */
     int updateOrderStatusForRefund(String orderNo);
+
+    /**
+     * C端申请退款更新状态
+     * @param orderNo
+     * @param customerId
+     */
+    int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
 }

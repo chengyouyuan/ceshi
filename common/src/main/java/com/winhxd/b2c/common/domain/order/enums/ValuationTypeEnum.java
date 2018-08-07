@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * 计价类型
  *
@@ -41,5 +44,13 @@ public enum ValuationTypeEnum {
             }
         }
         return null;
+    }
+
+    public static Map<Short, String> getDescMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (ValuationTypeEnum pickUpTypeEnum : values()) {
+            map.put(pickUpTypeEnum.getTypeCode(), pickUpTypeEnum.getTypeDesc());
+        }
+        return map;
     }
 }

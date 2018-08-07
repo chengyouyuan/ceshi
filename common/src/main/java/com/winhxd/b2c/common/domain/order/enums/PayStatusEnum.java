@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * @author pangjianhua
  * @date 2018/8/2 14:11
@@ -15,29 +18,37 @@ public enum PayStatusEnum {
     PAID((short) 1, "已支付");
 
     private short statusCode;
-    private String statusDes;
+    private String statusDesc;
 
     PayStatusEnum(short statusCode, String statusDes) {
         this.statusCode = statusCode;
-        this.statusDes = statusDes;
+        this.statusDesc = statusDes;
     }
 
     public short getStatusCode() {
         return statusCode;
     }
 
-    public String getStatusDes() {
-        return statusDes;
+    public String getStatusDesc() {
+        return statusDesc;
     }
 
     public static String getDesc(Short code) {
         if (null != code) {
             for (PayStatusEnum payStatusEnum : PayStatusEnum.values()) {
                 if (code == payStatusEnum.getStatusCode()) {
-                    return payStatusEnum.getStatusDes();
+                    return payStatusEnum.getStatusDesc();
                 }
             }
         }
         return null;
+    }
+    
+    public static Map<Short, String> getDescMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (PayStatusEnum payStatusEnum : values()) {
+            map.put(payStatusEnum.getStatusCode(), payStatusEnum.getStatusDesc());
+        }
+        return map;
     }
 }

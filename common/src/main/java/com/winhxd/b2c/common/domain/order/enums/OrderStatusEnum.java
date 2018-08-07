@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * 订单状态枚举
  *
@@ -78,5 +81,13 @@ public enum OrderStatusEnum {
             }
         }
         return null;
+    }
+    
+    public static Map<Short, String> getMarkMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (OrderStatusEnum orderStatusEnum : values()) {
+            map.put(orderStatusEnum.getStatusCode(), orderStatusEnum.getStatusMark());
+        }
+        return map;
     }
 }

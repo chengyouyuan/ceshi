@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
@@ -14,7 +15,7 @@ public interface CouponService {
     /**
      * 新人专享优惠列表
      *
-     * @author pangjianhua
+     * @author wangxiaoshun
      * @param couponCondition 入参
      * @return
      */
@@ -29,5 +30,21 @@ public interface CouponService {
      * @return
      */
     Integer getCouponNumsByCustomerForStore(Long storeId,Long customerId);
-    
+
+    /**
+     * 待领取的优惠券列表
+     *
+     * @author wangxiaoshun
+     * @param couponCondition 入参
+     * @return
+     */
+    PagedList<CouponVO> unclaimedCouponList(CouponCondition couponCondition);
+
+    /**
+     * 我的优惠券列表
+     * @author wangxiaoshun
+     * @param couponCondition 入参
+     * @return
+     */
+    PagedList<CouponVO> myCouponList(CouponCondition couponCondition);
 }

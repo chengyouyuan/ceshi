@@ -212,7 +212,19 @@
     cap.apply_rule_type applyRuleType,
     ca.coupon_type couponType,
     ca.activity_start activityStart,
-    ca.activity_end activityEnd
+    ca.activity_end activityEnd,
+    CASE
+    WHEN ctu.id IS NULL THEN
+    '未使用'
+    WHEN ctu.STATUS = 1 THEN
+    '已使用'
+    WHEN ctu.STATUS = 5 THEN
+    '退回'
+    WHEN ctu.STATUS = 3 THEN
+    '无效'
+    WHEN ctu.STATUS = 4 THEN
+    '已过期'
+    END AS useStatus
     FROM
     coupon_template_send cts
     JOIN coupon_template ct ON cts.template_id = ct.id
@@ -221,10 +233,14 @@
     JOIN coupon_grade cg ON ct.grade_id = cg.id
     JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
     JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
+    LEFT JOIN coupon_template_use ctu ON cts.id = ctu.id
     WHERE
     cts.customer_id = #{customerId}
     <if test="couponType != null">
       AND ca.coupon_type = #{couponType}
+    </if>
+    <if test="useStatus != null and useStatus !=0">
+       AND ctu.STATUS = #{useStatus}
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

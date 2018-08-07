@@ -64,7 +64,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
-	@RequestMapping(value = "2023/v1/saveWeChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "2021/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoVO> weChatRegister(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<CustomerUserInfoVO> result = new ResponseResult<>();
@@ -179,7 +179,7 @@ public class ApiCustomerLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "2024/v1/customerEasy", method = RequestMethod.POST)
+	@RequestMapping(value = "2023/v1/customerEasy", method = RequestMethod.POST)
 	public ResponseResult<String> customerEasy(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {

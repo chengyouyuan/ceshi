@@ -1,10 +1,7 @@
 package com.winhxd.b2c.common.domain.system.login.model;
 
 import java.io.Serializable;
-
 import java.util.Date;
-
-import io.swagger.annotations.ApiModelProperty;
 /**
  * @author wufuyun
  * @date  2018年8月2日 下午3:43:57

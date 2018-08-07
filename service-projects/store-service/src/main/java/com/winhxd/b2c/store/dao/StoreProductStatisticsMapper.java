@@ -2,12 +2,14 @@ package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
+import org.springframework.stereotype.Repository;
 
 /**
  * @description:
  * @author: lvsen
  * @date: 2018/8/6 14:37
  */
+@Repository
 public interface StoreProductStatisticsMapper {
     int deleteByPrimaryKey(Long id);
 

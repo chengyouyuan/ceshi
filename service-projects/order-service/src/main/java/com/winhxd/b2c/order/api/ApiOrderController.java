@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
 import com.winhxd.b2c.order.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,8 +38,8 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/422/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundCondition orderRefundCondition) {
-        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}", orderRefundCondition);
+    public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
+        LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}", condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
 
@@ -60,6 +61,7 @@ public class ApiOrderController {
         LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}", orderRefundCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
+            //优惠券一并退回
             result.setData(null);
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--异常" + e.getMessage(), e);

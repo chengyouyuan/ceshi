@@ -17,21 +17,13 @@ public enum OrderStatusEnum {
      */
     UNRECEIVED((short) 3, "订单待商铺确认", "待接单"),
     /**
-     * 待商铺确认价格/待计价
+     * 商铺已确认价格，待用户付款
      */
-    WAIT_VALUATION((short) 5, "待商铺确认价格", "待计价"),
-    /**
-     * 商铺已确认价格，待用户确认
-     */
-    ALREADY_VALUATION((short) 7, "商铺已确认价格，待用户确认", "已计价"),
+    ALREADY_VALUATION((short) 7, "商铺已确认价格，待用户付款", "已计价"),
     /**
      * 待自提（已确认）
      */
     WAIT_SELF_LIFTING((short) 9, "订单待提取，取货码：{0}", "待自提(已确认)"),
-    /**
-     * 待顾客确认
-     */
-    WAIT_CUSTOMER_CONFIRM((short) 11, "待顾客确认", "待顾客确认"),
     /**
      * 已完成
      */

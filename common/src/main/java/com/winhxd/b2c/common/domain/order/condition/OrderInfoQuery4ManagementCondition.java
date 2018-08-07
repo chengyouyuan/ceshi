@@ -12,10 +12,10 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class OrderInfoQuery4ManagementCondition extends BaseCondition {
 
-    @ApiModelProperty(value = "门店id", required=true)
+    @ApiModelProperty(value = "门店id")
     private Long storeId;
     
-    @ApiModelProperty(value = "用户id", required=true)
+    @ApiModelProperty(value = "用户id")
     private Long customerId;
 
     public Long getStoreId() {

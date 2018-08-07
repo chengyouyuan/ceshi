@@ -10,9 +10,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -31,11 +28,15 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -58,6 +59,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderChangeLogService orderChangeLogService;
     @Resource
     private CustomerServiceClient customerServiceClient;
+    @Resource
+    private ProductServiceClient productServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -72,24 +75,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
         List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
-        List<Long> customerIds = new ArrayList<>();
+        List<String> skuList = new ArrayList<>();
         for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            customerId = orderInfoDetailVO.getCustomerId();
-            customerIds.add(customerId);
-        }
-        ResponseResult<List<CustomerUserInfoVO1>> customersResult = this.customerServiceClient.findCustomerUserByIds(customerIds);
-        List<CustomerUserInfoVO1> customers = customersResult.getData();
-        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            customerId = orderInfoDetailVO.getCustomerId();
-            for (CustomerUserInfoVO1 customer : customers) {
-                if (customerId.equals(customer.getCustomerId())) {
-                    orderInfoDetailVO.setCustomerMobile(customer.getCustomerMobile());
-                    orderInfoDetailVO.setNickName(customer.getNickName());
-                }
+            List<OrderItemVO> items = orderInfoDetailVO.getOrderItemVoList();
+            for (OrderItemVO orderItemVO : items) {
+                skuList.add(orderItemVO.getSkuCode());
             }
         }
-
-        //TODO 调用商品仓库添加商品图片URL和商品名称 待订
+        //TODO 调用商品仓库添加商品图片URL和商品名称 skuList
         pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
@@ -124,7 +117,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
         StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
         // 从缓存中获取
-        String summaryInfoStr = cache.hget(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
+        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
                 String.valueOf(storeId));
         if (StringUtils.isNotBlank(summaryInfoStr)) {
             logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
@@ -148,11 +141,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
         storeOrderSalesSummaryVO.setStoreId(storeId);
-        cache.hset(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
         //当天有效
-        cache.expire(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
 

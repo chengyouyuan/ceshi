@@ -63,6 +63,7 @@ public class CouponServiceImpl implements CouponService {
         couponActivity.setCouponType((short)1);
         couponActivity.setStatus((short)1);
         couponActivity.setActivityStatus((short)1);
+        couponActivity.setType((short)2);
         List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
         if(couponActivities.isEmpty()){
             logger.error("不存在符合新用户注册的优惠券活动");
@@ -85,34 +86,36 @@ public class CouponServiceImpl implements CouponService {
             logger.error("不存在符合新用户注册的优惠券活动");
             throw new BusinessException(BusinessCode.CODE_500001);
         }
-        //step2 用户领券
+        //step2 向用户推券
         for(CouponActivityDetail activityDetail : couponActivityDetails){
+            //推送数量
+            for(int i=0; i <couponActivities.get(0).getSendNum();i++){
+                CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
+                couponTemplateSend.setStatus((short)2);
+                couponTemplateSend.setTemplateId(activityDetail.getTemplateId());
+                couponTemplateSend.setSource(1);
+                couponTemplateSend.setSendRole(1);
+                couponTemplateSend.setCustomerId(couponCondition.getCustomerId());
+                couponTemplateSend.setCustomerMobile("");
+                couponTemplateSend.setStartTime(activityDetail.getStartTime());
+                couponTemplateSend.setEndTime(activityDetail.getEndTime());
+                couponTemplateSend.setCount(couponActivities.get(0).getSendNum());
+                couponTemplateSend.setCreatedBy(couponCondition.getCustomerId());
+                couponTemplateSend.setCreated(new Date());
+                //TODO 用户名称
+                couponTemplateSend.setCreatedByName("");
+                couponTemplateSendMapper.insertSelective(couponTemplateSend);
 
-            CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
-            couponTemplateSend.setStatus((short)2);
-            couponTemplateSend.setTemplateId(activityDetail.getTemplateId());
-            couponTemplateSend.setSource(1);
-            couponTemplateSend.setSendRole(1);
-            couponTemplateSend.setCustomerId(couponCondition.getCustomerId());
-            couponTemplateSend.setCustomerMobile("");
-            couponTemplateSend.setStartTime(activityDetail.getStartTime());
-            couponTemplateSend.setEndTime(activityDetail.getEndTime());
-            couponTemplateSend.setCount(couponActivities.get(0).getSendNum());
-            couponTemplateSend.setCreatedBy(couponCondition.getCustomerId());
-            couponTemplateSend.setCreated(new Date());
-            //TODO 用户名称
-            couponTemplateSend.setCreatedByName("");
-            couponTemplateSendMapper.insertSelective(couponTemplateSend);
-
-            CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
-            couponActivityRecord.setCouponActivityId(activityDetail.getCouponActivityId());
-            couponActivityRecord.setCustomerId(couponCondition.getCustomerId());
-            couponActivityRecord.setSendId(couponTemplateSend.getId());
-            couponActivityRecord.setTemplateId(activityDetail.getTemplateId());
-            couponActivityRecord.setCreated(new Date());
-            couponActivityRecord.setCreatedBy(couponCondition.getCustomerId());
-            couponActivityRecord.setCreatedByName("");
-            couponActivityRecordMapper.insertSelective(couponActivityRecord);
+                CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
+                couponActivityRecord.setCouponActivityId(activityDetail.getCouponActivityId());
+                couponActivityRecord.setCustomerId(couponCondition.getCustomerId());
+                couponActivityRecord.setSendId(couponTemplateSend.getId());
+                couponActivityRecord.setTemplateId(activityDetail.getTemplateId());
+                couponActivityRecord.setCreated(new Date());
+                couponActivityRecord.setCreatedBy(couponCondition.getCustomerId());
+                couponActivityRecord.setCreatedByName("");
+                couponActivityRecordMapper.insertSelective(couponActivityRecord);
+            }
         }
         //step3 返回数据
 

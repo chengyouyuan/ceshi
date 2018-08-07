@@ -63,72 +63,65 @@ public class OrderQueryAspect {
             detailVO.setPayStatusDesc(PayStatusEnum.getDesc(detailVO.getPayStatus()));
             detailVO.setPayTypeDesc(PayTypeEnum.getPayTypeEnumDescByTypeCode(detailVO.getPayType()));
             detailVO.setPickupTypeDesc(PickUpTypeEnum.getPickUpTypeDescByCode(detailVO.getPickupType()));
-//            detailVO.setValuationTypeDesc(ValuationTypeEnum.getDescByCode(detailVO.getValuationType()));
+            //detailVO.setValuationTypeDesc(ValuationTypeEnum.getDescByCode(detailVO.getValuationType()));
         }
     }
     
     @AfterReturning(returning = "ret", value = "@annotation(com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation)")
-    public void orderEnumConvert(JoinPoint joinPoint,Object ret) {
-        try {
-            if (ret instanceof Object[]) {
-                Object[] objArr = (Object[]) ret;
-                for (int i = 0; i < objArr.length; i++) {
-                    if (objArr[i] == null) {
-                        continue;
-                    }
-                    assambleOrderInfos(objArr[i]);
+    public void orderEnumConvert(JoinPoint joinPoint, Object ret) {
+        if (ret instanceof Object[]) {
+            Object[] objArr = (Object[]) ret;
+            for (int i = 0; i < objArr.length; i++) {
+                if (objArr[i] == null) {
+                    continue;
                 }
-            } else if (ret instanceof List) {
-                List objList = (List) ret;
-                for (Iterator iterator = objList.iterator(); iterator.hasNext();) {
-                    Object object = (Object) iterator.next();
-                    if (object == null) {
-                        continue;
-                    }
-                    assambleOrderInfos(object);
-                }
-            }else if (ret instanceof PagedList) {
-                List objList = ((PagedList) ret).getData();
-                for (Iterator iterator = objList.iterator(); iterator.hasNext();) {
-                    Object object = (Object) iterator.next();
-                    if (object == null) {
-                        continue;
-                    }
-                    assambleOrderInfos(object);
-                }
-            } else {
-                assambleOrderInfos(ret);
+                assambleOrderInfos(objArr[i]);
             }
-            //获取用户相关信息
-            OrderInfoConvertAnnotation orderInfoConvertAnnotation = ((MethodSignature)joinPoint.getSignature()).getMethod().getAnnotation(OrderInfoConvertAnnotation.class);
-            if (orderInfoConvertAnnotation.queryCustomerInfo()) {
-                customerInfoConvert(joinPoint, ret);
+        } else if (ret instanceof List) {
+            List objList = (List) ret;
+            for (Iterator iterator = objList.iterator(); iterator.hasNext();) {
+                Object object = (Object) iterator.next();
+                if (object == null) {
+                    continue;
+                }
+                assambleOrderInfos(object);
             }
-        } catch (IllegalAccessException e) {
-            logger.error("订单信息封装异常：", e);
+        } else if (ret instanceof PagedList) {
+            List objList = ((PagedList) ret).getData();
+            for (Iterator iterator = objList.iterator(); iterator.hasNext();) {
+                Object object = (Object) iterator.next();
+                if (object == null) {
+                    continue;
+                }
+                assambleOrderInfos(object);
+            }
+        } else {
+            assambleOrderInfos(ret);
+        }
+        // 获取用户相关信息
+        OrderInfoConvertAnnotation orderInfoConvertAnnotation = ((MethodSignature) joinPoint.getSignature()).getMethod()
+                .getAnnotation(OrderInfoConvertAnnotation.class);
+        if (orderInfoConvertAnnotation.queryCustomerInfo()) {
+            customerInfoConvert(joinPoint, ret);
         }
     }
     
     public void customerInfoConvert(JoinPoint joinPoint,Object ret) {
-        try {
-            if (ret instanceof Object[]) {
-                Object[] objArr = (Object[]) ret;
-                assambleCustomerInfos(objArr);
-            } else if (ret instanceof List) {
-                List objList = (List) ret;
-                assambleCustomerInfos(objList.toArray(new Object[objList.size()]));
-            }else if (ret instanceof PagedList) {
-                List objList = ((PagedList) ret).getData();
-                assambleCustomerInfos(objList.toArray(new Object[objList.size()]));
-            } else {
-                assambleCustomerInfos(ret);
-            }
-        } catch (IllegalAccessException e) {
-            logger.error("订单信息封装异常：", e);
+        if (ret instanceof Object[]) {
+            Object[] objArr = (Object[]) ret;
+            assambleCustomerInfos(objArr);
+        } else if (ret instanceof List) {
+            List objList = (List) ret;
+            assambleCustomerInfos(objList.toArray(new Object[objList.size()]));
+        }else if (ret instanceof PagedList) {
+            List objList = ((PagedList) ret).getData();
+            assambleCustomerInfos(objList.toArray(new Object[objList.size()]));
+        } else {
+            assambleCustomerInfos(ret);
         }
     }
     
-    private void assambleCustomerInfos(Object... objArr) throws  IllegalAccessException {
+    private void assambleCustomerInfos(Object... objArr) {
         try {
             Set<Long> customerIds = new HashSet<>();
             for (int i = 0; i < objArr.length; i++) {
@@ -172,7 +165,7 @@ public class OrderQueryAspect {
         }
     }
 
-    private void assambleOrderInfos(Object obj) throws IllegalAccessException {
+    private void assambleOrderInfos(Object obj) {
         try {
             //订单相关状态类型信息
             setDesc(obj, ORDER_STATUS, OrderStatusEnum.getMarkMap());

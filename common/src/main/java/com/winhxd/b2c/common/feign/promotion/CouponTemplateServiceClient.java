@@ -80,6 +80,17 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
     @RequestMapping(value = "/promotion/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
     public ResponseResult viewCouponTemplateDetail(@RequestParam("id") String id);
 
+    /**
+     *
+     *@Deccription  确认修改优惠券模板
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/7 16:24
+     */
+    @RequestMapping(value = "/promotion/v1/confirmUpdateCouponTemplate", method = RequestMethod.POST)
+    ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition);
+
 }
 
 
@@ -148,6 +159,20 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     @Override
     public ResponseResult viewCouponTemplateDetail(String id) {
         logger.error("CouponTemplateServiceClient -> viewCouponTemplateDetail", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    /**
+     *
+     *@Deccription  确认修改优惠券模板
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/7 16:24
+     */
+    @Override
+    public ResponseResult confirmUpdateCouponTemplate(CouponTemplateCondition condition) {
+        logger.error("CouponTemplateServiceClient -> confirmUpdateCouponTemplate", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 

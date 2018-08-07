@@ -62,4 +62,14 @@ public interface CouponTemplateService {
      *@Date   2018/8/6 20:39
      */
     void updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName);
+
+    /**
+     *
+     *@Deccription 修改优惠券模板
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/7 16:31
+     */
+    int confirmUpdateCouponTemplate(Long updateBy, Date updated, String updateByName, CouponTemplateCondition condition);
 }

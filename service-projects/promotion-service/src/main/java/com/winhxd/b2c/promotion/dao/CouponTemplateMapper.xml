@@ -433,4 +433,14 @@
        #{item}
     </foreach>
   </update>
+
+
+<!-- 跟新优惠券模板 -->
+  <update id="confirmUpdateCouponTemplate">
+    update coupon_template set
+      update_by=#{updateBy},updated_by_name=#{updateByName},updated=#{updated}
+    where id = #{condition.id}
+  </update>
+
+
 </mapper>

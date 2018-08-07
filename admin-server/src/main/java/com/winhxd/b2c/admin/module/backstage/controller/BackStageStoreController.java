@@ -32,7 +32,7 @@ public class BackStageStoreController {
     private static final String MODULE_NAME = "后台-门店管理";
 
     @Autowired
-    private BackStageStoreServiceClient storeServiceClient;
+    private BackStageStoreServiceClient backStageStoreServiceClient;
 
     @ApiOperation("门店账户列表")
     @ApiResponses({
@@ -41,7 +41,7 @@ public class BackStageStoreController {
     })
     @PostMapping(value = "/1000/v1/storeList")
     public ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
-        ResponseResult<PagedList<BackStageStoreVO>> responseResult = storeServiceClient.storeList(storeInfoCondition);
+        ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.storeList(storeInfoCondition);
         logger.info("{} - #后台-门店##门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition);
         return responseResult;
     }

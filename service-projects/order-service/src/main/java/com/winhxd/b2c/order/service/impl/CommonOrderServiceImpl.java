@@ -1,18 +1,25 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -26,29 +33,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CommonOrderServiceImpl implements OrderService {
@@ -72,10 +63,10 @@ public class CommonOrderServiceImpl implements OrderService {
     @Qualifier("SweepPayPickUpInStoreOnlineValOrderHandler")
     private OrderHandler sweepPayPickUpInStoreOnlineValOrderHandler;
 
-    @Autowired
+    @Resource
     private OrderInfoMapper orderInfoMapper;
 
-    @Autowired
+    @Resource
     private OrderItemMapper orderItemMapper;
 
     @Autowired
@@ -195,6 +186,17 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_411001, "订单正在修改中");
         }
         return result;
+    }
+
+    /**
+     * 门店处理用户退款订单
+     *
+     * @param condition 入参
+     * @return 是否成功，true成功，false 不成功
+     */
+    @Override
+    public boolean handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
+        return false;
     }
 
     /**

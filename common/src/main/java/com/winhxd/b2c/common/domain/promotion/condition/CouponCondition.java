@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class CouponCondition  extends BaseCondition {
     @ApiModelProperty(value = "用户id", required=true)
     private Long customerId;
-    @ApiModelProperty(value = "优惠券使用状态 0 未使用 1 已使用 4 已过期", required=true)
+    @ApiModelProperty(value = "优惠券使用状态 1 已使用 2 未使用 3 无效 4 已过期 5退回", required=true)
     private Integer useStatus;
 
     public Long getCustomerId() {

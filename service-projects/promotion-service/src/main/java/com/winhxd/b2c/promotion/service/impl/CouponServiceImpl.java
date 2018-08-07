@@ -107,4 +107,10 @@ public class CouponServiceImpl implements CouponService {
 
         return null;
     }
+
+	@Override
+	public Integer getCouponNumsByCustomerForStore(Long storeId, Long customerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

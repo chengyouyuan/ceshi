@@ -329,7 +329,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_401001);
         }
         if (orderCreateCondition.getStoreId() == null) {
-            throw new BusinessException(BusinessCode.CODE_401002);
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
         }
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
             throw new BusinessException(BusinessCode.CODE_401003);

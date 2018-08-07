@@ -44,6 +44,8 @@ public final class BusinessCode {
     public static final int CODE_402006 = 402006;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
+    /**订单id参数为空*/
+    public static final int CODE_402013 = 402013;
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
@@ -60,6 +62,8 @@ public final class BusinessCode {
     public static final int CODE_200007 = 200007;
     /**更新用户状态失败*/
     public static final int CODE_200008 = 200008;
+    /**用户没有绑定的门店不存在*/
+    public static final int CODE_200009 = 200009;
 
 
     /** 购物车:商品下架或删除*/
@@ -119,5 +123,21 @@ public final class BusinessCode {
     @ApiModelProperty("门店id为空")
     public static final int STORE_ID_EMPTY = 400005;
 
+    /** 参数异常*/
+    public static final int CODE_422001 = 422001;
+    /** 未支付的订单不允许退款*/
+    public static final int CODE_422002 = 422002;
+    /** 已完成的订单不允许退款*/
+    public static final int CODE_422003 = 422003;
+    /** 订单修改中*/
+    public static final int CODE_422004 = 422004;
 
+    /** 订单状态不允许退款*/
+    public static final int CODE_421002 = 421002;
+    /** 参数错误*/
+    public static final int CODE_421001 = 421001;
+    /** 订单号不能为空*/
+    public static final int CODE_420001 = 420001;
+    /** 订单已支付成功不能取消*/
+    public static final int CODE_420002 = 420002;
 }

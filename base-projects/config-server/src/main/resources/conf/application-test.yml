@@ -1,0 +1,33 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:1111/admin/
+        instance:
+          prefer-ip: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: retail2C_user
+    password: tNB9gLJ42hwguHLK
+    url: jdbc:mysql://192.168.60.115:3306/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+# 云平台REST服务配置
+RETAIL-REST-SERVICE:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://192.168.60.241:8202/
+# 缓存配置
+redis:
+  cluster:
+    jedisClusterNode: 192.168.60.241:47000,192.168.60.241:47001,192.168.60.241:47002,192.168.60.241:47003,192.168.60.241:47004,192.168.60.241:47005
+    maxTotal: 500
+    maxIdle: 5000
+    maxWaitMillis: 10000
+    testOnBorrow: true
+#  sentinel:
+#    master: redis-master
+#    nodes: 192.168.60.241:25379
+#    password: foobared
+#    maxTotal: 500
+#    maxIdle: 5000
+#    maxWaitMillis: 10000
+#    testOnBorrow: true

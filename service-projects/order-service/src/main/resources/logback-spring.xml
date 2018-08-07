@@ -23,7 +23,7 @@
         <appender-ref ref="file"/>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="console"/>
         <appender-ref ref="async_log"/>
     </root>

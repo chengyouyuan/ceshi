@@ -28,5 +28,4 @@ public class CustomerUserInfoCondition{
     private String headurl;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
-    
 }

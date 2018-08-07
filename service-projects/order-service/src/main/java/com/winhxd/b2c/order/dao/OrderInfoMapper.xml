@@ -536,5 +536,10 @@
        set order_status=77,cancel_datetime = now(),pickup_code=null
        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
     </update>
+    <update id="updateOrderStatusForApplyRefund">
+        update order_info
+       set order_status=2,cancel_datetime = now(),pickup_code=null
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
+    </update>
 
 </mapper>

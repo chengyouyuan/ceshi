@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeConditi
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.domain.system.region.vo.SysSubRegionVO;
+import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface SysRegionService {
      * @param: 行政区域级别
      * @return: 地理区域列表
      */
-    List<SysRegion> findRegionByLevel(int level);
+    List<SysRegion> findRegionByLevel(RegionLevelEnum level);
 
     /**
      * 功能描述:通用查询接口
@@ -41,15 +42,6 @@ public interface SysRegionService {
      * @return: 地理区域列表
      */
     List<SysRegion> findRegionList(SysRegion region);
-
-    /**
-     * 功能描述:查询子集地理区域
-     * @auther: zhanglingke
-     * @date: 2018-08-02 17:09
-     * @param: regionCode
-     * @return: 地理区域列表
-     */
-    List<SysRegion> findChilds(SysRegionCondition regionCode);
 
     /**
      * 功能描述:查询指定地理区域列表

@@ -14,8 +14,8 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <resultMap id="voMap" type="com.winhxd.b2c.common.domain.system.user.model.SysUser" extends="BaseResultMap">
-    <result column="rule_id" jdbcType="BIGINT" property="roleId" />
-    <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -163,10 +163,10 @@
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
     select
     u.id, account, username, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,ur.id rule_id,r.rule_name
+    u.updated,ur.id role_id,r.role_name
     from sys_user u
-      left join sys_user_rule ur on u.id=ur.user_id
-      left join sys_rule r on r.id=ur.rule_id
+      left join sys_user_role ur on u.id=ur.user_id
+      left join sys_role r on r.id=ur.role_id
     <where>
       <if test="userId != null">
         and u.id = #{userId}
@@ -184,7 +184,7 @@
       </if>
       <if test="roleName != null and roleName != ''">
         <bind name="roleName" value="'%' + roleName + '%'" />
-        and rule_name like #{roleName,jdbcType=VARCHAR}
+        and role_name like #{roleName,jdbcType=VARCHAR}
       </if>
     </where>
   </select>
@@ -192,10 +192,10 @@
   <select id="getByAccount" resultMap="voMap" parameterType="string">
     select
     u.id, account, username, password, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,ur.id rule_id,r.rule_name
+    u.updated,ur.id role_id,r.role_name
     from sys_user u
-    left join sys_user_rule ur on u.id=ur.user_id
-    left join sys_rule r on r.id=ur.rule_id
+    left join sys_user_role ur on u.id=ur.user_id
+    left join sys_role r on r.id=ur.role_id
     where u.account = #{account}
   </select>
 </mapper>

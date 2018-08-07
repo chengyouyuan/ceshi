@@ -14,7 +14,7 @@ public class SysRoleDTO {
     @ApiModelProperty("权组编号")
     private Long id;
 
-    @ApiModelProperty("权组名称")
+    @ApiModelProperty(value = "权组名称", required = true)
     private String roleName;
 
     @ApiModelProperty("权限范围")

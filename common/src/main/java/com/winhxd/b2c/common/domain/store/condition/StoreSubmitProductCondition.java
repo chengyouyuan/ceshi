@@ -39,5 +39,11 @@ public class StoreSubmitProductCondition extends MobileCondition {
 
 	@ApiModelProperty(value = "商品信息（文字）")
 	private String prodInfoText;
+	
+	@ApiModelProperty(value = "页号")
+	private Integer pageNo=1;
+	
+	@ApiModelProperty(value = "页大小")
+	private Integer pageSize=10;
 
 }

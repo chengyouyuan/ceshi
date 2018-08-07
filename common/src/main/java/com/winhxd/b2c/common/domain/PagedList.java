@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -7,13 +10,23 @@ import java.util.List;
  *
  * @param <T>
  */
+
+@ApiModel("分页结果集")
 public class PagedList<T> {
+
+    @ApiModelProperty("页数")
     private long pageNo = 1;
+
+    @ApiModelProperty("每页条数")
     private long pageSize = 20;
+
+    @ApiModelProperty("结果行数")
     private long totalRows = 0;
+
+    @ApiModelProperty("结果数据")
     private List<T> data;
 
-
+    @ApiModelProperty("结果页数")
     public long getTotalPages() {
         if (pageSize == 0) {
             return 0;
@@ -52,4 +65,6 @@ public class PagedList<T> {
     public void setData(List<T> data) {
         this.data = data;
     }
+
+
 }

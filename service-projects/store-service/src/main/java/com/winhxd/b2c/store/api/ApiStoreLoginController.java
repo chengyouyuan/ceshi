@@ -40,7 +40,18 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api/storeLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
-
+	/**
+	 * 微信登录
+	 */
+	static final Integer LOGIN_LAG = 1;
+	/**
+	 * 验证码
+	 */
+	static final Integer LOGIN_PASSWORD_LAG_1 = 1;
+	/**
+	 * 密码登录
+	 */
+	static final Integer LOGIN_PASSWORD_LAG_2 = 2;
 	@Autowired
 	private StoreLoginService storeLoginService;
 	@Autowired
@@ -73,7 +84,51 @@ public class ApiStoreLoginController {
 			if (null == storeUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-
+			StoreUserInfo DB = null;
+			StoreUserInfo storeUserInfo = new StoreUserInfo();
+			/**
+			 * 验证码登录 拿手机号去惠小店表里面查询是否存在
+			 */
+			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+			DB = storeLoginService.getstoreUserInfoByMobile(storeUserInfo);
+			//验证码登录
+			if(LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())){
+				if(!storeUserInfoCondition.getVerificationCode().equals(cache.get(storeUserInfoCondition.getStoreMobile()))){
+					return new ResponseResult<>(BusinessCode.CODE_1008);
+				}
+				if(DB == null){
+					return new ResponseResult<>(BusinessCode.CODE_1004);
+				}
+				else{
+					result.setData(DB.getId());
+				}
+			}else{
+				/**
+				 * 掉惠下单服务查询门店用户信息 用户名密码登录
+				 */
+				ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
+						storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
+				Map<String, Object> map = object.getData();
+				if (map.isEmpty()) {
+					return new ResponseResult<>(BusinessCode.CODE_1004);
+				} else {
+					StoreUserInfo info = new StoreUserInfo();
+					info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+					if(DB == null){
+						/**
+						 * 如果是微信登录获取昵称头像
+						 */
+						if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
+							info.setOpenid(storeUserInfoCondition.getOpenid());
+							info.setShopOwnerUrl(storeUserInfoCondition.getShopOwnerUrl());
+						}
+						info.setCreated(new Date());
+						info.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+						info.setSource(storeUserInfoCondition.getSource());
+						storeLoginService.saveStoreInfo(info);
+					}
+				}
+			}
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> saveStoreLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
@@ -84,7 +139,7 @@ public class ApiStoreLoginController {
 		}
 		return result;
 	}
-
+ 
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:10:34
@@ -103,16 +158,13 @@ public class ApiStoreLoginController {
 			if (null == storeUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-			// TODO:调用massage 发送短信smsCode
 			StoreUserInfo storeUserInfo = new StoreUserInfo();
-			StoreUserInfo DB = null;
 			/**
 			 * 验证码登录 拿手机号去惠小店表里面查询是否存在
 			 */
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
-			DB = storeLoginService.getstoreUserInfoByMobile(storeUserInfo);
+			StoreUserInfo DB = storeLoginService.getstoreUserInfoByMobile(storeUserInfo);
 			String content = "";
-			if (DB == null) {
 				/**
 				 * 掉惠下单服务查询门店用户信息
 				 */
@@ -124,21 +176,21 @@ public class ApiStoreLoginController {
 				} else {
 					StoreUserInfo info = new StoreUserInfo();
 					info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
-					/**
-					 * 如果是微信登录获取昵称头像
-					 */
-					if (1 == storeUserInfoCondition.getLoginFlag()) {
+					if(DB == null){
+						/**
+						 * 如果是微信登录获取昵称头像
+						 */
+						if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
+							info.setOpenid(storeUserInfoCondition.getOpenid());
+							info.setShopOwnerUrl(storeUserInfoCondition.getShopOwnerUrl());
+						}
 						info.setCreated(new Date());
-						info.setOpenid(storeUserInfoCondition.getOpenid());
+						info.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 						info.setSource(storeUserInfoCondition.getSource());
-						info.setStorePassword(String.valueOf(map.get("storePassword")));
 						storeLoginService.saveStoreInfo(info);
 					}
 					messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(), content);
 				}
-			} else {
-				messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(), content);
-			}
 			logger.info("手机号：" + storeUserInfoCondition.getStoreMobile() + "************发送内容：" + content);
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

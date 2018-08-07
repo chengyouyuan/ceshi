@@ -21,8 +21,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @Description: 门店服务的实现类
  * @author chengyy
+ * @Description: 门店服务的实现类
  * @date 2018/8/3 10:51
  */
 @Service
@@ -37,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
         CustomerStoreRelation record = new CustomerStoreRelation();
         record.setCustomerId(customerId);
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
-        if(relations != null && relations.size() >0){
+        if (relations != null && relations.size() > 0) {
             //当前门店已经存在绑定关系不能再进行绑定
             return 0;
         }
@@ -49,11 +49,11 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
         StoreUserInfo userInfo = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
-        if(userInfo == null){
+        if (userInfo == null) {
             return null;
         }
         StoreUserInfoVO userInfoVO = new StoreUserInfoVO();
-        BeanUtils.copyProperties(userInfo,userInfoVO);
+        BeanUtils.copyProperties(userInfo, userInfoVO);
         return userInfoVO;
     }
 
@@ -61,7 +61,7 @@ public class StoreServiceImpl implements StoreService {
     public PagedList<BackStageStoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         String reginCode = null;
-        if (storeCondition.getReginCode() != null){
+        if (storeCondition.getReginCode() != null) {
             reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
         }
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
@@ -76,10 +76,10 @@ public class StoreServiceImpl implements StoreService {
         Set<String> codes = new HashSet<>();
         userInfoList.stream().forEach(storeUserInfo1 -> {
             BackStageStoreVO storeVO = new BackStageStoreVO();
-            BeanUtils.copyProperties(storeUserInfo1,storeVO);
+            BeanUtils.copyProperties(storeUserInfo1, storeVO);
             storeVOS.add(storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
-            if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())){
+            if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())) {
                 String[] codeArr = storeUserInfo1.getPaymentWay().split(",");
                 String paymentWayStr = Arrays.asList(codeArr).stream().map(s -> BackStageStorPaymentWayeEnum.codeOf(s).getStatusDes())
                         .collect(Collectors.joining(","));
@@ -90,5 +90,15 @@ public class StoreServiceImpl implements StoreService {
         pagedList.setTotalRows(userInfoList.size());
         pagedList.setData(storeVOS);
         return pagedList;
+    }
+
+    @Override
+    public StoreUserInfo findStoreUserInfoByCustomerId(Long customerUserId) {
+        return storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
+    }
+
+    @Override
+    public StoreUserInfo selectByStoreId(Long storeId) {
+        return storeUserInfoMapper.selectByStoreId(storeId);
     }
 }

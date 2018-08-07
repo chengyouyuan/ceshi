@@ -193,4 +193,10 @@ public interface OrderInfoMapper {
      */
     List<OrderInfoDetailVO> listOrder4Store(@Param("condition") OrderQuery4StoreCondition condition, @Param("storeId") Long storeId);
 
+    /**
+     * C端申请退款更新状态
+     * @param orderNo
+     * @param customerId
+     */
+    int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
 }

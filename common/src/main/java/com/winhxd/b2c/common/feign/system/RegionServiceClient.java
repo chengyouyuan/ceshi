@@ -41,7 +41,6 @@ public interface RegionServiceClient {
      * @return:
      */
     @RequestMapping(value = "/api/region/311/v1/rangeList", method = RequestMethod.POST)
-    @ResponseBody
     ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<SysRegionCodeCondition> condition);
 
     /**
@@ -51,8 +50,8 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/312/v1/rangeList", method = RequestMethod.GET)
-    ResponseResult<SysRegion> getRegion(@RequestParam String regisonCode);
+    @RequestMapping(value = "/api/region/312/v1/get/{regisonCode}", method = RequestMethod.GET)
+    ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode);
 }
 
 @Component

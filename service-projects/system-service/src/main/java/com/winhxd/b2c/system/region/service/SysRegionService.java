@@ -43,15 +43,6 @@ public interface SysRegionService {
     List<SysRegion> findRegionList(SysRegion region);
 
     /**
-     * 功能描述:查询子集地理区域
-     * @auther: zhanglingke
-     * @date: 2018-08-02 17:09
-     * @param: regionCode
-     * @return: 地理区域列表
-     */
-    List<SysRegion> findChilds(SysRegionCondition regionCode);
-
-    /**
      * 功能描述:查询指定地理区域列表
      * @auther: zhanglingke
      * @date: 2018-08-02 17:09

@@ -14,10 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,29 +32,59 @@ public class SysRegionController implements RegionServiceClient {
 
     private static final String MODULE_NAME = "地理区域管理";
 
+    /**
+     * 地域级别
+     * 1.	省
+     * 2.	市
+     * 3.	区
+     * 4.	县/镇（街道）
+     * 5.	村（居委会）
+     */
+    private static final int PROVINCELEVEL  = 1;
+    private static final int CITYLEVEL  = 2;
+    private static final int COUNTYLEVEL  = 3;
+    private static final int TOWNLEVEL  = 4;
+    private static final int VILLAGELEVEL  = 5;
+
     @Resource
     private SysRegionService sysRegionService;
 
     @Override
     @ApiOperation(value = "查询地理区域列表")
-    @RequestMapping(value = "/api/region/310/v1/list", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition) {
         logger.info("{} - 查询地理区域列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult result = new ResponseResult<>();
         try {
-            if(StringUtils.isBlank(condition.getRegionCode()) && null == condition.getLevel()){
+            //空参数或者行政级别为1时，返回所有省
+            if((StringUtils.isBlank(condition.getRegionCode()) && null == condition.getLevel())||condition.getLevel()==1 ){
                 //返回省列表
                 List<SysRegion> regionList=  sysRegionService.findRegionByLevel(1);//查找省区域列表
                 result.setData(regionList);
             }
-            if(null == condition.getLevel()){
+            //regioncode 不为空时
+            if(StringUtils.isNotBlank(condition.getRegionCode())){
                 SysRegion region=  sysRegionService.getRegionByCode(condition.getRegionCode());
-                condition.setLevel(region.getLevel());
-                List<SysRegion> regionList= sysRegionService.findChilds(condition);
-                result.setData(regionList);
-            }else{ //查找对应行政级别区域列表
-                List<SysRegion> regionList=  sysRegionService.findRegionByLevel(condition.getLevel());
-                result.setData(regionList);
+                SysRegion queryRegion=new SysRegion();
+                switch (region.getLevel()) {
+                    case PROVINCELEVEL:
+                        queryRegion.setProvinceCode(condition.getRegionCode());
+                        break;
+                    case CITYLEVEL:
+                        queryRegion.setCityCode(condition.getRegionCode());
+                        break;
+                    case COUNTYLEVEL:
+                        queryRegion.setCountyCode(condition.getRegionCode());
+                        break;
+                    case TOWNLEVEL:
+                        queryRegion.setTownCode(condition.getRegionCode());
+                        break;
+                    case VILLAGELEVEL:
+                        queryRegion.setVillageCode(condition.getRegionCode());
+                        break;
+                    default:
+                }
+                queryRegion.setLevel(condition.getLevel());
+                result.setData(sysRegionService.findRegionList(queryRegion));
             }
         } catch (BusinessException e){
             logger.error("{} - 查询地理区域列表失败, 参数：condition={}", MODULE_NAME, condition, e);
@@ -71,7 +98,6 @@ public class SysRegionController implements RegionServiceClient {
 
     @Override
     @ApiOperation(value = "查询指定的地理区域列表")
-    @RequestMapping(value = "/api/region/311/v1/list", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<SysRegionCodeCondition> condition) {
         logger.info("{} - 查询指定的地理区域列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<List<SysRegion>> result = new ResponseResult<>();
@@ -79,7 +105,7 @@ public class SysRegionController implements RegionServiceClient {
              if(null == condition || condition.size() ==0 ){
                return  result;  //返回空  
              }else {
-                 List<SysRegion> regionList=  sysRegionService.findRegionByCodes(condition);
+                 List<SysRegion> regionList = sysRegionService.findRegionByCodes(condition);
                  result.setData(regionList);
              }
         } catch (BusinessException e){
@@ -94,10 +120,10 @@ public class SysRegionController implements RegionServiceClient {
 
     @Override
     @ApiOperation(value = "查询指定的地理区域")
-    public ResponseResult<SysRegion> getRegion(String regisonCode) {
+    public ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode) {
         logger.info("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode);
         ResponseResult<SysRegion> result = new ResponseResult<>();
-        SysRegion sysRegion=   sysRegionService.getRegionByCode(regisonCode);
+        SysRegion sysRegion = sysRegionService.getRegionByCode(regisonCode);
         result.setData(sysRegion);
         return  result;
     }

@@ -54,32 +54,6 @@ public class SysRegionServiceImpl implements SysRegionService {
     }
 
     @Override
-    public List<SysRegion> findChilds(SysRegionCondition condition) {
-        SysRegion region=new SysRegion();
-
-        switch (condition.getLevel()) {
-            case PROVINCELEVEL:
-                region.setProvinceCode(condition.getRegionCode());
-                break;
-            case CITYLEVEL:
-                region.setCityCode(condition.getRegionCode());
-                break;
-            case COUNTYLEVEL:
-                region.setCountyCode(condition.getRegionCode());
-                break;
-            case TOWNLEVEL:
-                region.setTownCode(condition.getRegionCode());
-                break;
-            case VILLAGELEVEL:
-                region.setVillageCode(condition.getRegionCode());
-                break;
-            default:
-        }
-        region.setLevel(condition.getLevel()+1);
-        return  sysRegionMapper.selectRegionList(region);
-    }
-
-    @Override
     public List<SysRegion> findRegionByCodes(List<SysRegionCodeCondition> regionCodes) {
         return  sysRegionMapper.selectRegionRangeList(regionCodes);
     }

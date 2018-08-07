@@ -66,19 +66,20 @@ public class ApiOrderQueryController {
     })
     @RequestMapping(value = "/411/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
-        LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--开始--{}");
+        String logTitle = "=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=";
+        LOGGER.info("{}--开始--condition={}", logTitle, orderQueryByCustomerCondition);
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
         try {
             OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);
             result.setData(orderVO);
         } catch (BusinessException e) {
-            LOGGER.error("=/api-order/order/410/v1/orderListByCustomer-C端订单列表查询接口=--业务异常" + e.getMessage(), e);
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
         } catch (Exception e) {
-            LOGGER.error("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--异常" + e.getMessage(), e);
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--结束 result={}", result);
+        LOGGER.info("{}--结束 result={}", logTitle, result);
         return result;
     }
 

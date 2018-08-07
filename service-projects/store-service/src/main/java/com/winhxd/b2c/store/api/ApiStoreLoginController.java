@@ -120,7 +120,7 @@ public class ApiStoreLoginController {
 				Map<String,Object> params = new HashMap<String,Object>();
 				params.put("storeMobile",storeUserInfoCondition.getStoreMobile());
 				params.put("storePassword",storeUserInfoCondition.getStorePassword());
-				ResponseResult<Map<String,Object>> object = storeHxdServiceClient.getStotrUserInfo(params);
+				ResponseResult<Map<String,Object>> object = storeHxdServiceClient.getStoreUserInfo(params);
 				Map<String,Object> map = object.getData();
 				if(map.isEmpty()){
 					return new ResponseResult<>(BusinessCode.CODE_1004);

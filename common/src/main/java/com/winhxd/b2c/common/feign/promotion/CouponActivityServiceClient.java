@@ -22,8 +22,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponActivityServiceFallback.class)
 public interface CouponActivityServiceClient {
+    /**
+     *
+     *@Deccription 查询优惠券活动领券列表
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
     @RequestMapping(value = "/promotion/v1/queryPullCouponActivity/", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(@RequestBody CouponActivityCondition condition);
+    /**
+     *
+     *@Deccription 添加领券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    @RequestMapping(value = "/promotion/v1/addPullCouponActivity", method = RequestMethod.POST)
+    public ResponseResult addPullCouponActivity(@RequestBody CouponActivityCondition condition);
+
 }
 
 @Component
@@ -33,8 +52,13 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
 
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(CouponActivityCondition condition) {
-
         logger.error("CouponActivityServiceFallback -> queryPullCouponActivity", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
+        logger.error("CouponActivityServiceFallback -> addPullCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

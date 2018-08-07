@@ -50,4 +50,32 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("/promotion/v1/queryPullCouponActivity/ 领券活动列表查询结束");
         return result;
     }
+
+    /**
+     *
+     *@Deccription 添加领券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    @Override
+    @ApiOperation(value = "添加领券活动", notes = "添加领券活动")
+    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
+        /**
+         * 判断必填参数
+         */
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponActivityService.savePullCouponActivity(condition);
+            if(count > 0) {
+                responseResult.setCode(BusinessCode.CODE_OK);
+            }else{
+                responseResult.setCode(BusinessCode.CODE_1001);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
 }

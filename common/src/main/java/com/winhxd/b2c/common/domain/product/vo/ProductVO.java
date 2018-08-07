@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.domain.product.vo;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * 商品列表VO
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date:   2018年8月4日 下午1:09:15   
  *
  */
+@Data
 public class ProductVO {
 
 	@ApiModelProperty(value = "商品编码")
@@ -22,31 +24,5 @@ public class ProductVO {
 	
 	@ApiModelProperty(value = "商品sku")
 	private List<ProductSkuVO> productSkus;
-
-	public String getProductCode() {
-		return productCode;
-	}
-
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	public List<ProductSkuVO> getProductSkus() {
-		return productSkus;
-	}
-
-	public void setProductSkus(List<ProductSkuVO> productSkus) {
-		this.productSkus = productSkus;
-	}
-
-
 
 }

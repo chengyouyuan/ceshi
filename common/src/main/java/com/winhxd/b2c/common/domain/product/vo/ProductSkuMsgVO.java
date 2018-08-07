@@ -14,9 +14,9 @@ import lombok.Data;
  *
  */
 @Data
-public class ProductMsgVO extends ProductBaseMsgVO{
+public class ProductSkuMsgVO extends ProductBaseMsgVO{
 	
 	@ApiModelProperty(value = "商品")
-	private PagedList<ProductVO> products;
-
+	private PagedList<ProductSkuVO> productSkus;
+	
 }

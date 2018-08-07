@@ -2,7 +2,7 @@ package com.winhxd.b2c.common.domain.product.condition;
 
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.product.enums.CallClientEnums;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,14 +19,17 @@ import lombok.Data;
 @Data
 public class ProductCondition {
 	
-	@ApiModelProperty(value = "调用方 B端 或 C端")
-	private CallClientEnums client;
+	@ApiModelProperty(value = "是否在门店上架sku内查找", required = true)
+	private SearchSkuCodeEnum searchSkuCode;
 	
     @ApiModelProperty(value = "门店在惠下单购买过商品sku")
     private List<String> hxdProductSkus;
     
-    @ApiModelProperty(value = "门店已上架商品sku")
+    @ApiModelProperty(value = "门店已上架商品sku", required = true)
     private List<String> productSkus;
+    
+    @ApiModelProperty(value = "是否是推荐商品 1 推荐  ")
+    private Integer recommend;
     
     @ApiModelProperty(value = "品牌编码")
     private List<String> brandCodes;
@@ -39,16 +42,5 @@ public class ProductCondition {
     
     @ApiModelProperty(value = "商品名称")
     private String productName;
-
-	@ApiModelProperty(value = "商品排序 1最新到货 2价格排序 3销量排序")
-	private Integer prodSort;
-
-	@ApiModelProperty(value = "门店编号")
-	private Integer storeId;
-
-	@ApiModelProperty(value = "每页显示条数")
-    private Integer pageSize;
     
-	@ApiModelProperty(value = "页号")
-    private Integer pageNo;
 }

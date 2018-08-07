@@ -65,12 +65,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private OrderHandler onlinePayPickUpInStoreOrderHandler;
 
     @Autowired
-    @Qualifier("SweepPayPickUpInStoreOfflineValOrderHandler")
-    private OrderHandler sweepPayPickUpInStoreOfflineValOrderHandler;
-
-    @Autowired
-    @Qualifier("SweepPayPickUpInStoreOnlineValOrderHandler")
-    private OrderHandler sweepPayPickUpInStoreOnlineValOrderHandler;
+    @Qualifier("OnlinePayPickUpInStoreOfflineOrderHandler")
+    private OrderHandler onlinePayPickUpInStoreOfflineOrderHandler;
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
@@ -206,18 +202,18 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                                                                      @Override
-                                                                      public void afterCommit() {
-                                                                          threadPoolExecutor.execute(new Runnable() {
-                                                                              @Override
-                                                                              public void run() {
-                                                                                  //TODO 调用 顾客门店绑定接口
-                                                                                  getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
-                                                                              }
-                                                                          });
-                                                                      }
-                                                                  }
-        );
+            @Override
+            public void afterCommit() {
+                threadPoolExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO 调用 顾客门店绑定接口
+                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                                .orderInfoAfterCreateSuccessProcess(orderInfo);
+                    }
+                });
+            }
+        });
     }
 
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
@@ -271,15 +267,10 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     private OrderHandler getOrderHandler(short payType, short valuationType) {
-        if (payType == PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
+        if (valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             return onlinePayPickUpInStoreOrderHandler;
-        } else if (payType == PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
-            return sweepPayPickUpInStoreOfflineValOrderHandler;
-        } else if (payType == PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()
-                && valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
-            return sweepPayPickUpInStoreOnlineValOrderHandler;
+        } else if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+            return onlinePayPickUpInStoreOfflineOrderHandler;
         }
         throw new BusinessException(BusinessCode.CODE_401008);
     }

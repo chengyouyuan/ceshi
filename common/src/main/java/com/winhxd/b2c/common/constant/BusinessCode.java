@@ -87,9 +87,6 @@ public final class BusinessCode {
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
     
-    @ApiModelProperty("订单创建门店id为空")
-    public static final int CODE_401002 = 401002;
-    
     @ApiModelProperty("订单创建支付类型为空或错误")
     public static final int CODE_401003 = 401003;
     
@@ -122,6 +119,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单号为空")
     public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
+    
+    @ApiModelProperty("门店id为空")
+    public static final int STORE_ID_EMPTY = 400005;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;

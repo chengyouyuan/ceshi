@@ -89,13 +89,13 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         logger.info("{},orderNo={} 支付成功后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         if (orderInfo.getOrderStatus() == null
-                || orderInfo.getOrderStatus().shortValue() != OrderStatusEnum.ALREADY_VALUATION.getStatusCode()) {
+                || orderInfo.getOrderStatus().shortValue() != OrderStatusEnum.WAIT_PAY.getStatusCode()) {
             throw new UnsupportedOperationException(MessageFormat.format(
                     "订单orderNo={0},支付成功业务逻辑处理,状态错误：期望当前订单状态：{1}，实际订单状态：{2}", orderInfo.getOrderNo(),
-                    OrderStatusEnum.ALREADY_VALUATION.getStatusCode(), orderInfo.getOrderStatus()));
+                    OrderStatusEnum.WAIT_PAY.getStatusCode(), orderInfo.getOrderStatus()));
         }
         // 在线支付后，订单状态流转到待接单
-        int changeNum = orderInfoMapper.updateOrderStatus(OrderStatusEnum.ALREADY_VALUATION.getStatusCode(),
+        int changeNum = orderInfoMapper.updateOrderStatus(OrderStatusEnum.WAIT_PAY.getStatusCode(),
                 OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), orderInfo.getId());
         if (changeNum != 1) {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE,
@@ -114,7 +114,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
         String newOrderJson = JsonUtil.toJSONString(orderInfo);
         // 生成订单流转日志
-        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.ALREADY_VALUATION.getStatusCode(),
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.WAIT_PAY.getStatusCode(),
                 OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 MessageFormat.format(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes(), pickUpCode), MainPointEnum.MAIN);
         logger.info("{},orderNo={} 支付成功后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());

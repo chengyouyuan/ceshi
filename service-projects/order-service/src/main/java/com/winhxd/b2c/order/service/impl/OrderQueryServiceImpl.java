@@ -27,7 +27,10 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -218,6 +221,22 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
         return orderInfoDetailVO4Management;
     }
+    
+    @Override
+    public PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId) {
+        if (storeId == null) {
+            throw new BusinessException(BusinessCode.CODE_1002);
+        }
+        logger.info("查询门店订单列表开始：condition={}，storeId={}", condition, storeId);
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList<>();
+        pagedList.setData(orderInfoMapper.listOrder4Store(condition, storeId));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        logger.info("查询门店订单列表结束：condition={}，storeId={}, totalRows={}", condition, storeId, page.getTotal());
+        return pagedList;
+    }
 
     /**
      * 一次生成多个个提货码
@@ -247,4 +266,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
+    
 }

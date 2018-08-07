@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import org.slf4j.Logger;
@@ -34,14 +35,14 @@ public interface CouponActivityServiceClient {
     ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition);
     /**
      *
-     *@Deccription 添加领券活动
+     *@Deccription 添加优惠券活动
      *@Params  condition
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/6
      */
-    @RequestMapping(value = "/promotion/v1/addPullCouponActivity", method = RequestMethod.POST)
-    public ResponseResult addPullCouponActivity(@RequestBody CouponActivityCondition condition);
+    @RequestMapping(value = "/promotion/v1/addCouponActivity", method = RequestMethod.POST)
+    public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
 
 }
 
@@ -57,8 +58,8 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     }
 
     @Override
-    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> addPullCouponActivity", throwable);
+    public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
+        logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

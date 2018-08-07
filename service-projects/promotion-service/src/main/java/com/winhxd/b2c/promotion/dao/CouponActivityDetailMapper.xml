@@ -12,10 +12,11 @@
     <result column="count" jdbcType="INTEGER" property="count" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="effective_days" jdbcType="INTEGER" property="effectiveDays" />
   </resultMap>
   <sql id="Base_Column_List">
     id, coupon_activity_id, template_id, store_id, store_mobile, customer_id, customer_mobile, 
-    count, start_time, end_time
+    count, start_time, end_time, effective_days
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -42,11 +43,11 @@
     insert into coupon_activity_detail (id, coupon_activity_id, template_id, 
       store_id, store_mobile, customer_id, 
       customer_mobile, count, start_time, 
-      end_time)
+      end_time, effective_days)
     values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, 
       #{storeId,jdbcType=BIGINT}, #{storeMobile,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
       #{customerMobile,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP})
+      #{endTime,jdbcType=TIMESTAMP}, #{effectiveDays,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
     insert into coupon_activity_detail
@@ -81,6 +82,9 @@
       <if test="endTime != null">
         end_time,
       </if>
+      <if test="effectiveDays != null">
+        effective_days,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -112,6 +116,9 @@
       </if>
       <if test="endTime != null">
         #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effectiveDays != null">
+        #{effectiveDays,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -145,6 +152,9 @@
       <if test="endTime != null">
         end_time = #{endTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="effectiveDays != null">
+        effective_days = #{effectiveDays,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -158,7 +168,8 @@
       customer_mobile = #{customerMobile,jdbcType=VARCHAR},
       count = #{count,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP}
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      effective_days = #{effectiveDays,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

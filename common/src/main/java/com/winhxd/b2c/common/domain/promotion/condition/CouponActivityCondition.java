@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- *
+ * 查询用的condition
  * @author shijinxing
  * @date 2018/8/6
  */

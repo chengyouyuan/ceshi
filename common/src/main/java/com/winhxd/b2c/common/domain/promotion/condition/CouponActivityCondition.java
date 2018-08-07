@@ -42,8 +42,11 @@ public class CouponActivityCondition {
     @ApiModelProperty(value = "创建人")
     private String createdByName;
 
-    @ApiModelProperty(value = "创建时间(使用时间)")
-    private Date created;
+    @ApiModelProperty(value = "创建时间开始")
+    private Date createdStart;
+
+    @ApiModelProperty(value = "创建时间结束")
+    private Date createdEnd;
 
     public Long getId() {
         return id;
@@ -117,11 +120,19 @@ public class CouponActivityCondition {
         this.createdByName = createdByName;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getCreatedStart() {
+        return createdStart;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setCreatedStart(Date createdStart) {
+        this.createdStart = createdStart;
+    }
+
+    public Date getCreatedEnd() {
+        return createdEnd;
+    }
+
+    public void setCreatedEnd(Date createdEnd) {
+        this.createdEnd = createdEnd;
     }
 }

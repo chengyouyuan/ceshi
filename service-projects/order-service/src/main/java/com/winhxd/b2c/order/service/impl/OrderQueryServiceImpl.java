@@ -47,7 +47,6 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
-import com.winhxd.b2c.order.support.annotation.CustomerInfoConvertAnnotation;
 import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
@@ -207,8 +206,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
-    @OrderInfoConvertAnnotation
-    @CustomerInfoConvertAnnotation
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true)
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());

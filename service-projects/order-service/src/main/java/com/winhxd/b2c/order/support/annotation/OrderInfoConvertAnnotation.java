@@ -15,4 +15,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface OrderInfoConvertAnnotation {
     String type() default "1";
+    boolean queryCustomerInfo() default false;
 }

@@ -39,7 +39,7 @@
         permission,
       </if>
       <if test="permissionName != null">
-        permissionName,
+        permission_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -67,7 +67,7 @@
         permission = #{permission,jdbcType=VARCHAR},
       </if>
       <if test="permissionName != null">
-        permissionName = #{permissionName,jdbcType=VARCHAR},
+        permission_name = #{permissionName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

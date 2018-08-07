@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @ApiModel("系统管理权组传输对象")
 @Data
@@ -18,6 +18,6 @@ public class SysRoleDTO {
     private String roleName;
 
     @ApiModelProperty("权限范围")
-    private List<SysRolePermission> permissions;
+    private Set<SysRolePermission> permissions;
 
 }

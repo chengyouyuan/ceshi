@@ -1,9 +1,14 @@
 package com.winhxd.b2c.common.domain.product.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+@Data
 public class ProductSkuVO {
 
+	@ApiModelProperty(value = "商品编码")
+	private String productCode;
+	
 	@ApiModelProperty(value = "sku编码")
 	private String skuCode;
 	
@@ -15,37 +20,5 @@ public class ProductSkuVO {
 	
 	@ApiModelProperty(value = "商品规格")
 	private String skuAttributeOption;
-
-	public String getSkuCode() {
-		return skuCode;
-	}
-
-	public void setSkuCode(String skuCode) {
-		this.skuCode = skuCode;
-	}
-
-	public String getSkuName() {
-		return skuName;
-	}
-
-	public void setSkuName(String skuName) {
-		this.skuName = skuName;
-	}
-
-	public String getSkuImage() {
-		return skuImage;
-	}
-
-	public void setSkuImage(String skuImage) {
-		this.skuImage = skuImage;
-	}
-
-	public String getSkuAttributeOption() {
-		return skuAttributeOption;
-	}
-
-	public void setSkuAttributeOption(String skuAttributeOption) {
-		this.skuAttributeOption = skuAttributeOption;
-	}
 	
 }

@@ -4,8 +4,10 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CouponActivityMapper {
     int deleteByPrimaryKey(Long id);
@@ -33,4 +35,11 @@ public interface CouponActivityMapper {
      * @return
      */
     PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
+
+    /**
+     * 查询优惠券列表
+     * @param map
+     * @return
+     */
+    List<CouponVO> selectCouponList(Map<String, Object> map);
 }

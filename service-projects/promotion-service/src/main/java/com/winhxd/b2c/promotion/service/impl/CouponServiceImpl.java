@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther wangxiaoshun
@@ -51,6 +53,7 @@ public class CouponServiceImpl implements CouponService {
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setCouponType((short)1);
         couponActivity.setStatus((short)1);
+        couponActivity.setActivityStatus((short)1);
         List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
         if(couponActivities.isEmpty()){
             logger.error("不存在符合新用户注册的优惠券活动");
@@ -88,6 +91,7 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateSend.setCount(couponActivities.get(0).getSendNum());
             couponTemplateSend.setCreatedBy(couponCondition.getCustomerId());
             couponTemplateSend.setCreated(new Date());
+            //TODO 用户名称
             couponTemplateSend.setCreatedByName("");
             couponTemplateSendMapper.insertSelective(couponTemplateSend);
 
@@ -103,9 +107,26 @@ public class CouponServiceImpl implements CouponService {
         }
         //step3 返回数据
 
+        List<CouponVO> couponVOS = this.getCouponList(couponCondition.getCustomerId(),1);
 
+        return couponVOS;
+    }
 
-        return null;
+    /**
+     * 通过customer 获取优惠券列表
+     * @param customerId
+     * @return
+     */
+    public List<CouponVO> getCouponList(Long customerId,Integer couponType){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("customerId",customerId);
+        map.put("couponType",couponType);
+
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(map);
+
+        //TODO 1.通过品牌code 查询品牌信息  2.通过品类code 查询品类信息 3.通过商品code 查询商品信息
+
+        return couponVOS;
     }
 
 	@Override

@@ -27,7 +27,7 @@ public interface RoleServiceClient {
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/role/310/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/role/310/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> add(@RequestBody SysRole sysRole);
 
     /**
@@ -37,7 +37,7 @@ public interface RoleServiceClient {
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/role/311/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/role/311/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult update(@RequestBody SysRole sysRole);
 
     /**
@@ -47,7 +47,7 @@ public interface RoleServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/role/312/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/role/312/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysRole>> list(@RequestBody SysRoleCondition condition);
 
 
@@ -58,7 +58,7 @@ public interface RoleServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/role/313/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api-system/role/313/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysRole> getById(@PathVariable("id") Long id);
 
 }

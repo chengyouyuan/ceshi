@@ -7,6 +7,8 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
@@ -71,8 +73,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
-        //TODO 待添加获取当前用户的接口 获取customerId查找所有该用户的订单
-        Long customerId = 1L;
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        if (customer == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+        Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
         List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());

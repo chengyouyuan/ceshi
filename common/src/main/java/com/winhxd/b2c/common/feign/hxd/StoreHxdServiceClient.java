@@ -30,7 +30,7 @@ public interface StoreHxdServiceClient {
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId, @RequestParam("customerId") String customerId);
 
     @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") String storeId);
+    ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("storeId") String storeId);
 
 }
 

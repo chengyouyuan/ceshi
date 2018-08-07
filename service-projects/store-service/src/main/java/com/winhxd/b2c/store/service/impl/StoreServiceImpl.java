@@ -86,7 +86,7 @@ public class StoreServiceImpl implements StoreService {
         }
 
         //获取regincode对应的区域名称
-        List<SysRegionCodeCondition> reginCodeList = userInfoList.stream().map(storeUser -> new SysRegionCodeCondition(storeUser.getStoreRegionCode())).collect(Collectors.toList());
+        List<String> reginCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
         List<SysRegion> sysRegions = regionServiceClient.getRegionsByRange(reginCodeList).getData();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();

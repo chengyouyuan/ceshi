@@ -41,7 +41,8 @@ public class ApiOrderQueryController {
     @ApiOperation(value = "C端订单列表查询接口", response = OrderInfoDetailVO.class, notes = "C端订单列表查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/410/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
@@ -66,7 +67,6 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/411/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
         LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--开始--{}");
-        Long customerId = 1L;
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
         try {
             OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);
@@ -81,7 +81,7 @@ public class ApiOrderQueryController {
         LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--结束 result={}", result);
         return result;
     }
-    
+
     @ApiOperation(value = "B端订单列表查询接口", response = OrderInfoDetailVO.class, notes = "B端订单列表查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -102,8 +102,7 @@ public class ApiOrderQueryController {
             if (BusinessCode.STORE_ID_EMPTY == e.getErrorCode()) {
                 result.setCode(BusinessCode.CODE_1002);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }

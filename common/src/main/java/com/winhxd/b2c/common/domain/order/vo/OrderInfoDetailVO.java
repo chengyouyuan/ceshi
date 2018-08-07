@@ -127,4 +127,6 @@ public class OrderInfoDetailVO implements Serializable {
     private String customerMobile;
     @ApiModelProperty(value = "用户昵称", required = true)
     private String nickName;
+    @ApiModelProperty(value = "商家电话", required = true)
+    private String storeMobile;
 }

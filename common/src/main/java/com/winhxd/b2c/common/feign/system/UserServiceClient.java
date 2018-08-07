@@ -29,7 +29,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/300/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/user/300/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> add(@RequestBody SysUser sysUser);
 
     /**
@@ -39,7 +39,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult update(@RequestBody SysUser sysUser);
 
     /**
@@ -49,7 +49,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/302/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/user/302/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
@@ -59,7 +59,7 @@ public interface UserServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/user/303/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-system/user/303/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
 
     /**
@@ -69,7 +69,7 @@ public interface UserServiceClient {
      * @param account
      * @return
      */
-    @RequestMapping(value = "/user/304/v1/get/{account}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api-system/user/304/v1/get/{account}", method = RequestMethod.GET)
     ResponseResult<SysUser> getByAccount(@PathVariable("account") String account);
 
     /**
@@ -79,7 +79,7 @@ public interface UserServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/user/305/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api-system/user/305/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysUser> getById(@PathVariable("id") Long id);
 
     /**
@@ -88,7 +88,7 @@ public interface UserServiceClient {
      * @date 2018/8/7
      * @param id
      */
-    @RequestMapping(value = "/user/306/v1/disabled/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/api-system/user/306/v1/disabled/{id}", method = RequestMethod.PUT)
     ResponseResult disabled(@PathVariable("id") Long id);
 
 }

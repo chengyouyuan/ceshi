@@ -126,7 +126,7 @@ private CouponTemplateServiceClient couponTemplateServiceClient;
 	 *@User  wl
 	 *@Date   2018/8/7 16:01
 	 */
-	@ApiOperation("新建优惠券模板")
+	@ApiOperation("修改优惠券模板")
 	@PostMapping(value = "/v1/confirmEditCouponTemplate")
 	public ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition){
 		ResponseResult responseResult = couponTemplateServiceClient.confirmUpdateCouponTemplate(condition);

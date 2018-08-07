@@ -29,10 +29,10 @@ import java.util.List;
 
 /**
  * @author chengyy
- * @Description: 用户信息控制器
+ * @Description: 小程序用户信息控制器
  * @date 2018/8/4 16:08
  */
-@Api(value = "后台用户管理控制器", tags = "后台用户管理涉及到的接口")
+@Api(value = "小程序用户管理控制器", tags = "后台小程序用户信息管理接口")
 @RestController
 @RequestMapping(value = "customer/user")
 public class CustomerUserController {
@@ -47,14 +47,14 @@ public class CustomerUserController {
 
     @ApiOperation(value = "根据条件查询用户的分页数据信息", response = ResponseResult.class, notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @GetMapping(value = "/2002/v1/findCustomerPageInfo")
+    @GetMapping(value = "/findCustomerPageInfo")
     public ResponseResult<PagedList<CustomerUserInfoVO1>> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
         ResponseResult<PagedList<CustomerUserInfoVO1>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
         return responseResult;
     }
 
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", response = ResponseEntity.class, notes = "导出根据条件查询用户的分页数据信息")
-    @GetMapping(value = "/2003/v1/customerExport")
+    @GetMapping(value = "/customerExport")
     public ResponseEntity<byte[]> customerExport(CustomerUserInfoCondition1 condition) {
         ResponseResult<PagedList<CustomerUserInfoVO1>> result = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO1> list = result.getData().getData();
@@ -67,7 +67,7 @@ public class CustomerUserController {
 
     @ApiOperation(value = "根据用户id更新status状态（有效、无效）", response = ResponseResult.class, notes = "根据用户的id更新用户的状态")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK,message = "状态更新成功"),@ApiResponse(code = BusinessCode.CODE_200008,message = "状态更新失败")})
-    @PostMapping(value = "/2003/v1/updateStatus")
+    @PostMapping(value = "/updateStatus")
     public ResponseResult<Void> updateStatus(CustomerUserInfoCondition1 condition){
         if(condition.getCustomerId() == null){
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
@@ -80,7 +80,7 @@ public class CustomerUserController {
     }
 
     @ApiOperation(value = "根据用户id查询当前用户的信息以及订单信息",response = ResponseResult.class,notes = "点击用户详情页查询用户已经订单详情列表信息")
-    @GetMapping(value = "/2004/v1/queryCustomerUserInfoDeatil")
+    @GetMapping(value = "/queryCustomerUserInfoDeatil")
     public ResponseResult<CustomerOrderInfoVO> queryCustomerUserInfoDeatil(@RequestParam("customerUserId")Long customerUserId,
                                                                            @RequestParam(value = "pageNo",defaultValue = "1")Integer pageNo,@RequestParam(value = "pageSize",defaultValue = "10")Integer pageSize){
         ResponseResult<CustomerOrderInfoVO> responseResult = new ResponseResult<>();
@@ -99,7 +99,7 @@ public class CustomerUserController {
         return  responseResult;
     }
     @ApiOperation(value = "查询订单详情信息",response = OrderInfoDetailVO4Management.class,notes = "根据订单查询订单详情已经订单状态信息")
-    @GetMapping(value = "/2004/v1/queryOderInfoDetail/{orderNum}")
+    @GetMapping(value = "/queryOderInfoDetail/{orderNum}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功"),@ApiResponse(code = BusinessCode.CODE_1001,message = "服务器内部错误")})
     public ResponseResult<OrderInfoDetailVO4Management> queryOderInfoDetail(@PathVariable("orderNum")String orderNum){
         if(StringUtils.isEmpty(orderNum)){

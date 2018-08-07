@@ -153,7 +153,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "修改优惠券模板", notes = "修改优惠券模板",response = ResponseResult.class)
     @Override
-    public ResponseResult confirmUpdateCouponTemplate(@RequestParam CouponTemplateCondition condition) {
+    public ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition) {
         ResponseResult responseResult = new ResponseResult();
         Long updateBy = 100102L;
         Date updated = new Date();

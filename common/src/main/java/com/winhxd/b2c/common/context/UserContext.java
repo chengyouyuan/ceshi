@@ -1,13 +1,10 @@
 package com.winhxd.b2c.common.context;
 
-import com.winhxd.b2c.common.util.JsonUtil;
-import org.apache.commons.lang3.StringUtils;
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 /**
  * 用户数据上下文,用于获取当前后台管理员、门店用户、C端用户数据
@@ -54,9 +51,9 @@ public class UserContext {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
 
-        AdminUser adminUser = getHeaderObject(request, HEADER_USER_ADMIN, AdminUser.class);
-        StoreUser storeUser = getHeaderObject(request, HEADER_USER_STORE, StoreUser.class);
-        CustomerUser customerUser = getHeaderObject(request, HEADER_USER_CUSTOMER, CustomerUser.class);
+        AdminUser adminUser = ContextHelper.getHeaderObject(request, HEADER_USER_ADMIN, AdminUser.class);
+        StoreUser storeUser = ContextHelper.getHeaderObject(request, HEADER_USER_STORE, StoreUser.class);
+        CustomerUser customerUser = ContextHelper.getHeaderObject(request, HEADER_USER_CUSTOMER, CustomerUser.class);
         if (adminUser == null) {
             currentAdminUser.remove();
         } else {
@@ -74,16 +71,4 @@ public class UserContext {
         }
     }
 
-    private static <T> T getHeaderObject(HttpServletRequest request, String headerName, Class<T> clazz) {
-        String header = request.getHeader(headerName);
-        if (StringUtils.isBlank(header)) {
-            return null;
-        }
-        try {
-            String json = URLDecoder.decode(header, "utf-8");
-            return JsonUtil.parseJSONObject(json, clazz);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-    }
 }

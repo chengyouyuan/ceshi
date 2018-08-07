@@ -12,5 +12,5 @@ public interface SysRegionMapper {
 
     List<SysRegion> selectRegionList(SysRegion region);
 
-    List<SysRegion> selectRegionRangeList(List<SysRegionCodeCondition> regionCodes);
+    List<SysRegion> selectRegionRangeList(List<String> regionCodes);
 }

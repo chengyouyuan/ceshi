@@ -50,5 +50,5 @@ public interface SysRegionService {
      * @param: 地理区域编号数组
      * @return: 地理区域列表
      */
-    List<SysRegion> findRegionByCodes(List<SysRegionCodeCondition> regionCodes);
+    List<SysRegion> findRegionByCodes(List<String> regionCodes);
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.constant;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author lixiaodong
  */
@@ -36,14 +38,10 @@ public final class BusinessCode {
     public static final int CODE_402002 = 402002;
     /** 购物车:自提时间为空*/
     public static final int CODE_402003 = 402003;
-    /** 购物车:商品SKU为空*/
+    /** 购物车:商品信息为空*/
     public static final int CODE_402004 = 402004;
-    /** 购物车:商品数量为空*/
-    public static final int CODE_402005 = 402005;
     /** 购物车:支付方式*/
     public static final int CODE_402006 = 402006;
-    /** 购物车:订单金额*/
-    public static final int CODE_402007 = 402007;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
     /**用户id参数为空*/
@@ -64,11 +62,59 @@ public final class BusinessCode {
     public static final int CODE_200008 = 200008;
 
 
-    /** 购物车:商品下架*/
+    /** 购物车:商品下架或删除*/
     public static final int CODE_402010 = 402010;
+    /** 购物车:商品信息不存在或获取商品数量不正确*/
+    public static final int CODE_402011 = 402011;
+    /** 购物车:购物车商品价格有变动*/
+    public static final int CODE_402012 = 402012;
 
 
     /** 查询订单参数异常*/
     public static final int CODE_411001 = 411001;
+
+    /** 不存在符合的优惠券活动*/
+    public static final int CODE_500001 = 500001;
+
+    /** 该手机号已经享受过新用户福利*/
+    public static final int CODE_500002 = 500002;
+    
+
+    @ApiModelProperty("订单创建客户id为空")
+    public static final int CODE_401001 = 401001;
+    
+    @ApiModelProperty("订单创建门店id为空")
+    public static final int CODE_401002 = 401002;
+    
+    @ApiModelProperty("订单创建支付类型为空或错误")
+    public static final int CODE_401003 = 401003;
+    
+    @ApiModelProperty("订单创建自提时间为空")
+    public static final int CODE_401004 = 401004;
+    
+    @ApiModelProperty("订单创建商品信息为空")
+    public static final int CODE_401005 = 401005;
+    
+    @ApiModelProperty("订单创建商品数量信息错误")
+    public static final int CODE_401006 = 401006;
+    
+    @ApiModelProperty("订单创建商品sku为空")
+    public static final int CODE_401007 = 401007;
+    
+    @ApiModelProperty("订单创建不支持订单类型")
+    public static final int CODE_401008 = 401008;
+    
+    @ApiModelProperty("订单号错误")
+    public static final int WRONG_ORDERNO = 400000;
+    
+    @ApiModelProperty("订单已支付")
+    public static final int ORDER_ALREADY_PAID = 400001;
+    
+    @ApiModelProperty("订单状态修改失败")
+    public static final int ORDER_STATUS_CHANGE_FAILURE = 400002;
+    
+    @ApiModelProperty("订单号为空")
+    public static final int ORDER_NO_EMPTY = 400003;
+
 
 }

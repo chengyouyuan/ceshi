@@ -8,6 +8,9 @@ import com.winhxd.b2c.promotion.service.CouponActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author sjx
@@ -20,7 +23,12 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityMapper couponActivityMapper;
 
     @Override
-    public PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition) {
-        return null;
+    public PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition) {
+        return couponActivityMapper.queryCouponActivity(condition);
+    }
+
+    @Override
+    public int savePullCouponActivity(CouponActivityCondition condition) {
+        return 0;
     }
 }

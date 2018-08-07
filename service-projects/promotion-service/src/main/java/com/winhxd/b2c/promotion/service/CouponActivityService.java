@@ -10,5 +10,20 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
  * @date 2018/8/6
  */
 public interface CouponActivityService {
-    PagedList<CouponActivityVO> queryPullCouponActivity(CouponActivityCondition condition);
+
+    /**
+     * @Deccription 查询优惠券领券推券列表
+     * @param condition
+     * @return CouponActivityVO
+     */
+    PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
+    /**
+     *
+     *@Deccription 添加领券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    int savePullCouponActivity(CouponActivityCondition condition);
 }

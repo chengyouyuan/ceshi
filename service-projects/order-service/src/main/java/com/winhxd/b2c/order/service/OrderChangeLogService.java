@@ -1,6 +1,9 @@
 package com.winhxd.b2c.order.service;
 
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 
 /**
@@ -37,5 +40,28 @@ public interface OrderChangeLogService {
         }
     }
     
+    /**
+     * 记录订单流转状态
+     * @author wangbin
+     * @date  2018年8月6日 下午7:40:01
+     * @param orderNo
+     * @param originalJson
+     * @param newJson
+     * @param originalStatus
+     * @param newStatus
+     * @param createdBy
+     * @param createdByName
+     * @param changeMsg
+     * @param pointType
+     */
     void orderChange(String orderNo, String originalJson, String newJson, Short originalStatus, Short newStatus, Long createdBy, String createdByName, String changeMsg, MainPointEnum pointType);
+
+    /**
+     * 根据订单编号 获取订单流转信息
+     * @author wangbin
+     * @date  2018年8月6日 下午7:40:18
+     * @param orderNo
+     * @return
+     */
+    List<OrderChangeVO> listOrderChanges(String orderNo);
 }

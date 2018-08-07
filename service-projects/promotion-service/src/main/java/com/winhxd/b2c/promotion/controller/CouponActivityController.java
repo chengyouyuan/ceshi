@@ -34,20 +34,48 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private CouponActivityService couponActivityService;
 
     @Override
-    @ApiOperation(value = "领券活动列表接口", response = CouponActivityVO.class, notes = "领券活动列表接口")
+    @ApiOperation(value = "领券推券活动列表接口", response = CouponActivityVO.class, notes = "领券推券活动列表接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = CouponActivityVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-    public ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(CouponActivityCondition condition) {
-        logger.info("/promotion/v1/queryPullCouponActivity/ 领券活动列表查询开始");
+    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+        logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         try {
-            PagedList<CouponActivityVO> page = couponActivityService.queryPullCouponActivity(condition);
+            PagedList<CouponActivityVO> page = couponActivityService.queryCouponActivity(condition);
             result.setData(page);
         }catch (Exception e){
-            logger.error("/promotion/v1/queryPullCouponActivity/ 领券活动列表查询=--异常" + e.getMessage(), e);
+            logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        logger.info("/promotion/v1/queryPullCouponActivity/ 领券活动列表查询结束");
+        logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询结束");
         return result;
+    }
+
+    /**
+     *
+     *@Deccription 添加领券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    @Override
+    @ApiOperation(value = "添加领券活动", notes = "添加领券活动")
+    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
+        /**
+         * 判断必填参数
+         */
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponActivityService.savePullCouponActivity(condition);
+            if(count > 0) {
+                responseResult.setCode(BusinessCode.CODE_OK);
+            }else{
+                responseResult.setCode(BusinessCode.CODE_1001);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return responseResult;
     }
 }

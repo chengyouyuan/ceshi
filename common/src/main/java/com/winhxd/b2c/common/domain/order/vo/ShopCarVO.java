@@ -1,11 +1,13 @@
 package com.winhxd.b2c.common.domain.order.vo;
 
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -25,11 +27,8 @@ public class ShopCarVO {
     @ApiModelProperty(value = "门店ID")
     private Long storeId;
 
-    @ApiModelProperty(value = "商品sku")
-    private String skuCode;
-
-    @ApiModelProperty(value = "商品数量")
-    private Integer prodNum;
+    @ApiModelProperty(value = "订单商品明细")
+    private List<ShopCarProdInfoVO> shopCarProdInfoVOs;
 
     @ApiModelProperty(value = "创建时间")
     private Date created;
@@ -43,15 +42,4 @@ public class ShopCarVO {
     @ApiModelProperty(value = "更新人")
     private Long updatedby;
 
-    @ApiModelProperty(value = "上下架状态(0下架,1上架)")
-    private Short prodStatus;
-
-    @ApiModelProperty(value = "商品图片")
-    private String prodImg;
-
-    @ApiModelProperty(value = "商品名称")
-    private String prodName;
-
-    @ApiModelProperty(value = "商品单价")
-    private BigDecimal prodPrice;
 }

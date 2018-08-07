@@ -20,10 +20,29 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2018/8/6
  * @Description 优惠券活动相关接口
  */
-@FeignClient(value = ServiceName.COUPON_SERVICE, fallbackFactory = CouponActivityServiceFallback.class)
+@FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponActivityServiceFallback.class)
 public interface CouponActivityServiceClient {
-    @RequestMapping(value = "/promotion/v1/queryPullCouponActivity/", method = RequestMethod.POST)
-    ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(@RequestBody CouponActivityCondition condition);
+    /**
+     *
+     *@Deccription 查询优惠券活动领券推券列表
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    @RequestMapping(value = "/promotion/v1/queryCouponActivity/", method = RequestMethod.POST)
+    ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition);
+    /**
+     *
+     *@Deccription 添加领券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/6
+     */
+    @RequestMapping(value = "/promotion/v1/addPullCouponActivity", method = RequestMethod.POST)
+    public ResponseResult addPullCouponActivity(@RequestBody CouponActivityCondition condition);
+
 }
 
 @Component
@@ -32,9 +51,14 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     private Throwable throwable;
 
     @Override
-    public ResponseResult<PagedList<CouponActivityVO>> queryPullCouponActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+        logger.error("CouponActivityServiceFallback -> queryCouponActivity", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
 
-        logger.error("CouponActivityServiceFallback -> queryPullCouponActivity", throwable);
+    @Override
+    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
+        logger.error("CouponActivityServiceFallback -> addPullCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

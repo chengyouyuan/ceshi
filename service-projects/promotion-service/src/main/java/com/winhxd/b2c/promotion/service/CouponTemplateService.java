@@ -1,5 +1,7 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 
@@ -27,5 +29,10 @@ public interface CouponTemplateService {
      *@User     wl
      *@Date   2018/8/6 14:41
      */
-    CouponTemplateVO getCouponTemplate(String id);
+    CouponTemplateVO getCouponTemplateById(String id);
+
+
+    ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition);
+
+    ResponseResult<CouponTemplateVO> viewCouponTemplateDetailById(String id);
 }

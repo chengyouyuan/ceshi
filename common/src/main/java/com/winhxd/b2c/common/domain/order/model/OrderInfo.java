@@ -63,7 +63,7 @@ public class OrderInfo {
     /**
      * 实付金额
      */
-    private Long realPaymentMoney;
+    private BigDecimal realPaymentMoney;
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */

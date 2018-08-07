@@ -1,5 +1,8 @@
 package com.winhxd.b2c.store.api;
 
+import java.util.Date;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreLoginService;
 
@@ -42,6 +47,10 @@ public class ApiStoreLoginController {
 	private Cache cache;
 	@Autowired
 	StoreServiceClient storeServiceClient;
+	@Autowired
+	MessageServiceClient messageServiceClient;
+	@Autowired
+	StoreHxdServiceClient storeHxdServiceClient;
 
 	/**
 	 * @author wufuyun
@@ -60,7 +69,7 @@ public class ApiStoreLoginController {
 	@RequestMapping(value = "3021/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<Long> saveStoreLogin(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<Long> result = new ResponseResult<>();
-		try {
+		try {// storePassword
 			if (null == storeUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
@@ -102,15 +111,35 @@ public class ApiStoreLoginController {
 			 */
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			DB = storeLoginService.getstoreUserInfoByMobile(storeUserInfo);
+			String content = "";
 			if (DB == null) {
-				// TODO:掉惠下单服务查询门店用户信息
-				// 如果存在 发送验证码
-				// 同步登录信息到惠小店 如果用微信登录 存头像 和openid
-				// 否则 不发送验证码
-				return new ResponseResult<>(BusinessCode.CODE_1004);
+				/**
+				 * 掉惠下单服务查询门店用户信息
+				 */
+				ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
+						storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
+				Map<String, Object> map = object.getData();
+				if (map.isEmpty()) {
+					return new ResponseResult<>(BusinessCode.CODE_1004);
+				} else {
+					StoreUserInfo info = new StoreUserInfo();
+					info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+					/**
+					 * 如果是微信登录获取昵称头像
+					 */
+					if (1 == storeUserInfoCondition.getLoginFlag()) {
+						info.setCreated(new Date());
+						info.setOpenid(storeUserInfoCondition.getOpenid());
+						info.setSource(storeUserInfoCondition.getSource());
+						info.setStorePassword(String.valueOf(map.get("storePassword")));
+						storeLoginService.saveStoreInfo(info);
+					}
+					messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(), content);
+				}
 			} else {
-				// 发送验证码
+				messageServiceClient.sendSMS(storeUserInfoCondition.getStoreMobile(), content);
 			}
+			logger.info("手机号：" + storeUserInfoCondition.getStoreMobile() + "************发送内容：" + content);
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());

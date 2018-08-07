@@ -1,13 +1,16 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 /**
  * @Author wl
  * @Date 2018/8/6 09:56
  * @Description
  **/
-public class CouponTemplateCondition {
+public class CouponTemplateCondition extends BaseCondition implements Serializable {
 
     @ApiModelProperty(value = "优惠券标题")
     private String title;
@@ -18,7 +21,7 @@ public class CouponTemplateCondition {
     @ApiModelProperty(value = "出资方规则ID")
     private Long investorId;
     @ApiModelProperty(value = "使用范围规则ID")
-    private Long useRangeId;
+    private Long gradeId;
     @ApiModelProperty(value = "适用对象规则ID")
     private Long applyRuleId;
     @ApiModelProperty(value = "优惠券标签")
@@ -27,6 +30,27 @@ public class CouponTemplateCondition {
     private Short calType;
     @ApiModelProperty(value = "支付方式 1扫码支付 2线上支付")
     private Short payType;
+
+    @ApiModelProperty(value = "优惠券类型")
+    private Short applyRuleType;
+    @ApiModelProperty(value = "是否有效 0有效1无效")
+    private Short status;
+    @ApiModelProperty(value = "优惠券模板编码(UUID")
+    private String code;
+    @ApiModelProperty(value = "出资方规则名称")
+    private String investorName;
+    @ApiModelProperty(value = "优惠券优惠方式名称")
+    private String gradeName;
+    @ApiModelProperty(value = "优惠券类型规则名称")
+    private String applyRuleName;
+    @ApiModelProperty(value = "创建人")
+    private String createdByName;
+
+    @ApiModelProperty(value = "创建时间 开始")
+    private String createdBegin;
+    @ApiModelProperty(value = "创建时间 结束")
+    private String createdEnd;
+
 
     public String getTitle() {
         return title;
@@ -60,12 +84,12 @@ public class CouponTemplateCondition {
         this.investorId = investorId;
     }
 
-    public Long getUseRangeId() {
-        return useRangeId;
+    public Long getGradeId() {
+        return gradeId;
     }
 
-    public void setUseRangeId(Long useRangeId) {
-        this.useRangeId = useRangeId;
+    public void setGradeId(Long gradeId) {
+        this.gradeId = gradeId;
     }
 
     public Long getApplyRuleId() {
@@ -98,5 +122,77 @@ public class CouponTemplateCondition {
 
     public void setPayType(Short payType) {
         this.payType = payType;
+    }
+
+    public Short getApplyRuleType() {
+        return applyRuleType;
+    }
+
+    public void setApplyRuleType(Short applyRuleType) {
+        this.applyRuleType = applyRuleType;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getInvestorName() {
+        return investorName;
+    }
+
+    public void setInvestorName(String investorName) {
+        this.investorName = investorName;
+    }
+
+    public String getGradeName() {
+        return gradeName;
+    }
+
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
+    }
+
+    public String getApplyRuleName() {
+        return applyRuleName;
+    }
+
+    public void setApplyRuleName(String applyRuleName) {
+        this.applyRuleName = applyRuleName;
+    }
+
+    public String getCreatedByName() {
+        return createdByName;
+    }
+
+    public void setCreatedByName(String createdByName) {
+        this.createdByName = createdByName;
+    }
+
+    public String getCreatedBegin() {
+        return createdBegin;
+    }
+
+    public void setCreatedBegin(String createdBegin) {
+        this.createdBegin = createdBegin;
+    }
+
+    public String getCreatedEnd() {
+        return createdEnd;
+    }
+
+    public void setCreatedEnd(String createdEnd) {
+        this.createdEnd = createdEnd;
     }
 }

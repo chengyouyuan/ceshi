@@ -1,5 +1,8 @@
 package com.winhxd.b2c.order.dao;
 
+import java.util.List;
+
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.order.model.OrderChangeLog;
 
 public interface OrderChangeLogMapper {
@@ -16,4 +19,6 @@ public interface OrderChangeLogMapper {
     int updateByPrimaryKeyWithBLOBs(OrderChangeLog record);
 
     int updateByPrimaryKey(OrderChangeLog record);
+
+    List<OrderChangeVO> listOrderChanges(String orderNo);
 }

@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -29,7 +28,7 @@ public class CouponActivity {
     private String exolian;
 
     @ApiModelProperty(value = "发券备注")
-    private Short remarks;
+    private String remarks;
 
     @ApiModelProperty(value = "1领券 2推券")
     private Short type;
@@ -47,19 +46,22 @@ public class CouponActivity {
     private Short couponNumType;
 
     @ApiModelProperty(value = "数量")
-    private BigDecimal couponNum;
+    private Integer couponNum;
 
     @ApiModelProperty(value = "用户领券限制 1不限制 2每个门店可领取数量")
     private Short customerVoucherLimitType;
 
     @ApiModelProperty(value = "用户可领取数量")
-    private Long customerVoucherLimitNum;
+    private Integer customerVoucherLimitNum;
 
     @ApiModelProperty(value = "推送数量")
-    private BigDecimal sendNum;
+    private Integer sendNum;
 
     @ApiModelProperty(value = "发券时间")
     private Date sendTime;
+
+    @ApiModelProperty(value = "活动状态 1开启 2停止")
+    private Short activityStatus;
 
     @ApiModelProperty(value = "是否有效0有效1无效")
     private Short status;
@@ -81,6 +83,7 @@ public class CouponActivity {
 
     @ApiModelProperty(value = "修改时间")
     private Date updated;
+
 
     public Long getId() {
         return id;
@@ -114,11 +117,11 @@ public class CouponActivity {
         this.exolian = exolian;
     }
 
-    public Short getRemarks() {
+    public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(Short remarks) {
+    public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
 
@@ -162,11 +165,11 @@ public class CouponActivity {
         this.couponNumType = couponNumType;
     }
 
-    public BigDecimal getCouponNum() {
+    public Integer getCouponNum() {
         return couponNum;
     }
 
-    public void setCouponNum(BigDecimal couponNum) {
+    public void setCouponNum(Integer couponNum) {
         this.couponNum = couponNum;
     }
 
@@ -178,19 +181,19 @@ public class CouponActivity {
         this.customerVoucherLimitType = customerVoucherLimitType;
     }
 
-    public Long getCustomerVoucherLimitNum() {
+    public Integer getCustomerVoucherLimitNum() {
         return customerVoucherLimitNum;
     }
 
-    public void setCustomerVoucherLimitNum(Long customerVoucherLimitNum) {
+    public void setCustomerVoucherLimitNum(Integer customerVoucherLimitNum) {
         this.customerVoucherLimitNum = customerVoucherLimitNum;
     }
 
-    public BigDecimal getSendNum() {
+    public Integer getSendNum() {
         return sendNum;
     }
 
-    public void setSendNum(BigDecimal sendNum) {
+    public void setSendNum(Integer sendNum) {
         this.sendNum = sendNum;
     }
 
@@ -200,6 +203,14 @@ public class CouponActivity {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Short getActivityStatus() {
+        return activityStatus;
+    }
+
+    public void setActivityStatus(Short activityStatus) {
+        this.activityStatus = activityStatus;
     }
 
     public Short getStatus() {

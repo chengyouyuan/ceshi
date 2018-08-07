@@ -24,16 +24,10 @@ public class CacheName {
      * 订单修改锁KEY 全局唯一，订单修改统一用这个
      */
     public static final String CACHE_KEY_MODIFY_ORDER = "CACHE:KEY:MODIFY:ORDER:";
+    /**
+     * 订单修改锁KEY 全局唯一，订单修改统一用这个
+     */
+    public static final String CACHE_KEY_STORE_ORDER_SALESSUMMARY = "STORE:SALESSUMMARY:";
 
-    public static final String getStoreOrderSalesSummaryKey(long storeId, Date startDateTime, Date endDateTime) {
-        if (startDateTime == null) {
-            startDateTime = new Date();
-        }
-        if (endDateTime == null) {
-            endDateTime = new Date();
-        }
-        String storeSalesSummary = "STORE:SALESSUMMARY:{0}:{1}:{2}";
-        String pattern = "yyyyMMddHHmmss";
-        return MessageFormat.format(storeSalesSummary, storeId, DateFormatUtils.format(startDateTime, pattern), DateFormatUtils.format(endDateTime, pattern));
-    }
+    
 }

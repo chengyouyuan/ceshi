@@ -440,9 +440,15 @@
         </if>
         order by info.created desc
     </select>
+    <sql id="Order_Info_List_4_store">
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
+        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pickup_type, cancel_reason, remark
+    </sql>
     <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
         select
-        <include refid="Order_Info_List"/>
+        <include refid="Order_Info_List_4_store"/>
         ,item.sku_code AS skuCode
         ,item.amount AS amount
         ,item.price AS price

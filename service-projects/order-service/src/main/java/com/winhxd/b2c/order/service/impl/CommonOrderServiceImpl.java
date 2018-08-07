@@ -188,7 +188,7 @@ public class CommonOrderServiceImpl implements OrderService {
      * @return 是否成功，true成功，false 不成功
      */
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = Exception.class)
     public void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
             throw new BusinessException(BusinessCode.CODE_411001, "参数异常");
@@ -227,6 +227,7 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param orderRefundCondition 入参
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void orderRefundByCustomer(OrderRefundCondition orderRefundCondition) {
         String orderNo = orderRefundCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {

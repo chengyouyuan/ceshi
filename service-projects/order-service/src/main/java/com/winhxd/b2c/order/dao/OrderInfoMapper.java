@@ -165,4 +165,13 @@ public interface OrderInfoMapper {
      * @date 2018年8月6日 下午3:29:26
      */
     List<OrderInfoDetailVO> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
+
+    /**
+     * 更新订单提货码
+     * @author wangbin
+     * @date  2018年8月7日 下午1:21:55
+     * @param pickUpCode
+     * @param id
+     */
+    int updateOrderPickupCode(String pickUpCode, Long id);
 }

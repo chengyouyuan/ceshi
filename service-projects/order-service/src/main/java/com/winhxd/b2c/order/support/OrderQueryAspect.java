@@ -12,6 +12,7 @@ import java.util.Set;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
  * 订单状态转换，code->mark
@@ -95,12 +97,16 @@ public class OrderQueryAspect {
             } else {
                 assambleOrderInfos(ret);
             }
+            //获取用户相关信息
+            OrderInfoConvertAnnotation orderInfoConvertAnnotation = ((MethodSignature)joinPoint.getSignature()).getMethod().getAnnotation(OrderInfoConvertAnnotation.class);
+            if (orderInfoConvertAnnotation.queryCustomerInfo()) {
+                customerInfoConvert(joinPoint, ret);
+            }
         } catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {
             logger.error("订单信息封装异常：", e);
         }
     }
     
-    @AfterReturning(returning = "ret", value = "@annotation(com.winhxd.b2c.order.support.annotation.CustomerInfoConvertAnnotation)")
     public void customerInfoConvert(JoinPoint joinPoint,Object ret) {
         try {
             if (ret instanceof Object[]) {

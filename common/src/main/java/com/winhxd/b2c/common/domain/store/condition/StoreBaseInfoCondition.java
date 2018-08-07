@@ -16,9 +16,6 @@ import lombok.Data;
 @Data
 public class StoreBaseInfoCondition {
 
-    @ApiModelProperty(value = "用户编码", required = true)
-    private Long customerId;
-
     @ApiModelProperty(value = "门店编码", required = true)
     private Long storeId;
 
@@ -36,4 +33,7 @@ public class StoreBaseInfoCondition {
 
     @ApiModelProperty(value = "区域编码", required = true)
     private String storeRegionCode;
+
+    @ApiModelProperty(value = "门店地址", required = true)
+    private String storeAddress;
 }

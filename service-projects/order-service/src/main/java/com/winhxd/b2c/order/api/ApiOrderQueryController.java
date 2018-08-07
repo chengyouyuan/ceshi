@@ -66,7 +66,6 @@ public class ApiOrderQueryController {
     @RequestMapping(value = "/411/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
         LOGGER.info("=/api-order/order/411/v1/getOrderDetailByOrderNo-C端订单详情查询接口=--开始--{}");
-        Long customerId = 1L;
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
         try {
             OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);

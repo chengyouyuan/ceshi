@@ -28,10 +28,13 @@ public interface StoreHxdServiceClient {
     ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword); 
 
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId, @RequestParam("customerId") String customerId);
+    ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId);
 
     @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("storeId") String storeId);
+
+    @RequestMapping(value = "/hxdStore/getStoreBaseInfo/", method = RequestMethod.GET)
+    ResponseResult<List<String>> getStoreBaseInfo(@RequestParam("storeId") String storeId);
 
 }
 
@@ -55,7 +58,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<String>> getStorePerfectInfo(String storeId, String customerId) {
+    public ResponseResult<List<String>> getStorePerfectInfo(String storeId) {
         logger.error("StoreHxdServiceClient -> getStorePerfectInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -63,6 +66,12 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     @Override
     public ResponseResult<List<String>> getStoreBuyedProdSku(String storeId) {
         logger.error("StoreHxdServiceClient -> getStoreBuyedProdSku", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<String>> getStoreBaseInfo(String storeId) {
+        logger.error("StoreHxdServiceClient -> getStoreBaseInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

@@ -117,6 +117,23 @@ private CouponTemplateServiceClient couponTemplateServiceClient;
 		return responseResult;
 	}
 
+
+	/**
+	 *
+	 *@Deccription 修改优惠券模板
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  wl
+	 *@Date   2018/8/7 16:01
+	 */
+	@ApiOperation("修改优惠券模板")
+	@PostMapping(value = "/v1/confirmEditCouponTemplate")
+	public ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition){
+		ResponseResult responseResult = couponTemplateServiceClient.confirmUpdateCouponTemplate(condition);
+		return responseResult;
+	}
+
+
 //========================================================================================================
 
 }

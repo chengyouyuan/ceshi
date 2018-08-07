@@ -37,4 +37,15 @@ public enum PayTypeEnum {
         }
         return null;
     }
+
+    public static String getPayTypeEnumDescByTypeCode(Short typeCode) {
+        if (null != typeCode) {
+            for (PayTypeEnum payTypeEnum : PayTypeEnum.values()) {
+                if (typeCode == payTypeEnum.getTypeCode()) {
+                    return payTypeEnum.getTypeDesc();
+                }
+            }
+        }
+        return null;
+    }
 }

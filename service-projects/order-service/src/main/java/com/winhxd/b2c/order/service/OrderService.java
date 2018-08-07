@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.service;
 
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
@@ -57,4 +58,12 @@ public interface OrderService {
      * @param orderRefundCondition
      */
     void orderRefundByCustomer(OrderRefundCondition orderRefundCondition);
+
+    /**
+     * 门店接单
+     * @author wangbin
+     * @date  2018年8月7日 下午4:41:43
+     * @param condition
+     */
+    void orderConfirm4Store(OrderConfirmCondition condition);
 }

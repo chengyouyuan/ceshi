@@ -147,6 +147,19 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
     }
 
+    /**
+     *
+     *@Deccription 修改优惠券模板
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/7 16:31
+     */
+    @Override
+    public int confirmUpdateCouponTemplate(Long updateBy, Date updated, String updateByName, CouponTemplateCondition condition) {
+        return couponTemplateMapper.confirmUpdateCouponTemplate(updateBy,  updated,  updateByName, condition);
+    }
+
 
     /**
      * 自动生成32位的UUid，对应数据库的主键id进行插入用。

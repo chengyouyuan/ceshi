@@ -122,6 +122,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("门店id为空")
     public static final int STORE_ID_EMPTY = 400005;
+    
+    @ApiModelProperty("订单状态错误")
+    public static final int WRONG_ORDER_STATUS = 400006;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;
@@ -140,4 +143,5 @@ public final class BusinessCode {
     public static final int CODE_420001 = 420001;
     /** 订单已支付成功不能取消*/
     public static final int CODE_420002 = 420002;
+    
 }

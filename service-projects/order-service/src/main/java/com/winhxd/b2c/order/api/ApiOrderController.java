@@ -1,15 +1,7 @@
 package com.winhxd.b2c.order.api;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.order.service.OrderService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -18,7 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.order.service.OrderService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author pangjianhua
@@ -33,13 +37,39 @@ public class ApiOrderController {
     @Resource
     private OrderService orderService;
 
-    @ApiOperation(value = "B端退款订单处理接口", response = Boolean.class, notes = "B端退款订单处理接口")
+    @ApiOperation(value = "B端接单计价", response = Boolean.class, notes = "B端接单计价")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_422001, message = "参数异常"),
-            @ApiResponse(code = BusinessCode.CODE_422002, message = "未支付的订单不允许退款"),
-            @ApiResponse(code = BusinessCode.CODE_422003, message = "已完成的订单不允许退款"),
-            @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+    })
+    @RequestMapping(value = "/423/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Boolean> orderConfirm4Store(@RequestBody OrderConfirmCondition condition) {
+        String logTitle = "/api-order/order/423/v1/orderConfirm4Store-B端确认订单接口";
+        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        ResponseResult<Boolean> result = new ResponseResult<>();
+        try {
+            this.orderService.orderConfirm4Store(condition);
+            result.setData(null);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        LOGGER.info("{}=--结束 result={}", logTitle, result);
+        return result;
+    }
+    
+    @ApiOperation(value = "B端退款订单处理接口", response = Boolean.class, notes = "B端退款订单处理接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+        @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+        @ApiResponse(code = BusinessCode.CODE_422001, message = "参数异常"),
+        @ApiResponse(code = BusinessCode.CODE_422002, message = "未支付的订单不允许退款"),
+        @ApiResponse(code = BusinessCode.CODE_422003, message = "已完成的订单不允许退款"),
+        @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
     })
     @RequestMapping(value = "/422/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {

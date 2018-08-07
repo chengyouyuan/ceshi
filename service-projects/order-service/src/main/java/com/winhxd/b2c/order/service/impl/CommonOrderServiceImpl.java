@@ -257,6 +257,13 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
         }
     }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void orderConfirm4Store(OrderConfirmCondition condition) {
+        // TODO Auto-generated method stub
+        
+    }
 
     /**
      * 订单成功创建成功 业务操作
@@ -435,4 +442,5 @@ public class CommonOrderServiceImpl implements OrderService {
         String randomFormat = "%09d";
         return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
     }
+
 }

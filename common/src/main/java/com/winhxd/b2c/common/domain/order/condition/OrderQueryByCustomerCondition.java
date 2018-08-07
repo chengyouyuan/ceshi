@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2018/8/3 17:12
  */
 @Data
-public class OrderQueryByCustomerCondition extends BaseCondition {
+public class OrderQueryByCustomerCondition {
     @ApiModelProperty(value = "订单编号，查询订单详情时需传递编号")
     private String orderNo;
 }

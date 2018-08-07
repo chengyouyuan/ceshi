@@ -3,6 +3,8 @@ package com.winhxd.b2c.common.domain.system.login.model;
 import java.io.Serializable;
 
 import java.util.Date;
+
+import io.swagger.annotations.ApiModelProperty;
 /**
  * @author wufuyun
  * @date  2018年8月2日 下午3:43:57
@@ -84,7 +86,7 @@ public class StoreUserInfo implements Serializable {
      * 惠小店状态（0、未开店，1、有效，2、无效）
      */
     private Byte storeStatus;
-
+    private String token;
     private static final long serialVersionUID = 1L;
 
     public String getStoreName() {
@@ -270,6 +272,12 @@ public class StoreUserInfo implements Serializable {
 		this.id = id;
 	}
 
-	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
     
 }

@@ -10,12 +10,15 @@ import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Created by caiyulong on 2018/8/6.
+ *
+ * @author caiyulong
+ * @date 2018/8/6
  */
 @FeignClient(value = ServiceName.STORE_SERVICE,fallbackFactory = BackStageStoreServiceClientFallBack.class)
 public interface BackStageStoreServiceClient {
@@ -34,6 +37,7 @@ public interface BackStageStoreServiceClient {
  * @author chengyy
  * @date 2018/8/3 10:43
  */
+@Component
 class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient, FallbackFactory<BackStageStoreServiceClient> {
 
     Throwable throwable;

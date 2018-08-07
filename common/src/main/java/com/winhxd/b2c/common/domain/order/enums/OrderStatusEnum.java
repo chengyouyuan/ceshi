@@ -13,10 +13,10 @@ public enum OrderStatusEnum {
     SUBMITTED((short) 1, "订单已提交", "已提交"),
     
     /**
-     * 代付款，虚拟状态,不是真实的订单流转状态
+     * 待付款，虚拟状态,不是真实的订单流转状态
      * 1.(order_status=1 or order_status=7) and pay_stauts=0
      */
-    WAIT_PAY((short) 2, "代付款", "代付款"),
+    WAIT_PAY((short) 2, "待付款", "待付款"),
 
     /**
      * 订单待商铺确认/待接单

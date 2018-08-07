@@ -440,6 +440,23 @@
         </if>
         order by info.created desc
     </select>
+    <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        <if test="condition.orderStatus != null">
+            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.pickupCode != null">
+            and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
+        </if>
+        and store_id = #{storeId,jdbcType=BIGINT}
+        order by info.created desc
+    </select>
     <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
@@ -508,10 +525,21 @@
         where id=#{orderId,jdbcType=BIGINT}
         and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
     </update>
+    <update id="updateOrderPickupCode">
+        update order_info
+        set pickup_code=#{pickUpCode,jdbcType=VARCHAR}, 
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+    </update>
     <update id="updateOrderStatusForRefund">
        update order_info
        set order_status=77,cancel_datetime = now(),pickup_code=null
        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+    </update>
+    <update id="updateOrderStatusForApplyRefund">
+        update order_info
+       set order_status=2,cancel_datetime = now(),pickup_code=null
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
     </update>
 
 </mapper>

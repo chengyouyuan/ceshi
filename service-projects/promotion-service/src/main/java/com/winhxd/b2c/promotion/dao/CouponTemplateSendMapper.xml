@@ -48,7 +48,7 @@
       #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplateSend">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplateSend" keyProperty="id" useGeneratedKeys="true">
     insert into coupon_template_send
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

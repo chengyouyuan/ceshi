@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -167,9 +169,34 @@ public interface OrderInfoMapper {
     List<OrderInfoDetailVO> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
 
     /**
+     * 更新订单提货码
+     * @author wangbin
+     * @date  2018年8月7日 下午1:21:55
+     * @param pickUpCode
+     * @param id
+     */
+    int updateOrderPickupCode(@Param("pickUpCode") String pickUpCode, @Param("orderId") Long orderId);
+    /**
      * 订单退款更新状态等信息
      * @param orderNo
      * @return 更新成功影响条数
      */
     int updateOrderStatusForRefund(String orderNo);
+
+    /**
+     * 根据条件查询 
+     * @author wangbin
+     * @date  2018年8月7日 下午2:08:07
+     * @param condition
+     * @param storeId
+     * @return
+     */
+    List<OrderInfoDetailVO> listOrder4Store(@Param("condition") OrderQuery4StoreCondition condition, @Param("storeId") Long storeId);
+
+    /**
+     * C端申请退款更新状态
+     * @param orderNo
+     * @param customerId
+     */
+    int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
 }

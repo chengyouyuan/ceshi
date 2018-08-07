@@ -12,8 +12,18 @@ spring:
       discovery:
         enabled: true
         service-id: b2c-config-server
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          min-partition-count: 1
+      bindings:
+        orderProducer:
+          destination: order-event
+        orderConsumer:
+          destination: order-event
+          group: ggggg
 
 eureka:
   instance:
     prefer-ip-address: true
-

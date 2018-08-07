@@ -21,6 +21,8 @@ public interface CustomerUserInfoMapper {
     int updateByPrimaryKeySelective(CustomerUserInfo record);
 
     int updateByPrimaryKey(CustomerUserInfo record);
+    
+    CustomerUserInfo selectCustomerModel(CustomerUserInfo customerUserInfo);
 
     /**
      * @param condition 查询条件
@@ -39,4 +41,6 @@ public interface CustomerUserInfoMapper {
      * @Description 根据用户id批量查询用户信息
      */
     List<CustomerUserInfoVO1> selectCustomerUserByIds(@Param("ids") List<Long> ids);
+
+	CustomerUserInfo selectByCustomerUserInfoByModel(CustomerUserInfo customerUserInfo);
 }

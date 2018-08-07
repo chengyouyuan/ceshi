@@ -8,8 +8,10 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreService;
 import io.swagger.annotations.Api;
@@ -22,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -39,6 +44,9 @@ public class ApiOpenStoreController {
 
     @Autowired
     private StoreService storeService;
+
+    @Autowired
+    private StoreHxdServiceClient storeHxdServiceClient;
 
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
@@ -61,9 +69,39 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
+        OpenStoreVO openStoreVO = new OpenStoreVO();
         try {
             logger.info("惠小店开店条件验证接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
-            responseResult.setData(new OpenStoreVO());
+            //是否开过小店
+            StoreUserInfo storeUserInfo = storeService.selectByStoreId(openStoreCondition.getStoreId());
+            if (storeUserInfo == null) {
+                responseResult.setCode(BusinessCode.CODE_200004);
+                responseResult.setMessage("门店信息不存在");
+                return responseResult;
+            }
+            if(storeUserInfo.getStoreStatus() != 0){
+                openStoreVO.setStoreStatus((byte) 1);
+                responseResult.setData(openStoreVO);
+                return responseResult;
+            } else {
+                openStoreVO.setStoreStatus((byte) 0);
+            }
+            //是否完善信息
+            ResponseResult<List<String>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(openStoreCondition.getStoreId().toString(),
+                    openStoreCondition.getCustomerId().toString());
+            if(noPerfectResult.getCode() == 1){
+                List<String> list = noPerfectResult.getData();
+                if (list.size() > 0) {
+                    openStoreVO.setPerfectStatus((byte) 0);
+                    openStoreVO.setNoPerfectMessage(noPerfectResult.getData());
+                } else {
+                    openStoreVO.setPerfectStatus((byte) 1);
+                }
+                responseResult.setData(openStoreVO);
+            } else {
+                responseResult.setCode(noPerfectResult.getCode());
+                responseResult.setMessage(noPerfectResult.getMessage());
+            }
             logger.info("惠小店开店条件验证接口返参为：{}", JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {
             logger.error("惠小店开店条件验证接口，服务器内部错误：{}", e);
@@ -193,7 +231,7 @@ public class ApiOpenStoreController {
      */
     @ApiOperation(value = "通过门店id查询门店信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
-    @RequestMapping(value = "/api/store/2002/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/1002/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.POST)
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId){
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         if(storeUserId == null){

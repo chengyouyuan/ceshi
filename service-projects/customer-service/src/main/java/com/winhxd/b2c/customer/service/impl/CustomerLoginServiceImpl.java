@@ -34,8 +34,8 @@ public class CustomerLoginServiceImpl implements CustomerLoginService{
 		return cont;
 	}
 	@Override
-	public CustomerUserInfo getCustomerUserInfoById(Long customerId) {
-		return customerUserInfoMapper.selectByPrimaryKey(customerId);
+	public CustomerUserInfo getCustomerUserInfoByModel(CustomerUserInfo customerUserInfo) {
+		return customerUserInfoMapper.selectByCustomerUserInfoByModel(customerUserInfo);
 	}
 
 }

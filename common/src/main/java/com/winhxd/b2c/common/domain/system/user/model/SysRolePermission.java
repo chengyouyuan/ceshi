@@ -14,10 +14,10 @@ public class SysRolePermission {
     @ApiModelProperty("权组编号")
     private Long roleId;
 
-    @ApiModelProperty("权限编码")
+    @ApiModelProperty(value = "权限编码", required = true)
     private String permission;
 
-    @ApiModelProperty("权限名称")
+    @ApiModelProperty(value = "权限名称", required = true)
     private String permissionName;
 
 }

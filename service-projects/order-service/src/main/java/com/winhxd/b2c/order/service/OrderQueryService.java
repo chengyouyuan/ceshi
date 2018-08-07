@@ -5,6 +5,7 @@ import java.util.Date;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -82,4 +83,14 @@ public interface OrderQueryService {
      * @return
      */
     OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo);
+
+    /**
+     * 门店订单列表查询
+     * @author wangbin
+     * @date  2018年8月7日 下午1:49:03
+     * @param condition
+     * @param storeId
+     * @return
+     */
+    PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId);
 }

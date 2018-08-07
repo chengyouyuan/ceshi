@@ -6,10 +6,12 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,14 +42,14 @@ public interface StoreServiceClient {
      *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List<ShopCarProdVO>>
+     * @return ResponseResult<List < ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
      * @date 2018年8月6日上午9:23:34
      */
     @RequestMapping(value = "/store/2003/v1/findShopCarProd", method = RequestMethod.GET)
-    ResponseResult<List<ShopCarProdVO>> findShopCarProd(@RequestParam("skuCodes")List<String> skuCodes, @RequestParam("storeId")Long storeId);
+    ResponseResult<List<ShopCarProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**
      * B端登入时校验改门店下上架商品未设置价格信息
@@ -63,7 +65,6 @@ public interface StoreServiceClient {
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**
-     *
      * 功能描述: 统计门店商品信息
      *
      * @param: storeProdCondition
@@ -71,16 +72,29 @@ public interface StoreServiceClient {
      * @auther: lvsen
      * @date: 2018/8/6 15:10
      */
-    @RequestMapping(value = "/store/1005/v1/statisticsStoreProdInfo/",method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1005/v1/statisticsStoreProdInfo/", method = RequestMethod.GET)
     void statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
 
+    /**
+     * @param customerUserId 用户id
+     * @return 门店信息
+     * @author chengyy
+     * @date 2018/8/7 13:57
+     * @Description 通过用户id查询绑定的门店信息
+     */
+    @RequestMapping(value = "/store/1006/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
+    ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
+
 }
+
 /**
-/**
+ * /**
+ *
  * @author chengyy
  * @Description: 熔断回调
  * @date 2018/8/3 10:43
  */
+@Component
 class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<StoreServiceClient> {
 
     Throwable throwable;
@@ -109,11 +123,17 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
         logger.error("StoreServiceClientFallBack -> loginCheckSellMoney报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
-	}
+    }
 
     @Override
     public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
-        logger.error("StoreServiceClientFallBack -> statisticsStoreProdInfo，错误信息为{}",throwable);
+        logger.error("StoreServiceClientFallBack -> statisticsStoreProdInfo，错误信息为{}", throwable);
+    }
+
+    @Override
+    public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+        logger.error("StoreServiceClientFallBack -> findStoreUserInfoByCustomerId，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
 }

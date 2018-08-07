@@ -5,7 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
+import com.winhxd.b2c.common.domain.system.user.model.SysRolePermission;
 import com.winhxd.b2c.system.user.dao.SysRoleMapper;
+import com.winhxd.b2c.system.user.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.user.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +26,20 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
+    @Resource
+    private SysRolePermissionMapper sysRolePermissionMapper;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int addSysRule(SysRole sysRole) {
         int count = sysRoleMapper.insertSelective(sysRole);
-//        SysRole sysRole = new SysRole();
-//        sysRole.setRoleId(sysRole.getId());
-//        sysRole.setRoleId(sysRole.getRoleId());
-//        sysRoleMapper.insertSelective(sysRole);
+        if(null != sysRole.getPermissions()){
+            for(SysRolePermission permission : sysRole.getPermissions()){
+                permission.setRoleId(sysRole.getId());
+                sysRolePermissionMapper.insertSelective(permission);
+            }
+        }
         return count;
     }
 
@@ -40,17 +47,19 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional(rollbackFor = Exception.class)
     public int updateSysRule(SysRole sysRole) {
         int count = sysRoleMapper.updateByPrimaryKeySelective(sysRole);
-//        sysRoleMapper.deleteByRuleId(sysRole.getId());
-//        SysRole sysRole = new SysRole();
-//        sysRole.setRoleId(sysRole.getId());
-//        sysRole.setRoleId(sysRole.getRoleId());
-//        sysRoleMapper.insertSelective(sysRole);
+        sysRolePermissionMapper.deleteByRoleId(sysRole.getId());
+        if(null != sysRole.getPermissions()){
+            for(SysRolePermission permission : sysRole.getPermissions()){
+                permission.setRoleId(sysRole.getId());
+                sysRolePermissionMapper.insertSelective(permission);
+            }
+        }
         return count;
     }
 
     @Override
     public PagedList<SysRole> selectSysRule(SysRoleCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysRole> pagedList = new PagedList();
         pagedList.setData(sysRoleMapper.selectSysRole(condition));
         pagedList.setPageNo(condition.getPageNo());

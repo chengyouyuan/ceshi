@@ -42,7 +42,7 @@ public class SysUserServiceImpl implements SysUserService {
         int count = sysUserMapper.insertSelective(sysUser);
         SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRoleId(sysUser.getRuleId());
+        sysUserRule.setRoleId(sysUser.getRoleId());
         sysUserRoleMapper.insertSelective(sysUserRule);
         return count;
     }
@@ -54,7 +54,7 @@ public class SysUserServiceImpl implements SysUserService {
         sysUserRoleMapper.deleteByUserId(sysUser.getId());
         SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRoleId(sysUser.getRuleId());
+        sysUserRule.setRoleId(sysUser.getRoleId());
         sysUserRoleMapper.insertSelective(sysUserRule);
         return count;
     }
@@ -79,7 +79,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public PagedList<SysUser> selectSysUser(SysUserCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysUser> pagedList = new PagedList();
         pagedList.setData(sysUserMapper.selectSysUser(condition));
         pagedList.setPageNo(condition.getPageNo());

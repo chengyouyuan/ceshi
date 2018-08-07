@@ -3,8 +3,11 @@ package com.winhxd.b2c.promotion.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import io.swagger.annotations.Api;
@@ -60,14 +63,35 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@Date   2018/8/6
      */
     @Override
-    @ApiOperation(value = "添加领券活动", notes = "添加领券活动")
-    public ResponseResult addPullCouponActivity(CouponActivityCondition condition) {
+    @ApiOperation(value = "添加优惠券活动", notes = "添加优惠券活动")
+    public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
         /**
          * 判断必填参数
          */
+        if(null == condition){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(null == condition.getType()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
+            if (condition.getName() == null && condition.getCouponActivityDetailList() == null
+                    && condition.getActivityStart()==null && condition.getActivityEnd() == null
+                    && condition.getCouponNumType() == null && condition.getCustomerVoucherLimitType() == null) {
+                throw new BusinessException(BusinessCode.CODE_1007);
+            }
+        }
+        if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
+            if (condition.getName() == null && condition.getCouponActivityDetailList() == null
+                    && condition.getActivityStart() == null && condition.getActivityEnd() == null
+                    && condition.getCustomerVoucherLimitNum() == null) {
+                throw new BusinessException(BusinessCode.CODE_1007);
+            }
+        }
+
         ResponseResult responseResult = new ResponseResult();
         try {
-            int count = couponActivityService.savePullCouponActivity(condition);
+            int count = couponActivityService.saveCouponActivity(condition);
             if(count > 0) {
                 responseResult.setCode(BusinessCode.CODE_OK);
             }else{

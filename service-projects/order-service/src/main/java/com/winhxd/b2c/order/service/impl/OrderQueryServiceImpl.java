@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -25,7 +24,10 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
@@ -36,13 +38,17 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
  * @author pangjianhua
@@ -63,6 +69,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private CustomerServiceClient customerServiceClient;
     @Resource
     private ProductServiceClient productServiceClient;
+    @Resource
+    private StoreServiceClient storeServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -72,8 +80,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
-        //TODO 待添加获取当前用户的接口 获取customerId查找所有该用户的订单
-        Long customerId = 1L;
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        if (customer == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+        Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
         List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
@@ -93,7 +104,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     /**
-     * 根据用户ID查询订单
+     * 查询订单
      *
      * @param condition 入参
      * @return
@@ -105,9 +116,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
         }
-        //TODO 待添加获取当前用户的接口
-        Long customerId = 1L;
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+
+        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
+        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
+        detailVO.setStoreMobile(store.getStoreMobile());
+
         //TODO 调用商品仓库添加商品图片URL和商品名称
         return detailVO;
     }
@@ -192,6 +206,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true)
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -221,7 +236,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
         return orderInfoDetailVO4Management;
     }
-    
+
     @Override
     public PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId) {
         if (storeId == null) {
@@ -266,5 +281,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
-    
+
 }

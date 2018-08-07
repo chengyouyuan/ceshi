@@ -1,6 +1,6 @@
 package com.winhxd.b2c.message;
 
-import com.winhxd.b2c.common.config.ServiceConfig;
+import com.winhxd.b2c.common.config.MicroServiceConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.winhxd.b2c.message.dao")
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableScheduling
-@Import(ServiceConfig.class)
+@Import(MicroServiceConfig.class)
 public class MessageServiceApplication {
 
     public static void main(String[] args) {

@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * @author pangjianhua
  * @date 2018/8/2 19:34
@@ -50,5 +53,14 @@ public enum PickUpTypeEnum {
             }
         }
         return null;
+    }
+    
+
+    public static Map<Short, String> getDescMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (PickUpTypeEnum pickUpTypeEnum : values()) {
+            map.put(pickUpTypeEnum.getTypeCode(), pickUpTypeEnum.getTypeDesc());
+        }
+        return map;
     }
 }

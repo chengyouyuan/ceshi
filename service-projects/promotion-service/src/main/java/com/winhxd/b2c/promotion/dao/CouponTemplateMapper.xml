@@ -439,6 +439,30 @@
   <update id="confirmUpdateCouponTemplate">
     update coupon_template set
       update_by=#{updateBy},updated_by_name=#{updateByName},updated=#{updated}
+      <if test="condition.title!=null and condition.title!=''">
+        ,title = #{condition.title}
+      </if>
+    <if test="condition.exolian!=null and condition.exolian!=''">
+      ,exolian = #{condition.exolian}
+    </if>
+    <if test="condition.remarks!=null and condition.remarks!=''">
+      ,remarks = #{condition.remarks}
+    </if>
+    <if test="condition.investorId!=null and condition.investorId!=''">
+      ,investor_id = #{condition.investorId}
+    </if>
+    <if test="condition.gradeId !=null and condition.gradeId  !=''">
+      ,grade_id = #{condition.gradeId}
+    </if>
+    <if test="condition.applyRuleId!=null and condition.applyRuleId!=''">
+      ,apply_rule_id = #{condition.applyRuleId}
+    </if>
+    <if test="condition.couponLabel!=null and condition.couponLabel!=''">
+      ,coupon_label = #{condition.couponLabel}
+    </if>
+    <if test="condition.status!=null and condition.status!=''">
+      ,status = #{condition.status }
+    </if>
     where id = #{condition.id}
   </update>
 

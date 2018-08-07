@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * @author pangjianhua
  * @date 2018/8/2 14:13
@@ -47,5 +50,14 @@ public enum PayTypeEnum {
             }
         }
         return null;
+    }
+    
+
+    public static Map<Short, String> getDescMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (PayTypeEnum payTypeEnum : values()) {
+            map.put(payTypeEnum.getTypeCode(), payTypeEnum.getTypeDesc());
+        }
+        return map;
     }
 }

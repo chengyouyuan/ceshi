@@ -11,21 +11,10 @@ import org.springframework.context.annotation.Bean;
  *
  * @author lixiaodong
  */
-public class ServiceConfig {
-    /**
-     * i18n帮助类
-     *
-     * @return
-     */
-    @Bean
-    public MessageHelper messageHelper() {
-        return new MessageHelper();
-    }
+public class MicroServiceConfig extends CommonConfig {
 
     /**
      * 统一异常处理
-     *
-     * @return
      */
     @Bean
     public ServiceHandlerExceptionResolver serviceHandlerExceptionResolver() {
@@ -34,8 +23,6 @@ public class ServiceConfig {
 
     /**
      * 初始化当前用户信息
-     *
-     * @return
      */
     @Bean
     public ContextInitFilter contextInitFilter() {
@@ -44,8 +31,6 @@ public class ServiceConfig {
 
     /**
      * 传递当前用户信息
-     *
-     * @return
      */
     @Bean
     public ContextRequestInterceptor contextRequestInterceptor() {

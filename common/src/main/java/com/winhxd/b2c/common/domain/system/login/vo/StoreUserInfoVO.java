@@ -18,5 +18,7 @@ public class StoreUserInfoVO{
     private Long storeId;
 	@ApiModelProperty(value = "TOKEN")
     private String token;
+	@ApiModelProperty(value = "门店账号")
+	private String storeMobile;
 
 }

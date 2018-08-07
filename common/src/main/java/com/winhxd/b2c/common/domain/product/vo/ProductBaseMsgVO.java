@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.product.vo;
 
-import com.winhxd.b2c.common.domain.PagedList;
+import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,9 +14,13 @@ import lombok.Data;
  *
  */
 @Data
-public class ProductMsgVO extends ProductBaseMsgVO{
+public class ProductBaseMsgVO {
 	
-	@ApiModelProperty(value = "商品")
-	private PagedList<ProductVO> products;
+	@ApiModelProperty(value = "分类")
+	private List<CategoryVO> categorys;
+	
+	@ApiModelProperty(value = "是否在门店上架商品内查找")
+	private String searchSkuCode;
+
 
 }

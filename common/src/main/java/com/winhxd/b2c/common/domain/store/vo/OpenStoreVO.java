@@ -31,7 +31,7 @@ public class OpenStoreVO {
     private Long storeId;
 
     @ApiModelProperty(value = "门店头像")
-    private String storePhoto;
+    private String storeImg;
 
     @ApiModelProperty(value = "门店名称", required = true)
     private String storeName;
@@ -50,8 +50,5 @@ public class OpenStoreVO {
 
     @ApiModelProperty(value = "区县", required = true)
     private String county;
-
-    @ApiModelProperty(value = "区域编码", required = true)
-    private String regionCode;
 
 }

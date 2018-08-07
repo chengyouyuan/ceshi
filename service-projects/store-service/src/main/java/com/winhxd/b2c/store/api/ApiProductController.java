@@ -29,7 +29,7 @@ import java.util.List;
  */
 @Api(value = "api product", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api/product/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);
@@ -37,7 +37,7 @@ public class ApiProductController {
     @ApiOperation(value = "小程序商品搜索列表", response = ResponseResult.class, notes = "小程序商品搜索列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "2001/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "1006/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> searchProductList(@RequestBody ProductCondition productCondition) {
         ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
         try {
@@ -51,7 +51,7 @@ public class ApiProductController {
     @ApiOperation(value = "小程序商品筛选列表", response = ResponseResult.class, notes = "小程序商品筛选列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "2002/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "1007/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ProductMsgVO> filtrateProductList(@RequestBody ProductCondition productCondition) {
         ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
         try {

@@ -1,7 +1,9 @@
 package com.winhxd.b2c.common.domain.product.vo;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+@Data
 public class BrandVO {
 
 	@ApiModelProperty(value = "品牌编码")
@@ -9,5 +11,5 @@ public class BrandVO {
 	
 	@ApiModelProperty(value = "品牌名称")
 	private String brandName;
-	
+
 }

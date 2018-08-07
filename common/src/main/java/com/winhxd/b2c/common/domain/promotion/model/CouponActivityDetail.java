@@ -44,6 +44,9 @@ public class CouponActivityDetail {
     @ApiModelProperty(value = "优惠券结束时间")
     private Date endTime;
 
+    @ApiModelProperty(value = "优惠券有效天数")
+    private Integer effectiveDays;
+
     public Long getId() {
         return id;
     }
@@ -122,5 +125,13 @@ public class CouponActivityDetail {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public Integer getEffectiveDays() {
+        return effectiveDays;
+    }
+
+    public void setEffectiveDays(Integer effectiveDays) {
+        this.effectiveDays = effectiveDays;
     }
 }

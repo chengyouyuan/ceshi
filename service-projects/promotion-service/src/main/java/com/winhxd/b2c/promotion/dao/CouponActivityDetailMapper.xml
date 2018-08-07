@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponActivityDetailMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coupon_activity_id" jdbcType="BIGINT" property="couponActivityId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="store_mobile" jdbcType="VARCHAR" property="storeMobile" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="customer_mobile" jdbcType="VARCHAR" property="customerMobile" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coupon_activity_id, template_id, store_id, store_mobile, customer_id, customer_mobile, 
+    count, start_time, end_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_activity_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_detail
+    where 1=1
+    <if test="couponActivityId != null">
+      AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_activity_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
+    insert into coupon_activity_detail (id, coupon_activity_id, template_id, 
+      store_id, store_mobile, customer_id, 
+      customer_mobile, count, start_time, 
+      end_time)
+    values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, 
+      #{storeId,jdbcType=BIGINT}, #{storeMobile,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, 
+      #{customerMobile,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
+    insert into coupon_activity_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="couponActivityId != null">
+        coupon_activity_id,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="storeMobile != null">
+        store_mobile,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="customerMobile != null">
+        customer_mobile,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="couponActivityId != null">
+        #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeMobile != null">
+        #{storeMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="customerMobile != null">
+        #{customerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
+    update coupon_activity_detail
+    <set>
+      <if test="couponActivityId != null">
+        coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeMobile != null">
+        store_mobile = #{storeMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="customerMobile != null">
+        customer_mobile = #{customerMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail">
+    update coupon_activity_detail
+    set coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT},
+      store_id = #{storeId,jdbcType=BIGINT},
+      store_mobile = #{storeMobile,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=BIGINT},
+      customer_mobile = #{customerMobile,jdbcType=VARCHAR},
+      count = #{count,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

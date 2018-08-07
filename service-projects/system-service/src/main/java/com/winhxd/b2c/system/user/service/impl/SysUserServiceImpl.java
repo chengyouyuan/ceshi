@@ -6,12 +6,13 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
-import com.winhxd.b2c.common.domain.system.user.model.SysUserRule;
+import com.winhxd.b2c.common.domain.system.user.model.SysUserRole;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.system.user.dao.SysRulePermissionMapper;
+import com.winhxd.b2c.system.user.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.user.dao.SysUserMapper;
-import com.winhxd.b2c.system.user.dao.SysUserRuleMapper;
+import com.winhxd.b2c.system.user.dao.SysUserRoleMapper;
 import com.winhxd.b2c.system.user.service.SysUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +32,18 @@ public class SysUserServiceImpl implements SysUserService {
     @Resource
     private SysUserMapper sysUserMapper;
     @Resource
-    private SysUserRuleMapper sysUserRuleMapper;
+    private SysUserRoleMapper sysUserRoleMapper;
     @Resource
-    private SysRulePermissionMapper sysRulePermissionMapper;
+    private SysRolePermissionMapper sysRolePermissionMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int addSysUser(SysUser sysUser) {
         int count = sysUserMapper.insertSelective(sysUser);
-        SysUserRule sysUserRule = new SysUserRule();
+        SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUser.getRuleId());
-        sysUserRuleMapper.insertSelective(sysUserRule);
+        sysUserRule.setRoleId(sysUser.getRoleId());
+        sysUserRoleMapper.insertSelective(sysUserRule);
         return count;
     }
 
@@ -50,11 +51,11 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public int updateSysUser(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
-        sysUserRuleMapper.deleteByUserId(sysUser.getId());
-        SysUserRule sysUserRule = new SysUserRule();
+        sysUserRoleMapper.deleteByUserId(sysUser.getId());
+        SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
-        sysUserRule.setRuleId(sysUser.getRuleId());
-        sysUserRuleMapper.insertSelective(sysUserRule);
+        sysUserRule.setRoleId(sysUser.getRoleId());
+        sysUserRoleMapper.insertSelective(sysUserRule);
         return count;
     }
 
@@ -64,11 +65,11 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(newSysUser.getId());
         if(!sysUser.getPassword().equals(newSysUser.getPassword())){
             // 原密码输入错误
-            throw new BusinessException(BusinessCode.CODE_301201);
+            throw new BusinessException(BusinessCode.CODE_300021);
         }
         if(sysUser.getPassword().equals(newSysUser.getNewPassword())){
             // 新密码与原密码相同
-            throw new BusinessException(BusinessCode.CODE_301202);
+            throw new BusinessException(BusinessCode.CODE_302002);
         }
         sysUser.setPassword(newSysUser.getNewPassword());
         sysUser.setUpdated(newSysUser.getUpdated());
@@ -78,7 +79,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public PagedList<SysUser> selectSysUser(SysUserCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysUser> pagedList = new PagedList();
         pagedList.setData(sysUserMapper.selectSysUser(condition));
         pagedList.setPageNo(condition.getPageNo());
@@ -88,16 +89,13 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser getSysUserByUserCode(String userCode) {
-        SysUserCondition condition = new SysUserCondition();
-        condition.setUserCode(userCode);
-        List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);
-        if(CollectionUtils.isEmpty(sysUserList)){
+    public SysUser getByAccount(String account) {
+        SysUser sysUser = sysUserMapper.getByAccount(account);
+        if(null == sysUser){
             // 该用户不存在
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        SysUser sysUser = sysUserList.get(0);
-        List<String> permissionList = sysRulePermissionMapper.selectPermissionByUserId(sysUser.getId());
+        List<String> permissionList = sysRolePermissionMapper.selectPermissionByUserId(sysUser.getId());
         sysUser.setPermissions(permissionList);
         return sysUser;
     }
@@ -111,5 +109,13 @@ public class SysUserServiceImpl implements SysUserService {
             return null;
         }
         return sysUserList.get(0);
+    }
+
+    @Override
+    public int disabled(Long id) {
+        SysUser sysUser = new SysUser();
+        sysUser.setId(id);
+        sysUser.setStatus(UserStatusEnum.DISABLED.getCode());
+        return sysUserMapper.updateByPrimaryKeySelective(sysUser);
     }
 }

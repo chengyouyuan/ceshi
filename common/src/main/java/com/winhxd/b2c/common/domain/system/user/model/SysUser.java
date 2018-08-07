@@ -11,14 +11,14 @@ import java.util.List;
 @Data
 public class SysUser {
 
-    @ApiModelProperty(value = "编号")
+    @ApiModelProperty(value = "用户编号")
     private Long id;
 
     @ApiModelProperty(value = "账号")
-    private String userCode;
+    private String account;
 
     @ApiModelProperty(value = "姓名")
-    private String userName;
+    private String username;
 
     @ApiModelProperty(value = "手机")
     private String mobile;
@@ -42,10 +42,10 @@ public class SysUser {
     private Date updated;
 
     @ApiModelProperty(value = "角色编号")
-    private Long ruleId;
+    private Long roleId;
 
     @ApiModelProperty(value = "角色名称")
-    private String ruleName;
+    private String roleName;
 
     @ApiModelProperty(value = "权限列表")
     private List<String> permissions;

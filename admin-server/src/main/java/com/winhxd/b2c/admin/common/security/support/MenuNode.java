@@ -1,5 +1,6 @@
 package com.winhxd.b2c.admin.common.security.support;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 
 import java.util.List;
@@ -12,8 +13,13 @@ public class MenuNode {
     private String method;
     private String name;
     private List<MenuNode> children;
+    @JsonIgnore
+    private MenuNode parent;
     private PermissionEnum[] permissions;
     private String menu;
+
+    @JsonIgnore
+    private boolean hasAuthenticated;
 
     public String getPath() {
         return path;
@@ -62,4 +68,21 @@ public class MenuNode {
     public void setMenu(String menu) {
         this.menu = menu;
     }
+
+    public MenuNode getParent() {
+        return parent;
+    }
+
+    public void setParent(MenuNode parent) {
+        this.parent = parent;
+    }
+
+    public boolean isHasAuthenticated() {
+        return hasAuthenticated;
+    }
+
+    public void setHasAuthenticated(boolean hasAuthenticated) {
+        this.hasAuthenticated = hasAuthenticated;
+    }
+
 }

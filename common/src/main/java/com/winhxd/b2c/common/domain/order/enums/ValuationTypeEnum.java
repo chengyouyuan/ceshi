@@ -31,4 +31,15 @@ public enum ValuationTypeEnum {
     public String getTypeDesc() {
         return typeDesc;
     }
+
+    public static String getDescByCode(Short code) {
+        if (null != code) {
+            for (ValuationTypeEnum typeEnum : ValuationTypeEnum.values()) {
+                if (typeEnum.getTypeCode() == code) {
+                    return typeEnum.getTypeDesc();
+                }
+            }
+        }
+        return null;
+    }
 }

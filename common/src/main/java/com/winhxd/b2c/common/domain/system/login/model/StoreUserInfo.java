@@ -1,7 +1,6 @@
 package com.winhxd.b2c.common.domain.system.login.model;
 
 import java.io.Serializable;
-
 import java.util.Date;
 /**
  * @author wufuyun
@@ -47,13 +46,13 @@ public class StoreUserInfo implements Serializable {
      */
     private String shopOwnerUrl;
     /**
-     * 取货方式（1、自提）
+     * 取货方式（1、自提，多个用逗号分隔）
      */
-    private Byte pickupWay;
+    private String pickupWay;
     /**
-     * 支付方式（1、微信在线付款2、微信扫码付款）
+     * 支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）
      */
-    private Byte paymentWay;
+    private String paymentWay;
     /**
      * 联系方式 
      */
@@ -84,7 +83,7 @@ public class StoreUserInfo implements Serializable {
      * 惠小店状态（0、未开店，1、有效，2、无效）
      */
     private Byte storeStatus;
-
+    private String token;
     private static final long serialVersionUID = 1L;
 
     public String getStoreName() {
@@ -151,19 +150,19 @@ public class StoreUserInfo implements Serializable {
         this.shopOwnerUrl = shopOwnerUrl == null ? null : shopOwnerUrl.trim();
     }
 
-    public Byte getPickupWay() {
+    public String getPickupWay() {
         return pickupWay;
     }
 
-    public void setPickupWay(Byte pickupWay) {
+    public void setPickupWay(String pickupWay) {
         this.pickupWay = pickupWay;
     }
 
-    public Byte getPaymentWay() {
+    public String getPaymentWay() {
         return paymentWay;
     }
 
-    public void setPaymentWay(Byte paymentWay) {
+    public void setPaymentWay(String paymentWay) {
         this.paymentWay = paymentWay;
     }
 
@@ -270,6 +269,12 @@ public class StoreUserInfo implements Serializable {
 		this.id = id;
 	}
 
-	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
     
 }

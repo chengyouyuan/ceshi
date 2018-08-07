@@ -5,22 +5,38 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.OrderListCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.domain.order.vo.*;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +56,15 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Resource
     private Cache cache;
 
+    @Autowired
+    private OrderChangeLogService orderChangeLogService;
+    @Resource
+    private CustomerServiceClient customerServiceClient;
+    @Resource
+    private ProductServiceClient productServiceClient;
+    @Resource
+    private StoreServiceClient storeServiceClient;
+
     /**
      * 根据用户ID查询所有订单
      *
@@ -47,40 +72,75 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
-    public PagedList<OrderInfoDetailVO> findOrderByCustomerId(OrderListCondition condition) {
-        //TODO 待添加获取当前用户的接口
-        Long customerId = 1L;
+    public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        if (customer == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+        Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
-        //TODO 调用商品仓库添加商品图片URL和商品名称
-        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId));
+        List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
+        List<String> skuList = new ArrayList<>();
+        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
+            List<OrderItemVO> items = orderInfoDetailVO.getOrderItemVoList();
+            for (OrderItemVO orderItemVO : items) {
+                skuList.add(orderItemVO.getSkuCode());
+            }
+        }
+        //TODO 调用商品仓库添加商品图片URL和商品名称 skuList
+        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
 
+    /**
+     * 查询订单
+     *
+     * @param condition 入参
+     * @return
+     * @author pangjianhua
+     */
+    @Override
+    @OrderEnumConvertAnnotation
+    public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
+        }
+        OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+
+        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
+        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
+        detailVO.setStoreMobile(store.getStoreMobile());
+
+        //TODO 调用商品仓库添加商品图片URL和商品名称
+        return detailVO;
+    }
+
     @Override
     public StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null || endDateTime == null) {
-            throw new NullPointerException("查询区间startDateTime={}、endDateTime={}不能为空");
+            throw new NullPointerException(MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
         }
-        logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}");
+        logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
         StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
         // 从缓存中获取
-        String summaryInfoStr = cache.hget(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
+        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
                 String.valueOf(storeId));
-        if (StringUtils.isBlank(summaryInfoStr)) {
-            logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}");
+        if (StringUtils.isNotBlank(summaryInfoStr)) {
+            logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
             orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
         } else {
-            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算");
+            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算", storeId, startDateTime, endDateTime);
             orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
         }
         return orderSalesSummaryVO;
     }
 
-    private StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime, Date endDateTime) {
+    @Override
+    public StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime, Date endDateTime) {
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreOrderTurnover(storeId, startDateTime, endDateTime);
         if (storeOrderSalesSummaryVO == null) {
             storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
@@ -91,11 +151,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
         storeOrderSalesSummaryVO.setStoreId(storeId);
-        cache.hset(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
         //当天有效
-        cache.expire(CacheName.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
 
@@ -109,12 +169,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      */
     @Override
     public String getPickUpCode(long storeId) {
+        String code;
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
         String getCodeKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_QUEUE + storeId;
-        if (this.cache.llen(getCodeKey) < 1) {
-            String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + storeId;
-            Lock lock = new RedisLock(cache, lockKey, 1000);
-            try {
-                lock.lock();
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        try {
+            lock.lock();
+            code = this.cache.lpop(getCodeKey);
+            if (StringUtils.isBlank(code)) {
                 List<String> pickUpCodeList;
                 do {
                     //批量生成50个提货码
@@ -128,11 +190,59 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 this.cache.lpush(getCodeKey, pickUpCodeList.toArray(new String[pickUpCodeList.size()]));
                 //设置过期时间
                 this.cache.expire(getCodeKey, 7200);
-            } finally {
-                lock.unlock();
+                code = this.cache.lpop(getCodeKey);
             }
+        } finally {
+            lock.unlock();
         }
-        return this.cache.lpop(getCodeKey);
+        return code;
+    }
+
+    @Override
+    public PagedList<OrderInfoDetailVO> listOrder4Management(
+            OrderInfoQuery4ManagementCondition condition) {
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList();
+        pagedList.setData(this.orderInfoMapper.listOrder4Management(condition));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+    }
+
+    @Override
+    public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new NullPointerException("订单编号不能为空");
+        }
+        OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
+        OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
+        if (orderInfoDetailVO == null) {
+            logger.info("订单 orderNo={} 未找到相关订单信息", orderNo);
+            return orderInfoDetailVO4Management;
+        }
+        orderInfoDetailVO4Management = new OrderInfoDetailVO4Management();
+        List<OrderChangeVO> orderChangeVoList = orderChangeLogService.listOrderChanges(orderNo);
+        orderInfoDetailVO4Management.setOrderInfoDetailVO(orderInfoDetailVO);
+        orderInfoDetailVO4Management.setOrderChangeVoList(orderChangeVoList);
+        logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
+        return orderInfoDetailVO4Management;
+    }
+
+    @Override
+    public PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId) {
+        if (storeId == null) {
+            throw new BusinessException(BusinessCode.CODE_1002);
+        }
+        logger.info("查询门店订单列表开始：condition={}，storeId={}", condition, storeId);
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList<>();
+        pagedList.setData(orderInfoMapper.listOrder4Store(condition, storeId));
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        logger.info("查询门店订单列表结束：condition={}，storeId={}, totalRows={}", condition, storeId, page.getTotal());
+        return pagedList;
     }
 
     /**
@@ -163,4 +273,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
+
 }

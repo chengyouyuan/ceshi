@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.system.region.dao.SysRegionMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.region.model.SysRegion">
+    <id column="region_code" jdbcType="VARCHAR" property="regionCode" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="town" jdbcType="VARCHAR" property="town" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="village" jdbcType="VARCHAR" property="village" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
+    <result column="town_code" jdbcType="VARCHAR" property="townCode" />
+    <result column="village_code" jdbcType="VARCHAR" property="villageCode" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="village_type" jdbcType="INTEGER" property="villageType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    region_code, province, city, town, county, village, province_code, city_code, county_code, 
+    town_code, village_code, level, village_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_region
+    where region_code = #{regionCode,jdbcType=CHAR} AND active=1
+  </select>
+  <select id="selectRegionList" parameterType="com.winhxd.b2c.common.domain.system.region.model.SysRegion" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_region WHERE active=1
+      <if test="regionCode != null">
+        AND region_code = #{regionCode,jdbcType=CHAR}
+      </if>
+      <if test="level != null">
+        AND level = #{level,jdbcType=INTEGER}
+      </if>
+      <if test="provinceCode != null">
+        AND province_code = #{provinceCode,jdbcType=CHAR}
+      </if>
+      <if test="cityCode != null">
+        AND city_code = #{cityCode,jdbcType=CHAR}
+      </if>
+      <if test="countyCode != null">
+        AND county_code = #{countyCode,jdbcType=CHAR}
+      </if>
+      <if test="townCode != null">
+        AND town_code = #{townCode,jdbcType=CHAR}
+      </if>
+      <if test="villageCode != null">
+        AND village_code = #{villageCode,jdbcType=CHAR}
+      </if>
+      <if test="villageType != null">
+        AND village_type = #{villageType,jdbcType=INTEGER}
+      </if>
+  </select>
+
+  <select id="selectRegionRangeList" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_region  Where active=1 AND region_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+</mapper>

@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.domain.order.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.List;
  * @date 2018/8/3 9:52
  */
 @Data
-public class OrderInfoDetailVO {
+public class OrderInfoDetailVO implements Serializable {
+    private static final long serialVersionUID = -2960449858467596227L;
     @ApiModelProperty(value = "订单商品详情", required = true)
     private List<OrderItemVO> orderItemVoList;
     @ApiModelProperty(value = "主键", required = true)
@@ -34,12 +36,16 @@ public class OrderInfoDetailVO {
      */
     @ApiModelProperty(value = "计价类型:1:线上计价;2:线下计价;", required = true)
     private Short valuationType;
+    @ApiModelProperty(value = "计价类型描述", required = true)
+    private String valuationTypeDesc;
     /**
-     * 订单状态 1:已提交;3:待接单;5:待计价;7:已计价;
+     * 订单状态 1:已提交;2:待付款;3:待接单;5:待计价;7:已计价;
      * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
      */
-    @ApiModelProperty(value = "订单状态 1:已提交;3:待接单;5:待计价;7:已计价;9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
     private Short orderStatus;
+    @ApiModelProperty(value = "订单状态描述", required = true)
+    private String orderStatusDesc;
     /**
      * 提货码
      */
@@ -51,15 +57,29 @@ public class OrderInfoDetailVO {
     @ApiModelProperty(value = "订单总金额", required = true)
     private BigDecimal orderTotalMoney;
     /**
+     * 优惠金额
+     */
+    @ApiModelProperty(value = "优惠金额", required = true)
+    private BigDecimal discountMoney;
+    /**
+     * 订单实付金额
+     */
+    @ApiModelProperty(value = "订单实付金额", required = true)
+    private BigDecimal realPaymentMoney;
+    /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */
     @ApiModelProperty(value = "支付类型:1为微信扫码付款;2为微信在线支付;", required = true)
     private Short payType;
+    @ApiModelProperty(value = "支付类型描述", required = true)
+    private String payTypeDesc;
     /**
      * 支付状态:0为未支付;1为已支付;
      */
     @ApiModelProperty(value = "支付状态:0为未支付;1为已支付;", required = true)
     private Short payStatus;
+    @ApiModelProperty(value = "支付状态描述", required = true)
+    private String payStatusDesc;
     /**
      * 订单创建时间
      */
@@ -90,6 +110,8 @@ public class OrderInfoDetailVO {
      */
     @ApiModelProperty(value = "提货方式:1自提;2配送;", required = true)
     private Short pickupType;
+    @ApiModelProperty(value = "提货方式描述", required = true)
+    private String pickupTypeDesc;
     /**
      * 取消原因
      */
@@ -100,4 +122,10 @@ public class OrderInfoDetailVO {
      */
     @ApiModelProperty(value = "订单备注", required = true)
     private String remark;
+    @ApiModelProperty(value = "手机号码", required = true)
+    private String customerMobile;
+    @ApiModelProperty(value = "用户昵称", required = true)
+    private String nickName;
+    @ApiModelProperty(value = "商家电话", required = true)
+    private String storeMobile;
 }

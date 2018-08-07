@@ -1,9 +1,14 @@
 package com.winhxd.b2c.store.api;
 
+import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.OpenShopCondition;
-import com.winhxd.b2c.common.domain.store.vo.OpenShopVO;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.OpenStoreCondition;
+import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by caiyulong on 2018/8/4.
  */
 @Api(value = "api product", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api/product/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);
@@ -30,12 +37,25 @@ public class ApiProductController {
     @ApiOperation(value = "小程序商品搜索列表", response = ResponseResult.class, notes = "小程序商品搜索列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "2001/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenShopVO> checkStoreInfo(@RequestBody OpenShopCondition openShopCondition) {
-        ResponseResult<OpenShopVO> responseResult = new ResponseResult<>();
+    @PostMapping(value = "1006/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<ProductSkuVO>> searchProductList(@RequestBody ProductCondition productCondition) {
+        ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
         try {
-            logger.info("惠小店开店条件验证接口入参为：{}", JsonUtil.toJSONString(openShopCondition));
-            responseResult.setData(new OpenShopVO());
+            logger.info("小程序商品搜索列表：{}", JsonUtil.toJSONString(productCondition));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
+
+    @ApiOperation(value = "小程序商品筛选列表", response = ResponseResult.class, notes = "小程序商品筛选列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @PostMapping(value = "1007/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<ProductMsgVO> filtrateProductList(@RequestBody ProductCondition productCondition) {
+        ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
+        try {
+            logger.info("小程序商品筛选列表：{}", JsonUtil.toJSONString(productCondition));
         } catch (Exception e) {
             e.printStackTrace();
         }

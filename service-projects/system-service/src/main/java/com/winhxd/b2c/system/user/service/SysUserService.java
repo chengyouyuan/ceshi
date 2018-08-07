@@ -1,6 +1,5 @@
 package com.winhxd.b2c.system.user.service;
 
-import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
@@ -51,7 +50,7 @@ public interface SysUserService {
      * @param userCode
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysUserVO
      */
-    SysUser getSysUserByUserCode(String userCode);
+    SysUser getByAccount(String userCode);
 
     /**
      * 根据主键获取用户信息
@@ -62,4 +61,11 @@ public interface SysUserService {
      */
     SysUser getSysUserById(Long id);
 
+    /**
+     * 根据主键禁用用户
+     * @author zhangzhengyang
+     * @date 2018/8/7
+     * @param id
+     */
+    int disabled(Long id);
 }

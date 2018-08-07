@@ -18,25 +18,16 @@ public interface ShopCarService {
      * @param: CustomerShopCar
      * @return: int
      */
-    int saveShopCar(ShopCarCondition shopCar);
+    void saveShopCar(ShopCarCondition shopCar);
 
     /**
      * 查询购物车
      * @author: wangbaokuo
      * @date: 2018/8/3 14:05
      * @param: condition
-     * @return: List<ShopCarVO>
+     * @return: ShopCarVO
      */
-    List<ShopCarVO> findShopCar(ShopCarCondition condition);
-
-    /**
-     * 校验商品上下架
-     * @author: wangbaokuo
-     * @date: 2018/8/3 16:06
-     * @param: skuCode
-     * @return: Boolean
-     */
-    Boolean checkShelves(String skuCode);
+    ShopCarVO findShopCar(ShopCarCondition condition);
 
     /**
      * 删除购物车
@@ -46,4 +37,13 @@ public interface ShopCarService {
      * @return: int
      */
     int removeShopCar(ShopCarCondition condition);
+
+    /**
+     *  预订单
+     * @author: wangbaokuo
+     * @date: 2018/8/6 16:41
+     * @param: condition
+     * @return: void
+     */
+    void readyOrder(ShopCarCondition condition);
 }

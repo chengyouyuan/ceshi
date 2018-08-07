@@ -406,7 +406,8 @@
         </collection>
     </resultMap>
     <sql id="Order_Info_List">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, pay_type,
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
+        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remark
     </sql>
@@ -418,17 +419,69 @@
         ,item.price AS price
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
+        <if test="pickUpCode != null and pickUpCode !=''">
+           and info.pickup_code = #{pickUpCode,jdbcType=VARCHAR}
+        </if>
         order by info.created desc
+    </select>
+    <select id="listOrder4Management" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        <if test="condition.storeId != null">
+            and store_id = #{condition.storeId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.customerId != null">
+            and customer_id = #{condition.customerId,jdbcType=BIGINT}
+        </if>
+        order by info.created desc
+    </select>
+    <sql id="Order_Info_List_4_store">
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
+        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pickup_type, cancel_reason, remark
+    </sql>
+    <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List_4_store"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        <if test="condition.orderStatus != null">
+            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.pickupCode != null">
+            and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
+        </if>
+        and store_id = #{storeId,jdbcType=BIGINT}
+        order by info.created desc
+    </select>
+    <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        limit 1
     </select>
     <update id="updateOrderStatusForCancel">
         update order_info
-        set order_status=33,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now()
-        where order_no=#{orderNo,jdbcType=VARCHAR}
+        set order_status=33,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now(),pickup_code=null
+        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status != 1
     </update>
-    
+
     <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
         <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
-        <result column="dailyOrderNum" jdbcType="INT" property="dailyOrderNum"/>
+        <result column="dailyOrderNum" jdbcType="INTEGER" property="dailyOrderNum"/>
         <result column="storeId" jdbcType="BIGINT" property="storeId"/>
     </resultMap>
     <select id="getStoreOrderTurnover" resultMap="StoreOrderSalesSummaryMap">
@@ -444,7 +497,7 @@
         and order_status not in (33, 77, 99)
         group by store_id
     </select>
-    <select id="getStoreOrderCustomerNum" resultType="INTEGER">
+    <select id="getStoreOrderCustomerNum" resultType="java.lang.Integer">
         select
         	ifnull(count(distinct customer_id),0) dailyCustomerNum
         from order_info
@@ -463,5 +516,36 @@
         limit 1
     </select>
 
+    <update id="updateOrderPayStatus">
+        update order_info
+        set pay_status=#{payStatus,jdbcType=SMALLINT}, 
+        pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+        and pay_status=0
+    </update>
+    <update id="updateOrderStatus">
+        update order_info
+        set order_status=#{newOrderStatus,jdbcType=SMALLINT}, 
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+        and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
+    </update>
+    <update id="updateOrderPickupCode">
+        update order_info
+        set pickup_code=#{pickUpCode,jdbcType=VARCHAR}, 
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+    </update>
+    <update id="updateOrderStatusForRefund">
+       update order_info
+       set order_status=77,cancel_datetime = now(),pickup_code=null
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+    </update>
+    <update id="updateOrderStatusForApplyRefund">
+        update order_info
+       set order_status=2,cancel_datetime = now(),pickup_code=null
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
+    </update>
 
 </mapper>

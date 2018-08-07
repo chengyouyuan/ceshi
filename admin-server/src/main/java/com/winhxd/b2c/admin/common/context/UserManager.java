@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  * @author lixiaodong
@@ -40,12 +42,16 @@ public class UserManager implements ApplicationContextAware {
             for(Cookie cookie : requestCookies){
                 if(cookie.getName().equals(Constant.TOKEN_NAME)){
                     String token = cookie.getValue();
+                    String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 
-                    String json = cache.get(CacheName.CACHE_KEY_USER_TOKEN + token);
+                    String json = cache.exists(cacheKey) ? cache.get(cacheKey) : null;
                     logger.info("根据token获取用户信息{} ---> {}", token, json );
 
                     if(StringUtils.isNotBlank(json)){
                         UserInfo userInfo = JsonUtil.parseJSONObject(json, UserInfo.class);
+
+                        // 登录状态重新计时
+                        cache.setex(cacheKey,30 * 60, json);
                         return userInfo;
                     }
                     break;

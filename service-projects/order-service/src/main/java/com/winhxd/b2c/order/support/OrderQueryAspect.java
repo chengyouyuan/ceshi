@@ -2,6 +2,7 @@ package com.winhxd.b2c.order.support;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 @Aspect
 public class OrderQueryAspect {
     
+    private static final String DESC = "Desc";
     private static final String VALUATION_TYPE = "valuationType";
     private static final String PICKUP_TYPE = "pickupType";
     private static final String PAY_TYPE = "payType";
@@ -61,7 +63,7 @@ public class OrderQueryAspect {
             detailVO.setPayStatusDesc(PayStatusEnum.getDesc(detailVO.getPayStatus()));
             detailVO.setPayTypeDesc(PayTypeEnum.getPayTypeEnumDescByTypeCode(detailVO.getPayType()));
             detailVO.setPickupTypeDesc(PickUpTypeEnum.getPickUpTypeDescByCode(detailVO.getPickupType()));
-            detailVO.setValuationTypeDesc(ValuationTypeEnum.getDescByCode(detailVO.getValuationType()));
+//            detailVO.setValuationTypeDesc(ValuationTypeEnum.getDescByCode(detailVO.getValuationType()));
         }
     }
     
@@ -102,7 +104,7 @@ public class OrderQueryAspect {
             if (orderInfoConvertAnnotation.queryCustomerInfo()) {
                 customerInfoConvert(joinPoint, ret);
             }
-        } catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {
+        } catch (IllegalAccessException e) {
             logger.error("订单信息封装异常：", e);
         }
     }
@@ -121,80 +123,88 @@ public class OrderQueryAspect {
             } else {
                 assambleCustomerInfos(ret);
             }
-        } catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {
+        } catch (IllegalAccessException e) {
             logger.error("订单信息封装异常：", e);
         }
     }
     
-    private void assambleCustomerInfos(Object... objArr) throws NoSuchFieldException, IllegalAccessException {
-        Set<Long> customerIds = new HashSet<>();
-        for (int i = 0; i < objArr.length; i++) {
-            Object obj = objArr[i];
-            Field field = obj.getClass().getDeclaredField(CUSTOMER_ID);
-            if (field != null) {
-                field.setAccessible(true);
-                if (field.get(obj) != null) {
-                    customerIds.add((Long) field.get(obj));
-                }
-            }
-        }
-        //根据 customerIds 到用户中心查询用户信息
-        ResponseResult<List<CustomerUserInfoVO1>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
-        if (result != null && result.getCode() == BusinessCode.CODE_OK) {
-            List<CustomerUserInfoVO1> customerUserInfoVO1s = result.getData();
-            Map<Long, CustomerUserInfoVO1> customerUserInfoVOMap = new HashMap<>();
-            for (Iterator iterator = customerUserInfoVO1s.iterator(); iterator.hasNext();) {
-                CustomerUserInfoVO1 customerUserInfoVO1 = (CustomerUserInfoVO1) iterator.next();
-                customerUserInfoVOMap.put(customerUserInfoVO1.getCustomerId(), customerUserInfoVO1);
-            }
+    private void assambleCustomerInfos(Object... objArr) throws  IllegalAccessException {
+        try {
+            Set<Long> customerIds = new HashSet<>();
             for (int i = 0; i < objArr.length; i++) {
                 Object obj = objArr[i];
-                Field field = obj.getClass().getDeclaredField(CUSTOMER_ID);
+                Field field = Arrays.asList(obj.getClass().getDeclaredFields()).stream().filter(f -> f.getName().equals(CUSTOMER_ID)).findFirst().orElse(null);
                 if (field != null) {
                     field.setAccessible(true);
                     if (field.get(obj) != null) {
-                        CustomerUserInfoVO1 vo = customerUserInfoVOMap.get(field.get(obj));
-                        if (vo != null) {
-                            assambleInfos(obj, NICK_NAME, vo.getNickName());
-                            assambleInfos(obj, CUSTOMER_MOBILE, vo.getCustomerMobile());
-                        }
+                        customerIds.add((Long) field.get(obj));
                     }
                 }
             }
-        }else {
-            logger.info("根据用户customerId 查询用户信息失败：返回状态码:{}", result.getCode());
+            //根据 customerIds 到用户中心查询用户信息
+            ResponseResult<List<CustomerUserInfoVO1>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
+            if (result != null && result.getCode() == BusinessCode.CODE_OK) {
+                List<CustomerUserInfoVO1> customerUserInfoVO1s = result.getData();
+                Map<Long, CustomerUserInfoVO1> customerUserInfoVOMap = new HashMap<>();
+                for (Iterator iterator = customerUserInfoVO1s.iterator(); iterator.hasNext();) {
+                    CustomerUserInfoVO1 customerUserInfoVO1 = (CustomerUserInfoVO1) iterator.next();
+                    customerUserInfoVOMap.put(customerUserInfoVO1.getCustomerId(), customerUserInfoVO1);
+                }
+                for (int i = 0; i < objArr.length; i++) {
+                    Object obj = objArr[i];
+                    Field field = Arrays.asList(obj.getClass().getDeclaredFields()).stream().filter(f -> f.getName().equals(CUSTOMER_ID)).findFirst().orElse(null);
+                    if (field != null) {
+                        field.setAccessible(true);
+                        if (field.get(obj) != null) {
+                            CustomerUserInfoVO1 vo = customerUserInfoVOMap.get(field.get(obj));
+                            if (vo != null) {
+                                assambleInfos(obj, NICK_NAME, vo.getNickName());
+                                assambleInfos(obj, CUSTOMER_MOBILE, vo.getCustomerMobile());
+                            }
+                        }
+                    }
+                }
+            }else {
+                logger.info("根据用户customerId 查询用户信息失败：返回状态码:{}", result == null ? null : result.getCode());
+            }
+        }catch(Exception e) {
+            logger.error("订单用户信息封装异常", e);
         }
     }
 
-    private void assambleOrderInfos(Object obj) throws IllegalAccessException, NoSuchFieldException, SecurityException {
-        //订单相关状态类型信息
-        setDesc(obj, ORDER_STATUS, OrderStatusEnum.getMarkMap());
-        setDesc(obj, PAY_STATUS, PayStatusEnum.getDescMap());
-        setDesc(obj, PAY_TYPE, PayTypeEnum.getDescMap());
-        setDesc(obj, PICKUP_TYPE, PickUpTypeEnum.getDescMap());
-        setDesc(obj, VALUATION_TYPE, ValuationTypeEnum.getDescMap());
+    private void assambleOrderInfos(Object obj) throws IllegalAccessException {
+        try {
+            //订单相关状态类型信息
+            setDesc(obj, ORDER_STATUS, OrderStatusEnum.getMarkMap());
+            setDesc(obj, PAY_STATUS, PayStatusEnum.getDescMap());
+            setDesc(obj, PAY_TYPE, PayTypeEnum.getDescMap());
+            setDesc(obj, PICKUP_TYPE, PickUpTypeEnum.getDescMap());
+            setDesc(obj, VALUATION_TYPE, ValuationTypeEnum.getDescMap());
+        }catch(Exception e) {
+            logger.error("订单信息封装异常", e);
+        }
     }
     private void setDesc(Object obj, String fieldName, Map<Short, String> markMap)
-            throws IllegalAccessException, NoSuchFieldException {
-        Field field = obj.getClass().getDeclaredField(fieldName);
+            throws IllegalAccessException {
+        Field field = Arrays.asList(obj.getClass().getDeclaredFields()).stream().filter(f -> f.getName().equals(fieldName)).findFirst().orElse(null);
         if (field != null) {
             field.setAccessible(true);
             if (field.get(obj) != null) {
                 String markInfo = markMap.get((Short) field.get(obj));
-                assambleInfos(obj, fieldName + "Desc", markInfo);
+                assambleInfos(obj, fieldName + DESC, markInfo);
             }
         }
     }
     
-    private void assambleInfos(Object arg, String fieldName, Object val)
-            throws IllegalAccessException, NoSuchFieldException, SecurityException {
-        String fieldNameDesc = fieldName;
-        Field field = arg.getClass().getDeclaredField(fieldNameDesc);
+    private void assambleInfos(Object obj, String fieldName, Object val)
+            throws IllegalAccessException {
+        Field field = Arrays.asList(obj.getClass().getDeclaredFields()).stream().filter(f -> f.getName().equals(fieldName)).findFirst().orElse(null);
         if (field != null) {
             field.setAccessible(true);
-            if (field.get(arg) == null) {
-                field.set(arg, val);
+            if (field.get(obj) == null) {
+                field.set(obj, val);
             }
         }
+
     }
 }

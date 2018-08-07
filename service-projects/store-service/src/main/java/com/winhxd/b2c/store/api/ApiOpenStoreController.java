@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Api
 @RestController
-@RequestMapping(value = "api/openStore/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiOpenStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiOpenStoreController.class);
@@ -231,7 +231,7 @@ public class ApiOpenStoreController {
      */
     @ApiOperation(value = "通过门店id查询门店信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
-    @RequestMapping(value = "/1002/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.POST)
+    @RequestMapping(value = "/1005/v1/findStoreUserInfo/{storeUserId}",method = RequestMethod.POST)
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("storeUserId")Long storeUserId){
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         if(storeUserId == null){

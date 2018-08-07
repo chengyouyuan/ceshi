@@ -3,6 +3,7 @@ package com.winhxd.b2c.store.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,17 +45,17 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api/storeProductManage/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {
 	 private static final Logger logger = LoggerFactory.getLogger(ApiStoreProductManageController.class);
 	 @Autowired
 	 private StoreProductManageService storeProductManageService;
-//	 @Autowired
-//	 private ProductServiceClient productServiceClient;
+	 @Autowired
+	 private ProductServiceClient productServiceClient;
 	 /**
 	  * 惠下单商品
 	  */
-	 private static final Byte HXD_PROD_TYPE=0;
+	 private static final Byte HXD_PROD_TYPE = 0;
 	 /**
 	  * 普通商品
 	  */
@@ -63,7 +64,7 @@ public class ApiStoreProductManageController {
 	    @ApiOperation(value = "B端获取可上架商品数据接口", response = ResponseResult.class, notes = "B端获取可上架商品数据接口")
 	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-	    @PostMapping(value = "1000/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    @PostMapping(value = "1012/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<ProductMsgVO> allowPutawayProdList(@RequestBody AllowPutawayProdCondition condition) {
 	        ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
 	        try {
@@ -109,7 +110,7 @@ public class ApiStoreProductManageController {
 	    @ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", response = ResponseResult.class, notes = "B端商品操作接口")
 	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-	    @PostMapping(value = "1000/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    @PostMapping(value = "1013/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 	    	 ResponseResult<Void> responseResult = new ResponseResult<>();
 	    	 try{
@@ -178,7 +179,7 @@ public class ApiStoreProductManageController {
 	    @ApiOperation(value = "B端添加门店提报商品接口", response = ResponseResult.class, notes = "B端添加门店提报商品接口")
 	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-	    @PostMapping(value = "1000/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    @PostMapping(value = "1014/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
 	    	 ResponseResult<Void> responseResult = new ResponseResult<>();
 	    	 try{
@@ -193,7 +194,7 @@ public class ApiStoreProductManageController {
 	    @ApiOperation(value = "B端门店提报商品列表接口", response = ResponseResult.class, notes = "B端门店提报商品列表接口")
 	    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 	            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-	    @PostMapping(value = "1000/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	    @PostMapping(value = "1015/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(@RequestBody StoreSubmitProductCondition condition) {
 	    	 ResponseResult<PagedList<StoreSubmitProductVO>> responseResult = new ResponseResult<>();
 	    	 try{

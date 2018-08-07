@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "StoreLoginController Controller", tags = "B-Login")
 @RestController
-@RequestMapping(value = "/api/storeLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 	/**
@@ -81,7 +81,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "3021/v1/saveWeChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "1008/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoVO> saveStoreLogin(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
 		try {// storePassword
@@ -167,7 +167,7 @@ public class ApiStoreLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "3022/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
@@ -230,7 +230,7 @@ public class ApiStoreLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "3023/v1/verificationProductPrice", method = RequestMethod.POST)
+	@RequestMapping(value = "1010/v1/verificationProductPrice", method = RequestMethod.POST)
 	public ResponseResult<LoginCheckSellMoneyVO> verificationProductPrice(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
@@ -266,7 +266,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
-	@RequestMapping(value = "3024/v1/modifyPassword", method = RequestMethod.POST)
+	@RequestMapping(value = "1011/v1/modifyPassword", method = RequestMethod.POST)
 	public ResponseResult<String> modifyPassword(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		StoreUserInfo storeUserInfo = new StoreUserInfo();

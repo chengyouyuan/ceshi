@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInfoCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
-import com.winhxd.b2c.common.feign.promotion.ApiCouponServiceClient;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,15 +66,17 @@ public class ApiCouponController{
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponVO>> unclaimedCouponList(@RequestBody CouponCondition couponCondition) {
         LOGGER.info("=/api-coupon/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}", couponCondition);
-        ResponseResult<CouponVO> result = new ResponseResult<>();
+        ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
         try {
             //返回对象
+            PagedList<CouponVO> pages = couponService.unclaimedCouponList(couponCondition);
+            result.setData(pages);
         } catch (Exception e) {
             LOGGER.error("=/api-coupon/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
         }
         LOGGER.info("=/api-coupon/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--结束 result={}", result);
-        return null;
+        return result;
     }
 
     @ApiOperation(value = "我的优惠券列表", response = Boolean.class, notes = "我的优惠券列表")
@@ -86,15 +86,16 @@ public class ApiCouponController{
     @RequestMapping(value = "/503/v1/myCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponVO>> myCouponList(@RequestBody CouponCondition couponCondition) {
         LOGGER.info("=/api-coupon/coupon/503/v1/myCouponList-我的优惠券列表=--开始--{}", couponCondition);
-        ResponseResult<CouponVO> result = new ResponseResult<>();
+        ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
         try {
-            //返回对象
+            PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
+            result.setData(pages);
         } catch (Exception e) {
             LOGGER.error("=/api-coupon/coupon/503/v1/myCouponList-我的优惠券列表=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
         }
         LOGGER.info("=/api-coupon/coupon/503/v1/myCouponList-我的优惠券列表=--结束 result={}", result);
-        return null;
+        return result;
     }
 
 

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winhxd.b2c.common.domain.condition.MobileCondition;
@@ -26,15 +26,9 @@ public class ProdOperateCondition extends MobileCondition {
 
 	@ApiModelProperty(value = "门店编码", required = true)
 	private Long storeId;
-
-	@ApiModelProperty(value = "商品sku数组", required = true)
-	private String[] skuCode;
-
-	@ApiModelProperty("售卖价格")
-	private BigDecimal sellMoney;
-
-	@ApiModelProperty(value = "是否推荐 0不推荐 1推荐")
-	private Byte recommend;
+	
+	@ApiModelProperty(value = "商品操作信息集合", required = true)
+	private List<ProdOperateInfoCondition> products;
 
 	@ApiModelProperty(value = "操作类型 0下架 1上架 2删除 3编辑", required = true)
 	private Byte operateType;

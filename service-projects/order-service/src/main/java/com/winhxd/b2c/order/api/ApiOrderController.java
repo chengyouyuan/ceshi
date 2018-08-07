@@ -58,7 +58,10 @@ public class ApiOrderController {
 
     @ApiOperation(value = "C端订单退款接口", response = Boolean.class, notes = "C端订单退款接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_421001, message = "参数异常"),
+            @ApiResponse(code = BusinessCode.CODE_421002, message = "订单状态不允许退款"),
+            @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
     })
     @RequestMapping(value = "/421/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
@@ -78,7 +81,10 @@ public class ApiOrderController {
 
     @ApiOperation(value = "订单取消接口", response = Boolean.class, notes = "订单取消接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_421001, message = "订单号不能为空"),
+            @ApiResponse(code = BusinessCode.CODE_421002, message = "订单已支付成功不能取消"),
+            @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
     })
     @RequestMapping(value = "/420/v1/cancelOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> cancelOrder(@RequestBody OrderCancelCondition orderCancelCondition) {

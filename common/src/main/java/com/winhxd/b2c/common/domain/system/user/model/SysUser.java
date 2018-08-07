@@ -42,10 +42,10 @@ public class SysUser {
     private Date updated;
 
     @ApiModelProperty(value = "角色编号")
-    private Long ruleId;
+    private Long roleId;
 
     @ApiModelProperty(value = "角色名称")
-    private String ruleName;
+    private String roleName;
 
     @ApiModelProperty(value = "权限列表")
     private List<String> permissions;

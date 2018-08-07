@@ -58,6 +58,28 @@ public ResponseResult toEditCouponTemplate(@RequestParam("id") String id);
 @RequestMapping(value = "/promotion/v1/findCouponTemplatePageByCondition", method = RequestMethod.POST)
 public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
+    /**
+     *
+     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
+     *@Params  ids  多个页面勾选的ID 用逗号","隔开
+     *@Return  ResponseResult 删除是否成功
+     *@User  wl
+     *@Date   2018/8/6 20:39
+     */
+    @RequestMapping(value = "/promotion/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
+    public ResponseResult updateCouponTemplateToValid(String ids);
+
+    /**
+     *
+     *@Deccription 查看优惠券模板详情
+     *@Params  id
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/6 20:45
+     */
+    @RequestMapping(value = "/promotion/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
+    public ResponseResult viewCouponTemplateDetail(@RequestParam("id") String id);
+
 }
 
 
@@ -107,6 +129,26 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> findCouponTemplatePageByCondition", throwable);
         return new ResponseResult<PagedList<CouponTemplateVO>>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult updateCouponTemplateToValid(String ids) {
+        logger.error("CouponTemplateServiceClient -> updateCouponTemplateToValid", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    /**
+     *
+     *@Deccription 查看优惠券模板详情
+     *@Params  id
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/6 20:45
+     */
+    @Override
+    public ResponseResult viewCouponTemplateDetail(String id) {
+        logger.error("CouponTemplateServiceClient -> viewCouponTemplateDetail", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
     }
 
 }

@@ -21,8 +21,8 @@ import java.util.Map;
 @FeignClient(name = "RETAIL-REST-SERVICE", path = "/restapi", fallbackFactory = StoreServiceClientFallBack.class)
 public interface StoreHxdServiceClient {
 
-    @RequestMapping(value = "/store/getStotrUserInfo", method = RequestMethod.GET)
-    ResponseResult<Map<String, Object>> getStotrUserInfo(Map<String, Object> request);
+    @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.GET)
+    ResponseResult<Map<String, Object>> getStoreUserInfo(Map<String, Object> request);
 
     @RequestMapping(value = "/store/getStorePerfectInfo/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId, @RequestParam("customerId") String customerId);
@@ -42,7 +42,7 @@ class StoreServiceClientFallBack implements StoreHxdServiceClient, FallbackFacto
     }
 
     @Override
-    public ResponseResult<Map<String, Object>> getStotrUserInfo(Map<String, Object> request) {
+    public ResponseResult<Map<String, Object>> getStoreUserInfo(Map<String, Object> request) {
         logger.error("惠下单 StoreHxdServiceClientFallBack -> getStotrUserInfo报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

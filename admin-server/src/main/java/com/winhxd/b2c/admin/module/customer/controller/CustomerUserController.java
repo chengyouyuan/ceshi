@@ -100,6 +100,7 @@ public class CustomerUserController {
     }
     @ApiOperation(value = "查询订单详情信息",response = OrderInfoDetailVO4Management.class,notes = "根据订单查询订单详情已经订单状态信息")
     @GetMapping(value = "/2004/v1/queryOderInfoDetail/{orderNum}")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功"),@ApiResponse(code = BusinessCode.CODE_1001,message = "服务器内部错误")})
     public ResponseResult<OrderInfoDetailVO4Management> queryOderInfoDetail(@PathVariable("orderNum")String orderNum){
         if(StringUtils.isEmpty(orderNum)){
             logger.error("CustomerUserController ->queryOderInfoDetail方法参数orderNum为空");

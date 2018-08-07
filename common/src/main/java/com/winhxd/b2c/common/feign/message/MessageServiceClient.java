@@ -10,6 +10,7 @@ import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,6 +53,7 @@ public interface MessageServiceClient {
  * @Description: 熔断回调
  * @author jujinbiao
  */
+@Component
 class MessageServiceClientFallBack implements MessageServiceClient, FallbackFactory<MessageServiceClient> {
 
     Throwable throwable;

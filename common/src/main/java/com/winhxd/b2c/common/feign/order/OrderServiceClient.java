@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.feign.order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +40,7 @@ public interface OrderServiceClient {
     ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(String orderNo);
 }
 
+@Component
 class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceFallback.class);
     private Throwable throwable;

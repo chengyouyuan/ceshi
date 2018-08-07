@@ -11,7 +11,8 @@ import java.io.Serializable;
  * @Description
  **/
 public class CouponTemplateCondition extends BaseCondition implements Serializable {
-
+    @ApiModelProperty(value = "主键")
+    private String id;
     @ApiModelProperty(value = "优惠券标题")
     private String title;
     @ApiModelProperty(value = "优惠券说明")
@@ -51,6 +52,14 @@ public class CouponTemplateCondition extends BaseCondition implements Serializab
     @ApiModelProperty(value = "创建时间 结束")
     private String createdEnd;
 
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

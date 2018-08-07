@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -139,6 +140,30 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
     @Override
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(String id) {
         ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);
+        return responseResult;
+    }
+
+    /**
+     *
+     *@Deccription 修改优惠券模板
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/7 16:31
+     */
+    @ApiOperation(value = "修改优惠券模板", notes = "修改优惠券模板",response = ResponseResult.class)
+    @Override
+    public ResponseResult confirmUpdateCouponTemplate(@RequestParam CouponTemplateCondition condition) {
+        ResponseResult responseResult = new ResponseResult();
+        Long updateBy = 100102L;
+        Date updated = new Date();
+        String updateByName = "lidabenshi000";
+        int count = couponTemplateService.confirmUpdateCouponTemplate(updateBy,updated,updateByName,condition);
+        if(count > 0) {
+            responseResult.setCode(BusinessCode.CODE_OK);
+        }else{
+            responseResult.setCode(BusinessCode.CODE_1001);
+        }
         return responseResult;
     }
 

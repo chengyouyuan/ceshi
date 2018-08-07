@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInfoCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +52,10 @@ public class ApiCouponController{
         try {
             List<CouponVO> couponVOs =  couponService.getNewUserCouponList(couponCondition);
             result.setData(couponVOs);
-        } catch (Exception e) {
+        }catch (BusinessException e){
+            LOGGER.error("=/api-coupon/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--异常" + e, e);
+            result.setCode(e.getErrorCode());
+        }catch (Exception e) {
             LOGGER.error("=/api-coupon/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
         }

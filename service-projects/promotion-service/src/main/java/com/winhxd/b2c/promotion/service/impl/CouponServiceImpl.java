@@ -6,18 +6,12 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityDetail;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord;
-import com.winhxd.b2c.common.domain.promotion.model.CouponTemplateSend;
+import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.promotion.dao.CouponActivityDetailMapper;
-import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
-import com.winhxd.b2c.promotion.dao.CouponActivityRecordMapper;
-import com.winhxd.b2c.promotion.dao.CouponTemplateSendMapper;
+import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +43,8 @@ public class CouponServiceImpl implements CouponService {
     CouponActivityRecordMapper couponActivityRecordMapper;
     @Autowired
     CouponTemplateSendMapper couponTemplateSendMapper;
+    @Autowired
+    CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Resource
     StoreServiceClient storeServiceClient;
 
@@ -79,27 +75,27 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_500002);
         }
 
-        CouponActivityDetail couponActivityDetail = new CouponActivityDetail();
-        couponActivityDetail.setCouponActivityId(couponActivities.get(0).getId());
-        List<CouponActivityDetail> couponActivityDetails = couponActivityDetailMapper.selectByExample(couponActivityDetail);
-        if(couponActivityDetails.isEmpty()){
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        couponActivityTemplate.setCouponActivityId(couponActivities.get(0).getId());
+        List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
+        if(couponActivityTemplates.isEmpty()){
             logger.error("不存在符合新用户注册的优惠券活动");
             throw new BusinessException(BusinessCode.CODE_500001);
         }
         //step2 向用户推券
-        for(CouponActivityDetail activityDetail : couponActivityDetails){
+        for(CouponActivityTemplate activityTemplate : couponActivityTemplates){
             //推送数量
-            for(int i=0; i <couponActivities.get(0).getSendNum();i++){
+            for(int i=0; i <activityTemplate.getSendNum();i++){
                 CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
                 couponTemplateSend.setStatus((short)2);
-                couponTemplateSend.setTemplateId(activityDetail.getTemplateId());
+                couponTemplateSend.setTemplateId(activityTemplate.getTemplateId());
                 couponTemplateSend.setSource(1);
                 couponTemplateSend.setSendRole(1);
                 couponTemplateSend.setCustomerId(couponCondition.getCustomerId());
                 couponTemplateSend.setCustomerMobile("");
-                couponTemplateSend.setStartTime(activityDetail.getStartTime());
-                couponTemplateSend.setEndTime(activityDetail.getEndTime());
-                couponTemplateSend.setCount(couponActivities.get(0).getSendNum());
+                couponTemplateSend.setStartTime(activityTemplate.getStartTime());
+                couponTemplateSend.setEndTime(activityTemplate.getEndTime());
+                couponTemplateSend.setCount(activityTemplate.getCount());
                 couponTemplateSend.setCreatedBy(couponCondition.getCustomerId());
                 couponTemplateSend.setCreated(new Date());
                 //TODO 用户名称
@@ -107,10 +103,10 @@ public class CouponServiceImpl implements CouponService {
                 couponTemplateSendMapper.insertSelective(couponTemplateSend);
 
                 CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
-                couponActivityRecord.setCouponActivityId(activityDetail.getCouponActivityId());
+                couponActivityRecord.setCouponActivityId(activityTemplate.getCouponActivityId());
                 couponActivityRecord.setCustomerId(couponCondition.getCustomerId());
                 couponActivityRecord.setSendId(couponTemplateSend.getId());
-                couponActivityRecord.setTemplateId(activityDetail.getTemplateId());
+                couponActivityRecord.setTemplateId(activityTemplate.getTemplateId());
                 couponActivityRecord.setCreated(new Date());
                 couponActivityRecord.setCreatedBy(couponCondition.getCustomerId());
                 couponActivityRecord.setCreatedByName("");

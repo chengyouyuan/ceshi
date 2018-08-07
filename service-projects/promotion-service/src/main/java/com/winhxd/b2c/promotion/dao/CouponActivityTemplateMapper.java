@@ -2,6 +2,8 @@ package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 
+import java.util.List;
+
 public interface CouponActivityTemplateMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,11 @@ public interface CouponActivityTemplateMapper {
     int updateByPrimaryKeySelective(CouponActivityTemplate record);
 
     int updateByPrimaryKey(CouponActivityTemplate record);
+
+    /**
+     * 多条件查询
+     * @param couponActivityTemplate
+     * @return
+     */
+    List<CouponActivityTemplate> selectByExample(CouponActivityTemplate couponActivityTemplate);
 }

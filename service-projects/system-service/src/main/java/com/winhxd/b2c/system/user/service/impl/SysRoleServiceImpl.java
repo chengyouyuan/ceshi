@@ -50,7 +50,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public PagedList<SysRole> selectSysRule(SysRoleCondition condition) {
-        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysRole> pagedList = new PagedList();
         pagedList.setData(sysRoleMapper.selectSysRole(condition));
         pagedList.setPageNo(condition.getPageNo());

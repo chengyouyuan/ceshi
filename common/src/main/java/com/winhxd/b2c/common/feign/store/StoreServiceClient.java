@@ -34,7 +34,7 @@ public interface StoreServiceClient {
      * @Description 门店绑定用户
      * @Param storeUserId  门店id主键
      */
-    @RequestMapping(value = "/store/2001/v1/bindCustomer", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1016/v1/bindCustomer", method = RequestMethod.GET)
     ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId);
 
     /**
@@ -48,7 +48,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日上午9:23:34
      */
-    @RequestMapping(value = "/store/2003/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1017/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<List<ShopCarProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**
@@ -61,7 +61,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日下午1:40:49
      */
-    @RequestMapping(value = "/store/2004/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1018/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**
@@ -72,7 +72,7 @@ public interface StoreServiceClient {
      * @auther: lvsen
      * @date: 2018/8/6 15:10
      */
-    @RequestMapping(value = "/store/1005/v1/statisticsStoreProdInfo/", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1019/v1/statisticsStoreProdInfo/", method = RequestMethod.GET)
     void statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
 
     /**
@@ -82,7 +82,7 @@ public interface StoreServiceClient {
      * @date 2018/8/7 13:57
      * @Description 通过用户id查询绑定的门店信息
      */
-    @RequestMapping(value = "/store/1006/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
     ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
 }

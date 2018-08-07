@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Created by caiyulong on 2018/8/6.
+ *
+ * @author caiyulong
+ * @date 2018/8/6
  */
 @FeignClient(value = ServiceName.STORE_SERVICE,fallbackFactory = BackStageStoreServiceClientFallBack.class)
 public interface BackStageStoreServiceClient {

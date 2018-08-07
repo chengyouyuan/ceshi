@@ -30,4 +30,11 @@ wechat:
       grantType: authorization_code
       openidUrl: https://api.weixin.qq.com/sns/jscode2session
 
+##云信配置##
+netease:
+  baseUrl: https://api.netease.im/nimserver/
+  appKey: 6fe22febac816a1607a55ed3cdabd03f
+  appSecret: 20d6bb5ecaad
+  accidSuffix: _message_uat
+
 

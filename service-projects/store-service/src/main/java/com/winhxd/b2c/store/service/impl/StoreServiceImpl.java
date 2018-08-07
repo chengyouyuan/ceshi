@@ -96,4 +96,9 @@ public class StoreServiceImpl implements StoreService {
     public StoreUserInfo findStoreUserInfoByCustomerId(Long customerUserId) {
         return storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
     }
+
+    @Override
+    public StoreUserInfo selectByStoreId(Long storeId) {
+        return storeUserInfoMapper.selectByStoreId(storeId);
+    }
 }

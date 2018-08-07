@@ -328,4 +328,12 @@
       store_status = #{storeStatus,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectByStoreId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from store_user_info
+    where storeId = #{storeId,jdbcType=BIGINT}
+  </select>
+
 </mapper>

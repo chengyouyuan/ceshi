@@ -33,4 +33,11 @@ public interface StoreUserInfoMapper {
      * @Description 根据用户id查询绑定门店信息
      */
     StoreUserInfo selectStoreUserInfoByCustomerId(@Param("customerUserId") Long customerUserId);
+
+    /**
+     * 根据门店编码查询门店信息
+     * @param storeId 门店编码
+     * @return 门店信息
+     */
+    StoreUserInfo selectByStoreId(Long storeId);
 }

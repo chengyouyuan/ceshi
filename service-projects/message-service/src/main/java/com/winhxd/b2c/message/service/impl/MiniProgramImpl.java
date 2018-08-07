@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.message.service.MiniProgramService;
 import com.winhxd.b2c.message.utils.OpenIdUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,13 @@ public class MiniProgramImpl implements MiniProgramService {
     @Override
     public ResponseResult<MiniOpenId> getMiniOpenId(String code) {
         ResponseResult<MiniOpenId> result = new ResponseResult<>();
-        MiniOpenId miniOpenId = openIdUtil.oauth2GetOpenid(code);
-        result.setData(miniOpenId);
+        if(StringUtils.isNotEmpty(code)){
+            MiniOpenId miniOpenId = openIdUtil.oauth2GetOpenid(code);
+            result.setData(miniOpenId);
+        }else{
+            LOGGER.info("/message/721/v1/getMiniOpenId,code is null,then data is null...code={}",code);
+            result.setData(null);
+        }
         return result;
     }
 }

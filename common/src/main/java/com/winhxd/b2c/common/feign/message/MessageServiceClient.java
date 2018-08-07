@@ -28,8 +28,16 @@ public interface MessageServiceClient {
      * @param neteaseAccountCondition
      * @return
      */
-    @RequestMapping(value = "/message/702/v1/getNeteaseAccountInfo",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/701/v1/getNeteaseAccountInfo",method = RequestMethod.POST)
     ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
+
+    /**
+     * @Description 创建云信用户
+     * @param neteaseAccountCondition
+     * @return
+     */
+    @RequestMapping(value = "/message/702/v1/createNeteaseAccount",method = RequestMethod.POST)
+    ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
      * @Description: 给手机号发短信
@@ -69,6 +77,12 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     @Override
     public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition) {
         logger.error("MessageServiceClientFallBack -> getNeteaseAccountInfo，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+        logger.error("MessageServiceClientFallBack -> createNeteaseAccount，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

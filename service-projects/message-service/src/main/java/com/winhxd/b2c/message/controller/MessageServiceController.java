@@ -29,6 +29,24 @@ public class MessageServiceController implements MessageServiceClient {
     @Override
     public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition) {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
+        try{
+
+        }catch (Exception e){
+            LOGGER.error("/message/701/v1/getNeteaseAccountInfo,获取云信用户信息出错，异常信息为={}",e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+        ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
+        try{
+
+        }catch (Exception e){
+            LOGGER.error("/message/702/v1/createNeteaseAccount,创建云信用户出错，异常信息为={}",e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
         return result;
     }
 

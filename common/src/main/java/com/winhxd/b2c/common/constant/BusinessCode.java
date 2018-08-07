@@ -121,5 +121,21 @@ public final class BusinessCode {
     @ApiModelProperty("订单号为空")
     public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
 
+    /** 参数异常*/
+    public static final int CODE_422001 = 422001;
+    /** 未支付的订单不允许退款*/
+    public static final int CODE_422002 = 422002;
+    /** 已完成的订单不允许退款*/
+    public static final int CODE_422003 = 422003;
+    /** 订单修改中*/
+    public static final int CODE_422004 = 422004;
 
+    /** 订单状态不允许退款*/
+    public static final int CODE_421002 = 421002;
+    /** 参数错误*/
+    public static final int CODE_421001 = 421001;
+    /** 订单号不能为空*/
+    public static final int CODE_420001 = 420001;
+    /** 订单已支付成功不能取消*/
+    public static final int CODE_420002 = 420002;
 }

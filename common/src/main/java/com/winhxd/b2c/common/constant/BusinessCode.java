@@ -115,6 +115,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单号为空")
     public static final int ORDER_NO_EMPTY = 400003;
+    
+    @ApiModelProperty("订单号为空")
+    public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
 
 
 }

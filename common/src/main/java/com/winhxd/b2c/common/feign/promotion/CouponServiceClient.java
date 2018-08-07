@@ -23,8 +23,8 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponServiceFallback.class)
 public interface CouponServiceClient {
 	
-	@RequestMapping(value = "/coupon/getCouponNumsByStore", method = RequestMethod.GET)
-	ResponseResult<String> getCouponNumsByStore(@RequestParam("storeId") Long storeId);
+	@RequestMapping(value = "/coupon/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
+	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId);
 	
 	
 	
@@ -50,8 +50,8 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
         return new CouponServiceFallback(throwable);
     }
 	@Override
-	public ResponseResult<String> getCouponNumsByStore(Long storeId) {
-		 logger.error("CouponServiceClient -> getCouponNumsByStore", throwable);
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,Long customerId) {
+		 logger.error("CouponServiceClient -> getCouponNumsByCustomerForStore", throwable);
 	     return new ResponseResult<String>(BusinessCode.CODE_1001);
 	}
 

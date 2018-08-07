@@ -1,8 +1,8 @@
 package com.winhxd.b2c.common.feign.hxd;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import feign.hystrix.FallbackFactory;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Map;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+
+import feign.hystrix.FallbackFactory;
 
 /**
  * @author wufuyun
@@ -22,7 +24,7 @@ import java.util.Map;
 public interface StoreHxdServiceClient {
 
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.GET)
-    ResponseResult<Map<String, Object>> getStoreUserInfo(Map<String, Object> request);
+    ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword); 
 
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId, @RequestParam("customerId") String customerId);
@@ -45,7 +47,7 @@ class StoreServiceClientFallBack implements StoreHxdServiceClient, FallbackFacto
     }
 
     @Override
-    public ResponseResult<Map<String, Object>> getStoreUserInfo(Map<String, Object> request) {
+    public ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword) {
         logger.error("惠下单 StoreHxdServiceClientFallBack -> getStotrUserInfo报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

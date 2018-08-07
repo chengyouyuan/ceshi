@@ -26,6 +26,26 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
+  <resultMap id="queryResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="citeNum" jdbcType="INTEGER" property="citeNum" />
+    <result column="storeNum" jdbcType="INTEGER" property="storeNum" />
+    <result column="coupon_num_type" jdbcType="SMALLINT" property="couponNumType" />
+    <result column="coupon_num" jdbcType="INTEGER" property="couponNum" />
+    <result column="getNum" jdbcType="INTEGER" property="getNum" />
+    <result column="useNum" jdbcType="INTEGER" property="useNum" />
+    <result column="revocationNum" jdbcType="INTEGER" property="revocationNum" />
+    <result column="activity_start" jdbcType="TIMESTAMP" property="activityStart" />
+    <result column="activity_end" jdbcType="TIMESTAMP" property="activityEnd" />
+    <result column="coupon_start_time" jdbcType="TIMESTAMP" property="couponStartTime" />
+    <result column="coupon_end_time" jdbcType="TIMESTAMP" property="couponEndTime" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
 
   <sql id="Base_Column_List">
     id, name, code, exolian, remarks, type, coupon_type, activity_start, activity_end,
@@ -34,11 +54,178 @@
     update_by, updated_by_name, updated
   </sql>
 
+  <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
+    SELECT
+    ca.id,
+    ca.`code`,
+    ca.`name`,
+    (
+    SELECT
+    count(DISTINCT template_id)
+    FROM
+    coupon_activity_detail
+    WHERE
+    coupon_activity_id = ca.id
+    ) AS citeNum,
+    (
+    SELECT
+    count(DISTINCT store_id)
+    FROM
+    coupon_activity_detail
+    WHERE
+    coupon_activity_id = ca.id
+    ) AS storeNum,
+    ca.coupon_num_type,
+    ca.coupon_num,
+    (
+    SELECT
+    count(cts.id)
+    FROM
+    coupon_activity_record car
+    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+    WHERE
+    cts.`status` IN ('1', '2', '4')
+    AND car.coupon_activity_id = ca.id
+    ) AS getNum,
+    (
+    SELECT
+    count(cts.id)
+    FROM
+    coupon_activity_record car
+    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+    LEFT JOIN coupon_template_use ctu ON ctu.send_id = cts.id
+    WHERE
+    ctu.`status` = '1'
+    AND cts.`status` IN ('1', '2', '4')
+    AND car.coupon_activity_id = ca.id
+    ) AS useNum,
+    (
+    SELECT
+    count(cts.id)
+    FROM
+    coupon_activity_record car
+    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+    WHERE
+    cts.`status` = '5'
+    AND car.coupon_activity_id = ca.id
+    ) AS revocationNum,
+    ca.activity_start,
+    ca.activity_end,
+    (
+    SELECT
+    cad.start_time
+    FROM
+    coupon_activity_detail cad
+    WHERE
+    cad.coupon_activity_id = ca.id
+    ) AS coupon_start_time,
+    (
+    SELECT
+    cad.end_time
+    FROM
+    coupon_activity_detail cad
+    WHERE
+    cad.coupon_activity_id = ca.id
+    ) AS coupon_end_time,
+    ca.created_by_name,
+    ca.created,
+    ca.updated_by_name,
+    ca.updated
+    FROM
+    coupon_activity ca
+    LEFT JOIN coupon_activity_detail cad ON cad.coupon_activity_id = ca.id
+    LEFT JOIN coupon_template ct ON ct.id = cad.template_id
+    LEFT JOIN store_user_info sui ON sui.store_id = cad.customer_id
+    WHERE
+    1 = 1
+    AND ca.`status`='1'
+    <if test="code != null">
+      AND ca.`code` = #{code,jdbcType=VARCHAR},
+    </if>
+    <if test="name != null">
+      AND ca.`name` = #{name,jdbcType=VARCHAR},
+    </if>
+    <if test="templateCode != null">
+      AND ct.`code` = #{templateCode,jdbcType=VARCHAR},
+    </if>
+    <if test="storeId != null">
+      AND cad.store_id = #{storeId,jdbcType=BIGINT},
+    </if>
+    <if test="customerMobile != null">
+      AND cad.customer_mobile = #{customerMobile,jdbcType=VARCHAR},
+    </if>
+    <if test="store_name != null">
+      AND sui.store_name = #{store_name,jdbcType=VARCHAR},
+    </if>
+    <if test="couponNumType != null">
+      AND ca.coupon_num_type = = #{couponNumType,jdbcType=SMALLINT},
+    </if>
+    <if test="customerVoucherLimitType != null">
+      AND ca.customer_voucher_limit_type = = #{customerVoucherLimitType,jdbcType=SMALLINT},
+    </if>
+    <if test="createdByName != null">
+      AND ca.created_by_name = = #{createdByName,jdbcType=VARCHAR},
+    </if>
+    <if test="createdStart != null">
+      AND ca.created &lt; #{createdStart,jdbcType=TIMESTAMP},
+    </if>
+    <if test="createdEnd != null">
+      AND ca.created &gt; #{createdEnd,jdbcType=TIMESTAMP},
+    </if>
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from coupon_activity
     where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity
+    where 1=1
+    <if test="couponType != null">
+      AND coupon_type = #{couponType,jdbcType=SMALLINT}
+    </if>
+    <if test="status != null">
+      AND status = #{status,jdbcType=SMALLINT}
+    </if>
+    <if test="activityStatus != null">
+      AND activity_status = #{activityStatus,jdbcType=SMALLINT}
+    </if>
+
+  </select>
+  <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+    SELECT
+    ct.STATUS,
+    ct.reason,
+    ct.pay_type payType,
+    ct.cal_type calType,
+    cg.type type,
+    cgd.reduced_type reducedType,
+    cgd.reduced_amt reducedAmt,
+    cgd.discounted_amt discountedAmt,
+    cgd.discounted discounted,
+    cgd.discounted_max_amt discountedMaxAmt,
+    cap.apply_rule_type applyRuleType,
+    ca.coupon_type couponType,
+    ca.activity_start activityStart,
+    ca.activity_end activityEnd
+    FROM
+    coupon_template_send cts
+    JOIN coupon_template ct ON cts.template_id = ct.id
+    JOIN coupon_activity_record car ON cts.id = car.send_id
+    JOIN coupon_activity ca ON car.coupon_activity_id = ca.id
+    JOIN coupon_grade cg ON ct.grade_id = cg.id
+    JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
+    JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
+    WHERE
+    cts.customer_id = #{customerId}
+    <if test="couponType != null">
+      AND ca.coupon_type = #{couponType}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity

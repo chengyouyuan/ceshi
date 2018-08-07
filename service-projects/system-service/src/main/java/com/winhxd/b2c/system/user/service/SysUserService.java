@@ -61,4 +61,11 @@ public interface SysUserService {
      */
     SysUser getSysUserById(Long id);
 
+    /**
+     * 根据主键禁用用户
+     * @author zhangzhengyang
+     * @date 2018/8/7
+     * @param id
+     */
+    int disabled(Long id);
 }

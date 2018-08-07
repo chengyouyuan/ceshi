@@ -44,6 +44,8 @@ public final class BusinessCode {
     public static final int CODE_402006 = 402006;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
+    /**订单id参数为空*/
+    public static final int CODE_402013 = 402013;
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
@@ -115,6 +117,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单号为空")
     public static final int ORDER_NO_EMPTY = 400003;
+    
+    @ApiModelProperty("订单号为空")
+    public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
 
 
 }

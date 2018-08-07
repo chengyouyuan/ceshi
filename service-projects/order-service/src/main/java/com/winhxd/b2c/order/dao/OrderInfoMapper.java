@@ -165,4 +165,26 @@ public interface OrderInfoMapper {
      * @date 2018年8月6日 下午3:29:26
      */
     List<OrderInfoDetailVO> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
+
+    /**
+     * 更新订单提货码
+     * @author wangbin
+     * @date  2018年8月7日 下午1:21:55
+     * @param pickUpCode
+     * @param id
+     */
+    int updateOrderPickupCode(String pickUpCode, Long id);
+    /**
+     * 订单退款更新状态等信息
+     * @param orderNo
+     * @return 更新成功影响条数
+     */
+    int updateOrderStatusForRefund(String orderNo);
+
+    /**
+     * C端申请退款更新状态
+     * @param orderNo
+     * @param customerId
+     */
+    int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
 }

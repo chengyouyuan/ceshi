@@ -8,6 +8,10 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import com.winhxd.b2c.common.constant.CacheName;
 
 public class OrderUtil {
+    
+    private OrderUtil(){
+        
+    }
 
     public static final String getStoreOrderSalesSummaryKey(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null) {

@@ -12,19 +12,20 @@ public final class BusinessCode {
     public static final int CODE_1001 = 1001;
     /** 登录凭证无效 */
     public static final int CODE_1002 = 1002;
-
     /** 没有权限 */
     public static final int CODE_1003 = 1003;
     /** 账号无效 */
     public static final int CODE_1004 = 1004;
     /** 密码错误 */
     public static final int CODE_1005 = 1005;
-    /**  账号未启用 */
+    /** 账号未启用 */
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
     /** 验证码错误 */
     public static final int CODE_1008 = 1008;
+    /** 未定义的API */
+    public static final int CODE_1009 = 1009;
 
 
     /** 原密码输入错误 */

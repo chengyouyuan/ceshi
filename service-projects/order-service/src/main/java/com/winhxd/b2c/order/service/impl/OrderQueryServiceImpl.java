@@ -1,23 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
@@ -26,23 +8,38 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
-import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.order.vo.*;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author pangjianhua
@@ -63,6 +60,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private CustomerServiceClient customerServiceClient;
     @Resource
     private ProductServiceClient productServiceClient;
+    @Resource
+    private StoreServiceClient storeServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -93,7 +92,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     /**
-     * 根据用户ID查询订单
+     * 查询订单
      *
      * @param condition 入参
      * @return
@@ -105,9 +104,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
         }
-        //TODO 待添加获取当前用户的接口
-        Long customerId = 1L;
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+
+        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
+        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
+        detailVO.setStoreMobile(store.getStoreMobile());
+
         //TODO 调用商品仓库添加商品图片URL和商品名称
         return detailVO;
     }
@@ -221,7 +223,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
         return orderInfoDetailVO4Management;
     }
-    
+
     @Override
     public PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId) {
         if (storeId == null) {
@@ -266,5 +268,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return list.size() == new HashSet<Object>(list).size();
     }
-    
+
 }

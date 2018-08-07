@@ -17,17 +17,17 @@ import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 
 /**
- * 扫码支付线下计价自提订单处理接口
+ * 在线线下计价自提订单处理接口
  * @author wangbin
  * @date  2018年8月3日 上午9:36:33
  * @version 
  */
-@Service("SweepPayPickUpInStoreOfflineValOrderHandler")
-public abstract class SweepPayPickUpInStoreOrderHandlerImpl implements OrderHandler {
+@Service("OnlinePayPickUpInStoreOfflineOrderHandler")
+public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandler {
 
     private static final String ORDER_INFO_EMPTY = "orderInfo不能为空";
 
-    private static final Logger logger = LoggerFactory.getLogger(SweepPayPickUpInStoreOrderHandlerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnlinePayPickUpInStoreOfflineOrderHandlerImpl.class);
     
     @Autowired
     private OrderChangeLogService orderChangeLogService;

@@ -10,9 +10,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -35,8 +32,11 @@ import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -59,6 +59,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private OrderChangeLogService orderChangeLogService;
     @Resource
     private CustomerServiceClient customerServiceClient;
+    @Resource
+    private ProductServiceClient productServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -73,24 +75,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
         List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
-        List<Long> customerIds = new ArrayList<>();
+        List<String> skuList = new ArrayList<>();
         for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            customerId = orderInfoDetailVO.getCustomerId();
-            customerIds.add(customerId);
-        }
-        ResponseResult<List<CustomerUserInfoVO1>> customersResult = this.customerServiceClient.findCustomerUserByIds(customerIds);
-        List<CustomerUserInfoVO1> customers = customersResult.getData();
-        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            customerId = orderInfoDetailVO.getCustomerId();
-            for (CustomerUserInfoVO1 customer : customers) {
-                if (customerId.equals(customer.getCustomerId())) {
-                    orderInfoDetailVO.setCustomerMobile(customer.getCustomerMobile());
-                    orderInfoDetailVO.setNickName(customer.getNickName());
-                }
+            List<OrderItemVO> items = orderInfoDetailVO.getOrderItemVoList();
+            for (OrderItemVO orderItemVO : items) {
+                skuList.add(orderItemVO.getSkuCode());
             }
         }
-
-        //TODO 调用商品仓库添加商品图片URL和商品名称 待订
+        //TODO 调用商品仓库添加商品图片URL和商品名称 skuList
         pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());

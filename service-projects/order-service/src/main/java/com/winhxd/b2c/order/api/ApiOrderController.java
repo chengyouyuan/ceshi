@@ -60,6 +60,7 @@ public class ApiOrderController {
         LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}", orderRefundCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
+            //优惠券一并退回
             result.setData(null);
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--异常" + e.getMessage(), e);

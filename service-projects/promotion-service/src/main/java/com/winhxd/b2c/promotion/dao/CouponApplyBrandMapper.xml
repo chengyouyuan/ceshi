@@ -2,38 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyBrandMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="apply_id" jdbcType="INTEGER" property="applyId" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_id" jdbcType="BIGINT" property="applyId" />
     <result column="appoint_min_total" jdbcType="DECIMAL" property="appointMinTotal" />
     <result column="appoint_min_number" jdbcType="INTEGER" property="appointMinNumber" />
     <result column="must_min_number" jdbcType="INTEGER" property="mustMinNumber" />
     <result column="spare_min_number" jdbcType="INTEGER" property="spareMinNumber" />
     <result column="spare_min_total" jdbcType="DECIMAL" property="spareMinTotal" />
-    <result column="apply_product_id" jdbcType="INTEGER" property="applyProductId" />
+    <result column="apply_product_id" jdbcType="BIGINT" property="applyProductId" />
     <result column="must_min_total" jdbcType="DECIMAL" property="mustMinTotal" />
   </resultMap>
   <sql id="Base_Column_List">
     id, apply_id, appoint_min_total, appoint_min_number, must_min_number, spare_min_number, 
     spare_min_total, apply_product_id, must_min_total
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from coupon_apply_brand
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_apply_brand
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand">
     insert into coupon_apply_brand (id, apply_id, appoint_min_total, 
       appoint_min_number, must_min_number, spare_min_number, 
       spare_min_total, apply_product_id, must_min_total
       )
-    values (#{id,jdbcType=INTEGER}, #{applyId,jdbcType=INTEGER}, #{appointMinTotal,jdbcType=DECIMAL}, 
+    values (#{id,jdbcType=BIGINT}, #{applyId,jdbcType=BIGINT}, #{appointMinTotal,jdbcType=DECIMAL}, 
       #{appointMinNumber,jdbcType=INTEGER}, #{mustMinNumber,jdbcType=INTEGER}, #{spareMinNumber,jdbcType=INTEGER}, 
-      #{spareMinTotal,jdbcType=DECIMAL}, #{applyProductId,jdbcType=INTEGER}, #{mustMinTotal,jdbcType=DECIMAL}
+      #{spareMinTotal,jdbcType=DECIMAL}, #{applyProductId,jdbcType=BIGINT}, #{mustMinTotal,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand">
@@ -69,10 +69,10 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="applyId != null">
-        #{applyId,jdbcType=INTEGER},
+        #{applyId,jdbcType=BIGINT},
       </if>
       <if test="appointMinTotal != null">
         #{appointMinTotal,jdbcType=DECIMAL},
@@ -90,7 +90,7 @@
         #{spareMinTotal,jdbcType=DECIMAL},
       </if>
       <if test="applyProductId != null">
-        #{applyProductId,jdbcType=INTEGER},
+        #{applyProductId,jdbcType=BIGINT},
       </if>
       <if test="mustMinTotal != null">
         #{mustMinTotal,jdbcType=DECIMAL},
@@ -101,7 +101,7 @@
     update coupon_apply_brand
     <set>
       <if test="applyId != null">
-        apply_id = #{applyId,jdbcType=INTEGER},
+        apply_id = #{applyId,jdbcType=BIGINT},
       </if>
       <if test="appointMinTotal != null">
         appoint_min_total = #{appointMinTotal,jdbcType=DECIMAL},
@@ -119,24 +119,24 @@
         spare_min_total = #{spareMinTotal,jdbcType=DECIMAL},
       </if>
       <if test="applyProductId != null">
-        apply_product_id = #{applyProductId,jdbcType=INTEGER},
+        apply_product_id = #{applyProductId,jdbcType=BIGINT},
       </if>
       <if test="mustMinTotal != null">
         must_min_total = #{mustMinTotal,jdbcType=DECIMAL},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand">
     update coupon_apply_brand
-    set apply_id = #{applyId,jdbcType=INTEGER},
+    set apply_id = #{applyId,jdbcType=BIGINT},
       appoint_min_total = #{appointMinTotal,jdbcType=DECIMAL},
       appoint_min_number = #{appointMinNumber,jdbcType=INTEGER},
       must_min_number = #{mustMinNumber,jdbcType=INTEGER},
       spare_min_number = #{spareMinNumber,jdbcType=INTEGER},
       spare_min_total = #{spareMinTotal,jdbcType=DECIMAL},
-      apply_product_id = #{applyProductId,jdbcType=INTEGER},
+      apply_product_id = #{applyProductId,jdbcType=BIGINT},
       must_min_total = #{mustMinTotal,jdbcType=DECIMAL}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

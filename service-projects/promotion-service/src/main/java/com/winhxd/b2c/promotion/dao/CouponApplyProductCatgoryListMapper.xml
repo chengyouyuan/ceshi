@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.promotion.dao.CouponApplyProductCatgoryListMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="apply_produt_catgory_id" jdbcType="BIGINT" property="applyProdutCatgoryId" />
     <result column="cat_code" jdbcType="VARCHAR" property="catCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
@@ -10,20 +10,20 @@
   <sql id="Base_Column_List">
     id, apply_produt_catgory_id, cat_code, status
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from coupon_apply_product_catgory_list
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_apply_product_catgory_list
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
     insert into coupon_apply_product_catgory_list (id, apply_produt_catgory_id, cat_code, 
       status)
-    values (#{id,jdbcType=INTEGER}, #{applyProdutCatgoryId,jdbcType=BIGINT}, #{catCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{applyProdutCatgoryId,jdbcType=BIGINT}, #{catCode,jdbcType=VARCHAR}, 
       #{status,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
@@ -44,7 +44,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="applyProdutCatgoryId != null">
         #{applyProdutCatgoryId,jdbcType=BIGINT},
@@ -70,13 +70,13 @@
         status = #{status,jdbcType=SMALLINT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductCatgoryList">
     update coupon_apply_product_catgory_list
     set apply_produt_catgory_id = #{applyProdutCatgoryId,jdbcType=BIGINT},
       cat_code = #{catCode,jdbcType=VARCHAR},
       status = #{status,jdbcType=SMALLINT}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

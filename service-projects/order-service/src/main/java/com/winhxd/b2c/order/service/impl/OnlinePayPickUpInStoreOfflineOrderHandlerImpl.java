@@ -146,6 +146,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         // TODO 发送云信
         String last4MobileNums = null;
         String msg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        // TODO 发送延时MQ信息，处理超时未自提取消操作
     }
     
     /**

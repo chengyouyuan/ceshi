@@ -66,4 +66,24 @@ public interface OrderService {
      * @param condition
      */
     void orderConfirm4Store(OrderConfirmCondition condition);
+    
+    /**
+     * 订单超时取消接口
+     *
+     * @param orderNo 入参
+     * @return true 成功，false不成功
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    boolean cancelOrder4TimeOut(String orderNo);
+    
+    /**
+     * 订单超时退款接口
+     *
+     * @param orderNo 入参
+     * @return true 成功，false不成功
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    boolean orderRefund4TimeOut(String orderNo);
 }

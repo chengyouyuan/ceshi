@@ -40,7 +40,26 @@ public enum CouponActivityEnum {
      * 用户领券限制 1不限制 2每个门店可领取数量
      */
     UNLIMITED((short) 1, "不限制"),
-    STORE_LIMITED((short) 2, "每个门店可领取数量");
+    STORE_LIMITED((short) 2, "每个门店可领取数量"),
+
+    /**
+     * 优惠券状态 1-已使用，2-未使用，3-无效, 4-已过期,5-退回
+     */
+    ALREADY_USE((short) 1, "已使用"),
+    NOT_USE((short) 2, "未使用"),
+    INVALYD((short) 3, "未使用"),
+    EXPIRED((short) 4, "未使用"),
+    UNTREAD((short) 5, "未使用"),
+
+    /**
+     * 优惠券来源 1-系统发放
+     */
+    SYSTEM((short) 1, "系统发放"),
+
+    /**
+     * 发放对象 1-普通用户
+     */
+    ORDINARY_USER((short) 1, "普通用户");
 
 
     private short code;

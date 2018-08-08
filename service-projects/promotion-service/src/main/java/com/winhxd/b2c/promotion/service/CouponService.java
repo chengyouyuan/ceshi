@@ -55,4 +55,11 @@ public interface CouponService {
      * @return
      */
     Boolean userReceiveCoupon(ReceiveCouponCondition condition);
+
+    /**
+     * 更新优惠券使用状态
+     * @param condition
+     * @return
+     */
+    Boolean updateCouponStatus(CouponCondition condition);
 }

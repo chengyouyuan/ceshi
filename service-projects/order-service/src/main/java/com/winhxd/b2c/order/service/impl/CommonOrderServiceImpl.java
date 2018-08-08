@@ -214,6 +214,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (lock.tryLock()) {
             try {
                 short agree = condition.getAgree();
+                //门店是否同意退款
                 if (agree == 1) {
                     OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                     if (null == order || !order.getStoreId().equals(store.getStoreCustomerId())) {
@@ -293,7 +294,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     String newOrderJsonString = JsonUtil.toJSONString(order);
                     //添加订单流转日志
                     orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), order.getCreatedBy(), order.getCreatedByName(), order.getCancelReason(), MainPointEnum.MAIN);
+                            order.getOrderStatus(), customer.getCustomerId(), customer.getCustomerMobile(), order.getCancelReason(), MainPointEnum.MAIN);
                 } else {
                     logger.info("订单取消C端申请退款不成功 订单号={}", orderNo);
                 }
@@ -321,10 +322,10 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
-        if (OrderStatusEnum.UNRECEIVED.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {
+        if (OrderStatusEnum.UNRECEIVED.getStatusCode() != orderInfo.getOrderStatus()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
         }
-        if (orderInfo.getValuationType().shortValue() == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+        if (orderInfo.getValuationType() == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
             if (condition.getOrderTotal() == null || condition.getOrderTotal().compareTo(BigDecimal.ZERO) < 1) {
                 throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY);
             }
@@ -373,7 +374,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         // TODO 退款
     }
-    
+
     /**
      * 注册事物提交后相关操作
      *
@@ -389,7 +390,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
         });
     }
-    
+
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
@@ -544,17 +545,17 @@ public class CommonOrderServiceImpl implements OrderService {
         String randomFormat = "%09d";
         return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
     }
-    
+
     /**
      * 订单支付成功 处理
+     *
      * @author wangbin
-     * @date  2018年8月8日 下午3:16:37
-     * @version 
+     * @date 2018年8月8日 下午3:16:37
      */
     private class PaySuccessProcessRunnerble implements Runnable {
-        
+
         private OrderInfo orderInfo;
-        
+
         public PaySuccessProcessRunnerble(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
@@ -566,22 +567,22 @@ public class CommonOrderServiceImpl implements OrderService {
                     .orderInfoAfterPaySuccessProcess(orderInfo);
         }
     }
-    
+
     /**
      * 订单创建成功 处理
+     *
      * @author wangbin
-     * @date  2018年8月8日 下午3:16:17
-     * @version 
+     * @date 2018年8月8日 下午3:16:17
      */
     private class SubmitSuccessProcessRunnerble implements Runnable {
-        
+
         private OrderInfo orderInfo;
-        
+
         public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
-        
+
         @Override
         public void run() {
             getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())

@@ -152,7 +152,7 @@ public class OrderQueryAspect {
             if (CollectionUtils.isNotEmpty(skuSet)) {
                 ProductCondition condition = new ProductCondition();
                 condition.setProductSkus(new ArrayList<>(skuSet));
-                condition.setSearchSkuCode(SearchSkuCodeEnum.NOT_IN_SKU_CODE);
+                condition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                 ResponseResult<List<ProductSkuVO>> productResponseResultData = productServiceClient.getProductSkus(condition);
                 if (null != productResponseResultData && productResponseResultData.getCode() == BusinessCode.CODE_OK && CollectionUtils.isNotEmpty(productResponseResultData.getData())) {
                     List<ProductSkuVO> productSkuList = productResponseResultData.getData();

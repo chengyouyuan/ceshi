@@ -96,7 +96,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事物提交后相关事件
-        registerProcessAfterOrderSubmitSuccess(orderInfo);
+        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo));
         return orderInfo.getOrderNo();
     }
 
@@ -132,6 +132,8 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        //订单支付成功事物提交后相关事件
+        registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo));
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
     }
 
@@ -285,32 +287,25 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
-        logger.info("门店确认订单开始：condition={}", condition);
+        logger.info("门店确认订单结束：condition={}", condition);
     }
     
     /**
-     * 订单成功创建成功 业务操作
+     * 注册事物提交后相关操作
      *
      * @param orderInfo
      * @author wangbin
      * @date 2018年8月3日 下午4:50:11
      */
-    private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
+    private void registerProcessAfterTransSuccess(Runnable runnable) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                threadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO 调用 顾客门店绑定接口
-                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
-                                .orderInfoAfterCreateSuccessProcess(orderInfo);
-                    }
-                });
+                threadPoolExecutor.execute(runnable);
             }
         });
     }
-
+    
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
@@ -464,6 +459,50 @@ public class CommonOrderServiceImpl implements OrderService {
         // d 代表参数为正数型 
         String randomFormat = "%09d";
         return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
+    }
+    
+    /**
+     * 订单支付成功 处理
+     * @author wangbin
+     * @date  2018年8月8日 下午3:16:37
+     * @version 
+     */
+    private class PaySuccessProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public PaySuccessProcessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                    .orderInfoAfterPaySuccessProcess(orderInfo);
+        }
+    }
+    
+    /**
+     * 订单创建成功 处理
+     * @author wangbin
+     * @date  2018年8月8日 下午3:16:17
+     * @version 
+     */
+    private class SubmitSuccessProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                    .orderInfoAfterCreateSuccessProcess(orderInfo);
+        }
     }
 
 }

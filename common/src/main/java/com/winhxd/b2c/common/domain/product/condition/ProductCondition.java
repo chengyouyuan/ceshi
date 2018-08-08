@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class ProductCondition {
 	
-	@ApiModelProperty(value = "是否在门店上架sku内查找", required = true)
+	@ApiModelProperty(value = "在sku集合范围内/外查找", required = true)
 	private SearchSkuCodeEnum searchSkuCode;
 	
     @ApiModelProperty(value = "门店在惠下单购买过商品sku")

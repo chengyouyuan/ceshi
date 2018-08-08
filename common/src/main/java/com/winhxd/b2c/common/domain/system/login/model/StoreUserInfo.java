@@ -18,9 +18,9 @@ public class StoreUserInfo implements Serializable {
      */
     private String storeName;
     /**
-     * 门店编码
+     * 惠下单门店用户id
      */
-    private Long storeId;
+    private Long storeCustomerId;
     /**
      * 用户账号
      */
@@ -94,15 +94,15 @@ public class StoreUserInfo implements Serializable {
         this.storeName = storeName == null ? null : storeName.trim();
     }
 
-    public Long getStoreId() {
-        return storeId;
-    }
+    public Long getStoreCustomerId() {
+		return storeCustomerId;
+	}
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+	public void setStoreCustomerId(Long storeCustomerId) {
+		this.storeCustomerId = storeCustomerId;
+	}
 
-    public String getStoreMobile() {
+	public String getStoreMobile() {
         return storeMobile;
     }
 

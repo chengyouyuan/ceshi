@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="store_name" property="storeName" jdbcType="VARCHAR" />
-    <result column="store_id" property="storeId" jdbcType="BIGINT" />
+    <result column="store_customer_id" property="storeCustomerId" jdbcType="BIGINT" />
     <result column="store_mobile" property="storeMobile" jdbcType="CHAR" />
     <result column="store_address" property="storeAddress" jdbcType="VARCHAR" />
     <result column="store_region_code" property="storeRegionCode" jdbcType="CHAR" />
@@ -27,7 +27,7 @@
     <result column="store_status" property="storeStatus" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, store_name, store_id, store_mobile, store_address, store_region_code, store_password, 
+    id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
     shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, openId, 
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status
@@ -68,7 +68,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
-    insert into store_user_info (id, store_name, store_id, 
+    insert into store_user_info (id, store_name, store_customer_id, 
       store_mobile, store_address, store_region_code, 
       store_password, shopkeeper, shop_owner_img, 
       pickup_way, payment_way, contact_mobile, 
@@ -76,7 +76,7 @@
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
       store_status)
-    values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeId,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeCustomerId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
       #{pickupWay,jdbcType=VARCHAR}, #{paymentWay,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
@@ -94,8 +94,8 @@
       <if test="storeName != null" >
         store_name,
       </if>
-      <if test="storeId != null" >
-        store_id,
+      <if test="storeCustomerId != null" >
+        store_customer_id,
       </if>
       <if test="storeMobile != null" >
         store_mobile,
@@ -165,8 +165,8 @@
       <if test="storeName != null" >
         #{storeName,jdbcType=VARCHAR},
       </if>
-      <if test="storeId != null" >
-        #{storeId,jdbcType=BIGINT},
+      <if test="storeCustomerId != null" >
+        #{storeCustomerId,jdbcType=BIGINT},
       </if>
       <if test="storeMobile != null" >
         #{storeMobile,jdbcType=CHAR},
@@ -236,8 +236,8 @@
       <if test="storeName != null" >
         store_name = #{storeName,jdbcType=VARCHAR},
       </if>
-      <if test="storeId != null" >
-        store_id = #{storeId,jdbcType=BIGINT},
+      <if test="storeCustomerId != null" >
+        store_customer_id = #{storeCustomerId,jdbcType=BIGINT},
       </if>
       <if test="storeMobile != null" >
         store_mobile = #{storeMobile,jdbcType=CHAR},
@@ -305,7 +305,7 @@
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
     update store_user_info
     set store_name = #{storeName,jdbcType=VARCHAR},
-      store_id = #{storeId,jdbcType=BIGINT},
+      store_customer_id = #{storeCustomerId,jdbcType=BIGINT},
       store_mobile = #{storeMobile,jdbcType=CHAR},
       store_address = #{storeAddress,jdbcType=VARCHAR},
       store_region_code = #{storeRegionCode,jdbcType=CHAR},
@@ -329,11 +329,11 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectByStoreId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectBystoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />
     from store_user_info
-    where storeId = #{storeId,jdbcType=BIGINT}
+    where storeCustomerId = #{storeCustomerId,jdbcType=BIGINT}
   </select>
 
 </mapper>

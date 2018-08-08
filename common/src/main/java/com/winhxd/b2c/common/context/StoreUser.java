@@ -4,23 +4,21 @@ package com.winhxd.b2c.common.context;
  * 门店用户数据
  */
 public class StoreUser {
-    private Long BusinessId;
-    private Long storeId;
-
-
-    public Long getBusinessId() {
-		return BusinessId;
+	private Long businessId;
+	private Long storeCustomerId;
+	public Long getBusinessId() {
+		return businessId;
 	}
-
 	public void setBusinessId(Long businessId) {
-		BusinessId = businessId;
+		this.businessId = businessId;
+	}
+	public Long getStoreCustomerId() {
+		return storeCustomerId;
+	}
+	public void setStoreCustomerId(Long storeCustomerId) {
+		this.storeCustomerId = storeCustomerId;
 	}
 
-	public Long getStoreId() {
-        return storeId;
-    }
 
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+    
 }

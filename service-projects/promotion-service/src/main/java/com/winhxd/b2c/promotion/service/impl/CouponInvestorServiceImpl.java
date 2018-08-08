@@ -14,8 +14,10 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -30,8 +32,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     private CouponInvestorMapper couponInvestorMapper;
     @Autowired
     private CouponInvestorDetailMapper  couponInvestorDetailMapper;
+
+
     @Override
-    public int saveCouponInvestor(CouponInvestorCondition condition) {
+    public int saveCouponInvestor( CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
         int flag = BusinessCode.CODE_1001;
         List deatils = condition.getDetails();
@@ -95,5 +99,15 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         }
 
         return flag;
+    }
+
+
+
+    @Override
+    public ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id) {
+        CouponInvestorVO vo = couponInvestorMapper.selectCouponInvestorDetailById(id);
+        ResponseResult<CouponInvestorVO> result = new ResponseResult();
+        result.setData(vo);
+        return result;
     }
 }

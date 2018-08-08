@@ -36,12 +36,13 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
 
       /**
        *
-       *@Deccription
-       *@Params
-       *@Return
+       *@Deccription  新建出资方
+       *@Params  condition
+       *@Return  ResponseResult
        *@User  wl
        *@Date   2018/8/8 12:30
        */
+      @ApiOperation(value = "添加出资方", notes = "添加出资方",response = ResponseResult.class)
       @Override
       public ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult responseResult = new ResponseResult();
@@ -61,4 +62,19 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             }
             return responseResult;
       }
+
+     /**
+      *
+      *@Deccription 查看出资方详情
+      *@Params id
+      *@Return  ResponseResult
+      *@User  wl
+      *@Date   2018/8/8 14:06
+      */
+    @ApiOperation(value = "查看出资方详情", notes = "查看出资方详情",response = ResponseResult.class)
+    @Override
+    public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id) {
+        ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
+        return responseResult;
+    }
 }

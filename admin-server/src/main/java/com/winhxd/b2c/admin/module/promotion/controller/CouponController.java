@@ -225,7 +225,7 @@ public class CouponController {
 	@ApiOperation("查看出资方详情")
 	@GetMapping(value = "/v1/viewCouponInvestorDetail")
 	public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 

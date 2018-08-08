@@ -158,7 +158,7 @@ public class CouponServiceImpl implements CouponService {
         ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(couponCondition.getCustomerId());
         StoreUserInfo storeUserInfo = result.getData();
 
-        List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getStoreId());
+        List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getId());
 
 
 

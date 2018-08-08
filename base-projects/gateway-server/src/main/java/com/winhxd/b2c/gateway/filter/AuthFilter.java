@@ -88,8 +88,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
 
             StoreUser storeUser = new StoreUser();
-            storeUser.setStoreId(12L);
-            storeUser.setStoreUserId(1000L);
+            storeUser.setBusinessId(12L);
+            storeUser.setStoreCustomerId(1000L);
             requestBuilder = request.mutate()
                     .header(UserContext.HEADER_USER_STORE, JsonUtil.toJSONString(storeUser));
         }

@@ -15,7 +15,7 @@ public class StoreUserInfoVO{
 	@ApiModelProperty(value = "用户id")
     private Long businessId;
 	@ApiModelProperty(value = "门店编码")
-    private Long storeId;
+    private Long storeCustomerId;
 	@ApiModelProperty(value = "TOKEN")
     private String token;
 	@ApiModelProperty(value = "门店账号")

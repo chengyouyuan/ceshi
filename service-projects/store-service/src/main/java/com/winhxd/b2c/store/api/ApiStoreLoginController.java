@@ -117,7 +117,7 @@ public class ApiStoreLoginController {
 						return new ResponseResult<>(BusinessCode.CODE_1004);
 					} else {
 						vo.setBusinessId(DB.getId());
-						vo.setStoreId(DB.getStoreId());
+						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
 						BeanUtils.copyProperties(vo, user);
 						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
@@ -140,7 +140,7 @@ public class ApiStoreLoginController {
 					return new ResponseResult<>(BusinessCode.CODE_1004);
 				} else {
 					StoreUserInfo info = new StoreUserInfo();
-					info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCode"))));
 					if (DB == null) {
 						/**
 						 * 如果是微信登录获取昵称头像
@@ -155,7 +155,7 @@ public class ApiStoreLoginController {
 						info.setToken(String.valueOf(UUID.randomUUID()));
 						storeLoginService.saveStoreInfo(info);
 						vo.setBusinessId(info.getId());
-						vo.setStoreId(info.getStoreId());
+						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(info.getToken());
 						BeanUtils.copyProperties(vo, user);
 						cache.set(CacheName.STORE_USER_INFO_TOKEN + info.getToken(), JsonUtil.toJSONString(user));
@@ -209,7 +209,7 @@ public class ApiStoreLoginController {
 				return new ResponseResult<>(BusinessCode.CODE_1004);
 			} else {
 				StoreUserInfo info = new StoreUserInfo();
-				info.setStoreId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+				info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCode"))));
 				if (DB == null) {
 					/**
 					 * 如果是微信登录获取昵称头像

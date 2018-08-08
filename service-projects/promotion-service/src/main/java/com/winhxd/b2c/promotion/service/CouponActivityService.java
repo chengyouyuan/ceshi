@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
@@ -17,7 +18,7 @@ public interface CouponActivityService {
      * @param condition
      * @return CouponActivityVO
      */
-    PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
+    ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition);
     /**
      *
      *@Deccription 添加优惠券活动
@@ -36,4 +37,5 @@ public interface CouponActivityService {
      *@Date   2018/8/7
      */
     void updateCouponActivity(CouponActivityAddCondition condition);
+
 }

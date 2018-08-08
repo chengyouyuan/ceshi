@@ -28,7 +28,7 @@ import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
@@ -147,12 +147,12 @@ public class OrderQueryAspect {
                 }
             }
             //根据 customerIds 到用户中心查询用户信息
-            ResponseResult<List<CustomerUserInfoVO1>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
+            ResponseResult<List<CustomerUserInfoVO>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
             if (result != null && result.getCode() == BusinessCode.CODE_OK) {
-                List<CustomerUserInfoVO1> customerUserInfoVO1s = result.getData();
-                Map<Long, CustomerUserInfoVO1> customerUserInfoVOMap = new HashMap<>();
+                List<CustomerUserInfoVO> customerUserInfoVO1s = result.getData();
+                Map<Long, CustomerUserInfoVO> customerUserInfoVOMap = new HashMap<>();
                 for (Iterator iterator = customerUserInfoVO1s.iterator(); iterator.hasNext(); ) {
-                    CustomerUserInfoVO1 customerUserInfoVO1 = (CustomerUserInfoVO1) iterator.next();
+                    CustomerUserInfoVO customerUserInfoVO1 = (CustomerUserInfoVO) iterator.next();
                     customerUserInfoVOMap.put(customerUserInfoVO1.getCustomerId(), customerUserInfoVO1);
                 }
                 for (int i = 0; i < objArr.length; i++) {
@@ -161,7 +161,7 @@ public class OrderQueryAspect {
                     if (field != null) {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
-                            CustomerUserInfoVO1 vo = customerUserInfoVOMap.get(field.get(obj));
+                            CustomerUserInfoVO vo = customerUserInfoVOMap.get(field.get(obj));
                             if (vo != null) {
                                 assembleInfos(obj, NICK_NAME, vo.getNickName());
                                 assembleInfos(obj, CUSTOMER_MOBILE, vo.getCustomerMobile());

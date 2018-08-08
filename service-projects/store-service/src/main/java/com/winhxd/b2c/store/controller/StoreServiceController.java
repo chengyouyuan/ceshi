@@ -3,7 +3,9 @@ package com.winhxd.b2c.store.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,7 +22,6 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -147,6 +148,17 @@ public class StoreServiceController implements StoreServiceClient {
 			responseResult.setCode(BusinessCode.CODE_200004);
 		}
 		responseResult.setData(data);
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
+		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
+    	if(ids == null || ids.size() == 0){
+    		throw new BusinessException(BusinessCode.CODE_200001);
+		}
+		List<StoreUserInfoVO> storeInofs = storeService.findStoreUserInfoList(ids);
+    	responseResult.setData(storeInofs);
 		return responseResult;
 	}
 

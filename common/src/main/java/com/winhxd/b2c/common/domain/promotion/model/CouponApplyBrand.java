@@ -3,9 +3,9 @@ package com.winhxd.b2c.common.domain.promotion.model;
 import java.math.BigDecimal;
 
 public class CouponApplyBrand {
-    private Integer id;
+    private Long id;
 
-    private Integer applyId;
+    private Long applyId;
 
     private BigDecimal appointMinTotal;
 
@@ -17,23 +17,23 @@ public class CouponApplyBrand {
 
     private BigDecimal spareMinTotal;
 
-    private Integer applyProductId;
+    private Long applyProductId;
 
     private BigDecimal mustMinTotal;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getApplyId() {
+    public Long getApplyId() {
         return applyId;
     }
 
-    public void setApplyId(Integer applyId) {
+    public void setApplyId(Long applyId) {
         this.applyId = applyId;
     }
 
@@ -77,11 +77,11 @@ public class CouponApplyBrand {
         this.spareMinTotal = spareMinTotal;
     }
 
-    public Integer getApplyProductId() {
+    public Long getApplyProductId() {
         return applyProductId;
     }
 
-    public void setApplyProductId(Integer applyProductId) {
+    public void setApplyProductId(Long applyProductId) {
         this.applyProductId = applyProductId;
     }
 

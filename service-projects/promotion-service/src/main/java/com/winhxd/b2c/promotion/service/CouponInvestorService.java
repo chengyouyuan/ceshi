@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 
 /**
@@ -12,5 +13,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
  **/
 public interface CouponInvestorService {
 
+    int saveCouponInvestor(CouponInvestorCondition condition);
 
+    ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id);
 }

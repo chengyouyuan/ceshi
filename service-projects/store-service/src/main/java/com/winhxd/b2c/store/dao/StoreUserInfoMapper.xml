@@ -32,7 +32,13 @@
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status
   </sql>
-
+ <resultMap id="storeUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO" extends="BaseResultMap"/>
+  <select id="selectStoreUserByIds" resultMap="storeUserInfoVO1">
+    select <include refid="Base_Column_List"/> from store_user_info where id in
+    <foreach collection="ids" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
   <select id="selectStoreUserInfoByCustomerId" resultMap="BaseResultMap">
     select * from store_user_info sui left join customer_store_relation csr on sui.id = csr.store_user_id left join
       customer_user_info cui on cui.customer_id = csr.customer_id where cui.customer_id = #{customerUserId}

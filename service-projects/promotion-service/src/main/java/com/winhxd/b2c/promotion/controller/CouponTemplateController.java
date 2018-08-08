@@ -138,7 +138,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "查看优惠券模板详情", notes = "查看优惠券模板详情",response = ResponseResult.class)
     @Override
-    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(String id) {
+    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id) {
         ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);
         return responseResult;
     }

@@ -261,10 +261,33 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void orderConfirm4Store(OrderConfirmCondition condition) {
-        // TODO Auto-generated method stub
-        
+        if (condition == null) {
+            throw new NullPointerException("确认订单参数 OrderConfirmCondition 为空");
+        }
+        if (condition.getStoreId() == null) {
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
+        }
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(condition.getOrderNo());
+        if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (OrderStatusEnum.UNRECEIVED.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
+        }
+        if (orderInfo.getValuationType().shortValue() == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+            if (condition.getOrderTotal() == null || condition.getOrderTotal().compareTo(BigDecimal.ZERO) < 1) {
+                throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY);
+            }
+            orderInfo.setOrderTotalMoney(condition.getOrderTotal());
+        }
+        //调用订单接单业务流转接口
+        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        logger.info("门店确认订单开始：condition={}", condition);
     }
-
+    
     /**
      * 订单成功创建成功 业务操作
      *

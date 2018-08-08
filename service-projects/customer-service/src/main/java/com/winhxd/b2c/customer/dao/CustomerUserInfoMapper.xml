@@ -32,7 +32,7 @@
     delete from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
   </delete>
-  <resultMap id="customerUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1">
+  <resultMap id="customerUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO">
       <result property="customerId" column="customer_id"/>
       <result property="customerMobile" column="customer_mobile"/>
       <result property="openId" column="open_id"/>

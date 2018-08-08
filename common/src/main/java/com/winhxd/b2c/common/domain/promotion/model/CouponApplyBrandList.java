@@ -1,27 +1,27 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
 public class CouponApplyBrandList {
-    private Integer id;
+    private Long id;
 
-    private Integer applyBrandId;
+    private Long applyBrandId;
 
     private String brandCode;
 
     private Short status;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getApplyBrandId() {
+    public Long getApplyBrandId() {
         return applyBrandId;
     }
 
-    public void setApplyBrandId(Integer applyBrandId) {
+    public void setApplyBrandId(Long applyBrandId) {
         this.applyBrandId = applyBrandId;
     }
 

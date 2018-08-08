@@ -1,17 +1,5 @@
 package com.winhxd.b2c.common.feign.store;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -22,6 +10,14 @@ import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengyy
@@ -46,7 +42,7 @@ public interface StoreServiceClient {
      *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List   <   ShopCarProdVO>>
+     * @return ResponseResult<List       <       ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
@@ -98,6 +94,16 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
     ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
+
+    /**
+     * @param ids 门店id
+     * @return 门店信息集合
+     * @author chengyy
+     * @date 2018/8/8 10:10
+     * @Description 根据id批量查询门店信息
+     */
+    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.GET)
+    ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
 }
 
 /**
@@ -152,6 +158,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     @Override
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfo，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
+        logger.error("StoreServiceClientFallBack -> findStoreUserInfoList，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

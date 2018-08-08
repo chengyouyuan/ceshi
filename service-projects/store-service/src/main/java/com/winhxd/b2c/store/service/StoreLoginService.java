@@ -7,9 +7,9 @@ import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 @Service
 public interface StoreLoginService {
 
-	int modifyPassword(StoreUserInfo storeUserInfo);
+	int modifyStoreUserInfo(StoreUserInfo storeUserInfo);
 
-	StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile);
+	StoreUserInfo getstoreUserInfo(StoreUserInfo storeUserInfo);
 
 	int saveStoreInfo(StoreUserInfo info);
 

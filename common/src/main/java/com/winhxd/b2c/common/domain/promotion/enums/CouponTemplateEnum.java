@@ -24,6 +24,9 @@ public enum CouponTemplateEnum {
     SCAN_CODE_PAY((short) 1,"订单金额"),
     ONLINE_PAY((short) 2, "订单金额"),
 
+    PERCENT_NOT_EQ100((short) 1,"占比之和不等于100"),
+    INVERSTOR_REPEAT((short) 2,"出资方重复"),
+    INVERSTOR_DETAIL_ISNULL((short) 3,"出资方明细为空"),
     /**
      * 出资方类型
      */

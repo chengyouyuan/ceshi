@@ -25,7 +25,10 @@ import feign.hystrix.FallbackFactory;
 public interface StoreHxdServiceClient {
 
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.GET)
-    ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword); 
+    ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, 
+    		@RequestParam("storePassword") String storePassword); 
+    @RequestMapping(value = "/hxdStore/getStoreUserInfoByCustomerId", method = RequestMethod.GET)
+    ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId); 
 
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId);
@@ -81,6 +84,12 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
         logger.error("StoreHxdServiceClient -> getStoreBaseInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+	@Override
+	public ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(Long customerId) {
+		  logger.error("惠下单 StoreHxdServiceClientFallBack -> getStoreUserInfoByCustomerId报错，错误信息为{}", throwable);
+	        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 
 }
 

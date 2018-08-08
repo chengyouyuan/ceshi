@@ -1,9 +1,11 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "用户请求参数",description = "后台用户列表请求参数")
-public class CouponActivityCondition {
+public class CouponActivityCondition extends BaseCondition implements Serializable {
 
     @ApiModelProperty(value = "优惠券活动ID")
     private Long id;

@@ -46,7 +46,6 @@
     updated
   </sql>
 
-
   <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
@@ -115,42 +114,42 @@
     LEFT JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id
     LEFT JOIN coupon_template ct ON ct.id = cat.template_id
     LEFT JOIN coupon_activity_store_customer casc ON casc.coupon_activity_template_id = cat.id
-    LEFT JOIN store_user_info sui ON sui.store_id = casc.store_id
+    LEFT JOIN store_user_info sui ON sui.id = casc.store_id
     WHERE
     1 = 1
     AND ca.`status` = '1'
-    <if test="code != null">
-      AND ca.`code` = #{code,jdbcType=VARCHAR},
+    <if test="condition.code != null">
+      AND ca.`code` = #{condition.code}
     </if>
-    <if test="name != null">
-      AND ca.`name` = #{name,jdbcType=VARCHAR},
+    <if test="condition.name != null">
+      AND ca.`name` = #{condition.name}
     </if>
-    <if test="templateCode != null">
-      AND ct.`code` = #{templateCode,jdbcType=VARCHAR},
+    <if test="condition.templateCode != null">
+      AND ct.`code` = #{condition.templateCode}
     </if>
-    <if test="storeId != null">
-      AND casc.store_id = #{storeId,jdbcType=BIGINT},
+    <if test="condition.storeId != null">
+      AND casc.store_id = #{condition.storeId}
     </if>
-    <if test="customerMobile != null">
-      AND cui.customer_mobile = #{customerMobile,jdbcType=VARCHAR},
+    <if test="condition.customerMobile != null">
+      AND cui.customer_mobile = #{condition.customerMobile}
     </if>
-    <if test="store_name != null">
-      AND sui.store_name = #{store_name,jdbcType=VARCHAR},
+    <if test="condition.storeName != null">
+      AND sui.store_name = #{condition.storeName}
     </if>
-    <if test="couponNumType != null">
-      AND cat.coupon_num_type = = #{couponNumType,jdbcType=SMALLINT},
+    <if test="condition.couponNumType != null">
+      AND cat.coupon_num_type = #{condition.couponNumType}
     </if>
-    <if test="customerVoucherLimitType != null">
-      AND cat.customer_voucher_limit_type = = #{customerVoucherLimitType,jdbcType=SMALLINT},
+    <if test="condition.customerVoucherLimitType != null">
+      AND cat.customer_voucher_limit_type = #{condition.customerVoucherLimitType}
     </if>
-    <if test="createdByName != null">
-      AND ca.created_by_name = = #{createdByName,jdbcType=VARCHAR},
+    <if test="condition.createdByName != null">
+      AND ca.created_by_name = #{condition.createdByName}
     </if>
-    <if test="createdStart != null">
-      AND ca.created &lt; #{createdStart,jdbcType=TIMESTAMP},
+    <if test="condition.createdStart != null">
+      AND ca.created &lt; #{condition.createdStart}
     </if>
-    <if test="createdEnd != null">
-      AND ca.created &gt; #{createdEnd,jdbcType=TIMESTAMP},
+    <if test="condition.createdEnd != null">
+      AND ca.created &gt; #{condition.createdEnd}
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

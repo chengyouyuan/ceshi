@@ -7,6 +7,9 @@ import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author chengyy
  * @Description: 门店服务接口类
@@ -63,4 +66,12 @@ public interface StoreService {
      * @return
      */
     int updateByPrimaryKeySelective(StoreUserInfo record);
+
+    /**
+     * @return 门店信息
+     * @Description: 根据ids进行批量查询门店信息
+     * @author chengyy
+     * @date 2018/8/8 10:16
+     */
+    List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids);
 }

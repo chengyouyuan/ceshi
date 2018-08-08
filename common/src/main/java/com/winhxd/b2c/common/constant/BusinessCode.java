@@ -26,8 +26,11 @@ public final class BusinessCode {
     public static final int CODE_1008 = 1008;
     /** 未定义的API */
     public static final int CODE_1009 = 1009;
-
-
+    /** 改微信号已绑定过账号 */
+    public static final int CODE_1010 = 1010;
+    /** 微信快捷登录绑定账号无效 */
+    public static final int CODE_1011 = 1011;
+    
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
     /** 新密码与原密码相同 */
@@ -126,6 +129,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单状态错误")
     public static final int WRONG_ORDER_STATUS = 400006;
+    
+    @ApiModelProperty("订单金额错误")
+    public static final int WRONG_ORDER_TOTAL_MONEY = 400007;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;

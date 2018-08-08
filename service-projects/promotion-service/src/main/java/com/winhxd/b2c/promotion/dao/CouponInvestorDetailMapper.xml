@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="investor_id" jdbcType="BIGINT" property="investorId" />
     <result column="investor" jdbcType="INTEGER" property="investor" />
     <result column="percent" jdbcType="REAL" property="percent" />
@@ -10,24 +10,26 @@
     <result column="names" jdbcType="VARCHAR" property="names" />
     <result column="investor_type" jdbcType="SMALLINT" property="investorType" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, investor_id, investor, percent, ids, names, investor_type
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from coupon_investor_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_investor_detail
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
     insert into coupon_investor_detail (id, investor_id, investor, 
       percent, ids, names, investor_type
       )
-    values (#{id,jdbcType=INTEGER}, #{investorId,jdbcType=BIGINT}, #{investor,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=BIGINT}, #{investorId,jdbcType=BIGINT}, #{investor,jdbcType=INTEGER}, 
       #{percent,jdbcType=REAL}, #{ids,jdbcType=VARCHAR}, #{names,jdbcType=VARCHAR}, #{investorType,jdbcType=SMALLINT}
       )
   </insert>
@@ -58,7 +60,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="investorId != null">
         #{investorId,jdbcType=BIGINT},
@@ -102,7 +104,7 @@
         investor_type = #{investorType,jdbcType=SMALLINT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
     update coupon_investor_detail
@@ -112,6 +114,6 @@
       ids = #{ids,jdbcType=VARCHAR},
       names = #{names,jdbcType=VARCHAR},
       investor_type = #{investorType,jdbcType=SMALLINT}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

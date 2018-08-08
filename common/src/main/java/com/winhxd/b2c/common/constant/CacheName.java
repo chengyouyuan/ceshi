@@ -36,5 +36,8 @@ public class CacheName {
      * C端用户登录key
      */
     public static final String CUSTOMER_USER_INFO_TOKEN = "CUSTOMER_USER_INFO_TOKEN:";
-
+    /**
+     * 用户确认订单防频繁操作
+     */
+    public static final String CACHE_KEY_CUSTOMER_ORDER_REPEAT = "CACHE_KEY_CUSTOMER_ORDER_REPEAT";
 }

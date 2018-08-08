@@ -76,6 +76,8 @@ public final class BusinessCode {
     public static final int CODE_402011 = 402011;
     /** 购物车:购物车商品价格有变动*/
     public static final int CODE_402012 = 402012;
+    /** 购物车:用户下单操作频繁*/
+    public static final int CODE_402014 = 402014;
 
 
     /** 查询订单参数异常*/

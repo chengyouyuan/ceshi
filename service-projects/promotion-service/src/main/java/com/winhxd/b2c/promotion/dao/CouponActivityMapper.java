@@ -1,10 +1,10 @@
 package com.winhxd.b2c.promotion.dao;
 
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public interface CouponActivityMapper {
      * @param condition
      * @return
      */
-    PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition);
+    List<CouponActivityVO> queryCouponActivity(@Param("condition") CouponActivityCondition condition);
 
     /**
      * 查询优惠券列表
@@ -49,4 +49,5 @@ public interface CouponActivityMapper {
      * @return
      */
     List<CouponVO> selectUnclaimedCouponList(Long storeId);
+
 }

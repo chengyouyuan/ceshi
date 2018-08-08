@@ -18,8 +18,10 @@ import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
@@ -204,23 +206,31 @@ public class ApiCustomerLoginController {
 
 	/**
 	 * @author wufuyun
-	 * @date 2018年8月6日 上午9:56:37
-	 * @Description 用户领取礼包
+	 * @date  2018年8月8日 下午8:56:52
+	 * @Description 用户换绑手机号
 	 * @param customerUserInfoCondition
 	 * @return
 	 */
-	@ApiOperation(value = "领取礼包,返回列表")
+	@ApiOperation(value = "C端—用户换绑手机号")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@RequestMapping(value = "2023/v1/customerEasy", method = RequestMethod.POST)
-	public ResponseResult<String> customerEasy(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+	public ResponseResult<String> CustomerChangeMobile(@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
-			if (null == customerUserInfoCondition) {
+			if (null == customerChangeMobileCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-			// TODO:掉寒宁服务
+			CustomerUserInfo info = new CustomerUserInfo();
+			CustomerUser user = UserContext.getCurrentCustomerUser();
+			if(null == user.getCustomerId()){
+				return new ResponseResult<>(BusinessCode.CODE_1002);
+			}
+			info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
+			info.setCustomerId(user.getCustomerId());
+			customerLoginService.updateCustomerInfo(info);
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

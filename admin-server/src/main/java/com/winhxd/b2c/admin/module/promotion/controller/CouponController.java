@@ -193,6 +193,9 @@ public class CouponController {
 	@ApiOperation("新建出资方")
 	@PostMapping(value = "/v1/addCouponInvestor")
 	public ResponseResult addCouponInvestor(@RequestBody LinkedHashMap detailData){
+		/**
+		 *  校验参数
+		 */
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
@@ -211,6 +214,8 @@ public class CouponController {
 		ResponseResult responseResult = couponInvestorServiceClient.addCouponInvestor(condition);
 		return responseResult;
 	}
+
+
 
 
 	@ApiOperation("查看出资方详情")

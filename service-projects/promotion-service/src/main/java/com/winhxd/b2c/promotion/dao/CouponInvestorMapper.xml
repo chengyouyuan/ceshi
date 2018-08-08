@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.promotion.dao.CouponInvestorMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
@@ -22,22 +22,41 @@
     select 
     <include refid="Base_Column_List" />
     from coupon_investor
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from coupon_investor
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
+
+
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
-    insert into coupon_investor (id, code, name, 
-      remarks, status, created_by, 
-      created_by_name, created, update_by, 
+    insert into coupon_investor (id, code, name,
+      remarks, status, created_by,
+      created_by_name, created, update_by,
       updated_by_name, updated)
-    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
-      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, 
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT},
       #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
       #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
   </insert>
+
+
+  <!--  新建出资方主表插入sql -->
+  <insert id="insertCouponInvestor" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
+    insert into coupon_investor (id, code, name,
+    <if test="remarks!=null and remarks!=''">remarks,</if>
+    status, created_by,
+    created_by_name, created )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+    <if test="remarks!=null and remarks!=''">#{remarks,jdbcType=VARCHAR},</if>
+    #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT},
+    #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
+  </insert>
+
+
+
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
     insert into coupon_investor
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -77,7 +96,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
@@ -145,7 +164,7 @@
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
     update coupon_investor
@@ -159,6 +178,6 @@
       update_by = #{updateBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

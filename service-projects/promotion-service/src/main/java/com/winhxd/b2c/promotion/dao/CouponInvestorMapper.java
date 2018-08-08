@@ -14,4 +14,7 @@ public interface CouponInvestorMapper {
     int updateByPrimaryKeySelective(CouponInvestor record);
 
     int updateByPrimaryKey(CouponInvestor record);
+
+    Long insertCouponInvestor(CouponInvestor couponInvestor);
+
 }

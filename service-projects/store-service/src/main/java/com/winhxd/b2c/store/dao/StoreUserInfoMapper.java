@@ -23,7 +23,7 @@ public interface StoreUserInfoMapper {
 
     int updateByPrimaryKey(StoreUserInfo record);
 
-    StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeMobile);
+    StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeUserInfo);
 
     List<StoreUserInfo> findStoreUserInfo(StoreUserInfo storeUserInfo);
 

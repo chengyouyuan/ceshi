@@ -90,7 +90,8 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效")})
 	@RequestMapping(value = "1008/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> saveStoreLogin(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
@@ -312,7 +313,7 @@ public class ApiStoreLoginController {
 			 * 掉惠下单服务查询门店用户信息
 			 */
 			ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
-					storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
+					storeUserInfoCondition.getStoreMobile(), "");
 			Map<String, Object> map = object.getData();
 			if (map.isEmpty()) {
 				return new ResponseResult<>(BusinessCode.CODE_1004);

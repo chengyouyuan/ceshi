@@ -26,8 +26,7 @@ public class StoreLoginServiceImpl implements StoreLoginService{
 	}
 	@Override
 	public StoreUserInfo getstoreUserInfo(StoreUserInfo storeUserInfo) {
-		// TODO Auto-generated method stub
-		return null;
+		return storeUserInfoMapper.selectByStoreUserInfo(storeUserInfo);
 	}
 
 }

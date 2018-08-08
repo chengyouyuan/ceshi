@@ -108,6 +108,7 @@ public class ApiCustomerLoginController {
 					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 					vo.setToken(customerUserInfo.getToken());
 					CustomerUser user = new CustomerUser();
+					user.setOpenId(mini.getOpenId());
 					BeanUtils.copyProperties(vo, user);
 					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 							JsonUtil.toJSONString(user));
@@ -126,6 +127,7 @@ public class ApiCustomerLoginController {
 					vo.setToken(DB.getToken());
 					if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())) {
 						CustomerUser user = new CustomerUser();
+						user.setOpenId(DB.getOpenId());
 						BeanUtils.copyProperties(vo, user);
 						cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 								JsonUtil.toJSONString(user));

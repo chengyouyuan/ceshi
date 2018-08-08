@@ -18,7 +18,7 @@ public class StoreUserInfo implements Serializable {
      */
     private String storeName;
     /**
-     * 惠下单门店用户id
+     * 惠下单门店用户id(云平台crm_ws_customer表的customer_id)
      */
     private Long storeCustomerId;
     /**

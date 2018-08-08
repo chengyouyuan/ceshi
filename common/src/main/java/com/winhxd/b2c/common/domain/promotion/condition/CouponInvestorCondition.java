@@ -10,6 +10,7 @@ import java.util.List;
  * @Description
  **/
 public class CouponInvestorCondition extends BaseCondition implements Serializable {
+    private String id;
     private String code;
     private String name;
     private String remarks;
@@ -73,5 +74,13 @@ public class CouponInvestorCondition extends BaseCondition implements Serializab
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

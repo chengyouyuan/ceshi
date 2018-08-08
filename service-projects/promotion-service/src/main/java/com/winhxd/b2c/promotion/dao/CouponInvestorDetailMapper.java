@@ -18,5 +18,7 @@ public interface CouponInvestorDetailMapper {
 
     int updateByPrimaryKey(CouponInvestorDetail record);
 
+    void updateCouponInvestorDetailByInvetorId(CouponInvestorDetail detail);
 
+    void deleteCouponInvestorDetailByInvetorId(@Param("investorId") long investorId);
 }

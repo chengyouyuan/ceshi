@@ -19,10 +19,10 @@ public class CustomerBrowseLog {
     @ApiModelProperty("id主键")
     private Long id;
 
-    @ApiModelProperty("C端用户浏览的门店编码")
+    @ApiModelProperty("用户浏览的门店编码(store_user_info表的store_customer_id)")
     private Long storeId;
 
-    @ApiModelProperty("C端用户的id")
+    @ApiModelProperty("C端用户的id(customer_user_info表的customer_id)")
     private Long customerId;
 
     @ApiModelProperty("进入时间（浏览开始时间）")
@@ -30,5 +30,8 @@ public class CustomerBrowseLog {
 
     @ApiModelProperty("退出时间（浏览结束时间）")
     private Date logoutTime;
+
+    @ApiModelProperty("浏览时长,毫秒值")
+    private Long stayTimeMillis;
 
 }

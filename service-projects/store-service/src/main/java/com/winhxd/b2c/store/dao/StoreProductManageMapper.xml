@@ -5,7 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="prod_id" jdbcType="VARCHAR" property="prodId"/>
-        <result column="sku_attribute_option" jdbcType="INTEGER" property="skuAttributeOption"/>
+        <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
         <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
         <result column="recommend" jdbcType="TINYINT" property="recommend"/>
         <result column="prod_status" jdbcType="TINYINT" property="prodStatus"/>
@@ -145,7 +145,7 @@
     created, updated_by, updated_by_name,
     updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodId,jdbcType=VARCHAR},
-    #{skuAttributeOption,jdbcType=INTEGER}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
+    #{skuAttributeOption,jdbcType=VARCHAR}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
     #{prodStatus,jdbcType=TINYINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
     #{putawayTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
     #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
@@ -214,7 +214,7 @@
                 #{prodId,jdbcType=VARCHAR},
             </if>
             <if test="skuAttributeOption != null">
-                #{skuAttributeOption,jdbcType=INTEGER},
+                #{skuAttributeOption,jdbcType=VARCHAR},
             </if>
             <if test="sellMoney != null">
                 #{sellMoney,jdbcType=DECIMAL},
@@ -265,7 +265,7 @@
                 prod_id = #{prodId,jdbcType=VARCHAR},
             </if>
             <if test="skuAttributeOption != null">
-                sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
+                sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
             </if>
             <if test="sellMoney != null">
                 sell_money = #{sellMoney,jdbcType=DECIMAL},
@@ -310,7 +310,7 @@
     update store_product_manage
     set store_id = #{storeId,jdbcType=BIGINT},
       prod_id = #{prodId,jdbcType=VARCHAR},
-      sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
+      sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       sell_money = #{sellMoney,jdbcType=DECIMAL},
       recommend = #{recommend,jdbcType=TINYINT},
       prod_status = #{prodStatus,jdbcType=TINYINT},

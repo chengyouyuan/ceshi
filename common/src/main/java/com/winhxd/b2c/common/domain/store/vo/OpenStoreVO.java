@@ -27,28 +27,5 @@ public class OpenStoreVO {
     @ApiModelProperty(value = "未完善信息时，提示列表")
     private List<String> noPerfectMessage;
 
-    @ApiModelProperty(value = "门店编码", required = true)
-    private Long storeId;
-
-    @ApiModelProperty(value = "门店头像")
-    private String storeImg;
-
-    @ApiModelProperty(value = "门店名称", required = true)
-    private String storeName;
-
-    @ApiModelProperty(value = "店主姓名", required = true)
-    private String shopkeeper;
-
-    @ApiModelProperty(value = "店主头像")
-    private String shopOwnerImg;
-
-    @ApiModelProperty(value = "省", required = true)
-    private String province;
-
-    @ApiModelProperty(value = "市", required = true)
-    private String city;
-
-    @ApiModelProperty(value = "区县", required = true)
-    private String county;
 
 }

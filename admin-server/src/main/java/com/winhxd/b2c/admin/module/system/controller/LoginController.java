@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
+import com.winhxd.b2c.common.domain.system.user.dto.SysUserLoginDTO;
 import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -20,12 +21,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -57,10 +56,6 @@ public class LoginController {
     private UserServiceClient userServiceClient;
 
     @ApiOperation("登录")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "account", value = "账号", required = true, dataType = "String", paramType = "form"),
-            @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String", paramType = "form")
-    })
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -70,21 +65,23 @@ public class LoginController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @PostMapping(value = "/login")
-    public ResponseResult<Boolean> login(String account, String password, HttpServletRequest request, HttpServletResponse response) {
-        logger.info("{} - 用户登录, 参数：account={}", MODULE_NAME, account);
+    public ResponseResult<Boolean> login(@RequestBody SysUserLoginDTO userLoginDTO, HttpServletRequest request, HttpServletResponse response) {
+        logger.info("{} - 用户登录, 参数：userLoginDTO={}", MODULE_NAME, userLoginDTO);
+
+        userLoginDTO.setPassword(DigestUtils.md5DigestAsHex(userLoginDTO.getPassword().getBytes()));
 
         ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
-        if(StringUtils.isBlank(account) || StringUtils.isBlank(password)){
-            logger.error("{} - 参数无效，账号：{}", MODULE_NAME, account);
+        if(StringUtils.isBlank(userLoginDTO.getAccount()) || StringUtils.isBlank(userLoginDTO.getPassword())){
+            logger.error("{} - 参数无效，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1007);
             result.setData(false);
             return result;
         }
 
-        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(account);
+        ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userLoginDTO.getAccount());
         if(responseResult.getCode() != BusinessCode.CODE_OK){
-            logger.error("{} - {}，账号：{}", MODULE_NAME, responseResult.getMessage(), account);
+            logger.error("{} - {}，账号：{}", MODULE_NAME, responseResult.getMessage(), userLoginDTO);
             result = new ResponseResult<>(responseResult.getCode());
             result.setData(false);
             return result;
@@ -92,22 +89,22 @@ public class LoginController {
 
         SysUser sysUser = responseResult.getData();
         if(null == sysUser){
-            logger.error("{} - 登录账号无效，账号：{}", MODULE_NAME, account);
+            logger.error("{} - 登录账号无效，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1004);
             result.setData(false);
             return result;
         }
 
-        String encodePassword = DigestUtils.md5DigestAsHex(password.getBytes());
-        if(!sysUser.getPassword().equals(encodePassword)){
-            logger.error("{} - 登录密码错误，账号：{}", MODULE_NAME, account);
+
+        if(!sysUser.getPassword().equals(userLoginDTO.getPassword())){
+            logger.error("{} - 登录密码错误，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1005);
             result.setData(false);
             return result;
         }
 
         if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
-            logger.error("{} - 账号未启用，账号：{}", MODULE_NAME, account);
+            logger.error("{} - 账号未启用，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1006);
             result.setData(false);
             return result;
@@ -144,7 +141,7 @@ public class LoginController {
         response.addCookie(tokenCookie);
 
         // 登录成功
-        logger.info("{} - 用户登录成功, 参数：userCode={}", MODULE_NAME, account);
+        logger.info("{} - 用户登录成功, 账号={}", MODULE_NAME, userLoginDTO);
         result.setData(true);
         return result;
     }

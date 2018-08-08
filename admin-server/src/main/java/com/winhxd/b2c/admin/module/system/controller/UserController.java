@@ -53,9 +53,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/user/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/user/add")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
-    public ResponseResult add(SysUserDTO sysUserDTO) {
+    public ResponseResult add(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
@@ -86,9 +86,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/user/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/user/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
-    public ResponseResult edit(SysUserDTO sysUserDTO) {
+    public ResponseResult edit(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
@@ -115,9 +115,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PutMapping(value = "/user/updatePassword", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(value = "/user/updatePassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
-    public ResponseResult updatePassword(SysUserPasswordDTO passwordDTO){
+    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
 
         if(null == passwordDTO.getId()){
@@ -142,9 +142,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/user/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(value = "/user/list")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
-    public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition){
+    public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
        return userServiceClient.list(condition);
     }
@@ -176,7 +176,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/user/existsAccount", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/user/existsAccount")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
     public ResponseResult<Boolean> add(String account) {
         logger.info("{} - 验证用户是否已存在, 参数：account={}", MODULE_NAME, account);

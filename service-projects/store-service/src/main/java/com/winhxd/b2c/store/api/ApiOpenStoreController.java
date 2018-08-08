@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.OpenStoreCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
@@ -52,20 +51,20 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeCustomerId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1000/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody OpenStoreCondition openStoreCondition) {
-        if (openStoreCondition == null || openStoreCondition.getStoreId() == null) {
-            logger.error("惠小店开店条件验证接口 checkStoreInfo,storeId参数为空");
+    public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody Long storeCustomerId) {
+        if (storeCustomerId == null) {
+            logger.error("惠小店开店条件验证接口 checkStoreInfo,storeCustomerId参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         OpenStoreVO openStoreVO = new OpenStoreVO();
         try {
-            logger.info("惠小店开店条件验证接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
+            logger.info("惠小店开店条件验证接口入参为 storeCustomerId：{}", storeCustomerId);
             //是否开过小店
-            StoreUserInfo storeUserInfo = storeService.selectByStoreId(openStoreCondition.getStoreId());
+            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeCustomerId);
             if (storeUserInfo == null) {
                 responseResult.setCode(BusinessCode.CODE_200004);
                 responseResult.setMessage("门店信息不存在");
@@ -79,7 +78,7 @@ public class ApiOpenStoreController {
                 openStoreVO.setStoreStatus((byte) 0);
             }
             //是否完善信息
-            ResponseResult<List<String>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(openStoreCondition.getStoreId().toString());
+            ResponseResult<List<String>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
             if (noPerfectResult.getCode() == 1) {
                 List<String> list = noPerfectResult.getData();
                 if (list.size() > 0) {
@@ -105,19 +104,19 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "惠小店开店基础信息查询接口", notes = "惠小店开店基础信息查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OpenStoreVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeCustomerId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1001/v1/getStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenStoreVO> getStoreBaseInfo(@RequestBody OpenStoreCondition openStoreCondition) {
-        if (openStoreCondition == null || openStoreCondition.getStoreId() == null) {
-            logger.error("惠小店开店基础信息查询接口 getStoreBaseInfo,storeId参数为空");
+    public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo(@RequestBody Long storeCustomerId) {
+        if (storeCustomerId == null) {
+            logger.error("惠小店开店基础信息查询接口 getStoreBaseInfo,storeCustomerId参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-        ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
+        ResponseResult<StoreBaseInfoVO> responseResult = new ResponseResult<>();
         try {
-            logger.info("惠小店开店基础信息查询接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
-            storeHxdServiceClient.getStoreBaseInfo(openStoreCondition.getStoreId().toString());
-            responseResult.setData(new OpenStoreVO());
+            logger.info("惠小店开店基础信息查询接口入参为 storeCustomerId：{}", storeCustomerId);
+            storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
+            responseResult.setData(new StoreBaseInfoVO());
         } catch (Exception e) {
             logger.error("惠小店开店基础信息查询接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -133,7 +132,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200005, message = "门店基础信息保存参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "1002/v1/modifyStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBusinessInfoVO> modifyStoreBaseInfo(@RequestBody StoreBaseInfoCondition storeBaseInfoCondition) {
-        if (storeBaseInfoCondition == null || storeBaseInfoCondition.getStoreId() == null ||
+        if (storeBaseInfoCondition == null || storeBaseInfoCondition.getStoreCustomerId() == null ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getShopOwnerImg()) || StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode())) {
@@ -143,9 +142,9 @@ public class ApiOpenStoreController {
         ResponseResult<StoreBusinessInfoVO> responseResult = new ResponseResult<>();
         try {
             logger.info("惠小店开店基础信息保存接口入参为：{}", JsonUtil.toJSONString(storeBaseInfoCondition));
-            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeBaseInfoCondition.getStoreId());
+            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeBaseInfoCondition.getStoreCustomerId());
             if (storeUserInfo == null) {
-                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeBaseInfoCondition.getStoreId());
+                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeBaseInfoCondition.getStoreCustomerId());
                 throw new BusinessException(BusinessCode.CODE_200005);
             }
             BeanUtils.copyProperties(storeBaseInfoCondition, storeUserInfo);
@@ -166,18 +165,24 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "1003/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreBaseInfoVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
-        if (storeBusinessInfoCondition == null || storeBusinessInfoCondition.getStoreId() == null ||
+    public ResponseResult modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
+        if (storeBusinessInfoCondition == null || storeBusinessInfoCondition.getStoreCustomerId() == null ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
                 storeBusinessInfoCondition.getPaymentWay() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile()) || StringUtils.isBlank(storeBusinessInfoCondition.getStoreAddress())) {
             logger.error("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
         }
-        ResponseResult<StoreBaseInfoVO> responseResult = new ResponseResult<>();
+        ResponseResult responseResult = new ResponseResult();
         try {
             logger.info("惠小店开店店铺信息保存接口入参为：{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
-            responseResult.setData(new StoreBaseInfoVO());
+            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeBusinessInfoCondition.getStoreCustomerId());
+            if (storeUserInfo == null) {
+                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeBusinessInfoCondition.getStoreCustomerId());
+                throw new BusinessException(BusinessCode.CODE_200005);
+            }
+            BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
+            storeService.updateByPrimaryKeySelective(storeUserInfo);
         } catch (Exception e) {
             logger.error("惠小店开店店铺信息保存接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -190,21 +195,17 @@ public class ApiOpenStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreManageInfoVO.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200001, message = "customerId参数为空！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeCustomerId参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1004/v1/getStoreManageInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreManageInfoVO> getStoreManageInfo(@RequestBody OpenStoreCondition openStoreCondition) {
-        if (openStoreCondition == null || openStoreCondition.getCustomerId() == null) {
+    public ResponseResult<StoreManageInfoVO> getStoreManageInfo(@RequestBody Long storeCustomerId) {
+        if (storeCustomerId == null) {
             logger.error("惠小店管理首页获取数据接口 getStoreBaseInfo,customerId参数为空");
             throw new BusinessException(BusinessCode.CODE_200001);
         }
-        if (openStoreCondition.getStoreId() == null) {
-            logger.error("惠小店管理首页获取数据接口 getStoreBaseInfo,storeId参数为空");
-            throw new BusinessException(BusinessCode.CODE_200002);
-        }
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
         try {
-            logger.info("惠小店管理首页获取数据接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
+            logger.info("惠小店管理首页获取数据接口入参为 storeCustomerId：{}", storeCustomerId);
             responseResult.setData(new StoreManageInfoVO());
         } catch (Exception e) {
             logger.error("惠小店管理首页获取数据接口，服务器内部错误：{}", e);

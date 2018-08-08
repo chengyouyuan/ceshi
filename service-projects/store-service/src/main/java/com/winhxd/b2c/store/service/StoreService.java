@@ -55,10 +55,10 @@ public interface StoreService {
     /**
      * 根据门店编码查询门店信息
      *
-     * @param storeId 门店编码
+     * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(Long storeId);
+    StoreUserInfo selectByStoreId(Long storeCustomerId);
 
     /**
      * 修改门店信息非空的字段

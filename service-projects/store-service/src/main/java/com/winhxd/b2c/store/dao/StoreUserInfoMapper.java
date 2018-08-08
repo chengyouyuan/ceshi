@@ -39,10 +39,10 @@ public interface StoreUserInfoMapper {
     /**
      * 根据门店编码查询门店信息
      *
-     * @param storeId 门店编码
+     * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(@Param("storeId")Long storeId);
+    StoreUserInfo selectByStoreId(@Param("storeCustomerId")Long storeCustomerId);
 
     /**
      * @param ids 门店id

@@ -7,9 +7,10 @@
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="stay_time_millis" jdbcType="BIGINT" property="stayTimeMillis" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, customer_id, login_time, logout_time
+    id, store_id, customer_id, login_time, logout_time, stay_time_millis
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -23,9 +24,9 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     insert into customer_browse_log (id, store_id, customer_id, 
-      login_time, logout_time)
+      login_time, logout_time, stay_time_millis)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, 
-      #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP})
+      #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP}, #{stayTimeMillis, jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     insert into customer_browse_log
@@ -45,6 +46,9 @@
       <if test="logoutTime != null">
         logout_time,
       </if>
+      <if test="stayTimeMillis != null">
+        stay_time_millis,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -59,8 +63,8 @@
       <if test="loginTime != null">
         #{loginTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="logoutTime != null">
-        #{logoutTime,jdbcType=TIMESTAMP},
+      <if test="stayTimeMillis != null">
+        #{logoutTime,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -79,6 +83,9 @@
       <if test="logoutTime != null">
         logout_time = #{logoutTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="stayTimeMillis != null">
+        stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -87,7 +94,8 @@
     set store_id = #{storeId,jdbcType=BIGINT},
       customer_id = #{customerId,jdbcType=BIGINT},
       login_time = #{loginTime,jdbcType=TIMESTAMP},
-      logout_time = #{logoutTime,jdbcType=TIMESTAMP}
+      logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+      stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

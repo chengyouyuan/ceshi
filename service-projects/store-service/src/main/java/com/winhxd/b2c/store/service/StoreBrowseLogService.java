@@ -24,12 +24,12 @@ public interface StoreBrowseLogService {
      * @param customerId
      * @return
      */
-    Long getIdForLoginOut(Long storeId, Long customerId);
+    CustomerBrowseLog getIdForLoginOut(Long storeId, Long customerId);
 
     /**
      * 退出修改记录
      *
      * @param customerBrowseLog
      */
-    void modifyBrowseLogLogout(CustomerBrowseLog customerBrowseLog);
+    void modifyByPrimaryKey(CustomerBrowseLog customerBrowseLog);
 }

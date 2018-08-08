@@ -64,7 +64,7 @@
         #{loginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="stayTimeMillis != null">
-        #{logoutTime,jdbcType=BIGINT},
+        #{stayTimeMillis,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -99,11 +99,16 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectIdForLoginOut" resultType="java.lang.Long">
+  <select id="selectIdForLoginOut" resultMap="BaseResultMap">
     select
-    max(id) as id
+      <include refid="Base_Column_List" />
+    from customer_browse_log
+    where id = (
+    select
+      max(id) as id
     from customer_browse_log
     where store_id = #{storeId,jdbcType=BIGINT},
       customer_id = #{customerId,jdbcType=BIGINT}
+    )
   </select>
 </mapper>

@@ -11,4 +11,6 @@ public class OrderNotifyMsg {
     public static final String NEW_ORDER_NOTIFY_MSG_4_STORE = "【新订单】您有一笔新的惠小店订单";
     
     public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE = "【待自提】手机尾号{0}订单已付款待自提";
+    
+    public static final String ORDER_COMPLETE_MSG_4_STORE = "【已完成】 手机尾号{0}订单已完成";
 }

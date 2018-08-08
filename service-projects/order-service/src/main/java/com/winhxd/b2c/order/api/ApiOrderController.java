@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -43,23 +46,54 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
             @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-            @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_PICKUP_CODE, message = "提货码错误"),
             @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
-    @RequestMapping(value = "/423/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> orderConfirm4Store(@RequestBody OrderConfirmCondition condition) {
-        String logTitle = "/api-order/order/423/v1/orderConfirm4Store-B端确认订单接口";
+    @RequestMapping(value = "/424/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Void> orderPickup4Store(@RequestBody OrderPickupCondition condition) {
+        String logTitle = "/api-order/order/424/v1/orderPickup4Store-B端订单提货接口";
         LOGGER.info("{}=--开始--{}", logTitle, condition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
+        ResponseResult<Void> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
-            Long storeId = 0L;
-            if (storeId == null) {
+            StoreUser storeUser = UserContext.getCurrentStoreUser();
+            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
             }
-            condition.setStoreId(storeId);
+            condition.setStoreId(storeUser.getStoreCustomerId());
+            this.orderService.orderPickup4Store(condition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        LOGGER.info("{}=--结束 result={}", logTitle, result);
+        return result;
+    }
+    @ApiOperation(value = "B端接单计价", response = Boolean.class, notes = "B端接单计价")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+        @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+        @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+        @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
+        @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+        @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
+        @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+    })
+    @RequestMapping(value = "/423/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Void> orderConfirm4Store(@RequestBody OrderConfirmCondition condition) {
+        String logTitle = "/api-order/order/423/v1/orderConfirm4Store-B端确认订单接口";
+        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        ResponseResult<Void> result = new ResponseResult<>();
+        try {
+            //获取当前登录门店Id
+            StoreUser storeUser = UserContext.getCurrentStoreUser();
+            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+                throw new BusinessException(BusinessCode.CODE_1002);
+            }
+            condition.setStoreId(storeUser.getStoreCustomerId());
             this.orderService.orderConfirm4Store(condition);
-            result.setData(true);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());

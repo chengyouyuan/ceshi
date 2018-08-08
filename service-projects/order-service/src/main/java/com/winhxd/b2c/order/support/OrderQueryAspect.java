@@ -1,15 +1,21 @@
 package com.winhxd.b2c.order.support;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,18 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import javax.annotation.Resource;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 订单状态转换，code->mark
@@ -213,15 +211,15 @@ public class OrderQueryAspect {
                 }
             }
 
-            ResponseResult<List<StoreUserInfoVO1>> storeResponseResultData = this.storeServiceClient.findStoreUserInfoList(storeIds);
+            ResponseResult<List<StoreUserInfoVO>> storeResponseResultData = this.storeServiceClient.findStoreUserInfoList(storeIds);
             if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
-                List<StoreUserInfoVO1> storeInfoList = storeResponseResultData.getData();
+                List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
                 for (Object obj : objArr) {
                     Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
                     if (null != field) {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
-                            for (StoreUserInfoVO1 storeUserInfoVO : storeInfoList) {
+                            for (StoreUserInfoVO storeUserInfoVO : storeInfoList) {
                                 if (storeUserInfoVO.getStoreId().equals(field.get(obj))) {
                                     assembleInfos(obj, STORE_MOBILE, storeUserInfoVO.getStoreMobile());
                                 }

@@ -232,7 +232,7 @@ public class CouponController {
 	@ApiOperation("跳转到编辑出资方页面")
 	@GetMapping(value = "/v1/toEditCouponInvestor")
 	public ResponseResult toEditCouponInvestor(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 
@@ -248,7 +248,7 @@ public class CouponController {
 	@ApiOperation("删除出资方出资方")
 	@GetMapping(value = "/v1/updateCouponInvestorToValid")
 	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id);
 		return responseResult;
 	}
 

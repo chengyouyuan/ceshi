@@ -190,6 +190,7 @@
     </collection>
   </resultMap>
 
+  <!-- 关联查询出资方详情 sql -->
   <select id="selectCouponInvestorDetailById" parameterType="java.lang.Long" resultMap="ResultDetailMap">
       select a.id, a.code, a.name, a.remarks, a.status,
               b.percent,b.ids,b.names,b.investor_type
@@ -198,7 +199,14 @@
               coupon_investor_detail b
               on a.id = b.investor_id
               and a.id =#{id}
+              and a.status = 1
   </select>
 
+
+
+<!-- 设置无效 / 删除-->
+  <update id="updateCouponInvestorToValid" parameterType="java.lang.Long">
+      update coupon_investor set status = 0  where id = #{id}
+  </update>
 
 </mapper>

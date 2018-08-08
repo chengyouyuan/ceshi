@@ -110,4 +110,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         result.setData(vo);
         return result;
     }
+
+    @Override
+    public int updateCouponInvestorToValid(long id) {
+        int count = couponInvestorMapper.updateCouponInvestorToValid(id);
+        return count;
+    }
 }

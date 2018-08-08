@@ -21,4 +21,6 @@ public interface CouponInvestorMapper {
     Long insertCouponInvestor(CouponInvestor couponInvestor);
 
     CouponInvestorVO selectCouponInvestorDetailById(@Param("id") Long id);
+
+    int updateCouponInvestorToValid(@Param("id")long id);
 }

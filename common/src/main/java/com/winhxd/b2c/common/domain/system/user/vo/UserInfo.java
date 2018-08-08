@@ -32,6 +32,9 @@ public class UserInfo {
     @ApiModelProperty(value = "角色名称")
     private String roleName;
 
+    @ApiModelProperty(value = "token")
+    private String token;
+
     @ApiModelProperty(value = "权限列表")
     private List<String> permissions;
 

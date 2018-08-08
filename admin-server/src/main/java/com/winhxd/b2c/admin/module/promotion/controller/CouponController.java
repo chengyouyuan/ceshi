@@ -1,13 +1,19 @@
 package com.winhxd.b2c.admin.module.promotion.controller;
 
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponInvestorServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 
 
 /**
@@ -30,6 +40,8 @@ public class CouponController {
 	private Logger logger = LoggerFactory.getLogger(CouponController.class);
 	@Autowired
 	private CouponTemplateServiceClient couponTemplateServiceClient;
+	@Autowired
+	private CouponInvestorServiceClient couponInvestorServiceClient;
 	@Autowired
 	private CouponActivityServiceClient couponActivityServiceClient;
 
@@ -63,6 +75,9 @@ public class CouponController {
 		 */
 		return couponActivityServiceClient.addCouponActivity(condition);
 	}
+
+
+	//=====================================优惠券模板开始=============================================================
 	/**
 	 *
 	 *@Deccription  获取优惠券模板分页列表
@@ -161,6 +176,86 @@ public class CouponController {
 	}
 
 
-//========================================================================================================
+//============================================优惠券模板结束============================================================
+
+
+//============================================出资方开始============================================================
+
+
+	@ApiOperation("获取出资方分页列表")
+	@PostMapping(value = "/v1/getCouponInvestorPage")
+	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
+		System.out.println(condition);
+		ResponseResult<PagedList<CouponInvestorVO>> responseResult = null;
+		return responseResult;
+	}
+
+	@ApiOperation("新建出资方")
+	@PostMapping(value = "/v1/addCouponInvestor")
+	public ResponseResult addCouponInvestor(@RequestBody LinkedHashMap detailData){
+		String name = detailData.get("name").toString();
+		String remark = detailData.get("remark").toString();
+		ArrayList list  = (ArrayList)detailData.get("listDetail");
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+		String userId = adminUser.getId()+"";
+		String userName = adminUser.getUsername();
+		String code = getUUID();
+		CouponInvestorCondition condition = new CouponInvestorCondition();
+		condition.setCode(code);
+		condition.setName(name);
+		condition.setRemarks(remark);
+		condition.setUserId(userId);
+		condition.setUserName(userName);
+		condition.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
+		condition.setDetails(list);
+		ResponseResult responseResult = couponInvestorServiceClient.addCouponInvestor(condition);
+		return responseResult;
+	}
+
+
+	@ApiOperation("查看出资方详情")
+	@GetMapping(value = "/v1/viewCouponInvestorDetail")
+	public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id){
+		ResponseResult responseResult = null;
+		return responseResult;
+	}
+
+	@ApiOperation("跳转到编辑出资方页面")
+	@GetMapping(value = "/v1/toEditCouponInvestor")
+	public ResponseResult toEditCouponInvestor(@RequestParam("id") String id){
+		ResponseResult responseResult = null;
+		return responseResult;
+	}
+
+
+	@ApiOperation("编辑出资方出资方页面-确定")
+	@PostMapping(value = "/v1/updateCouponInvestor")
+	public ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition){
+		ResponseResult responseResult = null;
+		return responseResult;
+	}
+
+
+	@ApiOperation("删除出资方出资方")
+	@GetMapping(value = "/v1/updateCouponInvestorToValid")
+	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
+		ResponseResult responseResult = null;
+		return responseResult;
+	}
+
+
+//============================================出资方结束============================================================
+
+
+
+	/**
+	 * 自动生成32位的UUid，对应数据库的主键id进行插入用。
+	 * @return
+	 */
+	public String getUUID() {
+		return UUID.randomUUID().toString().replace("-", "");
+	}
+
+
 
 }

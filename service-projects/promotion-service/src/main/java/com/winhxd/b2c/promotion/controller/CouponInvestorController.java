@@ -31,5 +31,8 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       private CouponInvestorService couponInvestorService;
 
 
-
+      @Override
+      public ResponseResult addCouponInvestor(CouponInvestorCondition condition) {
+            return null;
+      }
 }

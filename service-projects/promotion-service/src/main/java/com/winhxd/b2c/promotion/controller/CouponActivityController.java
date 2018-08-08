@@ -75,14 +75,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
-            if (condition.getName() == null && condition.getCouponActivityDetailList() == null
+            if (condition.getName() == null && condition.getCouponActivityTemplateList() == null
                     && condition.getActivityStart()==null && condition.getActivityEnd() == null
                     && condition.getCouponNumType() == null && condition.getCustomerVoucherLimitType() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
-            if (condition.getName() == null && condition.getCouponActivityDetailList() == null
+            if (condition.getName() == null && condition.getCouponActivityTemplateList() == null
                     && condition.getActivityStart() == null && condition.getActivityEnd() == null
                     && condition.getCustomerVoucherLimitNum() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);

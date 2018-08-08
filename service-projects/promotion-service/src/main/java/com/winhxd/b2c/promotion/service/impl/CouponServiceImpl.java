@@ -95,7 +95,7 @@ public class CouponServiceImpl implements CouponService {
                 couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
                 couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
                 couponTemplateSend.setCustomerId(customerUser.getCustomerId());
-                couponTemplateSend.setCustomerMobile(customerUser.getCustomerMobile());
+                couponTemplateSend.setCustomerMobile("");
                 couponTemplateSend.setStartTime(activityTemplate.getStartTime());
                 couponTemplateSend.setEndTime(activityTemplate.getEndTime());
                 couponTemplateSend.setCount(1);
@@ -238,7 +238,7 @@ public class CouponServiceImpl implements CouponService {
         couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
         couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
         couponTemplateSend.setCustomerId(customerUser.getCustomerId());
-        couponTemplateSend.setCustomerMobile(customerUser.getCustomerMobile());
+        couponTemplateSend.setCustomerMobile("");
         couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
         couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
         couponTemplateSend.setCount(1);
@@ -288,7 +288,7 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateUse.setCouponPrice(condition.getCouponPrice());
             couponTemplateUse.setOrderPrice(condition.getOrderPrice());
             couponTemplateUse.setCustomerId(customerUser.getCustomerId());
-            couponTemplateUse.setCustomerMonbile(customerUser.getCustomerMobile());
+            couponTemplateUse.setCustomerMonbile("");
             couponTemplateUse.setCreated(new Date());
             couponTemplateUse.setCreatedBy(customerUser.getCustomerId());
             couponTemplateUse.setCreatedByName("");

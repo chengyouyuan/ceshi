@@ -25,6 +25,7 @@ import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
 
@@ -123,12 +124,13 @@ public class ApiCustomerLoginController {
 					vo.setCustomerId(DB.getCustomerId());
 					vo.setCustomerMobile(DB.getCustomerMobile());
 					vo.setToken(DB.getToken());
-					if(!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())){
+					if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())) {
 						CustomerUser user = new CustomerUser();
 						BeanUtils.copyProperties(vo, user);
 						cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 								JsonUtil.toJSONString(user));
-						cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+						cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
+								30 * 24 * 60 * 60);
 					}
 					result.setData(vo);
 				}
@@ -163,11 +165,29 @@ public class ApiCustomerLoginController {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
-			
+			if (cache.exists(
+					CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
+				return new ResponseResult<>(BusinessCode.CODE_1012);
+			}
+			/**
+			 * 随机生成6位数验证码
+			 */
+			String verificationCode = GeneratePwd.generatePwd6Mobile();
+			cache.set(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
+					verificationCode);
+			cache.expire(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
+					5 * 60);
+			/**
+			 * 60秒以后调用短信服务
+			 */
+			cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
+					verificationCode);
+			cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
+					60);
 			/**
 			 * 发送模板内容
 			 */
-			String content = "";
+			String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
 			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
 			return result;
 		} catch (BusinessException e) {

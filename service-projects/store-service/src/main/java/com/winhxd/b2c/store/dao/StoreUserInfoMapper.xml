@@ -40,7 +40,7 @@
     </foreach>
   </select>
   <select id="selectStoreUserInfoByCustomerId" resultMap="BaseResultMap">
-    select * from store_user_info sui left join customer_store_relation csr on sui.id = csr.store_user_id left join
+    select  sui.* from store_user_info sui left join customer_store_relation csr on sui.id = csr.store_user_id left join
       customer_user_info cui on cui.customer_id = csr.customer_id where cui.customer_id = #{customerUserId}
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

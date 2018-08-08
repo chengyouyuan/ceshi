@@ -63,8 +63,8 @@ public class StoreServiceImpl implements StoreService {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         //去除code尾部0
         String reginCode = null;
-        if (storeCondition.getReginCode() != null) {
-            reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
+        if (storeCondition.getRegionCode() != null) {
+            reginCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());

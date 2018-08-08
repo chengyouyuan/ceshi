@@ -226,24 +226,4 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
 	}
-
-    @ApiOperation(value = "更新优惠券使用状态", response = Boolean.class, notes = "更新优惠券使用状态")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
-    })
-    @RequestMapping(value = "/5010/v1/updateCouponStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> updateCouponStatus(@RequestBody CouponCondition condition) {
-        LOGGER.info("=/api-promotion/coupon/5010/v1/updateCouponStatus-更新优惠券使用状态=--开始--{}", condition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            //返回对象
-            Boolean flag =  couponService.updateCouponStatus(condition);
-            result.setData(flag);
-        } catch (Exception e) {
-            LOGGER.error("=/api-promotion/coupon/5010/v1/updateCouponStatus-更新优惠券使用状态=--异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        LOGGER.info("=/api-promotion/coupon/5010/v1/updateCouponStatus-更新优惠券使用状态=--结束 result={}", result);
-        return result;
-    }
 }

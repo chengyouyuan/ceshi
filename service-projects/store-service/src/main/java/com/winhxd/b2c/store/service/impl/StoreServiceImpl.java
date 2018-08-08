@@ -1,19 +1,16 @@
 package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
@@ -55,14 +52,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfoSimpleVO findStoreUserInfo(Long storeUserId) {
-        StoreUserInfo userInfo = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
-        if (userInfo == null) {
-            return null;
-        }
-        StoreUserInfoSimpleVO userInfoVO = new StoreUserInfoSimpleVO();
-        BeanUtils.copyProperties(userInfo, userInfoVO);
-        return userInfoVO;
+    public StoreUserInfoVO1 findStoreUserInfo(Long storeUserId) {
+        StoreUserInfo info =  storeUserInfoMapper.selectByPrimaryKey(storeUserId);
+        StoreUserInfoVO1 infoVO1 = new StoreUserInfoVO1();
+        BeanUtils.copyProperties(info,infoVO1);
+        return infoVO1;
+
     }
 
     @Override
@@ -129,6 +124,16 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfo selectByStoreId(Long storeId) {
         return storeUserInfoMapper.selectByStoreId(storeId);
+    }
+
+    @Override
+    public List<StoreUserInfoVO1> findStoreUserInfoList(Set<Long> ids) {
+        if(ids == null || ids.size() == 0){
+            return null;
+        }
+        List<StoreUserInfoVO1> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
+        return userInfos;
+
     }
 
     @Override

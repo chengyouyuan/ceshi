@@ -91,14 +91,11 @@ public class CouponActivityController implements CouponActivityServiceClient {
 
         ResponseResult responseResult = new ResponseResult();
         try {
-            int count = couponActivityService.saveCouponActivity(condition);
-            if(count > 0) {
-                responseResult.setCode(BusinessCode.CODE_OK);
-            }else{
-                responseResult.setCode(BusinessCode.CODE_1001);
-            }
+            couponActivityService.saveCouponActivity(condition);
+            responseResult.setCode(BusinessCode.CODE_OK);
         }catch (Exception e){
             e.printStackTrace();
+            responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;
     }
@@ -119,14 +116,11 @@ public class CouponActivityController implements CouponActivityServiceClient {
          */
         ResponseResult responseResult = new ResponseResult();
         try {
-            int count = couponActivityService.updateCouponActivity(condition);
-            if(count > 0) {
-                responseResult.setCode(BusinessCode.CODE_OK);
-            }else{
-                responseResult.setCode(BusinessCode.CODE_1001);
-            }
+            couponActivityService.updateCouponActivity(condition);
+            responseResult.setCode(BusinessCode.CODE_OK);
         }catch (Exception e){
             e.printStackTrace();
+            responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;
     }

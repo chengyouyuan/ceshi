@@ -1,11 +1,13 @@
 package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface StoreUserInfoMapper {
@@ -36,8 +38,18 @@ public interface StoreUserInfoMapper {
 
     /**
      * 根据门店编码查询门店信息
+     *
      * @param storeId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(@Param("storeId") Long storeId);
+    StoreUserInfo selectByStoreId(@Param("storeId")Long storeId);
+
+    /**
+     * @param ids 门店id
+     * @return 门店信息
+     * @author chengyy
+     * @date 2018/8/8 10:19
+     * @Description 根据ids进行批量查询门店信息
+     */
+    List<StoreUserInfoVO1> selectStoreUserByIds(@Param("dis") Set<Long> ids);
 }

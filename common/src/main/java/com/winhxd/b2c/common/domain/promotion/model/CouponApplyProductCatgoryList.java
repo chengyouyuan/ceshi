@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
 public class CouponApplyProductCatgoryList {
-    private Integer id;
+    private Long id;
 
     private Long applyProdutCatgoryId;
 
@@ -9,11 +9,11 @@ public class CouponApplyProductCatgoryList {
 
     private Short status;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

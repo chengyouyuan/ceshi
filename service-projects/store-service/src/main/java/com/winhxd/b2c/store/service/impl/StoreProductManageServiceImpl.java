@@ -28,7 +28,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
     StoreProductStatisticsMapper storeProductStatisticsMapper;
 
 	@Override
-	public List<String> selectSkusByConditon(StoreProductManageCondition condition) {
+	public List<String> findSkusByConditon(StoreProductManageCondition condition) {
 		
 		return storeProductManageMapper.selectSkusByConditon(condition);
 	}

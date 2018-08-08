@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.store.condition;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -34,7 +35,7 @@ public class StoreProductManageCondition implements Serializable{
 	private Byte recommend;
 	
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
-	private Byte prodStatus;
+	private List<Byte> prodStatus;
 	
 	@ApiModelProperty("商品spu")
 	private String prodCode;

@@ -129,6 +129,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单状态错误")
     public static final int WRONG_ORDER_STATUS = 400006;
+    
+    @ApiModelProperty("订单金额错误")
+    public static final int WRONG_ORDER_TOTAL_MONEY = 400007;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;

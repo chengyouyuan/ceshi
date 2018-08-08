@@ -52,7 +52,7 @@
       #{customerVoucherLimitType,jdbcType=SMALLINT}, #{customerVoucherLimitNum,jdbcType=INTEGER}, 
       #{sendNum,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate" useGeneratedKeys="true" keyProperty="id">
     insert into coupon_activity_template
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

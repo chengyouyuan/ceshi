@@ -143,23 +143,23 @@
     select
     <include refid="Base_Column_List"/>
     from shop_car
-    where
+    where 1 = 1
     <if test="customerId != null">
-      customer_id = #{customerId,jdbcType=BIGINT},
+      and customer_id = #{customerId,jdbcType=BIGINT}
     </if>
     <if test="storeId != null">
-      store_id = #{storeId,jdbcType=BIGINT},
+      and store_id = #{storeId,jdbcType=BIGINT}
     </if>
-    order by create
+    order by created
   </select>
   <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     delete from shop_car
-    where
+    where 1 = 1
     <if test="customerId != null">
-      customer_id = #{customerId,jdbcType=BIGINT},
+      and customer_id = #{customerId,jdbcType=BIGINT}
     </if>
     <if test="storeId != null">
-      store_id = #{storeId,jdbcType=BIGINT},
+      and store_id = #{storeId,jdbcType=BIGINT}
     </if>
   </delete>
   <insert id="insertByBatch" parameterType="java.util.List">

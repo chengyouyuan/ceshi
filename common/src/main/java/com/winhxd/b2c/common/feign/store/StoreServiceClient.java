@@ -7,7 +7,8 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengyy
@@ -40,7 +42,7 @@ public interface StoreServiceClient {
      *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List   <   ShopCarProdVO>>
+     * @return ResponseResult<List       <       ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
@@ -59,7 +61,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日下午1:40:49
      */
-    @RequestMapping(value = "/store/1018/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1018/v1/loginCheckSellMoney", method = RequestMethod.GET)
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**
@@ -91,7 +93,17 @@ public interface StoreServiceClient {
      * @Description 根据门店id(主键)查询门店信息
      */
     @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
-    ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(@PathVariable("id") Long id);
+    ResponseResult<StoreUserInfoVO1> findStoreUserInfo(@PathVariable("id") Long id);
+
+    /**
+     * @param ids 门店id
+     * @return 门店信息集合
+     * @author chengyy
+     * @date 2018/8/8 10:10
+     * @Description 根据id批量查询门店信息
+     */
+    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.GET)
+    ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(@RequestBody Set<Long> ids);
 }
 
 /**
@@ -144,8 +156,14 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(Long id) {
+    public ResponseResult<StoreUserInfoVO1> findStoreUserInfo(Long id) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfo，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(Set<Long> ids) {
+        logger.error("StoreServiceClientFallBack -> findStoreUserInfoList，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

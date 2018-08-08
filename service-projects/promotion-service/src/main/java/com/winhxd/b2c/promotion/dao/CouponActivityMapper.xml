@@ -45,7 +45,6 @@
     activity_status, status, created_by, created_by_name, created, update_by, updated_by_name, 
     updated
   </sql>
-
   <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
@@ -71,35 +70,27 @@
     cat.coupon_num,
     (
     SELECT
-    count(cts.id)
+    count(id)
     FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+    coupon_template_send
     WHERE
-    cts.`status` IN ('1', '2', '4')
-    AND car.coupon_activity_id = ca.id
+    STATUS IN ('2', '4')
     ) AS getNum,
     (
     SELECT
-    count(cts.id)
+    count(id)
     FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    LEFT JOIN coupon_template_use ctu ON ctu.send_id = cts.id
+    coupon_template_send
     WHERE
-    ctu.`status` = '1'
-    AND cts.`status` IN ('1', '2', '4')
-    AND car.coupon_activity_id = ca.id
+    STATUS = '1'
     ) AS useNum,
     (
     SELECT
-    count(cts.id)
+    count(id)
     FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+    coupon_template_send
     WHERE
-    cts.`status` = '5'
-    AND car.coupon_activity_id = ca.id
+    STATUS = '0'
     ) AS revocationNum,
     ca.activity_start,
     ca.activity_end,

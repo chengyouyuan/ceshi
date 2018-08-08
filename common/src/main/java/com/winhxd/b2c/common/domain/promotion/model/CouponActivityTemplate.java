@@ -30,6 +30,8 @@ public class CouponActivityTemplate {
 
     private Date sendTime;
 
+    private Short status;
+
     /**
      * 优惠券对应的门店用户集合
      */
@@ -145,5 +147,13 @@ public class CouponActivityTemplate {
 
     public void setCouponActivityStoreCustomerList(List<CouponActivityStoreCustomer> couponActivityStoreCustomerList) {
         this.couponActivityStoreCustomerList = couponActivityStoreCustomerList;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
     }
 }

@@ -42,4 +42,11 @@ public interface CouponActivityMapper {
      * @return
      */
     List<CouponVO> selectCouponList(Map<String, Object> map);
+
+    /**
+     * 查询该门店下可领取的优惠券
+     * @param storeId
+     * @return
+     */
+    List<CouponVO> selectUnclaimedCouponList(Long storeId);
 }

@@ -151,13 +151,16 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public PagedList<CouponVO> unclaimedCouponList(CouponCondition couponCondition) {
+    public List<CouponVO> unclaimedCouponList(CouponCondition couponCondition) {
         if(null == couponCondition.getCustomerId()){
             throw new NullPointerException("用户id不能为空");
         }
         ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(couponCondition.getCustomerId());
         StoreUserInfo storeUserInfo = result.getData();
-        //TODO Auto-generated method stub
+
+        List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getStoreId());
+
+
 
 
         return null;

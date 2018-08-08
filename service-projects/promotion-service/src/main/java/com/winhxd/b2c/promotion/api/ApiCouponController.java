@@ -68,12 +68,12 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<CouponVO>> unclaimedCouponList(@RequestBody CouponCondition couponCondition) {
+    public ResponseResult<List<CouponVO>> unclaimedCouponList(@RequestBody CouponCondition couponCondition) {
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}", couponCondition);
-        ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
+        ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         try {
             //返回对象
-            PagedList<CouponVO> pages = couponService.unclaimedCouponList(couponCondition);
+            List<CouponVO> pages = couponService.unclaimedCouponList(couponCondition);
             result.setData(pages);
         } catch (Exception e) {
             LOGGER.error("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);

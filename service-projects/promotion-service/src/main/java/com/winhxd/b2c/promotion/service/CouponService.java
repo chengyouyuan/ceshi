@@ -38,7 +38,7 @@ public interface CouponService {
      * @param couponCondition 入参
      * @return
      */
-    PagedList<CouponVO> unclaimedCouponList(CouponCondition couponCondition);
+    List<CouponVO> unclaimedCouponList(CouponCondition couponCondition);
 
     /**
      * 我的优惠券列表

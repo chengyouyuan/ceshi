@@ -40,6 +40,16 @@ public class CouponVO {
     private Date activityStart;
     @ApiModelProperty(value = "结束时间", required=true)
     private Date activityEnd;
+    @ApiModelProperty(value = "优惠券状态", required=true)
+    private String useStatus;
+
+    private String couponNumType;
+
+    private Integer couponNum;
+
+    private String limitType;
+
+    private Integer limitNum;
 
     public String getStatus() {
         return status;
@@ -151,5 +161,45 @@ public class CouponVO {
 
     public void setActivityEnd(Date activityEnd) {
         this.activityEnd = activityEnd;
+    }
+
+    public String getUseStatus() {
+        return useStatus;
+    }
+
+    public void setUseStatus(String useStatus) {
+        this.useStatus = useStatus;
+    }
+
+    public String getCouponNumType() {
+        return couponNumType;
+    }
+
+    public void setCouponNumType(String couponNumType) {
+        this.couponNumType = couponNumType;
+    }
+
+    public Integer getCouponNum() {
+        return couponNum;
+    }
+
+    public void setCouponNum(Integer couponNum) {
+        this.couponNum = couponNum;
+    }
+
+    public String getLimitType() {
+        return limitType;
+    }
+
+    public void setLimitType(String limitType) {
+        this.limitType = limitType;
+    }
+
+    public Integer getLimitNum() {
+        return limitNum;
+    }
+
+    public void setLimitNum(Integer limitNum) {
+        this.limitNum = limitNum;
     }
 }

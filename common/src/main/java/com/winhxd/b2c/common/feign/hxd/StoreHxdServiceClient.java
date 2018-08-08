@@ -30,6 +30,13 @@ public interface StoreHxdServiceClient {
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId);
 
+    /**
+     * 功能描述:获得门店在惠下单购买过商品sku
+     * @param storeId
+     * @return
+     * @auther lvsen
+     * @date 2018/8/7 20:40
+     */
     @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("storeId") String storeId);
 

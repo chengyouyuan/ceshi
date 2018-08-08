@@ -290,6 +290,22 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("门店确认订单结束：condition={}", condition);
     }
     
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean cancelOrder4TimeOut(String orderNo) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean orderRefund4TimeOut(String orderNo) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
     /**
      * 注册事物提交后相关操作
      *
@@ -504,5 +520,4 @@ public class CommonOrderServiceImpl implements OrderService {
                     .orderInfoAfterCreateSuccessProcess(orderInfo);
         }
     }
-
 }

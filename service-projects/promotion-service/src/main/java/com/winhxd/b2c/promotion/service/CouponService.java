@@ -57,9 +57,23 @@ public interface CouponService {
     Boolean userReceiveCoupon(ReceiveCouponCondition condition);
 
     /**
-     * 更新优惠券使用状态
+     * 订单使用优惠券
      * @param condition
      * @return
      */
-    Boolean updateCouponStatus(CouponCondition condition);
+    Boolean orderUseCoupon(CouponCondition condition);
+
+    /**
+     * 订单退回优惠券
+     * @param condition
+     * @return
+     */
+    Boolean orderUntreadCoupon(CouponCondition condition);
+
+    /**
+     * 撤回优惠券
+     * @param condition
+     * @return
+     */
+    Boolean revokeCoupon(CouponCondition condition);
 }

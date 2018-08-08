@@ -48,6 +48,8 @@ public class CouponServiceImpl implements CouponService {
     CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     CouponMapper couponMapper;
+    @Autowired
+    CouponTemplateUseMapper couponTemplateUseMapper;
     @Resource
     StoreServiceClient storeServiceClient;
 
@@ -261,21 +263,20 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean updateCouponStatus(CouponCondition condition) {
+    public Boolean orderUseCoupon(CouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
 
         List<Long> sendIds = condition.getSendIds();
-        Integer useStatus = condition.getUseStatus();
-        if(sendIds.isEmpty() || null == useStatus || condition.getCouponPrice() ==null || null ==condition.getOrderNo()||null == condition.getOrderPrice()){
+        if(sendIds.isEmpty() || condition.getCouponPrice() ==null || null ==condition.getOrderNo()||null == condition.getOrderPrice()){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
 
         for(int i =0 ;i<sendIds.size();i++){
             CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
-            couponTemplateSend.setStatus(useStatus.shortValue());
+            couponTemplateSend.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateSend.setUpdated(new Date());
             couponTemplateSend.setUpdateBy(customerUser.getCustomerId());
             couponTemplateSend.setUpdatedByName("");
@@ -285,6 +286,7 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateUse.setSendId(couponTemplateSend.getId());
             couponTemplateUse.setTemplateId(couponTemplateSend.getTemplateId());
             couponTemplateUse.setOrderNo(condition.getOrderNo());
+            couponTemplateUse.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateUse.setCouponPrice(condition.getCouponPrice());
             couponTemplateUse.setOrderPrice(condition.getOrderPrice());
             couponTemplateUse.setCustomerId(customerUser.getCustomerId());
@@ -292,6 +294,44 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateUse.setCreated(new Date());
             couponTemplateUse.setCreatedBy(customerUser.getCustomerId());
             couponTemplateUse.setCreatedByName("");
+            couponTemplateUseMapper.insertSelective(couponTemplateUse);
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean orderUntreadCoupon(CouponCondition condition) {
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+        if(null ==condition.getOrderNo()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
+        for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
+            couponTemplateUse.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
+
+            CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
+            couponTemplateSend.setId(couponTemplateUse.getSendId());
+            couponTemplateSend.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean revokeCoupon(CouponCondition condition) {
+        List<Long> sendIds = condition.getSendIds();
+        if(sendIds.isEmpty()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        for(int i =0 ;i<sendIds.size();i++){
+            CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
+            couponTemplateSend.setId(sendIds.get(i));
+            couponTemplateSend.setStatus(CouponActivityEnum.INVALYD.getCode());
+            couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         return true;
     }

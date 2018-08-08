@@ -50,5 +50,5 @@ public interface StoreUserInfoMapper {
      * @date 2018/8/8 10:19
      * @Description 根据ids进行批量查询门店信息
      */
-    List<StoreUserInfoVO> selectStoreUserByIds(@Param("dis") Set<Long> ids);
+    List<StoreUserInfoVO> selectStoreUserByIds(@Param("ids") Set<Long> ids);
 }

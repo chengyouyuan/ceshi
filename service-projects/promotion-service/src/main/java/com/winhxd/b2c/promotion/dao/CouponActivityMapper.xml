@@ -226,6 +226,8 @@
   </select>
   <select id="selectUnclaimedCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
+    cat.coupon_activity_id activityId,
+    cat.template_id templateId,
     ct.STATUS,
     ct.reason,
     ct.pay_type payType,

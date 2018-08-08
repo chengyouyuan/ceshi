@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "用户信息VO", description = "后台用户列表用户信息VO")
-public class CustomerUserInfoVO1 {
+public class CustomerUserInfoVO {
 
     /**
      * 用户id

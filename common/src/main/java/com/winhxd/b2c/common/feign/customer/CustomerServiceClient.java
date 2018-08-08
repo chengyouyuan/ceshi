@@ -5,7 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public interface CustomerServiceClient {
      * @Description 根据条件查询后台用户列表页数据，分页查询
      */
     @RequestMapping(value = "/customer/2005/v1/queryCustomerPageInfo", method = RequestMethod.POST)
-    ResponseResult<PagedList<CustomerUserInfoVO1>> queryCustomerPageInfo(@RequestBody CustomerUserInfoCondition1 condition);
+    ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody CustomerUserInfoCondition1 condition);
 
     /**
      * @param condition 参数条件对象
@@ -52,7 +52,7 @@ public interface CustomerServiceClient {
      * @Description 批量查询用户信息
      */
     @RequestMapping(value = "/customer/2007/v1/findCustomerUserByIds", method = RequestMethod.POST)
-    ResponseResult<List<CustomerUserInfoVO1>> findCustomerUserByIds(@RequestBody List<Long> ids);
+    ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody List<Long> ids);
 }
 
 @Component
@@ -67,7 +67,7 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<PagedList<CustomerUserInfoVO1>> queryCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(CustomerUserInfoCondition1 condition) {
         logger.error("CustomerServiceClientFallBack -> queryCustomerPageInfo错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -79,7 +79,7 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<CustomerUserInfoVO1>> findCustomerUserByIds(List<Long> ids) {
+    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(List<Long> ids) {
         logger.error("CustomerServiceClientFallBack -> findCustomerUserByIds错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

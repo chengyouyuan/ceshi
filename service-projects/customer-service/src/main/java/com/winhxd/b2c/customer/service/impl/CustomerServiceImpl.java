@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.customer.dao.CustomerUserInfoMapper;
 import com.winhxd.b2c.customer.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerUserInfoMapper customerUserInfoMapper;
     @Override
-    public PagedList<CustomerUserInfoVO1> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
-        PagedList<CustomerUserInfoVO1> pagedList = new PagedList<>();
+    public PagedList<CustomerUserInfoVO> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+        PagedList<CustomerUserInfoVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CustomerUserInfoVO1> customers = customerUserInfoMapper.selectCustomer(condition);
-        PageInfo<CustomerUserInfoVO1> pageInfo = new PageInfo<>(customers);
+        List<CustomerUserInfoVO> customers = customerUserInfoMapper.selectCustomer(condition);
+        PageInfo<CustomerUserInfoVO> pageInfo = new PageInfo<>(customers);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerUserInfoVO1> findCustomerUserByIds(List<Long> ids) {
+    public List<CustomerUserInfoVO> findCustomerUserByIds(List<Long> ids) {
         if(ids == null || ids.size() == 0){
             return null;
         }

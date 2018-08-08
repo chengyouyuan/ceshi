@@ -7,7 +7,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -93,7 +93,7 @@ public interface StoreServiceClient {
      * @Description 根据门店id(主键)查询门店信息
      */
     @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
-    ResponseResult<StoreUserInfoVO1> findStoreUserInfo(@PathVariable("id") Long id);
+    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
 
     /**
      * @param ids 门店id
@@ -103,7 +103,7 @@ public interface StoreServiceClient {
      * @Description 根据id批量查询门店信息
      */
     @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.GET)
-    ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(@RequestBody Set<Long> ids);
+    ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
 }
 
 /**
@@ -156,13 +156,13 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfoVO1> findStoreUserInfo(Long id) {
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfo，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(Set<Long> ids) {
+    public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoList，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

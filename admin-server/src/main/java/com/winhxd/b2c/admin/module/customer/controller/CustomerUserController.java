@@ -9,7 +9,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerOrderInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -48,16 +48,16 @@ public class CustomerUserController {
     @ApiOperation(value = "根据条件查询用户的分页数据信息", response = ResponseResult.class, notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @GetMapping(value = "/findCustomerPageInfo")
-    public ResponseResult<PagedList<CustomerUserInfoVO1>> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
-        ResponseResult<PagedList<CustomerUserInfoVO1>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+        ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
         return responseResult;
     }
 
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", response = ResponseEntity.class, notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/customerExport")
     public ResponseEntity<byte[]> customerExport(CustomerUserInfoCondition1 condition) {
-        ResponseResult<PagedList<CustomerUserInfoVO1>> result = customerServiceClient.queryCustomerPageInfo(condition);
-        List<CustomerUserInfoVO1> list = result.getData().getData();
+        ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
+        List<CustomerUserInfoVO> list = result.getData().getData();
         if (CollectionUtils.isEmpty(list)) {
             logger.error("CustomerUserController ->customerExport导出数据为空");
             return null;
@@ -135,12 +135,12 @@ public class CustomerUserController {
      * @param customerUserId 用户id
      * @return 用户信息
      */
-    public CustomerUserInfoVO1 queryCustomerById(Long customerUserId){
+    public CustomerUserInfoVO queryCustomerById(Long customerUserId){
         //根据customerId查询用户信息
         CustomerUserInfoCondition1 condition = new CustomerUserInfoCondition1();
         condition.setCustomerId(customerUserId);
-        ResponseResult<PagedList<CustomerUserInfoVO1>>  pageListResult = customerServiceClient.queryCustomerPageInfo(condition);
-        List<CustomerUserInfoVO1>customers = pageListResult.getData().getData();
+        ResponseResult<PagedList<CustomerUserInfoVO>>  pageListResult = customerServiceClient.queryCustomerPageInfo(condition);
+        List<CustomerUserInfoVO>customers = pageListResult.getData().getData();
         if(customers != null && customers.size() > 0){
            return  customers.get(0);
         }

@@ -3,7 +3,10 @@ package com.winhxd.b2c.store.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -136,17 +139,28 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
-		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
+	public ResponseResult<StoreUserInfoVO1> findStoreUserInfo(Long id) {
+		ResponseResult<StoreUserInfoVO1> responseResult = new ResponseResult<>();
 		if(id == null){
 			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
 			throw new BusinessException(BusinessCode.CODE_200002);
 		}
-		StoreUserInfoVO data = storeService.findStoreUserInfo(id);
+		StoreUserInfoVO1 data = storeService.findStoreUserInfo(id);
 		if(data == null){
 			responseResult.setCode(BusinessCode.CODE_200004);
 		}
 		responseResult.setData(data);
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(Set<Long> ids) {
+		ResponseResult<List<StoreUserInfoVO1>> responseResult = new ResponseResult<>();
+    	if(ids == null || ids.size() == 0){
+    		throw new BusinessException(BusinessCode.CODE_200001);
+		}
+		List<StoreUserInfoVO1> storeInofs = storeService.findStoreUserInfoList(ids);
+    	responseResult.setData(storeInofs);
 		return responseResult;
 	}
 

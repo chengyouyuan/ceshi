@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -118,8 +119,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
 
-        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
-        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
+        ResponseResult<StoreUserInfoVO1> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
+        StoreUserInfoVO1 store = storeUserInfoVOResponseResult.getData();
         detailVO.setStoreMobile(store.getStoreMobile());
 
         //TODO 调用商品仓库添加商品图片URL和商品名称

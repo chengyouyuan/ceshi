@@ -6,6 +6,10 @@ import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfo
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengyy
@@ -30,7 +34,7 @@ public interface StoreService {
      * @date 2018/8/3 16:09
      * @Description 根据门店的id查询门店信息
      */
-    StoreUserInfoVO findStoreUserInfo(Long storeUserId);
+    StoreUserInfoVO1 findStoreUserInfo(Long storeUserId);
 
     /**
      * 根据参数查询门店列表
@@ -63,4 +67,12 @@ public interface StoreService {
      * @return
      */
     int updateByPrimaryKeySelective(StoreUserInfo record);
+
+    /**
+     * @return 门店信息
+     * @Description: 根据ids进行批量查询门店信息
+     * @author chengyy
+     * @date 2018/8/8 10:16
+     */
+    List<StoreUserInfoVO1> findStoreUserInfoList(Set<Long> ids);
 }

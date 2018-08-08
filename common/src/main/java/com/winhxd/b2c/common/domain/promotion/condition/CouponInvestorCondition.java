@@ -1,10 +1,8 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
 import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
-
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author wl
@@ -16,6 +14,10 @@ public class CouponInvestorCondition extends BaseCondition implements Serializab
     private String name;
     private String remarks;
     private Short status; // 0 无效 1 有效
+
+    private List details;
+    private String userId;
+    private String userName;
 
     public String getCode() {
         return code;
@@ -49,5 +51,27 @@ public class CouponInvestorCondition extends BaseCondition implements Serializab
         this.status = status;
     }
 
+    public List getDetails() {
+        return details;
+    }
 
+    public void setDetails(List details) {
+        this.details = details;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

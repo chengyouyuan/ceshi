@@ -22,7 +22,13 @@ public enum CouponTemplateEnum {
      * 支付方式
      */
     SCAN_CODE_PAY((short) 1,"订单金额"),
-    ONLINE_PAY((short) 2, "订单金额");
+    ONLINE_PAY((short) 2, "订单金额"),
+
+    /**
+     * 出资方类型
+     */
+    INVERTOR_H_TYPE((short) 1, "惠下单"),
+    INVERTOR_S_TYPE((short) 2, "品牌商");
 
     private short code;
     private String desc;

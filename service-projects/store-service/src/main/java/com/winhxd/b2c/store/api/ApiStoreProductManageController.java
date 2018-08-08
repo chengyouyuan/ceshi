@@ -3,6 +3,7 @@ package com.winhxd.b2c.store.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.product.vo.ProductVO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,7 +127,7 @@ public class ApiStoreProductManageController {
 	            List<Byte> prodStatus=new ArrayList<>();
 	    		prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
 	            spmCondition.setProdStatus(prodStatus);
-	            putawayProdSkus=storeProductManageService.selectSkusByConditon(spmCondition);
+	            putawayProdSkus=storeProductManageService.findSkusByConditon(spmCondition);
 	            //放入已上架skus
 	            prodConditionByPage.setProductSkus(putawayProdSkus);
 	           
@@ -198,7 +199,7 @@ public class ApiStoreProductManageController {
 		        	List<Byte> prodStatus=new ArrayList<>();
 		        	prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
 		        	spmCondition.setProdStatus(prodStatus);
-			        List<String> spms=storeProductManageService.selectSkusByConditon(spmCondition);
+			        List<String> spms=storeProductManageService.findSkusByConditon(spmCondition);
 		        	 //上架操作
 		        	 //表示还没上架过
 		        	 if(spms==null||spms.size()==0){
@@ -263,7 +264,36 @@ public class ApiStoreProductManageController {
 	    	 
 	    	 return responseResult;
 	    }
-	    
+
+    @ApiOperation(value = "B端搜索商品接口", response = ResponseResult.class, notes = "B端搜索商品接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
+        ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
+        try {
+            logger.info("B端搜索商品接口入参为：{}", condition);
+            //参数校验
+            if (!checkParam(condition)) {
+                responseResult.setCode(BusinessCode.CODE_1007);
+                responseResult.setMessage("参数错误");
+                return responseResult;
+            }
+            StoreProductManageCondition manageCondition = new StoreProductManageCondition();
+            manageCondition.setStoreId(UserContext.getCurrentStoreUser().getBusinessId());
+            //manageCondition.setProdStatus(StoreProductStatusEnum);
+            List<String> skusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
+            ProductConditionByPage productCondition = new ProductConditionByPage();
+            productCondition.setProductName(condition.getProdName());
+            productCondition.setProductSkus(skusByConditon);
+            ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
+            responseResult.setData(productVo.getData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
+
 	    @PostMapping(value = "1111/test", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	    public ResponseResult<Object> test(@RequestBody StoreProductManageCondition condition) {
 	        ResponseResult<Object> responseResult = new ResponseResult<>();

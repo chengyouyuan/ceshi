@@ -25,7 +25,7 @@ public interface StoreProductManageService {
 	* @author wuyuanbao
 	* @date 2018年8月6日上午9:28:05
 	 */
-	List<String> selectSkusByConditon(StoreProductManageCondition condition);
+	List<String> findSkusByConditon(StoreProductManageCondition condition);
 	/**
 	 * 通过skuCodes获取对应门店的商品信息
 	* @Title: findProdBySkuCodes 

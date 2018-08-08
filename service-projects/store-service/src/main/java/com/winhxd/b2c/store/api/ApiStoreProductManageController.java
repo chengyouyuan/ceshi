@@ -38,6 +38,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -169,6 +170,8 @@ public class ApiStoreProductManageController {
 	            }
 	        } catch (Exception e) {
 	            e.printStackTrace();
+	            responseResult.setCode(BusinessCode.CODE_1001);
+	            responseResult.setMessage("服务器内部错误");
 	        }
 	        return responseResult;
 	    }
@@ -266,7 +269,8 @@ public class ApiStoreProductManageController {
 	    		 
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
-	    		 responseResult.setCode(BusinessCode.CODE_1001);
+	             responseResult.setCode(BusinessCode.CODE_1001);
+	             responseResult.setMessage("服务器内部错误");
 	    	 }
 	    	 
 	    	 return responseResult;
@@ -301,6 +305,8 @@ public class ApiStoreProductManageController {
 		         storeSubmitProductService.saveStoreSubmitProduct(storeId, storeSubmitProduct);
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
+	             responseResult.setCode(BusinessCode.CODE_1001);
+	             responseResult.setMessage("服务器内部错误");
 	    	 }
 	    	 
 	    	 return responseResult;
@@ -338,6 +344,8 @@ public class ApiStoreProductManageController {
 	    		 responseResult.setData(pageList);
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
+	             responseResult.setCode(BusinessCode.CODE_1001);
+	             responseResult.setMessage("服务器内部错误");
 	    	 }
 	    	 
 	    	 return responseResult;
@@ -368,6 +376,40 @@ public class ApiStoreProductManageController {
             responseResult.setData(productVo.getData());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return responseResult;
+    }
+    
+    @ApiOperation(value = "B端我的商品管理接口", response = ResponseResult.class, notes = "B端我的商品管理接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @PostMapping(value = "1019/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(@RequestBody StoreProductManageCondition condition) {
+    	ResponseResult<PagedList<StoreProdSimpleVO>> responseResult = new ResponseResult<>();
+        try {
+        	 logger.info("B端我的商品管理接口入参为：{}", condition);
+             //参数校验
+             if (!checkParam(condition)) {
+                 responseResult.setCode(BusinessCode.CODE_1007);
+                 responseResult.setMessage("参数错误");
+                 return responseResult;
+             }
+           //获取当前门店用户
+	         StoreUser storeUser=UserContext.getCurrentStoreUser();
+	         if(storeUser==null){
+	        	 responseResult.setCode(BusinessCode.CODE_1002);            	
+	        	 return responseResult;	
+	         }
+	         Long storeId=storeUser.getBusinessId();
+	         condition.setStoreId(storeId);
+	         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+	         PagedList<StoreProdSimpleVO> list=storeProductManageService.findSimpelVOByCondition(condition);
+	         responseResult.setData(list);
+        	
+        }catch (Exception e) {
+            e.printStackTrace();
+            responseResult.setCode(BusinessCode.CODE_1001);
+            responseResult.setMessage("服务器内部错误");
         }
         return responseResult;
     }
@@ -409,6 +451,13 @@ public class ApiStoreProductManageController {
 		    	if(condition instanceof StoreSubmitProductCondition){
 		    		StoreSubmitProductCondition c=(StoreSubmitProductCondition)condition;
 		    		if(c.getProdImage1()!=null){
+		    			flag=true;
+		    		}
+		    	}
+		    	//StoreProductManageCondition 必须传参数校验
+		    	if(condition instanceof StoreProductManageCondition){
+		    		StoreProductManageCondition c=(StoreProductManageCondition)condition;
+		    		if(c.getProdStatus()!=null&&c.getProdStatus().size()>0){
 		    			flag=true;
 		    		}
 		    	}

@@ -10,13 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
+import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.store.dao.StoreProductManageMapper;
@@ -225,6 +228,24 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			storeProductManageMapper.updateByPrimaryKeySelective(spManage);
 		}else{
 			logger.error("StoreProductManageService ->modifyStoreProductManage参数异常,storeId:"+storeId+",ProdOperateInfoCondition:"+prodOperateInfo);
+			throw new BusinessException(BusinessCode.CODE_1001);
+		}
+		
+	}
+
+	@Override
+	public PagedList<StoreProdSimpleVO> findSimpelVOByCondition(StoreProductManageCondition condition) {
+		PagedList<StoreProdSimpleVO> list=null;
+		if(condition!=null){
+			Page<StoreProdSimpleVO> page=storeProductManageMapper.selectVoByCondition(condition);
+			list=new PagedList<>();
+			list.setPageNo(condition.getPageNo());
+			list.setPageSize(condition.getPageSize());
+			list.setData(page.getResult());
+			list.setTotalRows(page.getTotal());
+			return list;
+		}else{
+			logger.error("StoreProductManageService ->findSimpelVOByCondition参数异常,condition:"+condition);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		

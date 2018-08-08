@@ -28,6 +28,14 @@ public interface StoreSubmitProductMapper {
     int updateByPrimaryKeySelective(StoreSubmitProduct record);
 
     int updateByPrimaryKey(StoreSubmitProduct record);
-    
+    /**
+     * 分页查询
+    * @Title: selectVoByCondition 
+    * @Description: TODO 
+    * @param condition
+    * @return Page<StoreSubmitProductVO>
+    * @author wuyuanbao
+    * @date 2018年8月8日下午8:59:06
+     */
 	Page<StoreSubmitProductVO> selectVoByCondition(@Param("condition")StoreSubmitProductCondition condition);
 }

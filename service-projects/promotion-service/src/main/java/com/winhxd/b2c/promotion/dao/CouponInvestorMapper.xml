@@ -203,12 +203,14 @@
   </select>
 
 
-
-<!-- 设置无效 / 删除-->
-  <update id="updateCouponInvestorToValid" parameterType="java.lang.Long">
-      update coupon_investor set status = 0  where id = #{id}
+  <update id="updateCouponInvestorToValid">
+    update coupon_investor set
+    status = 1 ,
+    update_by = #{userId},
+    updated_by_name = #{userName},
+    updated = now()
+    where id = #{id}
   </update>
-
 
 
   <update id="updateCouponInvestor" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">

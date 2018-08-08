@@ -22,7 +22,7 @@ public interface CouponInvestorMapper {
 
     CouponInvestorVO selectCouponInvestorDetailById(@Param("id") Long id);
 
-    int updateCouponInvestorToValid(@Param("id")long id);
+    int updateCouponInvestorToValid(@Param("id")long id,@Param("userId")long userId,@Param("userName")String userName);
 
     void updateCouponInvestor(CouponInvestor couponInvestor);
 }

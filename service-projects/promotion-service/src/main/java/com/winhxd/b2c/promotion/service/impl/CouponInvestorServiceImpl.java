@@ -122,8 +122,8 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
-    public int updateCouponInvestorToValid(long id) {
-        int count = couponInvestorMapper.updateCouponInvestorToValid(id);
+    public int updateCouponInvestorToValid(long id,long userId,String userName) {
+        int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;
     }
 

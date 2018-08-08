@@ -52,18 +52,8 @@ public interface CouponInvestorServiceClient {
      *@Date   2018/8/8 14:47
      */
     @RequestMapping(value = "/promotion/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
-    ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id);
+    ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
-    /**
-     *
-     *@Deccription 修改出资方
-     *@Params
-     *@Return
-     *@User  wl
-     *@Date   2018/8/8 15:08
-     */
-    @RequestMapping(value = "/promotion/v1/updateCouponInvestor", method = RequestMethod.POST)
-    ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition);
 }
 
 @Component
@@ -84,14 +74,9 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     }
 
     @Override
-    public ResponseResult updateCouponInvestorToValid(String id) {
+    public ResponseResult updateCouponInvestorToValid(String id,String userId,String userName) {
         logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
-    @Override
-    public ResponseResult updateCouponInvestor(CouponInvestorCondition condition) {
-        logger.error("CouponInvestorServiceClient -> updateCouponInvestor", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
 }

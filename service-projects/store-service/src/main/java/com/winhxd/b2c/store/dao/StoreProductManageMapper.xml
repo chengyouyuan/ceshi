@@ -33,7 +33,10 @@
   		from store_product_manage prod
   		where 1=1
   		<if test="condition.prodStatus != null">
-            and prod.prod_status=#{condition.prodStatus,jdbcType=TINYINT}
+            and prod.prod_status in
+             <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
+				#{status}
+			</foreach>  
         </if>
         <if test="condition.storeId != null">
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
@@ -77,7 +80,10 @@
         from store_product_manage prod
         where 1=1
         <if test="condition.prodStatus != null">
-            and prod.prod_status=#{condition.prodStatus,jdbcType=TINYINT}
+            and prod.prod_status in 
+            <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
+			#{status}
+			</foreach>  
         </if>
         <if test="condition.storeId != null">
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}

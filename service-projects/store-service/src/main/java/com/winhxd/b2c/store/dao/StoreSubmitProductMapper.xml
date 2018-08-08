@@ -21,11 +21,36 @@
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
   </resultMap>
+  <resultMap id="SimpelResultMap" type="com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="prod_code" jdbcType="VARCHAR" property="prodCode" />
+    <result column="prod_name" jdbcType="VARCHAR" property="prodName" />
+    <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
+    <result column="prod_status" jdbcType="INTEGER" property="prodStatus" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3,
     sku_attribute_option, prod_status, audit_remark, prod_info_voice, prod_info_text,
     updated, updated_by, updated_by_name, created, sku_code
   </sql>
+   <sql id="Simple_Column_List">
+    id, store_id, prod_name, prod_code, prod_image1,
+    prod_status, audit_remark,sku_code
+  </sql>
+  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="Simple_Column_List">
+  	select
+  	<include refid="Simple_Column_List" />
+  	from store_submit_product
+  	where 1=1
+  	<if test="condition.storeId != null">
+  	 store_id=#{condition.storeId,jdbcType=BIGINT}
+  	</if>
+  	order by created desc
+  	
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

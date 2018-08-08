@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
@@ -33,11 +35,14 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProdOperateEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
+import com.winhxd.b2c.store.service.StoreSubmitProductService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,6 +66,8 @@ public class ApiStoreProductManageController {
 	 private ProductServiceClient productServiceClient;
 	 @Autowired
 	 private StoreHxdServiceClient storeHxdServiceClient;
+	 @Autowired
+	 private StoreSubmitProductService storeSubmitProductService;
 	 /**
 	  * 惠下单商品
 	  */
@@ -95,8 +102,8 @@ public class ApiStoreProductManageController {
 	            
 	            //判断查询可上架商品类型
 	            Byte prodType=condition.getProdType();
-	            
-	            Long storeId=condition.getStoreId();
+	            //门店编码
+	            Long storeId=storeUser.getBusinessId();
 	            
 	            //已上架的商品sku
 	            List<String> putawayProdSkus=null;
@@ -189,16 +196,17 @@ public class ApiStoreProductManageController {
 		         //操作类型
 		         Byte operateType=condition.getOperateType();
 		         //门店id
-		         Long storeId=condition.getStoreId();
-		         //skuCode数组
+		         Long storeId=storeUser.getBusinessId();
+		         //skuCode集合
 		         List<ProdOperateInfoCondition> prodInfo=condition.getProducts();
-		         
+		         //skuCode数组
+		         List<String> skucodes=new ArrayList<>();
+	        	 for(int i=0;i<prodInfo.size();i++){
+	        		 skucodes.add(prodInfo.get(i).getSkuCode());
+	        	 }
 		         //判断操作类型
 		         if(StoreProdOperateEnum.PUTAWAY.getOperateCode()==operateType){
-		        	 List<String> skucodes=new ArrayList<>();
-		        	 for(int i=0;i<prodInfo.size();i++){
-		        		 skucodes.add(prodInfo.get(i).getSkuCode());
-		        	 }
+		        	
 		        	//查询过来的sku是否有的已经上架
 		        	StoreProductManageCondition spmCondition=new StoreProductManageCondition();
 		        	spmCondition.setStoreId(storeId);
@@ -231,30 +239,34 @@ public class ApiStoreProductManageController {
 		        					 prodSkuInfo.put(prod.getSkuCode(), prod);
 		        				 }
 		        				 //商品上架
+		        				 this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo, prodSkuInfo);
 		        			 }
+		        		 }else{
+		        			 responseResult.setCode(BusinessCode.CODE_1001);
+		        			 responseResult.setMessage("查询商品信息异常！");
+			        		 return responseResult;
 		        		 }
-		        		 //保存StoreProductManage
-		        		 //初始化门店商品对应统计信息
-	 
 		        	 }else{
 		        		 //表示商品中有部分已经上架过了
-		        		 //responseResult.setCode(BusinessCode.);
+		        		 responseResult.setCode(BusinessCode.CODE_1001);
+		        		 responseResult.setMessage("部分商品上架过");
 		        		 return responseResult;
 		        	 }
 		        	 
 		         }else if(StoreProdOperateEnum.UNPUTAWAY.getOperateCode()==operateType){
 		        	//下架操作
-		        	 
+		        	 storeProductManageService.unPutawayStoreProductManage(storeId, (String[])skucodes.toArray());
 		         }else if(StoreProdOperateEnum.DELETE.getOperateCode()==operateType){
 		        	 //删除操作
-		        	 
+		        	 storeProductManageService.removeStoreProductManage(storeId, (String[])skucodes.toArray());
 		         }else if(StoreProdOperateEnum.EDIT.getOperateCode()==operateType){
-		        	//编辑
-		        	 
+		        	//编辑（不支持批量）
+		        	 storeProductManageService.modifyStoreProductManage(storeId, prodInfo.get(0));
 		         }
 	    		 
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
+	    		 responseResult.setCode(BusinessCode.CODE_1001);
 	    	 }
 	    	 
 	    	 return responseResult;
@@ -267,7 +279,26 @@ public class ApiStoreProductManageController {
 	    public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
 	    	 ResponseResult<Void> responseResult = new ResponseResult<>();
 	    	 try{
-	    		 
+	    		 logger.info("B端添加门店提报商品接口入参为：{}", condition);
+	    		 //参数校验
+		         if(!checkParam(condition)){
+		            responseResult.setCode(BusinessCode.CODE_1007);
+		            responseResult.setMessage("参数错误");
+		            return responseResult;
+		         }
+		         //获取当前门店用户
+		         StoreUser storeUser=UserContext.getCurrentStoreUser();
+		         if(storeUser==null){
+		        	 responseResult.setCode(BusinessCode.CODE_1002);            	
+		        	 return responseResult;	
+		         }
+		         Long storeId=storeUser.getBusinessId();
+		         StoreSubmitProduct storeSubmitProduct=new StoreSubmitProduct();
+		         BeanUtils.copyProperties(condition, storeSubmitProduct);
+		         storeSubmitProduct.setStoreId(storeId);
+		         storeSubmitProduct.setProdStatus((int)StoreSubmitProductStatusEnum.CREATE.getStatusCode());
+	
+		         storeSubmitProductService.saveStoreSubmitProduct(storeId, storeSubmitProduct);
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
 	    	 }
@@ -282,7 +313,29 @@ public class ApiStoreProductManageController {
 	    public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(@RequestBody StoreSubmitProductCondition condition) {
 	    	 ResponseResult<PagedList<StoreSubmitProductVO>> responseResult = new ResponseResult<>();
 	    	 try{
+	    		 logger.info("B端门店提报商品列表接口入参为：{}", condition);
+	    		 //参数校验
+		         if(!checkParam(condition)){
+		            responseResult.setCode(BusinessCode.CODE_1007);
+		            responseResult.setMessage("参数错误");
+		            return responseResult;
+		         }
+		         //获取当前门店用户
+		         StoreUser storeUser=UserContext.getCurrentStoreUser();
+		         if(storeUser==null){
+		        	 responseResult.setCode(BusinessCode.CODE_1002);            	
+		        	 return responseResult;	
+		         }
+		         Long storeId=storeUser.getBusinessId();
+		         condition.setStoreId(storeId);
+		         
+	    		 PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 	    		 
+	    		 PagedList<StoreSubmitProductVO> pageList= storeSubmitProductService.findSimpelVOByCondition(condition);
+	    		 if(pageList==null){
+	    			 
+	    		 }
+	    		 responseResult.setData(pageList);
 	    	 }catch(Exception e){
 	    		 e.printStackTrace();
 	    	 }
@@ -340,15 +393,22 @@ public class ApiStoreProductManageController {
 	    		//AllowPutawayProdCondition 必须传参数校验
 	    		if(condition instanceof AllowPutawayProdCondition){
 		    		AllowPutawayProdCondition c=(AllowPutawayProdCondition)condition;
-			    		if(c.getStoreId()!=null&&c.getProdType()!=null){
+			    		if(c.getProdType()!=null){
 			    			flag=true;
 			    		}	
 		    	}
-	    		//AllowPutawayProdCondition 必须传参数校验
+	    		//ProdOperateCondition 必须传参数校验
 		    	if(condition instanceof ProdOperateCondition){
 		    		ProdOperateCondition c=(ProdOperateCondition)condition;
-		    		if(c.getStoreId()!=null&&c.getOperateType()!=null
+		    		if(c.getOperateType()!=null
 		    				&&c.getProducts()!=null&&c.getProducts().size()>0){
+		    			flag=true;
+		    		}
+		    	}
+		    	//StoreSubmitProductCondition 必须传参数校验
+		    	if(condition instanceof StoreSubmitProductCondition){
+		    		StoreSubmitProductCondition c=(StoreSubmitProductCondition)condition;
+		    		if(c.getProdImage1()!=null){
 		    			flag=true;
 		    		}
 		    	}

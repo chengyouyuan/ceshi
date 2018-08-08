@@ -62,5 +62,39 @@ public interface StoreProductManageService {
 	* @date 2018年8月8日下午3:26:52
 	 */
 	void batchPutawayStoreProductManage(Long storeId,Map<String,ProdOperateInfoCondition> putawayInfo,Map<String,ProductSkuVO> prodSkuInfo);
+	
+	/**
+	 * 删除门店商品信息（逻辑删除）支持批量
+	* @Title: removeStoreProductManage 
+	* @Description: TODO 
+	* @param storeId
+	* @param skuCodes void
+	* @author wuyuanbao
+	* @date 2018年8月8日下午5:05:47
+	 */
+	
+	void removeStoreProductManage(Long storeId,String...skuCodes);
+	
+	/**
+	 * 下架门店商品信息支持批量
+	* @Title: unPutawayStoreProductManage 
+	* @Description: TODO 
+	* @param storeId
+	* @param skuCodes void
+	* @author wuyuanbao
+	* @date 2018年8月8日下午5:08:09
+	 */
+	void unPutawayStoreProductManage(Long storeId,String...skuCodes);
+	
+	/**
+	 * 更新门店商品信息（价格，是否推荐）
+	* @Title: modifyStoreProductManage 
+	* @Description: TODO 
+	* @param storeId
+	* @param prodOperateInfo void
+	* @author wuyuanbao
+	* @date 2018年8月8日下午5:42:52
+	 */
+	void modifyStoreProductManage(Long storeId,ProdOperateInfoCondition prodOperateInfo);
 
 }

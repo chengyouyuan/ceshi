@@ -107,6 +107,7 @@ public class LoginController {
         String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(sysUser,userInfo);
+        userInfo.setToken(token);
 
         cache.setex(cacheKey,30 * 60, JsonUtil.toJSONString(userInfo));
 

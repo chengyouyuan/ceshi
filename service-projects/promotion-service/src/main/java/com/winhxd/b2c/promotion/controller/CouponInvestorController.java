@@ -52,16 +52,39 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             if(flag==0){
                   responseResult.setMessage("添加成功");
             }else if(flag==1){
-                  responseResult.setMessage("提交失败！占比之和不等于");
+                  responseResult.setMessage("新增失败！占比之和不等于100");
             }else if(flag==2){
-                  responseResult.setMessage("提交失败！出资方重复");
+                  responseResult.setMessage("新增失败！出资方重复");
             }else if(flag==3){
-                  responseResult.setMessage("提交失败！出资方明细为空");
+                  responseResult.setMessage("新增失败！出资方明细为空");
             }else {
                   responseResult.setMessage("服务器内部错误");
             }
             return responseResult;
       }
+
+
+    @Override
+    public ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition) {
+        ResponseResult responseResult = new ResponseResult();
+        // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
+        int flag = couponInvestorService.updateCouponInvestor(condition);
+        responseResult.setCode(flag);
+        if(flag==0){
+            responseResult.setMessage("修改成功");
+        }else if(flag==1){
+            responseResult.setMessage("修改失败！占比之和不等于100");
+        }else if(flag==2){
+            responseResult.setMessage("修改失败！出资方重复");
+        }else if(flag==3){
+            responseResult.setMessage("修改失败！出资方明细为空");
+        }else {
+            responseResult.setMessage("修改器内部错误");
+        }
+        return responseResult;
+    }
+
+
 
      /**
       *
@@ -94,4 +117,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         }
         return responseResult;
     }
+
+
 }

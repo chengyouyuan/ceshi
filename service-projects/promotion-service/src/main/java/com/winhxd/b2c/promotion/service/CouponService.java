@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
@@ -47,4 +48,11 @@ public interface CouponService {
      * @return
      */
     PagedList<CouponVO> myCouponList(CouponCondition couponCondition);
+
+    /**
+     * 领取优惠券
+     * @param condition
+     * @return
+     */
+    Boolean userReceiveCoupon(ReceiveCouponCondition condition);
 }

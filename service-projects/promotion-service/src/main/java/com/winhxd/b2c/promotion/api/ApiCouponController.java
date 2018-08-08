@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInfoCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -72,9 +73,11 @@ public class ApiCouponController{
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}", couponCondition);
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         try {
-            //返回对象
             List<CouponVO> pages = couponService.unclaimedCouponList(couponCondition);
             result.setData(pages);
+        }catch (BusinessException e){
+            LOGGER.error("=/api-promotion/coupon/501/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);
+            result.setCode(e.getErrorCode());
         } catch (Exception e) {
             LOGGER.error("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
@@ -94,6 +97,9 @@ public class ApiCouponController{
         try {
             PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
             result.setData(pages);
+        } catch (BusinessException e){
+            LOGGER.error("=/api-promotion/coupon/501/v1/myCouponList-我的优惠券列表=--异常" + e, e);
+            result.setCode(e.getErrorCode());
         } catch (Exception e) {
             LOGGER.error("=/api-promotion/coupon/503/v1/myCouponList-我的优惠券列表=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
@@ -108,12 +114,16 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/504/v1/userReceiveCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> userReceiveCoupon(@RequestBody CouponCondition couponCondition) {
-        LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--开始--{}", couponCondition);
+    public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {
+        LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--开始--{}", condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             //返回对象
-            result.setData(null);
+            Boolean flag =  couponService.userReceiveCoupon(condition);
+            result.setData(flag);
+        } catch (BusinessException e){
+            LOGGER.error("=/api-promotion/coupon/501/v1/userReceiveCoupon-用户领取优惠券=--异常" + e, e);
+            result.setCode(e.getErrorCode());
         } catch (Exception e) {
             LOGGER.error("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);

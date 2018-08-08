@@ -36,7 +36,7 @@ public class CouponActivityAddCondition {
     private Short type;
 
     @ApiModelProperty(value = "优惠券详情")
-    private List<CouponActivityTemplate> CouponActivityTemplateList;
+    private List<CouponActivityTemplate> couponActivityTemplateList;
 
     @ApiModelProperty(value = "活动开始时间")
     private Date activityStart;
@@ -108,11 +108,11 @@ public class CouponActivityAddCondition {
     }
 
     public List<CouponActivityTemplate> getCouponActivityTemplateList() {
-        return CouponActivityTemplateList;
+        return couponActivityTemplateList;
     }
 
     public void setCouponActivityTemplateList(List<CouponActivityTemplate> couponActivityTemplateList) {
-        CouponActivityTemplateList = couponActivityTemplateList;
+        this.couponActivityTemplateList = couponActivityTemplateList;
     }
 
     public Date getActivityStart() {

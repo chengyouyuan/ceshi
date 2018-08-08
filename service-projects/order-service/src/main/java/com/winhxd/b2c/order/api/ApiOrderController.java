@@ -40,8 +40,10 @@ public class ApiOrderController {
     @ApiOperation(value = "B端接单计价", response = Boolean.class, notes = "B端接单计价")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
             @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
             @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
     @RequestMapping(value = "/423/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -50,8 +52,14 @@ public class ApiOrderController {
         LOGGER.info("{}=--开始--{}", logTitle, condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
+            //获取当前登录门店Id
+            Long storeId = 0L;
+            if (storeId == null) {
+                throw new BusinessException(BusinessCode.CODE_1002);
+            }
+            condition.setStoreId(storeId);
             this.orderService.orderConfirm4Store(condition);
-            result.setData(null);
+            result.setData(true);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());

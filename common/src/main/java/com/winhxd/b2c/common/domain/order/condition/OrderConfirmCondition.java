@@ -11,6 +11,9 @@ public class OrderConfirmCondition {
     
     @ApiModelProperty(value = "订单金额", required = false)
     private BigDecimal orderTotal;
+    
+    @ApiModelProperty(value = "门店Id，不需要传", required = false)
+    private Long storeId;
 
     public String getOrderNo() {
         return orderNo;
@@ -28,8 +31,17 @@ public class OrderConfirmCondition {
         this.orderTotal = orderTotal;
     }
 
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
     @Override
     public String toString() {
-        return "OrderConfirmCondition [orderNo=" + orderNo + ", orderTotal=" + orderTotal + "]";
+        return "OrderConfirmCondition [orderNo=" + orderNo + ", orderTotal=" + orderTotal + ", storeId=" + storeId
+                + "]";
     }
 }

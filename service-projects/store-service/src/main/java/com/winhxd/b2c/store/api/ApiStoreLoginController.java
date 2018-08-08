@@ -360,7 +360,7 @@ public class ApiStoreLoginController {
 						info.setId(DB.getId());
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeLoginService.modifyStoreUserInfo(info);
-						result = SendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					} else {
 						/*
 						 * 插入数据库
@@ -373,7 +373,7 @@ public class ApiStoreLoginController {
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(String.valueOf(UUID.randomUUID()));
 						storeLoginService.saveStoreInfo(info);
-						result = SendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
 				}
 				/**
@@ -392,7 +392,7 @@ public class ApiStoreLoginController {
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(String.valueOf(UUID.randomUUID()));
 						storeLoginService.saveStoreInfo(info);
-						result = SendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
 					/**
 					 * 更新数据库
@@ -401,7 +401,7 @@ public class ApiStoreLoginController {
 						info.setId(DB.getId());
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeLoginService.modifyStoreUserInfo(info);
-						result = SendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
 				}
 
@@ -423,7 +423,7 @@ public class ApiStoreLoginController {
 	 * @param storeMobile
 	 * @return
 	 */
-	private ResponseResult<String> SendVerificationCode(String storeMobile) {
+	private ResponseResult<String> sendVerificationCode(String storeMobile) {
 		ResponseResult<String> result = new ResponseResult<>();
 		String content = "";
 		String verificationCode = "";

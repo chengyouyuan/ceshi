@@ -216,8 +216,8 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "2023/v1/customerEasy", method = RequestMethod.POST)
-	public ResponseResult<String> CustomerChangeMobile(@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
+	@RequestMapping(value = "2023/v1/customerChangeMobile", method = RequestMethod.POST)
+	public ResponseResult<String> customerChangeMobile(@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
 			if (null == customerChangeMobileCondition) {
@@ -233,10 +233,10 @@ public class ApiCustomerLoginController {
 			customerLoginService.updateCustomerInfo(info);
 			return result;
 		} catch (BusinessException e) {
-			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			logger.error("ApiCustomerLoginController -> customerChangeMobile异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
 		} catch (Exception e) {
-			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
+			logger.error("ApiCustomerLoginController -> customerChangeMobile异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		return result;

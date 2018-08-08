@@ -14,8 +14,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface OrderInfoConvertAnnotation {
-    String type() default "1";
     boolean queryCustomerInfo() default false;
 
     boolean queryStoreInfo() default false;
+
+    boolean queryProductInfo() default false;
 }

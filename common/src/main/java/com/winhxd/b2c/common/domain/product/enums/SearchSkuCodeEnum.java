@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.product.enums;
 
 /**
- * 在门店上架商品内查找
+ * sku集合内/外查找
  * @ClassName:  SearchSkuCodeEnum   
  * @Description:TODO   
  * @author: zhuchongchen 
@@ -10,8 +10,8 @@ package com.winhxd.b2c.common.domain.product.enums;
  */
 public enum SearchSkuCodeEnum {
    
-    IN_SKU_CODE("IN", "在门店上架商品sku中查找"),
-    NOT_IN_SKU_CODE("NOT", "不在门店上架商品sku中查找");
+    IN_SKU_CODE("IN", "在sku集合范围内查找"),
+    NOT_IN_SKU_CODE("NOT", "在sku集合范围外查找");
    
 
     private String code;

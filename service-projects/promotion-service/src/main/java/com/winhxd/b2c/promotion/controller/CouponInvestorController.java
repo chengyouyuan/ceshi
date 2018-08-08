@@ -77,4 +77,21 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
         return responseResult;
     }
+
+    @Override
+    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id) {
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id));
+            if(count>0){
+                responseResult.setCode(BusinessCode.CODE_OK);
+                responseResult.setMessage("删除成功");
+            }
+        }catch (Exception e){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            responseResult.setMessage("删除失败");
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
 }

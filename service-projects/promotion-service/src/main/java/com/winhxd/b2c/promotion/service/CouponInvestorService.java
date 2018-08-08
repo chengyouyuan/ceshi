@@ -16,4 +16,6 @@ public interface CouponInvestorService {
     int saveCouponInvestor(CouponInvestorCondition condition);
 
     ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id);
+
+    int updateCouponInvestorToValid(long id);
 }

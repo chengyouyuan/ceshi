@@ -10,7 +10,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreBusinessInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -227,13 +227,13 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "通过门店id查询门店信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
     @RequestMapping(value = "/1005/v1/findStoreUserInfo/{id}",method = RequestMethod.POST)
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id){
-        ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
+    public ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(@PathVariable("id")Long id){
+        ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
         if(id == null){
             logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-        StoreUserInfoVO data = storeService.findStoreUserInfo(id);
+        StoreUserInfoSimpleVO data = storeService.findStoreUserInfo(id);
         if(data == null){
             result.setCode(BusinessCode.CODE_200004);
         }

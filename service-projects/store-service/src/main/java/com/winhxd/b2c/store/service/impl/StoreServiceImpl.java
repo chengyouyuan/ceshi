@@ -10,7 +10,7 @@ import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWa
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -55,12 +55,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
+    public StoreUserInfoSimpleVO findStoreUserInfo(Long storeUserId) {
         StoreUserInfo userInfo = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         if (userInfo == null) {
             return null;
         }
-        StoreUserInfoVO userInfoVO = new StoreUserInfoVO();
+        StoreUserInfoSimpleVO userInfoVO = new StoreUserInfoSimpleVO();
         BeanUtils.copyProperties(userInfo, userInfoVO);
         return userInfoVO;
     }

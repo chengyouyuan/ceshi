@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @ApiModel("小程序登录返参")
 @Data
-public class CustomerUserInfoVO {
+public class CustomerUserInfoSimpleVO {
 	@ApiModelProperty(value = "用户主键")
     private Long customerId;
 	@ApiModelProperty(value = "账号")

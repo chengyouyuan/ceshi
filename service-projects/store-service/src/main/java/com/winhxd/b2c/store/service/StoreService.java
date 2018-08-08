@@ -5,7 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 
 /**
  * @author chengyy
@@ -30,7 +30,7 @@ public interface StoreService {
      * @date 2018/8/3 16:09
      * @Description 根据门店的id查询门店信息
      */
-    StoreUserInfoVO findStoreUserInfo(Long storeUserId);
+    StoreUserInfoSimpleVO findStoreUserInfo(Long storeUserId);
 
     /**
      * 根据参数查询门店列表

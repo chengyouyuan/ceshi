@@ -7,7 +7,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ public interface StoreServiceClient {
      * @Description 根据门店id(主键)查询门店信息
      */
     @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
-    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
+    ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(@PathVariable("id") Long id);
 }
 
 /**
@@ -144,7 +144,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
+    public ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(Long id) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfo，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

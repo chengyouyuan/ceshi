@@ -17,16 +17,17 @@ public class StoreLoginServiceImpl implements StoreLoginService{
     @Autowired
     private StoreUserInfoMapper storeUserInfoMapper;
 	@Override
-	public int modifyPassword(StoreUserInfo storeUserInfo) {
+	public int modifyStoreUserInfo(StoreUserInfo storeUserInfo) {
 		return storeUserInfoMapper.updateByPrimaryKeySelective(storeUserInfo);
-	}
-	@Override
-	public StoreUserInfo getstoreUserInfoByMobile(StoreUserInfo storeMobile) {
-		return storeUserInfoMapper.selectByStoreUserInfo(storeMobile);
 	}
 	@Override
 	public int saveStoreInfo(StoreUserInfo info) {
 		return storeUserInfoMapper.insertSelective(info);
+	}
+	@Override
+	public StoreUserInfo getstoreUserInfo(StoreUserInfo storeUserInfo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

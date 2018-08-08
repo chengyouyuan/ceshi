@@ -38,7 +38,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -118,8 +118,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
 
-        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
-        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
+        ResponseResult<StoreUserInfoSimpleVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
+        StoreUserInfoSimpleVO store = storeUserInfoVOResponseResult.getData();
         detailVO.setStoreMobile(store.getStoreMobile());
 
         //TODO 调用商品仓库添加商品图片URL和商品名称

@@ -4,7 +4,7 @@ package com.winhxd.b2c.store.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -136,13 +136,13 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
-		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
+	public ResponseResult<StoreUserInfoSimpleVO> findStoreUserInfo(Long id) {
+		ResponseResult<StoreUserInfoSimpleVO> responseResult = new ResponseResult<>();
 		if(id == null){
 			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
 			throw new BusinessException(BusinessCode.CODE_200002);
 		}
-		StoreUserInfoVO data = storeService.findStoreUserInfo(id);
+		StoreUserInfoSimpleVO data = storeService.findStoreUserInfo(id);
 		if(data == null){
 			responseResult.setCode(BusinessCode.CODE_200004);
 		}

@@ -79,6 +79,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
+    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (customer == null) {
@@ -95,7 +96,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 skuList.add(orderItemVO.getSkuCode());
             }
         }
-        //TODO 调用商品仓库添加商品图片URL和商品名称 skuList
         pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
@@ -117,8 +117,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
-
-        //TODO 调用商品仓库添加商品图片URL和商品名称
         return detailVO;
     }
 

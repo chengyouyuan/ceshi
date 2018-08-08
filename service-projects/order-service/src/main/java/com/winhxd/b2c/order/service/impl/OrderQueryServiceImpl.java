@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -39,7 +39,6 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -112,16 +111,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @author pangjianhua
      */
     @Override
-    @OrderEnumConvertAnnotation
+    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
-
-        ResponseResult<StoreUserInfoVO1> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
-        StoreUserInfoVO1 store = storeUserInfoVOResponseResult.getData();
-        detailVO.setStoreMobile(store.getStoreMobile());
 
         //TODO 调用商品仓库添加商品图片URL和商品名称
         return detailVO;

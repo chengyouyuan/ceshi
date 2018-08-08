@@ -174,4 +174,52 @@
     #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP})
   </insert>
 
+
+  <!-- 关联查询出资方详情 -->
+  <resultMap id="ResultDetailMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO">
+      <id column="id" jdbcType="BIGINT" property="id" />
+      <result column="code" jdbcType="VARCHAR" property="code" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+      <result column="status" jdbcType="SMALLINT" property="status" />
+    <collection property="detailList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail" column="investor_id">
+      <result column="percent" property="percent"/>
+      <result column="ids" property="ids"/>
+      <result column="names" property="names"/>
+      <result column="investor_type" property="investorType"/>
+    </collection>
+  </resultMap>
+
+  <!-- 关联查询出资方详情 sql -->
+  <select id="selectCouponInvestorDetailById" parameterType="java.lang.Long" resultMap="ResultDetailMap">
+      select a.id, a.code, a.name, a.remarks, a.status,
+              b.percent,b.ids,b.names,b.investor_type
+              from coupon_investor a
+              left join
+              coupon_investor_detail b
+              on a.id = b.investor_id
+              and a.id =#{id}
+              and a.status = 1
+  </select>
+
+
+
+<!-- 设置无效 / 删除-->
+  <update id="updateCouponInvestorToValid" parameterType="java.lang.Long">
+      update coupon_investor set status = 0  where id = #{id}
+  </update>
+
+
+
+  <update id="updateCouponInvestor" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
+    update coupon_investor
+    set name = #{name,jdbcType=VARCHAR},
+    remarks = #{remarks,jdbcType=VARCHAR},
+    update_by = #{updateBy,jdbcType=BIGINT},
+    updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+    updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
 </mapper>

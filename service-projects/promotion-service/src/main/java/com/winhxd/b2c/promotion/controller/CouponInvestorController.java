@@ -36,14 +36,15 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
 
       /**
        *
-       *@Deccription
-       *@Params
-       *@Return
+       *@Deccription  新建出资方
+       *@Params  condition
+       *@Return  ResponseResult
        *@User  wl
        *@Date   2018/8/8 12:30
        */
+      @ApiOperation(value = "添加出资方", notes = "添加出资方",response = ResponseResult.class)
       @Override
-      public ResponseResult addCouponInvestor(CouponInvestorCondition condition) {
+      public ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult responseResult = new ResponseResult();
             // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
             int flag = couponInvestorService.saveCouponInvestor(condition);
@@ -51,14 +52,71 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             if(flag==0){
                   responseResult.setMessage("添加成功");
             }else if(flag==1){
-                  responseResult.setMessage("提交失败！占比之和不等于");
+                  responseResult.setMessage("新增失败！占比之和不等于100");
             }else if(flag==2){
-                  responseResult.setMessage("提交失败！出资方重复");
+                  responseResult.setMessage("新增失败！出资方重复");
             }else if(flag==3){
-                  responseResult.setMessage("提交失败！出资方明细为空");
+                  responseResult.setMessage("新增失败！出资方明细为空");
             }else {
                   responseResult.setMessage("服务器内部错误");
             }
             return responseResult;
       }
+
+
+    @Override
+    public ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition) {
+        ResponseResult responseResult = new ResponseResult();
+        // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
+        int flag = couponInvestorService.updateCouponInvestor(condition);
+        responseResult.setCode(flag);
+        if(flag==0){
+            responseResult.setMessage("修改成功");
+        }else if(flag==1){
+            responseResult.setMessage("修改失败！占比之和不等于100");
+        }else if(flag==2){
+            responseResult.setMessage("修改失败！出资方重复");
+        }else if(flag==3){
+            responseResult.setMessage("修改失败！出资方明细为空");
+        }else {
+            responseResult.setMessage("修改器内部错误");
+        }
+        return responseResult;
+    }
+
+
+
+     /**
+      *
+      *@Deccription 查看出资方详情
+      *@Params id
+      *@Return  ResponseResult
+      *@User  wl
+      *@Date   2018/8/8 14:06
+      */
+    @ApiOperation(value = "查看出资方详情", notes = "查看出资方详情",response = ResponseResult.class)
+    @Override
+    public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id) {
+        ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id) {
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id));
+            if(count>0){
+                responseResult.setCode(BusinessCode.CODE_OK);
+                responseResult.setMessage("删除成功");
+            }
+        }catch (Exception e){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            responseResult.setMessage("删除失败");
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
+
+
 }

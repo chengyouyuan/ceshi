@@ -11,10 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -40,6 +41,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
     
     @Autowired
     private OrderQueryService orderQueryService;
+    
+    @Autowired
+    private StoreServiceClient storeServiceClient;
 
     private static final String ORDER_TYPE_DESC = "在线支付线下计价自提订单";
     
@@ -59,16 +63,12 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        if (orderInfo.getPayType() == null
-                || orderInfo.getPayType().shortValue() != PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode()) {
-            throw new UnsupportedOperationException(MessageFormat.format("只支持扫码支付订单：payType={0}, 实际payType={1}",
-                    PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode(), orderInfo.getPayType()));
-        }
-        logger.info("扫码支付下单后状态直接流转到待接单");
+        logger.info("{},orderNo={} 创建后逻辑处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         // 生产订单流转日志
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), null, JsonUtil.toJSONString(orderInfo), orderInfo.getOrderStatus(),
                 orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 OrderStatusEnum.UNRECEIVED.getStatusDes(), MainPointEnum.MAIN);
+        logger.info("{},orderNo={} 创建后逻辑处理结", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
 
     @Override
@@ -76,8 +76,13 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
+        ResponseResult<Void> result = storeServiceClient.bindCustomer(orderInfo.getCustomerId(), orderInfo.getStoreId());
+        if (result == null || result.getCode() != BusinessCode.CODE_OK) {
+            logger.error("门店storeId={}，客户customerId={} 绑定关系失败", orderInfo.getStoreId(), orderInfo.getCustomerId());
+        }
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
+        // TODO 发送延时MQ信息，处理超时取消操作
     }
     
     @Override
@@ -128,9 +133,20 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         //确认 后状态流转到待付款
         orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), OrderStatusEnum.WAIT_PAY.getStatusCode());
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), newOrderJson, newOrderJson1, OrderStatusEnum.ALREADY_VALUATION.getStatusCode(),
-                OrderStatusEnum.WAIT_PAY.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
+                OrderStatusEnum.WAIT_PAY.getStatusCode(), orderInfo.getStoreId(), null,
                 OrderStatusEnum.WAIT_PAY.getStatusDes(), MainPointEnum.MAIN);
         logger.info("{},orderNo={} 订单确认后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+    }
+
+    @Override
+    public void orderInfoAfterPaySuccessProcess(OrderInfo orderInfo) {
+        if (orderInfo == null) {
+            throw new NullPointerException(ORDER_INFO_EMPTY);
+        }
+        // TODO 发送云信
+        String last4MobileNums = null;
+        String msg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        // TODO 发送延时MQ信息，处理超时未自提取消操作
     }
     
     /**

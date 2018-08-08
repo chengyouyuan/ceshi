@@ -41,7 +41,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/6
      */
-    @RequestMapping(value = "/promotion/v1/addCouponActivity", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/v1/addCouponActivity/", method = RequestMethod.POST)
     public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
     /**
      *
@@ -51,7 +51,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/7
      */
-    @RequestMapping(value = "/promotion/v1/updateCouponActivity", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/v1/updateCouponActivity/", method = RequestMethod.POST)
     public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition);
 
 }

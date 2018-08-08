@@ -21,7 +21,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -137,13 +137,13 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO1> findStoreUserInfo(Long id) {
-		ResponseResult<StoreUserInfoVO1> responseResult = new ResponseResult<>();
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
+		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(id == null){
 			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
 			throw new BusinessException(BusinessCode.CODE_200002);
 		}
-		StoreUserInfoVO1 data = storeService.findStoreUserInfo(id);
+		StoreUserInfoVO data = storeService.findStoreUserInfo(id);
 		if(data == null){
 			responseResult.setCode(BusinessCode.CODE_200004);
 		}
@@ -152,12 +152,12 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<List<StoreUserInfoVO1>> findStoreUserInfoList(Set<Long> ids) {
-		ResponseResult<List<StoreUserInfoVO1>> responseResult = new ResponseResult<>();
+	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
+		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
     	if(ids == null || ids.size() == 0){
     		throw new BusinessException(BusinessCode.CODE_200001);
 		}
-		List<StoreUserInfoVO1> storeInofs = storeService.findStoreUserInfoList(ids);
+		List<StoreUserInfoVO> storeInofs = storeService.findStoreUserInfoList(ids);
     	responseResult.setData(storeInofs);
 		return responseResult;
 	}

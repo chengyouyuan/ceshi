@@ -47,7 +47,11 @@ public enum OrderStatusEnum {
     /**
      * 待退款
      */
-    WAIT_REFUND((short) 33, "待退款", "待退款");
+    WAIT_REFUND((short) 33, "待退款", "待退款"),
+    /**
+     * 待退款
+     */
+    REFUNDING((short) 66, "退款中", "退款中");
 
 
     private short statusCode;

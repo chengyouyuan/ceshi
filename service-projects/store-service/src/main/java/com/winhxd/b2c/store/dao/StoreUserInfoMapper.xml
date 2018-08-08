@@ -16,7 +16,7 @@
     <result column="contact_mobile" property="contactMobile" jdbcType="CHAR" />
     <result column="lat" property="lat" jdbcType="DOUBLE" />
     <result column="lon" property="lon" jdbcType="DOUBLE" />
-    <result column="openId" property="openid" jdbcType="CHAR" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
     <result column="created" property="created" jdbcType="TIMESTAMP" />
     <result column="created_by" property="createdBy" jdbcType="BIGINT" />
     <result column="created_by_name" property="createdByName" jdbcType="VARCHAR" />
@@ -28,11 +28,11 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
-    shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, openId, 
+    shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, open_id, 
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status
   </sql>
- <resultMap id="storeUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1" extends="BaseResultMap"/>
+ <resultMap id="storeUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO" extends="BaseResultMap"/>
   <select id="selectStoreUserByIds" resultMap="storeUserInfoVO1">
     select <include refid="Base_Column_List"/> from store_user_info where id in
     <foreach collection="ids" item="id" separator="," open="(" close=")">
@@ -48,6 +48,22 @@
     <include refid="Base_Column_List" />
     from store_user_info
     where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectByStoreUserInfo" resultMap="BaseResultMap" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from store_user_info
+    <where>
+        <if test="storeMobile != null and storeMobile != ''">
+          AND store_mobile =#{storeMobile}
+        </if>
+        <if test="openId != null and openId != ''">
+          AND open_id = #{openId}
+        </if>
+        <if test="storeCustomerId != null">
+          AND store_customer_id = #{storeCustomerId}
+        </if>
+      </where>
   </select>
     <select id="findStoreUserInfo" resultType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo">
       SELECT
@@ -78,7 +94,7 @@
       store_mobile, store_address, store_region_code, 
       store_password, shopkeeper, shop_owner_img, 
       pickup_way, payment_way, contact_mobile, 
-      lat, lon, openId, created, 
+      lat, lon, open_id, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
       store_status)
@@ -86,7 +102,7 @@
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
       #{pickupWay,jdbcType=VARCHAR}, #{paymentWay,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
-      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=CHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
       #{storeStatus,jdbcType=TINYINT})
@@ -136,8 +152,8 @@
       <if test="lon != null" >
         lon,
       </if>
-      <if test="openid != null" >
-        openId,
+      <if test="openId != null" >
+        open_id,
       </if>
       <if test="created != null" >
         created,
@@ -207,8 +223,8 @@
       <if test="lon != null" >
         #{lon,jdbcType=DOUBLE},
       </if>
-      <if test="openid != null" >
-        #{openid,jdbcType=CHAR},
+      <if test="openId != null" >
+        #{openId,jdbcType=VARCHAR},
       </if>
       <if test="created != null" >
         #{created,jdbcType=TIMESTAMP},
@@ -278,8 +294,8 @@
       <if test="lon != null" >
         lon = #{lon,jdbcType=DOUBLE},
       </if>
-      <if test="openid != null" >
-        openId = #{openid,jdbcType=CHAR},
+      <if test="openId != null" >
+        openId = #{openId,jdbcType=VARCHAR},
       </if>
       <if test="created != null" >
         created = #{created,jdbcType=TIMESTAMP},
@@ -323,7 +339,7 @@
       contact_mobile = #{contactMobile,jdbcType=CHAR},
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},
-      openId = #{openid,jdbcType=CHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},

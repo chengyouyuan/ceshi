@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.customer.service.CustomerService;
@@ -28,10 +28,10 @@ public class CustomerServiceController implements CustomerServiceClient {
     private Logger logger = LoggerFactory.getLogger(CustomerServiceController.class);
 
     @Override
-    public ResponseResult<PagedList<CustomerUserInfoVO1>> queryCustomerPageInfo(@RequestBody  CustomerUserInfoCondition1 condition) {
-        ResponseResult<PagedList<CustomerUserInfoVO1>> responseResult = new ResponseResult<PagedList<CustomerUserInfoVO1>>();
+    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody  CustomerUserInfoCondition1 condition) {
+        ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = new ResponseResult<PagedList<CustomerUserInfoVO>>();
         try {
-            PagedList<CustomerUserInfoVO1> page = customerService.findCustomerPageInfo(condition);
+            PagedList<CustomerUserInfoVO> page = customerService.findCustomerPageInfo(condition);
             responseResult.setData(page);
         } catch (Exception e) {
             logger.error("CustomerServiceController ->queryCustomerPageInfo报错，错误信息为{}", e);
@@ -56,9 +56,9 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<List<CustomerUserInfoVO1>> findCustomerUserByIds(@RequestBody  List<Long> ids) {
-        ResponseResult<List<CustomerUserInfoVO1>> responseResult = new ResponseResult<>();
-        List<CustomerUserInfoVO1> customers = customerService.findCustomerUserByIds(ids);
+    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody  List<Long> ids) {
+        ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<>();
+        List<CustomerUserInfoVO> customers = customerService.findCustomerUserByIds(ids);
         responseResult.setData(customers);
         return responseResult;
     }

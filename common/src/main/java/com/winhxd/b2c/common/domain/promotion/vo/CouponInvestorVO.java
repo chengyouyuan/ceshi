@@ -1,6 +1,9 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
+
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author wl
@@ -30,6 +33,8 @@ public class CouponInvestorVO {
     private String updatedByName;
 
     private Date updated;
+
+    private List<CouponInvestorDetail> detailList;
 
 
     public Integer getId() {
@@ -118,5 +123,13 @@ public class CouponInvestorVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public List<CouponInvestorDetail> getDetailList() {
+        return detailList;
+    }
+
+    public void setDetailList(List<CouponInvestorDetail> detailList) {
+        this.detailList = detailList;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public class CustomerOrderInfoVO {
 
     @ApiModelProperty("用户信息对象")
-    private CustomerUserInfoVO1 customer;
+    private CustomerUserInfoVO customer;
 
     @ApiModelProperty("领取的优惠卷的总次数")
     private Integer couponCount;

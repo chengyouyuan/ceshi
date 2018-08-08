@@ -199,9 +199,13 @@ public class CouponController {
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
+		/**
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 		String userId = adminUser.getId()+"";
 		String userName = adminUser.getUsername();
+		**/
+		String userId = "100102";
+		String userName = "大花脸";
 		String code = getUUID();
 		CouponInvestorCondition condition = new CouponInvestorCondition();
 		condition.setCode(code);
@@ -221,22 +225,43 @@ public class CouponController {
 	@ApiOperation("查看出资方详情")
 	@GetMapping(value = "/v1/viewCouponInvestorDetail")
 	public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 
 	@ApiOperation("跳转到编辑出资方页面")
 	@GetMapping(value = "/v1/toEditCouponInvestor")
 	public ResponseResult toEditCouponInvestor(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 
 
 	@ApiOperation("编辑出资方出资方页面-确定")
 	@PostMapping(value = "/v1/updateCouponInvestor")
-	public ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition){
-		ResponseResult responseResult = null;
+	public ResponseResult updateCouponInvestor(@RequestBody LinkedHashMap detailData){
+		/**
+		 *  校验参数
+		 */
+		String name = detailData.get("name").toString();
+		String remark = detailData.get("remark").toString();
+		ArrayList list  = (ArrayList)detailData.get("listDetail");
+		String id = detailData.get("id").toString();
+		/**
+		 AdminUser adminUser = UserContext.getCurrentAdminUser();
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 **/
+		String userId = "100102000";
+		String userName = "大花脸88jsdishd";
+		CouponInvestorCondition condition = new CouponInvestorCondition();
+		condition.setId(id);
+		condition.setName(name);
+		condition.setRemarks(remark);
+		condition.setUserId(userId);
+		condition.setUserName(userName);
+		condition.setDetails(list);
+		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestor(condition);
 		return responseResult;
 	}
 
@@ -244,7 +269,7 @@ public class CouponController {
 	@ApiOperation("删除出资方出资方")
 	@GetMapping(value = "/v1/updateCouponInvestorToValid")
 	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id);
 		return responseResult;
 	}
 

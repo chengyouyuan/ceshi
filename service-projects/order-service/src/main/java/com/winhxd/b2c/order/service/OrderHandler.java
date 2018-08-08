@@ -42,4 +42,12 @@ public interface OrderHandler {
      * @param orderInso
      */
     void orderInfoConfirmProcess(OrderInfo orderInfo);
+    
+    /**
+     * 订单支付成功提交后相关业务逻辑,比如发送消息等相关边缘操作
+     * @author wangbin
+     * @date  2018年8月3日 下午4:38:24
+     * @param orderInfo
+     */
+    void orderInfoAfterPaySuccessProcess(OrderInfo orderInfo);
 }

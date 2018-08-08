@@ -44,8 +44,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         try {
-            PagedList<CouponActivityVO> page = couponActivityService.queryCouponActivity(condition);
-            result.setData(page);
+            result = couponActivityService.queryCouponActivity(condition);
+            //result.setData(page.getData());
         }catch (Exception e){
             logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -76,15 +76,13 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
             if (condition.getName() == null && condition.getCouponActivityTemplateList() == null
-                    && condition.getActivityStart()==null && condition.getActivityEnd() == null
-                    && condition.getCouponNumType() == null && condition.getCustomerVoucherLimitType() == null) {
+                    && condition.getActivityStart()==null && condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
             if (condition.getName() == null && condition.getCouponActivityTemplateList() == null
-                    && condition.getActivityStart() == null && condition.getActivityEnd() == null
-                    && condition.getCustomerVoucherLimitNum() == null) {
+                    && condition.getActivityStart() == null && condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }

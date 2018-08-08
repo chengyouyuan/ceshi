@@ -11,13 +11,13 @@ import lombok.Data;
  * @author liutong
  * @date 2018-08-03 14:22:44
  */
-@ApiModel("惠小店营业信息保存入参")
+@ApiModel("惠小店开店店铺信息保存返参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoreBusinessInfoVO {
 
     @ApiModelProperty(value = "门店编码", required = true)
-    private Long storeId;
+    private Long storeCustomerId;
 
     @ApiModelProperty(value = "店铺名称", required = true)
     private String storeName;

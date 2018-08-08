@@ -10,6 +10,7 @@
     <result column="names" jdbcType="VARCHAR" property="names" />
     <result column="investor_type" jdbcType="SMALLINT" property="investorType" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, investor_id, investor, percent, ids, names, investor_type
   </sql>
@@ -23,6 +24,7 @@
     delete from coupon_investor_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
     insert into coupon_investor_detail (id, investor_id, investor, 
       percent, ids, names, investor_type
@@ -114,4 +116,23 @@
       investor_type = #{investorType,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+  <!-- 根据 investor_id 修改详情 -->
+  <update id="updateCouponInvestorDetailByInvetorId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
+    update coupon_investor_detail
+    set percent = #{percent,jdbcType=REAL},
+      ids = #{ids,jdbcType=VARCHAR},
+      names = #{names,jdbcType=VARCHAR},
+      investor_type = #{investorType,jdbcType=SMALLINT}
+    where investor_id = #{investorId,jdbcType=BIGINT}
+  </update>
+
+
+  <delete id="deleteCouponInvestorDetailByInvetorId" parameterType="java.lang.Long">
+    delete from coupon_investor_detail
+       where investor_id = #{investorId}
+  </delete>
+
 </mapper>

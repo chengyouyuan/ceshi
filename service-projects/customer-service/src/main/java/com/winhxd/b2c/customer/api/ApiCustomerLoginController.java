@@ -22,7 +22,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -67,12 +67,12 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
 	@RequestMapping(value = "2021/v1/saveWeChatLogin", method = RequestMethod.POST)
-	public ResponseResult<CustomerUserInfoVO> weChatRegister(
+	public ResponseResult<CustomerUserInfoSimpleVO> weChatRegister(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
-		ResponseResult<CustomerUserInfoVO> result = new ResponseResult<>();
+		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
 		ResponseResult<MiniOpenId> object = null;
 		MiniOpenId mini = null;
-		CustomerUserInfoVO vo;
+		CustomerUserInfoSimpleVO vo;
 		try {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
@@ -102,7 +102,7 @@ public class ApiCustomerLoginController {
 					customerUserInfo.setCreated(new Date());
 					customerUserInfo.setToken(String.valueOf(UUID.randomUUID()));
 					customerLoginService.saveLoginInfo(customerUserInfo);
-					vo = new CustomerUserInfoVO();
+					vo = new CustomerUserInfoSimpleVO();
 					vo.setCustomerId(customerUserInfo.getCustomerId());
 					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 					vo.setToken(customerUserInfo.getToken());
@@ -119,7 +119,7 @@ public class ApiCustomerLoginController {
 					}
 					customerUserInfo.setCustomerId(DB.getCustomerId());
 					customerLoginService.updateCustomerInfo(customerUserInfo);
-					vo = new CustomerUserInfoVO();
+					vo = new CustomerUserInfoSimpleVO();
 					vo.setCustomerId(DB.getCustomerId());
 					vo.setCustomerMobile(DB.getCustomerMobile());
 					vo.setToken(DB.getToken());

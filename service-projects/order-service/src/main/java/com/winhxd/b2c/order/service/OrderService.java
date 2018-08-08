@@ -66,4 +66,22 @@ public interface OrderService {
      * @param condition
      */
     void orderConfirm4Store(OrderConfirmCondition condition);
+    
+    /**
+     * 订单超时未接单接口
+     *
+     * @param orderNo 入参
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    void orderReceiveTimeOut(String orderNo);
+    
+    /**
+     * 订单超时未自提接口
+     *
+     * @param orderNo 入参
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    void orderPickupTimeOut(String orderNo);
 }

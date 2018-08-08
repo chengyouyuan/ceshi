@@ -94,7 +94,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					//是否推荐
 					spManage.setRecommend(putaway.getRecommend());
 					//prodSku.getSkuAttributeOption()规格
-					spManage.setSkuAttributeOption(0);
+					spManage.setSkuAttributeOption("");
 					spManage.setCreated(new Date());
 					spManage.setCreatedBy(storeId);
 					//店主名称

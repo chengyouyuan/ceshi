@@ -5,6 +5,9 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.enums.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
@@ -96,7 +99,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事物提交后相关事件
-        registerProcessAfterOrderSubmitSuccess(orderInfo);
+        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo));
         return orderInfo.getOrderNo();
     }
 
@@ -132,6 +135,8 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        //订单支付成功事物提交后相关事件
+        registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo));
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
     }
 
@@ -170,7 +175,16 @@ public class CommonOrderServiceImpl implements OrderService {
                     result = false;
                 } else {
                     //TODO 优惠券一并退回
-                    //TODO 添加订单流转日志
+
+                    String oldOrderJsonString = JsonUtil.toJSONString(order);
+                    Short oldStatus = order.getOrderStatus();
+                    order.setOrderStatus(OrderStatusEnum.CANCELED.getStatusCode());
+                    order.setCancelReason(orderCancelCondition.getCancelReason());
+                    String newOrderJsonString = JsonUtil.toJSONString(order);
+                    //添加订单流转日志
+                    orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
+                            order.getOrderStatus(), order.getCreatedBy(), order.getCreatedByName(), order.getCancelReason(), MainPointEnum.MAIN);
+                    //TODO 订单取消发送云信
                 }
             } finally {
                 lock.unlock();
@@ -193,6 +207,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
             throw new BusinessException(BusinessCode.CODE_422001, "参数异常");
         }
+        StoreUser store = UserContext.getCurrentStoreUser();
         String orderNo = condition.getOrderNo();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -201,6 +216,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 short agree = condition.getAgree();
                 if (agree == 1) {
                     OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                    if (null == order || !order.getStoreId().equals(store.getStoreCustomerId())) {
+                        throw new BusinessException(BusinessCode.WRONG_ORDERNO, "门店处理用户退款订单查询失败");
+                    }
                     if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
                         throw new BusinessException(BusinessCode.CODE_422002, "未支付的订单不允许退款");
                     }
@@ -210,8 +228,19 @@ public class CommonOrderServiceImpl implements OrderService {
                     //TODO 调用订单退款接口
                     //TODO 判断退款是否成功
                     //更新订单状态
-                    this.orderInfoMapper.updateOrderStatusForRefund(orderNo);
-                    //TODO 添加订单流转日志
+                    int updateResult = this.orderInfoMapper.updateOrderStatusForRefund(orderNo);
+                    //添加订单流转日志
+                    if (updateResult > 0) {
+                        Short oldStatus = order.getOrderStatus();
+                        String oldOrderJsonString = JsonUtil.toJSONString(order);
+                        order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
+                        String newOrderJsonString = JsonUtil.toJSONString(order);
+                        //添加订单流转日志
+                        orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
+                                order.getOrderStatus(), order.getCreatedBy(), order.getCreatedByName(), order.getCancelReason(), MainPointEnum.MAIN);
+                    } else {
+                        logger.info("订单取消处理用户退款不成功 订单号={}", orderNo);
+                    }
                 }
             } finally {
                 lock.unlock();
@@ -233,12 +262,19 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.CODE_421001, "参数错误");
         }
-        Long customerId = 1L;
+        CustomerUser customer = UserContext.getCurrentCustomerUser();
+        if (null == customer) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户不存在");
+        }
+        Long customerId = customer.getCustomerId();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         if (lock.tryLock()) {
             try {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+                if (null == order || !order.getStoreId().equals(customer.getCustomerId())) {
+                    throw new BusinessException(BusinessCode.WRONG_ORDERNO, "C端申请退款订单查询失败");
+                }
                 //判断订单状态是否可以申请退款
                 Short status = order.getOrderStatus();
                 if (status.equals(PayStatusEnum.UNPAID.getStatusCode())
@@ -248,8 +284,19 @@ public class CommonOrderServiceImpl implements OrderService {
                     throw new BusinessException(BusinessCode.CODE_421002, "订单状态不允许退款");
                 }
                 //更新订单状态为待退款，并更新相关属性
-                this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId);
-                //TODO 添加订单流转日志
+                int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId);
+                //添加订单流转日志
+                if (updateResult > 0) {
+                    Short oldStatus = order.getOrderStatus();
+                    String oldOrderJsonString = JsonUtil.toJSONString(order);
+                    order.setOrderStatus(OrderStatusEnum.WAIT_REFUND.getStatusCode());
+                    String newOrderJsonString = JsonUtil.toJSONString(order);
+                    //添加订单流转日志
+                    orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
+                            order.getOrderStatus(), order.getCreatedBy(), order.getCreatedByName(), order.getCancelReason(), MainPointEnum.MAIN);
+                } else {
+                    logger.info("订单取消C端申请退款不成功 订单号={}", orderNo);
+                }
             } finally {
                 lock.unlock();
             }
@@ -257,7 +304,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
         }
     }
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void orderConfirm4Store(OrderConfirmCondition condition) {
@@ -285,32 +332,64 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
-        logger.info("门店确认订单开始：condition={}", condition);
+        logger.info("门店确认订单结束：condition={}", condition);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void orderReceiveTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+        if (orderInfo == null) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (orderInfo.getOrderStatus() != OrderStatusEnum.UNRECEIVED.getStatusCode()) {
+            // 如果非 带确认状态，直接返回
+            logger.info("订单：{} 状态：{} 非待接单状态，无需进行超时取消操作", orderNo,
+                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+            return;
+        }
+        //TODO 退款或取消
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void orderPickupTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+        if (orderInfo == null) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) {
+            // 如果非 带确认状态，直接返回
+            logger.info("订单：{} 状态：{} 非待自提状态，无需进行超时未自提操作", orderNo,
+                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+            return;
+        }
+        // TODO 退款
     }
     
     /**
-     * 订单成功创建成功 业务操作
+     * 注册事物提交后相关操作
      *
      * @param orderInfo
      * @author wangbin
      * @date 2018年8月3日 下午4:50:11
      */
-    private void registerProcessAfterOrderSubmitSuccess(OrderInfo orderInfo) {
+    private void registerProcessAfterTransSuccess(Runnable runnable) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
             public void afterCommit() {
-                threadPoolExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        // TODO 调用 顾客门店绑定接口
-                        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
-                                .orderInfoAfterCreateSuccessProcess(orderInfo);
-                    }
-                });
+                threadPoolExecutor.execute(runnable);
             }
         });
     }
-
+    
     private OrderInfo assembleOrderInfo(OrderCreateCondition orderCreateCondition) {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
@@ -465,5 +544,48 @@ public class CommonOrderServiceImpl implements OrderService {
         String randomFormat = "%09d";
         return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
     }
+    
+    /**
+     * 订单支付成功 处理
+     * @author wangbin
+     * @date  2018年8月8日 下午3:16:37
+     * @version 
+     */
+    private class PaySuccessProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public PaySuccessProcessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
 
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                    .orderInfoAfterPaySuccessProcess(orderInfo);
+        }
+    }
+    
+    /**
+     * 订单创建成功 处理
+     * @author wangbin
+     * @date  2018年8月8日 下午3:16:17
+     * @version 
+     */
+    private class SubmitSuccessProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                    .orderInfoAfterCreateSuccessProcess(orderInfo);
+        }
+    }
 }

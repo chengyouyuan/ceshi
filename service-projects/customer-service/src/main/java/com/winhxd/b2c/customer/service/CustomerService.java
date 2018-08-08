@@ -2,7 +2,7 @@ package com.winhxd.b2c.customer.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface CustomerService {
      * @param condition 查询条件
      * @return 分页数据
      */
-    PagedList<CustomerUserInfoVO1> findCustomerPageInfo(CustomerUserInfoCondition1 condition);
+    PagedList<CustomerUserInfoVO> findCustomerPageInfo(CustomerUserInfoCondition1 condition);
 
     /**
      * @author chengyy
@@ -37,5 +37,5 @@ public interface CustomerService {
      * @param ids 用户id
      * @return  用户信息
      */
-    List<CustomerUserInfoVO1> findCustomerUserByIds(List<Long> ids);
+    List<CustomerUserInfoVO> findCustomerUserByIds(List<Long> ids);
 }

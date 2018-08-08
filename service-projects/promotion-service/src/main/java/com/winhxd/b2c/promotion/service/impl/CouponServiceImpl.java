@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
@@ -215,5 +216,50 @@ public class CouponServiceImpl implements CouponService {
         pagedList.setPageSize(couponCondition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
+    }
+
+    @Override
+    public Boolean userReceiveCoupon(ReceiveCouponCondition condition) {
+
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        couponActivityTemplate.setCouponActivityId(condition.getCouponActivityId());
+        couponActivityTemplate.setTemplateId(condition.getTemplateId());
+        List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
+        if(couponActivityTemplates.isEmpty()){
+            logger.error("不存在符合新用户注册的优惠券活动");
+            throw new BusinessException(BusinessCode.CODE_500001);
+        }
+
+        CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
+        couponTemplateSend.setStatus((short)2);
+        couponTemplateSend.setTemplateId(condition.getTemplateId());
+        couponTemplateSend.setSource(1);
+        couponTemplateSend.setSendRole(1);
+        couponTemplateSend.setCustomerId(customerUser.getCustomerId());
+        couponTemplateSend.setCustomerMobile(customerUser.getCustomerMobile());
+        couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
+        couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
+        couponTemplateSend.setCount(couponActivityTemplates.get(0).getCount());
+        couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
+        couponTemplateSend.setCreated(new Date());
+        //TODO 用户名称
+        couponTemplateSend.setCreatedByName("");
+        couponTemplateSendMapper.insertSelective(couponTemplateSend);
+
+        CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
+        couponActivityRecord.setCouponActivityId(condition.getCouponActivityId());
+        couponActivityRecord.setCustomerId(customerUser.getCustomerId());
+        couponActivityRecord.setSendId(couponTemplateSend.getId());
+        couponActivityRecord.setTemplateId(condition.getTemplateId());
+        couponActivityRecord.setCreated(new Date());
+        couponActivityRecord.setCreatedBy(customerUser.getCustomerId());
+        couponActivityRecord.setCreatedByName("");
+        couponActivityRecordMapper.insertSelective(couponActivityRecord);
+        return true;
     }
 }

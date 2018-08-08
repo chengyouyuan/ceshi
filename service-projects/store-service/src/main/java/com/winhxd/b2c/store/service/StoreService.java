@@ -58,7 +58,7 @@ public interface StoreService {
      * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(Long storeCustomerId);
+    StoreUserInfo findByStoreCustomerId(Long storeCustomerId);
 
     /**
      * 修改门店信息非空的字段

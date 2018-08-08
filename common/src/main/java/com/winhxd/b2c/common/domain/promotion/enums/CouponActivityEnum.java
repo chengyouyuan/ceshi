@@ -43,13 +43,13 @@ public enum CouponActivityEnum {
     STORE_LIMITED((short) 2, "每个门店可领取数量"),
 
     /**
-     * 优惠券状态 1-已使用，2-未使用，3-无效, 4-已过期,5-退回
+     * 优惠券状态 0 无效 1-已使用，2-未使用， 3-已过期,4-退回
      */
     ALREADY_USE((short) 1, "已使用"),
     NOT_USE((short) 2, "未使用"),
-    INVALYD((short) 3, "未使用"),
-    EXPIRED((short) 4, "未使用"),
-    UNTREAD((short) 5, "未使用"),
+    INVALYD((short) 0, "无效"),
+    EXPIRED((short) 3, "已过期"),
+    UNTREAD((short) 4, "退回"),
 
     /**
      * 优惠券来源 1-系统发放

@@ -118,7 +118,7 @@ public class CouponServiceImpl implements CouponService {
         }
         //step3 返回数据
 
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),1,null);
+        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),1);
 
         return couponVOS;
     }
@@ -130,12 +130,8 @@ public class CouponServiceImpl implements CouponService {
      * @Param useStatus 使用状态 1
      * @return
      */
-    public List<CouponVO> getCouponList(Long customerId,Integer couponType,Integer useStatus){
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("customerId",customerId);
-        map.put("couponType",couponType);
-        map.put("useStatus",useStatus);
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(map);
+    public List<CouponVO> getCouponList(Long customerId,Integer couponType){
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerId,couponType);
 
         //TODO 1.通过品牌code 查询品牌信息  2.通过品类code 查询品类信息 3.通过商品code 查询商品信息
 
@@ -210,7 +206,7 @@ public class CouponServiceImpl implements CouponService {
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
         PagedList<CouponVO> pagedList = new PagedList();
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),null,couponCondition.getUseStatus());
+        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),null);
 
         pagedList.setData(couponVOS);
         pagedList.setPageNo(couponCondition.getPageNo());

@@ -198,11 +198,11 @@
     '未使用'
     WHEN cts.STATUS = 1 THEN
     '已使用'
-    WHEN cts.STATUS = 5 THEN
-    '退回'
-    WHEN cts.STATUS = 3 THEN
-    '无效'
     WHEN cts.STATUS = 4 THEN
+    '退回'
+    WHEN cts.STATUS = 0 THEN
+    '无效'
+    WHEN cts.STATUS = 3 THEN
     '已过期'
     END AS useStatus
     FROM
@@ -214,12 +214,9 @@
     JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
     JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
     WHERE
-    cts.customer_id = #{customerId}
+    cts.customer_id = #{customerId}  AND (cts.STATUS = 2 OR cts.STATUS = 4)
     <if test="couponType != null">
       AND ca.coupon_type = #{couponType}
-    </if>
-    <if test="useStatus != null">
-      AND cts.STATUS = #{useStatus}
     </if>
     GROUP BY cts.template_id
   </select>

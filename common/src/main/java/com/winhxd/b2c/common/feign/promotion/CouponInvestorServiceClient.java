@@ -31,6 +31,17 @@ public interface CouponInvestorServiceClient {
      */
     @RequestMapping(value = "/promotion/v1/addCouponInvestor", method = RequestMethod.POST)
     ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition);
+
+    /**
+     *
+     *@Deccription 查看出资方详情
+     *@Params
+     *@Return
+     *@User  wl
+     *@Date   2018/8/8 13:59
+     */
+    @RequestMapping(value = "/promotion/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
+    ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id);
 }
 
 @Component
@@ -41,6 +52,12 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     @Override
     public ResponseResult addCouponInvestor(CouponInvestorCondition condition) {
         logger.error("CouponInvestorServiceClient -> addCouponInvestor", throwable);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult viewCouponInvestorDetail(String id) {
+        logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 }

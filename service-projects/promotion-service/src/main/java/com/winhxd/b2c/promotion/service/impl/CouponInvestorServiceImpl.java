@@ -14,8 +14,10 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 
@@ -30,8 +32,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     private CouponInvestorMapper couponInvestorMapper;
     @Autowired
     private CouponInvestorDetailMapper  couponInvestorDetailMapper;
+
+
     @Override
-    public int saveCouponInvestor(CouponInvestorCondition condition) {
+    public int saveCouponInvestor( CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
         int flag = BusinessCode.CODE_1001;
         List deatils = condition.getDetails();
@@ -71,7 +75,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
             couponInvestor.setRemarks(condition.getRemarks());
             couponInvestor.setStatus(condition.getStatus());
             couponInvestor.setCreated(new Date());
-            couponInvestor.setCreatedBy(Long.parseLong(condition.getUserName()));
+            couponInvestor.setCreatedBy(Long.parseLong(condition.getUserId()));
             couponInvestor.setCreatedByName(condition.getUserName());
             //插入主表
             Long keyId = couponInvestorMapper.insertCouponInvestor(couponInvestor);
@@ -79,14 +83,15 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
             for(int i=0;i<deatils.size();i++){
                 CouponInvestorDetail detail = new CouponInvestorDetail();
                 LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                detail.setIds(map.get("brandCode").toString());
-                detail.setInvestorId(keyId);
+                if(map.get("brandCode")!=null){
+                    detail.setIds(map.get("brandCode").toString());
+                }
+                detail.setInvestorId(couponInvestor.getId());
                 detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
                 detail.setPercent(Float.parseFloat(map.get("percent").toString()));
                 detail.setNames(map.get("names").toString());
-                //couponInvestorDetailMapper
+                couponInvestorDetailMapper.insert(detail);
             }
-
             flag = BusinessCode.CODE_OK ;
         }catch (Exception e){
             flag = BusinessCode.CODE_1001;
@@ -94,5 +99,15 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         }
 
         return flag;
+    }
+
+
+
+    @Override
+    public ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id) {
+        CouponInvestorVO vo = couponInvestorMapper.selectCouponInvestorDetailById(id);
+        ResponseResult<CouponInvestorVO> result = new ResponseResult();
+        result.setData(vo);
+        return result;
     }
 }

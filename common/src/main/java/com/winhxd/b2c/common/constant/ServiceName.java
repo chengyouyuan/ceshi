@@ -10,7 +10,7 @@ public final class ServiceName {
     public  static final String STORE_SERVICE = "b2c-store-service";
 
     // 商品服务
-    public static final String PRODUCT_SERVICE = "product-service";
+    public static final String PRODUCT_SERVICE = "product-microservice";
 
     //优惠券服务
     public static final String PROMOTION_SERVICE = "b2c-promotion-service";

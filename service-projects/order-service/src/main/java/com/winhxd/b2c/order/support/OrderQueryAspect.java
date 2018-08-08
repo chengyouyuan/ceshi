@@ -1,22 +1,15 @@
 package com.winhxd.b2c.order.support;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.enums.*;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
-import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
-import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
-import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO1;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
-import org.apache.commons.collections4.CollectionUtils;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,13 +19,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO1;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
- * 订单数据转换
+ * 订单状态转换，code->mark
  *
  * @author pangjianhua
  */
@@ -265,12 +266,12 @@ public class OrderQueryAspect {
                 }
             }
             //根据 customerIds 到用户中心查询用户信息
-            ResponseResult<List<CustomerUserInfoVO1>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
+            ResponseResult<List<CustomerUserInfoVO>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
             if (result != null && result.getCode() == BusinessCode.CODE_OK) {
-                List<CustomerUserInfoVO1> customerUserInfoVO1s = result.getData();
-                Map<Long, CustomerUserInfoVO1> customerUserInfoVOMap = new HashMap<>();
+                List<CustomerUserInfoVO> customerUserInfoVO1s = result.getData();
+                Map<Long, CustomerUserInfoVO> customerUserInfoVOMap = new HashMap<>();
                 for (Iterator iterator = customerUserInfoVO1s.iterator(); iterator.hasNext(); ) {
-                    CustomerUserInfoVO1 customerUserInfoVO1 = (CustomerUserInfoVO1) iterator.next();
+                    CustomerUserInfoVO customerUserInfoVO1 = (CustomerUserInfoVO) iterator.next();
                     customerUserInfoVOMap.put(customerUserInfoVO1.getCustomerId(), customerUserInfoVO1);
                 }
                 for (int i = 0; i < objArr.length; i++) {
@@ -279,7 +280,7 @@ public class OrderQueryAspect {
                     if (field != null) {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
-                            CustomerUserInfoVO1 vo = customerUserInfoVOMap.get(field.get(obj));
+                            CustomerUserInfoVO vo = customerUserInfoVOMap.get(field.get(obj));
                             if (vo != null) {
                                 assembleInfos(obj, NICK_NAME, vo.getNickName());
                                 assembleInfos(obj, CUSTOMER_MOBILE, vo.getCustomerMobile());

@@ -1,6 +1,9 @@
 package com.winhxd.b2c.promotion.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
@@ -8,6 +11,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -16,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,8 +39,18 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
 
     @Override
-    public PagedList<CouponActivityVO> queryCouponActivity(CouponActivityCondition condition) {
-        return couponActivityMapper.queryCouponActivity(condition);
+    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+        ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
+        PagedList<CouponActivityVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
+        PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
     }
 
     @Override
@@ -50,7 +65,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setActivityStart(condition.getActivityStart());
             couponActivity.setActivityEnd(condition.getActivityEnd());
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-            couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+            couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setCreated(new Date());
             couponActivity.setCreatedBy(123456L);
             couponActivity.setCreatedByName("测试用户");

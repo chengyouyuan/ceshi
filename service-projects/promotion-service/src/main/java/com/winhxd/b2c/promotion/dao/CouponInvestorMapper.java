@@ -1,6 +1,9 @@
 package com.winhxd.b2c.promotion.dao;
 
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
+import org.apache.ibatis.annotations.Param;
 
 public interface CouponInvestorMapper {
     int deleteByPrimaryKey(Long id);
@@ -16,4 +19,6 @@ public interface CouponInvestorMapper {
     int updateByPrimaryKey(CouponInvestor record);
 
     Long insertCouponInvestor(CouponInvestor couponInvestor);
+
+    CouponInvestorVO selectCouponInvestorDetailById(@Param("id") Long id);
 }

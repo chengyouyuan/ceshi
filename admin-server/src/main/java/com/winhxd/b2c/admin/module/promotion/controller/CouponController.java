@@ -199,9 +199,13 @@ public class CouponController {
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
+		/**
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 		String userId = adminUser.getId()+"";
 		String userName = adminUser.getUsername();
+		**/
+		String userId = "100102";
+		String userName = "大花脸";
 		String code = getUUID();
 		CouponInvestorCondition condition = new CouponInvestorCondition();
 		condition.setCode(code);
@@ -221,7 +225,7 @@ public class CouponController {
 	@ApiOperation("查看出资方详情")
 	@GetMapping(value = "/v1/viewCouponInvestorDetail")
 	public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id){
-		ResponseResult responseResult = null;
+		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 

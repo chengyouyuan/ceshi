@@ -14,7 +14,7 @@ redis:
  
 ##################### product服务 数据源配置在文件服务器上 #####################
 jdbc:
-  url: file:E:/gitHuiStore/jdbc-mysql.properties
+  url: file:D:/jdbc-mysql.properties
 
 ##################### cas #####################
 cas: 

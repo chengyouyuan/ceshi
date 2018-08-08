@@ -44,18 +44,6 @@ public class CouponActivityAddCondition {
     @ApiModelProperty(value = "活动结束时间")
     private Date activityEnd;
 
-    @ApiModelProperty(value = "优惠券数量的限制 1优惠券总数2每个门店优惠券数")
-    private Short couponNumType;
-
-    @ApiModelProperty(value = "数量")
-    private Integer couponNum;
-
-    @ApiModelProperty(value = "用户领券限制 1不限制 2每个门店可领取数量")
-    private Short customerVoucherLimitType;
-
-    @ApiModelProperty(value = "用户可领取数量")
-    private Integer customerVoucherLimitNum;
-
     @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动")
     private Short couponType;
 
@@ -129,38 +117,6 @@ public class CouponActivityAddCondition {
 
     public void setActivityEnd(Date activityEnd) {
         this.activityEnd = activityEnd;
-    }
-
-    public Short getCouponNumType() {
-        return couponNumType;
-    }
-
-    public void setCouponNumType(Short couponNumType) {
-        this.couponNumType = couponNumType;
-    }
-
-    public Integer getCouponNum() {
-        return couponNum;
-    }
-
-    public void setCouponNum(Integer couponNum) {
-        this.couponNum = couponNum;
-    }
-
-    public Short getCustomerVoucherLimitType() {
-        return customerVoucherLimitType;
-    }
-
-    public void setCustomerVoucherLimitType(Short customerVoucherLimitType) {
-        this.customerVoucherLimitType = customerVoucherLimitType;
-    }
-
-    public Integer getCustomerVoucherLimitNum() {
-        return customerVoucherLimitNum;
-    }
-
-    public void setCustomerVoucherLimitNum(Integer customerVoucherLimitNum) {
-        this.customerVoucherLimitNum = customerVoucherLimitNum;
     }
 
     public Short getCouponType() {

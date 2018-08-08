@@ -337,17 +337,41 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean cancelOrder4TimeOut(String orderNo) {
-        // TODO Auto-generated method stub
-        return false;
+    public void orderReceiveTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+        if (orderInfo == null) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (orderInfo.getOrderStatus() != OrderStatusEnum.UNRECEIVED.getStatusCode()) {
+            // 如果非 带确认状态，直接返回
+            logger.info("订单：{} 状态：{} 非待接单状态，无需进行超时取消操作", orderNo,
+                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+            return;
+        }
+        //TODO 退款或取消
     }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean orderRefund4TimeOut(String orderNo) {
-        // TODO Auto-generated method stub
-        return false;
+    public void orderPickupTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+        if (orderInfo == null) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) {
+            // 如果非 带确认状态，直接返回
+            logger.info("订单：{} 状态：{} 非待自提状态，无需进行超时未自提操作", orderNo,
+                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+            return;
+        }
+        // TODO 退款
     }
     
     /**

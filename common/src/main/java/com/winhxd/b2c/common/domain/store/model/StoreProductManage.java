@@ -21,7 +21,7 @@ public class StoreProductManage {
     @ApiModelProperty("商品id")
     private String prodId;
     @ApiModelProperty("商品规则")
-    private Integer skuAttributeOption;
+    private String skuAttributeOption;
     @ApiModelProperty("售卖价格")
     private BigDecimal sellMoney;
     @ApiModelProperty("是否推荐 0不推荐 1推荐")
@@ -97,11 +97,11 @@ public class StoreProductManage {
         this.prodStatus = prodStatus;
     }
 
-    public Integer getSkuAttributeOption() {
+    public String getSkuAttributeOption() {
         return skuAttributeOption;
     }
 
-    public void setSkuAttributeOption(Integer skuAttributeOption) {
+    public void setSkuAttributeOption(String skuAttributeOption) {
         this.skuAttributeOption = skuAttributeOption;
     }
 

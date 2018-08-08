@@ -117,6 +117,42 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
     }
 
+    /**
+     *
+     *@Deccription 优惠券活动查看和回显编辑页
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/8
+     */
+    @Override
+    public CouponActivityVO getCouponActivityById(String id) {
+        CouponActivityVO couponActivityVO = new CouponActivityVO();
+        List<CouponActivityStoreCustomer> couponActivityStoreCustomerList;
+
+        CouponActivity couponActivity = couponActivityMapper.selectByPrimaryKey(Long.valueOf(id));
+        couponActivityVO.setId(couponActivity.getId());
+        couponActivityVO.setName(couponActivity.getName());
+        couponActivityVO.setCode(couponActivity.getCode());
+        couponActivityVO.setExolian(couponActivity.getExolian());
+        couponActivityVO.setRemarks(couponActivity.getRemarks());
+        couponActivityVO.setType(couponActivity.getType());
+        couponActivityVO.setActivityStart(couponActivity.getActivityStart());
+        couponActivityVO.setActivityEnd(couponActivity.getActivityEnd());
+        couponActivityVO.setActivityStatus(couponActivity.getActivityStatus());
+        if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
+            couponActivityVO.setCouponType(couponActivity.getCouponType());
+        }
+        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectByActivityId(couponActivity.getId());
+        couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
+
+        for(int i = 0 ; i < couponActivityTemplateList.size() ; i++) {
+            couponActivityStoreCustomerList = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplateList.get(i).getId());
+            couponActivityVO.getCouponActivityTemplateList().get(i).setCouponActivityStoreCustomerList(couponActivityStoreCustomerList);
+        }
+        return couponActivityVO;
+    }
+
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
     }

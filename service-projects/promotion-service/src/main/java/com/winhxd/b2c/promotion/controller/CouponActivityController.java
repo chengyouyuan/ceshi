@@ -100,6 +100,29 @@ public class CouponActivityController implements CouponActivityServiceClient {
 
     /**
      *
+     *@Deccription 查看优惠券活动
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/8
+     */
+    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页",response = ResponseResult.class)
+    @Override
+    public ResponseResult getCouponActivityById(String id) {
+        logger.info("优惠券活动查看&回显编辑页入参id: " +id);
+        ResponseResult responseResult = new ResponseResult();
+        CouponActivityVO couponActivityVO = couponActivityService.getCouponActivityById(id);
+        if(couponActivityVO!=null){
+            responseResult.setData(couponActivityVO);
+            responseResult.setCode(BusinessCode.CODE_OK);
+        }
+        return responseResult;
+    }
+
+
+
+    /**
+     *
      *@Deccription 编辑优惠券活动
      *@Params  condition
      *@Return  ResponseResult

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -43,6 +44,17 @@ public interface CouponActivityServiceClient {
      */
     @RequestMapping(value = "/promotion/v1/addCouponActivity/", method = RequestMethod.POST)
     public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
+
+    /**
+     *
+     *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)
+     *@Params   id  模板id
+     *@Return   ResponseResult
+     *@User     sjx
+     *@Date   2018/8/8
+     */
+    @RequestMapping(value = "/promotion/v1/getCouponActivityById/", method = RequestMethod.GET)
+    public ResponseResult getCouponActivityById(@RequestParam("id") String id);
     /**
      *
      *@Deccription 编辑优惠券活动
@@ -71,6 +83,12 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
         logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult getCouponActivityById(String id) {
+        logger.error("CouponActivityServiceFallback -> getCouponActivityById", throwable);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override

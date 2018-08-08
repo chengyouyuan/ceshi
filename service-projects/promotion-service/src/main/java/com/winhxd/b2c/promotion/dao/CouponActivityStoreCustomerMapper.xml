@@ -16,6 +16,12 @@
     from coupon_activity_store_customer
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByTemplateId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_store_customer
+    where coupon_activity_template_id = #{couponActivityTemplateId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity_store_customer
     where id = #{id,jdbcType=BIGINT}

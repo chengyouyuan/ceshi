@@ -27,6 +27,12 @@
     from coupon_activity_template
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_template
+    where coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </select>
   <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

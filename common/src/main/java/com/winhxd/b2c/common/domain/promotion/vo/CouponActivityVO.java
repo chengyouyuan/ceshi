@@ -1,10 +1,12 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -18,11 +20,26 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "优惠券活动ID")
     private Long id;
 
-    @ApiModelProperty(value = "发券编码")
+    @ApiModelProperty(value = "活动编码")
     private String code;
 
-    @ApiModelProperty(value = "发券名称")
+    @ApiModelProperty(value = "活动名称")
     private String name;
+
+    @ApiModelProperty(value = "活动说明")
+    private String exolian;
+
+    @ApiModelProperty(value = "活动备注")
+    private String remarks;
+
+    @ApiModelProperty(value = "1领券2推券")
+    private Short type;
+
+    @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动")
+    private Short couponType;
+
+    @ApiModelProperty(value = "活动状态1开启2停止")
+    private Short activityStatus;
 
     @ApiModelProperty(value = "引用数量")
     private Integer citeNum;
@@ -69,6 +86,9 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "修改时间")
     private Date updated;
 
+    @ApiModelProperty(value = "优惠券详情")
+    private List<CouponActivityTemplate> couponActivityTemplateList;
+
     public Long getId() {
         return id;
     }
@@ -91,6 +111,46 @@ public class CouponActivityVO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getExolian() {
+        return exolian;
+    }
+
+    public void setExolian(String exolian) {
+        this.exolian = exolian;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Short getType() {
+        return type;
+    }
+
+    public void setType(Short type) {
+        this.type = type;
+    }
+
+    public Short getCouponType() {
+        return couponType;
+    }
+
+    public void setCouponType(Short couponType) {
+        this.couponType = couponType;
+    }
+
+    public Short getActivityStatus() {
+        return activityStatus;
+    }
+
+    public void setActivityStatus(Short activityStatus) {
+        this.activityStatus = activityStatus;
     }
 
     public Integer getCiteNum() {
@@ -211,5 +271,13 @@ public class CouponActivityVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public List<CouponActivityTemplate> getCouponActivityTemplateList() {
+        return couponActivityTemplateList;
+    }
+
+    public void setCouponActivityTemplateList(List<CouponActivityTemplate> couponActivityTemplateList) {
+        this.couponActivityTemplateList = couponActivityTemplateList;
     }
 }

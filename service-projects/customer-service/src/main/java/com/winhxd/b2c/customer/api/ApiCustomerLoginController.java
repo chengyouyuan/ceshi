@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
@@ -104,8 +106,10 @@ public class ApiCustomerLoginController {
 					vo.setCustomerId(customerUserInfo.getCustomerId());
 					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 					vo.setToken(customerUserInfo.getToken());
+					CustomerUser user = new CustomerUser();
+					BeanUtils.copyProperties(vo, user);
 					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
-							JsonUtil.toJSONString(vo));
+							JsonUtil.toJSONString(user));
 					cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
 					result.setData(vo);
 

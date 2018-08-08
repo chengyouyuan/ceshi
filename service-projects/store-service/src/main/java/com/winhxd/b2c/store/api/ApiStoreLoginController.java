@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
@@ -84,12 +86,14 @@ public class ApiStoreLoginController {
 	@RequestMapping(value = "1008/v1/saveWeChatLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoVO> saveStoreLogin(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-		try {// storePassword
+		try {
 			if (null == storeUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
 			StoreUserInfo DB = null;
 			StoreUserInfo storeUserInfo = new StoreUserInfo();
+			StoreUser user = new StoreUser();
+
 			/**
 			 * 验证码登录 拿手机号去惠小店表里面查询是否存在
 			 */
@@ -102,17 +106,30 @@ public class ApiStoreLoginController {
 						.equals(cache.get(storeUserInfoCondition.getStoreMobile()))) {
 					return new ResponseResult<>(BusinessCode.CODE_1008);
 				}
-				if (DB == null) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				/**
+				 * 微信登录
+				 */
+				if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
+					// TODO:根据openId查询惠下单用户表登录
+
 				} else {
-					vo.setBusinessId(DB.getId());
-					vo.setStoreId(DB.getStoreId());
-					vo.setToken(DB.getToken());
-					cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(vo));
-					cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
-					result.setData(vo);
+					if (DB == null) {
+						return new ResponseResult<>(BusinessCode.CODE_1004);
+					} else {
+						vo.setBusinessId(DB.getId());
+						vo.setStoreId(DB.getStoreId());
+						vo.setToken(DB.getToken());
+						BeanUtils.copyProperties(vo, user);
+						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
+						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						result.setData(vo);
+					}
 				}
 			} else {
+
+				if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
+					// TODO:根据openId查询惠下单用户表登录
+				}
 				/**
 				 * 掉惠下单服务查询门店用户信息 用户名密码登录
 				 */
@@ -140,7 +157,8 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(info.getId());
 						vo.setStoreId(info.getStoreId());
 						vo.setToken(info.getToken());
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + info.getToken(), JsonUtil.toJSONString(vo));
+						BeanUtils.copyProperties(vo, user);
+						cache.set(CacheName.STORE_USER_INFO_TOKEN + info.getToken(), JsonUtil.toJSONString(user));
 						cache.expire(CacheName.STORE_USER_INFO_TOKEN + info.getToken(), 30 * 24 * 60 * 60);
 					}
 				}

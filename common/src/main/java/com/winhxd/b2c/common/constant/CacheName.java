@@ -1,10 +1,5 @@
 package com.winhxd.b2c.common.constant;
 
-import java.text.MessageFormat;
-import java.util.Date;
-
-import org.apache.commons.lang.time.DateFormatUtils;
-
 /**
  * @author lixiaodong
  * 缓存前缀常量
@@ -40,4 +35,16 @@ public class CacheName {
      * 用户确认订单防频繁操作
      */
     public static final String CACHE_KEY_CUSTOMER_ORDER_REPEAT = "CACHE_KEY_CUSTOMER_ORDER_REPEAT";
+    /**
+     * C端用户验证码key
+     */
+    public static final String CUSTOMER_USER_SEND_VERIFICATION_CODE = "CUSTOMER:USER:SEND:VERIFICATION:CODE:";
+    /**
+     * B端用户验证码key
+     */
+    public static final String STORE_USER_SEND_VERIFICATION_CODE = "STORE:USER:SEND:VERIFICATION:CODE:";
+    /**
+     * B端C端发送验证码请求key
+     */
+    public static final String SEND_VERIFICATION_CODE_REQUEST_TIME = "SEND:VERIFICATION:CODE:REQUEST:TIME:";
 }

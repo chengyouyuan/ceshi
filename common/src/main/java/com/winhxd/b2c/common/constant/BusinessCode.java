@@ -30,6 +30,10 @@ public final class BusinessCode {
     public static final int CODE_1010 = 1010;
     /** 微信快捷登录绑定账号无效 */
     public static final int CODE_1011 = 1011;
+    /**
+     * 验证码请求时长没有超过一分钟
+     */
+    public static final int CODE_1012 = 1012;
     
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;

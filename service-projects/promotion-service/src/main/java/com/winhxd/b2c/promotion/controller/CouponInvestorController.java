@@ -98,4 +98,13 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
     }
 
 
+
+    @ApiOperation(value = "多条件分页查询 出资方列表", notes = "多条件分页查询 出资方列表",response = ResponseResult.class)
+    @Override
+    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+        ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
+        return responseResult;
+    }
+
+
 }

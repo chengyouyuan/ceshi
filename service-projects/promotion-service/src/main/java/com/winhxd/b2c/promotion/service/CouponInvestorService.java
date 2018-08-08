@@ -20,4 +20,6 @@ public interface CouponInvestorService {
     int updateCouponInvestorToValid(long id,long userId,String userName);
 
     int updateCouponInvestor(CouponInvestorCondition condition);
+
+    ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 }

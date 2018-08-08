@@ -1,9 +1,12 @@
 package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CouponInvestorMapper {
     int deleteByPrimaryKey(Long id);
@@ -25,4 +28,6 @@ public interface CouponInvestorMapper {
     int updateCouponInvestorToValid(@Param("id")long id,@Param("userId")long userId,@Param("userName")String userName);
 
     void updateCouponInvestor(CouponInvestor couponInvestor);
+
+    List<CouponInvestorVO> getCouponInvestorPage(@Param("condition") CouponInvestorCondition condition);
 }

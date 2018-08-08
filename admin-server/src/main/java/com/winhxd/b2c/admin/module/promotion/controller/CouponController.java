@@ -185,8 +185,7 @@ public class CouponController {
 	@ApiOperation("获取出资方分页列表")
 	@PostMapping(value = "/v1/getCouponInvestorPage")
 	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
-		System.out.println(condition);
-		ResponseResult<PagedList<CouponInvestorVO>> responseResult = null;
+		ResponseResult<PagedList<CouponInvestorVO>> responseResult = couponInvestorServiceClient.getCouponInvestorPage(condition);
 		return responseResult;
 	}
 
@@ -248,6 +247,7 @@ public class CouponController {
 
 
 //============================================优惠方式规则开始============================================================
+
 @ApiOperation("多条件分页查询优惠方式规则")
 @PostMapping(value = "/v1/getCouponGradePage")
 public ResponseResult<PagedList<CouponInvestorVO>> getCouponGradePage(){

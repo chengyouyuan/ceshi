@@ -547,5 +547,14 @@
        set order_status=2,cancel_datetime = now(),pickup_code=null
        where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
     </update>
+    <update id="orderPickup">
+        update order_info
+        set pickup_code=null, 
+        order_status=#{newOrderStatus,jdbcType=SMALLINT}, 
+        updated = now()
+        where id=#{orderId,jdbcType=BIGINT}
+        and pickup_code=#{pickupCode,jdbcType=VARCHAR}
+        and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
+    </update>
 
 </mapper>

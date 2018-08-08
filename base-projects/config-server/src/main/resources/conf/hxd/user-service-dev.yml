@@ -4,9 +4,12 @@ spring:
 #  zipkin:
 #    serviceId: zipkin-server
 
-##################### 数据源配置在文件服务器上 #####################
-jdbc:
-  url: file:E:/gitShare/jdbc.properties
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://192.168.60.3:1433;DatabaseName=CRM_RETAIL_UAT
+    username: Retail_Uat
+    password: T4wYGypz#(9::/Mq
+
 
 eureka: 
   client: 

@@ -199,4 +199,17 @@ public interface OrderInfoMapper {
      * @param customerId
      */
     int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
+
+    /**
+     * 订单提货
+     * @author wangbin
+     * @date  2018年8月8日 下午6:25:55
+     * @Description 
+     * @param pickupCode
+     * @param orderId
+     * @param expectOrderStatus
+     * @param newOrderStatus
+     * @return
+     */
+    int orderPickup(@Param("pickupCode") String pickupCode, @Param("orderId") Long orderId, @Param("expectOrderStatus") Short expectOrderStatus, @Param("newOrderStatus") short newOrderStatus);
 }

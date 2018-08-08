@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
-
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
@@ -121,8 +120,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfo selectByStoreId(Long storeCustomerId) {
-        return storeUserInfoMapper.selectByStoreId(storeCustomerId);
+    public StoreUserInfo findByStoreCustomerId(Long storeCustomerId) {
+        return storeUserInfoMapper.selectByStoreCustomerId(storeCustomerId);
     }
 
     @Override

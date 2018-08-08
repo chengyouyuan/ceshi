@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
@@ -331,6 +332,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             orderInfo.setOrderTotalMoney(condition.getOrderTotal());
         }
+        //TODO 更新订单金额
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
         logger.info("门店确认订单结束：condition={}", condition);
@@ -373,6 +375,49 @@ public class CommonOrderServiceImpl implements OrderService {
             return;
         }
         // TODO 退款
+    }
+
+    @Override
+    public void orderPickup4Store(OrderPickupCondition condition) {
+        if (condition == null) {
+            throw new NullPointerException("确认订单参数 OrderConfirmCondition 为空");
+        }
+        if (condition.getStoreId() == null) {
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
+        }
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(condition.getOrderNo());
+        if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (StringUtils.isBlank(condition.getPickupCode())
+                || condition.getPickupCode().equals(orderInfo.getPickupCode())) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_PICKUP_CODE);
+        }
+        if (OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
+        }
+        logger.info("订单：orderNo={} 自提收货开始", condition.getOrderNo());
+        int ret = orderInfoMapper.orderPickup(condition.getPickupCode(), orderInfo.getId(),
+                OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), OrderStatusEnum.FINISHED.getStatusCode());
+        if (ret != 1) {
+            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE);
+        }
+        String oldOrderJsonString = JsonUtil.toJSONString(orderInfo);
+        orderInfo.setOrderStatus(OrderStatusEnum.FINISHED.getStatusCode());
+        orderInfo.setPickupCode(null);
+        orderInfo.setUpdated(new Date());
+        String newOrderJsonString = JsonUtil.toJSONString(orderInfo);
+        //生产流水记录
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJsonString, newOrderJsonString, orderInfo.getOrderStatus(),
+                orderInfo.getOrderStatus(), orderInfo.getStoreId(), null,
+                OrderStatusEnum.FINISHED.getStatusDes(), MainPointEnum.MAIN);
+        //TODO 发送云信
+        String msg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE;
+        registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo));
+        logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
 
     /**
@@ -545,17 +590,17 @@ public class CommonOrderServiceImpl implements OrderService {
         String randomFormat = "%09d";
         return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
     }
-
+    
     /**
      * 订单支付成功 处理
-     *
      * @author wangbin
-     * @date 2018年8月8日 下午3:16:37
+     * @date  2018年8月8日 下午3:16:37
+     * @version 
      */
     private class PaySuccessProcessRunnerble implements Runnable {
-
+        
         private OrderInfo orderInfo;
-
+        
         public PaySuccessProcessRunnerble(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
@@ -567,26 +612,47 @@ public class CommonOrderServiceImpl implements OrderService {
                     .orderInfoAfterPaySuccessProcess(orderInfo);
         }
     }
-
+    
     /**
      * 订单创建成功 处理
-     *
      * @author wangbin
-     * @date 2018年8月8日 下午3:16:17
+     * @date  2018年8月8日 下午3:16:17
+     * @version 
      */
     private class SubmitSuccessProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+                    .orderInfoAfterCreateSuccessProcess(orderInfo);
+        }
+    }
+
+    /**
+     * 订单提货完成 处理
+     * @author wangbin
+     * @date  2018年8月8日 下午3:16:17
+     * @version
+     */
+    private class OrderCompleteProcessRunnerble implements Runnable {
 
         private OrderInfo orderInfo;
 
-        public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
+        public OrderCompleteProcessRunnerble(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
 
         @Override
         public void run() {
-            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
-                    .orderInfoAfterCreateSuccessProcess(orderInfo);
+            //TODO 发送mq完成消息
         }
     }
 }

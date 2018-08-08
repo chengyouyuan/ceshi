@@ -102,7 +102,7 @@ public interface StoreServiceClient {
      * @date 2018/8/8 10:10
      * @Description 根据id批量查询门店信息
      */
-    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
 }
 

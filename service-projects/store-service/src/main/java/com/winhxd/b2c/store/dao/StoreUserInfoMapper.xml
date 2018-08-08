@@ -351,7 +351,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectBystoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select
     <include refid="Base_Column_List" />
     from store_user_info

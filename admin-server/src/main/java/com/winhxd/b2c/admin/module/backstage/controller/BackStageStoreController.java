@@ -105,7 +105,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "获取地域列表", response = ResponseResult.class, notes = "获取地域列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "1000/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "1003/v1/reginCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult reginCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult  = new ResponseResult<>();
         try {

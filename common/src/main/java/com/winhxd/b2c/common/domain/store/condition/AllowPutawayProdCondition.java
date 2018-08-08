@@ -22,7 +22,7 @@ public class AllowPutawayProdCondition extends MobileCondition {
 
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "门店编码", required = true)
+	@ApiModelProperty(value = "门店编码")
 	private Long storeId;
 
 	@ApiModelProperty(value = "待上架商品名称")

@@ -12,6 +12,10 @@ import java.util.List;
  * @Description
  */
 public class CouponVO {
+    @ApiModelProperty(value = "活动id", required=true)
+    private Long activityId;
+    @ApiModelProperty(value = "优惠券id", required=true)
+    private Long templateId;
     @ApiModelProperty(value = "是否有效", required=true)
     private String status;
     @ApiModelProperty(value = "无效原因", required=true)
@@ -42,6 +46,8 @@ public class CouponVO {
     private Date activityEnd;
     @ApiModelProperty(value = "优惠券状态", required=true)
     private String useStatus;
+    @ApiModelProperty(value = "优惠券领取状态 0 未领取  1 已领取", required=true)
+    private String receiveStatus;
 
     private String couponNumType;
 
@@ -201,5 +207,29 @@ public class CouponVO {
 
     public void setLimitNum(Integer limitNum) {
         this.limitNum = limitNum;
+    }
+
+    public Long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
+    }
+
+    public Long getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(Long templateId) {
+        this.templateId = templateId;
+    }
+
+    public String getReceiveStatus() {
+        return receiveStatus;
+    }
+
+    public void setReceiveStatus(String receiveStatus) {
+        this.receiveStatus = receiveStatus;
     }
 }

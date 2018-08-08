@@ -1,5 +1,17 @@
 package com.winhxd.b2c.common.feign.store;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -8,14 +20,8 @@ import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import feign.hystrix.FallbackFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import feign.hystrix.FallbackFactory;
 
 /**
  * @author chengyy
@@ -59,7 +65,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日下午1:40:49
      */
-    @RequestMapping(value = "/store/1018/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1018/v1/loginCheckSellMoney", method = RequestMethod.GET)
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**

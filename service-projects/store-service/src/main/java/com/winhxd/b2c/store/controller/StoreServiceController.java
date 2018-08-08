@@ -4,7 +4,6 @@ package com.winhxd.b2c.store.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -166,7 +166,9 @@ public class StoreServiceController implements StoreServiceClient {
 		//未设置价格
 		condition.setPriceStatus((byte)0);
 		//上架商品
-		condition.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+		List<Byte> prodStatus=new ArrayList<>();
+		prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+		condition.setProdStatus(prodStatus);
 		int count=storeProductManageService.countSkusByConditon(condition);
 		//设置是否有未设置价格的商品
 		if(count>0){

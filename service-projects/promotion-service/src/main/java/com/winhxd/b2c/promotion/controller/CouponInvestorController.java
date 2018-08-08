@@ -43,7 +43,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
        *@Date   2018/8/8 12:30
        */
       @Override
-      public ResponseResult addCouponInvestor(CouponInvestorCondition condition) {
+      public ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult responseResult = new ResponseResult();
             // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
             int flag = couponInvestorService.saveCouponInvestor(condition);

@@ -71,7 +71,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
             couponInvestor.setRemarks(condition.getRemarks());
             couponInvestor.setStatus(condition.getStatus());
             couponInvestor.setCreated(new Date());
-            couponInvestor.setCreatedBy(Long.parseLong(condition.getUserName()));
+            couponInvestor.setCreatedBy(Long.parseLong(condition.getUserId()));
             couponInvestor.setCreatedByName(condition.getUserName());
             //插入主表
             Long keyId = couponInvestorMapper.insertCouponInvestor(couponInvestor);
@@ -79,14 +79,15 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
             for(int i=0;i<deatils.size();i++){
                 CouponInvestorDetail detail = new CouponInvestorDetail();
                 LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                detail.setIds(map.get("brandCode").toString());
-                detail.setInvestorId(keyId);
+                if(map.get("brandCode")!=null){
+                    detail.setIds(map.get("brandCode").toString());
+                }
+                detail.setInvestorId(couponInvestor.getId());
                 detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
                 detail.setPercent(Float.parseFloat(map.get("percent").toString()));
                 detail.setNames(map.get("names").toString());
-                //couponInvestorDetailMapper
+                couponInvestorDetailMapper.insert(detail);
             }
-
             flag = BusinessCode.CODE_OK ;
         }catch (Exception e){
             flag = BusinessCode.CODE_1001;

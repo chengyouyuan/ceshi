@@ -23,6 +23,7 @@
     delete from coupon_investor_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail">
     insert into coupon_investor_detail (id, investor_id, investor, 
       percent, ids, names, investor_type

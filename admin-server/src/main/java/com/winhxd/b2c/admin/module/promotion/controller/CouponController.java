@@ -199,9 +199,13 @@ public class CouponController {
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
+		/**
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 		String userId = adminUser.getId()+"";
 		String userName = adminUser.getUsername();
+		**/
+		String userId = "100102";
+		String userName = "大花脸";
 		String code = getUUID();
 		CouponInvestorCondition condition = new CouponInvestorCondition();
 		condition.setCode(code);

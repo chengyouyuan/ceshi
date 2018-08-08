@@ -1,10 +1,12 @@
 package com.winhxd.b2c.store.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 
@@ -27,8 +29,8 @@ public interface StoreProductManageService {
 	 */
 	List<String> findSkusByConditon(StoreProductManageCondition condition);
 	/**
-	 * 通过skuCodes获取对应门店的商品信息
-	* @Title: findProdBySkuCodes 
+	 * 通过skuCodes获取对应门店的上架商品信息
+	* @Title: findPutawayProdBySkuCodes 
 	* @Description: TODO 
 	* @param storeId
 	* @param skuCodes
@@ -36,7 +38,7 @@ public interface StoreProductManageService {
 	* @author wuyuanbao
 	* @date 2018年8月6日下午4:05:43
 	 */
-	List<StoreProductManage> findProdBySkuCodes(Long storeId,String...skuCodes);
+	List<StoreProductManage> findPutawayProdBySkuCodes(Long storeId,String...skuCodes);
 	
 	/**
 	 * 查询sku数量
@@ -50,15 +52,15 @@ public interface StoreProductManageService {
 	int countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
 	
 	/**
-	 * 支持批量保存门店商品关系信息
-	* @Title: saveBatchStoreProductManage 
+	 * 商品上架操作（支持批量）
+	* @Title: batchPutawayStoreProductManage 
 	* @Description: TODO 
 	* @param storeId
-	* @param storeProductList
-	* @param storeUser void
+	* @param putawayInfo
+	* @param prodSkuInfo void
 	* @author wuyuanbao
-	* @date 2018年8月7日下午3:29:40
+	* @date 2018年8月8日下午3:26:52
 	 */
-	void saveBatchStoreProductManage(Long storeId,List<StoreProductManage> storeProductList,StoreUser storeUser);
+	void batchPutawayStoreProductManage(Long storeId,Map<String,ProdOperateInfoCondition> putawayInfo,Map<String,ProductSkuVO> prodSkuInfo);
 
 }

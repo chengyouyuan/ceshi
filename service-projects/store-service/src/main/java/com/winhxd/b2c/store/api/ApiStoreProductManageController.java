@@ -1,9 +1,10 @@
 package com.winhxd.b2c.store.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.winhxd.b2c.common.domain.product.vo.ProductVO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,12 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductVO;
 import com.winhxd.b2c.common.domain.store.condition.AllowPutawayProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
@@ -30,6 +33,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProdOperateEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -88,6 +92,7 @@ public class ApiStoreProductManageController {
 	            	responseResult.setCode(BusinessCode.CODE_1002);            	
 	            	return responseResult;	
 	            }
+	            
 	            //判断查询可上架商品类型
 	            Byte prodType=condition.getProdType();
 	            
@@ -107,8 +112,9 @@ public class ApiStoreProductManageController {
 	            if(HXD_PROD_TYPE.equals(prodType)){
 	            	//在惠下单下过单的sku
 		            List<String> hxdBuyedProdSkuList=null;
+		            Long customerId=storeUser.getStoreCustomerId();
 	            	//调用接口请求该用户惠下单商品sku	
-	            	ResponseResult<List<String>> storehxdResult=storeHxdServiceClient.getStoreBuyedProdSku("");
+	            	ResponseResult<List<String>> storehxdResult=storeHxdServiceClient.getStoreBuyedProdSku(customerId.toString());
 	            	if(storehxdResult.getCode()==0&&storehxdResult.getData()!=null
 	            			&&storehxdResult.getData().size()>0){
 	            		hxdBuyedProdSkuList=storehxdResult.getData();
@@ -189,9 +195,9 @@ public class ApiStoreProductManageController {
 		         
 		         //判断操作类型
 		         if(StoreProdOperateEnum.PUTAWAY.getOperateCode()==operateType){
-		        	 String skucodes[]=new String[prodInfo.size()];
+		        	 List<String> skucodes=new ArrayList<>();
 		        	 for(int i=0;i<prodInfo.size();i++){
-		        		 skucodes[i]=prodInfo.get(i).getSkuCode();
+		        		 skucodes.add(prodInfo.get(i).getSkuCode());
 		        	 }
 		        	//查询过来的sku是否有的已经上架
 		        	StoreProductManageCondition spmCondition=new StoreProductManageCondition();
@@ -199,18 +205,37 @@ public class ApiStoreProductManageController {
 		        	List<Byte> prodStatus=new ArrayList<>();
 		        	prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
 		        	spmCondition.setProdStatus(prodStatus);
-			        List<String> spms=storeProductManageService.findSkusByConditon(spmCondition);
+		        	
+			        List<StoreProductManage> spms=storeProductManageService.findPutawayProdBySkuCodes(storeId, (String[])skucodes.toArray());
 		        	 //上架操作
 		        	 //表示还没上架过
 		        	 if(spms==null||spms.size()==0){
 		        		 //调用商品接口获取商品相关信息
-		        		 List<ProductSkuVO> prodSkuList=null;
+		        		 List<ProductSkuVO> prodSkuList=new ArrayList<>();
+		        		 ProductCondition prodCondition=new ProductCondition();
+		        		 prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+		        		 prodCondition.setProductSkus(skucodes);
+		        		 //查询商品详情
+		        		 ResponseResult<List<ProductSkuVO>> productResult=productServiceClient.getProductSkus(prodCondition);
+		        		 if(productResult.getCode()==0){
+		        			 
+		        			 List<ProductSkuVO> productList=productResult.getData();
+		        			 //查询信息一一对应
+		        			 if(productList!=null&&productList.size()==prodInfo.size()){
+		        				 Map<String,ProdOperateInfoCondition> putawayInfo=new HashMap<>();
+		        				 for(ProdOperateInfoCondition p:prodInfo){
+		        					 putawayInfo.put(p.getSkuCode(), p);
+		        				 }
+		        				 Map<String,ProductSkuVO> prodSkuInfo=new HashMap<>();
+		        				 for(ProductSkuVO prod:productList){
+		        					 prodSkuInfo.put(prod.getSkuCode(), prod);
+		        				 }
+		        				 //商品上架
+		        			 }
+		        		 }
 		        		 //保存StoreProductManage
 		        		 //初始化门店商品对应统计信息
-		        		 
-		        		 
-		        		 
-		        		 
+	 
 		        	 }else{
 		        		 //表示商品中有部分已经上架过了
 		        		 //responseResult.setCode(BusinessCode.);
@@ -302,7 +327,7 @@ public class ApiStoreProductManageController {
 	            List<String> list=new ArrayList<>();
 	            list.add("987654321");
 	            list.add("123456789");
-	            responseResult.setData(storeProductManageService.findProdBySkuCodes(1L, (String[])list.toArray()));
+	            //responseResult.setData(storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodes);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }

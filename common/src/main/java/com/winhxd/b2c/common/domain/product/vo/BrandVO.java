@@ -11,5 +11,7 @@ public class BrandVO {
 	
 	@ApiModelProperty(value = "品牌名称")
 	private String brandName;
-
+	
+	@ApiModelProperty(value = "品牌图片")
+	private String brandImg;
 }

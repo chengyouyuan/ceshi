@@ -25,6 +25,15 @@
     updated_by_name, updated
   </sql>
   
+ 	<select id="selectBySkuCodeAndStoreId" resultMap="BaseResultMap">
+  	 	select
+  	 	<include refid="Base_Column_List"/>
+  	 	from store_product_manage prod 
+  	 	where prod.store_id=#{storeId,jdbcType=BIGINT}
+  	 	and prod.sku_code= #{skuCode,jdbcType=VARCHAR}
+
+  	</select>
+  
   	<select id="countSkusByConditon"  
   			parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition" 
   			resultType="java.lang.Long">

@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -44,6 +45,9 @@ public class CustomerUserController {
 
     @Autowired
     private OrderServiceClient orderServiceClient;
+
+    @Autowired
+    private CouponServiceClient couponServiceClient;
 
     @ApiOperation(value = "根据条件查询用户的分页数据信息", response = ResponseResult.class, notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
@@ -92,8 +96,8 @@ public class CustomerUserController {
         //查询设置用户信息
        result.setCustomer(queryCustomerById(customerUserId));
         //查询优惠券领取的总次数
-        //TODO 调用fegin查询当前用户领取的优惠券的总次数
-
+        Integer count = Integer.valueOf(couponServiceClient.getCouponNumsByCustomerForStore(null,customerUserId).getData());
+        result.setCouponCount(count == null ? 0 : count);
         //调用Fegin查询订单信息
          result.setOrderInfoDetailVOList(queryOrderPageInfo(customerUserId,pageNo,pageSize));
         return  responseResult;

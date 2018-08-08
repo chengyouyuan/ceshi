@@ -81,11 +81,12 @@ public class ApiBrowseLogController {
         ResponseResult responseResult = new ResponseResult<>();
         try {
             logger.info("C端用户浏览门店退出日志接口入参为：{}", JsonUtil.toJSONString(browseLogCondition));
-            Long id = storeBrowseLogService.getIdForLoginOut(browseLogCondition.getStoreId(),browseLogCondition.getCustomerId());
-            CustomerBrowseLog customerBrowseLog = new CustomerBrowseLog();
-            customerBrowseLog.setId(id);
-            customerBrowseLog.setLogoutTime(new Date());
-            storeBrowseLogService.modifyBrowseLogLogout(customerBrowseLog);
+            Date currentTime = new Date();
+            CustomerBrowseLog customerBrowseLog = storeBrowseLogService.getIdForLoginOut(browseLogCondition.getStoreId(),browseLogCondition.getCustomerId());
+            customerBrowseLog.setLogoutTime(currentTime);
+            long times = (currentTime.getTime() - customerBrowseLog.getLoginTime().getTime());
+            customerBrowseLog.setStayTimeMillis(times);
+            storeBrowseLogService.modifyByPrimaryKey(customerBrowseLog);
         } catch (Exception e) {
             logger.error("C端用户浏览门店退出日志接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);

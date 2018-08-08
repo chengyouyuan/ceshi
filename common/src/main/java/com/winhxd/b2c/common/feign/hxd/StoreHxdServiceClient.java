@@ -28,10 +28,16 @@ public interface StoreHxdServiceClient {
     ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, 
     		@RequestParam("storePassword") String storePassword); 
     @RequestMapping(value = "/hxdStore/getStoreUserInfoByCustomerId", method = RequestMethod.GET)
-    ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId); 
+    ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId);
 
+    /**
+     * 查询门店信息是否完善
+     *
+     * @param customerId
+     * @return
+     */
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("storeId") String storeId);
+    ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("customerId") String customerId);
 
     /**
      * 功能描述:获得门店在惠下单购买过商品sku
@@ -43,8 +49,14 @@ public interface StoreHxdServiceClient {
     @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") String customerId);
 
+    /**
+     * 查询门店基础信息
+     *
+     * @param customerId
+     * @return
+     */
     @RequestMapping(value = "/hxdStore/getStoreBaseInfo/", method = RequestMethod.GET)
-    ResponseResult<Object> getStoreBaseInfo(@RequestParam("storeId") String storeId);
+    ResponseResult<Object> getStoreBaseInfo(@RequestParam("customerId") String customerId);
 
 }
 

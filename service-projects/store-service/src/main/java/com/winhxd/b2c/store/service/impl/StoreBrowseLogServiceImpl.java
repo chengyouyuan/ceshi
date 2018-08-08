@@ -22,12 +22,12 @@ public class StoreBrowseLogServiceImpl implements StoreBrowseLogService {
     }
 
     @Override
-    public Long getIdForLoginOut(Long storeId, Long customerId) {
+    public CustomerBrowseLog getIdForLoginOut(Long storeId, Long customerId) {
         return customerBrowseLogMapper.selectIdForLoginOut(storeId, customerId);
     }
 
     @Override
-    public void modifyBrowseLogLogout(CustomerBrowseLog customerBrowseLog) {
-        customerBrowseLogMapper.updateByPrimaryKeySelective(customerBrowseLog);
+    public void modifyByPrimaryKey(CustomerBrowseLog customerBrowseLog) {
+        customerBrowseLogMapper.updateByPrimaryKey(customerBrowseLog);
     }
 }

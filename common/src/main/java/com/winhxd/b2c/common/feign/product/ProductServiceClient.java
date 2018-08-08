@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
+import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -92,6 +93,18 @@ public interface ProductServiceClient {
 	@RequestMapping(value = "/product/v1/getProductSkus/", method = RequestMethod.POST)
 	ResponseResult<List<ProductSkuVO>> getProductSkus(@RequestBody ProductCondition condition);
 	 
+	
+	/**	
+	 * 根据brandCode获取品牌信息
+	 * @Description: TODO     
+	 * @Title: getProductSkus
+	 * @param: @param condition
+	 * @param: @return      
+	 * @return: ResponseResult<List<ProductSkuVO>>      
+	 * @throws
+	 */
+	@RequestMapping(value = "/product/v1/getBrandInfo/", method = RequestMethod.POST)
+	ResponseResult<List<BrandVO>> getBrandInfo(@RequestBody List<String> brandCodes);
 }
 
 @Component
@@ -147,5 +160,10 @@ class ProductServiceFallback implements ProductServiceClient, FallbackFactory<Pr
 		logger.error("ProductServiceClient -> getProductSkus", throwable);
 		return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
-
+	
+	@Override
+	public ResponseResult<List<BrandVO>> getBrandInfo(List<String> brandCodes) {
+		logger.error("ProductServiceClient -> getBrandInfo", throwable);
+		return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 }

@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     <id column="customer_id" property="customerId" jdbcType="BIGINT" />
     <result column="customer_mobile" property="customerMobile" jdbcType="CHAR" />
-    <result column="open_id" property="openId" jdbcType="CHAR" />
+    <result column="open_id" property="openId" jdbcType="VARCHAR" />
     <result column="lat" property="lat" jdbcType="DOUBLE" />
     <result column="lon" property="lon" jdbcType="DOUBLE" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
@@ -27,6 +27,12 @@
     <include refid="Base_Column_List" />
     from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByCustomerUserInfoByModel" resultMap="BaseResultMap" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from customer_user_info
+    where open_id = #{openId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from customer_user_info
@@ -66,7 +72,7 @@
         cui.customer_mobile =  #{customerMobile,jdbcType=VARCHAR} and
       </if>
       <if test="openId != null and openId != ''">
-        cui.open_id = #{openId,jdbcType=CHAR} and
+        cui.open_id = #{openId,jdbcType=VARCHAR} and
       </if>
       <if test="status != null and status != ''">
         cui.status = #{status,jdbcType=TINYINT} and
@@ -193,7 +199,7 @@
         customer_mobile = #{customerMobile,jdbcType=CHAR},
       </if>
       <if test="openId != null" >
-        open_id = #{openId,jdbcType=CHAR},
+        open_id = #{openId,jdbcType=VARCHAR},
       </if>
       <if test="lat != null" >
         lat = #{lat,jdbcType=DOUBLE},
@@ -237,7 +243,7 @@
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     update customer_user_info
     set customer_mobile = #{customerMobile,jdbcType=CHAR},
-      open_id = #{openId,jdbcType=CHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},
       nick_name = #{nickName,jdbcType=VARCHAR},

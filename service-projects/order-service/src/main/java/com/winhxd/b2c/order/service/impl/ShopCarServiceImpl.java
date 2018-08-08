@@ -1,6 +1,10 @@
 package com.winhxd.b2c.order.service.impl;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -28,6 +32,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: wangbaokuo
@@ -47,6 +52,8 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Resource
     private StoreServiceClient storeServiceClient;
+    @Resource
+    private Cache cache;
 
     @Transactional(rollbackFor= {Exception.class})
     @Override
@@ -115,23 +122,33 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public int removeShopCar(ShopCarCondition condition) {
         ShopCar shopCar = new ShopCar();
-        // TODO TOCKEN获取当前用户信息
-        Long customerId = getCurrentCustomerId();
-        shopCar.setCustomerId(customerId);
+        shopCar.setCustomerId( getCurrentCustomerId());
         shopCar.setStoreId(condition.getStoreId());
         return shopCarMapper.deleteShopCars(shopCar);
     }
 
     @Override
-    public void readyOrder(ShopCarCondition condition) {
-        List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
-        checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
-        // 保存订单
-        OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
-        BeanUtils.copyProperties(condition, orderCreateCondition);
-        orderService.submitOrder(orderCreateCondition);
-        // 保存成功删除此用户门店的购物车
-        removeShopCar(condition);
+    public void readyOrder(ShopCarCondition condition) throws InterruptedException {
+        String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + getCurrentCustomerId();
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+
+        if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
+            try {
+                List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
+                checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
+                // 保存订单
+                OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
+                BeanUtils.copyProperties(condition, orderCreateCondition);
+                orderService.submitOrder(orderCreateCondition);
+                // 保存成功删除此用户门店的购物车
+                removeShopCar(condition);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            throw new BusinessException(BusinessCode.CODE_402014);
+        }
+
     }
 
     private List<ShopCarProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId){

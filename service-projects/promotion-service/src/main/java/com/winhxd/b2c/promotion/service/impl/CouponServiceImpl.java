@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
@@ -89,15 +90,15 @@ public class CouponServiceImpl implements CouponService {
             //推送数量
             for(int i=0; i <activityTemplate.getSendNum();i++){
                 CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
-                couponTemplateSend.setStatus((short)2);
+                couponTemplateSend.setStatus(CouponActivityEnum.NOT_USE.getCode());
                 couponTemplateSend.setTemplateId(activityTemplate.getTemplateId());
-                couponTemplateSend.setSource(1);
-                couponTemplateSend.setSendRole(1);
+                couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
+                couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
                 couponTemplateSend.setCustomerId(customerUser.getCustomerId());
                 couponTemplateSend.setCustomerMobile(customerUser.getCustomerMobile());
                 couponTemplateSend.setStartTime(activityTemplate.getStartTime());
                 couponTemplateSend.setEndTime(activityTemplate.getEndTime());
-                couponTemplateSend.setCount(activityTemplate.getCount());
+                couponTemplateSend.setCount(1);
                 couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
                 couponTemplateSend.setCreated(new Date());
                 //TODO 用户名称
@@ -166,7 +167,7 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> results = new ArrayList<>();
         for(CouponVO couponVO : couponVOS){
             //根据优惠券总数限制用户领取
-            if(couponVO.getCouponNumType().equals(1)){
+            if(couponVO.getCouponNumType().equals(CouponActivityEnum.COUPON_SUM.getCode())){
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(),couponVO.getTemplateId());
                 if(templateNum < couponVO.getCouponNum()){
                     int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getStoreCustomerId(),customerUser.getCustomerId());
@@ -181,7 +182,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
-            if(couponVO.getCouponNumType().equals(2)){
+            if(couponVO.getCouponNumType().equals(CouponActivityEnum.STORE_NUM.getCode())){
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getStoreCustomerId());
                 if(storeNum < couponVO.getCouponNum()){
                     int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getStoreCustomerId(),customerUser.getCustomerId());
@@ -236,15 +237,15 @@ public class CouponServiceImpl implements CouponService {
         }
 
         CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
-        couponTemplateSend.setStatus((short)2);
+        couponTemplateSend.setStatus(CouponActivityEnum.NOT_USE.getCode());
         couponTemplateSend.setTemplateId(condition.getTemplateId());
-        couponTemplateSend.setSource(1);
-        couponTemplateSend.setSendRole(1);
+        couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
+        couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
         couponTemplateSend.setCustomerId(customerUser.getCustomerId());
         couponTemplateSend.setCustomerMobile(customerUser.getCustomerMobile());
         couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
         couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
-        couponTemplateSend.setCount(couponActivityTemplates.get(0).getCount());
+        couponTemplateSend.setCount(1);
         couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
         couponTemplateSend.setCreated(new Date());
         //TODO 用户名称
@@ -260,6 +261,42 @@ public class CouponServiceImpl implements CouponService {
         couponActivityRecord.setCreatedBy(customerUser.getCustomerId());
         couponActivityRecord.setCreatedByName("");
         couponActivityRecordMapper.insertSelective(couponActivityRecord);
+        return true;
+    }
+
+    @Override
+    public Boolean updateCouponStatus(CouponCondition condition) {
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+        }
+
+        List<Long> sendIds = condition.getSendIds();
+        Integer useStatus = condition.getUseStatus();
+        if(sendIds.isEmpty() || null == useStatus || condition.getCouponPrice() ==null || null ==condition.getOrderNo()||null == condition.getOrderPrice()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+
+        for(int i =0 ;i<sendIds.size();i++){
+            CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
+            couponTemplateSend.setStatus(useStatus.shortValue());
+            couponTemplateSend.setUpdated(new Date());
+            couponTemplateSend.setUpdateBy(customerUser.getCustomerId());
+            couponTemplateSend.setUpdatedByName("");
+            couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
+
+            CouponTemplateUse couponTemplateUse = new CouponTemplateUse();
+            couponTemplateUse.setSendId(couponTemplateSend.getId());
+            couponTemplateUse.setTemplateId(couponTemplateSend.getTemplateId());
+            couponTemplateUse.setOrderNo(condition.getOrderNo());
+            couponTemplateUse.setCouponPrice(condition.getCouponPrice());
+            couponTemplateUse.setOrderPrice(condition.getOrderPrice());
+            couponTemplateUse.setCustomerId(customerUser.getCustomerId());
+            couponTemplateUse.setCustomerMonbile(customerUser.getCustomerMobile());
+            couponTemplateUse.setCreated(new Date());
+            couponTemplateUse.setCreatedBy(customerUser.getCustomerId());
+            couponTemplateUse.setCreatedByName("");
+        }
         return true;
     }
 }

@@ -123,6 +123,13 @@ public class ApiCustomerLoginController {
 					vo.setCustomerId(DB.getCustomerId());
 					vo.setCustomerMobile(DB.getCustomerMobile());
 					vo.setToken(DB.getToken());
+					if(!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())){
+						CustomerUser user = new CustomerUser();
+						BeanUtils.copyProperties(vo, user);
+						cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
+								JsonUtil.toJSONString(user));
+						cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+					}
 					result.setData(vo);
 				}
 			} else {
@@ -156,6 +163,7 @@ public class ApiCustomerLoginController {
 			if (null == customerUserInfoCondition) {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
+			
 			/**
 			 * 发送模板内容
 			 */

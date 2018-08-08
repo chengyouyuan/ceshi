@@ -122,9 +122,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(DB.getId());
 						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					}
 			} 
@@ -155,9 +157,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(DB.getId());
 						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					} else {
 						/*
@@ -175,9 +179,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(storeUserInfo.getId());
 						vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						vo.setToken(storeUserInfo.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					}
 				}
@@ -202,9 +208,11 @@ public class ApiStoreLoginController {
 				vo.setBusinessId(storeUserInfo.getId());
 				vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 				vo.setToken(storeUserInfo.getToken());
-				BeanUtils.copyProperties(vo, user);
-				cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
-				cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+				if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())){
+					BeanUtils.copyProperties(vo, user);
+					cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
+					cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+				}
 				result.setData(vo);
 				
 			} 
@@ -219,9 +227,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(DB.getId());
 						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					}
 			}
@@ -247,9 +257,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(DB.getId());
 						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					} else {
 						/*
@@ -267,9 +279,11 @@ public class ApiStoreLoginController {
 						vo.setBusinessId(storeUserInfo.getId());
 						vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						vo.setToken(storeUserInfo.getToken());
-						BeanUtils.copyProperties(vo, user);
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+						if(!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())){
+							BeanUtils.copyProperties(vo, user);
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
+						}
 						result.setData(vo);
 					}
 				}

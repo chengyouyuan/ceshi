@@ -16,14 +16,16 @@ import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.*;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -64,17 +66,25 @@ public class LoginController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
-            @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用")
+            @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用"),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseResult<Boolean> login(@RequestParam String account, @RequestParam String password, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping(value = "/login")
+    public ResponseResult<Boolean> login(String account, String password, HttpServletRequest request, HttpServletResponse response) {
         logger.info("{} - 用户登录, 参数：account={}", MODULE_NAME, account);
 
         ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
+        if(StringUtils.isBlank(account) || StringUtils.isBlank(password)){
+            logger.error("{} - 参数无效，账号：{}", MODULE_NAME, account);
+            result = new ResponseResult<>(BusinessCode.CODE_1007);
+            result.setData(false);
+            return result;
+        }
+
         ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(account);
         if(responseResult.getCode() != BusinessCode.CODE_OK){
-            logger.error("{}，账号：{}", responseResult.getMessage(), account);
+            logger.error("{} - {}，账号：{}", MODULE_NAME, responseResult.getMessage(), account);
             result = new ResponseResult<>(responseResult.getCode());
             result.setData(false);
             return result;
@@ -82,7 +92,7 @@ public class LoginController {
 
         SysUser sysUser = responseResult.getData();
         if(null == sysUser){
-            logger.error("登录账号无效，账号：{}", account);
+            logger.error("{} - 登录账号无效，账号：{}", MODULE_NAME, account);
             result = new ResponseResult<>(BusinessCode.CODE_1004);
             result.setData(false);
             return result;
@@ -90,27 +100,30 @@ public class LoginController {
 
         String encodePassword = DigestUtils.md5DigestAsHex(password.getBytes());
         if(!sysUser.getPassword().equals(encodePassword)){
-            logger.error("登录密码错误，账号：{}", account);
+            logger.error("{} - 登录密码错误，账号：{}", MODULE_NAME, account);
             result = new ResponseResult<>(BusinessCode.CODE_1005);
             result.setData(false);
             return result;
         }
 
         if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
-            logger.error("账号未启用，账号：{}", account);
+            logger.error("{} - 账号未启用，账号：{}", MODULE_NAME, account);
             result = new ResponseResult<>(BusinessCode.CODE_1006);
             result.setData(false);
             return result;
         }
 
+        //随机生成token
         String token = UUID.randomUUID().toString().replaceAll("-","");
         String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(sysUser,userInfo);
         userInfo.setToken(token);
 
+        //将token和用户信息放入缓存，并设置token过期时间为30分钟
         cache.setex(cacheKey,30 * 60, JsonUtil.toJSONString(userInfo));
 
+        //将token写到客户端的cookie里面
         Cookie tokenCookie = null;
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){
@@ -149,6 +162,7 @@ public class LoginController {
 
         ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
+        //获取客户端的cookie数据
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){
             for(Cookie cookie : requestCookies){
@@ -156,7 +170,10 @@ public class LoginController {
                     String token = cookie.getValue();
                     String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 
+                    //删除缓存里面的token和用户信息
                     cache.del(cacheKey);
+
+                    //删除客户端的cookie里面的token
                     cookie.setValue(null);
                     cookie.setMaxAge(0);
                     cookie.setPath("/");

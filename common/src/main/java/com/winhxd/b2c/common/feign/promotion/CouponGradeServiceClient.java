@@ -2,8 +2,10 @@ package com.winhxd.b2c.common.feign.promotion;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -30,6 +32,8 @@ public interface CouponGradeServiceClient {
     @RequestMapping(value = "/promotion/v1/updateCouponGradeValid", method = RequestMethod.POST)
     ResponseResult updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
+    @RequestMapping(value = "/promotion/v1/getCouponGradePage", method = RequestMethod.POST)
+    ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
 }
 
 
@@ -54,6 +58,12 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     public ResponseResult updateCouponGradeValid(String id,String userId,String userName) {
         logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
+        logger.error("CouponGradeServiceClient -> getCouponGradePage", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
     }
 }
 

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
@@ -250,9 +251,9 @@ public class CouponController {
 
 @ApiOperation("多条件分页查询优惠方式规则")
 @PostMapping(value = "/v1/getCouponGradePage")
-public ResponseResult<PagedList<CouponInvestorVO>> getCouponGradePage(){
-
-	return null;
+public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition){
+	ResponseResult<PagedList<CouponGradeVO>> responseResult = couponGradeServiceClient.getCouponGradePage(condition);
+	return responseResult;
 }
 
 @ApiOperation("新建优惠方式规则")
@@ -261,8 +262,17 @@ public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGra
 	/**
 	 * 参数校验
 	 */
+	AdminUser adminUser = UserContext.getCurrentAdminUser();
+	/**
+	 String userId = adminUser.getId()+"";
+	 String userName = adminUser.getUsername();
+	 */
+	String userId = "100102";
+	String userName = "大花脸";
 	 String code = getUUID();
 	 couponGradeCondition.setCode(code);
+	 couponGradeCondition.setUserId(userId);
+	couponGradeCondition.setUserName(userName);
 	 ResponseResult responseResult = couponGradeServiceClient.addCouponGrade(couponGradeCondition);
 	 return responseResult;
 }

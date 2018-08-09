@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
@@ -28,7 +29,19 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @ApiOperation(value = "添加优惠方式规则", notes = "添加优惠方式规则",response = ResponseResult.class)
     @Override
     public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
-        return null;
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int flag = couponGradeService.addCouponGrade(couponGradeCondition);
+            if(flag>0){
+                responseResult.setCode(BusinessCode.CODE_OK);
+                responseResult.setMessage("添加成功");
+            }
+        }catch (Exception e){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            responseResult.setMessage("添加失败");
+            e.printStackTrace();
+        }
+        return responseResult;
     }
 
     @ApiOperation(value = "优惠方式规则详情查看", notes = "优惠方式规则详情查看",response = ResponseResult.class)
@@ -56,7 +69,11 @@ public class CouponGradeController implements CouponGradeServiceClient {
         return responseResult;
     }
 
-
+    @Override
+    public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
+        ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);
+        return result;
+    }
 
 
 }

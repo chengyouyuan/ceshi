@@ -56,7 +56,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@Date   2018/8/6 20:39
      */
     @RequestMapping(value = "/promotion/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
-    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids);
+    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName);
 
     /**
      *
@@ -110,7 +110,7 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     }
 
     @Override
-    public ResponseResult updateCouponTemplateToValid(String ids) {
+    public ResponseResult updateCouponTemplateToValid(String ids,String userId,String userName) {
         logger.error("CouponTemplateServiceClient -> updateCouponTemplateToValid", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }

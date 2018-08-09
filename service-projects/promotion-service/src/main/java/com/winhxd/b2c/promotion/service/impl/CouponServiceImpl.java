@@ -315,7 +315,7 @@ public class CouponServiceImpl implements CouponService {
             CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateSend.setUpdated(new Date());
-            couponTemplateSend.setUpdateBy(customerUser.getCustomerId());
+            couponTemplateSend.setUpdatedBy(customerUser.getCustomerId());
             couponTemplateSend.setUpdatedByName("");
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
 

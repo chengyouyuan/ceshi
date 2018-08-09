@@ -199,8 +199,8 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping("/user/disabled/{id}")
-    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
+    @DeleteMapping("/user/disabled/{id}")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
     public ResponseResult<SysUser> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.disabled(id);

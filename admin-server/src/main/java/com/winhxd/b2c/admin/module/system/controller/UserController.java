@@ -206,7 +206,7 @@ public class UserController {
         return userServiceClient.disabled(id);
     }
 
-    @ApiOperation(value = "用户管理页面")
+    @ApiOperation(value = "用户管理页面(样本功能)")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),

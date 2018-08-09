@@ -3,7 +3,7 @@ package com.winhxd.b2c.customer.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.customer.dao.CustomerUserInfoMapper;
@@ -23,7 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerUserInfoMapper customerUserInfoMapper;
     @Override
-    public PagedList<CustomerUserInfoVO> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+    public PagedList<CustomerUserInfoVO> findCustomerPageInfo(BackStageCustomerInfoCondition condition) {
         PagedList<CustomerUserInfoVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CustomerUserInfoVO> customers = customerUserInfoMapper.selectCustomer(condition);
@@ -36,7 +36,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public int modifyCustomerStatus(CustomerUserInfoCondition1 condition) {
+    public int modifyCustomerStatus(BackStageCustomerInfoCondition condition) {
         CustomerUserInfo record = new CustomerUserInfo();
         record.setCustomerId(condition.getCustomerId());
         record.setStatus(condition.getStatus());

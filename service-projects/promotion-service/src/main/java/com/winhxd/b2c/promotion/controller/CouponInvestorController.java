@@ -80,6 +80,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         return responseResult;
     }
 
+    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效",response = ResponseResult.class)
     @Override
     public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();

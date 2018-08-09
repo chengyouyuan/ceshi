@@ -17,7 +17,7 @@ import java.util.List;
  */
 @ApiModel("用户加购传参")
 @Data
-public class ShopCarCondition extends BaseCondition{
+public class ShopCarCondition {
 
     @ApiModelProperty(value = "门店ID")
     private Long storeId;

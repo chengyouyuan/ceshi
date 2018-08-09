@@ -95,7 +95,9 @@ public class ShopCarServiceImpl implements ShopCarService {
         ShopCarVO shopCarVO = new ShopCarVO();
         if (CollectionUtils.isNotEmpty(shopCars)) {
             BeanUtils.copyProperties(shopCars.get(0), shopCarVO);
+            // 商品详情
             List<ShopCarProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
+            // 组装产品信息prodInfos
             List<ShopCarProdInfoVO> prodInfos = new ArrayList<>(shopCarProdVOs.size());
             ShopCarProdInfoVO shopCarProdInfoVO;
             for (ShopCar shopCar2 : shopCars){
@@ -122,7 +124,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public int removeShopCar(ShopCarCondition condition) {
         ShopCar shopCar = new ShopCar();
-        shopCar.setCustomerId( getCurrentCustomerId());
+        shopCar.setCustomerId(getCurrentCustomerId());
         shopCar.setStoreId(condition.getStoreId());
         return shopCarMapper.deleteShopCars(shopCar);
     }

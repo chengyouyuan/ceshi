@@ -96,7 +96,7 @@
       #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
       #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" useGeneratedKeys="true" keyProperty="customerId">
     insert into customer_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >

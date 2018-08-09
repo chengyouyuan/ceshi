@@ -37,9 +37,9 @@ public class ShopCarVO {
     private Date updated;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdby;
+    private Long createdBy;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedby;
+    private Long updatedBy;
 
 }

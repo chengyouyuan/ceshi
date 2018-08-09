@@ -72,13 +72,13 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
         Date current = new Date();
         shopCar.setCreated(current);
-        shopCar.setCreatedby(customerId);
+        shopCar.setCreatedBy(customerId);
         shopCar.setUpdated(current);
-        shopCar.setUpdatedby(customerId);
+        shopCar.setUpdatedBy(customerId);
         List<ShopCar> insertList = new ArrayList<>(orderItemConditions.size());
         for(OrderItemCondition item : orderItemConditions){
             shopCar.setSkuCode(item.getSkuCode());
-            shopCar.setProdNum(item.getAmount());
+            shopCar.setSkuNum(item.getAmount());
             insertList.add(shopCar);
         }
         shopCarMapper.insertByBatch(insertList);
@@ -105,7 +105,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     if (shopCar2.getSkuCode().equals(shopCarProdVO.getSkuCode())) {
                         shopCarProdInfoVO = new ShopCarProdInfoVO();
                         shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
-                        shopCarProdInfoVO.setAmount(shopCar2.getProdNum());
+                        shopCarProdInfoVO.setAmount(shopCar2.getSkuNum());
                         shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
                         shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
                         // TODO 商品名称

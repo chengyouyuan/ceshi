@@ -128,7 +128,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
         String newOrderJson = JsonUtil.toJSONString(orderInfo);
         // 生成订单流转日志
-        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.WAIT_PAY.getStatusCode(),
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.UNRECEIVED.getStatusCode(),
                 OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 MessageFormat.format(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes(), pickUpCode), MainPointEnum.MAIN);
         logger.info("{},orderNo={} 确认订单后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());

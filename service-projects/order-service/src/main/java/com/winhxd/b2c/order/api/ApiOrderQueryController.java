@@ -99,14 +99,14 @@ public class ApiOrderQueryController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+            if (storeUser == null || storeUser.getBusinessId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
             }
-            PagedList<OrderInfoDetailVO> list = this.orderQueryService.listOrder4Store(condition, storeUser.getStoreCustomerId());
+            PagedList<OrderInfoDetailVO> list = this.orderQueryService.listOrder4Store(condition, storeUser.getBusinessId());
             result.setData(list);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
+            result.setCode(e.getErrorCode());
             if (BusinessCode.STORE_ID_EMPTY == e.getErrorCode()) {
                 result.setCode(BusinessCode.CODE_1002);
             }
@@ -130,13 +130,13 @@ public class ApiOrderQueryController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+            if (storeUser == null || storeUser.getBusinessId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
 //                storeUser = new StoreUser();
 //                storeUser.setStoreCustomerId(0L);
             }
-            LOGGER.info("{}=--开始--storeId={}", logTitle, storeUser.getStoreCustomerId());
-            OrderCountByStatus4StoreVO orderCountByStatus4StoreVO = this.orderQueryService.getOrderCountByStatus(storeUser.getStoreCustomerId());
+            LOGGER.info("{}=--开始--storeId={}", logTitle, storeUser.getBusinessId());
+            OrderCountByStatus4StoreVO orderCountByStatus4StoreVO = this.orderQueryService.getOrderCountByStatus(storeUser.getBusinessId());
             result.setData(orderCountByStatus4StoreVO);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);

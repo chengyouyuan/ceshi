@@ -13,7 +13,6 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
-import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -39,8 +38,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
-    @Autowired
-    private CouponServiceClient couponServiceClient;
+    //@Autowired
+    //private CouponServiceClient couponServiceClient;
 
     /**
      * 查询活动列表
@@ -186,7 +185,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setUpdated(new Date());
-            couponActivity.setUpdateBy(123456L);
+            couponActivity.setUpdatedBy(123456L);
             couponActivity.setUpdatedByName("测试用户");
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
@@ -258,7 +257,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setId(Long.valueOf(id));
         couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
         couponActivity.setUpdated(new Date());
-        couponActivity.setUpdateBy(123456L);
+        couponActivity.setUpdatedBy(123456L);
         couponActivity.setUpdatedByName("测试用户");
         couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
     }
@@ -275,7 +274,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setId(Long.valueOf(id));
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
             couponActivity.setUpdated(new Date());
-            couponActivity.setUpdateBy(123456L);
+            couponActivity.setUpdatedBy(123456L);
             couponActivity.setUpdatedByName("测试用户");
 
             couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
@@ -284,7 +283,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             longList.add(Long.valueOf(id));
             RevokeCouponCodition couponCondition = new RevokeCouponCodition();
             couponCondition.setSendIds(longList);
-            couponServiceClient.revokeCoupon(couponCondition);
+            //couponServiceClient.revokeCoupon(couponCondition);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -301,7 +300,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setId(condition.getId());
         couponActivity.setActivityStatus(condition.getActivityStatus());
         couponActivity.setUpdated(new Date());
-        couponActivity.setUpdateBy(123456L);
+        couponActivity.setUpdatedBy(123456L);
         couponActivity.setUpdatedByName("测试用户");
 
         couponActivityMapper.updateByPrimaryKeySelective(couponActivity);

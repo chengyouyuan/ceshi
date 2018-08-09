@@ -79,7 +79,7 @@ public class ApiStoreProductManageController {
 	 */
 	private static final Byte COMMON_PROD_TYPE = 1;
 
-	@ApiOperation(value = "B端获取可上架商品数据接口", response = ResponseResult.class, notes = "B端获取可上架商品数据接口")
+	@ApiOperation(value = "B端获取可上架商品数据接口", notes = "B端获取可上架商品数据接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ProductMsgVO.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
@@ -176,7 +176,7 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	@ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", response = ResponseResult.class, notes = "B端商品操作接口")
+	@ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", notes = "B端商品操作接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
 	@PostMapping(value = "1013/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -279,7 +279,7 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	@ApiOperation(value = "B端添加门店提报商品接口", response = ResponseResult.class, notes = "B端添加门店提报商品接口")
+	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
 	@PostMapping(value = "1014/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -315,7 +315,7 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	@ApiOperation(value = "B端门店提报商品列表接口", response = StoreSubmitProductVO.class, notes = "B端门店提报商品列表接口")
+	@ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreSubmitProductVO.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
 	@PostMapping(value = "1015/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -355,58 +355,61 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	@ApiOperation(value = "B端搜索商品接口", response = ResponseResult.class, notes = "B端搜索商品接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！", response = ResponseResult.class) })
-	@PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
-		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
-		try {
-			// UserContext.getCurrentStoreUser().getStoreCustomerId();
-			logger.info("B端搜索商品接口入参为：{}", condition);
-			// 参数校验
-			if (StringUtils.isBlank(condition.getProdName())) {
-				logger.error("B端搜索商品接口:参数ProdName为空");
-				return new ResponseResult<>(BusinessCode.CODE_1007);
+    @ApiOperation(value = "B端搜索商品接口", notes = "B端搜索商品接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！", response = ResponseResult.class),})
+    @PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
+        ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
+        try {
+			Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+			Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+			if (null == storeCustomerId || null == businessId) {
+				logger.error("B端搜索商品接口:登录凭证为空");
+				return new ResponseResult<>(BusinessCode.CODE_1002);
 			}
-			if (null == condition.getProdType()) {
-				logger.error("B端搜索商品接口:参数ProdType为空");
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			if (null == condition.getPageNo()) {
-				logger.error("B端搜索商品接口:参数PageNo为空");
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			if (null == condition.getPageSize()) {
-				logger.error("B端搜索商品接口:参数PageSize为空");
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
-			manageCondition.setStoreId(UserContext.getCurrentStoreUser().getBusinessId());
-			List<Byte> prodStatus = new ArrayList<>();
-			prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
-			prodStatus.add((byte) StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
-			manageCondition.setProdStatus(prodStatus);
-			List<String> skusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
-			ProductConditionByPage productCondition = new ProductConditionByPage();
-			productCondition.setProductName(condition.getProdName());
-			productCondition.setProductSkus(skusByConditon);
-			if (HXD_PROD_TYPE.equals(condition.getProdType())) {
-				productCondition.setHxdProductSkus(
-						getStoreBuyedHxdProdSkus(UserContext.getCurrentStoreUser().getStoreCustomerId()));
-			}
-			productCondition.setPageNo(condition.getPageNo());
-			productCondition.setPageSize(condition.getPageSize());
-			ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
-			responseResult.setData(productVo.getData());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return responseResult;
-	}
+            if (StringUtils.isBlank(condition.getProdName())) {
+                logger.error("B端搜索商品接口:参数ProdName为空");
+                return new ResponseResult<>(BusinessCode.CODE_1007);
+            }
+            if (null == condition.getProdType()) {
+                logger.error("B端搜索商品接口:参数ProdType为空");
+                return new ResponseResult<>(BusinessCode.CODE_1007);
+            }
+            if (null == condition.getPageNo()) {
+                logger.error("B端搜索商品接口:参数PageNo为空");
+                return new ResponseResult<>(BusinessCode.CODE_1007);
+            }
+            if (null == condition.getPageSize()) {
+                logger.error("B端搜索商品接口:参数PageSize为空");
+                return new ResponseResult<>(BusinessCode.CODE_1007);
+            }
+            StoreProductManageCondition manageCondition = new StoreProductManageCondition();
+            manageCondition.setStoreId(businessId);
+            List<Byte> prodStatus = new ArrayList<>();
+            prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
+            prodStatus.add((byte) StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+            manageCondition.setProdStatus(prodStatus);
+            List<String> putwaySkusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
+            ProductConditionByPage productCondition = new ProductConditionByPage();
+            productCondition.setProductName(condition.getProdName());
+            productCondition.setProductSkus(putwaySkusByConditon);
+            if (HXD_PROD_TYPE.equals(condition.getProdType())) {
+                productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkus(UserContext.getCurrentStoreUser().getStoreCustomerId()));
+            }
+            productCondition.setPageNo(condition.getPageNo());
+            productCondition.setPageSize(condition.getPageSize());
+            ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
+            responseResult.setData(productVo.getData());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
 
-	@ApiOperation(value = "B端我的商品管理接口", response = ResponseResult.class, notes = "B端我的商品管理接口")
+	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
 	@PostMapping(value = "1019/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -441,50 +444,57 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	private List<String> getStoreBuyedHxdProdSkus(Long storeCustomerId) {
-		if (null == storeCustomerId) {
-			return null;
-		}
-		ResponseResult<List<String>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(storeCustomerId);
-		List<String> skuData = storeBuyedProdSku.getData();
-		// cache.set("",skuData);
-		// cache.lpush()
-		return skuData;
-	}
+    /**
+     * 功能描述: 获取门店购买过商品sku list
+     * @param storeCustomerId
+     * @return
+     * @auther lvsen
+     * @date 2018/8/9 11:22
+     */private List<String> getStoreBuyedHxdProdSkus(Long storeCustomerId) {
+        if (null == storeCustomerId) {
+            return null;
+        }
+        ResponseResult<List<String>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(storeCustomerId);
+        List<String> skuData = storeBuyedProdSku.getData();
+        //cache.set("",skuData);
+        //cache.lpush()
+        return skuData;
+    }
 
-	private boolean checkParam(Object condition) {
-		boolean flag = false;
-		if (condition != null) {
-			// AllowPutawayProdCondition 必须传参数校验
-			if (condition instanceof AllowPutawayProdCondition) {
-				AllowPutawayProdCondition c = (AllowPutawayProdCondition) condition;
-				if (c.getProdType() != null) {
-					flag = true;
-				}
-			}
-			// ProdOperateCondition 必须传参数校验
-			if (condition instanceof ProdOperateCondition) {
-				ProdOperateCondition c = (ProdOperateCondition) condition;
-				if (c.getOperateType() != null && c.getProducts() != null && c.getProducts().size() > 0) {
-					flag = true;
-				}
-			}
-			// StoreSubmitProductCondition 必须传参数校验
-			if (condition instanceof StoreSubmitProductCondition) {
-				StoreSubmitProductCondition c = (StoreSubmitProductCondition) condition;
-				if (c.getProdImage1() != null) {
-					flag = true;
-				}
-			}
-			// StoreProductManageCondition 必须传参数校验
-			if (condition instanceof StoreProductManageCondition) {
-				StoreProductManageCondition c = (StoreProductManageCondition) condition;
-				if (c.getProdStatus() != null && c.getProdStatus().size() > 0) {
-					flag = true;
-				}
-			}
-		}
-		return flag;
-	}
+    private boolean checkParam(Object condition) {
+        boolean flag = false;
+        if (condition != null) {
+            //AllowPutawayProdCondition 必须传参数校验
+            if (condition instanceof AllowPutawayProdCondition) {
+                AllowPutawayProdCondition c = (AllowPutawayProdCondition) condition;
+                if (c.getProdType() != null) {
+                    flag = true;
+                }
+            }
+            //ProdOperateCondition 必须传参数校验
+            if (condition instanceof ProdOperateCondition) {
+                ProdOperateCondition c = (ProdOperateCondition) condition;
+                if (c.getOperateType() != null
+                        && c.getProducts() != null && c.getProducts().size() > 0) {
+                    flag = true;
+                }
+            }
+            //StoreSubmitProductCondition 必须传参数校验
+            if (condition instanceof StoreSubmitProductCondition) {
+                StoreSubmitProductCondition c = (StoreSubmitProductCondition) condition;
+                if (c.getProdImage1() != null) {
+                    flag = true;
+                }
+            }
+            //StoreProductManageCondition 必须传参数校验
+            if (condition instanceof StoreProductManageCondition) {
+                StoreProductManageCondition c = (StoreProductManageCondition) condition;
+                if (c.getProdStatus() != null && c.getProdStatus().size() > 0) {
+                    flag = true;
+                }
+            }
+        }
+        return flag;
+    }
 
 }

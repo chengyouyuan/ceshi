@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.controller;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
@@ -65,7 +66,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<Boolean> orderUntreadCoupon(OrderUntreadCouponCondition condition) {
+	public ResponseResult<Boolean> orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition) {
 		LOGGER.info("=/coupon/orderUntreadCoupon-订单退回优惠券=--开始--{}", condition);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {
@@ -84,7 +85,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<Boolean> revokeCoupon(RevokeCouponCodition condition) {
+	public ResponseResult<Boolean> revokeCoupon(@RequestBody RevokeCouponCodition condition) {
 		LOGGER.info("=/coupon/revokeCoupon-撤回优惠券=--开始--{}", condition);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {
@@ -99,7 +100,7 @@ public class CouponController implements CouponServiceClient{
 	}
 
 	@Override
-	@ApiOperation(value = "查询订单使用的优惠券列表", response = Boolean.class, notes = "查询订单使用的优惠券列表")
+	@ApiOperation(value = "订单已使用的优惠券列表", response = Boolean.class, notes = "订单已使用的优惠券列表")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
@@ -107,7 +108,6 @@ public class CouponController implements CouponServiceClient{
 		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--开始--{}", couponCondition);
 		ResponseResult<List<CouponVO>> result = new ResponseResult<>();
 		try {
-			//返回对象
             List<CouponVO> pages = couponService.couponListByOrder(couponCondition);
 			result.setData(pages);
 		} catch (BusinessException e) {
@@ -119,6 +119,42 @@ public class CouponController implements CouponServiceClient{
 			result.setCode(BusinessCode.CODE_1001);
 		}
 		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "订单可用的优惠券列表", response = Boolean.class, notes = "订单可用的优惠券列表")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	public ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponProductCondition couponCondition) {
+		LOGGER.info("=/coupon/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}", couponCondition);
+		ResponseResult<List<CouponVO>> result = new ResponseResult<>();
+		try {
+			//返回对象
+		}catch (Exception e) {
+			LOGGER.error("=/coupon/availableCouponListByOrder-订单可用的优惠券列表=--异常" + e, e);
+			result.setCode(BusinessCode.CODE_1001);
+		}
+		LOGGER.info("=/coupon/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "计算订单优惠金额", response = Boolean.class, notes = "计算订单优惠金额")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	public ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition) {
+		LOGGER.info("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--开始--{}", couponCondition);
+		ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
+		try {
+			//返回对象
+		}catch (Exception e) {
+			LOGGER.error("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--异常" + e, e);
+			result.setCode(BusinessCode.CODE_1001);
+		}
+		LOGGER.info("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--结束 result={}", result);
 		return result;
 	}
 

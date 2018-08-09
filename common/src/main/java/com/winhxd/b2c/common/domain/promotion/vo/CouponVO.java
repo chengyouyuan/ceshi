@@ -18,6 +18,8 @@ public class CouponVO {
     private Long activityId;
     @ApiModelProperty(value = "优惠券id", required=true)
     private Long templateId;
+    @ApiModelProperty(value = "优惠券发放id", required=true)
+    private Long sendId;
     @ApiModelProperty(value = "适用规则id", required=true)
     private Long applyId;
     @ApiModelProperty(value = "是否有效", required=true)
@@ -263,5 +265,13 @@ public class CouponVO {
 
     public void setProducts(List<ProductSkuVO> products) {
         this.products = products;
+    }
+
+    public Long getSendId() {
+        return sendId;
+    }
+
+    public void setSendId(Long sendId) {
+        this.sendId = sendId;
     }
 }

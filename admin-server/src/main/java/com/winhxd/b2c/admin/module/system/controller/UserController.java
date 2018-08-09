@@ -86,7 +86,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/user/edit")
+    @PostMapping(value = "/user/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
     public ResponseResult edit(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
@@ -115,7 +115,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PutMapping(value = "/user/updatePassword")
+    @PostMapping(value = "/user/updatePassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -142,7 +142,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/user/list")
+    @PostMapping(value = "/user/list")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
@@ -176,9 +176,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/user/existsAccount")
+    @GetMapping(value = "/user/existsAccount")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
-    public ResponseResult<Boolean> add(String account) {
+    public ResponseResult<Boolean> existsAccount(String account) {
         logger.info("{} - 验证用户是否已存在, 参数：account={}", MODULE_NAME, account);
 
         SysUser sysUser = userServiceClient.getByAccount(account).getData();

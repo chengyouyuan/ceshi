@@ -205,7 +205,7 @@
 
   <update id="updateCouponInvestorToValid">
     update coupon_investor set
-    status = 1 ,
+    status = 0 ,
     update_by = #{userId},
     updated_by_name = #{userName},
     updated = now()

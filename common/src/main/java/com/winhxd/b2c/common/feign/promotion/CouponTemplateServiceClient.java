@@ -35,17 +35,6 @@ public interface CouponTemplateServiceClient {
 public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
 
-/**
- *
- *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
- *@Params   id  模板id
- *@Return   ResponseResult
- *@User     wl
- *@Date   2018/8/6 14:41
- */
-@RequestMapping(value = "/promotion/v1/toEditCouponTemplate", method = RequestMethod.GET)
-public ResponseResult toEditCouponTemplate(@RequestParam("id") String id);
-
 
  /**
   *
@@ -80,16 +69,6 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
     @RequestMapping(value = "/promotion/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
     public ResponseResult viewCouponTemplateDetail(@RequestParam("id") String id);
 
-    /**
-     *
-     *@Deccription  确认修改优惠券模板
-     *@Params  condition
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/7 16:24
-     */
-    @RequestMapping(value = "/promotion/v1/confirmUpdateCouponTemplate", method = RequestMethod.POST)
-    ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition);
 
 }
 
@@ -114,19 +93,7 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
-    /**
-     *
-     *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
-     *@Params   id  模板id
-     *@Return   ResponseResult
-     *@User     wl
-     *@Date   2018/8/6 14:41
-     */
-    @Override
-    public ResponseResult toEditCouponTemplate(String id) {
-        logger.error("CouponTemplateServiceClient -> toEditCouponTemplate", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+
 
     /**
      *
@@ -162,19 +129,6 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 
-    /**
-     *
-     *@Deccription  确认修改优惠券模板
-     *@Params  condition
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/7 16:24
-     */
-    @Override
-    public ResponseResult confirmUpdateCouponTemplate(CouponTemplateCondition condition) {
-        logger.error("CouponTemplateServiceClient -> confirmUpdateCouponTemplate", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
 
 }
 

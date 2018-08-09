@@ -1,10 +1,10 @@
 package com.winhxd.b2c.customer.api;
 
 import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +21,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificationCodeCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -42,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "CustomerLogin Controller", tags = "C-Login")
 @RestController
-@RequestMapping(value = "/api/weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerLoginController.class);
 
@@ -85,7 +86,7 @@ public class ApiCustomerLoginController {
 			 * 根据手机号去取缓存verificationCode对比是否一致
 			 */
 			if (!customerUserInfoCondition.getVerificationCode()
-					.equals(cache.get(customerUserInfoCondition.getCustomerMobile()))) {
+					.equals(cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE+customerUserInfoCondition.getCustomerMobile()))) {
 				return new ResponseResult<>(BusinessCode.CODE_1008);
 			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
@@ -104,12 +105,11 @@ public class ApiCustomerLoginController {
 					customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 					customerLoginService.saveLoginInfo(customerUserInfo);
 					vo = new CustomerUserInfoSimpleVO();
-					vo.setCustomerId(customerUserInfo.getCustomerId());
 					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 					vo.setToken(customerUserInfo.getToken());
 					CustomerUser user = new CustomerUser();
+					user.setCustomerId(customerUserInfo.getCustomerId());
 					user.setOpenId(mini.getOpenId());
-					BeanUtils.copyProperties(vo, user);
 					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 							JsonUtil.toJSONString(user));
 					cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
@@ -122,13 +122,12 @@ public class ApiCustomerLoginController {
 					customerUserInfo.setCustomerId(DB.getCustomerId());
 					customerLoginService.updateCustomerInfo(customerUserInfo);
 					vo = new CustomerUserInfoSimpleVO();
-					vo.setCustomerId(DB.getCustomerId());
 					vo.setCustomerMobile(DB.getCustomerMobile());
 					vo.setToken(DB.getToken());
 					if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())) {
 						CustomerUser user = new CustomerUser();
 						user.setOpenId(DB.getOpenId());
-						BeanUtils.copyProperties(vo, user);
+						user.setCustomerId(DB.getCustomerId());
 						cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 								JsonUtil.toJSONString(user));
 						cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
@@ -161,7 +160,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@RequestMapping(value = "2022/v1/sendVerification", method = RequestMethod.POST)
-	public ResponseResult<String> sendVerification(@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
+	public ResponseResult<String> sendVerification(@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
 			if (null == customerUserInfoCondition) {
@@ -191,6 +190,7 @@ public class ApiCustomerLoginController {
 			 */
 			String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
 			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+			logger.info(customerUserInfoCondition.getCustomerMobile()+":发送的内容为:"+content);
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
@@ -225,6 +225,10 @@ public class ApiCustomerLoginController {
 			CustomerUser user = UserContext.getCurrentCustomerUser();
 			if(null == user.getCustomerId()){
 				return new ResponseResult<>(BusinessCode.CODE_1002);
+			}
+			if (!customerChangeMobileCondition.getVerificationCode()
+					.equals(cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE+customerChangeMobileCondition.getCustomerMobile()))) {
+				return new ResponseResult<>(BusinessCode.CODE_1008);
 			}
 			info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
 			info.setCustomerId(user.getCustomerId());

@@ -12,8 +12,6 @@ import java.util.List;
  * @Description
  */
 public class CouponCondition  extends BaseCondition {
-    @ApiModelProperty(value = "用户id", required=true)
-    private Long customerId;
     @ApiModelProperty(value = "优惠券使用状态0 无效 1 已使用 2 未使用  3 已过期 4退回", required=true)
     private Integer useStatus;
     @ApiModelProperty(value = "优惠券发放id", required=true)
@@ -24,14 +22,6 @@ public class CouponCondition  extends BaseCondition {
     private BigDecimal couponPrice;
     @ApiModelProperty(value = "订单总额(优惠之前)", required=true)
     private BigDecimal orderPrice;
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
 
     public Integer getUseStatus() {
         return useStatus;

@@ -220,7 +220,7 @@ public class OrderQueryAspect {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
                             for (StoreUserInfoVO storeUserInfoVO : storeInfoList) {
-                                if (storeUserInfoVO.getStoreId().equals(field.get(obj))) {
+                                if (storeUserInfoVO.getId().equals(field.get(obj))) {
                                     assembleInfos(obj, STORE_MOBILE, storeUserInfoVO.getStoreMobile());
                                 }
                             }

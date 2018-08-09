@@ -42,7 +42,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "CustomerLogin Controller", tags = "C-Login")
 @RestController
-@RequestMapping(value = "/api/weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerLoginController.class);
 

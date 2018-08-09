@@ -12,14 +12,12 @@ import lombok.Data;
 @ApiModel("惠小店用户请求参数")
 @Data
 public class StoreUserInfoCondition{
-	@ApiModelProperty(value = "用户主键")
-    private Long id;
 	@ApiModelProperty(value = "用户账号")
     private String storeMobile;
 	@ApiModelProperty(value = "密码")
     private String storePassword;
 	@ApiModelProperty(value = "头像")
-    private String shopOwnerUrl;
+    private String shopOwnerImg;
 	@ApiModelProperty(value = "微信openid")
     private String openid;
 	@ApiModelProperty(value = "来源")

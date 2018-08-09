@@ -45,9 +45,9 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/role/add", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/role/add")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_ADD})
-    public ResponseResult add(SysRoleDTO sysRoleDTO) {
+    public ResponseResult add(@RequestBody SysRoleDTO sysRoleDTO) {
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRoleDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
@@ -74,9 +74,9 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/role/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/role/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_EDIT})
-    public ResponseResult edit(SysRoleDTO sysRoleDTO) {
+    public ResponseResult edit(@RequestBody SysRoleDTO sysRoleDTO) {
         logger.info("{} - 编辑权限组, 参数：sysRole={}", MODULE_NAME, sysRoleDTO);
 
         UserInfo userInfo = UserManager.getCurrentUser();
@@ -98,9 +98,9 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/role/list", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/role/list")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
-    public ResponseResult<PagedList<SysRole>> list(SysRoleCondition condition){
+    public ResponseResult<PagedList<SysRole>> list(@RequestBody SysRoleCondition condition){
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
        return roleServiceClient.list(condition);
     }

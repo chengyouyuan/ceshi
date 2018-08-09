@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "StoreLoginController Controller", tags = "B-Login")
 @RestController
-@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 	/**
@@ -172,11 +172,12 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+						storeUserInfo.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -277,11 +278,12 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+						storeUserInfo.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -366,11 +368,12 @@ public class ApiStoreLoginController {
 						 */
 						info.setOpenid(storeUserInfoCondition.getOpenid());
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						info.setCreated(new Date());
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
+						info.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -390,6 +393,7 @@ public class ApiStoreLoginController {
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
+						info.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -469,7 +473,7 @@ public class ApiStoreLoginController {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
 			ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoneyVO = storeServiceClient
-					.loginCheckSellMoney(storeUserInfoCondition.getId());
+					.loginCheckSellMoney(1L);
 			return loginCheckSellMoneyVO;
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" + e.getMessage(),
@@ -519,7 +523,7 @@ public class ApiStoreLoginController {
 			if (!storeUserInfoCondition.getStorePassword().equals(storeUserInfoCondition.getConfirmPassword())) {
 				result = new ResponseResult<>(BusinessCode.CODE_1005);
 			}
-			storeUserInfo.setId(storeUserInfoCondition.getId());
+			storeUserInfo.setId(1L);
 			storeUserInfo.setStorePassword(storeUserInfoCondition.getStorePassword());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			return result;

@@ -40,11 +40,60 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
+  <resultMap id="queryCouponResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="couponName" jdbcType="VARCHAR" property="couponName" />
+    <result column="couponCode" jdbcType="VARCHAR" property="couponCode" />
+    <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="store_mobile" jdbcType="VARCHAR" property="storeMobile" />
+    <result column="activityName" jdbcType="VARCHAR" property="activityName" />
+    <result column="activityCode" jdbcType="VARCHAR" property="activityCode" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, name, code, exolian, remarks, type, coupon_type, activity_start, activity_end, 
     activity_status, status, created_by, created_by_name, created, update_by, updated_by_name, 
     updated
   </sql>
+  <select id="queryStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+    SELECT
+    ca.id,
+    sui.`store_name`,
+    sui.`store_mobile`,
+    ca.`name` AS activityName,
+    ca.`code` activityCode,
+    sui.`store_status` AS status
+    FROM
+    coupon_activity ca
+    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
+    LEFT JOIN coupon_activity_store_customer casc ON casc.coupon_activity_template_id=cat.id
+    LEFT JOIN store_user_info sui ON sui.id=casc.store_id
+    <if test="condition.id != null">
+      AND ca.id = #{condition.id}
+    </if>
+  </select>
+  <select id="queryCouponByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+    SELECT
+    ca.id,
+    ct.title AS couponName,
+    ct.`code` AS couponCode,
+    ca.`name` AS activityName,
+    ca.`code` AS activityCode,
+    ct.`status` ,
+    cts.updated
+    FROM
+    coupon_activity ca
+    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
+    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
+    LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id
+    AND cts.`status` = '1'
+    WHERE
+    1 = 1
+    <if test="condition.id != null">
+      AND ca.id = #{condition.id}
+    </if>
+  </select>
   <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,

@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.MessageQueueDestination;
 import com.winhxd.b2c.common.mq.MessageQueueHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -27,20 +29,20 @@ import java.util.List;
  * @author lixiaodong
  */
 public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
+    private static final Logger logger = LoggerFactory.getLogger(MessageQueueConfig.class);
+
     private DefaultListableBeanFactory beanFactory;
 
     @Autowired
     private ConnectionFactory connectionFactory;
 
     @Bean
-    public List<Declarable> declarables() {
+    public List<Declarable> declarableList() {
         List<Declarable> list = new ArrayList<>();
         for (MessageQueueHandler listener : MessageQueueHandler.values()) {
             MessageQueueDestination dest = listener.getDestination();
             FanoutExchange exchange = new FanoutExchange(dest.toString(), true, false);
-            if (dest.isDelayed()) {
-                exchange.setDelayed(true);
-            }
+            exchange.setDelayed(dest.isDelayed());
             list.add(exchange);
             Queue queue = new Queue(listener.toString(), true, false, false);
             Binding binding = BindingBuilder.bind(queue).to(exchange);
@@ -73,9 +75,10 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
                     try {
                         method.invoke(bean, body);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        logger.error("MQ消费异常", e);
                     } catch (InvocationTargetException e) {
-                        e.printStackTrace();
+                        logger.error("MQ消费异常", e.getCause());
+                        throw new RuntimeException("MQ消费异常", e);
                     }
                 });
                 beanFactory.registerSingleton(bean.getClass().getName() + "#" + method.getName(), listenerContainer);

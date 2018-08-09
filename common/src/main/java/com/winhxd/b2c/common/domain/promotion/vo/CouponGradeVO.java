@@ -37,6 +37,7 @@ public class CouponGradeVO {
 
     private List<CouponGradeDetail> details;
 
+    private String relTempleteCount;
 
     public Long getId() {
         return id;
@@ -140,5 +141,13 @@ public class CouponGradeVO {
 
     public void setDetails(List<CouponGradeDetail> details) {
         this.details = details;
+    }
+
+    public String getRelTempleteCount() {
+        return relTempleteCount;
+    }
+
+    public void setRelTempleteCount(String relTempleteCount) {
+        this.relTempleteCount = relTempleteCount;
     }
 }

@@ -13,7 +13,6 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
-import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -39,8 +38,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
-    @Autowired
-    private CouponServiceClient couponServiceClient;
+    //@Autowired
+    //private CouponServiceClient couponServiceClient;
 
     /**
      * 查询活动列表
@@ -284,7 +283,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             longList.add(Long.valueOf(id));
             RevokeCouponCodition couponCondition = new RevokeCouponCodition();
             couponCondition.setSendIds(longList);
-            couponServiceClient.revokeCoupon(couponCondition);
+            //couponServiceClient.revokeCoupon(couponCondition);
         }catch (Exception e){
             e.printStackTrace();
         }

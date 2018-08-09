@@ -19,6 +19,9 @@ public class BackStageModifyStoreCondition {
     @ApiModelProperty(value = "id")
     private Long id;
 
+    @ApiModelProperty(value = "门店有效状态 1有效 2无效")
+    private Byte storeStatus;
+
     @ApiModelProperty(value = "门店名称")
     private String storeName;
 
@@ -30,5 +33,7 @@ public class BackStageModifyStoreCondition {
 
     @ApiModelProperty(value = "联系方式")
     private String contactMobile;
+
+
 
 }

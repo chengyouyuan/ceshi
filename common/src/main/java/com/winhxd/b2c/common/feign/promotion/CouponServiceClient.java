@@ -1,9 +1,8 @@
 package com.winhxd.b2c.common.feign.promotion;
 
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -40,6 +39,9 @@ public interface CouponServiceClient {
 
     @RequestMapping(value = "/coupon/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult revokeCoupon(@RequestBody RevokeCouponCodition condition);
+
+    @RequestMapping(value = "/coupon/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
 	
 }
 
@@ -80,6 +82,12 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     @Override
     public ResponseResult revokeCoupon(RevokeCouponCodition condition) {
         logger.error("CouponServiceClient -> revokeCoupon", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult couponListByOrder(OrderCouponCondition couponCondition) {
+        logger.error("CouponServiceClient -> couponListByOrder", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 

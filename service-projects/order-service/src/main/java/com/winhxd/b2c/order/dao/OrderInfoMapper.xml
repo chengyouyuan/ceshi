@@ -553,5 +553,32 @@
         and pickup_code=#{pickupCode,jdbcType=VARCHAR}
         and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
     </update>
-
+    <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
+        <result column="allNum" jdbcType="INTEGER" property="allNum"/>
+        <result column="unreceivedNum" jdbcType="INTEGER" property="unreceivedNum"/>
+        <result column="waitSelfLiftingNum" jdbcType="INTEGER" property="waitSelfLiftingNum"/>
+        <result column="waitRefundNum" jdbcType="INTEGER" property="waitRefundNum"/>
+        <result column="waitPayNum" jdbcType="INTEGER" property="waitPayNum"/>
+        <result column="finishedNum" jdbcType="INTEGER" property="finishedNum"/>
+        <result column="refundedNum" jdbcType="INTEGER" property="refundedNum"/>
+        <result column="refundingNum" jdbcType="INTEGER" property="refundingNum"/>
+        <result column="canceledNum" jdbcType="INTEGER" property="canceledNum"/>
+    </resultMap>
+    <select id="getOrderCountByStatus" resultMap="OrderCountByStatus4StoreMap">
+    	select
+			count(*) allNum,
+			sum(case when order_status=2 then 1 else 0 end) waitPayNum,
+			sum(case when order_status=3 then 1 else 0 end) unreceivedNum,
+			sum(case when order_status=9 then 1 else 0 end) waitSelfLiftingNum,
+			sum(case when order_status=33 then 1 else 0 end) waitRefundNum,
+			sum(case when order_status=22 then 1 else 0 end) finishedNum,
+			sum(case when order_status=77 then 1 else 0 end) refundedNum,
+			sum(case when order_status=22 then 1 else 0 end) canceledNum,
+			sum(case when order_status=66 then 1 else 0 end) refundingNum,
+			store_id storeId
+		from
+			order_info
+		where store_id = #{storeId,jdbcType=BIGINT}
+		group by store_id
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,5 +18,14 @@ public interface CouponApplyBrandMapper {
 
     int updateByPrimaryKey(CouponApplyBrand record);
 
+
+    long insertCouponApplyBrand(CouponApplyBrand couponApplyBrand);
+
+    /**
+     *
+     * @param applyId
+     * @return
+     */
     List<CouponApplyBrand> selectByApplyId(Long applyId);
+
 }

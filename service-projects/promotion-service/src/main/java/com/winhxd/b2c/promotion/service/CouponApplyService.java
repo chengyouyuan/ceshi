@@ -1,6 +1,8 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 
 /**
@@ -12,4 +14,9 @@ public interface CouponApplyService {
     ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id);
 
     int updateCouponApplyToValid(long id, long userId, String userName);
+
+    ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition);
+
+
+    int addCouponApply(CouponApplyCondition condition);
 }

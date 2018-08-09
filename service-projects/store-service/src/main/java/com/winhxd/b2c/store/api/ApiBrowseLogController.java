@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -23,6 +24,7 @@ import java.util.Date;
  * @author liutong
  * @date 2018-08-07 17:59:13
  */
+@Api(tags = "C端用户浏览门店记录日志")
 @RestController
 @RequestMapping(value = "api-store/")
 public class ApiBrowseLogController {

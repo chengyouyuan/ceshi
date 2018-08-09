@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "StoreLoginController Controller", tags = "B-Login")
 @RestController
-@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 	/**

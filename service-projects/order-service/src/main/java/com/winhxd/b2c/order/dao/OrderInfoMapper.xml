@@ -539,6 +539,13 @@
        set order_status=77,cancel_datetime = now(),pickup_code=null
        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
     </update>
+    <update id="updateOrderMoney">
+       update order_info
+       set 
+       order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
+       real_payment_money = #{realPayMoney,jdbcType=DECIMAL},
+       where id=#{orderId,jdbcType=BIGINT}
+    </update>
     <update id="updateOrderStatusForApplyRefund">
         update order_info
        set order_status=2,cancel_datetime = now(),pickup_code=null

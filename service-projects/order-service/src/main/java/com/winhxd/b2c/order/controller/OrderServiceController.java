@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
@@ -61,8 +63,11 @@ public class OrderServiceController implements OrderServiceClient {
         logger.info("{} 门店销售数据接口查询开始", logTitle);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
-            //TODO 获取门店id
-            long storeId = 0L;
+            //获取当前登录门店Id
+            StoreUser storeUser = UserContext.getCurrentStoreUser();
+            if (storeUser == null || storeUser.getBusinessId() == null) {
+                throw new BusinessException(BusinessCode.CODE_1002);
+            }
             //查询当天数据
             //获取当天最后一秒
             long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
@@ -70,7 +75,10 @@ public class OrderServiceController implements OrderServiceClient {
             long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
             Date startDateTime = new Date(startSecond);
             Date endDateTime = new Date(lastSecond);
-            result.setData(orderQueryService.getStoreOrderSalesSummary(storeId, startDateTime, endDateTime));
+            result.setData(orderQueryService.getStoreOrderSalesSummary(storeUser.getBusinessId(), startDateTime, endDateTime));
+        } catch (BusinessException e) {
+            logger.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
         } catch (Exception e) {
             logger.error(logTitle + " 门店销售数据接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

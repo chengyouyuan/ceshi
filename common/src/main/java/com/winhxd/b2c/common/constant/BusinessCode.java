@@ -122,6 +122,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单创建不支持订单类型")
     public static final int CODE_401008 = 401008;
     
+    @ApiModelProperty("订单创建优惠券使用失败")
+    public static final int CODE_401009 = 401009;
+    
     @ApiModelProperty("订单号错误")
     public static final int WRONG_ORDERNO = 400000;
     

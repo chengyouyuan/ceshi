@@ -52,10 +52,13 @@ import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
@@ -101,6 +104,9 @@ public class CommonOrderServiceImpl implements OrderService {
     @Autowired
     private CustomerServiceClient customerServiceclient;
     
+    @Autowired
+    private CouponServiceClient couponServiceClient;
+    
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
     
 
@@ -130,7 +136,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事物提交后相关事件
-        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo));
+        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo), new SubmitFailureProcessRunnerble(orderInfo, orderCreateCondition.getCouponIds()));
         return orderInfo.getOrderNo();
     }
 
@@ -167,7 +173,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
         //订单支付成功事物提交后相关事件
-        registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo));
+        registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
     }
 
@@ -478,7 +484,7 @@ public class CommonOrderServiceImpl implements OrderService {
             last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
         }
         String msg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
-        registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo));
+        registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo), null);
         logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
 
@@ -489,11 +495,16 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月3日 下午4:50:11
      */
-    private void registerProcessAfterTransSuccess(Runnable runnable) {
+    private void registerProcessAfterTransSuccess(Runnable commitRunnable, Runnable rollBackRunnable) {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
             @Override
-            public void afterCommit() {
-                threadPoolExecutor.execute(runnable);
+            public void afterCompletion(int status) {
+                super.afterCompletion(status);
+                if (status == STATUS_COMMITTED && commitRunnable != null) {
+                    threadPoolExecutor.execute(commitRunnable);
+                } else if(status == STATUS_ROLLED_BACK && rollBackRunnable != null) {
+                    threadPoolExecutor.execute(rollBackRunnable);
+                }
             }
         });
     }
@@ -557,11 +568,30 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单orderNo：{}计算优惠金额时还没有计价，无法进行优惠计算", orderInfo.getOrderNo());
             return;
         }
+        if (couponIds == null || couponIds.length < 1) {
+            //不使用优惠券
+            logger.info("订单：{} 不使用优惠券，不计算优惠券金额", orderInfo.getOrderNo());
+            orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney());
+            return;
+        }
         //TODO 调用促销系统
         orderInfo.setCouponHxdMoney(BigDecimal.ZERO);
         orderInfo.setCouponBrandMoney(BigDecimal.ZERO);
         orderInfo.setRandomReductionMoney(BigDecimal.ZERO);
         orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney()).subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney()));
+        //通知促销系统优惠券使用情况
+        OrderUseCouponCondition orderUseCouponCondition = new OrderUseCouponCondition();
+        orderUseCouponCondition.setCouponPrice(orderInfo.getCouponHxdMoney());
+        orderUseCouponCondition.setOrderNo(orderInfo.getOrderNo());
+        orderUseCouponCondition.setOrderPrice(orderInfo.getOrderTotalMoney());
+        orderUseCouponCondition.setSendIds(Arrays.asList(couponIds));
+        ResponseResult ret = couponServiceClient.orderUseCoupon(orderUseCouponCondition);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK) {
+            //优惠券使用失败
+            logger.error("订单：{}优惠券使用更新接口调用失败:code={}，创建订单异常！~", orderInfo.getOrderNo(), ret==null?null:ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401009);
+        }
+        logger.info("订单:{},优惠券 couponIds={},使用接口调用成功。", orderInfo.getOrderNo(), Arrays.toString(couponIds));
     }
 
     private OrderHandler getOrderHandler(short valuationType) {
@@ -710,6 +740,43 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterCreateSuccessProcess(orderInfo);
+        }
+    }
+    
+    /**
+     * 订单创建失败 处理
+     *
+     * @author wangbin
+     * @date 2018年8月8日 下午3:16:17
+     */
+    private class SubmitFailureProcessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        private Long[] couponIds;
+        
+        public SubmitFailureProcessRunnerble(OrderInfo orderInfo, Long[] couponIds) {
+            super();
+            this.orderInfo = orderInfo;
+            this.couponIds = couponIds;
+        }
+        
+        @Override
+        public void run() {
+            //订单提交失败，退回优惠券
+            if (couponIds != null && couponIds.length > 0) {
+                logger.info("订单：{} 提交失败，进行优惠券回退操作.", orderInfo.getOrderNo());
+                OrderUntreadCouponCondition orderUntreadCouponCondition = new OrderUntreadCouponCondition();
+                orderUntreadCouponCondition.setOrderNo(orderInfo.getOrderNo());
+                ResponseResult ret = couponServiceClient.orderUntreadCoupon(orderUntreadCouponCondition);
+                if (ret == null || ret.getCode() != BusinessCode.CODE_OK) {
+                    logger.info("订单：{} 提交失败，进行优惠券回退操作失败，code={}.", orderInfo.getOrderNo(), ret==null?null:ret.getCode());
+                }else {
+                    logger.info("订单：{} 提交失败，进行优惠券回退操作成功，couponIds={}.", orderInfo.getOrderNo(), Arrays.toString(couponIds));
+                }
+            } else {
+                logger.info("订单：{} 提交失败，没有使用优惠券，不需要进行优惠券回退操作", orderInfo.getOrderNo());
+            }
         }
     }
 

@@ -60,9 +60,11 @@ public class RoleController {
         BeanUtils.copyProperties(sysRoleDTO, sysRole);
      
         sysRole.setCreated(date);
-        sysRole.setCreatedBy(userInfo.getUsername());
+        sysRole.setCreatedBy(userInfo.getId());
+        sysRole.setCreatedByName(userInfo.getUsername());
         sysRole.setUpdated(date);
-        sysRole.setUpdatedBy(userInfo.getUsername());
+        sysRole.setUpdatedBy(userInfo.getId());
+        sysRole.setUpdatedByName(userInfo.getUsername());
 
         return roleServiceClient.save(sysRole);
     }
@@ -89,7 +91,8 @@ public class RoleController {
         BeanUtils.copyProperties(sysRoleDTO, sysRole);
 
         sysRole.setUpdated(date);
-        sysRole.setUpdatedBy(userInfo.getUsername());
+        sysRole.setUpdatedBy(userInfo.getId());
+        sysRole.setUpdatedByName(userInfo.getUsername());
 
         return roleServiceClient.modify(sysRole);
     }

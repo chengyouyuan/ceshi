@@ -34,7 +34,7 @@ import feign.hystrix.FallbackFactory;
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
-     * @return 无
+     * @return 无  (根据状态码进行判断绑定状态 1001绑定失败, 0绑定成功, 200011用户已经和当前门店存在绑定关系 ， 200003用户已经和其他门店存在绑定关系)
      * @author chengyy
      * @date 2018/8/3 10:32
      * @Description 门店绑定用户
@@ -89,7 +89,7 @@ public interface StoreServiceClient {
      * @Description 通过用户id查询绑定的门店信息
      */
     @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
-    ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
+    ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
      * @param id 门店id
@@ -168,7 +168,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(Long customerUserId) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoByCustomerId，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

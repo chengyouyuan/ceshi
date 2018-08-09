@@ -24,10 +24,13 @@ public class SysUserPasswordDTO {
     @ApiModelProperty(value = "新密码", required = true)
     private String newPassword;
 
-    @ApiModelProperty("更新人")
-    private String updatedBy;
+    @ApiModelProperty("更新人id")
+    private Long updatedBy;
 
     @ApiModelProperty("更新时间")
     private Date updated;
+
+    @ApiModelProperty("更新人")
+    private String updatedByName;
 
 }

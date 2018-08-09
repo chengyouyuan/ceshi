@@ -1,6 +1,9 @@
 package com.winhxd.b2c.promotion.controller;
 
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +44,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<Boolean> orderUseCoupon(@RequestBody CouponCondition condition) {
+	public ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition) {
 		LOGGER.info("=/coupon/orderUseCoupon-订单使用优惠券=--开始--{}", condition);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {
@@ -60,7 +63,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<Boolean> orderUntreadCoupon(CouponCondition condition) {
+	public ResponseResult<Boolean> orderUntreadCoupon(OrderUntreadCouponCondition condition) {
 		LOGGER.info("=/coupon/orderUntreadCoupon-订单退回优惠券=--开始--{}", condition);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {
@@ -79,7 +82,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<Boolean> revokeCoupon(CouponCondition condition) {
+	public ResponseResult<Boolean> revokeCoupon(RevokeCouponCodition condition) {
 		LOGGER.info("=/coupon/revokeCoupon-撤回优惠券=--开始--{}", condition);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {

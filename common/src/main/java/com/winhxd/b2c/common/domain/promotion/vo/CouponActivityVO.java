@@ -280,4 +280,5 @@ public class CouponActivityVO {
     public void setCouponActivityTemplateList(List<CouponActivityTemplate> couponActivityTemplateList) {
         this.couponActivityTemplateList = couponActivityTemplateList;
     }
+
 }

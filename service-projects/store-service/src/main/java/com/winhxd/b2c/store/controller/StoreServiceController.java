@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +26,6 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -41,8 +42,12 @@ import com.winhxd.b2c.store.service.StoreService;
 public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private StoreService storeService;
+
     @Autowired
     private StoreProductManageService storeProductManageService;
+
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
 
     @Autowired
 	private StoreProductStatisticsService storeProductStatisticsService;
@@ -61,10 +66,35 @@ public class StoreServiceController implements StoreServiceClient {
             logger.error("StoreServiceController -> bindCustomer获取的门店id参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        //检查用户id和storeuserId有效
+		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
+        if(storeUserInfoVO == null){
+        	throw new BusinessException(BusinessCode.CODE_200004);
+		}
+
+		if(!checkCustomerExist(customerId)){
+        	throw new BusinessException(BusinessCode.CODE_200010);
+		}
         int status = storeService.bindCustomer(customerId,storeUserId);
-        result.setCode(status == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200003);
+        if(status == 0){
+			result.setCode(BusinessCode.CODE_1001);
+		}else if(status == -1){
+        	result.setCode(BusinessCode.CODE_200011);
+		}else if(status == -2){
+        	result.setCode(BusinessCode.CODE_200003);
+		}
         return result;
     }
+
+    public boolean checkCustomerExist(Long customerId){
+		List<Long> ids = new ArrayList<>();
+		ids.add(customerId);
+		List<CustomerUserInfoVO>  list = customerServiceClient.findCustomerUserByIds(ids).getData();
+		if(list != null && list.size() > 0){
+			return true;
+		}
+		return false;
+	}
 
 
 	@Override
@@ -126,13 +156,13 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
-    	ResponseResult<StoreUserInfo> responseResult = new ResponseResult<>();
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
+    	ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {
 			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
 			throw new BusinessException(BusinessCode.CODE_200001);
 		}
-		StoreUserInfo storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
+		StoreUserInfoVO storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
 		if(storeInfo == null){
 			responseResult.setCode(BusinessCode.CODE_200009);
 		}

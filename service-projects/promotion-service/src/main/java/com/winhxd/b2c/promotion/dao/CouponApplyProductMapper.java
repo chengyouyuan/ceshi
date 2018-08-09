@@ -14,4 +14,6 @@ public interface CouponApplyProductMapper {
     int updateByPrimaryKeySelective(CouponApplyProduct record);
 
     int updateByPrimaryKey(CouponApplyProduct record);
+
+    long insertCouponApplyProduct(CouponApplyProduct couponApplyProduct);
 }

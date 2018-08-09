@@ -139,4 +139,10 @@
       must_min_total = #{mustMinTotal,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertCouponApplyBrand" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand">
+    insert into coupon_apply_brand (id, apply_id) values (#{id,jdbcType=BIGINT}, #{applyId,jdbcType=BIGINT})
+  </insert>
+
+
 </mapper>

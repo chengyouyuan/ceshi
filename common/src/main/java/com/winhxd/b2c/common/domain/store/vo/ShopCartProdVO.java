@@ -31,6 +31,6 @@ public class ShopCartProdVO {
 	private BigDecimal sellMoney;
 
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
-	private Byte prodStatus;
+	private Short prodStatus;
 
 }

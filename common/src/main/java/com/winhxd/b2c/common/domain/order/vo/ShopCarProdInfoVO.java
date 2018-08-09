@@ -24,5 +24,5 @@ public class ShopCarProdInfoVO {
     @ApiModelProperty(value = "商品名称", required = true)
     private String prodName;
     @ApiModelProperty("商品状态 0下架1上架2已删除")
-    private Byte prodStatus;
+    private Short prodStatus;
 }

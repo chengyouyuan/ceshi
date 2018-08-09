@@ -316,7 +316,7 @@ public class ApiStoreProductManageController {
 			StoreSubmitProduct storeSubmitProduct = new StoreSubmitProduct();
 			BeanUtils.copyProperties(condition, storeSubmitProduct);
 			storeSubmitProduct.setStoreId(storeId);
-			storeSubmitProduct.setProdStatus((int) StoreSubmitProductStatusEnum.CREATE.getStatusCode());
+			storeSubmitProduct.setProdStatus(StoreSubmitProductStatusEnum.CREATE.getStatusCode());
 
 			storeSubmitProductService.saveStoreSubmitProduct(storeId, storeSubmitProduct);
 		} catch (Exception e) {

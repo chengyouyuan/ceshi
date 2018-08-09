@@ -11,7 +11,7 @@
     <result column="prod_image2" jdbcType="VARCHAR" property="prodImage2" />
     <result column="prod_image3" jdbcType="VARCHAR" property="prodImage3" />
     <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption" />
-    <result column="prod_status" jdbcType="INTEGER" property="prodStatus" />
+    <result column="prod_status" jdbcType="SMALLINT" property="prodStatus" />
     <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
     <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
     <result column="prod_info_text" jdbcType="VARCHAR" property="prodInfoText" />
@@ -27,7 +27,7 @@
     <result column="prod_code" jdbcType="VARCHAR" property="prodCode" />
     <result column="prod_name" jdbcType="VARCHAR" property="prodName" />
     <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
-    <result column="prod_status" jdbcType="INTEGER" property="prodStatus" />
+    <result column="prod_status" jdbcType="SMALLINT" property="prodStatus" />
     <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
   </resultMap>
@@ -72,7 +72,7 @@
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR},
     #{prodName,jdbcType=VARCHAR}, #{prodCode,jdbcType=VARCHAR}, #{prodImage1,jdbcType=VARCHAR},
     #{prodImage2,jdbcType=VARCHAR}, #{prodImage3,jdbcType=VARCHAR}, #{skuAttributeOption,jdbcType=VARCHAR},
-    #{prodStatus,jdbcType=INTEGER}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR},
+    #{prodStatus,jdbcType=SMALLINT}, #{auditRemark,jdbcType=VARCHAR}, #{prodInfoVoice,jdbcType=VARCHAR},
     #{prodInfoText,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
     #{updatedByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{skuCode,jdbcType=VARCHAR}
     )
@@ -164,7 +164,7 @@
         #{skuAttributeOption,jdbcType=VARCHAR},
       </if>
       <if test="prodStatus != null">
-        #{prodStatus,jdbcType=INTEGER},
+        #{prodStatus,jdbcType=SMALLINT},
       </if>
       <if test="auditRemark != null">
         #{auditRemark,jdbcType=VARCHAR},
@@ -220,7 +220,7 @@
         sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       </if>
       <if test="prodStatus != null">
-        prod_status = #{prodStatus,jdbcType=INTEGER},
+        prod_status = #{prodStatus,jdbcType=SMALLINT},
       </if>
       <if test="auditRemark != null">
         audit_remark = #{auditRemark,jdbcType=VARCHAR},
@@ -259,7 +259,7 @@
     prod_image2 = #{prodImage2,jdbcType=VARCHAR},
     prod_image3 = #{prodImage3,jdbcType=VARCHAR},
     sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
-    prod_status = #{prodStatus,jdbcType=INTEGER},
+    prod_status = #{prodStatus,jdbcType=SMALLINT},
     audit_remark = #{auditRemark,jdbcType=VARCHAR},
     prod_info_voice = #{prodInfoVoice,jdbcType=VARCHAR},
     prod_info_text = #{prodInfoText,jdbcType=VARCHAR},

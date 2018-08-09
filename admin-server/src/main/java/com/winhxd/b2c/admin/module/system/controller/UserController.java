@@ -20,7 +20,6 @@ import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,7 +72,7 @@ public class UserController {
         sysUser.setUpdated(date);
         sysUser.setUpdatedBy(userInfo.getUsername());
 
-        return userServiceClient.add(sysUser);
+        return userServiceClient.save(sysUser);
     }
 
     @ApiOperation("编辑用户")
@@ -106,7 +105,7 @@ public class UserController {
         sysUser.setUpdated(date);
         sysUser.setUpdatedBy(userInfo.getUsername());
 
-        return userServiceClient.update(sysUser);
+        return userServiceClient.modify(sysUser);
     }
 
     @ApiOperation(value = "修改密码")
@@ -146,7 +145,7 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
-       return userServiceClient.list(condition);
+       return userServiceClient.find(condition);
     }
 
     @ApiOperation(value = "根据主键获取用户信息")
@@ -163,7 +162,7 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
-        return userServiceClient.getById(id);
+        return userServiceClient.get(id);
     }
 
     @ApiOperation("验证用户是否已存在")
@@ -221,8 +220,8 @@ public class UserController {
         ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
         Map<String,Object> data = new HashMap<>();
         Map<String,String> url = new HashMap<>();
-        url.put("list","/user/list");
-        url.put("add","/user/add");
+        url.put("list","/user/find");
+        url.put("add","/user/save");
         url.put("edit","/user/edit");
         data.put("url",url);
         result.setData(data);

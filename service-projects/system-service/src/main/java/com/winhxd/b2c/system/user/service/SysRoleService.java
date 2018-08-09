@@ -13,7 +13,7 @@ public interface SysRoleService {
      * @param sysRole
      * @return int
      */
-    int addSysRule(SysRole sysRole);
+    int save(SysRole sysRole);
 
     /**
      * 修改权限组
@@ -22,7 +22,7 @@ public interface SysRoleService {
      * @param sysRole
      * @return int
      */
-    int updateSysRule(SysRole sysRole);
+    int modify(SysRole sysRole);
 
 
     /**
@@ -32,7 +32,7 @@ public interface SysRoleService {
      * @param condition
      * @return java.util.List<com.winhxd.b2c.common.domain.system.sys.vo.SysRuleVO>
      */
-    PagedList<SysRole> selectSysRule(SysRoleCondition condition);
+    PagedList<SysRole> find(SysRoleCondition condition);
     
     /**
      * 根据主键获取权限组信息
@@ -41,6 +41,14 @@ public interface SysRoleService {
      * @param id
      * @return com.winhxd.b2c.common.domain.system.sys.vo.SysRuleVO
      */
-    SysRole getSysRuleById(Long id);
+    SysRole get(Long id);
+
+    /**
+     * 根据主键删除权限组信息
+     * @author zhangzhengyang
+     * @date 2018/8/9
+     * @param id
+     */
+    int remove(Long id);
 
 }

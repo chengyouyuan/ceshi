@@ -161,4 +161,10 @@ public final class BusinessCode {
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
     public static final int CODE_410001 = 410001;
+    /** 订单号错误*/
+    public static final int CODE_420003 = 420003;
+    /** 取消订单状态更新不成功*/
+    public static final int CODE_420004 = 420004;
+    /** 订单取消处理用户退款不成功*/
+    public static final int CODE_422005 = 422005;
 }

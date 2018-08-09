@@ -43,7 +43,7 @@ public interface OrderService {
      * @author pangjianhua
      * @date 2018年8月2日 下午5:51:46
      */
-    boolean cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
+    void cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
 
     /**
      * 门店处理用户退款订单

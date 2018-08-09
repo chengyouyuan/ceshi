@@ -6,8 +6,8 @@
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
         <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
-        <result column="recommend" jdbcType="TINYINT" property="recommend"/>
-        <result column="prod_status" jdbcType="TINYINT" property="prodStatus"/>
+        <result column="recommend" jdbcType="SMALLINT" property="recommend"/>
+        <result column="prod_status" jdbcType="SMALLINT" property="prodStatus"/>
         <result column="prod_code" jdbcType="VARCHAR" property="prodCode"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
@@ -23,8 +23,8 @@
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
         <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
-        <result column="recommend" jdbcType="TINYINT" property="recommend"/>
-        <result column="prod_status" jdbcType="TINYINT" property="prodStatus"/>
+        <result column="recommend" jdbcType="SMALLINT" property="recommend"/>
+        <result column="prod_status" jdbcType="SMALLINT" property="prodStatus"/>
         <result column="prod_code" jdbcType="VARCHAR" property="prodCode"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
@@ -54,7 +54,7 @@
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
         <if test="condition.recommend != null">
-            and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+            and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
         <if test="condition.priceStatus != null">
         	<choose>
@@ -98,7 +98,7 @@
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
         <if test="condition.recommend != null">
-            and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+            and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
         <if test="condition.priceStatus != null">
         	<choose>
@@ -134,6 +134,7 @@
         select
         prod.sku_code as skuCode
         from store_product_manage prod
+        left join store_product_statistics sps on sps.store_id = prod.store_id and sps.prod_id = prod.prod_id
         where 1=1
         <if test="condition.prodStatus != null">
             and prod.prod_status in 
@@ -145,8 +146,9 @@
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
         <if test="condition.recommend != null">
-            and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+            and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
+        group by prod.sku_code
         <choose>
             <!-- 加排序字段目前支持，价格和创建时间升降序 -->
             <when test="condition.orderBy != null">
@@ -154,25 +156,35 @@
                     <when test="condition.orderBy==1">
                         <choose>
                             <when test="condition.descAsc != null and condition.descAsc==1">
-                                order by sell_money desc
+                                order by prod.sell_money desc
                             </when>
                             <otherwise>
-                                order by sell_money asc
+                                order by when sell_money is null then 1 else 0 end, prod.sell_money asc
                             </otherwise>
                         </choose>
                     </when>
                     <when test="condition.orderBy==0">
                         <choose>
                             <when test="condition.descAsc != null and condition.descAsc==1">
-                                order by created desc
+                                order by prod.created desc
                             </when>
                             <otherwise>
-                                order by created asc
+                                order by prod.created asc
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <when test="condition.orderBy==2">
+                        <choose>
+                            <when test="condition.descAsc != null and condition.descAsc==1">
+                                order by sum(sps.quantity_sold_out) desc
+                            </when>
+                            <otherwise>
+                                order by sum(sps.quantity_sold_out) asc
                             </otherwise>
                         </choose>
                     </when>
                     <otherwise>
-                        order by created desc
+                        order by prod.created desc
                     </otherwise>
                 </choose>
 
@@ -189,6 +201,12 @@
         from store_product_manage
         where id = #{id,jdbcType=BIGINT}
     </select>
+    <select id="queryRecommendFlag" resultType="java.lang.Integer">
+          select
+            count(1)
+        from store_product_manage
+        where  prod_status = 1 and recommend = 1
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from store_product_manage
     where id = #{id,jdbcType=BIGINT}
@@ -201,8 +219,8 @@
     created, updated_by, updated_by_name,
     updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT},
-    #{skuAttributeOption,jdbcType=VARCHAR}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
-    #{prodStatus,jdbcType=TINYINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
+    #{skuAttributeOption,jdbcType=VARCHAR}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=SMALLINT},
+    #{prodStatus,jdbcType=SMALLINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
     #{putawayTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
     #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
     #{updated,jdbcType=TIMESTAMP})
@@ -270,10 +288,10 @@
                 #{sellMoney,jdbcType=DECIMAL},
             </if>
             <if test="recommend != null">
-                #{recommend,jdbcType=TINYINT},
+                #{recommend,jdbcType=SMALLINT},
             </if>
             <if test="prodStatus != null">
-                #{prodStatus,jdbcType=TINYINT},
+                #{prodStatus,jdbcType=SMALLINT},
             </if>
             <if test="prodCode != null">
                 #{prodCode,jdbcType=VARCHAR},
@@ -318,10 +336,10 @@
                 sell_money = #{sellMoney,jdbcType=DECIMAL},
             </if>
             <if test="recommend != null">
-                recommend = #{recommend,jdbcType=TINYINT},
+                recommend = #{recommend,jdbcType=SMALLINT},
             </if>
             <if test="prodStatus != null">
-                prod_status = #{prodStatus,jdbcType=TINYINT},
+                prod_status = #{prodStatus,jdbcType=SMALLINT},
             </if>
             <if test="prodCode != null">
                 prod_code = #{prodCode,jdbcType=VARCHAR},
@@ -358,8 +376,8 @@
     set store_id = #{storeId,jdbcType=BIGINT},
       sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       sell_money = #{sellMoney,jdbcType=DECIMAL},
-      recommend = #{recommend,jdbcType=TINYINT},
-      prod_status = #{prodStatus,jdbcType=TINYINT},
+      recommend = #{recommend,jdbcType=SMALLINT},
+      prod_status = #{prodStatus,jdbcType=SMALLINT},
       prod_code = #{prodCode,jdbcType=VARCHAR},
       sku_code = #{skuCode,jdbcType=VARCHAR},
       putaway_time = #{putawayTime,jdbcType=TIMESTAMP},

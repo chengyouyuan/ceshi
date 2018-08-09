@@ -13,14 +13,14 @@ import com.winhxd.b2c.message.service.SMSService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author jujinbiao
  * @className MessageServiceController
  * @description
  */
-@Controller
+@RestController
 public class MessageServiceController implements MessageServiceClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceController.class);
 

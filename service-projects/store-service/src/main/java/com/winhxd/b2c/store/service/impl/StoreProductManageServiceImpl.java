@@ -1,15 +1,5 @@
 package com.winhxd.b2c.store.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -18,7 +8,6 @@ import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
-import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -26,6 +15,15 @@ import com.winhxd.b2c.store.dao.StoreProductManageMapper;
 import com.winhxd.b2c.store.dao.StoreProductStatisticsMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreProductManageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 /**
  * 门店商品管理Service实现类
  * @ClassName: StoreProductManageServiceImpl 
@@ -58,7 +56,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	@Override
 	public int countSkusByConditon(StoreProductManageCondition condition) {
 		
-		return storeProductManageMapper.countSkusByConditon(condition);
+		return (int)storeProductManageMapper.countSkusByConditon(condition);
 	}
 
 
@@ -91,7 +89,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setStoreId(storeId);
 					spManage.setSkuCode(skuCode);
 					spManage.setProdCode(prodSku.getProductCode());
-					spManage.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setPutawayTime(new Date());
 					//售价
 					spManage.setSellMoney(putaway.getSellMoney());
@@ -105,21 +103,10 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setCreatedByName(storeUserInfo.getShopkeeper());
 					//保存门店商品管理信息
 					storeProductManageMapper.insert(spManage);
-					
-					StoreProductStatistics statistics=new StoreProductStatistics();
-					statistics.setSkuCode(skuCode);
-					statistics.setStoreId(storeId);
-					statistics.setProdCode(prodSku.getProductCode());
-					statistics.setCreated(new Date());
-					statistics.setCreatedBy(storeId);
-					statistics.setCreatedByName(storeUserInfo.getShopkeeper());
-					statistics.setBrowseNumber(0);
-					statistics.setQuantitySoldOut(0);
-					//保存门店商品统计信息（浏览量，销售量等）
-					storeProductStatisticsMapper.insert(statistics);
+				
 				}else{
 					//存在，可能是下架了或则删除
-					spManage.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setUpdated(new Date());
 					spManage.setUpdatedBy(storeId);
 					//上架日期
@@ -159,7 +146,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					logger.error("StoreProductManageService ->removeStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
-				spManage.setProdStatus((byte)StoreProductStatusEnum.DELETED.getStatusCode());
+				spManage.setProdStatus(StoreProductStatusEnum.DELETED.getStatusCode());
 				spManage.setUpdated(new Date());
 				spManage.setUpdatedBy(storeId);
 				//店主名称
@@ -189,7 +176,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					logger.error("StoreProductManageService ->unPutawayStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
-				spManage.setProdStatus((byte)StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+				spManage.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
 				spManage.setUpdated(new Date());
 				spManage.setUpdatedBy(storeId);
 				//店主名称
@@ -250,4 +237,14 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		}
 		
 	}
+
+	@Override
+	public Boolean queryRecommendFlag(Long storeId) {
+		Integer count = storeProductManageMapper.queryRecommendFlag(storeId);
+		if (count != null && count > 0){
+			return true;
+		}
+		return false;
+	}
+
 }

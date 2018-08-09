@@ -76,6 +76,8 @@ public final class BusinessCode {
     public static final int CODE_200010 = 200010;
     /**当前用户和门店已经存在绑定关系*/
     public static final int CODE_200011 = 200011;
+    /**门店商品skuCode无效*/
+    public static final int CODE_200012 = 200012;
 
 
 
@@ -120,6 +122,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单创建不支持订单类型")
     public static final int CODE_401008 = 401008;
     
+    @ApiModelProperty("订单创建优惠券使用失败")
+    public static final int CODE_401009 = 401009;
+    
     @ApiModelProperty("订单号错误")
     public static final int WRONG_ORDERNO = 400000;
     
@@ -132,9 +137,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单号为空")
     public static final int ORDER_NO_EMPTY = 400003;
     
-    @ApiModelProperty("订单号为空")
+    @ApiModelProperty("提货码为空")
     public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
-    
+
     @ApiModelProperty("门店id为空")
     public static final int STORE_ID_EMPTY = 400005;
     
@@ -152,6 +157,12 @@ public final class BusinessCode {
     
     @ApiModelProperty("顾客id错误")
     public static final int WRONG_CUSTOMER_ID = 400010;
+
+    @ApiModelProperty("订单不存在")
+    public static final int ORDER_DOES_NOT_EXIST = 400011;
+
+    @ApiModelProperty("订单正在修改中")
+    public static final int ORDER_IS_BEING_MODIFIED = 400012;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;

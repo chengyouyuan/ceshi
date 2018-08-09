@@ -62,7 +62,7 @@ public interface StoreProductManageMapper {
     * @author wuyuanbao
     * @date 2018年8月6日下午8:16:11
      */
-    int countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
+    long countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
     /**
      * 通过storeId跟skucode查询StoreProductManage
     * @Title: selectBySkuCodeAndStoreId 
@@ -84,4 +84,11 @@ public interface StoreProductManageMapper {
     * @date 2018年8月8日下午8:42:09
      */
     Page<StoreProdSimpleVO> selectVoByCondition(@Param("condition")StoreProductManageCondition condition);
+
+    /**
+     * 查询是否有推荐商品
+     * @param storeId
+     * @return
+     */
+    Integer queryRecommendFlag(Long storeId);
 }

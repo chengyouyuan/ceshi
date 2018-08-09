@@ -1,20 +1,33 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -28,49 +41,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.constant.OrderNotifyMsg;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
-import com.winhxd.b2c.common.domain.order.condition.*;
-import com.winhxd.b2c.common.domain.order.enums.*;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CommonOrderServiceImpl implements OrderService {
@@ -100,10 +78,10 @@ public class CommonOrderServiceImpl implements OrderService {
     private OrderChangeLogService orderChangeLogService;
     @Resource
     private StoreServiceClient storeServiceClient;
-
+    @Resource
+    private CouponServiceClient couponServiceClient;
     @Resource
     private Cache cache;
-
 
     @Autowired
     private CustomerServiceClient customerServiceclient;
@@ -211,7 +189,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 }
                 //判断是否支付成功,支付成功走退款逻辑，支付不成功走取消订单逻辑
                 if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
-
+                    orderRefund(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
                 } else {
                     orderCancel(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
                 }
@@ -277,10 +255,19 @@ public class CommonOrderServiceImpl implements OrderService {
         //设置提货码置为null、取消原因、取消状态等
         int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, cancelReason);
         if (updateRowNum < 1) {
-            logger.info("取消订单状态更新不成功 订单号={}", orderNo);
+            logger.info("取消订单-状态更新不成功-订单号={}", orderNo);
             throw new BusinessException(BusinessCode.CODE_420004, "取消订单状态更新不成功");
         } else {
             //TODO 优惠券一并退回
+            logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
+            OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
+            couponCondition.setOrderNo(orderNo);
+            ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
+            if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
+                logger.info("取消订单-退优惠券返回数据失败-订单号={},返回数据={}", orderNo, couponData);
+            }
+            logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
+            logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             Short oldStatus = order.getOrderStatus();
             order.setOrderStatus(OrderStatusEnum.CANCELED.getStatusCode());
@@ -289,6 +276,7 @@ public class CommonOrderServiceImpl implements OrderService {
             //添加订单流转日志
             orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
                     order.getOrderStatus(), operatorId, operatorName, cancelReason, MainPointEnum.MAIN);
+            logger.info("取消订单-添加流转日志结束-订单号={}", orderNo);
         }
     }
 
@@ -296,7 +284,6 @@ public class CommonOrderServiceImpl implements OrderService {
      * 门店处理用户退款订单
      *
      * @param condition 入参
-     * @return 是否成功，true成功，false 不成功
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -322,11 +309,13 @@ public class CommonOrderServiceImpl implements OrderService {
                 short agree = condition.getAgree();
                 //门店是否同意退款，不同意时不做任何操作
                 if (agree == 1) {
+                    logger.info("门店同意退款-操作订单开始-订单号={}", orderNo);
                     OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                     if (null == order || !order.getStoreId().equals(store.getStoreCustomerId())) {
                         throw new BusinessException(BusinessCode.WRONG_ORDERNO, "门店处理用户退款订单查询失败");
                     }
                     orderRefund(order, null, storeVO.getId(), storeVO.getShopkeeper());
+                    logger.info("门店同意退款-操作订单结束-订单号={}", orderNo);
                 }
             } finally {
                 lock.unlock();
@@ -541,7 +530,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
             logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
             last4MobileNums = "";
-        }else {
+        } else {
             last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
         }
         String msg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
@@ -597,10 +586,11 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 获取门店信息
-     * @author wangbin
-     * @date  2018年8月9日 下午3:07:42
+     *
      * @param storeId
      * @return
+     * @author wangbin
+     * @date 2018年8月9日 下午3:07:42
      */
     private StoreUserInfoVO getStoreUserInfoByStoreId(Long storeId) {
         ResponseResult<StoreUserInfoVO> storeRet = storeServiceClient.findStoreUserInfo(storeId);

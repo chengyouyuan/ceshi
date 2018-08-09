@@ -167,7 +167,7 @@ public class OrderQueryAspect {
                                 for (OrderItemVO orderItemVO : orderItemVOS) {
                                     ProductSkuVO product = productListMap.get(orderItemVO.getSkuCode());
                                     if (null != product) {
-                                        orderItemVO.setProductName(product.getSkuName());
+                                        orderItemVO.setProductName(product.getSkuCode());
                                         orderItemVO.setProductPictureUrl(product.getSkuImage());
                                     }
                                 }

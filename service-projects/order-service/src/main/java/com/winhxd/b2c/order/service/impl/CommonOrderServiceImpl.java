@@ -339,18 +339,28 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, "已完成的订单不允许退款");
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
+        String orderNo = order.getOrderNo();
         //TODO 调用订单退款接口
         //TODO 判断退款是否成功
         //更新订单状态为退款中
         int updateResult = this.orderInfoMapper.updateOrderStatusForRefund(order.getOrderNo(), reason);
         //添加订单流转日志
         if (updateResult > 0) {
+            //退优惠券
+            logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
+            OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
+            couponCondition.setOrderNo(orderNo);
+            ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
+            if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
+                logger.info("取消订单-退优惠券返回数据失败-订单号={}", orderNo);
+            }
+            logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
             String newOrderJsonString = JsonUtil.toJSONString(order);
             //添加订单流转日志
-            orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
+            orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
                     order.getOrderStatus(), operatorId, operatorName, reason, MainPointEnum.MAIN);
         } else {
             logger.info("订单取消处理用户退款不成功 订单号={}", order.getOrderNo());

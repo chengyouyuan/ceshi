@@ -1,12 +1,13 @@
 package com.winhxd.b2c.promotion.controller;
 
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,13 +22,14 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Api(tags = "coupon")
 @RestController
 public class CouponController implements CouponServiceClient{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CouponController.class);
 
-	@Resource
+	@Autowired
 	private CouponService couponService;
 	
 	@Override
@@ -93,6 +95,30 @@ public class CouponController implements CouponServiceClient{
 			result.setCode(BusinessCode.CODE_1001);
 		}
 		LOGGER.info("=/coupon/revokeCoupon-撤回优惠券=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "查询订单使用的优惠券列表", response = Boolean.class, notes = "查询订单使用的优惠券列表")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	public ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition) {
+		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--开始--{}", couponCondition);
+		ResponseResult<List<CouponVO>> result = new ResponseResult<>();
+		try {
+			//返回对象
+            List<CouponVO> pages = couponService.couponListByOrder(couponCondition);
+			result.setData(pages);
+		} catch (BusinessException e) {
+            LOGGER.error("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--异常" + e, e);
+            result.setCode(e.getErrorCode());
+        }
+		catch (Exception e) {
+			LOGGER.error("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--异常" + e, e);
+			result.setCode(BusinessCode.CODE_1001);
+		}
+		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--结束 result={}", result);
 		return result;
 	}
 

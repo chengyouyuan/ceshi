@@ -12,10 +12,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,7 @@ import java.util.List;
 /**
  * Created by caiyulong on 2018/8/4.
  */
-@Api(value = "后台门店账户管理")
+@Api(tags = "后台门店账户管理")
 @RestController
 @RequestMapping("/store")
 public class BackStageStoreController {
@@ -67,6 +64,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "查询门店账户详细信息接口", notes = "查询门店账户详细信息接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @ApiParam()
     @PostMapping(value = "1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();

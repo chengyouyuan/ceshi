@@ -1,7 +1,7 @@
 package com.winhxd.b2c.customer.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface CustomerService {
      * @param condition 查询条件
      * @return 分页数据
      */
-    PagedList<CustomerUserInfoVO> findCustomerPageInfo(CustomerUserInfoCondition1 condition);
+    PagedList<CustomerUserInfoVO> findCustomerPageInfo(BackStageCustomerInfoCondition condition);
 
     /**
      * @author chengyy
@@ -28,7 +28,7 @@ public interface CustomerService {
      * @param condition  参数对象
      * @return  sql语句执行之后影响的行数
      */
-    int modifyCustomerStatus(CustomerUserInfoCondition1 condition);
+    int modifyCustomerStatus(BackStageCustomerInfoCondition condition);
 
     /**
      * @author chengyy

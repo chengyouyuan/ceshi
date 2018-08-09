@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -193,8 +194,8 @@ public class CouponServiceImpl implements CouponService {
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
-        ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
-        StoreUserInfo storeUserInfo = result.getData();
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        StoreUserInfoVO storeUserInfo = result.getData();
 
 
         List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getStoreCustomerId());
@@ -314,7 +315,7 @@ public class CouponServiceImpl implements CouponService {
             CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateSend.setUpdated(new Date());
-            couponTemplateSend.setUpdateBy(customerUser.getCustomerId());
+            couponTemplateSend.setUpdatedBy(customerUser.getCustomerId());
             couponTemplateSend.setUpdatedByName("");
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
 
@@ -378,17 +379,13 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public PagedList<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
-
-        Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
-        PagedList<CouponVO> pagedList = new PagedList();
+    public List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
+        if(null == couponCondition.getOrderNo()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
 
-        pagedList.setData(this.getCouponDetail(couponVOS));
-        pagedList.setPageNo(couponCondition.getPageNo());
-        pagedList.setPageSize(couponCondition.getPageSize());
-        pagedList.setTotalRows(page.getTotal());
-        return pagedList;
+        return this.getCouponDetail(couponVOS);
 
     }
 }

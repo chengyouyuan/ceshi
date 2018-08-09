@@ -236,6 +236,7 @@
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
     <collection property="detailList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail" column="investor_id">
       <result column="percent" property="percent"/>
       <result column="names" property="names"/>
@@ -244,9 +245,10 @@
 
   <select id="getCouponInvestorPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
       select a.code,a.name,a.created_by_name,a.created,a.updated_by_name,a.updated,
-              b.percent,b.names from coupon_investor a
-              left join coupon_investor_detail b
-              on a.id = b.investor_id
+              b.percent,b.names ,count(c.investor_id) as rel_templete_count
+              from coupon_investor a
+              left join coupon_investor_detail b on a.id = b.investor_id
+              left join coupon_template c on a.id = c.investor_id
               where 1=1
               <if test="condition.code!=null and  condition.code!=''">
                   and a.code = #{condition.code}

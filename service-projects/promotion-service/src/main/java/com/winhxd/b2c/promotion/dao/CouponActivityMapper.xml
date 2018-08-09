@@ -16,7 +16,7 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
@@ -53,7 +53,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, name, code, exolian, remarks, type, coupon_type, activity_start, activity_end, 
-    activity_status, status, created_by, created_by_name, created, update_by, updated_by_name, 
+    activity_status, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
   <select id="queryStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
@@ -309,13 +309,13 @@
       exolian, remarks, type, 
       coupon_type, activity_start, activity_end, 
       activity_status, status, created_by, 
-      created_by_name, created, update_by, 
+      created_by_name, created, updated_by, 
       updated_by_name, updated)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{exolian,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, 
       #{couponType,jdbcType=SMALLINT}, #{activityStart,jdbcType=TIMESTAMP}, #{activityEnd,jdbcType=TIMESTAMP}, 
       #{activityStatus,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
       #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivity" useGeneratedKeys="true" keyProperty="id">
@@ -363,8 +363,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -416,8 +416,8 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -469,8 +469,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -496,7 +496,7 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

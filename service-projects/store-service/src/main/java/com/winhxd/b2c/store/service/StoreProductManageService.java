@@ -1,14 +1,14 @@
 package com.winhxd.b2c.store.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 门段商品管理service
@@ -107,7 +107,11 @@ public interface StoreProductManageService {
 	* @date 2018年8月8日下午9:12:27
 	 */
 	PagedList<StoreProdSimpleVO> findSimpelVOByCondition(StoreProductManageCondition condition);
-	
-	
 
+	/**
+	 * 查询门店上架商品中是否有推荐商品 true为有
+	 * @param storeId
+	 * @return
+	 */
+	Boolean queryRecommendFlag(Long storeId);
 }

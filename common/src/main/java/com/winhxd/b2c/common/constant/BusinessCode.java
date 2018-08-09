@@ -134,9 +134,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单号为空")
     public static final int ORDER_NO_EMPTY = 400003;
     
-    @ApiModelProperty("订单号为空")
+    @ApiModelProperty("提货码为空")
     public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
-    
+
     @ApiModelProperty("门店id为空")
     public static final int STORE_ID_EMPTY = 400005;
     
@@ -148,6 +148,18 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单提货码错误")
     public static final int WRONG_ORDER_PICKUP_CODE = 400008;
+
+    @ApiModelProperty("门店id错误")
+    public static final int WRONG_STORE_ID = 400009;
+    
+    @ApiModelProperty("顾客id错误")
+    public static final int WRONG_CUSTOMER_ID = 400010;
+
+    @ApiModelProperty("订单不存在")
+    public static final int ORDER_DOES_NOT_EXIST = 400011;
+
+    @ApiModelProperty("订单正在修改中")
+    public static final int ORDER_IS_BEING_MODIFIED = 400012;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;

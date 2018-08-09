@@ -1,6 +1,8 @@
 package com.winhxd.b2c.order.service.impl;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +16,9 @@ import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
@@ -49,6 +53,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
     
     @Autowired
     private OrderChangeLogService orderChangeLogService;
+    
+    @Autowired
+    private CustomerServiceClient customerServiceclient;
     
     @Override
     public void orderInfoBeforeCreateProcess(OrderInfo orderInfo) {
@@ -143,10 +150,26 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        // TODO 发送云信
-        String last4MobileNums = null;
+        CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
+        String last4MobileNums;
+        if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
+            logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
+            last4MobileNums = "";
+        }else {
+            last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+        }
         String msg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        //TODO 发送云信
         // TODO 发送延时MQ信息，处理超时未自提取消操作
+    }
+
+    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+        ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceclient.findCustomerUserByIds(Arrays.asList(customerId));
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null || ret.getData().isEmpty()) {
+            throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
+        }
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        return ret.getData().get(0);
     }
     
     /**
@@ -170,5 +193,4 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
                     MessageFormat.format("订单orderNo={0}, 订单状态修改失败", orderInfo.getOrderNo()));
         }
     }
-
 }

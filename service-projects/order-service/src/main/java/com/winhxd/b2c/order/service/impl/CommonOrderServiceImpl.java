@@ -357,21 +357,22 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
         String orderNo = order.getOrderNo();
-        //TODO 调用订单退款接口
+        //TODO 调用订单退款接口 状态改为退款中
         //TODO 判断退款是否成功
         //更新订单状态为退款中
         int updateResult = this.orderInfoMapper.updateOrderStatusForRefund(order.getOrderNo(), reason);
         //添加订单流转日志
         if (updateResult > 0) {
             //退优惠券
-            logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
+            logger.info("订单取消处理用户退款-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                logger.info("取消订单-退优惠券返回数据失败-订单号={}", orderNo);
+                logger.info("订单取消处理用户退款-退优惠券返回数据失败-订单号={}", orderNo);
             }
-            logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
+            logger.info("订单取消处理用户退款-退优惠券结束-订单号={}", orderNo);
+            logger.info("订单取消处理用户退款-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
@@ -379,6 +380,7 @@ public class CommonOrderServiceImpl implements OrderService {
             //添加订单流转日志
             orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
                     order.getOrderStatus(), operatorId, operatorName, reason, MainPointEnum.MAIN);
+            logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
         } else {
             logger.info("订单取消处理用户退款不成功 订单号={}", order.getOrderNo());
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, "订单取消处理用户退款不成功");

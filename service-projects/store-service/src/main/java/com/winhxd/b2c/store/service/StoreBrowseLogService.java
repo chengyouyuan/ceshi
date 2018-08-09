@@ -2,6 +2,8 @@ package com.winhxd.b2c.store.service;
 
 import com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog;
 
+import java.util.Date;
+
 /**
  * C端用户浏览门店记录日志
  *
@@ -32,4 +34,14 @@ public interface StoreBrowseLogService {
      * @param customerBrowseLog
      */
     void modifyByPrimaryKey(CustomerBrowseLog customerBrowseLog);
+
+    /**
+     * 获取某门店时间段内浏览人数
+     *
+     * @param storeCustomerId 门店用户编码
+     * @param beginDate 开始时间
+     * @param endDate 结束时间
+     * @return
+     */
+    int getBrowseNum(Long storeCustomerId, Date beginDate, Date endDate);
 }

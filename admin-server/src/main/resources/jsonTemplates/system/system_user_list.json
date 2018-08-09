@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "url": "/user/list",
+    "type": "report",
+    "id": "system_user_list",
+    "code": "system_user_list",
+    "title": "成员管理",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "url": "/config/%2ftemplate%2fsystem_user_list_add",
+          "callBack": {
+          }
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "url": "/user/list"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "url": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "username",
+        "title": "成员姓名"
+      },
+      {
+        "name": "account",
+        "title": "账号"
+      },
+      {
+        "name": "mobile",
+        "title": "手机号"
+      },
+      {
+        "name": "permissions",
+        "title": "所在权限组"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "url": "/config/%2ftemplate%2fsystem_user_list_view"
+            }
+          },
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "url": "/config/%2ftemplate%2fsystem_user_list_edit"
+            }
+          },
+          {
+            "name": "删除",
+            "icon": null,
+            "event": {
+              "ajaxType": "delete",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "url": "/user/disabled/{id}"
+            }
+          },
+          {
+            "name": "重置密码",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "url": "/config/%2ftemplate%2fsystem_user_list_password"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "username",
+        "inputModel": "input",
+        "title": "姓名",
+        "value": "",
+        "placeholder": "请输入成员姓名",
+        "isHidden": false
+      },
+      {
+        "name": "mobile",
+        "inputModel": "input",
+        "title": "手机号",
+        "placeholder": "请输入成员手机号",
+        "value": "",
+        "isHidden": false
+      },
+      {
+        "name": "roleName",
+        "inputModel": "input",
+        "title": "权限组",
+        "placeholder": "请输入成员权限组",
+        "value": "",
+        "isHidden": false
+      }
+    ]
+  }
+}

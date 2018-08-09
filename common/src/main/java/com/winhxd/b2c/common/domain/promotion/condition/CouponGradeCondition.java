@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -7,7 +10,7 @@ import java.math.BigDecimal;
  * @Date 2018/8/8 16:43
  * @Description
  **/
-public class CouponGradeCondition {
+public class CouponGradeCondition extends BaseCondition implements Serializable {
     private Long id;
 
     private String code;
@@ -41,7 +44,8 @@ public class CouponGradeCondition {
     private Integer times;
 
 
-
+    private String userId;
+    private String userName;
 
 
 
@@ -172,5 +176,21 @@ public class CouponGradeCondition {
 
     public void setTimes(Integer times) {
         this.times = times;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

@@ -44,7 +44,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 店主头像
      */
-    private String shopOwnerUrl;
+    private String shopOwnerImg;
     /**
      * 取货方式（1、自提，多个用逗号分隔）
      */
@@ -134,20 +134,20 @@ public class StoreUserInfo implements Serializable {
         this.storePassword = storePassword == null ? null : storePassword.trim();
     }
 
+    public String getShopOwnerImg() {
+        return shopOwnerImg;
+    }
+
+    public void setShopOwnerImg(String shopOwnerImg) {
+        this.shopOwnerImg = shopOwnerImg;
+    }
+
     public String getShopkeeper() {
         return shopkeeper;
     }
 
     public void setShopkeeper(String shopkeeper) {
         this.shopkeeper = shopkeeper == null ? null : shopkeeper.trim();
-    }
-
-    public String getShopOwnerUrl() {
-        return shopOwnerUrl;
-    }
-
-    public void setShopOwnerUrl(String shopOwnerUrl) {
-        this.shopOwnerUrl = shopOwnerUrl == null ? null : shopOwnerUrl.trim();
     }
 
     public String getPickupWay() {

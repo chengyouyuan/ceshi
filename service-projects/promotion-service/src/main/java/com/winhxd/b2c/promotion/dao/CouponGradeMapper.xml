@@ -176,7 +176,7 @@
   </update>
 
 
-  <resultMap id="ResultDetailMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO">
+  <resultMap id="ResultDetailMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -217,8 +217,6 @@
   </select>
 
 
-
-
   <update id="updateCouponGradeValid">
     update coupon_grade
     set status = 1 ,
@@ -228,6 +226,42 @@
     where id = #{id}
   </update>
 
+
+
+  <insert id="insertCouponGrade" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGrade">
+     insert into coupon_grade (id, code, name,
+      remarks, status, type,
+      created_by, created_by_name, created
+      )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT},
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+
+
+
+  <select id="getCouponGradePage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition" resultMap="ResultDetailMap">
+    select
+    a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
+    a.created_by_name,a.created,a.update_by,a.updated_by_name,
+    a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
+    b.discounted,b.discounted_max_amt,b.full_give_amt,
+    b.increase_amt,b.cost,b.count,b.times
+    from coupon_grade a left join  coupon_grade_detail b
+    on a.id = b.grade_id
+    where 1 = 1
+    <if test="condition.name!=null and condition.name!=''">
+      and a.name = #{condition.name}
+    </if>
+    <if test="condition.code!=null and condition.code!=''">
+      and a.code = #{condition.code}
+    </if>
+    <if test="condition.type!=null and condition.type!=''">
+      and a.type = #{condition.type}
+    </if>
+  </select>
 
 
 </mapper>

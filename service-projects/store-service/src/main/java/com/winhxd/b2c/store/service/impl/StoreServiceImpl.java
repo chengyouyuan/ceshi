@@ -14,6 +14,8 @@ import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class StoreServiceImpl implements StoreService {
+
+    private Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
+
     @Autowired
     private CustomerStoreRelationMapper customerStoreRelationMapper;
     @Autowired
@@ -161,8 +166,13 @@ public class StoreServiceImpl implements StoreService {
         BackStageStoreVO backStageStoreVO = new BackStageStoreVO();
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
+        //查询省市县五级信息
         SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
-        BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        if(sysRegion != null) {
+            BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        } else {
+            logger.error("门店详细信息查询，未查询到该门店的行政区域！区域编码为：{}", storeUserInfo.getStoreRegionCode());
+        }
         return backStageStoreVO;
     }
 

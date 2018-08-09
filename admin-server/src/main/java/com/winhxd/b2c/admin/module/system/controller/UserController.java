@@ -70,9 +70,11 @@ public class UserController {
         }
         sysUser.setStatus(UserStatusEnum.ENABLED.getCode());
         sysUser.setCreated(date);
-        sysUser.setCreatedBy(userInfo.getUsername());
+        sysUser.setCreatedBy(userInfo.getId());
+        sysUser.setCreatedByName(userInfo.getUsername());
         sysUser.setUpdated(date);
-        sysUser.setUpdatedBy(userInfo.getUsername());
+        sysUser.setUpdatedBy(userInfo.getId());
+        sysUser.setUpdatedByName(userInfo.getUsername());
 
         return userServiceClient.save(sysUser);
     }
@@ -105,7 +107,8 @@ public class UserController {
         }
 
         sysUser.setUpdated(date);
-        sysUser.setUpdatedBy(userInfo.getUsername());
+        sysUser.setUpdatedBy(userInfo.getId());
+        sysUser.setUpdatedByName(userInfo.getUsername());
 
         return userServiceClient.modify(sysUser);
     }
@@ -131,7 +134,8 @@ public class UserController {
         passwordDTO.setNewPassword(MD5Encoder.encode(passwordDTO.getNewPassword().getBytes()));
 
         passwordDTO.setUpdated(Calendar.getInstance().getTime());
-        passwordDTO.setUpdatedBy(userInfo.getUsername());
+        passwordDTO.setUpdatedBy(userInfo.getId());
+        passwordDTO.setUpdatedByName(userInfo.getUsername());
 
         return userServiceClient.updatePassword(passwordDTO);
     }

@@ -17,17 +17,23 @@ public class SysRole {
     @ApiModelProperty("权组名称")
     private String roleName;
 
-    @ApiModelProperty("创建人")
-    private String createdBy;
-
     @ApiModelProperty("创建时间")
     private Date created;
 
-    @ApiModelProperty("修改人")
-    private String updatedBy;
+    @ApiModelProperty("创建人id")
+    private Long createdBy;
 
-    @ApiModelProperty("修改时间")
+    @ApiModelProperty("创建人")
+    private String createdByName;
+
+    @ApiModelProperty("更新人id")
+    private Long updatedBy;
+
+    @ApiModelProperty("更新时间")
     private Date updated;
+
+    @ApiModelProperty("更新人")
+    private String updatedByName;
 
     @ApiModelProperty("权限范围")
     private Set<SysRolePermission> permissions;

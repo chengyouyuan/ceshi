@@ -28,6 +28,4 @@ public class StoreUserInfoCondition{
 	private Integer loginFlag;
 	@ApiModelProperty(value = "1、验证码登录，2、密码登录,3、快捷登录")
 	private Integer loginPasswordFlag;
-	@ApiModelProperty(value = "确认密码")
-	private String confirmPassword;
 }

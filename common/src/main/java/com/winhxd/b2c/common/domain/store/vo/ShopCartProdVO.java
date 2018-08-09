@@ -17,12 +17,15 @@ import lombok.Data;
 @ApiModel("购物车商品VO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class ShopCarProdVO {
+public class ShopCartProdVO {
 	@ApiModelProperty("商品sku")
 	private String skuCode;
 	
 	@ApiModelProperty("商品图片")
 	private String prodImage;
+	
+	@ApiModelProperty("商品名称")
+	private String prodName;
 	
 	@ApiModelProperty("售卖价格")
 	private BigDecimal sellMoney;

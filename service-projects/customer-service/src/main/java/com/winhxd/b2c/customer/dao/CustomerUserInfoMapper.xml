@@ -60,26 +60,26 @@
   </select>
   <select id="selectCustomer" resultMap="customerUserInfoVO1">
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.open_id,cui.status,sui.store_name,cui.head_img,cui.created
-    from customer_user_info cui left join customer_store_relation csr
-    on cui.customer_id = csr.customer_id left join store_user_info sui on csr.store_user_id = sui.id
+    from customer_user_info cui  left join customer_store_relation csr
+    on cui.customer_id = csr.customer_id left join store_user_info sui  on csr.store_user_id = sui.id
     <where>
       <if test="customerId != null">
-        cui.customer_id =  #{customerId,jdbcType=BIGINT} and
+        cui.customer_id =  #{customerId,jdbcType=BIGINT}
       </if>
       <if test="nickName != null and nickName != ''">
-        cui.nick_name =  #{nickName,jdbcType=VARCHAR} and
+        and cui.nick_name like CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
       </if>
       <if test="customerMobile != null and customerMobile != ''">
-        cui.customer_mobile =  #{customerMobile,jdbcType=VARCHAR} and
+        and cui.customer_mobile like CONCAT('%', #{customerMobile,jdbcType=VARCHAR}, '%')
       </if>
       <if test="openId != null and openId != ''">
-        cui.open_id = #{openId,jdbcType=VARCHAR} and
+        and cui.open_id like CONCAT('%',  #{openId,jdbcType=VARCHAR}, '%')
       </if>
       <if test="status != null and status != ''">
-        cui.status = #{status,jdbcType=TINYINT} and
+        and cui.status = #{status,jdbcType=TINYINT}
       </if>
       <if test="storeName != null and storeName != ''">
-        sui.store_name = #{storeName,jdbcType=VARCHAR} and
+        and sui.store_name like CONCAT('%',  #{storeName,jdbcType=VARCHAR}, '%')
       </if>
     </where>
   </select>

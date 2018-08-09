@@ -1,7 +1,7 @@
 package com.winhxd.b2c.order.dao;
 
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -43,5 +43,5 @@ public interface ShopCarMapper {
      * @param:
      * @return:
      */
-    int insertByBatch(List<ShopCar> shopCars);
+    int insertByBatch(@Param("shopCars") List<ShopCar> shopCars);
 }

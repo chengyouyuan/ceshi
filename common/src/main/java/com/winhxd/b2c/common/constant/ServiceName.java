@@ -22,5 +22,5 @@ public final class ServiceName {
     public static final String SYSTEM_SERVICE = "b2c-system-service";
 
     //系统管理服务
-    public static final String MESSAGE_SERVICE = "message-service";
+    public static final String MESSAGE_SERVICE = "b2c-message-service";
 }

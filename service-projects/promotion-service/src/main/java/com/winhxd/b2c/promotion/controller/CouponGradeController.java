@@ -69,6 +69,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
         return responseResult;
     }
 
+    @ApiOperation(value = "优惠方式规则分页查询", notes = "优惠方式规则分页查询",response = ResponseResult.class)
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
         ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);

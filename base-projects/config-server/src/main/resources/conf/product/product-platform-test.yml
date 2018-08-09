@@ -60,7 +60,7 @@ cas:
   server: 
     url: http://192.168.60.241:8080
   client: 
-    url: http://localhost:6333
+    url: http://192.168.60.250:6333
   
 ########shiro session 过期时间########
 shiro:

@@ -39,7 +39,7 @@ public interface CouponGradeServiceClient {
 
 @Component
 class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
-    private static final Logger logger = LoggerFactory.getLogger(CouponGradeServiceClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(CouponGradeServiceClientFallback.class);
     private Throwable throwable;
 
     @Override

@@ -70,7 +70,7 @@ public interface CouponInvestorServiceClient {
 
 @Component
 class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
-    private static final Logger logger = LoggerFactory.getLogger(CouponInvestorServiceClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(CouponInvestorServiceFallback.class);
     private Throwable throwable;
 
     @Override
@@ -82,7 +82,7 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     @Override
     public ResponseResult viewCouponInvestorDetail(String id) {
         logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+        return new ResponseResult(BusinessCode.CODE_1001);
     }
 
     @Override

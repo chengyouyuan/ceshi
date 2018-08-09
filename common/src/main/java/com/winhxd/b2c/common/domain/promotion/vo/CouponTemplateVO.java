@@ -83,7 +83,7 @@ public class CouponTemplateVO {
     /**
      * 修改人id
      */
-    private Long updateBy;
+    private Long updatedBy;
     /**
      * 修改人
      */
@@ -258,12 +258,12 @@ public class CouponTemplateVO {
         this.created = created;
     }
 
-    public Long getUpdateBy() {
-        return updateBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public String getUpdatedByName() {

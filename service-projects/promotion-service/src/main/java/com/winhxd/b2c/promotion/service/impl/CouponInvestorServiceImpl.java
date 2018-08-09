@@ -86,7 +86,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
             couponInvestor.setName(condition.getName());
             couponInvestor.setRemarks(condition.getRemarks());
             couponInvestor.setUpdated(new Date());
-            couponInvestor.setUpdateBy(Long.parseLong(condition.getUserId()));
+            couponInvestor.setUpdatedBy(Long.parseLong(condition.getUserId()));
             couponInvestor.setUpdatedByName(condition.getUserName());
             couponInvestorMapper.updateCouponInvestor(couponInvestor);
 

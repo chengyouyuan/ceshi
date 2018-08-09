@@ -41,8 +41,13 @@ public class StoreServiceImpl implements StoreService {
         record.setCustomerId(customerId);
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
         if (relations != null && relations.size() > 0) {
-            //当前门店已经存在绑定关系不能再进行绑定
-            return 0;
+            //当前用户已经存在绑定关系
+            record.setStoreUserId(storeUserId);
+            List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
+            if(list != null && list.size() > 0){
+                return -1;
+            }
+            return -2;
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
@@ -53,8 +58,11 @@ public class StoreServiceImpl implements StoreService {
     public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
         StoreUserInfo info =  storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         StoreUserInfoVO infoVO1 = new StoreUserInfoVO();
-        BeanUtils.copyProperties(info,infoVO1);
-        return infoVO1;
+        if(info != null) {
+            BeanUtils.copyProperties(info, infoVO1);
+            return infoVO1;
+        }
+        return null;
 
     }
 
@@ -115,8 +123,14 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfo findStoreUserInfoByCustomerId(Long customerUserId) {
-        return storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
+    public StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId) {
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
+        if(storeUserInfo == null){
+            return null;
+        }
+        StoreUserInfoVO infoVo = new StoreUserInfoVO();
+        BeanUtils.copyProperties(storeUserInfo,infoVo);
+        return infoVo;
     }
 
     @Override

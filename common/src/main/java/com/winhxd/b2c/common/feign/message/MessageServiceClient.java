@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import feign.hystrix.FallbackFactory;
@@ -38,6 +39,14 @@ public interface MessageServiceClient {
      */
     @RequestMapping(value = "/message/702/v1/createNeteaseAccount",method = RequestMethod.POST)
     ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
+
+    /**
+     * @Description 给B端用户发云信消息
+     * @param neteaseMsgCondition
+     * @return
+     */
+    @RequestMapping(value = "/message/703/v1/createNeteaseAccount",method = RequestMethod.POST)
+    ResponseResult<Void> sendNeteaseMsg(@RequestBody NeteaseMsgCondition neteaseMsgCondition);
 
     /**
      * @Description: 给手机号发短信
@@ -83,6 +92,12 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     @Override
     public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
         logger.error("MessageServiceClientFallBack -> createNeteaseAccount，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> sendNeteaseMsg(NeteaseMsgCondition neteaseMsgCondition) {
+        logger.error("MessageServiceClientFallBack -> sendNeteaseMsg，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

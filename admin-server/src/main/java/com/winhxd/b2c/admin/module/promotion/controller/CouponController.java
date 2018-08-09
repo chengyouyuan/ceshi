@@ -6,10 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -275,9 +272,21 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	@ApiOperation("新建优惠券类型")
 	@PostMapping(value = "/v1/addCouponApply")
 	public ResponseResult addCouponApply(@RequestBody CouponApplyCondition  condition){
+		/**
+		 * 参数校验
+		 */
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+		/**
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 */
+		String userId = "100102";
+		String userName = "大花脸";
+		String code = getUUID();
+		condition.setCode(code);
+		ResponseResult responseResult = couponApplyServiceClient.addCouponApply(condition);
+		return responseResult;
 
-
-	return null;
 	}
 
 	@ApiOperation("查看优惠券类型")
@@ -304,11 +313,10 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 
 
 	@ApiOperation("优惠券类型列表分页条件查询")
-	@PostMapping(value = "/v1/findouponApplyPage")
-	public ResponseResult findouponApplyPage(@RequestBody CouponApplyCondition  condition){
-
-
-		return null;
+	@PostMapping(value = "/v1/findCouponApplyPage")
+	public ResponseResult findCouponApplyPage(@RequestBody CouponApplyCondition  condition){
+		ResponseResult<PagedList<CouponApplyVO>> responseResult = couponApplyServiceClient.findCouponApplyPage(condition);
+		return responseResult;
 	}
 
 //============================================优惠券类型规则开始============================================================

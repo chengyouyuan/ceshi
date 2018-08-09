@@ -49,7 +49,7 @@ cas:
   server: 
     url: http://192.168.60.241:8080
   client: 
-    url: http://localhost:3998
+    url: http://192.168.60.250:6111
     
 ########品牌logo上传图片 所在cdn地址########  
 domain: http://cdn.winhxd.com

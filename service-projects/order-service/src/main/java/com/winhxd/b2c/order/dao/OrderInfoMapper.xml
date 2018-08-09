@@ -25,7 +25,7 @@
         <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
         <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason"/>
-        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
         <result column="region_code" jdbcType="VARCHAR" property="regionCode"/>
         <result column="imie" jdbcType="VARCHAR" property="imie"/>
         <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
@@ -37,7 +37,7 @@
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, pay_type,
         pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime,
-        pickup_type, inviter_code, updated, cancel_reason, remark, region_code, imie, created_by,
+        pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -68,7 +68,7 @@
         pay_finish_datetime, pickup_datetime,
         finish_datetime, cancel_datetime, pickup_type,
         inviter_code, updated, cancel_reason,
-        remark, region_code, imie,
+        remarks, region_code, imie,
         created_by, updated_by, updated_by_name,
         created_by_name)
         values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{customerId,jdbcType=BIGINT},
@@ -79,7 +79,7 @@
         #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
         #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
         #{inviterCode,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{cancelReason,jdbcType=VARCHAR},
-        #{remark,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR},
+        #{remarks,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR},
         #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
         #{createdByName,jdbcType=VARCHAR})
     </insert>
@@ -155,8 +155,8 @@
             <if test="cancelReason != null">
                 cancel_reason,
             </if>
-            <if test="remark != null">
-                remark,
+            <if test="remarks != null">
+                remarks,
             </if>
             <if test="regionCode != null">
                 region_code,
@@ -247,8 +247,8 @@
             <if test="cancelReason != null">
                 #{cancelReason,jdbcType=VARCHAR},
             </if>
-            <if test="remark != null">
-                #{remark,jdbcType=VARCHAR},
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
             </if>
             <if test="regionCode != null">
                 #{regionCode,jdbcType=VARCHAR},
@@ -339,8 +339,8 @@
             <if test="cancelReason != null">
                 cancel_reason = #{cancelReason,jdbcType=VARCHAR},
             </if>
-            <if test="remark != null">
-                remark = #{remark,jdbcType=VARCHAR},
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
             </if>
             <if test="regionCode != null">
                 region_code = #{regionCode,jdbcType=VARCHAR},
@@ -387,7 +387,7 @@
       inviter_code = #{inviterCode,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
       cancel_reason = #{cancelReason,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
       region_code = #{regionCode,jdbcType=VARCHAR},
       imie = #{imie,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=BIGINT},
@@ -409,7 +409,7 @@
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
         real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
-        pickup_type, cancel_reason, remark
+        pickup_type, cancel_reason, remarks
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
         select
@@ -441,7 +441,7 @@
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
         real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
-        pickup_type, cancel_reason, remark
+        pickup_type, cancel_reason, remarks
     </sql>
     <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
         select
@@ -553,5 +553,32 @@
         and pickup_code=#{pickupCode,jdbcType=VARCHAR}
         and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
     </update>
-
+    <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
+        <result column="allNum" jdbcType="INTEGER" property="allNum"/>
+        <result column="unreceivedNum" jdbcType="INTEGER" property="unreceivedNum"/>
+        <result column="waitSelfLiftingNum" jdbcType="INTEGER" property="waitSelfLiftingNum"/>
+        <result column="waitRefundNum" jdbcType="INTEGER" property="waitRefundNum"/>
+        <result column="waitPayNum" jdbcType="INTEGER" property="waitPayNum"/>
+        <result column="finishedNum" jdbcType="INTEGER" property="finishedNum"/>
+        <result column="refundedNum" jdbcType="INTEGER" property="refundedNum"/>
+        <result column="refundingNum" jdbcType="INTEGER" property="refundingNum"/>
+        <result column="canceledNum" jdbcType="INTEGER" property="canceledNum"/>
+    </resultMap>
+    <select id="getOrderCountByStatus" resultMap="OrderCountByStatus4StoreMap">
+    	select
+			count(*) allNum,
+			sum(case when order_status=2 then 1 else 0 end) waitPayNum,
+			sum(case when order_status=3 then 1 else 0 end) unreceivedNum,
+			sum(case when order_status=9 then 1 else 0 end) waitSelfLiftingNum,
+			sum(case when order_status=33 then 1 else 0 end) waitRefundNum,
+			sum(case when order_status=22 then 1 else 0 end) finishedNum,
+			sum(case when order_status=77 then 1 else 0 end) refundedNum,
+			sum(case when order_status=22 then 1 else 0 end) canceledNum,
+			sum(case when order_status=66 then 1 else 0 end) refundingNum,
+			store_id storeId
+		from
+			order_info
+		where store_id = #{storeId,jdbcType=BIGINT}
+		group by store_id
+    </select>
 </mapper>

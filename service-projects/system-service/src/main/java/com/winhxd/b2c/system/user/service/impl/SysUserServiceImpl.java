@@ -38,7 +38,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int addSysUser(SysUser sysUser) {
+    public int save(SysUser sysUser) {
         int count = sysUserMapper.insertSelective(sysUser);
         SysUserRole sysUserRule = new SysUserRole();
         sysUserRule.setUserId(sysUser.getId());
@@ -49,7 +49,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateSysUser(SysUser sysUser) {
+    public int modify(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
         sysUserRoleMapper.deleteByUserId(sysUser.getId());
         SysUserRole sysUserRule = new SysUserRole();
@@ -61,7 +61,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePassword(SysUserPasswordDTO newSysUser) {
+    public void modifyPassword(SysUserPasswordDTO newSysUser) {
         SysUser sysUser = sysUserMapper.selectByPrimaryKey(newSysUser.getId());
         if(!sysUser.getPassword().equals(newSysUser.getPassword())){
             // 原密码输入错误
@@ -78,7 +78,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public PagedList<SysUser> selectSysUser(SysUserCondition condition) {
+    public PagedList<SysUser> find(SysUserCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysUser> pagedList = new PagedList();
         pagedList.setData(sysUserMapper.selectSysUser(condition));
@@ -101,7 +101,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser getSysUserById(Long id) {
+    public SysUser get(Long id) {
         SysUserCondition condition = new SysUserCondition();
         condition.setUserId(id);
         List<SysUser> sysUserList = sysUserMapper.selectSysUser(condition);

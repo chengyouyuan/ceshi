@@ -108,7 +108,7 @@
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
       #{storeStatus,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" useGeneratedKeys="true" keyProperty="id">
     insert into store_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

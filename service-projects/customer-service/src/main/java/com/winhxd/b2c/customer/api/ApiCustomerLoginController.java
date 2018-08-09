@@ -190,6 +190,7 @@ public class ApiCustomerLoginController {
 			 */
 			String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
 			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+			logger.info(customerUserInfoCondition.getCustomerMobile()+":发送的内容为:"+content);
 			return result;
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());

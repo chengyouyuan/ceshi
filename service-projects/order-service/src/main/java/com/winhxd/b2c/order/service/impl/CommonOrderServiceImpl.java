@@ -474,7 +474,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
         orderInfo.setPayType(orderCreateCondition.getPayType());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
-        orderInfo.setRemark(orderCreateCondition.getRemark());
+        orderInfo.setRemarks(orderCreateCondition.getRemark());
         orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
         orderInfo.setOrderNo(generateOrderNo());
         // TODO 获取门店地理区域信息

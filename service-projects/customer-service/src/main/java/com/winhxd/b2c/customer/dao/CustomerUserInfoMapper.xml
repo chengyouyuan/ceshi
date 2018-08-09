@@ -17,10 +17,11 @@
     <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="session_key" property="sessionKey" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT"/>
+    <result column="token" property="token" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     customer_id, customer_mobile, open_id, lat, lon, nick_name, head_img, created, created_by, 
-    created_by_name, updated, updated_by, updated_by_name, session_key, status
+    created_by_name, updated, updated_by, updated_by_name, session_key, status,token
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -88,12 +89,12 @@
       lat, lon, nick_name, head_img, 
       created, created_by, created_by_name, 
       updated, updated_by, updated_by_name, 
-      session_key, status)
+      session_key, status,token)
     values (#{customerId,jdbcType=BIGINT}, #{customerMobile,jdbcType=CHAR}, #{openId,jdbcType=CHAR}, 
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{nickName,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
-      #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT})
+      #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     insert into customer_user_info
@@ -143,6 +144,9 @@
       <if test="status != null" >
         status,
       </if>
+      <if test="token != null" >
+        token,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >
@@ -189,6 +193,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=TINYINT},
+      </if>
+      <if test="token != null" >
+        #{token,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -237,6 +244,9 @@
       <if test="status != null" >
         status = #{status,jdbcType=TINYINT},
       </if>
+       <if test="status != null" >
+        token = #{token,jdbcType=VARCHAR},
+      </if>
     </set>
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
@@ -255,7 +265,8 @@
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       session_key = #{sessionKey,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT}
+      status = #{status,jdbcType=TINYINT},
+      token = #{token,jdbcType=VARCHAR}
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
 </mapper>

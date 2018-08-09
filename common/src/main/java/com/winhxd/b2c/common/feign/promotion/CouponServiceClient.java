@@ -19,6 +19,8 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 
 import feign.hystrix.FallbackFactory;
 
+import java.util.List;
+
 /**
  * @author liuhanning
  * @date  2018年8月6日 下午5:21:22
@@ -32,16 +34,16 @@ public interface CouponServiceClient {
 	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId);
 
     @RequestMapping(value = "/coupon/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
+    ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
 
     @RequestMapping(value = "/coupon/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition);
+    ResponseResult<Boolean> orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition);
 
     @RequestMapping(value = "/coupon/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult revokeCoupon(@RequestBody RevokeCouponCodition condition);
+    ResponseResult<Boolean> revokeCoupon(@RequestBody RevokeCouponCodition condition);
 
     @RequestMapping(value = "/coupon/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
+    ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
 	
 }
 

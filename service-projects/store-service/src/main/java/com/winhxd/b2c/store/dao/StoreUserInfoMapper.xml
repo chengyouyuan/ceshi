@@ -366,7 +366,7 @@
     select
     <include refid="Base_Column_List" />
     from store_user_info
-    where storeCustomerId = #{storeCustomerId,jdbcType=BIGINT}
+    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
   </select>
 
 </mapper>

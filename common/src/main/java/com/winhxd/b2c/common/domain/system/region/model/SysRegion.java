@@ -1,14 +1,10 @@
 package com.winhxd.b2c.common.domain.system.region.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Value;
 
 import java.io.Serializable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @ApiModel
 public class SysRegion implements Serializable{
@@ -60,108 +56,4 @@ public class SysRegion implements Serializable{
 
     @ApiModelProperty(value = "111=居委会")
     private Integer villageType;
-
-    public String getRegionCode() {
-        return regionCode;
-    }
-
-    public void setRegionCode(String regionCode) {
-        this.regionCode = regionCode;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getTown() {
-        return town;
-    }
-
-    public void setTown(String town) {
-        this.town = town;
-    }
-
-    public String getCounty() {
-        return county;
-    }
-
-    public void setCounty(String county) {
-        this.county = county;
-    }
-
-    public String getVillage() {
-        return village;
-    }
-
-    public void setVillage(String village) {
-        this.village = village;
-    }
-
-    public String getProvinceCode() {
-        return provinceCode;
-    }
-
-    public void setProvinceCode(String provinceCode) {
-        this.provinceCode = provinceCode;
-    }
-
-    public String getCityCode() {
-        return cityCode;
-    }
-
-    public void setCityCode(String cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public String getCountyCode() {
-        return countyCode;
-    }
-
-    public void setCountyCode(String countyCode) {
-        this.countyCode = countyCode;
-    }
-
-    public String getTownCode() {
-        return townCode;
-    }
-
-    public void setTownCode(String townCode) {
-        this.townCode = townCode;
-    }
-
-    public String getVillageCode() {
-        return villageCode;
-    }
-
-    public void setVillageCode(String villageCode) {
-        this.villageCode = villageCode;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
-    public Integer getVillageType() {
-        return villageType;
-    }
-
-    public void setVillageType(Integer villageType) {
-        this.villageType = villageType;
-    }
 }

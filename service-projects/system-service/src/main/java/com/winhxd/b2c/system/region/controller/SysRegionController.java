@@ -2,21 +2,17 @@ package com.winhxd.b2c.system.region.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
-import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import com.winhxd.b2c.system.region.service.SysRegionService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,7 +41,7 @@ public class SysRegionController implements RegionServiceClient {
     @ApiOperation(value = "查询地理区域列表")
     public ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition) {
         logger.info("{} - 查询地理区域列表, 参数：condition={}", MODULE_NAME, condition);
-        ResponseResult result = new ResponseResult<>();
+        ResponseResult<List<SysRegion>> result = new ResponseResult<>();
         try {
             //空参数或者行政级别为1时，返回所有省
             if((StringUtils.isBlank(condition.getRegionCode()) && null == condition.getLevel())||condition.getLevel().equals(PROVINCELEVEL.getCode())){
@@ -69,15 +65,15 @@ public class SysRegionController implements RegionServiceClient {
                     queryRegion.setVillageCode(condition.getRegionCode());
                 }
                 queryRegion.setLevel(condition.getLevel());
-                List<?> list=sysRegionService.findRegionList(queryRegion);
+                List<SysRegion> list=sysRegionService.findRegionList(queryRegion);
                 result.setData(list);
             }
         } catch (BusinessException e){
             logger.error("{} - 查询地理区域列表失败, 参数：condition={}", MODULE_NAME, condition, e);
-            result = new ResponseResult(e.getErrorCode());
+            result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
             logger.error("{} - 查询地理区域列表失败, 参数：condition={}", MODULE_NAME, condition);
-            result = new ResponseResult(BusinessCode.CODE_1001);
+            result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
         return result;
     }
@@ -117,10 +113,10 @@ public class SysRegionController implements RegionServiceClient {
             }
         } catch (BusinessException e){
             logger.error("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode, e);
-            result = new ResponseResult(e.getErrorCode());
+            result = new ResponseResult<>(e.getErrorCode());
         } catch (Exception e){
             logger.error("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode);
-            result = new ResponseResult(BusinessCode.CODE_1001);
+            result = new ResponseResult<>(BusinessCode.CODE_1001);
         }
 
         return  result;

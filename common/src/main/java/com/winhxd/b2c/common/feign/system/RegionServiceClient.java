@@ -3,14 +3,12 @@ package com.winhxd.b2c.common.feign.system;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,7 @@ public interface RegionServiceClient {
      * @param: SysRegionCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/320/v1/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/api-system/region/320/v1/list", method = RequestMethod.POST)
     ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition);
     /**
      * 功能描述: 根据指定地理区域编码获取地理区域列表
@@ -40,7 +38,7 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/321/v1/rangeList", method = RequestMethod.POST)
+    @RequestMapping(value = "/api-system/region/321/v1/rangeList", method = RequestMethod.POST)
     ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<String> regisonCodes);
 
     /**
@@ -50,7 +48,7 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/api-system/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
     ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode);
 }
 

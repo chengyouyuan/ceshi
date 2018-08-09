@@ -2,7 +2,7 @@ package com.winhxd.b2c.message.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgBoxVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -32,7 +32,7 @@ public class ApiNeteaseController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/701/v1/findNeteaseMsgBox", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<NeteaseMsgBoxVO> findNeteaseMsgBox(@RequestBody NeteaseMsgCondition neteaseMsgCondition){
+    public ResponseResult<NeteaseMsgBoxVO> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition neteaseMsgBoxCondition){
         ResponseResult<NeteaseMsgBoxVO> result = new ResponseResult<>();
         try {
             result.setData(null);

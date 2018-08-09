@@ -42,9 +42,6 @@ public class CouponServiceImpl implements CouponService {
     CouponActivityMapper couponActivityMapper;
 
     @Autowired
-    CouponActivityDetailMapper couponActivityDetailMapper;
-
-    @Autowired
     CouponActivityRecordMapper couponActivityRecordMapper;
     @Autowired
     CouponTemplateSendMapper couponTemplateSendMapper;
@@ -133,22 +130,17 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         //step3 返回数据
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),1);
 
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),1);
-
-        return couponVOS;
+        return this.getCouponDetail(couponVOS);
     }
 
     /**
-     * 通过customer 获取已经领取的优惠券列表
-     * @param customerId
-     * @param couponType 1 新用户注册，2 老用户活动
-     * @Param useStatus 使用状态 1
-     * @return
+     * 获取优惠券适用范围
+     * @param couponVOS
+      * @return
      */
-    public List<CouponVO> getCouponList(Long customerId,Integer couponType){
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerId,couponType);
-
+    public List<CouponVO> getCouponDetail(List<CouponVO> couponVOS){
         for(CouponVO couponVO : couponVOS){
             if(couponVO.getApplyRuleType().equals(4)){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
@@ -170,7 +162,7 @@ public class CouponServiceImpl implements CouponService {
             if(couponVO.getApplyRuleType().equals(2)){
                 List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
                 if(!couponApplyBrands.isEmpty()){
-                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyProductListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
                     //组装请求的参数
                     List<String> brandCodes = new ArrayList<>();
                     for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
@@ -242,7 +234,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
-        return results;
+        return this.getCouponDetail(results);
     }
 
     @Override
@@ -254,9 +246,9 @@ public class CouponServiceImpl implements CouponService {
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
         PagedList<CouponVO> pagedList = new PagedList();
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),null);
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null);
 
-        pagedList.setData(couponVOS);
+        pagedList.setData(this.getCouponDetail(couponVOS));
         pagedList.setPageNo(couponCondition.getPageNo());
         pagedList.setPageSize(couponCondition.getPageSize());
         pagedList.setTotalRows(page.getTotal());

@@ -215,4 +215,37 @@
 
 
 
+  <select id="getCouponApplyPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition" resultMap="BaseResultMap2">
+    select
+    id, name, code, remarks, apply_rule_type, status, created_by, created_by_name, created,
+    update_by, updated_by_name, updated
+    from coupon_apply
+    where 1=1
+    <if test="condition.code!=null and  condition.code!=''">
+      and a.code = #{condition.code}
+    </if>
+    <if test="condition.name!=null and  condition.name!=''">
+      and a.name = #{condition.name}
+    </if>
+    <if test="condition.applyRuleType!=null and  condition.applyRuleType!=''">
+      and a.apply_rule_type = #{condition.applyRuleType}
+    </if>
+  </select>
+
+
+
+
+  <insert id="insertCouponApply" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApply">
+    insert into coupon_apply (id, name, code,
+      remarks, apply_rule_type, status,
+      created_by, created_by_name, created
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+      #{remarks,jdbcType=VARCHAR}, #{applyRuleType,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT},
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+
+
 </mapper>

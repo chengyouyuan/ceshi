@@ -20,7 +20,7 @@ public class StoreProductStatisticsCondition {
     /**
      * 商品id
      */
-    private String prodId;
+    private String prodCode;
     /**
      * sku编码
      */

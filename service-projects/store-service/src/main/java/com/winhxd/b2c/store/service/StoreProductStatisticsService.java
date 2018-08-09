@@ -36,6 +36,16 @@ public interface StoreProductStatisticsService {
 	void saveStoreProductStatistics(StoreProductStatistics record);
 	
 	/**
+	 * 批量插入
+	* @Title: bathSaveStoreProductStatistics 
+	* @Description: TODO 
+	* @param records void
+	* @author wuyuanbao
+	* @date 2018年8月9日下午5:42:13
+	 */
+	void bathSaveStoreProductStatistics(List<StoreProductStatistics> records);
+	
+	/**
 	 * 更新一条门店商品统计信息
 	* @Title: modifyStoreProductStatistics 
 	* @Description: TODO 

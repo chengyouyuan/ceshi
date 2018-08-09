@@ -130,7 +130,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderInfo == null) {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
-        if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus().shortValue()) {
+        if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus()) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
         logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
@@ -166,15 +166,15 @@ public class CommonOrderServiceImpl implements OrderService {
     public void cancelOrderByStore(OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.CODE_420001, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
         }
         StoreUser store = UserContext.getCurrentStoreUser();
         if (null == store) {
-            throw new BusinessException(BusinessCode.CODE_422004, "门店不存在");
+            throw new BusinessException(BusinessCode.WRONG_STORE_ID, "门店不存在");
         }
         ResponseResult<StoreUserInfoVO> storeData = this.storeServiceClient.findStoreUserInfo(store.getBusinessId());
         if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
-            throw new BusinessException(BusinessCode.CODE_422004, "调用门店服务查询不到门店");
+            throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
         }
 
         StoreUserInfoVO storeVO = storeData.getData();
@@ -185,7 +185,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                 if (null == order) {
                     logger.info("订单不存在 订单号={}", orderNo);
-                    throw new BusinessException(BusinessCode.CODE_420003, "订单不存在");
+                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, "订单不存在");
                 }
                 //判断是否支付成功,支付成功走退款逻辑，支付不成功走取消订单逻辑
                 if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
@@ -197,7 +197,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
         }
     }
 
@@ -215,7 +215,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.CODE_420001, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
         }
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -224,12 +224,12 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                 if (null == order) {
                     logger.info("订单不存在 订单号={}", orderNo);
-                    throw new BusinessException(BusinessCode.CODE_420003, "订单不存在");
+                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, "订单不存在");
                 }
                 //判断是否支付成功,支付成功不让取消
                 if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
                     logger.info("订单已支付成功不能取消，请走退款接口 订单号={}", orderNo);
-                    throw new BusinessException(BusinessCode.CODE_420002, "订单已支付成功不能取消");
+                    throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, "订单已支付成功不能取消");
                 }
 
                 orderCancel(order, orderCancelCondition.getCancelReason(), user.getCustomerId(), null);
@@ -238,14 +238,14 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
         }
     }
 
     /**
      * 订单取消service 超时订单和取消订单
      *
-     * @param orderNo      订单号
+     * @param order        订单
      * @param cancelReason 取消原因
      * @param operatorId   操作人ID
      * @param operatorName 操作人名称
@@ -258,13 +258,13 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("取消订单-状态更新不成功-订单号={}", orderNo);
             throw new BusinessException(BusinessCode.CODE_420004, "取消订单状态更新不成功");
         } else {
-            //TODO 优惠券一并退回
+            //优惠券一并退回
             logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                logger.info("取消订单-退优惠券返回数据失败-订单号={},返回数据={}", orderNo, couponData);
+                logger.info("取消订单-退优惠券返回数据失败-订单号={}", orderNo);
             }
             logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
             logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
@@ -321,7 +321,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
         }
     }
 
@@ -409,7 +409,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.CODE_422004, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
         }
     }
 

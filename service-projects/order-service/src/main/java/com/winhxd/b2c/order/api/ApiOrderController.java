@@ -183,14 +183,14 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/425/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
-        String logTitle = "=/api-order/order/420/v1/cancelOrderByStore-B端订单拒单接口=";
+        String logTitle = "=/api-order/order/425/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
             this.orderService.cancelOrderByStore(orderCancelCondition);
             result.setData(true);
         } catch (Exception e) {
-            LOGGER.error(logTitle + "=/api-order/order/420/v1/cancelOrderByStore-订单取消接口=--异常" + e.getMessage(), e);
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
         LOGGER.info("{}--结束 result={}", logTitle, result);

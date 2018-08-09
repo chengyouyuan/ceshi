@@ -446,7 +446,7 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-	    //messageServiceClient.sendSMS(storeMobile, content);
+	    messageServiceClient.sendSMS(storeMobile, content);
 		logger.info(storeMobile+":发送的内容为:"+content);
 		return result;
 	}

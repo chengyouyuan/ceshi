@@ -103,6 +103,8 @@ public class ApiCustomerLoginController {
 				if (null == DB) {
 					customerUserInfo.setCreated(new Date());
 					customerUserInfo.setToken(GeneratePwd.getRandomUUID());
+					customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
+					customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
 					customerLoginService.saveLoginInfo(customerUserInfo);
 					vo = new CustomerUserInfoSimpleVO();
 					vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());

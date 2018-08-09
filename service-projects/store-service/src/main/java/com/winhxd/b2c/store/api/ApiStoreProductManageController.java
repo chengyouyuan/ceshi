@@ -373,11 +373,11 @@ public class ApiStoreProductManageController {
 				logger.error("B端搜索商品接口:登录凭证为空");
 				return new ResponseResult<>(BusinessCode.CODE_1002);
 			}
-			Long storeCustomerId = storeUser.getStoreCustomerId();
-			Long businessId = storeUser.getBusinessId();
 			if(!verifyParam(condition)){
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
+			Long storeCustomerId = storeUser.getStoreCustomerId();
+			Long businessId = storeUser.getBusinessId();
 			//门店已经上架的商品
 			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
 			manageCondition.setStoreId(businessId);

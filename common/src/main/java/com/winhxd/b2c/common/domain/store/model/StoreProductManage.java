@@ -18,8 +18,6 @@ public class StoreProductManage {
     private Long id;
     @ApiModelProperty("门店id")
     private Long storeId;
-    @ApiModelProperty("商品id")
-    private String prodId;
     @ApiModelProperty("商品规则")
     private String skuAttributeOption;
     @ApiModelProperty("售卖价格")
@@ -63,14 +61,6 @@ public class StoreProductManage {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
-    }
-
-    public String getProdId() {
-        return prodId;
-    }
-
-    public void setProdId(String prodId) {
-        this.prodId = prodId;
     }
 
     public BigDecimal getSellMoney() {

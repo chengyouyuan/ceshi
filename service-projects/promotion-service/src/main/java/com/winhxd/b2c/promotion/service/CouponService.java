@@ -73,4 +73,11 @@ public interface CouponService {
      * @return
      */
     Boolean revokeCoupon(RevokeCouponCodition condition);
+
+    /**
+     * 查询订单使用的优惠券列表
+     * @param couponCondition
+     * @return
+     */
+    PagedList<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
 }

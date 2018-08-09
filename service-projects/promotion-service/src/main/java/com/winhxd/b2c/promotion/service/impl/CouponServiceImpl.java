@@ -371,4 +371,24 @@ public class CouponServiceImpl implements CouponService {
         }
         return true;
     }
+
+    /**
+     * 查询订单使用的优惠券列表
+     * @param couponCondition
+     * @return
+     */
+    @Override
+    public PagedList<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
+
+        Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
+        PagedList<CouponVO> pagedList = new PagedList();
+        List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
+
+        pagedList.setData(this.getCouponDetail(couponVOS));
+        pagedList.setPageNo(couponCondition.getPageNo());
+        pagedList.setPageSize(couponCondition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+
+    }
 }

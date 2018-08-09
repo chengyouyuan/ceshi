@@ -76,6 +76,8 @@ public final class BusinessCode {
     public static final int CODE_200010 = 200010;
     /**当前用户和门店已经存在绑定关系*/
     public static final int CODE_200011 = 200011;
+    /**门店商品skuCode无效*/
+    public static final int CODE_200012 = 200012;
 
 
 

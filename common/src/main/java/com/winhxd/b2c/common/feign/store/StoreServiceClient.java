@@ -20,7 +20,6 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
@@ -121,7 +120,7 @@ public interface StoreServiceClient {
     * @date 2018年8月9日下午4:16:00
      */
     @RequestMapping(value = "/store/1024/v1/findStoreUserInfoList", method = RequestMethod.POST)
-    ResponseResult<Void> updateStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
+    ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
 }
 
 /**
@@ -186,9 +185,10 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
 	@Override
-	public ResponseResult<Void> updateStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
-		logger.error("StoreServiceClientFallBack -> updateStoreProductStatistics，错误信息为{}", throwable);
+	public ResponseResult<Void> saveStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+		logger.error("StoreServiceClientFallBack -> saveStoreProductStatistics，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
+
 
 }

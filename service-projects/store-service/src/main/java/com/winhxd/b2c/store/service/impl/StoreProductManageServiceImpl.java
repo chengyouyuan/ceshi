@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
-import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -57,7 +56,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	@Override
 	public int countSkusByConditon(StoreProductManageCondition condition) {
 		
-		return storeProductManageMapper.countSkusByConditon(condition);
+		return (int)storeProductManageMapper.countSkusByConditon(condition);
 	}
 
 
@@ -104,18 +103,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setCreatedByName(storeUserInfo.getShopkeeper());
 					//保存门店商品管理信息
 					storeProductManageMapper.insert(spManage);
-					
-					StoreProductStatistics statistics=new StoreProductStatistics();
-					statistics.setSkuCode(skuCode);
-					statistics.setStoreId(storeId);
-					statistics.setProdCode(prodSku.getProductCode());
-					statistics.setCreated(new Date());
-					statistics.setCreatedBy(storeId);
-					statistics.setCreatedByName(storeUserInfo.getShopkeeper());
-					statistics.setBrowseNumber(0);
-					statistics.setQuantitySoldOut(0);
-					//保存门店商品统计信息（浏览量，销售量等）
-					storeProductStatisticsMapper.insert(statistics);
+				
 				}else{
 					//存在，可能是下架了或则删除
 					spManage.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());

@@ -152,25 +152,48 @@ public class ApiOrderController {
         return result;
     }
 
-    @ApiOperation(value = "订单取消接口", response = Boolean.class, notes = "订单取消接口")
+    @ApiOperation(value = "C端订单取消接口", response = Boolean.class, notes = "订单取消接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_421001, message = "订单号不能为空"),
             @ApiResponse(code = BusinessCode.CODE_421002, message = "订单已支付成功不能取消"),
             @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
     })
-    @RequestMapping(value = "/420/v1/cancelOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> cancelOrder(@RequestBody OrderCancelCondition orderCancelCondition) {
-        LOGGER.info("=/api-order/order/420/v1/cancelOrder-订单取消接口=--开始--{}", orderCancelCondition);
+    @RequestMapping(value = "/420/v1/cancelOrderByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Boolean> cancelOrderByCustomer(@RequestBody OrderCancelCondition orderCancelCondition) {
+        LOGGER.info("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--开始--{}", orderCancelCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
-            this.orderService.cancelOrder(orderCancelCondition);
+            this.orderService.cancelOrderByCustomer(orderCancelCondition);
             result.setData(true);
         } catch (Exception e) {
-            LOGGER.error("=/api-order/order/420/v1/cancelOrder-订单取消接口=--异常" + e.getMessage(), e);
+            LOGGER.error("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("=/api-order/order/420/v1/cancelOrder-订单取消接口=--结束 result={}", result);
+        LOGGER.info("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--结束 result={}", result);
+        return result;
+    }
+
+    @ApiOperation(value = "B端订单取消接口", response = Boolean.class, notes = "订单取消接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_421001, message = "订单号不能为空"),
+            @ApiResponse(code = BusinessCode.CODE_421002, message = "订单已支付成功不能取消"),
+            @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
+    })
+    @RequestMapping(value = "/425/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Boolean> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
+        String logTitle = "=/api-order/order/420/v1/cancelOrderByStore-B端订单拒单接口=";
+        LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
+        ResponseResult<Boolean> result = new ResponseResult<>();
+        try {
+            this.orderService.cancelOrderByStore(orderCancelCondition);
+            result.setData(true);
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "=/api-order/order/420/v1/cancelOrderByStore-订单取消接口=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        LOGGER.info("{}--结束 result={}", logTitle, result);
         return result;
     }
 }

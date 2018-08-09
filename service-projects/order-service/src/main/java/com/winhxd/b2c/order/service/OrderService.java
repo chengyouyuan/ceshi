@@ -35,17 +35,6 @@ public interface OrderService {
     void orderPaySuccessNotify(String orderNo);
 
     /**
-     * 订单取消接口
-     *
-     * @param orderCancelCondition 入参
-     * @return true 成功，false不成功
-     * @throws InterruptedException
-     * @author pangjianhua
-     * @date 2018年8月2日 下午5:51:46
-     */
-    void cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
-
-    /**
      * 门店处理用户退款订单
      *
      * @param condition 入参
@@ -93,4 +82,16 @@ public interface OrderService {
      * @param condition
      */
     void orderPickup4Store(OrderPickupCondition condition);
+
+    /**
+     * B端取消订单
+     * @param orderCancelCondition 入参
+     */
+    void cancelOrderByStore(OrderCancelCondition orderCancelCondition);
+
+    /**
+     * C端取消订单
+     * @param orderCancelCondition 入参
+     */
+    void cancelOrderByCustomer(OrderCancelCondition orderCancelCondition);
 }

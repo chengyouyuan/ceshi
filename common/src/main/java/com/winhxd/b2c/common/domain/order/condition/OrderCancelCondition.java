@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @ApiModel("取消订单入参")
 public class OrderCancelCondition {
-    @ApiModelProperty(value = "取消类型 1:为门店取消订单;2:未顾客取消订单;", required = true,example ="1")
+    @ApiModelProperty(value = "取消类型 1:门店取消订单;2:顾客取消订单;", required = true,example ="1")
     private short type;
     @ApiModelProperty(value = "订单编号", required = true)
     private String orderNo;

@@ -180,9 +180,10 @@ public interface OrderInfoMapper {
     /**
      * 订单退款更新状态等信息
      * @param orderNo
+     * @param reason
      * @return 更新成功影响条数
      */
-    int updateOrderStatusForRefund(String orderNo);
+    int updateOrderStatusForRefund(@Param("orderNo") String orderNo, @Param("cancelReason") String cancelReason);
 
     /**
      * 根据条件查询 

@@ -82,7 +82,7 @@ public class ApiOrderQueryController {
             LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        LOGGER.info("{}--结束 result={}", logTitle, result);
+        LOGGER.info("{}--结束 result={}", result);
         return result;
     }
 

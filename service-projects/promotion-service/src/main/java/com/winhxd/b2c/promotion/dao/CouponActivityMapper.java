@@ -38,10 +38,11 @@ public interface CouponActivityMapper {
 
     /**
      * 查询优惠券列表
-     * @param map
+     * @param customerId
+     * @param couponType
      * @return
      */
-    List<CouponVO> selectCouponList(Map<String, Object> map);
+    List<CouponVO> selectCouponList(@Param("customerId")Long customerId,@Param("couponType")Integer couponType);
 
     /**
      * 查询该门店下可领取的优惠券

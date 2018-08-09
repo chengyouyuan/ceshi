@@ -83,7 +83,7 @@ public interface OrderInfoMapper {
      * @param customerId
      * @return
      */
-    List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(@Param("customerId") Long customerId, @Param("pickUpCode") String pickUpCode);
+    List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(@Param("customerId") Long customerId);
 
     /**
      * 获取用户的订单和订单商品内容

@@ -21,6 +21,14 @@
     from coupon_apply_product
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <select id="selectByApplyId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_apply_product
+    where apply_id = #{applyId,jdbcType=BIGINT}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_apply_product
     where id = #{id,jdbcType=BIGINT}

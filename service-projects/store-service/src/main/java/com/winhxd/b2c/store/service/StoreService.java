@@ -58,7 +58,7 @@ public interface StoreService {
      * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(Long storeCustomerId);
+    StoreUserInfo findByStoreCustomerId(Long storeCustomerId);
 
     /**
      * 修改门店信息非空的字段
@@ -74,4 +74,11 @@ public interface StoreService {
      * @date 2018/8/8 10:16
      */
     List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids);
+
+    /**
+     * 后台管理，查询门店详细信息
+     * @param id 主键
+     * @return
+     */
+    BackStageStoreVO findByIdForBackStage(Long id);
 }

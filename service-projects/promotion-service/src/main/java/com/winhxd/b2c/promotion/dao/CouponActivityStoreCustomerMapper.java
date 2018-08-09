@@ -18,4 +18,6 @@ public interface CouponActivityStoreCustomerMapper {
     int updateByPrimaryKey(CouponActivityStoreCustomer record);
 
     List<CouponActivityStoreCustomer> selectByTemplateId(Long couponActivityTemplateId);
+
+    void updateByCouponActivityTemplateId(CouponActivityStoreCustomer couponActivityStoreCustomer);
 }

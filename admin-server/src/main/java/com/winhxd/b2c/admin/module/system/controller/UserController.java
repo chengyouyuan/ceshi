@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
@@ -20,7 +21,6 @@ import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,12 +68,13 @@ public class UserController {
         } else {
             sysUser.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         }
+        sysUser.setStatus(UserStatusEnum.ENABLED.getCode());
         sysUser.setCreated(date);
         sysUser.setCreatedBy(userInfo.getUsername());
         sysUser.setUpdated(date);
         sysUser.setUpdatedBy(userInfo.getUsername());
 
-        return userServiceClient.add(sysUser);
+        return userServiceClient.save(sysUser);
     }
 
     @ApiOperation("编辑用户")
@@ -86,7 +87,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PutMapping(value = "/user/edit")
+    @PostMapping(value = "/user/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
     public ResponseResult edit(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
@@ -106,7 +107,7 @@ public class UserController {
         sysUser.setUpdated(date);
         sysUser.setUpdatedBy(userInfo.getUsername());
 
-        return userServiceClient.update(sysUser);
+        return userServiceClient.modify(sysUser);
     }
 
     @ApiOperation(value = "修改密码")
@@ -115,7 +116,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PutMapping(value = "/user/updatePassword")
+    @PostMapping(value = "/user/editPassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -142,11 +143,11 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping(value = "/user/list")
+    @PostMapping(value = "/user/list")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
-       return userServiceClient.list(condition);
+       return userServiceClient.find(condition);
     }
 
     @ApiOperation(value = "根据主键获取用户信息")
@@ -163,7 +164,7 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
     public ResponseResult<SysUser> getById(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
-        return userServiceClient.getById(id);
+        return userServiceClient.get(id);
     }
 
     @ApiOperation("验证用户是否已存在")
@@ -176,9 +177,9 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/user/existsAccount")
+    @GetMapping(value = "/user/existsAccount")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
-    public ResponseResult<Boolean> add(String account) {
+    public ResponseResult<Boolean> existsAccount(String account) {
         logger.info("{} - 验证用户是否已存在, 参数：account={}", MODULE_NAME, account);
 
         SysUser sysUser = userServiceClient.getByAccount(account).getData();
@@ -199,14 +200,14 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @GetMapping("/user/disabled/{id}")
-    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
+    @DeleteMapping("/user/disabled/{id}")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
     public ResponseResult<SysUser> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.disabled(id);
     }
 
-    @ApiOperation(value = "用户管理页面")
+    @ApiOperation(value = "用户管理页面(样本功能)")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -224,6 +225,9 @@ public class UserController {
         url.put("list","/user/list");
         url.put("add","/user/add");
         url.put("edit","/user/edit");
+        url.put("get","/user/get/{id}");
+        url.put("editPassword","/user/editPassword");
+        url.put("disabled","/user/disabled/{id}");
         data.put("url",url);
         result.setData(data);
         return result;

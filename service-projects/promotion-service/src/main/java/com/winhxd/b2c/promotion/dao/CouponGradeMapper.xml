@@ -174,4 +174,94 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <resultMap id="ResultDetailMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <collection property="details" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail" column="grade_id">
+      <result column="reduced_amt" jdbcType="DECIMAL" property="reducedAmt" />
+      <result column="reduced_type" jdbcType="SMALLINT" property="reducedType" />
+      <result column="discounted_amt" jdbcType="DECIMAL" property="discountedAmt" />
+      <result column="discounted" jdbcType="DECIMAL" property="discounted" />
+      <result column="discounted_max_amt" jdbcType="DECIMAL" property="discountedMaxAmt" />
+      <result column="full_give_amt" jdbcType="DECIMAL" property="fullGiveAmt" />
+      <result column="increase_amt" jdbcType="DECIMAL" property="increaseAmt" />
+      <result column="cost" jdbcType="DECIMAL" property="cost" />
+      <result column="count" jdbcType="INTEGER" property="count" />
+      <result column="times" jdbcType="INTEGER" property="times" />
+    </collection>
+  </resultMap>
+
+
+  <select id="viewCouponGradeDetail" parameterType="java.lang.Long" resultMap="ResultDetailMap">
+    select
+      a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
+      a.created_by_name,a.created,a.update_by,a.updated_by_name,
+      a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
+      b.discounted,b.discounted_max_amt,b.full_give_amt,
+      b.increase_amt,b.cost,b.count,b.times
+    from coupon_grade a left join  coupon_grade_detail b
+    on a.id = b.grade_id
+    where id = #{id}
+  </select>
+
+
+  <update id="updateCouponGradeValid">
+    update coupon_grade
+    set status = 1 ,
+    update_by = #{userId},
+    updated_by_name = #{userName},
+    updated = now()
+    where id = #{id}
+  </update>
+
+
+
+  <insert id="insertCouponGrade" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGrade">
+     insert into coupon_grade (id, code, name,
+      remarks, status, type,
+      created_by, created_by_name, created
+      )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT},
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+
+
+
+  <select id="getCouponGradePage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition" resultMap="ResultDetailMap">
+    select
+    a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
+    a.created_by_name,a.created,a.update_by,a.updated_by_name,
+    a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
+    b.discounted,b.discounted_max_amt,b.full_give_amt,
+    b.increase_amt,b.cost,b.count,b.times
+    from coupon_grade a left join  coupon_grade_detail b
+    on a.id = b.grade_id
+    where 1 = 1
+    <if test="condition.name!=null and condition.name!=''">
+      and a.name = #{condition.name}
+    </if>
+    <if test="condition.code!=null and condition.code!=''">
+      and a.code = #{condition.code}
+    </if>
+    <if test="condition.type!=null and condition.type!=''">
+      and a.type = #{condition.type}
+    </if>
+  </select>
+
+
 </mapper>

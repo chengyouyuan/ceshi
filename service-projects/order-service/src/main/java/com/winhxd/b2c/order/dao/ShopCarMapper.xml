@@ -18,15 +18,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shop_car
+    from shop_cart
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from shop_car
+    delete from shop_cart
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    insert into shop_car (id, customer_id, store_id, 
+    insert into shop_cart (id, customer_id, store_id, 
       sku_code, prod_num, created, 
       updated, createdby, updatedby
       )
@@ -36,7 +36,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    insert into shop_car
+    insert into shop_cart
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -97,7 +97,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    update shop_car
+    update shop_cart
     <set>
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
@@ -127,7 +127,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    update shop_car
+    update shop_cart
     set customer_id = #{customerId,jdbcType=BIGINT},
       store_id = #{storeId,jdbcType=BIGINT},
       sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -142,7 +142,7 @@
   <select id="selectShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from shop_car
+    from shop_cart
     where 1 = 1
     <if test="customerId != null">
       and customer_id = #{customerId,jdbcType=BIGINT}
@@ -153,7 +153,7 @@
     order by created
   </select>
   <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    delete from shop_car
+    delete from shop_cart
     where 1 = 1
     <if test="customerId != null">
       and customer_id = #{customerId,jdbcType=BIGINT}
@@ -163,67 +163,17 @@
     </if>
   </delete>
   <insert id="insertByBatch" parameterType="java.util.List">
-    insert into shop_car
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="customerId != null">
-        customer_id,
-      </if>
-      <if test="storeId != null">
-        store_id,
-      </if>
-      <if test="skuCode != null">
-        sku_code,
-      </if>
-      <if test="prodNum != null">
-        prod_num,
-      </if>
-      <if test="created != null">
-        created,
-      </if>
-      <if test="updated != null">
-        updated,
-      </if>
-      <if test="createdby != null">
-        createdby,
-      </if>
-      <if test="updatedby != null">
-        updatedby,
-      </if>
-    </trim>
+    insert into shop_cart (customer_id, store_id, sku_code, prod_num, created, updated, createdby, updatedby)
     values
     <foreach collection="shopCars" item="item" index="index" separator=",">
-      <trim prefix="values (" suffix=")" suffixOverrides=",">
-        <if test="item.id != null">
-          #{id,jdbcType=BIGINT},
-        </if>
-        <if test="item.customerId != null">
-          #{customerId,jdbcType=BIGINT},
-        </if>
-        <if test="item.storeId != null">
-          #{storeId,jdbcType=BIGINT},
-        </if>
-        <if test="item.skuCode != null">
-          #{skuCode,jdbcType=VARCHAR},
-        </if>
-        <if test="item.prodNum != null">
-          #{prodNum,jdbcType=INTEGER},
-        </if>
-        <if test="item.created != null">
-          #{created,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.updated != null">
-          #{updated,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.createdby != null">
-          #{createdby,jdbcType=BIGINT},
-        </if>
-        <if test="item.updatedby != null">
-          #{updatedby,jdbcType=BIGINT},
-        </if>
-      </trim>
+      (#{item.customerId,jdbcType=BIGINT},
+      #{item.storeId,jdbcType=BIGINT},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.prodNum,jdbcType=INTEGER},
+      #{item.created,jdbcType=TIMESTAMP},
+      #{item.updated,jdbcType=TIMESTAMP},
+      #{item.createdby,jdbcType=BIGINT},
+      #{item.updatedby,jdbcType=BIGINT})
     </foreach>
   </insert>
 </mapper>

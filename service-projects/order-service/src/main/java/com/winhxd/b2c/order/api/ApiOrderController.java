@@ -72,14 +72,15 @@ public class ApiOrderController {
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
+
     @ApiOperation(value = "B端接单计价", response = Boolean.class, notes = "B端接单计价")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-        @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-        @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-        @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
-        @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-        @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
-        @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
     @RequestMapping(value = "/423/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderConfirm4Store(@RequestBody OrderConfirmCondition condition) {
@@ -104,14 +105,14 @@ public class ApiOrderController {
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
-    
+
     @ApiOperation(value = "B端退款订单处理接口", response = Boolean.class, notes = "B端退款订单处理接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
-        @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-        @ApiResponse(code = BusinessCode.CODE_422001, message = "参数异常"),
-        @ApiResponse(code = BusinessCode.CODE_422002, message = "未支付的订单不允许退款"),
-        @ApiResponse(code = BusinessCode.CODE_422003, message = "已完成的订单不允许退款"),
-        @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_422001, message = "参数异常"),
+            @ApiResponse(code = BusinessCode.CODE_422002, message = "未支付的订单不允许退款"),
+            @ApiResponse(code = BusinessCode.CODE_422003, message = "已完成的订单不允许退款"),
+            @ApiResponse(code = BusinessCode.CODE_422004, message = "订单修改中")
     })
     @RequestMapping(value = "/422/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
@@ -163,8 +164,8 @@ public class ApiOrderController {
         LOGGER.info("=/api-order/order/420/v1/cancelOrder-订单取消接口=--开始--{}", orderCancelCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
-            boolean modifyResult = this.orderService.cancelOrder(orderCancelCondition);
-            result.setData(modifyResult);
+            this.orderService.cancelOrder(orderCancelCondition);
+            result.setData(true);
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/420/v1/cancelOrder-订单取消接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

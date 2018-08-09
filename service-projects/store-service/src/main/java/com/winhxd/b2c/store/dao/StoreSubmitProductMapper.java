@@ -1,7 +1,14 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
+
+
 
 /**
  * @description:
@@ -21,4 +28,14 @@ public interface StoreSubmitProductMapper {
     int updateByPrimaryKeySelective(StoreSubmitProduct record);
 
     int updateByPrimaryKey(StoreSubmitProduct record);
+    /**
+     * 分页查询
+    * @Title: selectVoByCondition 
+    * @Description: TODO 
+    * @param condition
+    * @return Page<StoreSubmitProductVO>
+    * @author wuyuanbao
+    * @date 2018年8月8日下午8:59:06
+     */
+	Page<StoreSubmitProductVO> selectVoByCondition(@Param("condition")StoreSubmitProductCondition condition);
 }

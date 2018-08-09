@@ -18,7 +18,7 @@ public class StoreBrowseLogServiceImpl implements StoreBrowseLogService {
 
     @Override
     public void saveBrowseLogLogin(CustomerBrowseLog customerBrowseLog) {
-        customerBrowseLogMapper.insert(customerBrowseLog);
+        customerBrowseLogMapper.insertSelective(customerBrowseLog);
     }
 
     @Override

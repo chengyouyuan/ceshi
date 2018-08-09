@@ -16,8 +16,8 @@ public class BackStageStoreVO {
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Integer storeStatus;
 
-    @ApiModelProperty(value = "门店编码")
-    private Long storeId;
+    @ApiModelProperty(value = "门店用户编码")
+    private Long storeCustomerId;
 
     @ApiModelProperty(value = "门店账号")
     private String storeMobile;
@@ -40,13 +40,13 @@ public class BackStageStoreVO {
     @ApiModelProperty(value = "村")
     private String village;
 
-    @ApiModelProperty(value = "地址")
+    @ApiModelProperty(value = "门店地址")
     private String storeAddress;
 
     @ApiModelProperty(value = "联系人")
     private String shopkeeper;
 
-    @ApiModelProperty(value = "支付方式（返回汉字，多个以逗号分隔）")
+    @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
     private String paymentWay;
 
 }

@@ -1,17 +1,13 @@
 package com.winhxd.b2c.system.region.service.impl;
 
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
-import com.winhxd.b2c.common.domain.system.region.vo.SysSubRegionVO;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import com.winhxd.b2c.system.region.dao.SysRegionMapper;
 import com.winhxd.b2c.system.region.service.SysRegionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

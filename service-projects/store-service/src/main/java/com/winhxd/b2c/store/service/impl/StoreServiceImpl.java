@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
-
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
@@ -64,8 +63,8 @@ public class StoreServiceImpl implements StoreService {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         //去除code尾部0
         String reginCode = null;
-        if (storeCondition.getReginCode() != null) {
-            reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
+        if (storeCondition.getRegionCode() != null) {
+            reginCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
@@ -121,8 +120,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfo selectByStoreId(Long storeCustomerId) {
-        return storeUserInfoMapper.selectByStoreId(storeCustomerId);
+    public StoreUserInfo findByStoreCustomerId(Long storeCustomerId) {
+        return storeUserInfoMapper.selectByStoreCustomerId(storeCustomerId);
     }
 
     @Override
@@ -130,9 +129,27 @@ public class StoreServiceImpl implements StoreService {
         if(ids == null || ids.size() == 0){
             return null;
         }
-        List<StoreUserInfoVO> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
-        return userInfos;
+        List<StoreUserInfo> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
+        List<StoreUserInfoVO> list = new ArrayList<>();
+        if(userInfos != null && userInfos.size() > 0){
+        for(StoreUserInfo info:userInfos){
+            StoreUserInfoVO infoVO = new StoreUserInfoVO();
+            BeanUtils.copyProperties(info,infoVO);
+            list.add(infoVO);
+            }
+        }
+        return list;
 
+    }
+
+    @Override
+    public BackStageStoreVO findByIdForBackStage(Long id) {
+        BackStageStoreVO backStageStoreVO = new BackStageStoreVO();
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
+        SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
+        BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        return backStageStoreVO;
     }
 
     @Override

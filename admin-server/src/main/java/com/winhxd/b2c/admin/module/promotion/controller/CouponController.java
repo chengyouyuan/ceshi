@@ -4,17 +4,13 @@ import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
-import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
-import com.winhxd.b2c.common.feign.promotion.CouponInvestorServiceClient;
-import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
+import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -44,6 +40,10 @@ public class CouponController {
 	private CouponInvestorServiceClient couponInvestorServiceClient;
 	@Autowired
 	private CouponActivityServiceClient couponActivityServiceClient;
+	@Autowired
+	private CouponGradeServiceClient couponGradeServiceClient;
+	@Autowired
+	private CouponApplyServiceClient couponApplyServiceClient;
 
 //==================================================================================================
 	/**
@@ -111,20 +111,6 @@ public class CouponController {
 		return responseResult;
 	}
 
-    /**
-     *
-     *@Deccription 点击修改优惠券模板返回对应的数据信息
-     *@Params  id  被点击的记录id
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/7 16:01
-     */
-	@ApiOperation("点击修改优惠券模板返回对应的数据信息")
-	@GetMapping(value = "/v1/toEditCouponTemplate")
-	public ResponseResult toEditCouponTemplate(@RequestParam("id") String id){
-		ResponseResult responseResult = couponTemplateServiceClient.toEditCouponTemplate(id);
-		return responseResult;
-	}
 
 
 	/**
@@ -160,22 +146,6 @@ public class CouponController {
 	}
 
 
-	/**
-	 *
-	 *@Deccription 修改优惠券模板
-	 *@Params  condition
-	 *@Return  ResponseResult
-	 *@User  wl
-	 *@Date   2018/8/7 16:01
-	 */
-	@ApiOperation("修改优惠券模板")
-	@PostMapping(value = "/v1/confirmEditCouponTemplate")
-	public ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition){
-		ResponseResult responseResult = couponTemplateServiceClient.confirmUpdateCouponTemplate(condition);
-		return responseResult;
-	}
-
-
 //============================================优惠券模板结束============================================================
 
 
@@ -185,8 +155,7 @@ public class CouponController {
 	@ApiOperation("获取出资方分页列表")
 	@PostMapping(value = "/v1/getCouponInvestorPage")
 	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
-		System.out.println(condition);
-		ResponseResult<PagedList<CouponInvestorVO>> responseResult = null;
+		ResponseResult<PagedList<CouponInvestorVO>> responseResult = couponInvestorServiceClient.getCouponInvestorPage(condition);
 		return responseResult;
 	}
 
@@ -229,52 +198,121 @@ public class CouponController {
 		return responseResult;
 	}
 
-	@ApiOperation("跳转到编辑出资方页面")
-	@GetMapping(value = "/v1/toEditCouponInvestor")
-	public ResponseResult toEditCouponInvestor(@RequestParam("id") String id){
-		ResponseResult responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
-		return responseResult;
-	}
-
-
-	@ApiOperation("编辑出资方出资方页面-确定")
-	@PostMapping(value = "/v1/updateCouponInvestor")
-	public ResponseResult updateCouponInvestor(@RequestBody LinkedHashMap detailData){
-		/**
-		 *  校验参数
-		 */
-		String name = detailData.get("name").toString();
-		String remark = detailData.get("remark").toString();
-		ArrayList list  = (ArrayList)detailData.get("listDetail");
-		String id = detailData.get("id").toString();
-		/**
-		 AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
-		 **/
-		String userId = "100102000";
-		String userName = "大花脸88jsdishd";
-		CouponInvestorCondition condition = new CouponInvestorCondition();
-		condition.setId(id);
-		condition.setName(name);
-		condition.setRemarks(remark);
-		condition.setUserId(userId);
-		condition.setUserName(userName);
-		condition.setDetails(list);
-		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestor(condition);
-		return responseResult;
-	}
-
 
 	@ApiOperation("删除出资方出资方")
 	@GetMapping(value = "/v1/updateCouponInvestorToValid")
 	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
-		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id);
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+		/**
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 */
+		String userId = "100102";
+		String userName = "大花脸";
+		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id,userId,userName);
+		return responseResult;
+	}
+
+//============================================出资方结束============================================================
+
+
+//============================================优惠方式规则开始============================================================
+
+@ApiOperation("多条件分页查询优惠方式规则")
+@PostMapping(value = "/v1/getCouponGradePage")
+public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition){
+	ResponseResult<PagedList<CouponGradeVO>> responseResult = couponGradeServiceClient.getCouponGradePage(condition);
+	return responseResult;
+}
+
+@ApiOperation("新建优惠方式规则")
+@PostMapping(value = "/v1/addCouponGrade")
+public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition){
+	/**
+	 * 参数校验
+	 */
+	AdminUser adminUser = UserContext.getCurrentAdminUser();
+	/**
+	 String userId = adminUser.getId()+"";
+	 String userName = adminUser.getUsername();
+	 */
+	String userId = "100102";
+	String userName = "大花脸";
+	 String code = getUUID();
+	 couponGradeCondition.setCode(code);
+	 couponGradeCondition.setUserId(userId);
+	couponGradeCondition.setUserName(userName);
+	 ResponseResult responseResult = couponGradeServiceClient.addCouponGrade(couponGradeCondition);
+	 return responseResult;
+}
+
+@ApiOperation("查看优惠方式规则详情")
+@GetMapping(value = "/v1/viewCouponGradeDetail")
+public ResponseResult viewCouponGradeDetail(@RequestParam("id") String id){
+	ResponseResult responseResult = couponGradeServiceClient.viewCouponGradeDetail(id);
+	return responseResult;
+}
+
+
+@ApiOperation("优惠方式规则逻辑删除/设置为无效")
+@GetMapping (value = "/v1/updateCouponGradeValid")
+public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
+	AdminUser adminUser = UserContext.getCurrentAdminUser();
+	/**
+	String userId = adminUser.getId()+"";
+	String userName = adminUser.getUsername();
+	*/
+	String userId = "100102";
+	String userName = "大花脸";
+	ResponseResult responseResult = couponGradeServiceClient.updateCouponGradeValid(id,userId,userName);
+	return responseResult;
+}
+
+//============================================优惠方式规则结束============================================================
+
+
+//============================================优惠券类型规则开始============================================================
+	@ApiOperation("新建优惠券类型")
+	@PostMapping(value = "/v1/addCouponApply")
+	public ResponseResult addCouponApply(@RequestBody CouponApplyCondition  condition){
+
+
+	return null;
+	}
+
+	@ApiOperation("查看优惠券类型")
+	@PostMapping(value = "/v1/viewCouponApplyDetail")
+	public ResponseResult viewCouponApplyDetail(@RequestParam("id") String id){
+		ResponseResult responseResult = couponApplyServiceClient.viewCouponApplyDetail(id);
 		return responseResult;
 	}
 
 
-//============================================出资方结束============================================================
+	@ApiOperation("优惠券类型设置无效")
+	@PostMapping(value = "/v1/updateCouponApplyToValid")
+	public ResponseResult updateCouponApplyToValid(@RequestParam("id") String id){
+		AdminUser adminUser = UserContext.getCurrentAdminUser();
+		/**
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 */
+		String userId = "100102";
+		String userName = "大花脸";
+		ResponseResult responseResult = couponApplyServiceClient.updateCouponApplyToValid(id,userId,userName);
+		return responseResult;
+	}
+
+
+	@ApiOperation("优惠券类型列表分页条件查询")
+	@PostMapping(value = "/v1/findouponApplyPage")
+	public ResponseResult findouponApplyPage(@RequestBody CouponApplyCondition  condition){
+
+
+		return null;
+	}
+
+//============================================优惠券类型规则开始============================================================
+
 
 
 
@@ -285,6 +323,8 @@ public class CouponController {
 	public String getUUID() {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
+
+
 
 
 

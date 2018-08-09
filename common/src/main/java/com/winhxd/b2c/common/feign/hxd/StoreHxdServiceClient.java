@@ -47,7 +47,7 @@ public interface StoreHxdServiceClient {
      * @date 2018/8/7 20:40
      */
     @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") String customerId);
+    ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") Long customerId);
 
     /**
      * 查询门店基础信息
@@ -86,7 +86,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<String>> getStoreBuyedProdSku(String storeId) {
+    public ResponseResult<List<String>> getStoreBuyedProdSku(Long storeId) {
         logger.error("StoreHxdServiceClient -> getStoreBuyedProdSku", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

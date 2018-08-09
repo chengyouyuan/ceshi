@@ -64,27 +64,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       }
 
 
-    @Override
-    public ResponseResult updateCouponInvestor(@RequestBody CouponInvestorCondition condition) {
-        ResponseResult responseResult = new ResponseResult();
-        // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
-        int flag = couponInvestorService.updateCouponInvestor(condition);
-        responseResult.setCode(flag);
-        if(flag==0){
-            responseResult.setMessage("修改成功");
-        }else if(flag==1){
-            responseResult.setMessage("修改失败！占比之和不等于100");
-        }else if(flag==2){
-            responseResult.setMessage("修改失败！出资方重复");
-        }else if(flag==3){
-            responseResult.setMessage("修改失败！出资方明细为空");
-        }else {
-            responseResult.setMessage("修改器内部错误");
-        }
-        return responseResult;
-    }
-
-
 
      /**
       *
@@ -101,11 +80,12 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         return responseResult;
     }
 
+    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id) {
+    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
         try {
-            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id));
+            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id),Long.parseLong(userId),userName);
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");
@@ -115,6 +95,15 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             responseResult.setMessage("删除失败");
             e.printStackTrace();
         }
+        return responseResult;
+    }
+
+
+
+    @ApiOperation(value = "多条件分页查询 出资方列表", notes = "多条件分页查询 出资方列表",response = ResponseResult.class)
+    @Override
+    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+        ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
         return responseResult;
     }
 

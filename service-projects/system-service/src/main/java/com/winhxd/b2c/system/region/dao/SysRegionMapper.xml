@@ -22,14 +22,14 @@
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" /> -- 测试环境 active=1 AND
     from sys_region
-    where region_code = #{regionCode,jdbcType=CHAR} AND active=1
+    where region_code = #{regionCode,jdbcType=CHAR}
   </select>
   <select id="selectRegionList" parameterType="com.winhxd.b2c.common.domain.system.region.model.SysRegion" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from sys_region WHERE active=1
+    <include refid="Base_Column_List" /> -- 测试环境 active=1 AND
+    from sys_region WHERE 1=1
       <if test="regionCode != null">
         AND region_code = #{regionCode,jdbcType=CHAR}
       </if>
@@ -58,8 +58,8 @@
 
   <select id="selectRegionRangeList" parameterType="java.util.List" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from sys_region  Where active=1 AND region_code IN
+    <include refid="Base_Column_List" /> -- 测试环境 active=1 AND
+    from sys_region  Where  region_code IN
     <foreach collection="list" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>

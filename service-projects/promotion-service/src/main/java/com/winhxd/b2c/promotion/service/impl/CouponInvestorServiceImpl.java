@@ -111,6 +111,20 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
 
+    @Override
+    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+        ResponseResult<PagedList<CouponInvestorVO>> result= new ResponseResult<PagedList<CouponInvestorVO>>();
+        PagedList<CouponInvestorVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponInvestorVO> customers = couponInvestorMapper.getCouponInvestorPage(condition);
+        PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(customers);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
 
 
     @Override
@@ -122,8 +136,8 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
-    public int updateCouponInvestorToValid(long id) {
-        int count = couponInvestorMapper.updateCouponInvestorToValid(id);
+    public int updateCouponInvestorToValid(long id,long userId,String userName) {
+        int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;
     }
 

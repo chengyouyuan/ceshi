@@ -14,7 +14,4 @@ import java.io.Serializable;
 public class AllOrderQueryByCustomerCondition extends BaseCondition implements Serializable {
 
     private static final long serialVersionUID = -4668408534907732545L;
-
-    @ApiModelProperty(value = "提货码")
-    private String pickUpCode;
 }

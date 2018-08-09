@@ -12,8 +12,6 @@ import lombok.Data;
 @ApiModel("惠小店登录返参")
 @Data
 public class StoreUserInfoSimpleVO{
-	@ApiModelProperty(value = "用户id")
-    private Long businessId;
 	@ApiModelProperty(value = "门店编码")
     private Long storeCustomerId;
 	@ApiModelProperty(value = "TOKEN")

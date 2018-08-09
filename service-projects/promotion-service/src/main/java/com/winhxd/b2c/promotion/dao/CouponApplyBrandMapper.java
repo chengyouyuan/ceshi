@@ -2,6 +2,8 @@ package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrand;
 
+import java.util.List;
+
 public interface CouponApplyBrandMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,11 @@ public interface CouponApplyBrandMapper {
     int updateByPrimaryKeySelective(CouponApplyBrand record);
 
     int updateByPrimaryKey(CouponApplyBrand record);
+
+    /**
+     *
+     * @param applyId
+     * @return
+     */
+    List<CouponApplyBrand> selectByApplyId(Long applyId);
 }

@@ -10,6 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -19,7 +22,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
-import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -47,7 +50,7 @@ public class StoreServiceController implements StoreServiceClient {
 //    @Autowired
 //    private ProductServiceClient productServiceClient;
     @Override
-    public ResponseResult<Void> bindCustomer(Long customerId,Long storeUserId) {
+    public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
         if(customerId == null) {
             logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
@@ -64,8 +67,8 @@ public class StoreServiceController implements StoreServiceClient {
 
 
 	@Override
-	public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes, Long storeId) {
-		ResponseResult<List<ShopCarProdVO>> result = new ResponseResult<>();
+	public ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes")List<String> skuCodes, @RequestParam("storeId")Long storeId) {
+		ResponseResult<List<ShopCartProdVO>> result = new ResponseResult<>();
 		//参数检验
 		if(storeId==null||CollectionUtils.isEmpty(skuCodes)){
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
@@ -84,13 +87,13 @@ public class StoreServiceController implements StoreServiceClient {
 			//调用商品feigin查询商品基本信息
 			List<ProductSkuVO> productSkuList=null;
 			//productServiceClient.
-			List<ShopCarProdVO> shopCarProdList=new ArrayList<>();
+			List<ShopCartProdVO> shopCarProdList=new ArrayList<>();
 			if(CollectionUtils.isEmpty(productSkuList)){
 				 logger.error("StoreServiceController -> findShopCarProd 调用ProductServiceClient 异常！");
 		         throw new BusinessException(BusinessCode.CODE_1001);
 			}
 			for(int i=0;i<productSkuList.size();i++){
-				ShopCarProdVO spVO=new ShopCarProdVO();
+				ShopCartProdVO spVO=new ShopCartProdVO();
 				//sku信息
 				ProductSkuVO current=productSkuList.get(i);
 				//门店与sku关系
@@ -122,7 +125,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
     	ResponseResult<StoreUserInfo> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {
 			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
@@ -137,7 +140,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id) {
 		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(id == null){
 			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
@@ -152,7 +155,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
+	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids) {
 		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
     	if(ids == null || ids.size() == 0){
     		throw new BusinessException(BusinessCode.CODE_200001);

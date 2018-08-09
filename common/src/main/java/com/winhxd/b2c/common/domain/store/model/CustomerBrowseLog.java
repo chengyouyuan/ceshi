@@ -20,7 +20,7 @@ public class CustomerBrowseLog {
     private Long id;
 
     @ApiModelProperty("用户浏览的门店编码(store_user_info表的store_customer_id)")
-    private Long storeId;
+    private Long storeCustomerId;
 
     @ApiModelProperty("C端用户的id(customer_user_info表的customer_id)")
     private Long customerId;

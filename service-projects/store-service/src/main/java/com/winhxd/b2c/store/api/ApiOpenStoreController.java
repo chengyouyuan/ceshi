@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
@@ -53,16 +54,22 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1000/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody Long storeCustomerId) {
+    public ResponseResult<OpenStoreVO> checkStoreInfo() {
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
-        OpenStoreVO openStoreVO = new OpenStoreVO();
+        if(UserContext.getCurrentStoreUser() == null){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            logger.info("惠小店开店条件验证接口 未获取到当前用户信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         try {
-            logger.info("惠小店开店条件验证接口入参为 storeCustomerId：{}", storeCustomerId);
+            OpenStoreVO openStoreVO = new OpenStoreVO();
+            Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
             //是否开过小店
-            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeCustomerId);
+            StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
             if (storeUserInfo == null) {
                 responseResult.setCode(BusinessCode.CODE_200004);
                 responseResult.setMessage("门店信息不存在");
+                logger.info("惠小店开店条件验证接口 门店信息不存在 storeCustomerId：{}", storeCustomerId);
                 return responseResult;
             }
             if (storeUserInfo.getStoreStatus() != 0) {
@@ -101,12 +108,18 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1001/v1/getStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo(@RequestBody Long storeCustomerId) {
+    public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo() {
         ResponseResult<StoreBaseInfoVO> responseResult = new ResponseResult<>();
+        if(UserContext.getCurrentStoreUser() == null){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            logger.info("惠小店开店基础信息查询接口 未获取到当前用户信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         try {
-            logger.info("惠小店开店基础信息查询接口入参为 storeCustomerId：{}", storeCustomerId);
-            storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
-            responseResult.setData(new StoreBaseInfoVO());
+            ResponseResult<Object> result = storeHxdServiceClient.getStoreBaseInfo(UserContext.getCurrentStoreUser().getStoreCustomerId().toString());
+            StoreBaseInfoVO storeBaseInfoVO = new StoreBaseInfoVO();
+            BeanUtils.copyProperties(result,storeBaseInfoVO);
+            responseResult.setData(storeBaseInfoVO);
         } catch (Exception e) {
             logger.error("惠小店开店基础信息查询接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -123,18 +136,23 @@ public class ApiOpenStoreController {
     @PostMapping(value = "1002/v1/modifyStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBusinessInfoVO> modifyStoreBaseInfo(@RequestBody StoreBaseInfoCondition storeBaseInfoCondition) {
         logger.info("惠小店开店基础信息保存接口入参为：{}", storeBaseInfoCondition.toString());
-        if (storeBaseInfoCondition.getStoreCustomerId() == null ||
-                StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
+        if (StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getShopOwnerImg()) || StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode())) {
             logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,参数错误:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200005);
         }
         ResponseResult<StoreBusinessInfoVO> responseResult = new ResponseResult<>();
+        if(UserContext.getCurrentStoreUser() == null){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            logger.info("惠小店开店基础信息保存接口 未获取到当前用户信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         try {
-            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeBaseInfoCondition.getStoreCustomerId());
+            Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+            StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
             if (storeUserInfo == null) {
-                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeBaseInfoCondition.getStoreCustomerId());
+                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);
                 throw new BusinessException(BusinessCode.CODE_200004);
             }
             BeanUtils.copyProperties(storeBaseInfoCondition, storeUserInfo);
@@ -158,18 +176,23 @@ public class ApiOpenStoreController {
     @PostMapping(value = "1003/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
-        if (storeBusinessInfoCondition.getStoreCustomerId() == null ||
-                StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
+        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
                 storeBusinessInfoCondition.getPaymentWay() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile()) || StringUtils.isBlank(storeBusinessInfoCondition.getStoreAddress())) {
             logger.error("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
         }
         ResponseResult responseResult = new ResponseResult();
+        if(UserContext.getCurrentStoreUser() == null){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            logger.info("惠小店开店店铺信息保存接口 未获取到当前用户信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         try {
-            StoreUserInfo storeUserInfo = storeService.selectByStoreId(storeBusinessInfoCondition.getStoreCustomerId());
+            Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+            StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
             if (storeUserInfo == null) {
-                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeBusinessInfoCondition.getStoreCustomerId());
+                logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);
                 throw new BusinessException(BusinessCode.CODE_200004);
             }
             BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
@@ -187,10 +210,14 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
     @PostMapping(value = "1004/v1/getStoreManageInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreManageInfoVO> getStoreManageInfo(@RequestBody Long storeCustomerId) {
+    public ResponseResult<StoreManageInfoVO> getStoreManageInfo() {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
+        if(UserContext.getCurrentStoreUser() == null){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            logger.info("惠小店开店条件验证接口 未获取到当前用户信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         try {
-            logger.info("惠小店管理首页获取数据接口入参为 storeCustomerId：{}", storeCustomerId);
             responseResult.setData(new StoreManageInfoVO());
         } catch (Exception e) {
             logger.error("惠小店管理首页获取数据接口，服务器内部错误：{}", e);
@@ -216,12 +243,16 @@ public class ApiOpenStoreController {
 
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id){
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
+        if(UserContext.getCurrentStoreUser() == null){
+            logger.error("ApiOpenStoreController -> findStoreUserInfo未获取到门店登录信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         if(id == null){
             logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-
-        StoreUserInfoVO data = storeService.findStoreUserInfo(id);
+        Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+        StoreUserInfoVO data = storeService.findStoreUserInfo(storeCustomerId);
         if(data == null){
             result.setCode(BusinessCode.CODE_200004);
         }

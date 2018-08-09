@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -45,6 +44,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreSubmitProductService;
 
@@ -104,6 +104,7 @@ public class ApiStoreProductManageController {
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
 			if (storeUser == null) {
 				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效");
 				return responseResult;
 			}
 
@@ -111,7 +112,6 @@ public class ApiStoreProductManageController {
 			Byte prodType = condition.getProdType();
 			// 门店编码
 			Long storeId = storeUser.getBusinessId();
-
 			// 已上架的商品sku
 			List<String> putawayProdSkus = null;
 
@@ -125,12 +125,11 @@ public class ApiStoreProductManageController {
 			if (HXD_PROD_TYPE.equals(prodType)) {
 				// 在惠下单下过单的sku
 				List<String> hxdBuyedProdSkuList = null;
-				Long customerId = storeUser.getStoreCustomerId();
+				Long storeCustomerId = storeUser.getStoreCustomerId();
 				// 调用接口请求该用户惠下单商品sku
-				ResponseResult<List<String>> storehxdResult = storeHxdServiceClient.getStoreBuyedProdSku(customerId);
-				if (storehxdResult.getCode() == 0 && storehxdResult.getData() != null
-						&& storehxdResult.getData().size() > 0) {
-					hxdBuyedProdSkuList = storehxdResult.getData();
+				hxdBuyedProdSkuList = getStoreBuyedHxdProdSkuCodes(storeCustomerId);
+
+				if (hxdBuyedProdSkuList != null&& hxdBuyedProdSkuList.size() > 0) {
 					// 设置惠下单下过单的商品
 					prodConditionByPage.setHxdProductSkus(hxdBuyedProdSkuList);
 				} else {
@@ -171,7 +170,12 @@ public class ApiStoreProductManageController {
 					brandCodeList.add(brandCode);
 					prodConditionByPage.setBrandCodes(brandCodeList);
 				}
-				responseResult = productServiceClient.getProductMsg(prodConditionByPage);
+				ResponseResult<PagedList<ProductVO>> prodResult = productServiceClient.getProductsByPage(prodConditionByPage);
+				if(prodResult!=null&&prodResult.getCode()==0){
+					ProductMsgVO pmVO=new ProductMsgVO();
+					pmVO.setProducts(prodResult.getData());
+					responseResult.setData(pmVO);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,20 +201,23 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				return responseResult;
-			}
+//			if (storeUser == null) {
+//				responseResult.setCode(BusinessCode.CODE_1002);
+//				return responseResult;
+//			}
 			// 操作类型
 			Byte operateType = condition.getOperateType();
 			// 门店id
-			Long storeId = storeUser.getBusinessId();
+//			Long storeId = storeUser.getBusinessId();
+			Long storeId =condition.getStoreId();
 			// skuCode集合
 			List<ProdOperateInfoCondition> prodInfo = condition.getProducts();
 			// skuCode数组
 			List<String> skucodes = new ArrayList<>();
+			String skucodeArray[]=new String[prodInfo.size()];
 			for (int i = 0; i < prodInfo.size(); i++) {
 				skucodes.add(prodInfo.get(i).getSkuCode());
+				skucodeArray[i]=prodInfo.get(i).getSkuCode();
 			}
 			// 判断操作类型
 			if (StoreProdOperateEnum.PUTAWAY.getOperateCode() == operateType) {
@@ -223,7 +230,7 @@ public class ApiStoreProductManageController {
 				spmCondition.setProdStatus(prodStatus);
 
 				List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId,
-						(String[]) skucodes.toArray());
+						skucodeArray);
 				// 上架操作
 				// 表示还没上架过
 				if (spms == null || spms.size() == 0) {
@@ -266,10 +273,10 @@ public class ApiStoreProductManageController {
 
 			} else if (StoreProdOperateEnum.UNPUTAWAY.getOperateCode() == operateType) {
 				// 下架操作
-				storeProductManageService.unPutawayStoreProductManage(storeId, (String[]) skucodes.toArray());
+				storeProductManageService.unPutawayStoreProductManage(storeId, skucodeArray);
 			} else if (StoreProdOperateEnum.DELETE.getOperateCode() == operateType) {
 				// 删除操作
-				storeProductManageService.removeStoreProductManage(storeId, (String[]) skucodes.toArray());
+				storeProductManageService.removeStoreProductManage(storeId, skucodeArray);
 			} else if (StoreProdOperateEnum.EDIT.getOperateCode() == operateType) {
 				// 编辑（不支持批量）
 				storeProductManageService.modifyStoreProductManage(storeId, prodInfo.get(0));

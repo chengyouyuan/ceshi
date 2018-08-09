@@ -73,7 +73,7 @@ public interface StoreProductManageMapper {
     * @author wuyuanbao
     * @date 2018年8月8日下午3:43:07
      */
-    StoreProductManage selectBySkuCodeAndStoreId(Long storeId,String skuCode);
+    StoreProductManage selectBySkuCodeAndStoreId(@Param("storeId")Long storeId,@Param("skuCode")String skuCode);
     /**
      * 分页获取
     * @Title: selectVoByCondition 

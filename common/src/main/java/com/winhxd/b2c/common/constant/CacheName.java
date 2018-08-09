@@ -47,4 +47,8 @@ public class CacheName {
      * B端C端发送验证码请求key
      */
     public static final String SEND_VERIFICATION_CODE_REQUEST_TIME = "SEND:VERIFICATION:CODE:REQUEST:TIME:";
+    /**
+     * B端购买过商品sku key
+     */
+    public static final String STORE_BUYED_HXDPROD_SKU = "STORE:BUYED:HXDPROD:SKU:";
 }

@@ -107,7 +107,7 @@ public class OrderInfo {
     /**
      * 订单备注
      */
-    private String remark;
+    private String remarks;
     /**
      * 下单所用设备
      */

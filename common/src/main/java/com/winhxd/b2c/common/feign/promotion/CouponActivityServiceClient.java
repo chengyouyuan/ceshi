@@ -49,7 +49,7 @@ public interface CouponActivityServiceClient {
     /**
      *
      *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)
-     *@Params   id  模板id
+     *@Params   id
      *@Return   ResponseResult
      *@User     sjx
      *@Date   2018/8/8

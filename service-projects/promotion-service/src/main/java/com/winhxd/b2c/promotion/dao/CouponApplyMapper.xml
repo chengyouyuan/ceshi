@@ -249,4 +249,30 @@
 
 
 
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO">
+    <result column="apply_id" jdbcType="VARCHAR" property="applyId" />
+    <result column="apply_name" jdbcType="VARCHAR" property="applyName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+
+  <select id="findApplyTempleteCountPage" parameterType="java.lang.Long" resultMap="ResultCountPageMap">
+    SELECT
+    a.title AS templete_name,
+    a.`code` AS templete_code,
+    a.`status` AS templete_status,
+    b.`code` AS apply_code,
+    b.`name` AS apply_name,
+    b.id AS apply_id
+    FROM
+    coupon_template a
+    LEFT JOIN coupon_apply b ON a.grade_id = b.id
+    WHERE
+    a.apply_rule_id = #{applyId}
+  </select>
+
+
 </mapper>

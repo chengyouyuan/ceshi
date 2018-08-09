@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
+import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 
 /**
  * @Author wl
@@ -22,4 +23,6 @@ public interface CouponInvestorService {
     int updateCouponInvestor(CouponInvestorCondition condition);
 
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
+
+    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize);
 }

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -36,7 +37,8 @@ public interface CouponGradeServiceClient {
     @RequestMapping(value = "/promotion/v1/getCouponGradePage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
 
-
+    @RequestMapping(value = "/promotion/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
+    ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 
 
@@ -66,6 +68,12 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
         logger.error("CouponGradeServiceClient -> getCouponGradePage", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(String gradeId, Integer pageNo, Integer pageSize) {
+        logger.error("CouponGradeServiceClient -> findGradeTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 

@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 
 /**
@@ -19,4 +20,6 @@ public interface CouponApplyService {
 
 
     int addCouponApply(CouponApplyCondition condition);
+
+    ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(String applyId, Integer pageNo, Integer pageSize);
 }

@@ -33,7 +33,7 @@ public class ContextHelper {
         try {
             return URLEncoder.encode(json, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            return null;
+            return "";
         }
     }
 }

@@ -25,7 +25,7 @@ public class StoreProductStatisticsServiceImpl implements StoreProductStatistics
 
     @Override
     public int modifyQuantitySoldOutByStoreIdAndProdId(StoreProductManageCondition condition) {
-        return storeProductStatisticsMapper.updateQuantitySoldOutByStoreIdAndProdId(condition);
+        return storeProductStatisticsMapper.updateQuantitySoldOutByStoreIdAndProdCode(condition);
     }
 
 	@Override

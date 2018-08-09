@@ -20,7 +20,7 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
@@ -49,7 +49,7 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
@@ -62,7 +62,7 @@
   <sql id="Base_Column_List">
     id, title, exolian, remarks, investor_id, grade_id, apply_rule_id, corner, coupon_label,
     coupon_label_color, status, reason, code, cal_type, pay_type, created_by, created_by_name, 
-    created, update_by, updated_by_name, updated
+    created, updated_by, updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -79,7 +79,7 @@
       a.corner,a.coupon_label,
       a.coupon_label_color,
       a.STATUS,a.reason,a.CODE,a.cal_type,a.pay_type,a.created_by,
-      a.created_by_name,a.created,a.update_by,a.updated_by_name,
+      a.created_by_name,a.created,a.updated_by,a.updated_by_name,
       a.updated,b.`name` as investor_name,c.`name` as grade_name,
       d.`name` as apply_rule_name,d.apply_rule_type
   </sql>
@@ -109,7 +109,7 @@
       coupon_label_color, status, reason, 
       code, cal_type, pay_type, 
       created_by, created_by_name, created, 
-      update_by, updated_by_name, updated
+      updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{exolian,jdbcType=VARCHAR}, 
       #{remarks,jdbcType=VARCHAR}, #{investorId,jdbcType=BIGINT}, #{gradeId,jdbcType=BIGINT},
@@ -117,7 +117,7 @@
       #{couponLabelColor,jdbcType=INTEGER}, #{status,jdbcType=SMALLINT}, #{reason,jdbcType=VARCHAR}, 
       #{code,jdbcType=VARCHAR}, #{calType,jdbcType=SMALLINT}, #{payType,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplate">
@@ -177,8 +177,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -242,8 +242,8 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -307,8 +307,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -338,7 +338,7 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
@@ -366,7 +366,7 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
@@ -427,7 +427,7 @@
 
   <!-- 批量（单个）设置无效或批量（单个）非物理删除 -->
   <update id="updateCouponTemplateToValid" parameterType="java.util.List">
-      update coupon_template set status= 0 ,update_by=#{updateBy},updated_by_name=#{updateByName},updated=#{updated}
+      update coupon_template set status= 0 ,updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
       where id in
     <foreach collection="idsList" index="index" item="item" open="(" separator="," close=")">
        #{item}
@@ -438,7 +438,7 @@
 <!-- 更新优惠券模板 -->
   <update id="confirmUpdateCouponTemplate">
     update coupon_template set
-      update_by=#{updateBy},updated_by_name=#{updateByName},updated=#{updated}
+      updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
       <if test="condition.title!=null and condition.title!=''">
         ,title = #{condition.title}
       </if>

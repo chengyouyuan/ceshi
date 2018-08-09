@@ -11,12 +11,12 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name, remarks, status, type, created_by, created_by_name, created, update_by, 
+    id, code, name, remarks, status, type, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,12 +33,12 @@
     insert into coupon_grade (id, code, name, 
       remarks, status, type, 
       created_by, created_by_name, created, 
-      update_by, updated_by_name, updated
+      updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{type,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponGrade">
@@ -71,8 +71,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -110,7 +110,7 @@
         #{created,jdbcType=TIMESTAMP},
       </if>
       <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -147,8 +147,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -169,7 +169,7 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
@@ -186,7 +186,7 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <collection property="details" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail" column="grade_id">
@@ -207,7 +207,7 @@
   <select id="viewCouponGradeDetail" parameterType="java.lang.Long" resultMap="ResultDetailMap">
     select
       a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
-      a.created_by_name,a.created,a.update_by,a.updated_by_name,
+      a.created_by_name,a.created,a.updated_by,a.updated_by_name,
       a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
       b.discounted,b.discounted_max_amt,b.full_give_amt,
       b.increase_amt,b.cost,b.count,b.times
@@ -220,7 +220,7 @@
   <update id="updateCouponGradeValid">
     update coupon_grade
     set status = 1 ,
-    update_by = #{userId},
+    updated_by = #{userId},
     updated_by_name = #{userName},
     updated = now()
     where id = #{id}
@@ -245,7 +245,7 @@
   <select id="getCouponGradePage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition" resultMap="ResultDetailMap">
     select
     a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
-    a.created_by_name,a.created,a.update_by,a.updated_by_name,
+    a.created_by_name,a.created,a.updated_by,a.updated_by_name,
     a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
     b.discounted,b.discounted_max_amt,b.full_give_amt,
     b.increase_amt,b.cost,b.count,b.times

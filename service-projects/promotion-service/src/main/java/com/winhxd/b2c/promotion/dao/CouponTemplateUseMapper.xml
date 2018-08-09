@@ -14,13 +14,13 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
     id, template_id, customer_monbile, customer_id, send_id, order_no, coupon_price, 
-    order_price, status, created_by, created_by_name, created, update_by, updated_by_name, 
+    order_price, status, created_by, created_by_name, created, updated_by, updated_by_name,
     updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -46,13 +46,13 @@
       customer_id, send_id, order_no, 
       coupon_price, order_price, status, 
       created_by, created_by_name, created, 
-      update_by, updated_by_name, updated
+      updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, #{customerMonbile,jdbcType=VARCHAR}, 
       #{customerId,jdbcType=BIGINT}, #{sendId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
       #{couponPrice,jdbcType=DECIMAL}, #{orderPrice,jdbcType=DECIMAL}, #{status,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplateUse">
@@ -94,8 +94,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -141,8 +141,8 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -188,8 +188,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -213,7 +213,7 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

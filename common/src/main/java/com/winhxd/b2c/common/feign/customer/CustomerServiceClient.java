@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public interface CustomerServiceClient {
      * @Description 根据条件查询后台用户列表页数据，分页查询
      */
     @RequestMapping(value = "/customer/2005/v1/queryCustomerPageInfo", method = RequestMethod.POST)
-    ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody CustomerUserInfoCondition1 condition);
+    ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition);
 
     /**
      * @param condition 参数条件对象
@@ -42,7 +42,7 @@ public interface CustomerServiceClient {
      * @Description 更新用户的状态
      */
     @RequestMapping(value = "/customer/2006/v1/updateStatus", method = RequestMethod.POST)
-    ResponseResult<Void> updateStatus(@RequestBody CustomerUserInfoCondition1 condition);
+    ResponseResult<Void> updateStatus(@RequestBody BackStageCustomerInfoCondition condition);
 
     /**
      * @param ids 用户id
@@ -67,13 +67,13 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(BackStageCustomerInfoCondition condition) {
         logger.error("CustomerServiceClientFallBack -> queryCustomerPageInfo错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<Void> updateStatus(CustomerUserInfoCondition1 condition) {
+    public ResponseResult<Void> updateStatus(BackStageCustomerInfoCondition condition) {
         logger.error("CustomerServiceClientFallBack -> updateStatus错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

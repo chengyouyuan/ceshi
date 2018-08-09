@@ -7,11 +7,12 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="CHAR" property="mobile" />
     <result column="status" jdbcType="SMALLINT" property="status" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
   </resultMap>
   <resultMap id="voMap" type="com.winhxd.b2c.common.domain.system.user.model.SysUser" extends="BaseResultMap">
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
@@ -19,11 +20,11 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, account, username, mobile, status, password, created_by, created, updated_by, 
-    updated
+    id, account, username, mobile, status, password, created_by, created_by_name, created,
+    updated_by, updated, updated_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from sys_user
     where id = #{id,jdbcType=BIGINT}
@@ -32,17 +33,19 @@
     delete from sys_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_user (id, account, username, 
-      mobile, status, password, 
-      created_by, created, updated_by, 
-      updated)
-    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
-      #{mobile,jdbcType=CHAR}, #{status,jdbcType=SMALLINT}, #{password,jdbcType=VARCHAR}, 
-      #{createdBy,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, 
-      #{updated,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
+    insert into sys_user (id, account, username,
+      mobile, status, password,
+      created_by, created_by_name, created,
+      updated_by, updated, updated_by_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{mobile,jdbcType=CHAR}, #{status,jdbcType=SMALLINT}, #{password,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedByName,jdbcType=VARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
     insert into sys_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -66,6 +69,9 @@
       <if test="createdBy != null">
         created_by,
       </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
       <if test="created != null">
         created,
       </if>
@@ -74,6 +80,9 @@
       </if>
       <if test="updated != null">
         updated,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -96,16 +105,22 @@
         #{password,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=VARCHAR},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -128,16 +143,22 @@
         password = #{password,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=VARCHAR},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -149,21 +170,36 @@
       mobile = #{mobile,jdbcType=CHAR},
       status = #{status,jdbcType=SMALLINT},
       password = #{password,jdbcType=VARCHAR},
-      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP}
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  
+
   <update id="updatePassword">
-    update sys_user set password=#{newPassword} where id=#{id}
+    update sys_user
+    <set>
+      password=#{newPassword},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id=#{id}
   </update>
 
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
     select
     u.id, account, username, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,ur.id role_id,r.role_name
+    u.updated,u.created_by_name,u.updated_by_name,ur.id role_id,r.role_name
     from sys_user u
       left join sys_user_role ur on u.id=ur.user_id
       left join sys_role r on r.id=ur.role_id
@@ -192,7 +228,7 @@
   <select id="getByAccount" resultMap="voMap" parameterType="string">
     select
     u.id, account, username, password, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,ur.id role_id,r.role_name
+    u.updated,u.created_by_name,u.updated_by_name,ur.id role_id,r.role_name
     from sys_user u
     left join sys_user_role ur on u.id=ur.user_id
     left join sys_role r on r.id=ur.role_id

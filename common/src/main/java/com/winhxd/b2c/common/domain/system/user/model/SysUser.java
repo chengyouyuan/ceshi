@@ -29,17 +29,23 @@ public class SysUser {
     @ApiModelProperty(value = "密码")
     private String password;
 
-    @ApiModelProperty("创建人")
-    private String createdBy;
-
     @ApiModelProperty("创建时间")
     private Date created;
 
-    @ApiModelProperty("更新人")
-    private String updatedBy;
+    @ApiModelProperty("创建人id")
+    private Long createdBy;
+
+    @ApiModelProperty("创建人")
+    private String createdByName;
+
+    @ApiModelProperty("更新人id")
+    private Long updatedBy;
 
     @ApiModelProperty("更新时间")
     private Date updated;
+
+    @ApiModelProperty("更新人")
+    private String updatedByName;
 
     @ApiModelProperty(value = "角色编号")
     private Long roleId;

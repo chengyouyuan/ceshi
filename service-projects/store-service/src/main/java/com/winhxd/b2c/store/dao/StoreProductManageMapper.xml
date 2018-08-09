@@ -4,7 +4,6 @@
     <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
-        <result column="prod_id" jdbcType="VARCHAR" property="prodId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
         <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
         <result column="recommend" jdbcType="TINYINT" property="recommend"/>
@@ -31,7 +30,7 @@
         <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
     </resultMap>
    <sql id="Base_Column_List">
-    id, store_id, prod_id, sku_attribute_option, sell_money, recommend, prod_status,
+    id, store_id, sku_attribute_option, sell_money, recommend, prod_status,
     prod_code, sku_code, putaway_time, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
@@ -195,13 +194,13 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
-    insert into store_product_manage (id, store_id, prod_id,
+    insert into store_product_manage (id, store_id,
     sku_attribute_option, sell_money, recommend,
     prod_status, prod_code, sku_code,
     putaway_time, created_by, created_by_name,
     created, updated_by, updated_by_name,
     updated)
-    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodId,jdbcType=VARCHAR},
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT},
     #{skuAttributeOption,jdbcType=VARCHAR}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
     #{prodStatus,jdbcType=TINYINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
     #{putawayTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
@@ -216,9 +215,6 @@
             </if>
             <if test="storeId != null">
                 store_id,
-            </if>
-            <if test="prodId != null">
-                prod_id,
             </if>
             <if test="skuAttributeOption != null">
                 sku_attribute_option,
@@ -266,9 +262,6 @@
             </if>
             <if test="storeId != null">
                 #{storeId,jdbcType=BIGINT},
-            </if>
-            <if test="prodId != null">
-                #{prodId,jdbcType=VARCHAR},
             </if>
             <if test="skuAttributeOption != null">
                 #{skuAttributeOption,jdbcType=VARCHAR},
@@ -318,9 +311,6 @@
             <if test="storeId != null">
                 store_id = #{storeId,jdbcType=BIGINT},
             </if>
-            <if test="prodId != null">
-                prod_id = #{prodId,jdbcType=VARCHAR},
-            </if>
             <if test="skuAttributeOption != null">
                 sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
             </if>
@@ -366,7 +356,6 @@
     <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
     update store_product_manage
     set store_id = #{storeId,jdbcType=BIGINT},
-      prod_id = #{prodId,jdbcType=VARCHAR},
       sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       sell_money = #{sellMoney,jdbcType=DECIMAL},
       recommend = #{recommend,jdbcType=TINYINT},

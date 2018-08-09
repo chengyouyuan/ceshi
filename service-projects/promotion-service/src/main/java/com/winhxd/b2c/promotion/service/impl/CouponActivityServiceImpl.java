@@ -6,12 +6,13 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -37,7 +38,13 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
+    //@Autowired
+    //private CouponServiceClient couponServiceClient;
 
+    /**
+     * 查询活动列表
+     * @param condition
+     */
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
@@ -53,6 +60,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         return result;
     }
 
+    /**
+     * 新增活动
+     * @param condition
+     */
     @Override
     public void saveCouponActivity(CouponActivityAddCondition condition) {
         try {
@@ -155,6 +166,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         return couponActivityVO;
     }
 
+    /**
+     * 编辑活动
+     * @param condition
+     */
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
         try {
@@ -170,7 +185,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setUpdated(new Date());
-            couponActivity.setUpdateBy(123456L);
+            couponActivity.setUpdatedBy(123456L);
             couponActivity.setUpdatedByName("测试用户");
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
@@ -230,6 +245,104 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * 删除活动信息（更新活动状态为无效）
+     * @param id
+     */
+    @Override
+    public void deleteCouponActivity(String id) {
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setId(Long.valueOf(id));
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setUpdated(new Date());
+        couponActivity.setUpdatedBy(123456L);
+        couponActivity.setUpdatedByName("测试用户");
+        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+    }
+
+    /**
+     * 停止活动，撤销优惠券
+     * @param id
+     */
+    @Override
+    public void revocationActivityCoupon(String id) {
+        try {
+            //停止活动
+            CouponActivity couponActivity = new CouponActivity();
+            couponActivity.setId(Long.valueOf(id));
+            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
+            couponActivity.setUpdated(new Date());
+            couponActivity.setUpdatedBy(123456L);
+            couponActivity.setUpdatedByName("测试用户");
+
+            couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+            //撤销已发放的优惠券
+            List<Long> longList = null;
+            longList.add(Long.valueOf(id));
+            RevokeCouponCodition couponCondition = new RevokeCouponCodition();
+            couponCondition.setSendIds(longList);
+            //couponServiceClient.revokeCoupon(couponCondition);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 开启/停止活动
+     * @param condition
+     */
+    @Override
+    public void updateCouponActivityStatus(CouponActivityAddCondition condition) {
+        //更新CouponActivity
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setId(condition.getId());
+        couponActivity.setActivityStatus(condition.getActivityStatus());
+        couponActivity.setUpdated(new Date());
+        couponActivity.setUpdatedBy(123456L);
+        couponActivity.setUpdatedByName("测试用户");
+
+        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+    }
+    /**
+     * 根据活动查询优惠券信息
+     * @param condition
+     */
+    @Override
+    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
+        ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
+        PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityStoreVO> coupon = couponActivityMapper.queryCouponByActivity(condition);
+        PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(coupon);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
+    /**
+     * 根据活动查询小店信息
+     * @param condition
+     */
+    @Override
+    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
+        ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
+        PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityStoreVO> store = couponActivityMapper.queryStoreByActivity(condition);
+        PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(store);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
 
     /**
      * 自动生成32位的UUid，对应数据库的主键id进行插入用。

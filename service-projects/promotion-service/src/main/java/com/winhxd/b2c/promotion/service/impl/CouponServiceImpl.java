@@ -10,12 +10,12 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -42,9 +42,6 @@ public class CouponServiceImpl implements CouponService {
     CouponActivityMapper couponActivityMapper;
 
     @Autowired
-    CouponActivityDetailMapper couponActivityDetailMapper;
-
-    @Autowired
     CouponActivityRecordMapper couponActivityRecordMapper;
     @Autowired
     CouponTemplateSendMapper couponTemplateSendMapper;
@@ -68,7 +65,7 @@ public class CouponServiceImpl implements CouponService {
     ProductServiceClient productServiceClient;
 
     @Override
-    public List<CouponVO> getNewUserCouponList(CouponCondition couponCondition) {
+    public List<CouponVO> getNewUserCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -133,22 +130,17 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         //step3 返回数据
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),1);
 
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),1);
-
-        return couponVOS;
+        return this.getCouponDetail(couponVOS);
     }
 
     /**
-     * 通过customer 获取已经领取的优惠券列表
-     * @param customerId
-     * @param couponType 1 新用户注册，2 老用户活动
-     * @Param useStatus 使用状态 1
-     * @return
+     * 获取优惠券适用范围
+     * @param couponVOS
+      * @return
      */
-    public List<CouponVO> getCouponList(Long customerId,Integer couponType){
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerId,couponType);
-
+    public List<CouponVO> getCouponDetail(List<CouponVO> couponVOS){
         for(CouponVO couponVO : couponVOS){
             if(couponVO.getApplyRuleType().equals(4)){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
@@ -194,17 +186,16 @@ public class CouponServiceImpl implements CouponService {
 
     /**
      * 待领取优惠券
-     * @param couponCondition 入参
      * @return
      */
     @Override
-    public List<CouponVO> unclaimedCouponList(CouponCondition couponCondition) {
+    public List<CouponVO> unclaimedCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
-        ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
-        StoreUserInfo storeUserInfo = result.getData();
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        StoreUserInfoVO storeUserInfo = result.getData();
 
 
         List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getStoreCustomerId());
@@ -242,7 +233,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
-        return results;
+        return this.getCouponDetail(results);
     }
 
     @Override
@@ -254,9 +245,9 @@ public class CouponServiceImpl implements CouponService {
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
         PagedList<CouponVO> pagedList = new PagedList();
-        List<CouponVO> couponVOS = this.getCouponList(customerUser.getCustomerId(),null);
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null);
 
-        pagedList.setData(couponVOS);
+        pagedList.setData(this.getCouponDetail(couponVOS));
         pagedList.setPageNo(couponCondition.getPageNo());
         pagedList.setPageSize(couponCondition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -309,7 +300,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean orderUseCoupon(CouponCondition condition) {
+    public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -324,7 +315,7 @@ public class CouponServiceImpl implements CouponService {
             CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateSend.setUpdated(new Date());
-            couponTemplateSend.setUpdateBy(customerUser.getCustomerId());
+            couponTemplateSend.setUpdatedBy(customerUser.getCustomerId());
             couponTemplateSend.setUpdatedByName("");
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
 
@@ -346,7 +337,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean orderUntreadCoupon(CouponCondition condition) {
+    public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -368,7 +359,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean revokeCoupon(CouponCondition condition) {
+    public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
         if(sendIds.isEmpty()){
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -380,5 +371,25 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         return true;
+    }
+
+    /**
+     * 查询订单使用的优惠券列表
+     * @param couponCondition
+     * @return
+     */
+    @Override
+    public PagedList<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
+
+        Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
+        PagedList<CouponVO> pagedList = new PagedList();
+        List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
+
+        pagedList.setData(this.getCouponDetail(couponVOS));
+        pagedList.setPageNo(couponCondition.getPageNo());
+        pagedList.setPageSize(couponCondition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+
     }
 }

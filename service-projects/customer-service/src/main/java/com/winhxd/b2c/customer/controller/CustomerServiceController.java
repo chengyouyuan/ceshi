@@ -3,7 +3,7 @@ package com.winhxd.b2c.customer.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -28,7 +28,7 @@ public class CustomerServiceController implements CustomerServiceClient {
     private Logger logger = LoggerFactory.getLogger(CustomerServiceController.class);
 
     @Override
-    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody  CustomerUserInfoCondition1 condition) {
+    public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = new ResponseResult<PagedList<CustomerUserInfoVO>>();
         try {
             PagedList<CustomerUserInfoVO> page = customerService.findCustomerPageInfo(condition);
@@ -42,7 +42,7 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> updateStatus(@RequestBody  CustomerUserInfoCondition1 condition) {
+    public ResponseResult<Void> updateStatus(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<Void> responseResult = new ResponseResult<>();
         if (condition.getCustomerId() == null) {
             throw new BusinessException(BusinessCode.CODE_200001);

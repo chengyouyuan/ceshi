@@ -134,4 +134,9 @@
       spare_min_total = #{spareMinTotal,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <insert id="insertCouponApplyProduct" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProduct">
+      insert into coupon_apply_product (id, apply_id) values (#{id,jdbcType=BIGINT}, #{applyId,jdbcType=BIGINT})
+  </insert>
+
 </mapper>

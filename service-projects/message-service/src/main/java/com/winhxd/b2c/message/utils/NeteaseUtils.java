@@ -1,5 +1,7 @@
 package com.winhxd.b2c.message.utils;
 
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -9,10 +11,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.integration.support.json.JsonObjectMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +30,7 @@ import java.util.*;
 @Component
 public class NeteaseUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeteaseUtils.class);
+    private static final String NETEASE_PLATFORM_ADMIN = "admin";
     /**
      * 请求超时
      */
@@ -42,6 +47,10 @@ public class NeteaseUtils {
      * 更新用户名片
      */
     private static final String UPDATE_ACCOUNT_URL = "https://api.netease.im/nimserver/user/updateUinfo.action";
+    /**
+     * 发送普通消息
+     */
+    private static final String SEND_MSG_URL = "https://api.netease.im/nimserver/msg/sendMsg.action";
 
     @Value("${netease.appKey}")
     private String appKey;
@@ -128,6 +137,45 @@ public class NeteaseUtils {
         nvps.add(new BasicNameValuePair("name", name));
         nvps.add(new BasicNameValuePair("icon", icon));
         return sendHttpClientPost(CREATE_ACCOUNT_URL, nvps);
+    }
+
+    /**
+     * 发送普通云信消息
+     * @param accid
+     * @param neteaseMsgCondition
+     * @return
+     */
+    public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition){
+        String bodyMsg = buildBodyJsonMsg(neteaseMsgCondition.getNeteaseMsg());
+        //扩展参数
+        String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg());
+        //组织参数
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("from", NETEASE_PLATFORM_ADMIN));
+        //ope：0表示点对点个人消息
+        nvps.add(new BasicNameValuePair("ope", "0"));
+        nvps.add(new BasicNameValuePair("to", accid));
+        //type:0表示文本消息
+        nvps.add(new BasicNameValuePair("type", "0"));
+        nvps.add(new BasicNameValuePair("body", bodyMsg));
+        nvps.add(new BasicNameValuePair("ext", extMsg));
+        return  sendHttpClientPost(SEND_MSG_URL,nvps);
+    }
+
+    private String buildBodyJsonMsg(NeteaseMsg neteaseMsg) {
+        JSONObject bodyJson = new JSONObject();
+        bodyJson.put("type","txt");
+        bodyJson.put("msg",neteaseMsg.getMsgContent());
+        return bodyJson.toJSONString();
+    }
+
+    private String buildExtJsonMsg(NeteaseMsg neteaseMsg){
+        JSONObject extJson = new JSONObject();
+        extJson.put("title",neteaseMsg.getMsgContent());
+        extJson.put("pagetype",neteaseMsg.getPageType());
+        extJson.put("audiotype", neteaseMsg.getAudioType());
+        extJson.put("page", neteaseMsg.getTreeCode());
+        return extJson.toJSONString();
     }
 
 }

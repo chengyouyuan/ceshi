@@ -129,6 +129,35 @@ public class ApiShopCarController {
     }
 
     /**
+     *  清空购物车接口
+     * @author: wangbaokuo
+     * @date: 2018/8/9 19:09
+     * @param: [condition]
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Long>
+     */
+    @ApiOperation(value = "清空购物车", notes = "清空购物车")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
+    })
+    @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Long> removeShopCar(@RequestBody ShopCarCondition condition){
+        ResponseResult<Long> result = new ResponseResult<>();
+        try{
+            if (null == condition || null == condition.getStoreId()) {
+                logger.error("清空购物车异常{}  参数storeId为空");
+                throw new BusinessException(BusinessCode.CODE_402001);
+            }
+            shopCarService.removeShopCar(condition);
+        }catch (Exception e){
+            logger.error("ShopCarController -> removeShopCar接口异常, 异常信息{}" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    /**
      * 验参
      * @author: wangbaokuo
      * @date: 2018/8/3 13:25

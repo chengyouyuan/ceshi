@@ -2,9 +2,11 @@ package com.winhxd.b2c.admin.module.system.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysRoleDTO;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @description 系统权限组管理控制层
@@ -136,5 +140,29 @@ public class RoleController {
     public ResponseResult remove(@PathVariable("id") Long id) {
         logger.info("{} - 根据编号删除权限组, 参数：id={}", MODULE_NAME, id);
         return roleServiceClient.remove(id);
+    }
+
+    @ApiOperation(value = "权限组管理页面(样本功能)")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @GetMapping("/role/page")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE})
+    @MenuAssign({MenuEnum.SYSTEM_MANAGEMENT_ROLE})
+    public ResponseResult<Map<String,Object>> page(){
+        logger.info("{} - 权限组管理页面", MODULE_NAME);
+        ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        Map<String,Object> data = new HashMap<>();
+        Map<String,String> url = new HashMap<>();
+        url.put("list","/role/list");
+        url.put("add","/role/save");
+        url.put("edit","/role/edit");
+        url.put("remove","/role/remove");
+        data.put("url",url);
+        result.setData(data);
+        return result;
     }
 }

@@ -116,7 +116,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PostMapping(value = "/user/updatePassword")
+    @PostMapping(value = "/user/editPassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -222,9 +222,12 @@ public class UserController {
         ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
         Map<String,Object> data = new HashMap<>();
         Map<String,String> url = new HashMap<>();
-        url.put("list","/user/find");
-        url.put("add","/user/save");
+        url.put("list","/user/list");
+        url.put("add","/user/add");
         url.put("edit","/user/edit");
+        url.put("get","/user/get/{id}");
+        url.put("editPassword","/user/editPassword");
+        url.put("disabled","/user/disabled/{id}");
         data.put("url",url);
         result.setData(data);
         return result;

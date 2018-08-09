@@ -29,7 +29,7 @@
     delete from sys_role
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_role (id, role_name, created_by,
       created_by_name, created, updated_by,
       updated, updated_by_name)
@@ -37,7 +37,7 @@
       #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
       #{updated,jdbcType=TIMESTAMP}, #{updatedByName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

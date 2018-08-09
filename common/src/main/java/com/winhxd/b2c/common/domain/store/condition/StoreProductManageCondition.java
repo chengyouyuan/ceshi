@@ -1,14 +1,13 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -52,7 +51,7 @@ public class StoreProductManageCondition implements Serializable{
 	@ApiModelProperty("更新时间")
 	private Date updated;
 	
-	@ApiModelProperty("排序条件,0创建时间，1价格")
+	@ApiModelProperty("排序条件,0创建时间，1价格， 2销量")
 	private Integer orderBy;
 	
 	@ApiModelProperty("升序或者降序，如果默认升序 1 降序 0升序")

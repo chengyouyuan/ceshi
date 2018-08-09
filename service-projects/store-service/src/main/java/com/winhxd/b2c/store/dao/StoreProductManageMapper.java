@@ -84,4 +84,11 @@ public interface StoreProductManageMapper {
     * @date 2018年8月8日下午8:42:09
      */
     Page<StoreProdSimpleVO> selectVoByCondition(@Param("condition")StoreProductManageCondition condition);
+
+    /**
+     * 查询是否有推荐商品
+     * @param storeId
+     * @return
+     */
+    Integer queryRecommendFlag(Long storeId);
 }

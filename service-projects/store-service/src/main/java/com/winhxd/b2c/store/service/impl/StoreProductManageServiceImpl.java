@@ -1,15 +1,5 @@
 package com.winhxd.b2c.store.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -26,6 +16,15 @@ import com.winhxd.b2c.store.dao.StoreProductManageMapper;
 import com.winhxd.b2c.store.dao.StoreProductStatisticsMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreProductManageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 /**
  * 门店商品管理Service实现类
  * @ClassName: StoreProductManageServiceImpl 
@@ -250,4 +249,14 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		}
 		
 	}
+
+	@Override
+	public Boolean queryRecommendFlag(Long storeId) {
+		Integer count = storeProductManageMapper.queryRecommendFlag(storeId);
+		if (count != null && count > 0){
+			return true;
+		}
+		return false;
+	}
+
 }

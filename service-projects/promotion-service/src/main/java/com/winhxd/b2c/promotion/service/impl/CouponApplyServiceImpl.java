@@ -56,8 +56,8 @@ public class CouponApplyServiceImpl implements CouponApplyService {
         ResponseResult<PagedList<CouponApplyVO>> result= new ResponseResult<PagedList<CouponApplyVO>>();
         PagedList<CouponApplyVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponApplyVO> customers = couponApplyMapper.getCouponApplyPage(condition);
-        PageInfo<CouponApplyVO> pageInfo = new PageInfo<>(customers);
+        List<CouponApplyVO> couponApplyList = couponApplyMapper.getCouponApplyPage(condition);
+        PageInfo<CouponApplyVO> pageInfo = new PageInfo<>(couponApplyList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

@@ -36,6 +36,8 @@ public class CouponInvestorVO {
 
     private List<CouponInvestorDetail> detailList;
 
+    private String relTempleteCount;
+
 
     public Integer getId() {
         return id;
@@ -131,5 +133,13 @@ public class CouponInvestorVO {
 
     public void setDetailList(List<CouponInvestorDetail> detailList) {
         this.detailList = detailList;
+    }
+
+    public String getRelTempleteCount() {
+        return relTempleteCount;
+    }
+
+    public void setRelTempleteCount(String relTempleteCount) {
+        this.relTempleteCount = relTempleteCount;
     }
 }

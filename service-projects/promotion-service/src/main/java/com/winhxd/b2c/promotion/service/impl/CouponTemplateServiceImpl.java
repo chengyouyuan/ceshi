@@ -99,8 +99,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         ResponseResult<PagedList<CouponTemplateVO>> result= new ResponseResult<PagedList<CouponTemplateVO>>();
         PagedList<CouponTemplateVO> pagedList = new PagedList<>();
         PageHelper.startPage(couponTemplateCondition.getPageNo(),couponTemplateCondition.getPageSize());
-        List<CouponTemplateVO> customers = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);
-        PageInfo<CouponTemplateVO> pageInfo = new PageInfo<>(customers);
+        List<CouponTemplateVO> couponTemplateVOList = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);
+        PageInfo<CouponTemplateVO> pageInfo = new PageInfo<>(couponTemplateVOList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

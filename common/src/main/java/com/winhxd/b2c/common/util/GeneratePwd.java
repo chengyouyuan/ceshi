@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.util;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author caoliming
@@ -303,17 +304,9 @@ public class GeneratePwd {
         return "" + result;
     }
 
-    public static void main(String[] args) {
-        System.out.println(GeneratePwd.generatePwd());
-        /*for (int i = 0; i < 20; i++) {
-			System.out.println(i+" = "+GeneratePwd.generatePwd());
-		}*/
-		/*for (int i = 0; i < 100; i++) {
-			System.out.println(i+" = "+GeneratePwd.generatePwd4Mobile());
-		}*/
-        for (int i = 0; i < 100; i++) {
-            System.out.println(i + " = " + GeneratePwd.generate12Code());
-        }
-    }
+	public static String getRandomUUID() {
+		String uuid = UUID.randomUUID().toString(); 
+		return uuid = uuid.replace("-", "");  
+	}
 
 }

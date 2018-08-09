@@ -42,7 +42,7 @@ public class CouponController {
 	@Autowired
 	private CouponApplyServiceClient couponApplyServiceClient;
 
-	//=====================================优惠券活动结束=============================================================
+	//=====================================优惠券活动开始=============================================================
 	/**
 	 *
 	 *@Deccription  获取优惠券活动列表（领券、推券）
@@ -188,6 +188,10 @@ public class CouponController {
 
 	//=====================================优惠券活动结束=============================================================
 
+
+
+
+
 	//=====================================优惠券模板开始=============================================================
 	/**
 	 *
@@ -275,7 +279,6 @@ public class CouponController {
 	}
 
 
-//============================================优惠券模板结束============================================================
 
 
 //============================================出资方开始============================================================
@@ -342,7 +345,6 @@ public class CouponController {
 		return responseResult;
 	}
 
-//============================================出资方结束============================================================
 
 
 //============================================优惠方式规则开始============================================================
@@ -397,7 +399,7 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	return responseResult;
 }
 
-//============================================优惠方式规则结束============================================================
+
 
 
 //============================================优惠券类型规则开始============================================================
@@ -451,9 +453,32 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 		return responseResult;
 	}
 
-//============================================优惠券类型规则开始============================================================
 
 
+//=====================================点模板引用数量显示分页===============================================
+@ApiOperation("点出资方列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findInvertorTempleteCountPage")
+public ResponseResult findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId){
+
+   return null;
+}
+
+
+@ApiOperation("点优惠方式规则列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findGradeTempleteCountPage")
+public ResponseResult findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId){
+
+	return null;
+}
+
+
+
+@ApiOperation("点类型规则列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findApplyTempleteCountPage")
+public ResponseResult findApplyTempleteCountPage(@RequestParam("applyId") String applyId){
+
+	return null;
+}
 
 
 	/**

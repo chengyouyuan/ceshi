@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
@@ -67,6 +68,7 @@ public class UserController {
         } else {
             sysUser.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         }
+        sysUser.setStatus(UserStatusEnum.ENABLED.getCode());
         sysUser.setCreated(date);
         sysUser.setCreatedBy(userInfo.getUsername());
         sysUser.setUpdated(date);

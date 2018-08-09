@@ -52,16 +52,15 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * 惠小店门店商品相关接口
  *
  * @ClassName: ApiStoreProductManageController
- * @Description: TODO
+ * @Description: 惠小店门店商品相关接口
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午2:58:37
  */
 @Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {
     private static final Logger logger = LoggerFactory.getLogger(ApiStoreProductManageController.class);
     @Autowired

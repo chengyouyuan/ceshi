@@ -40,7 +40,7 @@ public interface BackStageStoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/2003/v1/getStoreInfoById",method = RequestMethod.GET)
-    ResponseResult<BackStageStoreVO> getStoreInfoById(@RequestParam Long id);
+    ResponseResult<BackStageStoreVO> getStoreInfoById(@RequestParam("id") Long id);
 
 }
 /**

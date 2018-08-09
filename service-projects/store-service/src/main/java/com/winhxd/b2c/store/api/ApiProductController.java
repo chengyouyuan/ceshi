@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -62,7 +63,7 @@ public class ApiProductController {
             //获取门店下的商品
             StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
             storeProductManageCondition.setStoreId(condition.getStoreId());
-            storeProductManageCondition.setProdStatus(Arrays.asList((byte)1));
+            storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
             storeProductManageCondition.setRecommend(condition.getRecommend());
             storeProductManageCondition.setOrderBy(condition.getProductSortType());
             storeProductManageCondition.setDescAsc(condition.getProductSortType() != null && condition.getProductSortType().equals(1)
@@ -104,8 +105,8 @@ public class ApiProductController {
             //获取门店下的商品
             StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
             storeProductManageCondition.setStoreId(condition.getStoreId());
-            storeProductManageCondition.setProdStatus(Arrays.asList((byte)1));
-            storeProductManageCondition.setRecommend(flag ? (byte)1 : (byte)0);
+            storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+            storeProductManageCondition.setRecommend(flag ? (short)1 : (short)0);
             List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
 
             //获取分类信息 初始化商品信息

@@ -21,15 +21,15 @@ public enum StoreProductStatusEnum {
      */
     DELETED((short) 2, "删除");
 
-    private short statusCode;
+    private Short statusCode;
     private String statusDes;
 
-    StoreProductStatusEnum(short statusCode, String statusDes) {
+    StoreProductStatusEnum(Short statusCode, String statusDes) {
         this.statusCode = statusCode;
         this.statusDes = statusDes;
     }
 
-    public short getStatusCode() {
+    public Short getStatusCode() {
         return statusCode;
     }
 

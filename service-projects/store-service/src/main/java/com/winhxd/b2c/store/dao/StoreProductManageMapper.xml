@@ -134,7 +134,7 @@
         select
         prod.sku_code as skuCode
         from store_product_manage prod
-        left join store_product_statistics sps on sps.store_id = prod.store_id and sps.prod_id = prod.prod_id
+        left join store_product_statistics sps on sps.store_id = prod.store_id and sps.prod_code = prod.prod_code
         where 1=1
         <if test="condition.prodStatus != null">
             and prod.prod_status in 
@@ -191,7 +191,7 @@
             </when>
             <!-- 默认创建时间 desc -->
             <otherwise>
-                order by created desc
+                order by prod.created desc
             </otherwise>
         </choose>
     </select>

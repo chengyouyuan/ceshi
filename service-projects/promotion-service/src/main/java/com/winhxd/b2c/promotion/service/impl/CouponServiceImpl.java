@@ -10,8 +10,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
@@ -301,7 +300,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean orderUseCoupon(CouponCondition condition) {
+    public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -338,7 +337,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean orderUntreadCoupon(CouponCondition condition) {
+    public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -360,7 +359,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Boolean revokeCoupon(CouponCondition condition) {
+    public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
         if(sendIds.isEmpty()){
             throw new BusinessException(BusinessCode.CODE_1007);

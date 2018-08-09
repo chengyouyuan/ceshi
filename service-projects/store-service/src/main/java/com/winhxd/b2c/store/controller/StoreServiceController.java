@@ -21,6 +21,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
@@ -226,6 +227,13 @@ public class StoreServiceController implements StoreServiceClient {
 		
 		result.setData(vo);
 		return result;
+	}
+
+
+	@Override
+	public ResponseResult<Void> updateStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

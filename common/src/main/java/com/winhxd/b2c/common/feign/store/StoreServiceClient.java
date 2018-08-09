@@ -1,23 +1,29 @@
 package com.winhxd.b2c.common.feign.store;
 
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author chengyy
@@ -104,6 +110,18 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
+    
+    /**
+     * 更新门店商品统计信息
+    * @Title: updateStoreProductStatistics 
+    * @Description: TODO 
+    * @param conditions
+    * @return ResponseResult<Void>
+    * @author wuyuanbao
+    * @date 2018年8月9日下午4:16:00
+     */
+    @RequestMapping(value = "/store/1024/v1/findStoreUserInfoList", method = RequestMethod.POST)
+    ResponseResult<Void> updateStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
 }
 
 /**
@@ -166,5 +184,11 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoList，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+	@Override
+	public ResponseResult<Void> updateStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+		logger.error("StoreServiceClientFallBack -> updateStoreProductStatistics，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 
 }

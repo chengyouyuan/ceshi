@@ -20,7 +20,7 @@ public class BackStageModifyStoreCondition {
     private Long id;
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
-    private Byte storeStatus;
+    private Short storeStatus;
 
     @ApiModelProperty(value = "门店名称")
     private String storeName;

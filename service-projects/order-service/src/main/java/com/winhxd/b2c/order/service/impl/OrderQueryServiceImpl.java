@@ -88,15 +88,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
-        List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
-        List<String> skuList = new ArrayList<>();
-        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            List<OrderItemVO> items = orderInfoDetailVO.getOrderItemVoList();
-            for (OrderItemVO orderItemVO : items) {
-                skuList.add(orderItemVO.getSkuCode());
-            }
-        }
-        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
+        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());

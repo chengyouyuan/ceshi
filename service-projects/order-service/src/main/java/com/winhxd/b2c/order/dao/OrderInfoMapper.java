@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 
@@ -212,4 +213,13 @@ public interface OrderInfoMapper {
      * @return
      */
     int orderPickup(@Param("pickupCode") String pickupCode, @Param("orderId") Long orderId, @Param("expectOrderStatus") Short expectOrderStatus, @Param("newOrderStatus") short newOrderStatus);
+
+    /**
+     * 订单各状态数量统计
+     * @author wangbin
+     * @date  2018年8月9日 下午2:02:13
+     * @param storeCustomerId
+     * @return 
+     */
+    OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
 }

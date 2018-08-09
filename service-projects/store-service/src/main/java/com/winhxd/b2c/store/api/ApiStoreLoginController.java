@@ -177,6 +177,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+						storeUserInfo.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -282,6 +283,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+						storeUserInfo.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -371,6 +373,7 @@ public class ApiStoreLoginController {
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
+						info.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -390,6 +393,7 @@ public class ApiStoreLoginController {
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
+						info.setStoreStatus((byte) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}

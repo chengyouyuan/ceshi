@@ -1,26 +1,20 @@
 package com.winhxd.b2c.order.service.impl;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.constant.OrderNotifyMsg;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.order.condition.*;
-import com.winhxd.b2c.common.domain.order.enums.*;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -34,13 +28,42 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
 
 @Service
 public class CommonOrderServiceImpl implements OrderService {
@@ -68,11 +91,18 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
+    
     @Resource
     private Cache cache;
+    
+    @Resource
+    private StoreServiceClient storeServiceClient;
 
-
+    @Autowired
+    private CustomerServiceClient customerServiceclient;
+    
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
+    
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
@@ -86,7 +116,7 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo orderInfo = assembleOrderInfo(orderCreateCondition);
         //订单创建前相关业务操作
         logger.info("订单orderNo：{} 创建前相关业务操作执行开始", orderInfo.getOrderNo());
-        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoBeforeCreateProcess(orderInfo);
+        getOrderHandler(orderInfo.getValuationType()).orderInfoBeforeCreateProcess(orderInfo);
         logger.info("订单orderNo：{} 创建前相关业务操作执行结束", orderInfo.getOrderNo());
         orderInfoMapper.insertSelective(orderInfo);
         orderItemMapper.insertItems(orderInfo.getOrderItems());
@@ -96,7 +126,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderStatusEnum.SUBMITTED.getStatusDes(), MainPointEnum.MAIN);
         //订单创建后相关业务操作
         logger.info("订单orderNo：{} 创建后相关业务操作执行开始", orderInfo.getOrderNo());
-        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderInfoAfterCreateProcess(orderInfo);
+        getOrderHandler(orderInfo.getValuationType()).orderInfoAfterCreateProcess(orderInfo);
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事物提交后相关事件
@@ -135,7 +165,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 orderPayMsg, MainPointEnum.NOT_MAIN);
         logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
-        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        getOrderHandler(orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
         //订单支付成功事物提交后相关事件
         registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo));
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
@@ -351,10 +381,14 @@ public class CommonOrderServiceImpl implements OrderService {
                 throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY);
             }
             orderInfo.setOrderTotalMoney(condition.getOrderTotal());
+            orderInfo.setRealPaymentMoney(condition.getOrderTotal());
+            int num = orderInfoMapper.updateOrderMoney(condition.getOrderTotal(), condition.getOrderTotal(), orderInfo.getId());
+            if (num != 1) {
+                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+            }
         }
-        //TODO 更新订单金额
         //调用订单接单业务流转接口
-        getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
+        getOrderHandler(orderInfo.getValuationType()).orderInfoConfirmProcess(orderInfo);
         logger.info("门店确认订单结束：condition={}", condition);
     }
 
@@ -435,7 +469,15 @@ public class CommonOrderServiceImpl implements OrderService {
                 orderInfo.getOrderStatus(), orderInfo.getStoreId(), null,
                 OrderStatusEnum.FINISHED.getStatusDes(), MainPointEnum.MAIN);
         //TODO 发送云信
-        String msg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE;
+        String last4MobileNums;
+        CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
+        if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
+            logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
+            last4MobileNums = "";
+        }else {
+            last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+        }
+        String msg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
         registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo));
         logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
@@ -462,10 +504,10 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setCreatedBy(orderCreateCondition.getCustomerId());
         //计算订单总金额
         BigDecimal orderTotal = calculateOrderTotal(orderCreateCondition);
-        short valuationType = (short) ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
+        short valuationType = ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
         if (orderTotal == null) {
             //待计价订单
-            valuationType = (short) ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
+            valuationType = ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
         }
         orderInfo.setOrderTotalMoney(orderTotal);
         orderInfo.setValuationType(valuationType);
@@ -477,13 +519,29 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setRemarks(orderCreateCondition.getRemark());
         orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
         orderInfo.setOrderNo(generateOrderNo());
-        // TODO 获取门店地理区域信息
-        orderInfo.setRegionCode("regionCode");
+        StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
+        orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
         //组装订单商品信息
         aseembleOrderItems(orderCreateCondition, orderInfo);
         //优惠券相关优惠计算
         calculateDiscounts(orderInfo, orderCreateCondition.getCouponIds());
         return orderInfo;
+    }
+
+    /**
+     * 获取门店信息
+     * @author wangbin
+     * @date  2018年8月9日 下午3:07:42
+     * @param storeId
+     * @return
+     */
+    private StoreUserInfoVO getStoreUserInfoByStoreId(Long storeId) {
+        ResponseResult<StoreUserInfoVO> storeRet = storeServiceClient.findStoreUserInfo(storeId);
+        if (storeRet == null || storeRet.getCode() != BusinessCode.CODE_OK || storeRet.getData() == null) {
+            throw new BusinessException(BusinessCode.WRONG_STORE_ID);
+        }
+        logger.info("根据storeId={}获取门店信息成功，门店信息：{}", storeId, storeRet.getData());
+        return storeRet.getData();
     }
 
     /**
@@ -506,7 +564,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney()).subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney()));
     }
 
-    private OrderHandler getOrderHandler(short payType, short valuationType) {
+    private OrderHandler getOrderHandler(short valuationType) {
         if (valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             return onlinePayPickUpInStoreOrderHandler;
         } else if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
@@ -628,7 +686,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+            getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterPaySuccessProcess(orderInfo);
         }
     }
@@ -650,7 +708,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            getOrderHandler(orderInfo.getPayType(), orderInfo.getValuationType())
+            getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterCreateSuccessProcess(orderInfo);
         }
     }
@@ -675,4 +733,14 @@ public class CommonOrderServiceImpl implements OrderService {
             //TODO 发送mq完成消息
         }
     }
+    
+    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+        ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceclient.findCustomerUserByIds(Arrays.asList(customerId));
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null || ret.getData().isEmpty()) {
+            throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
+        }
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        return ret.getData().get(0);
+    }
+
 }

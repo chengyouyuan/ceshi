@@ -57,10 +57,10 @@ public class ApiOrderController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+            if (storeUser == null || storeUser.getBusinessId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
             }
-            condition.setStoreId(storeUser.getStoreCustomerId());
+            condition.setStoreId(storeUser.getBusinessId());
             this.orderService.orderPickup4Store(condition);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
@@ -90,10 +90,10 @@ public class ApiOrderController {
         try {
             //获取当前登录门店Id
             StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+            if (storeUser == null || storeUser.getBusinessId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
             }
-            condition.setStoreId(storeUser.getStoreCustomerId());
+            condition.setStoreId(storeUser.getBusinessId());
             this.orderService.orderConfirm4Store(condition);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);

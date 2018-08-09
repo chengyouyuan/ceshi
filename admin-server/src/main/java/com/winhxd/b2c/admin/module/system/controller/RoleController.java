@@ -131,7 +131,7 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @PostMapping(value = "/role/remove/{id}")
+    @DeleteMapping(value = "/role/remove/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_DELETE})
     public ResponseResult remove(@PathVariable("id") Long id) {
         logger.info("{} - 根据编号删除权限组, 参数：id={}", MODULE_NAME, id);

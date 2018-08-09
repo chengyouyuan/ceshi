@@ -17,7 +17,7 @@ import lombok.Data;
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午1:31:17
  */
-@ApiModel("B端门店商品基本操作入参")
+@ApiModel("B端门店商品管理入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoreProductManageCondition implements Serializable{

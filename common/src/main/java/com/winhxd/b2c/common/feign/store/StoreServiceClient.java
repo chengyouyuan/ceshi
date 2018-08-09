@@ -5,7 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
-import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
@@ -49,7 +49,7 @@ public interface StoreServiceClient {
      * @date 2018年8月6日上午9:23:34
      */
     @RequestMapping(value = "/store/1017/v1/findShopCarProd", method = RequestMethod.GET)
-    ResponseResult<List<ShopCarProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
+    ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**
      * B端登入时校验改门店下上架商品未设置价格信息
@@ -133,7 +133,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus, Long storeId) {
+    public ResponseResult<List<ShopCartProdVO>> findShopCarProd(List<String> skus, Long storeId) {
         logger.error("StoreServiceClientFallBack -> findShopCarProd报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

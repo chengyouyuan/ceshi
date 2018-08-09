@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(value = "api product", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);

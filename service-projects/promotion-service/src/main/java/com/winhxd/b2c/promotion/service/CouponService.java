@@ -16,10 +16,9 @@ public interface CouponService {
      * 新人专享优惠列表
      *
      * @author wangxiaoshun
-     * @param couponCondition 入参
      * @return
      */
-    List<CouponVO> getNewUserCouponList(CouponCondition couponCondition);
+    List<CouponVO> getNewUserCouponList();
     
     /**
      * @author liuhanning
@@ -35,10 +34,9 @@ public interface CouponService {
      * 待领取的优惠券列表
      *
      * @author wangxiaoshun
-     * @param couponCondition 入参
      * @return
      */
-    List<CouponVO> unclaimedCouponList(CouponCondition couponCondition);
+    List<CouponVO> unclaimedCouponList();
 
     /**
      * 我的优惠券列表

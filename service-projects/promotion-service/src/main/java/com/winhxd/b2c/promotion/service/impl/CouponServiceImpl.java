@@ -64,7 +64,7 @@ public class CouponServiceImpl implements CouponService {
     ProductServiceClient productServiceClient;
 
     @Override
-    public List<CouponVO> getNewUserCouponList(CouponCondition couponCondition) {
+    public List<CouponVO> getNewUserCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -185,11 +185,10 @@ public class CouponServiceImpl implements CouponService {
 
     /**
      * 待领取优惠券
-     * @param couponCondition 入参
      * @return
      */
     @Override
-    public List<CouponVO> unclaimedCouponList(CouponCondition couponCondition) {
+    public List<CouponVO> unclaimedCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");

@@ -33,8 +33,8 @@
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status,token
   </sql>
- <resultMap id="storeUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO" extends="BaseResultMap"/>
-  <select id="selectStoreUserByIds" resultMap="storeUserInfoVO1">
+
+  <select id="selectStoreUserByIds" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from store_user_info where id in
     <foreach collection="ids" item="id" separator="," open="(" close=")">
       #{id}

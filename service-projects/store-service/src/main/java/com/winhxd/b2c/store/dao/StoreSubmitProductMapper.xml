@@ -40,7 +40,7 @@
     id, store_id, prod_name, prod_code, prod_image1,
     prod_status, audit_remark,sku_code
   </sql>
-  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="Simple_Column_List">
+  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="BaseResultMap">
   	select
   	<include refid="Simple_Column_List" />
   	from store_submit_product

@@ -129,8 +129,16 @@ public class StoreServiceImpl implements StoreService {
         if(ids == null || ids.size() == 0){
             return null;
         }
-        List<StoreUserInfoVO> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
-        return userInfos;
+        List<StoreUserInfo> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
+        List<StoreUserInfoVO> list = new ArrayList<>();
+        if(userInfos != null && userInfos.size() > 0){
+        for(StoreUserInfo info:userInfos){
+            StoreUserInfoVO infoVO = new StoreUserInfoVO();
+            BeanUtils.copyProperties(info,infoVO);
+            list.add(infoVO);
+            }
+        }
+        return list;
 
     }
 

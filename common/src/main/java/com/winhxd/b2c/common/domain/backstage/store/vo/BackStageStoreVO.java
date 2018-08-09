@@ -46,6 +46,9 @@ public class BackStageStoreVO {
     @ApiModelProperty(value = "联系人")
     private String shopkeeper;
 
+    @ApiModelProperty(value = "联系方式")
+    private String contactMobile;
+
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
     private String paymentWay;
 

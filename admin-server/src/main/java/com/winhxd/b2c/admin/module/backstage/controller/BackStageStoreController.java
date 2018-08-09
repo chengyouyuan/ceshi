@@ -3,6 +3,7 @@ package com.winhxd.b2c.admin.module.backstage.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
@@ -15,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,7 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @PostMapping(value = "/1000/v1/storeList")
+    @PostMapping(value = "/1020/v1/storeList")
     public ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
         try {
@@ -65,8 +67,8 @@ public class BackStageStoreController {
     @ApiOperation(value = "查询门店账户详细信息接口", notes = "查询门店账户详细信息接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "1000/v1/getStoreInfoById", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<BackStageStoreVO> getStoreInfoById(@RequestParam("id") Long id) {
+    @PostMapping(value = "1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
         try {
             logger.info("查询门店账户详细信息接口入参为：{}", id);
@@ -81,20 +83,22 @@ public class BackStageStoreController {
         return responseResult;
     }
 
-    @ApiOperation(value = "编辑门店保存接口", response = ResponseResult.class, notes = "编辑门店保存接口")
+    @ApiOperation(value = "编辑门店保存接口", notes = "编辑门店保存接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeId参数为空！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
-    @PostMapping(value = "1000/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult modifyStoreInfo(@RequestBody BackStageStoreInfoCondition openStoreCondition) {
-        if (openStoreCondition.getCustomerId() == null) {
-            logger.error("编辑门店保存接口 modifyStoreInfo,customerId参数为空");
-            throw new BusinessException(BusinessCode.CODE_200001);
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！", response = ResponseResult.class)})
+    @PostMapping(value = "1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
+        if(condition.getId() == null || StringUtils.isBlank(condition.getStoreName()) ||
+                StringUtils.isBlank(condition.getStoreAddress()) || StringUtils.isBlank(condition.getShopkeeper()) ||
+                StringUtils.isBlank(condition.getContactMobile())){
+            logger.error("编辑门店保存接口，参数错误");
+            throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult responseResult = new ResponseResult();
         try {
-            logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(openStoreCondition));
+            logger.info("编辑门店保存接口入参为：{}", condition.toString());
+            backStageStoreServiceClient.modifyStoreInfo(condition);
         } catch (Exception e) {
             logger.error("编辑门店保存接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -103,11 +107,11 @@ public class BackStageStoreController {
         return responseResult;
     }
 
-    @ApiOperation(value = "获取地域列表", response = ResponseResult.class, notes = "获取地域列表")
+    @ApiOperation(value = "获取地域列表", notes = "获取地域列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "1003/v1/reginCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult reginCodeList(@RequestBody SysRegionCondition condition) {
+    @PostMapping(value = "1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult  = new ResponseResult<>();
         try {
             logger.info("{} - #后台-门店##地理区域列表, 参数：condition={}", MODULE_NAME, condition.toString());

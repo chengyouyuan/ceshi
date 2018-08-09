@@ -18,7 +18,11 @@ public interface CouponApplyProductListMapper {
 
     int updateByPrimaryKey(CouponApplyProductList record);
 
-    List<CouponApplyProductList> selectByApplyProductId(Long id);
+    /**
+     *
+     * @param applyProductId
+     * @return
+     */
+    List<CouponApplyProductList> selectByApplyProductId(Long applyProductId);
 
-    List<CouponApplyBrandList> selectByApplyBrandId(Long id);
 }

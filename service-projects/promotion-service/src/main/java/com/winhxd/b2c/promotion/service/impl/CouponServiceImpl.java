@@ -170,7 +170,7 @@ public class CouponServiceImpl implements CouponService {
             if(couponVO.getApplyRuleType().equals(2)){
                 List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
                 if(!couponApplyBrands.isEmpty()){
-                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyProductListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
                     //组装请求的参数
                     List<String> brandCodes = new ArrayList<>();
                     for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){

@@ -17,5 +17,10 @@ public interface CouponApplyBrandMapper {
 
     int updateByPrimaryKey(CouponApplyBrand record);
 
+    /**
+     *
+     * @param applyId
+     * @return
+     */
     List<CouponApplyBrand> selectByApplyId(Long applyId);
 }

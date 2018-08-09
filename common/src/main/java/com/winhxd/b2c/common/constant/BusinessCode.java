@@ -142,6 +142,12 @@ public final class BusinessCode {
     @ApiModelProperty("订单提货码错误")
     public static final int WRONG_ORDER_PICKUP_CODE = 400008;
 
+    @ApiModelProperty("门店id错误")
+    public static final int WRONG_STORE_ID = 400009;
+    
+    @ApiModelProperty("顾客id错误")
+    public static final int WRONG_CUSTOMER_ID = 400010;
+
     /** 参数异常*/
     public static final int CODE_422001 = 422001;
     /** 未支付的订单不允许退款*/

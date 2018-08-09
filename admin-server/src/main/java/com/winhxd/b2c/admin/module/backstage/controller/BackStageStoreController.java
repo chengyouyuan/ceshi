@@ -70,7 +70,8 @@ public class BackStageStoreController {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
         try {
             logger.info("查询门店账户详细信息接口入参为：{}", id);
-            responseResult.setData(new BackStageStoreVO());
+            BackStageStoreVO backStageStoreVO = backStageStoreServiceClient.getStoreInfoById(id).getData();
+            responseResult.setData(backStageStoreVO);
             logger.info("查询门店账户详细信息接口返参为：{}", JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {
             logger.error("查询门店账户详细信息接口，服务器内部错误：{}", e);

@@ -31,4 +31,12 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
         return responseResult;
     }
 
+    @Override
+    public ResponseResult<BackStageStoreVO> getStoreInfoById(Long id) {
+        ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
+        BackStageStoreVO backStageStoreVO = storeService.findByIdForBackStage(id);
+        responseResult.setData(backStageStoreVO);
+        return responseResult;
+    }
+
 }

@@ -135,6 +135,16 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public BackStageStoreVO findByIdForBackStage(Long id) {
+        BackStageStoreVO backStageStoreVO = new BackStageStoreVO();
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
+        SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
+        BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        return backStageStoreVO;
+    }
+
+    @Override
     public int updateByPrimaryKeySelective(StoreUserInfo record) {
         return storeUserInfoMapper.updateByPrimaryKeySelective(record);
     }

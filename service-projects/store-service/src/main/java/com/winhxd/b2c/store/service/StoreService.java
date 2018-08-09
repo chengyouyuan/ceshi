@@ -74,4 +74,11 @@ public interface StoreService {
      * @date 2018/8/8 10:16
      */
     List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids);
+
+    /**
+     * 后台管理，查询门店详细信息
+     * @param id 主键
+     * @return
+     */
+    BackStageStoreVO findByIdForBackStage(Long id);
 }

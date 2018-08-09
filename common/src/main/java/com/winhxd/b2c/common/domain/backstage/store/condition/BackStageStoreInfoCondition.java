@@ -54,7 +54,7 @@ public class BackStageStoreInfoCondition extends BaseCondition{
     private String contactMobile;
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
-    private Byte paymentWay;
+    private String paymentWay;
 
     @ApiModelProperty(value = "筛选的最小级别regionCode")
     private String regionCode;

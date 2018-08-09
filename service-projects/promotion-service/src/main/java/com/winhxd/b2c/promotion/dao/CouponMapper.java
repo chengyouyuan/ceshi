@@ -3,6 +3,8 @@ package com.winhxd.b2c.promotion.dao;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @Auther wangxiaoshun
  * @Date 2018/8/8 09 53
@@ -35,4 +37,11 @@ public interface CouponMapper {
      * @return
      */
     int getCouponNumByStoreId(@Param("activityId")Long activityId, @Param("templateId")Long templateId,@Param("storeId") Long storeId);
+
+    /**
+     * 查询订单使用的优惠券列表
+     * @param orderNo
+     * @return
+     */
+    List<CouponVO> couponListByOrder(String orderNo);
 }

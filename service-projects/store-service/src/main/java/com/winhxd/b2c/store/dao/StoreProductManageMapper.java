@@ -62,7 +62,7 @@ public interface StoreProductManageMapper {
     * @author wuyuanbao
     * @date 2018年8月6日下午8:16:11
      */
-    int countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
+    long countSkusByConditon(@Param("condition") StoreProductManageCondition condition);
     /**
      * 通过storeId跟skucode查询StoreProductManage
     * @Title: selectBySkuCodeAndStoreId 

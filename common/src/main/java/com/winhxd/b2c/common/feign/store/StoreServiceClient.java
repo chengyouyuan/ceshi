@@ -20,7 +20,6 @@ import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
 import feign.hystrix.FallbackFactory;
@@ -34,7 +33,7 @@ import feign.hystrix.FallbackFactory;
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
-     * @return 无
+     * @return 无  (根据状态码进行判断绑定状态 1001绑定失败, 0绑定成功, 200011用户已经和当前门店存在绑定关系 ， 200003用户已经和其他门店存在绑定关系)
      * @author chengyy
      * @date 2018/8/3 10:32
      * @Description 门店绑定用户
@@ -89,7 +88,7 @@ public interface StoreServiceClient {
      * @Description 通过用户id查询绑定的门店信息
      */
     @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
-    ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
+    ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
      * @param id 门店id
@@ -121,7 +120,7 @@ public interface StoreServiceClient {
     * @date 2018年8月9日下午4:16:00
      */
     @RequestMapping(value = "/store/1024/v1/findStoreUserInfoList", method = RequestMethod.POST)
-    ResponseResult<Void> updateStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
+    ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
 }
 
 /**
@@ -168,7 +167,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(Long customerUserId) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoByCustomerId，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -186,9 +185,10 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
 	@Override
-	public ResponseResult<Void> updateStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
-		logger.error("StoreServiceClientFallBack -> updateStoreProductStatistics，错误信息为{}", throwable);
+	public ResponseResult<Void> saveStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+		logger.error("StoreServiceClientFallBack -> saveStoreProductStatistics，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
+
 
 }

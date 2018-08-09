@@ -307,11 +307,12 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				return responseResult;
-			}
-			Long storeId = storeUser.getBusinessId();
+//			if (storeUser == null) {
+//				responseResult.setCode(BusinessCode.CODE_1002);
+//				return responseResult;
+//			}
+//			Long storeId = storeUser.getBusinessId();
+			Long storeId = condition.getStoreId();
 			StoreSubmitProduct storeSubmitProduct = new StoreSubmitProduct();
 			BeanUtils.copyProperties(condition, storeSubmitProduct);
 			storeSubmitProduct.setStoreId(storeId);
@@ -375,15 +376,16 @@ public class ApiStoreProductManageController {
 	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
 		try {
-			Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-			Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-			if (null == storeCustomerId || null == businessId) {
+			StoreUser storeUser = UserContext.getCurrentStoreUser();
+			if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
 				logger.error("B端搜索商品接口:登录凭证为空");
 				return new ResponseResult<>(BusinessCode.CODE_1002);
 			}
 			if(!verifyParam(condition)){
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
+			Long storeCustomerId = storeUser.getStoreCustomerId();
+			Long businessId = storeUser.getBusinessId();
 			//门店已经上架的商品
 			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
 			manageCondition.setStoreId(businessId);

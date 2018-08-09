@@ -1,6 +1,9 @@
 package com.winhxd.b2c.common.feign.promotion;
 
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -30,13 +33,13 @@ public interface CouponServiceClient {
 	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId);
 
     @RequestMapping(value = "/coupon/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUseCoupon(@RequestBody CouponCondition condition);
+    ResponseResult orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
 
     @RequestMapping(value = "/coupon/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUntreadCoupon(@RequestBody CouponCondition condition);
+    ResponseResult orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition);
 
     @RequestMapping(value = "/coupon/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult revokeCoupon(@RequestBody CouponCondition condition);
+    ResponseResult revokeCoupon(@RequestBody RevokeCouponCodition condition);
 	
 }
 
@@ -63,19 +66,19 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
 	}
 
     @Override
-    public ResponseResult orderUseCoupon(CouponCondition condition) {
+    public ResponseResult orderUseCoupon(OrderUseCouponCondition condition) {
         logger.error("CouponServiceClient -> orderUseCoupon", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult orderUntreadCoupon(CouponCondition condition) {
+    public ResponseResult orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         logger.error("CouponServiceClient -> orderUntreadCoupon", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult revokeCoupon(CouponCondition condition) {
+    public ResponseResult revokeCoupon(RevokeCouponCodition condition) {
         logger.error("CouponServiceClient -> revokeCoupon", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }

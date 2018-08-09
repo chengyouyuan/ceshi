@@ -17,7 +17,7 @@ public class StoreProductStatistics {
     /**
      * 商品id
      */
-    private String prodId;
+    private String prodCode;
     /**
      * sku编码
      */
@@ -59,12 +59,12 @@ public class StoreProductStatistics {
         this.storeId = storeId;
     }
 
-    public String getProdId() {
-        return prodId;
+    public String getProdCode() {
+        return prodCode;
     }
 
-    public void setProdId(String prodId) {
-        this.prodId = prodId;
+    public void setProdCode(String prodCode) {
+        this.prodCode = prodCode;
     }
 
     public String getSkuCode() {

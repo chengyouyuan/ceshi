@@ -46,5 +46,5 @@ public interface StoreProductStatisticsMapper {
      * @auther lvsen
      * @date 2018/8/6 17:45
      */
-    int updateQuantitySoldOutByStoreIdAndProdId(StoreProductManageCondition condition);
+    int updateQuantitySoldOutByStoreIdAndProdCode(StoreProductManageCondition condition);
 }

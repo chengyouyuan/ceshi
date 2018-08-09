@@ -58,7 +58,7 @@ public final class BusinessCode {
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
     public static final int CODE_200002 = 200002;
-    /**门店用户绑定失败*/
+    /**用户已经和其他门店绑定*/
     public static final int CODE_200003 = 200003;
     /**门店信息不存在*/
     public  static final int CODE_200004 = 200004;
@@ -70,8 +70,15 @@ public final class BusinessCode {
     public static final int CODE_200007 = 200007;
     /**更新用户状态失败*/
     public static final int CODE_200008 = 200008;
-    /**用户没有绑定的门店不存在*/
+    /**用户绑定的门店不存在*/
     public static final int CODE_200009 = 200009;
+    /**用户信息不存在*/
+    public static final int CODE_200010 = 200010;
+    /**当前用户和门店已经存在绑定关系*/
+    public static final int CODE_200011 = 200011;
+    /**门店商品skuCode无效*/
+    public static final int CODE_200012 = 200012;
+
 
 
     /** 购物车:商品下架或删除*/

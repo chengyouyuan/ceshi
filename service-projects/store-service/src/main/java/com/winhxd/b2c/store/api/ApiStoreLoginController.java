@@ -172,7 +172,7 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
@@ -278,7 +278,7 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
@@ -368,7 +368,7 @@ public class ApiStoreLoginController {
 						 */
 						info.setOpenid(storeUserInfoCondition.getOpenid());
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerUrl());
+						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						info.setCreated(new Date());
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());

@@ -19,7 +19,7 @@ public class StoreUserInfoCondition{
 	@ApiModelProperty(value = "密码")
     private String storePassword;
 	@ApiModelProperty(value = "头像")
-    private String shopOwnerUrl;
+    private String shopOwnerImg;
 	@ApiModelProperty(value = "微信openid")
     private String openid;
 	@ApiModelProperty(value = "来源")

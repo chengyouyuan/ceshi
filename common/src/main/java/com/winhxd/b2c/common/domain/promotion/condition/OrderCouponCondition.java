@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Date 2018/8/9 15 48
  * @Description
  */
-public class OrderCouponCondition extends BaseCondition {
+public class OrderCouponCondition{
 
     @ApiModelProperty(value = "订单号", required=true)
     private String orderNo;

@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.controller;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Api(tags = "coupon")
 @RestController
@@ -101,18 +103,22 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<PagedList<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition) {
-		LOGGER.info("=/api-promotion/coupon/504/v1/couponListByOrder-查询订单使用的优惠券列表=--开始--{}", couponCondition);
-		ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
+	public ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition) {
+		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--开始--{}", couponCondition);
+		ResponseResult<List<CouponVO>> result = new ResponseResult<>();
 		try {
 			//返回对象
-			PagedList<CouponVO> pages = couponService.couponListByOrder(couponCondition);
+            List<CouponVO> pages = couponService.couponListByOrder(couponCondition);
 			result.setData(pages);
-		} catch (Exception e) {
-			LOGGER.error("=/api-promotion/coupon/505/v1/couponListByOrder-查询订单使用的优惠券列表=--异常" + e, e);
+		} catch (BusinessException e) {
+            LOGGER.error("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--异常" + e, e);
+            result.setCode(e.getErrorCode());
+        }
+		catch (Exception e) {
+			LOGGER.error("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--异常" + e, e);
 			result.setCode(BusinessCode.CODE_1001);
 		}
-		LOGGER.info("=/api-promotion/coupon/505/v1/couponListByOrder-查询订单使用的优惠券列表=--结束 result={}", result);
+		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--结束 result={}", result);
 		return result;
 	}
 

@@ -103,7 +103,17 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
-
+		/**
+		 AdminUser adminUser = UserContext.getCurrentAdminUser();
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 **/
+		String userId = "100102";
+		String userName = "大花脸";
+		String code = getUUID();
+		condition.setCode(code);
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
 		ResponseResult responseResult = couponTemplateServiceClient.addCouponTemplate(condition);
 		return responseResult;
 	}
@@ -138,7 +148,15 @@ public class CouponController {
 	@ApiOperation("单个删除/批量删除（非物理删除）/ 设为无效")
 	@PostMapping(value = "/v1/updateCouponTemplateToValid")
 	public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids){
-		ResponseResult responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(ids);
+		/**
+		 AdminUser adminUser = UserContext.getCurrentAdminUser();
+		 String userId = adminUser.getId()+"";
+		 String userName = adminUser.getUsername();
+		 **/
+		String userId = "100102";
+		String userName = "大花脸";
+
+		ResponseResult responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(ids,userId,userName);
 		return responseResult;
 	}
 

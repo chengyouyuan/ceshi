@@ -91,16 +91,16 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "单个删除/批量删除（非物理删除）/ 设为无效", notes = "单个删除/批量删除（非物理删除）/ 设为无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponTemplateToValid(String ids) {
+    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
         if(StringUtils.isBlank(ids)){
             responseResult.setCode(BusinessCode.CODE_1007);
             responseResult.setMessage("参数为空错误");
             return responseResult;
         }
-        Long updateBy = 100102L;
+        Long updateBy = Long.parseLong(userId);
         Date updated = new Date();
-        String updateByName = "lidabenshi";
+        String updateByName = userName ;
         String[] idsArr = ids.split(",");
         List<String> idsList = Arrays.asList(idsArr);
         couponTemplateService.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);

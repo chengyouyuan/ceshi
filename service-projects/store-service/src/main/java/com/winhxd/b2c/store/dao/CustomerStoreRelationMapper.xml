@@ -14,7 +14,7 @@
   <select id="selectByCondition" resultType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
     select <include refid="Base_Column_List"/> from customer_store_relation
     <where>
-      <if test="customerId != null and customerId != ''">
+      <if test="customerId != null">
         and customer_id = #{customerId}
       </if>
     </where>

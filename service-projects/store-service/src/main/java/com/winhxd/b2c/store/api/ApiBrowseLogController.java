@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -13,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -26,6 +24,7 @@ import java.util.Date;
  * @author liutong
  * @date 2018-08-07 17:59:13
  */
+@Api(tags = "C端用户浏览门店记录日志")
 @RestController
 @RequestMapping(value = "api-store/")
 public class ApiBrowseLogController {
@@ -37,20 +36,14 @@ public class ApiBrowseLogController {
 
     @ApiOperation(value = "C端用户浏览门店进入日志", notes = "C端用户浏览门店进入日志")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeCustomerId 参数为空！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
-    @PostMapping(value = "1016/v1/saveBrowseLogLogin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult saveBrowseLogLogin(@RequestBody Long storeCustomerId) {
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @PostMapping(value = "1016/v1/saveBrowseLogLogin/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult saveBrowseLogLogin(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
             logger.info("C端用户浏览门店进入日志 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1001);
-        }
-        if (storeCustomerId == null) {
-            logger.error("C端用户浏览门店进入日志 saveBrowseLogLogin,storeCustomerId 参数为空");
-            throw new BusinessException(BusinessCode.CODE_200001, "storeCustomerId 参数为空");
         }
         try {
             Long customerId = UserContext.getCurrentCustomerUser().getCustomerId();
@@ -71,10 +64,9 @@ public class ApiBrowseLogController {
     @ApiOperation(value = "C端用户浏览门店退出日志", notes = "C端用户浏览门店退出日志")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002, message = "storeCustomerId 参数为空！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
-    @PostMapping(value = "1017/v1/saveBrowseLogLogout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult saveBrowseLogLogout(@RequestBody Long storeCustomerId) {
+    @PostMapping(value = "1017/v1/saveBrowseLogLogout/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult saveBrowseLogLogout(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);

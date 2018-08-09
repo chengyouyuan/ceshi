@@ -14,7 +14,7 @@ import lombok.Data;
 public class BackStageStoreVO {
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
-    private Integer storeStatus;
+    private Byte storeStatus;
 
     @ApiModelProperty(value = "门店用户编码")
     private Long storeCustomerId;
@@ -45,6 +45,9 @@ public class BackStageStoreVO {
 
     @ApiModelProperty(value = "联系人")
     private String shopkeeper;
+
+    @ApiModelProperty(value = "联系方式")
+    private String contactMobile;
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
     private String paymentWay;

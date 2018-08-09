@@ -1,5 +1,6 @@
 package com.winhxd.b2c.order.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -180,9 +181,10 @@ public interface OrderInfoMapper {
     /**
      * 订单退款更新状态等信息
      * @param orderNo
+     * @param reason
      * @return 更新成功影响条数
      */
-    int updateOrderStatusForRefund(String orderNo);
+    int updateOrderStatusForRefund(@Param("orderNo") String orderNo, @Param("cancelReason") String cancelReason);
 
     /**
      * 根据条件查询 
@@ -222,4 +224,15 @@ public interface OrderInfoMapper {
      * @return 
      */
     OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
+
+    /**
+     * 更新订单总金额
+     * @author wangbin
+     * @date  2018年8月9日 下午4:00:33
+     * @param orderTotalMoney
+     * @param realPayMoney
+     * @param orderId
+     * @return
+     */
+    int updateOrderMoney(@Param("orderTotalMoney") BigDecimal orderTotalMoney, @Param("realPayMoney") BigDecimal realPayMoney, @Param("orderId") Long orderId);
 }

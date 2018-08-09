@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "用户请求参数",description = "后台用户列表请求参数")
-public class CustomerUserInfoCondition1 extends BaseCondition {
+public class BackStageCustomerInfoCondition extends BaseCondition {
     /**用户id*/
     private Long customerId;
     /**用户账号*/

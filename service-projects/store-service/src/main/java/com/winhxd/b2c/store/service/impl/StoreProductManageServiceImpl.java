@@ -109,7 +109,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					StoreProductStatistics statistics=new StoreProductStatistics();
 					statistics.setSkuCode(skuCode);
 					statistics.setStoreId(storeId);
-					statistics.setProdId(prodSku.getProductCode());
+					statistics.setProdCode(prodSku.getProductCode());
 					statistics.setCreated(new Date());
 					statistics.setCreatedBy(storeId);
 					statistics.setCreatedByName(storeUserInfo.getShopkeeper());

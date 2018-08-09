@@ -1,6 +1,6 @@
 package com.winhxd.b2c.customer.dao;
 
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import org.apache.ibatis.annotations.Param;
@@ -31,7 +31,7 @@ public interface CustomerUserInfoMapper {
      * @date 2018/8/6 9:33
      * @Description 根据条件查询用户分页数据
      */
-    List<CustomerUserInfoVO> selectCustomer(CustomerUserInfoCondition1 condition);
+    List<CustomerUserInfoVO> selectCustomer(BackStageCustomerInfoCondition condition);
 
     /**
      * @param ids 用户ids

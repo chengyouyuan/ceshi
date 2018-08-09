@@ -1,8 +1,7 @@
 package com.winhxd.b2c.promotion.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
@@ -17,10 +16,9 @@ public interface CouponService {
      * 新人专享优惠列表
      *
      * @author wangxiaoshun
-     * @param couponCondition 入参
      * @return
      */
-    List<CouponVO> getNewUserCouponList(CouponCondition couponCondition);
+    List<CouponVO> getNewUserCouponList();
     
     /**
      * @author liuhanning
@@ -36,10 +34,9 @@ public interface CouponService {
      * 待领取的优惠券列表
      *
      * @author wangxiaoshun
-     * @param couponCondition 入参
      * @return
      */
-    List<CouponVO> unclaimedCouponList(CouponCondition couponCondition);
+    List<CouponVO> unclaimedCouponList();
 
     /**
      * 我的优惠券列表
@@ -61,19 +58,26 @@ public interface CouponService {
      * @param condition
      * @return
      */
-    Boolean orderUseCoupon(CouponCondition condition);
+    Boolean orderUseCoupon(OrderUseCouponCondition condition);
 
     /**
      * 订单退回优惠券
      * @param condition
      * @return
      */
-    Boolean orderUntreadCoupon(CouponCondition condition);
+    Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition);
 
     /**
      * 撤回优惠券
      * @param condition
      * @return
      */
-    Boolean revokeCoupon(CouponCondition condition);
+    Boolean revokeCoupon(RevokeCouponCodition condition);
+
+    /**
+     * 查询订单使用的优惠券列表
+     * @param couponCondition
+     * @return
+     */
+    List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
 }

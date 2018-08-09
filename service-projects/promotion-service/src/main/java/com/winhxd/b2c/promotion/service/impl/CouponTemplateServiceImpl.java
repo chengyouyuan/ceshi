@@ -48,10 +48,10 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         couponTemplate.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
         couponTemplate.setCalType(couponTemplateCondition.getCalType());
         couponTemplate.setPayType(couponTemplateCondition.getPayType());
-        couponTemplate.setCode(getUUID());
+        couponTemplate.setCode(couponTemplateCondition.getCode());
         couponTemplate.setCreated(new Date());
-        couponTemplate.setCreatedByName("lidabenshi");
-        couponTemplate.setCreatedBy(100102L);
+        couponTemplate.setCreatedByName(couponTemplateCondition.getCreatedByName());
+        couponTemplate.setCreatedBy(Long.parseLong(couponTemplateCondition.getCreatedBy()));
         return couponTemplateMapper.insert(couponTemplate);
     }
 

@@ -7,6 +7,9 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.vo.BrandVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
@@ -14,6 +17,7 @@ import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
@@ -50,8 +54,18 @@ public class CouponServiceImpl implements CouponService {
     CouponMapper couponMapper;
     @Autowired
     CouponTemplateUseMapper couponTemplateUseMapper;
-    @Resource
+    @Autowired
+    CouponApplyBrandMapper couponApplyBrandMapper;
+    @Autowired
+    CouponApplyBrandListMapper couponApplyBrandListMapper;
+    @Autowired
+    CouponApplyProductMapper couponApplyProductMapper;
+    @Autowired
+    CouponApplyProductListMapper couponApplyProductListMapper;
+    @Autowired
     StoreServiceClient storeServiceClient;
+    @Autowired
+    ProductServiceClient productServiceClient;
 
     @Override
     public List<CouponVO> getNewUserCouponList(CouponCondition couponCondition) {
@@ -135,7 +149,39 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> getCouponList(Long customerId,Integer couponType){
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerId,couponType);
 
-        //TODO 1.通过品牌code 查询品牌信息  2.通过品类code 查询品类信息 3.通过商品code 查询商品信息
+        for(CouponVO couponVO : couponVOS){
+            if(couponVO.getApplyRuleType().equals(4)){
+                List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
+                if(!couponApplyProducts.isEmpty()){
+                    List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
+                    //组装请求的参数
+                    List<String> productSkus = new ArrayList<>();
+                    for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
+                        productSkus.add(couponApplyProductList.getSkuCode());
+                    }
+                    ProductCondition productCondition = new ProductCondition();
+                    productCondition.setProductSkus(productSkus);
+                    //调用获取商品信息接口
+                    ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
+                    couponVO.setProducts(result.getData());
+                }
+            }
+
+            if(couponVO.getApplyRuleType().equals(2)){
+                List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
+                if(!couponApplyBrands.isEmpty()){
+                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyProductListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+                    //组装请求的参数
+                    List<String> brandCodes = new ArrayList<>();
+                    for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
+                        brandCodes.add(couponApplyBrandList.getBrandCode());
+                    }
+                    //调用获取商品信息接口
+                    ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                    couponVO.setBrands(result.getData());
+                }
+            }
+        }
 
         return couponVOS;
     }
@@ -157,7 +203,7 @@ public class CouponServiceImpl implements CouponService {
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
-        ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(couponCondition.getCustomerId());
+        ResponseResult<StoreUserInfo> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         StoreUserInfo storeUserInfo = result.getData();
 
 

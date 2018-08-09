@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.product.vo.BrandVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -16,6 +18,8 @@ public class CouponVO {
     private Long activityId;
     @ApiModelProperty(value = "优惠券id", required=true)
     private Long templateId;
+    @ApiModelProperty(value = "适用规则id", required=true)
+    private Long applyId;
     @ApiModelProperty(value = "是否有效", required=true)
     private String status;
     @ApiModelProperty(value = "无效原因", required=true)
@@ -48,6 +52,10 @@ public class CouponVO {
     private String useStatus;
     @ApiModelProperty(value = "优惠券领取状态 0 未领取  1 已领取", required=true)
     private String receiveStatus;
+    @ApiModelProperty(value = "适用品牌信息")
+    private List<BrandVO> brands;
+    @ApiModelProperty(value = "适用商品信息")
+    private List<ProductSkuVO> products;
 
     private String couponNumType;
 
@@ -231,5 +239,29 @@ public class CouponVO {
 
     public void setReceiveStatus(String receiveStatus) {
         this.receiveStatus = receiveStatus;
+    }
+
+    public Long getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
+    }
+
+    public List<BrandVO> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(List<BrandVO> brands) {
+        this.brands = brands;
+    }
+
+    public List<ProductSkuVO> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductSkuVO> products) {
+        this.products = products;
     }
 }

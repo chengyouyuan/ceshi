@@ -5,7 +5,7 @@ package com.winhxd.b2c.common.context;
  */
 public class CustomerUser {
     private Long customerId;
-    private String customerMobile;
+    private String openId;
 
     public Long getCustomerId() {
         return customerId;
@@ -15,11 +15,13 @@ public class CustomerUser {
         this.customerId = customerId;
     }
 
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
+	public String getOpenId() {
+		return openId;
+	}
 
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile;
-    }
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
+
+   
 }

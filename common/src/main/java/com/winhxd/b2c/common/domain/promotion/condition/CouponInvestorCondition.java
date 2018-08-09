@@ -10,8 +10,10 @@ import java.util.List;
  * @Description
  **/
 public class CouponInvestorCondition extends BaseCondition implements Serializable {
+    private String id;
     private String code;
-    private String name;
+    private String name;  //规则名称
+    private String names; //出资方名称
     private String remarks;
     private Short status; // 0 无效 1 有效
 
@@ -73,5 +75,21 @@ public class CouponInvestorCondition extends BaseCondition implements Serializab
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNames() {
+        return names;
+    }
+
+    public void setNames(String names) {
+        this.names = names;
     }
 }

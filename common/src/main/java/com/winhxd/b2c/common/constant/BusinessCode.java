@@ -30,6 +30,10 @@ public final class BusinessCode {
     public static final int CODE_1010 = 1010;
     /** 微信快捷登录绑定账号无效 */
     public static final int CODE_1011 = 1011;
+    /**
+     * 验证码请求时长没有超过一分钟
+     */
+    public static final int CODE_1012 = 1012;
     
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
@@ -76,6 +80,8 @@ public final class BusinessCode {
     public static final int CODE_402011 = 402011;
     /** 购物车:购物车商品价格有变动*/
     public static final int CODE_402012 = 402012;
+    /** 购物车:用户下单操作频繁*/
+    public static final int CODE_402014 = 402014;
 
 
     /** 查询订单参数异常*/
@@ -132,6 +138,9 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单金额错误")
     public static final int WRONG_ORDER_TOTAL_MONEY = 400007;
+    
+    @ApiModelProperty("订单提货码错误")
+    public static final int WRONG_ORDER_PICKUP_CODE = 400008;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;
@@ -152,4 +161,10 @@ public final class BusinessCode {
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
     public static final int CODE_410001 = 410001;
+    /** 订单号错误*/
+    public static final int CODE_420003 = 420003;
+    /** 取消订单状态更新不成功*/
+    public static final int CODE_420004 = 420004;
+    /** 订单取消处理用户退款不成功*/
+    public static final int CODE_422005 = 422005;
 }

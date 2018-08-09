@@ -3,13 +3,14 @@
 <mapper namespace="com.winhxd.b2c.store.dao.CustomerBrowseLogMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="store_customer_id" jdbcType="BIGINT" property="storeCustomerId" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="stay_time_millis" jdbcType="BIGINT" property="stayTimeMillis" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, customer_id, login_time, logout_time
+    id, store_customer_id, customer_id, login_time, logout_time, stay_time_millis
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -22,10 +23,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
-    insert into customer_browse_log (id, store_id, customer_id, 
-      login_time, logout_time)
-    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, 
-      #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP})
+    insert into customer_browse_log (id, store_customer_id, customer_id,
+      login_time, logout_time, stay_time_millis)
+    values (#{id,jdbcType=BIGINT}, #{storeCustomerId,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT},
+      #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP}, #{stayTimeMillis, jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     insert into customer_browse_log
@@ -33,8 +34,8 @@
       <if test="id != null">
         id,
       </if>
-      <if test="storeId != null">
-        store_id,
+      <if test="storeCustomerId != null">
+        store_customer_id,
       </if>
       <if test="customerId != null">
         customer_id,
@@ -45,13 +46,16 @@
       <if test="logoutTime != null">
         logout_time,
       </if>
+      <if test="stayTimeMillis != null">
+        stay_time_millis,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="storeId != null">
-        #{storeId,jdbcType=BIGINT},
+      <if test="storeCustomerId != null">
+        #{storeCustomerId,jdbcType=BIGINT},
       </if>
       <if test="customerId != null">
         #{customerId,jdbcType=BIGINT},
@@ -59,16 +63,16 @@
       <if test="loginTime != null">
         #{loginTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="logoutTime != null">
-        #{logoutTime,jdbcType=TIMESTAMP},
+      <if test="stayTimeMillis != null">
+        #{stayTimeMillis,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     update customer_browse_log
     <set>
-      <if test="storeId != null">
-        store_id = #{storeId,jdbcType=BIGINT},
+      <if test="storeCustomerId != null">
+        store_customer_id = #{storeCustomerId,jdbcType=BIGINT},
       </if>
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
@@ -79,23 +83,32 @@
       <if test="logoutTime != null">
         logout_time = #{logoutTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="stayTimeMillis != null">
+        stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     update customer_browse_log
-    set store_id = #{storeId,jdbcType=BIGINT},
+    set store_customer_id = #{storeCustomerId,jdbcType=BIGINT},
       customer_id = #{customerId,jdbcType=BIGINT},
       login_time = #{loginTime,jdbcType=TIMESTAMP},
-      logout_time = #{logoutTime,jdbcType=TIMESTAMP}
+      logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+      stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="selectIdForLoginOut" resultType="java.lang.Long">
+  <select id="selectIdForLoginOut" resultMap="BaseResultMap">
     select
-    max(id) as id
+      <include refid="Base_Column_List" />
     from customer_browse_log
-    where store_id = #{storeId,jdbcType=BIGINT},
-      customer_id = #{customerId,jdbcType=BIGINT}
+    where id = (
+    select
+      max(id) as id
+    from customer_browse_log
+    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
+      and customer_id = #{customerId,jdbcType=BIGINT}
+    )
   </select>
 </mapper>

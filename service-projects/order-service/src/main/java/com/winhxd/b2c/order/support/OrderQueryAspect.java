@@ -1,15 +1,21 @@
 package com.winhxd.b2c.order.support;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,18 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import javax.annotation.Resource;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 订单状态转换，code->mark
@@ -50,10 +48,17 @@ public class OrderQueryAspect {
     private static final String CUSTOMER_ID = "customerId";
     private static final String NICK_NAME = "nickName";
     private static final String CUSTOMER_MOBILE = "customerMobile";
+    private static final String STORE_ID = "storeId";
+    public static final String STORE_MOBILE = "storeMobile";
+    public static final String ORDER_ITEMVO_LIST = "orderItemVoList";
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryAspect.class);
 
+    @Resource
+    private StoreServiceClient storeServiceClient;
     @Autowired
     private CustomerServiceClient customerServiceclient;
+    @Resource
+    private ProductServiceClient productServiceClient;
 
     @AfterReturning(returning = "detailVO", value = "@annotation(com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation)")
     public void orderEnumConvert(OrderInfoDetailVO detailVO) {
@@ -80,7 +85,7 @@ public class OrderQueryAspect {
         } else if (ret instanceof List) {
             List objList = (List) ret;
             for (Iterator iterator = objList.iterator(); iterator.hasNext(); ) {
-                Object object = (Object) iterator.next();
+                Object object = iterator.next();
                 if (object == null) {
                     continue;
                 }
@@ -89,7 +94,7 @@ public class OrderQueryAspect {
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
             for (Iterator iterator = objList.iterator(); iterator.hasNext(); ) {
-                Object object = (Object) iterator.next();
+                Object object = iterator.next();
                 if (object == null) {
                     continue;
                 }
@@ -98,13 +103,83 @@ public class OrderQueryAspect {
         } else {
             assembleOrderInfos(ret);
         }
-        // 获取用户相关信息
         OrderInfoConvertAnnotation orderInfoConvertAnnotation = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(OrderInfoConvertAnnotation.class);
         if (orderInfoConvertAnnotation.queryCustomerInfo()) {
+            // 获取用户相关信息
             customerInfoConvert(joinPoint, ret);
         }
         if (orderInfoConvertAnnotation.queryStoreInfo()) {
+            // 获取门店相关信息
             storeInfoConvert(joinPoint, ret);
+        }
+        if (orderInfoConvertAnnotation.queryProductInfo()) {
+            // 获取商品相关信息
+            productInfoConvert(joinPoint, ret);
+        }
+    }
+
+    private void productInfoConvert(JoinPoint joinPoint, Object ret) {
+        if (ret instanceof Object[]) {
+            Object[] objArr = (Object[]) ret;
+            assembleProductInfo(objArr);
+        } else if (ret instanceof List) {
+            List objList = (List) ret;
+            assembleProductInfo(objList.toArray(new Object[objList.size()]));
+        } else if (ret instanceof PagedList) {
+            List objList = ((PagedList) ret).getData();
+            assembleProductInfo(objList.toArray(new Object[objList.size()]));
+        } else {
+            assembleProductInfo(ret);
+        }
+    }
+
+    private void assembleProductInfo(Object... objArr) {
+        try {
+            Set<String> skuSet = new HashSet<>();
+            for (Object obj : objArr) {
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                if (null != field) {
+                    field.setAccessible(true);
+                    if (field.get(obj) != null) {
+                        @SuppressWarnings("unchecked")
+                        List<OrderItemVO> orderItemVOS = (List<OrderItemVO>) field.get(obj);
+                        for (OrderItemVO orderItemVO : orderItemVOS) {
+                            skuSet.add(orderItemVO.getSkuCode());
+                        }
+                    }
+                }
+            }
+            if (CollectionUtils.isNotEmpty(skuSet)) {
+                ProductCondition condition = new ProductCondition();
+                condition.setProductSkus(new ArrayList<>(skuSet));
+                condition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+                ResponseResult<List<ProductSkuVO>> productResponseResultData = productServiceClient.getProductSkus(condition);
+                if (null != productResponseResultData && productResponseResultData.getCode() == BusinessCode.CODE_OK && CollectionUtils.isNotEmpty(productResponseResultData.getData())) {
+                    List<ProductSkuVO> productSkuList = productResponseResultData.getData();
+                    Map<String, ProductSkuVO> productListMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuVO::getSkuCode, productSkuVO -> productSkuVO));
+                    for (Object obj : objArr) {
+                        Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                        if (null != field) {
+                            field.setAccessible(true);
+                            if (field.get(obj) != null) {
+                                @SuppressWarnings("unchecked")
+                                List<OrderItemVO> orderItemVOS = (List<OrderItemVO>) field.get(obj);
+                                for (OrderItemVO orderItemVO : orderItemVOS) {
+                                    ProductSkuVO product = productListMap.get(orderItemVO.getSkuCode());
+                                    if (null != product) {
+                                        orderItemVO.setProductName(product.getSkuName());
+                                        orderItemVO.setProductPictureUrl(product.getSkuImage());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    logger.info("根据SKU查询商品信息失败：返回状态码:{}", productResponseResultData == null ? null : productResponseResultData.getCode());
+                }
+            }
+        } catch (Exception e) {
+            logger.error("订单商品信息封装异常", e);
         }
     }
 
@@ -112,10 +187,52 @@ public class OrderQueryAspect {
         if (ret instanceof Object[]) {
             Object[] objArr = (Object[]) ret;
             assembleStoreInfo(objArr);
+        } else if (ret instanceof List) {
+            List objList = (List) ret;
+            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+        } else if (ret instanceof PagedList) {
+            List objList = ((PagedList) ret).getData();
+            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+        } else {
+            assembleStoreInfo(ret);
         }
     }
 
     private void assembleStoreInfo(Object... objArr) {
+        try {
+            Set<Long> storeIds = new HashSet<>();
+            for (Object obj : objArr) {
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                if (null != field) {
+                    field.setAccessible(true);
+                    if (field.get(obj) != null) {
+                        storeIds.add((Long) field.get(obj));
+                    }
+                }
+            }
+
+            ResponseResult<List<StoreUserInfoVO>> storeResponseResultData = this.storeServiceClient.findStoreUserInfoList(storeIds);
+            if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
+                List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
+                for (Object obj : objArr) {
+                    Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                    if (null != field) {
+                        field.setAccessible(true);
+                        if (field.get(obj) != null) {
+                            for (StoreUserInfoVO storeUserInfoVO : storeInfoList) {
+                                if (storeUserInfoVO.getStoreId().equals(field.get(obj))) {
+                                    assembleInfos(obj, STORE_MOBILE, storeUserInfoVO.getStoreMobile());
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                logger.info("根据门店storeId 查询门店信息失败：返回状态码:{}", storeResponseResultData == null ? null : storeResponseResultData.getCode());
+            }
+        } catch (Exception e) {
+            logger.error("订单用户信息封装异常", e);
+        }
     }
 
     public void customerInfoConvert(JoinPoint joinPoint, Object ret) {

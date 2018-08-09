@@ -1,9 +1,9 @@
 package com.winhxd.b2c.common.domain.store.model;
 
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.Date;
 
 /**
  * @description: 门店提报商品信息类
@@ -30,7 +30,7 @@ public class StoreSubmitProduct {
     private String prodImage3;
     @ApiModelProperty("商品规则")
     private String skuAttributeOption;
-    @ApiModelProperty("商品规则")
+    @ApiModelProperty("商品状态（0 待审核 ，1 审核不通过 ，2 审核通过，3 已添加）")
     private Integer prodStatus;
     @ApiModelProperty("审核备注")
     private String auditRemark;

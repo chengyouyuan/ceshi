@@ -5,7 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="prod_id" jdbcType="VARCHAR" property="prodId"/>
-        <result column="sku_attribute_option" jdbcType="INTEGER" property="skuAttributeOption"/>
+        <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
         <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
         <result column="recommend" jdbcType="TINYINT" property="recommend"/>
         <result column="prod_status" jdbcType="TINYINT" property="prodStatus"/>
@@ -19,11 +19,68 @@
         <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
     </resultMap>
-    <sql id="Base_Column_List">
+    <resultMap id="SimpleResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="store_id" jdbcType="BIGINT" property="storeId"/>
+        <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
+        <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
+        <result column="recommend" jdbcType="TINYINT" property="recommend"/>
+        <result column="prod_status" jdbcType="TINYINT" property="prodStatus"/>
+        <result column="prod_code" jdbcType="VARCHAR" property="prodCode"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
+    </resultMap>
+   <sql id="Base_Column_List">
     id, store_id, prod_id, sku_attribute_option, sell_money, recommend, prod_status,
     prod_code, sku_code, putaway_time, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
+  <sql id="Simple_Column_List">
+    id, store_id, sku_attribute_option, sell_money, recommend, prod_status,
+    prod_code, sku_code, putaway_time
+  </sql>
+  
+  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"  resultMap="SimpleResultMap">
+  	 	select
+  	 	<include refid="Simple_Column_List"/>
+  	 	from store_product_manage 
+  	 	where 1=1
+  	 	<if test="condition.prodStatus != null">
+            and prod.prod_status in
+             <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
+				#{status}
+			</foreach>  
+        </if>
+        <if test="condition.storeId != null">
+            and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.recommend != null">
+            and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
+        </if>
+        <if test="condition.priceStatus != null">
+        	<choose>
+        		<!-- 设置价格 -->
+        		<when test="condition.priceStatus==1">
+        			and prod.sell_money  <![CDATA[ >= ]]> 0
+        		</when>
+        		<otherwise>
+        		<!-- 未设置价格 -->
+        		and (prod.sell_money  <![CDATA[ < ]]> 0 or prod.sell_money is null)
+        		</otherwise>
+        	</choose>
+            
+        </if> 
+
+  </select>
+  
+ 	<select id="selectBySkuCodeAndStoreId" resultMap="BaseResultMap">
+  	 	select
+  	 	<include refid="Base_Column_List"/>
+  	 	from store_product_manage prod 
+  	 	where prod.store_id=#{storeId,jdbcType=BIGINT}
+  	 	and prod.sku_code= #{skuCode,jdbcType=VARCHAR}
+
+  	</select>
   
   	<select id="countSkusByConditon"  
   			parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition" 
@@ -145,7 +202,7 @@
     created, updated_by, updated_by_name,
     updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodId,jdbcType=VARCHAR},
-    #{skuAttributeOption,jdbcType=INTEGER}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
+    #{skuAttributeOption,jdbcType=VARCHAR}, #{sellMoney,jdbcType=DECIMAL}, #{recommend,jdbcType=TINYINT},
     #{prodStatus,jdbcType=TINYINT}, #{prodCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
     #{putawayTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
     #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
@@ -214,7 +271,7 @@
                 #{prodId,jdbcType=VARCHAR},
             </if>
             <if test="skuAttributeOption != null">
-                #{skuAttributeOption,jdbcType=INTEGER},
+                #{skuAttributeOption,jdbcType=VARCHAR},
             </if>
             <if test="sellMoney != null">
                 #{sellMoney,jdbcType=DECIMAL},
@@ -265,7 +322,7 @@
                 prod_id = #{prodId,jdbcType=VARCHAR},
             </if>
             <if test="skuAttributeOption != null">
-                sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
+                sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
             </if>
             <if test="sellMoney != null">
                 sell_money = #{sellMoney,jdbcType=DECIMAL},
@@ -310,7 +367,7 @@
     update store_product_manage
     set store_id = #{storeId,jdbcType=BIGINT},
       prod_id = #{prodId,jdbcType=VARCHAR},
-      sku_attribute_option = #{skuAttributeOption,jdbcType=INTEGER},
+      sku_attribute_option = #{skuAttributeOption,jdbcType=VARCHAR},
       sell_money = #{sellMoney,jdbcType=DECIMAL},
       recommend = #{recommend,jdbcType=TINYINT},
       prod_status = #{prodStatus,jdbcType=TINYINT},

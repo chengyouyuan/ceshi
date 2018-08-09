@@ -18,7 +18,7 @@ public class StoreUserInfo implements Serializable {
      */
     private String storeName;
     /**
-     * 惠下单门店用户id
+     * 惠下单门店用户id(云平台crm_ws_customer表的customer_id)
      */
     private Long storeCustomerId;
     /**
@@ -68,7 +68,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 微信openid
      */
-    private String openid;
+    private String openId;
     private Date created;
     private Long createdBy;
     private String createdByName;
@@ -190,12 +190,12 @@ public class StoreUserInfo implements Serializable {
         this.lon = lon;
     }
 
-    public String getOpenid() {
-        return openid;
+    public String getOpenId() {
+        return openId;
     }
 
-    public void setOpenid(String openid) {
-        this.openid = openid == null ? null : openid.trim();
+    public void setOpenid(String openId) {
+        this.openId = openId == null ? null : openId.trim();
     }
     public Date getCreated() {
         return created;

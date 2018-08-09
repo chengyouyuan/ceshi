@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +22,7 @@ public interface StoreUserInfoMapper {
 
     int updateByPrimaryKey(StoreUserInfo record);
 
-    StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeMobile);
+    StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeUserInfo);
 
     List<StoreUserInfo> findStoreUserInfo(StoreUserInfo storeUserInfo);
 
@@ -39,10 +38,10 @@ public interface StoreUserInfoMapper {
     /**
      * 根据门店编码查询门店信息
      *
-     * @param storeId 门店编码
+     * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreId(@Param("storeId")Long storeId);
+    StoreUserInfo selectByStoreCustomerId(@Param("storeCustomerId")Long storeCustomerId);
 
     /**
      * @param ids 门店id
@@ -51,5 +50,5 @@ public interface StoreUserInfoMapper {
      * @date 2018/8/8 10:19
      * @Description 根据ids进行批量查询门店信息
      */
-    List<StoreUserInfoVO> selectStoreUserByIds(@Param("dis") Set<Long> ids);
+    List<StoreUserInfoVO> selectStoreUserByIds(@Param("ids") Set<Long> ids);
 }

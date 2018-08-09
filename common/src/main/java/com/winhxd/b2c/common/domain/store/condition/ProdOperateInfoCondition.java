@@ -27,6 +27,6 @@ public class ProdOperateInfoCondition {
 	private BigDecimal sellMoney;
 
 	@ApiModelProperty(value = "是否推荐 0不推荐 1推荐")
-	private Byte recommend; 
+	private Byte recommend=0; 
 
 }

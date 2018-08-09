@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.service;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
 
@@ -42,7 +43,7 @@ public interface OrderService {
      * @author pangjianhua
      * @date 2018年8月2日 下午5:51:46
      */
-    boolean cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
+    void cancelOrder(OrderCancelCondition orderCancelCondition) throws InterruptedException;
 
     /**
      * 门店处理用户退款订单
@@ -66,4 +67,30 @@ public interface OrderService {
      * @param condition
      */
     void orderConfirm4Store(OrderConfirmCondition condition);
+    
+    /**
+     * 订单超时未接单接口
+     *
+     * @param orderNo 入参
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    void orderReceiveTimeOut(String orderNo);
+    
+    /**
+     * 订单超时未自提接口
+     *
+     * @param orderNo 入参
+     * @author wangbin
+     * @date 2018年8月2日 下午5:51:46
+     */
+    void orderPickupTimeOut(String orderNo);
+
+    /**
+     * 订单提货
+     * @author wangbin
+     * @date  2018年8月8日 下午5:24:30
+     * @param condition
+     */
+    void orderPickup4Store(OrderPickupCondition condition);
 }

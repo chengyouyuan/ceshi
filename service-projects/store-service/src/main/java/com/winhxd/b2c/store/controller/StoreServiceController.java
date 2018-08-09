@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -22,6 +24,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
@@ -47,7 +50,7 @@ public class StoreServiceController implements StoreServiceClient {
 //    @Autowired
 //    private ProductServiceClient productServiceClient;
     @Override
-    public ResponseResult<Void> bindCustomer(Long customerId,Long storeUserId) {
+    public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
         if(customerId == null) {
             logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
@@ -73,7 +76,7 @@ public class StoreServiceController implements StoreServiceClient {
 		}
 		//查询门店下商品信息集合--判断数据权限
 		//查询有权限的数据
-		List<StoreProductManage> storeProds=this.storeProductManageService.findProdBySkuCodes(storeId, (String[])skuCodes.toArray());
+		List<StoreProductManage> storeProds=this.storeProductManageService.findPutawayProdBySkuCodes(storeId, (String[])skuCodes.toArray());
 		
 		//查询结果不为空
 		if(CollectionUtils.isEmpty(storeProds)){
@@ -122,7 +125,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
     	ResponseResult<StoreUserInfo> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {
 			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
@@ -137,7 +140,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(Long id) {
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id) {
 		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(id == null){
 			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
@@ -152,7 +155,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(Set<Long> ids) {
+	public ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids) {
 		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
     	if(ids == null || ids.size() == 0){
     		throw new BusinessException(BusinessCode.CODE_200001);

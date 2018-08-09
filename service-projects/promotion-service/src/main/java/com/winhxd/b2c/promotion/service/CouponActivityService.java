@@ -38,4 +38,5 @@ public interface CouponActivityService {
      */
     void updateCouponActivity(CouponActivityAddCondition condition);
 
+    CouponActivityVO getCouponActivityById(String id);
 }

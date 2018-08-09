@@ -25,5 +25,5 @@ public interface CustomerBrowseLogMapper {
      * @param customerId 用户编码
      * @return id
      */
-    Long selectIdForLoginOut(@Param("storeId") Long storeId, @Param("customerId") Long customerId);
+    CustomerBrowseLog selectIdForLoginOut(@Param("storeId") Long storeId, @Param("customerId") Long customerId);
 }

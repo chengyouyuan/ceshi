@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -31,11 +32,21 @@ public interface BackStageStoreServiceClient {
      */
     @RequestMapping(value = "/store/2003/v1/storeList",method = RequestMethod.GET)
     ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeCondition);
+
+    /**
+     * 获取门店详细信息
+     * @auther liutong
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/store/2003/v1/getStoreInfoById",method = RequestMethod.GET)
+    ResponseResult<BackStageStoreVO> getStoreInfoById(@RequestParam Long id);
+
 }
 /**
  * @Description: 熔断回调
- * @author chengyy
- * @date 2018/8/3 10:43
+ * @author caiyulong
+ * @date 2018/8/6 10:43
  */
 @Component
 class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient, FallbackFactory<BackStageStoreServiceClient> {
@@ -53,6 +64,12 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
     @Override
     public ResponseResult<PagedList<BackStageStoreVO>> storeList(BackStageStoreInfoCondition storeCondition) {
         logger.error("StoreServiceClientFallBack -> storeList报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<BackStageStoreVO> getStoreInfoById(Long id) {
+        logger.error("StoreServiceClientFallBack -> getStoreInfoById 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

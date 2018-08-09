@@ -20,8 +20,8 @@ public class BackStageStoreInfoCondition extends BaseCondition{
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Byte storeStatus;
 
-    @ApiModelProperty(value = "门店编码")
-    private Long storeId;
+    @ApiModelProperty(value = "门店用户编码")
+    private Long storeCustomerId;
 
     @ApiModelProperty(value = "门店账号")
     private String storeMobile;
@@ -54,9 +54,9 @@ public class BackStageStoreInfoCondition extends BaseCondition{
     private String contactMobile;
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
-    private Byte paymentWay;
+    private String paymentWay;
 
-    @ApiModelProperty(value = "筛选的最小级别reginCode")
-    private String reginCode;
+    @ApiModelProperty(value = "筛选的最小级别regionCode")
+    private String regionCode;
 
 }

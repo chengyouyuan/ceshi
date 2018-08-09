@@ -15,17 +15,24 @@
     <result column="customer_voucher_limit_num" jdbcType="INTEGER" property="customerVoucherLimitNum" />
     <result column="send_num" jdbcType="INTEGER" property="sendNum" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
     id, coupon_activity_id, template_id, count, start_time, end_time, effective_days, 
     coupon_num_type, coupon_num, customer_voucher_limit_type, customer_voucher_limit_num, 
-    send_num, send_time
+    send_num, send_time, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from coupon_activity_template
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_template
+    where coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
   </select>
   <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate" resultMap="BaseResultMap">
     select
@@ -34,6 +41,9 @@
     where 1 = 1
     <if test="couponActivityId != null">
       AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+    </if>
+    <if test="templateId != null">
+      AND template_id = #{templateId,jdbcType=BIGINT}
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -45,12 +55,12 @@
       count, start_time, end_time, 
       effective_days, coupon_num_type, coupon_num, 
       customer_voucher_limit_type, customer_voucher_limit_num, 
-      send_num, send_time)
+      send_num, send_time, status)
     values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, 
       #{count,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{effectiveDays,jdbcType=INTEGER}, #{couponNumType,jdbcType=SMALLINT}, #{couponNum,jdbcType=INTEGER}, 
       #{customerVoucherLimitType,jdbcType=SMALLINT}, #{customerVoucherLimitNum,jdbcType=INTEGER}, 
-      #{sendNum,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+      #{sendNum,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP}, #{status,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate" useGeneratedKeys="true" keyProperty="id">
     insert into coupon_activity_template
@@ -94,6 +104,9 @@
       <if test="sendTime != null">
         send_time,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -134,6 +147,9 @@
       </if>
       <if test="sendTime != null">
         #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -176,6 +192,9 @@
       <if test="sendTime != null">
         send_time = #{sendTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -192,7 +211,13 @@
       customer_voucher_limit_type = #{customerVoucherLimitType,jdbcType=SMALLINT},
       customer_voucher_limit_num = #{customerVoucherLimitNum,jdbcType=INTEGER},
       send_num = #{sendNum,jdbcType=INTEGER},
-      send_time = #{sendTime,jdbcType=TIMESTAMP}
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByCouponActivityId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate">
+    update coupon_activity_template
+    set status = #{status,jdbcType=SMALLINT}
+    where coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -9,6 +9,8 @@ public class CouponActivityStoreCustomer {
 
     private Long customerId;
 
+    private Short status;
+
     public Long getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class CouponActivityStoreCustomer {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
     }
 }

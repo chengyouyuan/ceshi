@@ -2,8 +2,10 @@ package com.winhxd.b2c.common.feign.promotion;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -42,6 +44,28 @@ public interface CouponInvestorServiceClient {
      */
     @RequestMapping(value = "/promotion/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
     ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id);
+
+    /**
+     *
+     *@Deccription 删除出资方（非物理删除）
+     *@Params  id
+     *@Return  ResponseResult
+     *@User  wl
+     *@Date   2018/8/8 14:47
+     */
+    @RequestMapping(value = "/promotion/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
+    ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+
+    /**
+     *
+     *@Deccription 根据条件获取出资方分页
+     *@Params
+     *@Return
+     *@User  wl
+     *@Date   2018/8/8 20:31
+     */
+    @RequestMapping(value = "/promotion/v1/getCouponInvestorPage", method = RequestMethod.POST)
+    ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 }
 
 @Component
@@ -60,4 +84,17 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
         logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
+
+    @Override
+    public ResponseResult updateCouponInvestorToValid(String id,String userId,String userName) {
+        logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+        logger.error("CouponInvestorServiceClient -> getCouponInvestorPage", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
 }

@@ -41,6 +41,13 @@ public interface CustomerUserInfoMapper {
      * @Description 根据用户id批量查询用户信息
      */
     List<CustomerUserInfoVO> selectCustomerUserByIds(@Param("ids") List<Long> ids);
-
+    
+    /**
+     * @author wufuyun
+     * @date  2018年8月8日 下午3:59:11
+     * @Description 查询C端用户信息
+     * @param customerUserInfo
+     * @return
+     */
 	CustomerUserInfo selectByCustomerUserInfoByModel(CustomerUserInfo customerUserInfo);
 }

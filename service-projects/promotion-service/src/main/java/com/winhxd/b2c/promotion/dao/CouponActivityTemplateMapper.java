@@ -23,4 +23,9 @@ public interface CouponActivityTemplateMapper {
      * @return
      */
     List<CouponActivityTemplate> selectByExample(CouponActivityTemplate couponActivityTemplate);
+
+    List<CouponActivityTemplate> selectByActivityId(Long id);
+
+    void updateByCouponActivityId(CouponActivityTemplate couponActivityTemplate);
+
 }

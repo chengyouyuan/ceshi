@@ -401,7 +401,7 @@
        and a.code = #{condition.code}
     </if>
     <if test="condition.title!=null and  condition.title!=''">
-       and a.title like CONCAT('%', #{condition.title}, '%')
+       and a.title = #{condition.title}
     </if>
     <if test="condition.couponLabel!=null and  condition.couponLabel!=''">
       and a.coupon_label = #{condition.couponLabel}

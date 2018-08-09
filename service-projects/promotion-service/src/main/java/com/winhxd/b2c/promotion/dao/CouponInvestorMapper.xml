@@ -190,6 +190,7 @@
     </collection>
   </resultMap>
 
+  <!-- 关联查询出资方详情 sql -->
   <select id="selectCouponInvestorDetailById" parameterType="java.lang.Long" resultMap="ResultDetailMap">
       select a.id, a.code, a.name, a.remarks, a.status,
               b.percent,b.ids,b.names,b.investor_type
@@ -198,7 +199,64 @@
               coupon_investor_detail b
               on a.id = b.investor_id
               and a.id =#{id}
+              and a.status = 1
   </select>
 
+
+  <update id="updateCouponInvestorToValid">
+    update coupon_investor set
+    status = 1 ,
+    update_by = #{userId},
+    updated_by_name = #{userName},
+    updated = now()
+    where id = #{id}
+  </update>
+
+
+  <update id="updateCouponInvestor" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
+    update coupon_investor
+    set name = #{name,jdbcType=VARCHAR},
+    remarks = #{remarks,jdbcType=VARCHAR},
+    update_by = #{updateBy,jdbcType=BIGINT},
+    updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+    updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+
+
+
+
+  <resultMap id="ResultDetailMap2" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <collection property="detailList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail" column="investor_id">
+      <result column="percent" property="percent"/>
+      <result column="names" property="names"/>
+    </collection>
+  </resultMap>
+
+  <select id="getCouponInvestorPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
+      select a.code,a.name,a.created_by_name,a.created,a.updated_by_name,a.updated,
+              b.percent,b.names from coupon_investor a
+              left join coupon_investor_detail b
+              on a.id = b.investor_id
+              where 1=1
+              <if test="condition.code!=null and  condition.code!=''">
+                  and a.code = #{condition.code}
+              </if>
+              <if test="condition.name!=null and  condition.name!=''">
+                and a.name = #{condition.name}
+              </if>
+              <if test="condition.names!=null and  condition.names!=''">
+                  and b.names = #{condition.names}
+              </if>
+  </select>
 
 </mapper>

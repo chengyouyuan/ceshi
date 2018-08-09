@@ -52,16 +52,18 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             if(flag==0){
                   responseResult.setMessage("添加成功");
             }else if(flag==1){
-                  responseResult.setMessage("提交失败！占比之和不等于");
+                  responseResult.setMessage("新增失败！占比之和不等于100");
             }else if(flag==2){
-                  responseResult.setMessage("提交失败！出资方重复");
+                  responseResult.setMessage("新增失败！出资方重复");
             }else if(flag==3){
-                  responseResult.setMessage("提交失败！出资方明细为空");
+                  responseResult.setMessage("新增失败！出资方明细为空");
             }else {
                   responseResult.setMessage("服务器内部错误");
             }
             return responseResult;
       }
+
+
 
      /**
       *
@@ -77,4 +79,32 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
         return responseResult;
     }
+
+    @Override
+    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
+        ResponseResult responseResult = new ResponseResult();
+        try {
+            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id),Long.parseLong(userId),userName);
+            if(count>0){
+                responseResult.setCode(BusinessCode.CODE_OK);
+                responseResult.setMessage("删除成功");
+            }
+        }catch (Exception e){
+            responseResult.setCode(BusinessCode.CODE_1001);
+            responseResult.setMessage("删除失败");
+            e.printStackTrace();
+        }
+        return responseResult;
+    }
+
+
+
+    @ApiOperation(value = "多条件分页查询 出资方列表", notes = "多条件分页查询 出资方列表",response = ResponseResult.class)
+    @Override
+    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+        ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
+        return responseResult;
+    }
+
+
 }

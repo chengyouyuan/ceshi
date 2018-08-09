@@ -1,11 +1,8 @@
 package com.winhxd.b2c.system.region.service;
 
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCodeCondition;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
-import com.winhxd.b2c.common.domain.system.region.vo.SysSubRegionVO;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

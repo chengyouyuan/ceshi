@@ -6,9 +6,10 @@
     <result column="coupon_activity_template_id" jdbcType="BIGINT" property="couponActivityTemplateId" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, coupon_activity_template_id, store_id, customer_id
+    id, coupon_activity_template_id, store_id, customer_id, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -16,15 +17,21 @@
     from coupon_activity_store_customer
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByTemplateId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_store_customer
+    where coupon_activity_template_id = #{couponAciTemplateId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity_store_customer
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
     insert into coupon_activity_store_customer (id, coupon_activity_template_id, store_id, 
-      customer_id)
+      customer_id, status)
     values (#{id,jdbcType=BIGINT}, #{couponActivityTemplateId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
-      #{customerId,jdbcType=BIGINT})
+      #{customerId,jdbcType=BIGINT}, #{status,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
     insert into coupon_activity_store_customer
@@ -41,6 +48,9 @@
       <if test="customerId != null">
         customer_id,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -54,6 +64,9 @@
       </if>
       <if test="customerId != null">
         #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -69,6 +82,9 @@
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -76,7 +92,13 @@
     update coupon_activity_store_customer
     set coupon_activity_template_id = #{couponActivityTemplateId,jdbcType=BIGINT},
       store_id = #{storeId,jdbcType=BIGINT},
-      customer_id = #{customerId,jdbcType=BIGINT}
+      customer_id = #{customerId,jdbcType=BIGINT},
+      status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByCouponActivityTemplateId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer">
+    update coupon_activity_store_customer
+    set status = #{status,jdbcType=SMALLINT}
+    where coupon_activity_template_id = #{couponActivityTemplateId,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
-
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
@@ -64,8 +63,8 @@ public class StoreServiceImpl implements StoreService {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         //去除code尾部0
         String reginCode = null;
-        if (storeCondition.getReginCode() != null) {
-            reginCode = storeCondition.getReginCode().replaceAll("0+$", "");
+        if (storeCondition.getRegionCode() != null) {
+            reginCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
@@ -121,8 +120,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfo selectByStoreId(Long storeId) {
-        return storeUserInfoMapper.selectByStoreId(storeId);
+    public StoreUserInfo findByStoreCustomerId(Long storeCustomerId) {
+        return storeUserInfoMapper.selectByStoreCustomerId(storeCustomerId);
     }
 
     @Override
@@ -133,6 +132,16 @@ public class StoreServiceImpl implements StoreService {
         List<StoreUserInfoVO> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
         return userInfos;
 
+    }
+
+    @Override
+    public BackStageStoreVO findByIdForBackStage(Long id) {
+        BackStageStoreVO backStageStoreVO = new BackStageStoreVO();
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
+        SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
+        BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        return backStageStoreVO;
     }
 
     @Override

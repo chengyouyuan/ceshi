@@ -79,6 +79,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
+    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (customer == null) {
@@ -95,7 +96,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 skuList.add(orderItemVO.getSkuCode());
             }
         }
-        //TODO 调用商品仓库添加商品图片URL和商品名称 skuList
         pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
@@ -111,18 +111,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @author pangjianhua
      */
     @Override
-    @OrderEnumConvertAnnotation
+    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
-
-        ResponseResult<StoreUserInfoVO> storeUserInfoVOResponseResult = storeServiceClient.findStoreUserInfo(detailVO.getStoreId());
-        StoreUserInfoVO store = storeUserInfoVOResponseResult.getData();
-        detailVO.setStoreMobile(store.getStoreMobile());
-
-        //TODO 调用商品仓库添加商品图片URL和商品名称
         return detailVO;
     }
 

@@ -92,6 +92,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
                     couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                     couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
+                    couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                     if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
                         couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
                     }
@@ -109,6 +110,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
                     couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
                     couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
+                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                     couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
                 }
             }
@@ -117,8 +119,116 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
     }
 
+    /**
+     *
+     *@Deccription 优惠券活动查看和回显编辑页
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/8
+     */
+    @Override
+    public CouponActivityVO getCouponActivityById(String id) {
+        CouponActivityVO couponActivityVO = new CouponActivityVO();
+        List<CouponActivityStoreCustomer> couponActivityStoreCustomerList;
+
+        CouponActivity couponActivity = couponActivityMapper.selectByPrimaryKey(Long.valueOf(id));
+        couponActivityVO.setId(couponActivity.getId());
+        couponActivityVO.setName(couponActivity.getName());
+        couponActivityVO.setCode(couponActivity.getCode());
+        couponActivityVO.setExolian(couponActivity.getExolian());
+        couponActivityVO.setRemarks(couponActivity.getRemarks());
+        couponActivityVO.setType(couponActivity.getType());
+        couponActivityVO.setActivityStart(couponActivity.getActivityStart());
+        couponActivityVO.setActivityEnd(couponActivity.getActivityEnd());
+        couponActivityVO.setActivityStatus(couponActivity.getActivityStatus());
+        if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
+            couponActivityVO.setCouponType(couponActivity.getCouponType());
+        }
+        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectByActivityId(couponActivity.getId());
+        couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
+
+        for(int i = 0 ; i < couponActivityTemplateList.size() ; i++) {
+            couponActivityStoreCustomerList = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplateList.get(i).getId());
+            couponActivityVO.getCouponActivityTemplateList().get(i).setCouponActivityStoreCustomerList(couponActivityStoreCustomerList);
+        }
+        return couponActivityVO;
+    }
+
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
+        try {
+            //更新CouponActivity
+            CouponActivity couponActivity = new CouponActivity();
+            couponActivity.setId(condition.getId());
+            couponActivity.setName(condition.getName());
+            couponActivity.setCode(getUUID());
+            couponActivity.setExolian(condition.getExolian());
+            couponActivity.setRemarks(condition.getRemarks());
+            couponActivity.setActivityStart(condition.getActivityStart());
+            couponActivity.setActivityEnd(condition.getActivityEnd());
+            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+            couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            couponActivity.setUpdated(new Date());
+            couponActivity.setUpdateBy(123456L);
+            couponActivity.setUpdatedByName("测试用户");
+            //领券
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+                couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
+            }
+            //推券
+            if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
+                couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
+                couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+            }
+            couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+
+            //删除CouponActivityTemplate
+            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+            couponActivityTemplate.setCouponActivityId(condition.getId());
+            couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
+            //删除couponActivityStoreCustomer
+            CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
+            couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
+            couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
+
+            //新增couponActivityTemplate
+            for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+                couponActivityTemplate.setCouponActivityId(couponActivity.getId());
+                couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
+                //领券
+                if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+                    couponActivityTemplate.setStartTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                    couponActivityTemplate.setEndTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                    couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
+                    couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
+                    couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
+                    couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                    if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
+                        couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                    }
+                }
+                //推券
+                if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
+                    couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
+                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                }
+                couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+
+                //新增couponActivityStoreCustomer
+                for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
+                    couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
+                    couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
+                    couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
+                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                    couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

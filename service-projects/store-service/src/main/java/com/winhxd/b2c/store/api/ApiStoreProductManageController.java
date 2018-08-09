@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +73,8 @@ public class ApiStoreProductManageController {
 	private StoreHxdServiceClient storeHxdServiceClient;
 	@Autowired
 	private StoreSubmitProductService storeSubmitProductService;
+	@Autowired
+	private Cache cache;
 	/**
 	 * 惠下单商品
 	 */
@@ -311,7 +316,6 @@ public class ApiStoreProductManageController {
 			responseResult.setCode(BusinessCode.CODE_1001);
 			responseResult.setMessage("服务器内部错误");
 		}
-
 		return responseResult;
 	}
 
@@ -355,59 +359,72 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-    @ApiOperation(value = "B端搜索商品接口", notes = "B端搜索商品接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！", response = ResponseResult.class),})
-    @PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
-        ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
-        try {
+	@ApiOperation(value = "B端搜索商品接口", notes = "B端搜索商品接口")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！", response = ResponseResult.class),})
+	@PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
+		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
+		try {
 			Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
 			Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 			if (null == storeCustomerId || null == businessId) {
 				logger.error("B端搜索商品接口:登录凭证为空");
 				return new ResponseResult<>(BusinessCode.CODE_1002);
 			}
-            if (StringUtils.isBlank(condition.getProdName())) {
-                logger.error("B端搜索商品接口:参数ProdName为空");
-                return new ResponseResult<>(BusinessCode.CODE_1007);
-            }
-            if (null == condition.getProdType()) {
-                logger.error("B端搜索商品接口:参数ProdType为空");
-                return new ResponseResult<>(BusinessCode.CODE_1007);
-            }
-            if (null == condition.getPageNo()) {
-                logger.error("B端搜索商品接口:参数PageNo为空");
-                return new ResponseResult<>(BusinessCode.CODE_1007);
-            }
-            if (null == condition.getPageSize()) {
-                logger.error("B端搜索商品接口:参数PageSize为空");
-                return new ResponseResult<>(BusinessCode.CODE_1007);
-            }
-            StoreProductManageCondition manageCondition = new StoreProductManageCondition();
-            manageCondition.setStoreId(businessId);
-            List<Byte> prodStatus = new ArrayList<>();
-            prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
-            prodStatus.add((byte) StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
-            manageCondition.setProdStatus(prodStatus);
-            List<String> putwaySkusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
-            ProductConditionByPage productCondition = new ProductConditionByPage();
-            productCondition.setProductName(condition.getProdName());
-            productCondition.setProductSkus(putwaySkusByConditon);
-            if (HXD_PROD_TYPE.equals(condition.getProdType())) {
-                productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkus(UserContext.getCurrentStoreUser().getStoreCustomerId()));
-            }
-            productCondition.setPageNo(condition.getPageNo());
-            productCondition.setPageSize(condition.getPageSize());
-            ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
-            responseResult.setData(productVo.getData());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return responseResult;
-    }
+			if(!verifyParam(condition)){
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
+			//门店已经上架的商品
+			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
+			manageCondition.setStoreId(businessId);
+			List<Byte> prodStatus = new ArrayList<>();
+			prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
+			prodStatus.add((byte) StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+			manageCondition.setProdStatus(prodStatus);
+			List<String> putwaySkusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
+
+			ProductConditionByPage productCondition = new ProductConditionByPage();
+			productCondition.setProductName(condition.getProdName());
+			productCondition.setProductSkus(putwaySkusByConditon);
+			//hxd购买过的商品
+			if (HXD_PROD_TYPE.equals(condition.getProdType())) {
+				productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
+			}
+			productCondition.setPageNo(condition.getPageNo());
+			productCondition.setPageSize(condition.getPageSize());
+			ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
+			responseResult.setData(productVo.getData());
+		} catch (Exception e) {
+			responseResult.setCode(BusinessCode.CODE_1001);
+			responseResult.setMessage("服务器内部错误");
+			e.printStackTrace();
+		}
+		return responseResult;
+	}
+
+	private boolean verifyParam(AllowPutawayProdCondition condition){
+		boolean flag = true;
+		if (StringUtils.isBlank(condition.getProdName())) {
+			logger.error("B端搜索商品接口:参数ProdName为空");
+			return false;
+		}
+		if (null == condition.getProdType()) {
+			logger.error("B端搜索商品接口:参数ProdType为空");
+			return false;
+		}
+		if (null == condition.getPageNo()) {
+			logger.error("B端搜索商品接口:参数PageNo为空");
+			return false;
+		}
+		if (null == condition.getPageSize()) {
+			logger.error("B端搜索商品接口:参数PageSize为空");
+			return false;
+		}
+		return flag;
+	}
 
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
@@ -450,15 +467,22 @@ public class ApiStoreProductManageController {
      * @return
      * @auther lvsen
      * @date 2018/8/9 11:22
-     */private List<String> getStoreBuyedHxdProdSkus(Long storeCustomerId) {
+     */
+    private List<String> getStoreBuyedHxdProdSkuCodes(Long storeCustomerId) {
         if (null == storeCustomerId) {
             return null;
         }
-        ResponseResult<List<String>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(storeCustomerId);
-        List<String> skuData = storeBuyedProdSku.getData();
-        //cache.set("",skuData);
-        //cache.lpush()
-        return skuData;
+		String hxdSkuKey = CacheName.STORE_BUYED_HXDPROD_SKU + storeCustomerId;
+		List<String> skuData;
+		if(StringUtils.isNotBlank(cache.get(hxdSkuKey))) {
+			skuData = JsonUtil.parseJSONObject(cache.get(hxdSkuKey),List.class);
+			return skuData;
+		}
+		ResponseResult<List<String>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(storeCustomerId);
+		skuData = storeBuyedProdSku.getData();
+		cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
+		cache.expire(hxdSkuKey, 60 * 60 * 5);
+		return skuData;
     }
 
     private boolean checkParam(Object condition) {

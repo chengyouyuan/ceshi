@@ -33,7 +33,7 @@
     select 
     <include refid="Base_Column_List" />
     from customer_user_info
-    where open_id = #{openId,jdbcType=VARCHAR}
+    where status = 1 and open_id = #{openId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from customer_user_info
@@ -53,7 +53,7 @@
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.open_id,cui.status,sui.store_name,cui.head_img,cui.created
     from customer_user_info cui left join customer_store_relation csr
     on cui.customer_id = csr.customer_id left join store_user_info sui on csr.store_user_id = sui.id
-    where cui.customer_id in
+    where cui.status =1 and cui.customer_id in
     <foreach collection="ids" item="id" open="(" close=")" separator=",">
         #{id}
     </foreach>
@@ -62,9 +62,9 @@
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.open_id,cui.status,sui.store_name,cui.head_img,cui.created
     from customer_user_info cui  left join customer_store_relation csr
     on cui.customer_id = csr.customer_id left join store_user_info sui  on csr.store_user_id = sui.id
-    <where>
+    where cui.status = 1
       <if test="customerId != null">
-        cui.customer_id =  #{customerId,jdbcType=BIGINT}
+         and cui.customer_id =  #{customerId,jdbcType=BIGINT}
       </if>
       <if test="nickName != null and nickName != ''">
         and cui.nick_name like CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
@@ -81,7 +81,6 @@
       <if test="storeName != null and storeName != ''">
         and sui.store_name like CONCAT('%',  #{storeName,jdbcType=VARCHAR}, '%')
       </if>
-    </where>
   </select>
 
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >

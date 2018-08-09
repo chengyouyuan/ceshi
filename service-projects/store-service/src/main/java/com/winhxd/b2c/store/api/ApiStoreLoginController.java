@@ -2,7 +2,6 @@ package com.winhxd.b2c.store.api;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,7 +176,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
-						storeUserInfo.setToken(String.valueOf(UUID.randomUUID()));
+						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -282,7 +281,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
-						storeUserInfo.setToken(String.valueOf(UUID.randomUUID()));
+						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setBusinessId(storeUserInfo.getId());
@@ -371,7 +370,7 @@ public class ApiStoreLoginController {
 						info.setCreated(new Date());
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());
-						info.setToken(String.valueOf(UUID.randomUUID()));
+						info.setToken(GeneratePwd.getRandomUUID());
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -390,7 +389,7 @@ public class ApiStoreLoginController {
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setSource(storeUserInfoCondition.getSource());
-						info.setToken(String.valueOf(UUID.randomUUID()));
+						info.setToken(GeneratePwd.getRandomUUID());
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}

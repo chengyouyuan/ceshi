@@ -1,8 +1,6 @@
 package com.winhxd.b2c.customer.api;
 
 import java.util.Date;
-import java.util.UUID;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +101,7 @@ public class ApiCustomerLoginController {
 				DB = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 				if (null == DB) {
 					customerUserInfo.setCreated(new Date());
-					customerUserInfo.setToken(String.valueOf(UUID.randomUUID()));
+					customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 					customerLoginService.saveLoginInfo(customerUserInfo);
 					vo = new CustomerUserInfoSimpleVO();
 					vo.setCustomerId(customerUserInfo.getCustomerId());

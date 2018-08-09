@@ -38,39 +38,39 @@ public class WechatShareServiceImpl implements WechatShareService {
     private HttpClientUtil httpClientUtil;
 
     /**获取token的url地址*/
-    @Value("wechat.share.tokenUrl")
+    @Value("${wechat.share.tokenUrl}")
     private String tokenUrl;
 
     /**token认证类型*/
-    @Value("wechat.share.grantType")
+    @Value("${wechat.share.grantType}")
     private String grantType;
 
     /**第三方用户唯一凭证*/
-    @Value("wechat.share.appid")
+    @Value("${wechat.share.appid}")
     private String appid;
 
     /**第三方用户唯一凭证密码*/
-    @Value("wechat.share.secret")
+    @Value("${wechat.share.secret}")
     private String secret;
 
     /**二维码生成的url地址*/
-    @Value("wechat.share.codeUrl")
+    @Value("${wechat.share.codeUrl}")
     private String codeUrl;
 
     /**扫描二维码跳转默认页面*/
-    @Value("wechat.share.pageUrl")
+    @Value("${wechat.share.pageUrl}")
     private String pageUrl;
 
     /**小程序二维码宽度*/
-    @Value("wechat.share.width")
+    @Value("${wechat.share.width}")
     private int width;
 
     /**自动配置线条颜色*/
-    @Value("wechat.share.autoColor")
+    @Value("${wechat.share.autoColor}")
     private boolean autoColor;
 
     /**是否需要透明底色*/
-    @Value("wechat.share.isHyaline")
+    @Value("${wechat.share.isHyaline}")
     private boolean isHyaline;
     /**
      * @author chengyy

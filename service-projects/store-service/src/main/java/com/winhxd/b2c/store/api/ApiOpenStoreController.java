@@ -243,12 +243,16 @@ public class ApiOpenStoreController {
 
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id){
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
+        if(UserContext.getCurrentStoreUser() == null){
+            logger.error("ApiOpenStoreController -> findStoreUserInfo未获取到门店登录信息");
+            throw new BusinessException(BusinessCode.CODE_1001);
+        }
         if(id == null){
             logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-
-        StoreUserInfoVO data = storeService.findStoreUserInfo(id);
+        Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+        StoreUserInfoVO data = storeService.findStoreUserInfo(storeCustomerId);
         if(data == null){
             result.setCode(BusinessCode.CODE_200004);
         }

@@ -54,6 +54,9 @@ public class CouponTemplateCondition extends BaseCondition implements Serializab
     @ApiModelProperty(value = "创建时间 结束")
     private String createdEnd;
 
+    @ApiModelProperty(value = "角标")
+    private String corner;
+
 
     public String getId() {
         return id;
@@ -213,5 +216,13 @@ public class CouponTemplateCondition extends BaseCondition implements Serializab
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getCorner() {
+        return corner;
+    }
+
+    public void setCorner(String corner) {
+        this.corner = corner;
     }
 }

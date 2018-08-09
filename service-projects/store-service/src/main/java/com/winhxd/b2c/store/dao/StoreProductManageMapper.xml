@@ -134,6 +134,7 @@
         select
         prod.sku_code as skuCode
         from store_product_manage prod
+        left join store_product_statistics sps on sps.store_id = prod.store_id and sps.prod_id = prod.prod_id
         where 1=1
         <if test="condition.prodStatus != null">
             and prod.prod_status in 
@@ -147,6 +148,7 @@
         <if test="condition.recommend != null">
             and prod.recommend=#{condition.recommend,jdbcType=TINYINT}
         </if>
+        group by prod.sku_code
         <choose>
             <!-- 加排序字段目前支持，价格和创建时间升降序 -->
             <when test="condition.orderBy != null">
@@ -154,25 +156,35 @@
                     <when test="condition.orderBy==1">
                         <choose>
                             <when test="condition.descAsc != null and condition.descAsc==1">
-                                order by sell_money desc
+                                order by prod.sell_money desc
                             </when>
                             <otherwise>
-                                order by sell_money asc
+                                order by when sell_money is null then 1 else 0 end, prod.sell_money asc
                             </otherwise>
                         </choose>
                     </when>
                     <when test="condition.orderBy==0">
                         <choose>
                             <when test="condition.descAsc != null and condition.descAsc==1">
-                                order by created desc
+                                order by prod.created desc
                             </when>
                             <otherwise>
-                                order by created asc
+                                order by prod.created asc
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <when test="condition.orderBy==2">
+                        <choose>
+                            <when test="condition.descAsc != null and condition.descAsc==1">
+                                order by sum(sps.quantity_sold_out) desc
+                            </when>
+                            <otherwise>
+                                order by sum(sps.quantity_sold_out) asc
                             </otherwise>
                         </choose>
                     </when>
                     <otherwise>
-                        order by created desc
+                        order by prod.created desc
                     </otherwise>
                 </choose>
 
@@ -188,6 +200,12 @@
         <include refid="Base_Column_List"/>
         from store_product_manage
         where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="queryRecommendFlag" resultType="java.lang.Integer">
+          select
+            count(1)
+        from store_product_manage
+        where  prod_status = 1 and recommend = 1
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from store_product_manage

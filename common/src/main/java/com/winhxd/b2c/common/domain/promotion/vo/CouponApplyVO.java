@@ -32,6 +32,8 @@ public class CouponApplyVO {
 
     private Date updated;
 
+    private String relTempleteCount;
+
 
     public Long getId() {
         return id;
@@ -127,5 +129,13 @@ public class CouponApplyVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getRelTempleteCount() {
+        return relTempleteCount;
+    }
+
+    public void setRelTempleteCount(String relTempleteCount) {
+        this.relTempleteCount = relTempleteCount;
     }
 }

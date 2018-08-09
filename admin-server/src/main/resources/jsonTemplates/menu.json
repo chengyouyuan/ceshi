@@ -1,0 +1,205 @@
+{
+  "roles": "",
+  "token": "",
+  "introduction": "",
+  "avatar": "",
+  "name": "",
+  "menus": [
+    {
+      "id": "1",
+      "menuName": "商品管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "2",
+      "menuName": "店铺管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "3",
+      "menuName": "顾客管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "4",
+      "menuName": "订单管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "5",
+      "menuName": "财务管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "6",
+      "menuName": "促销管理",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "6_1",
+          "menuName": "优惠券模板管理",
+          "path": "",
+          "children": [
+            {
+              "id": "6_1_1",
+              "menuName": "【优惠券】新建模版",
+              "path": "/promotion/addtemplate"
+            },
+            {
+              "id": "6_1_2",
+              "menuName": "【优惠券】模板列表",
+              "path": "/config/%2Freport%2Fmeta%2Ftemplate_management"
+            }
+          ]
+        },
+        {
+          "id": "6_2",
+          "menuName": "适用对象规则管理",
+          "path": "",
+          "children": [
+            {
+              "id": "6_2_1",
+              "menuName": "适用对象规则新增",
+              "path": "/contributiveRule/index"
+            }
+          ]
+        },
+        {
+          "id": "6_3",
+          "menuName": "优惠券出资方规则",
+          "path": "",
+          "children": [
+            {
+              "id": "6_3_1",
+              "menuName": "【优惠券】出资方规则",
+              "path": "/contributiveRule/index"
+            },
+            {
+              "id": "6_3_2",
+              "menuName": "【优惠券】出资方规则列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        },
+        {
+          "id": "6_4",
+          "menuName": "优惠券优惠方式规则",
+          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "children": [
+            {
+              "id": "6_4_1",
+              "menuName": "【优惠券】优惠方式规则",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            },
+            {
+              "id": "6_4_2",
+              "menuName": "【优惠券】优惠方式规则列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        },
+        {
+          "id": "6_5",
+          "menuName": "优惠券领券管理",
+          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
+          "children": [
+            {
+              "id": "6_5_1",
+              "menuName": "【优惠券】领券管理",
+              "path": "/couponReceive/index"
+            },
+            {
+              "id": "6_5_2",
+              "menuName": "【优惠券】领券管理列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        },
+        {
+          "id": "6_6",
+          "menuName": "优惠券推券管理",
+          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "children": [
+            {
+              "id": "6_6_1",
+              "menuName": "【优惠券】推券管理",
+              "path": "/promotion/pushvolume"
+            },
+            {
+              "id": "6_6_2",
+              "menuName": "【优惠券】推券管理列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        },
+        {
+          "id": "6_7",
+          "menuName": "优惠券类型规则",
+          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
+          "children": [
+            {
+              "id": "6_7_1",
+              "menuName": "【优惠券】类型规则",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            },
+            {
+              "id": "6_7_2",
+              "menuName": "【优惠券】类型规则列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "menuName": "消息管理",
+      "path": "",
+      "permission": "",
+      "children": []
+    },
+    {
+      "id": "8",
+      "menuName": "系统管理",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "8_1",
+          "menuName": "权限管理",
+          "path": "",
+          "permission": ""
+        },
+        {
+          "id": "8_2",
+          "menuName": "成员管理",
+          "path": "/config/%2ftemplate%2fsystem_user_list",
+          "permission": ""
+        },
+        {
+          "id": "8_3",
+          "menuName": "订单时间设置",
+          "path": "",
+          "permission": ""
+        },
+        {
+          "id": "8_4",
+          "menuName": "修改密码",
+          "path": "",
+          "permission": ""
+        }
+      ]
+    }
+  ]
+}

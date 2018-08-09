@@ -33,7 +33,7 @@
     delete from sys_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_user (id, account, username,
       mobile, status, password,
       created_by, created_by_name, created,
@@ -45,7 +45,7 @@
       #{updatedBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedByName,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
@@ -45,6 +46,17 @@ public class StoreProductStatisticsServiceImpl implements StoreProductStatistics
 			StoreProductStatisticsCondition condition) {
 		
 		return storeProductStatisticsMapper.selectByCondition(condition);
+	}
+
+	@Override
+	@Transactional
+	public void bathSaveStoreProductStatistics(List<StoreProductStatistics> records) {
+		if(records!=null){
+			for(StoreProductStatistics record:records){
+				this.saveStoreProductStatistics(record);
+			}
+		}
+		
 	}
 	
 	

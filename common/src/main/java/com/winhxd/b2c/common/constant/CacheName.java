@@ -51,4 +51,8 @@ public class CacheName {
      * B端购买过商品sku key
      */
     public static final String STORE_BUYED_HXDPROD_SKU = "STORE:BUYED:HXDPROD:SKU:";
+    /**
+     * JSON模板文件缓存
+     */
+    public static final String JSON_TEMPLATES = "JSON_TEMPLATES:";
 }

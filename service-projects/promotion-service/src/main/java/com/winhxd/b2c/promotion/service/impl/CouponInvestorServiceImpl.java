@@ -116,8 +116,8 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         ResponseResult<PagedList<CouponInvestorVO>> result= new ResponseResult<PagedList<CouponInvestorVO>>();
         PagedList<CouponInvestorVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponInvestorVO> customers = couponInvestorMapper.getCouponInvestorPage(condition);
-        PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(customers);
+        List<CouponInvestorVO> couponInvestorList = couponInvestorMapper.getCouponInvestorPage(condition);
+        PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(couponInvestorList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

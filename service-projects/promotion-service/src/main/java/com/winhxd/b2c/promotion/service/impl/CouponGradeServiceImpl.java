@@ -87,8 +87,8 @@ public class CouponGradeServiceImpl implements CouponGradeService {
         ResponseResult<PagedList<CouponGradeVO>> result= new ResponseResult<PagedList<CouponGradeVO>>();
         PagedList<CouponGradeVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponGradeVO> customers = couponGradeMapper.getCouponGradePage(condition);
-        PageInfo<CouponGradeVO> pageInfo = new PageInfo<>(customers);
+        List<CouponGradeVO> couponGradeList = couponGradeMapper.getCouponGradePage(condition);
+        PageInfo<CouponGradeVO> pageInfo = new PageInfo<>(couponGradeList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

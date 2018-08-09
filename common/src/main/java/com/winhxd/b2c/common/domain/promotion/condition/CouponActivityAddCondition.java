@@ -47,6 +47,9 @@ public class CouponActivityAddCondition {
     @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动")
     private Short couponType;
 
+    @ApiModelProperty(value = "活动状态1开启2停止")
+    private Short activityStatus;
+
     public Long getId() {
         return id;
     }
@@ -125,5 +128,13 @@ public class CouponActivityAddCondition {
 
     public void setCouponType(Short couponType) {
         this.couponType = couponType;
+    }
+
+    public Short getActivityStatus() {
+        return activityStatus;
+    }
+
+    public void setActivityStatus(Short activityStatus) {
+        this.activityStatus = activityStatus;
     }
 }

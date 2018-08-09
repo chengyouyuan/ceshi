@@ -79,5 +79,5 @@ public interface CouponService {
      * @param couponCondition
      * @return
      */
-    PagedList<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
+    List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
 }

@@ -473,7 +473,7 @@ public class ApiStoreLoginController {
 				return new ResponseResult<>(BusinessCode.CODE_1007);
 			}
 			ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoneyVO = storeServiceClient
-					.loginCheckSellMoney(storeUserInfoCondition.getId());
+					.loginCheckSellMoney(1L);
 			return loginCheckSellMoneyVO;
 		} catch (BusinessException e) {
 			logger.error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" + e.getMessage(),
@@ -523,7 +523,7 @@ public class ApiStoreLoginController {
 			if (!storeUserInfoCondition.getStorePassword().equals(storeUserInfoCondition.getConfirmPassword())) {
 				result = new ResponseResult<>(BusinessCode.CODE_1005);
 			}
-			storeUserInfo.setId(storeUserInfoCondition.getId());
+			storeUserInfo.setId(1L);
 			storeUserInfo.setStorePassword(storeUserInfoCondition.getStorePassword());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			return result;

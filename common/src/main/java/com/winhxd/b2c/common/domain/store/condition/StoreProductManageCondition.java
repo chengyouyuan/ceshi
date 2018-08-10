@@ -31,10 +31,10 @@ public class StoreProductManageCondition implements Serializable{
 	private String prodId;
 	
 	@ApiModelProperty("是否推荐 0不推荐 1推荐")
-	private Byte recommend;
+	private Short recommend;
 	
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
-	private List<Byte> prodStatus;
+	private List<Short> prodStatus;
 	
 	@ApiModelProperty("商品spu")
 	private String prodCode;

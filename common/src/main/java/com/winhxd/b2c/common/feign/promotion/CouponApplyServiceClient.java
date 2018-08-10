@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public interface CouponApplyServiceClient {
 
     @RequestMapping(value = "/promotion/v1/addCouponApply", method = RequestMethod.POST)
     ResponseResult addCouponApply(@RequestBody CouponApplyCondition condition);
+
+    @RequestMapping(value = "/promotion/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
+    ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 
 @Component
@@ -62,6 +66,12 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     @Override
     public ResponseResult addCouponApply(CouponApplyCondition condition) {
         logger.error("CouponApplyServiceClient -> addCouponApply", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(String applyId, Integer pageNo, Integer pageSize) {
+        logger.error("CouponApplyServiceClient -> findApplyTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 }

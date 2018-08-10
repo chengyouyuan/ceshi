@@ -46,7 +46,7 @@ public interface StoreHxdServiceClient {
      * @auther lvsen
      * @date 2018/8/7 20:40
      */
-    @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
+    @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku", method = RequestMethod.POST)
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") Long customerId);
 
     /**

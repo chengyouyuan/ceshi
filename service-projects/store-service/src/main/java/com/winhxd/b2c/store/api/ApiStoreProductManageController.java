@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,9 +143,7 @@ public class ApiStoreProductManageController {
 			StoreProductManageCondition spmCondition = new StoreProductManageCondition();
 			spmCondition.setStoreId(storeId);
 			// 设置状态
-			List<Byte> prodStatus = new ArrayList<>();
-			prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
-			spmCondition.setProdStatus(prodStatus);
+			spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
 			putawayProdSkus = storeProductManageService.findSkusByConditon(spmCondition);
 			// 放入已上架skus
 			prodConditionByPage.setProductSkus(putawayProdSkus);
@@ -225,10 +224,7 @@ public class ApiStoreProductManageController {
 				// 查询过来的sku是否有的已经上架
 				StoreProductManageCondition spmCondition = new StoreProductManageCondition();
 				spmCondition.setStoreId(storeId);
-				List<Byte> prodStatus = new ArrayList<>();
-				prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
-				spmCondition.setProdStatus(prodStatus);
-
+				spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
 				List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId,
 						skucodeArray);
 				// 上架操作
@@ -376,22 +372,24 @@ public class ApiStoreProductManageController {
 	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
 		try {
-			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
-				logger.error("B端搜索商品接口:登录凭证为空");
-				return new ResponseResult<>(BusinessCode.CODE_1002);
-			}
-			if(!verifyParam(condition)){
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			Long storeCustomerId = storeUser.getStoreCustomerId();
-			Long businessId = storeUser.getBusinessId();
+//			StoreUser storeUser = UserContext.getCurrentStoreUser();
+//			if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
+//				logger.error("B端搜索商品接口:登录凭证为空");
+//				return new ResponseResult<>(BusinessCode.CODE_1002);
+//			}
+//			if(!verifyParam(condition)){
+//				return new ResponseResult<>(BusinessCode.CODE_1007);
+//			}
+			//storeUser.getStoreCustomerId();
+			Long storeCustomerId = 1607479L;
+			//storeUser.getBusinessId();
+			Long businessId = 2L;
 			//门店已经上架的商品
 			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
 			manageCondition.setStoreId(businessId);
-			List<Byte> prodStatus = new ArrayList<>();
-			prodStatus.add((byte) StoreProductStatusEnum.PUTAWAY.getStatusCode());
-			prodStatus.add((byte) StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+			List<Short> prodStatus = new ArrayList<>();
+			prodStatus.add(StoreProductStatusEnum.PUTAWAY.getStatusCode());
+			prodStatus.add(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
 			manageCondition.setProdStatus(prodStatus);
 			List<String> putwaySkusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
 

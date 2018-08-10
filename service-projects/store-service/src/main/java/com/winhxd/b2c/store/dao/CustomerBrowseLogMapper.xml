@@ -111,4 +111,11 @@
       and customer_id = #{customerId,jdbcType=BIGINT}
     )
   </select>
+
+  <select id="getBrowseNum" resultType="java.lang.Integer">
+    select
+    count(distinct id)
+    from customer_browse_log
+    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
+  </select>
 </mapper>

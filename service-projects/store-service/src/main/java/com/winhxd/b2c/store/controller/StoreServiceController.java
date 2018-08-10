@@ -2,6 +2,7 @@ package com.winhxd.b2c.store.controller;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -239,9 +240,7 @@ public class StoreServiceController implements StoreServiceClient {
 		//未设置价格
 		condition.setPriceStatus((byte)0);
 		//上架商品
-		List<Byte> prodStatus=new ArrayList<>();
-		prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
-		condition.setProdStatus(prodStatus);
+		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
 		int count=storeProductManageService.countSkusByConditon(condition);
 		//设置是否有未设置价格的商品
 		if(count>0){

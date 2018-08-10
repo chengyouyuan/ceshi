@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.feign.promotion;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,14 @@ public interface CouponServiceClient {
 
     @RequestMapping(value = "/coupon/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
-	
+
+    @RequestMapping(value = "/coupon/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponProductCondition couponCondition);
+
+    @RequestMapping(value = "/coupon/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition);
+
+
 }
 
 
@@ -90,6 +98,18 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     @Override
     public ResponseResult couponListByOrder(OrderCouponCondition couponCondition) {
         logger.error("CouponServiceClient -> couponListByOrder", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult availableCouponListByOrder(CouponProductCondition couponCondition) {
+        logger.error("CouponServiceClient -> availableCouponListByOrder", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+        logger.error("CouponServiceClient -> couponAmountCompute", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 

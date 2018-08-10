@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import com.winhxd.b2c.common.feign.promotion.CouponGradeServiceClient;
 import com.winhxd.b2c.promotion.service.CouponGradeService;
 import io.swagger.annotations.Api;
@@ -73,6 +74,13 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
         ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);
+        return result;
+    }
+
+    @ApiOperation(value = "优惠方式规则关联模板分页查询", notes = "优惠方式规则关联模板分页查询",response = ResponseResult.class)
+    @Override
+    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize")Integer pageSize) {
+        ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(gradeId,pageNo,pageSize);
         return result;
     }
 

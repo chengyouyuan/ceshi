@@ -261,4 +261,34 @@
               </if>
   </select>
 
+
+
+
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO">
+    <result column="invertor_id" jdbcType="VARCHAR" property="invertorId" />
+    <result column="invertor_name" jdbcType="VARCHAR" property="invertorName" />
+    <result column="invertor_code" jdbcType="VARCHAR" property="invertorCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+  <select id="getInvertorTempleteCountPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
+    SELECT
+        a.title AS templete_name,
+        a.`code` AS templete_code,
+        a.`status` AS templete_status,
+        b.`code` AS invertor_code,
+        b.`name` AS invertor_name,
+        b.id AS invertor_id
+    FROM
+        coupon_template a
+    LEFT JOIN coupon_investor b ON a.investor_id = b.id
+    WHERE
+        a.grade_id = #{investorId}
+  </select>
+
+
+
+
 </mapper>

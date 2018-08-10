@@ -16,7 +16,7 @@ public class CustomerSearchProductCondition extends BaseCondition {
     private List<String> brandCodes;
 
     @ApiModelProperty(value = "点击店主推荐分类传参 1推荐 ")
-    private Byte recommend;
+    private Short recommend;
 
     @ApiModelProperty(value = "一级品类编码")
     private String categoryCode;

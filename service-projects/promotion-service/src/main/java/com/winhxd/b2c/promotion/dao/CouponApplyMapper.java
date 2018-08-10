@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApply;
+import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,5 +29,5 @@ public interface CouponApplyMapper {
 
     long insertCouponApply(CouponApply couponApply);
 
-
+    List<ApplyTempleteCountVO> findApplyTempleteCountPage(@Param("applyId") long applyId);
 }

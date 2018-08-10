@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.region.controller;
+package com.winhxd.b2c.system.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -6,7 +6,7 @@ import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
-import com.winhxd.b2c.system.region.service.SysRegionService;
+import com.winhxd.b2c.system.service.SysRegionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,9 +28,9 @@ import static com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum.*;
 @Api(tags = "地理区域管理")
 @RestController
 @RequestMapping
-public class SysRegionController implements RegionServiceClient {
+public class ApiRegionController implements RegionServiceClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(SysRegionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiRegionController.class);
 
     private static final String MODULE_NAME = "地理区域管理";
 
@@ -39,7 +39,7 @@ public class SysRegionController implements RegionServiceClient {
 
     @Override
     @ApiOperation(value = "查询地理区域列表")
-    public ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition) {
+    public ResponseResult<List<SysRegion>> findRegionList(@RequestBody SysRegionCondition condition) {
         logger.info("{} - 查询地理区域列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<List<SysRegion>> result = new ResponseResult<>();
         try {
@@ -84,7 +84,7 @@ public class SysRegionController implements RegionServiceClient {
     @Override
     @ApiOperation(value = "查询指定的地理区域列表")
     @ApiParam(name="地理区域编号数组",value="地理区域编号数组")
-    public ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<String> regisonCodes) {
+    public ResponseResult<List<SysRegion>> findRegionRangeList(@RequestBody List<String> regisonCodes) {
         logger.info("{} - 查询指定的地理区域列表, 参数：condition={}", MODULE_NAME, regisonCodes);
         ResponseResult<List<SysRegion>> result = new ResponseResult<>();
         try {
@@ -106,7 +106,7 @@ public class SysRegionController implements RegionServiceClient {
 
     @Override
     @ApiOperation(value = "查询指定的地理区域")
-    public ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode) {
+    public ResponseResult<SysRegion> getRegionByCode(@PathVariable("regisonCode") String regisonCode) {
         logger.info("{} - 查询指定的地理区域, 参数：regisonCode={}", MODULE_NAME, regisonCode);
         ResponseResult<SysRegion> result = new ResponseResult<>();
         try{

@@ -19,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -114,8 +117,11 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Autowired
     private CustomerServiceClient customerServiceclient;
-
+    @Resource
     private ProductServiceClient productServiceClient;
+    @Resource
+    private MessageServiceClient messageServiceClient;
+
 
     private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("order-thread-pool-%d").build();
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY),
@@ -269,9 +275,8 @@ public class CommonOrderServiceImpl implements OrderService {
 
                 orderCancel(order, orderCancelCondition.getCancelReason(), user.getCustomerId(), customer.getNickName());
                 //TODO 订单取消发送云信
-                // 给门店【已取消】手机尾号8513张先生已取消订单
-                //给申请用户 “您的订单已取消”。
-                String mobileStr = getLast4Mobile(customer.getCustomerMobile());
+                //取消订单成功事务提交后相关事件
+                registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, customer), null);
             } finally {
                 lock.unlock();
             }
@@ -299,10 +304,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
-            ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
-            if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                throw new BusinessException(BusinessCode.CODE_422006, MessageFormat.format("取消订单-退优惠券返回失败-订单号={0}", orderNo));
-            }
+            couponServiceClient.orderUntreadCoupon(couponCondition).getData();
             logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
             logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);
@@ -980,6 +982,39 @@ public class CommonOrderServiceImpl implements OrderService {
         @Override
         public void run() {
             //TODO 发送mq完成消息
+        }
+    }
+
+    /**
+     * 订单提货完成 处理
+     *
+     * @author wangbin
+     * @date 2018年8月8日 下午3:16:17
+     */
+    private class OrderCancelCompleteProcessRunnable implements Runnable {
+
+        private OrderInfo orderInfo;
+        private CustomerUserInfoVO customer;
+
+        public OrderCancelCompleteProcessRunnable(OrderInfo orderInfo, CustomerUserInfoVO customer) {
+            super();
+            this.orderInfo = orderInfo;
+            this.customer = customer;
+        }
+
+        @Override
+        public void run() {
+            // 给门店【已取消】手机尾号8513张先生已取消订单
+            String mobileStr = getLast4Mobile(customer.getCustomerMobile());
+            NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
+            neteaseMsgCondition.setCustomerId(orderInfo.getCustomerId());
+            String customerMsgContent = "【已取消】手机尾号" + mobileStr + "的顾客已取消订单";
+            NeteaseMsg neteaseMsg = new NeteaseMsg();
+            neteaseMsg.setMsgContent(customerMsgContent);
+            neteaseMsg.setAudioType(0);
+            neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
+            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+            //给申请用户 “您的订单已取消”。
         }
     }
 

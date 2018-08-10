@@ -32,7 +32,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/7 20:59
      */
-    @RequestMapping(value = "/promotion/v1/addCouponInvestor", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/514/v1/addCouponInvestor", method = RequestMethod.POST)
     ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition);
 
     /**
@@ -43,7 +43,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 13:59
      */
-    @RequestMapping(value = "/promotion/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/515/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
     ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id);
 
     /**
@@ -54,7 +54,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 14:47
      */
-    @RequestMapping(value = "/promotion/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/516/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
     ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     /**
@@ -65,10 +65,10 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 20:31
      */
-    @RequestMapping(value = "/promotion/v1/getCouponInvestorPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/528/v1/getCouponInvestorPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 
-    @RequestMapping(value = "/promotion/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/525/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

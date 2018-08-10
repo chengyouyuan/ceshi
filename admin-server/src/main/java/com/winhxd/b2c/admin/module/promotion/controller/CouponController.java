@@ -189,9 +189,6 @@ public class CouponController {
 	//=====================================优惠券活动结束=============================================================
 
 
-
-
-
 	//=====================================优惠券模板开始=============================================================
 	/**
 	 *
@@ -221,13 +218,12 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
-		/**
 		 AdminUser adminUser = UserContext.getCurrentAdminUser();
 		 String userId = adminUser.getId()+"";
 		 String userName = adminUser.getUsername();
-		 **/
-		String userId = "100102";
-		String userName = "大花脸";
+
+//		String userId = "100102";
+//		String userName = "大花脸";
 		String code = getUUID();
 		condition.setCode(code);
 		condition.setCreatedBy(userId);
@@ -266,13 +262,12 @@ public class CouponController {
 	@ApiOperation("单个删除/批量删除（非物理删除）/ 设为无效")
 	@PostMapping(value = "/v1/updateCouponTemplateToValid")
 	public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids){
-		/**
+
 		 AdminUser adminUser = UserContext.getCurrentAdminUser();
 		 String userId = adminUser.getId()+"";
 		 String userName = adminUser.getUsername();
-		 **/
-		String userId = "100102";
-		String userName = "大花脸";
+//		String userId = "100102";
+//		String userName = "大花脸";
 
 		ResponseResult responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(ids,userId,userName);
 		return responseResult;
@@ -300,13 +295,12 @@ public class CouponController {
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
-		/**
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 		String userId = adminUser.getId()+"";
 		String userName = adminUser.getUsername();
-		**/
-		String userId = "100102";
-		String userName = "大花脸";
+
+//		String userId = "100102";
+//		String userName = "大花脸";
 		String code = getUUID();
 		CouponInvestorCondition condition = new CouponInvestorCondition();
 		condition.setCode(code);
@@ -335,12 +329,11 @@ public class CouponController {
 	@GetMapping(value = "/v1/updateCouponInvestorToValid")
 	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		/**
 		 String userId = adminUser.getId()+"";
 		 String userName = adminUser.getUsername();
-		 */
-		String userId = "100102";
-		String userName = "大花脸";
+
+//		String userId = "100102";
+//		String userName = "大花脸";
 		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id,userId,userName);
 		return responseResult;
 	}
@@ -363,12 +356,10 @@ public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGra
 	 * 参数校验
 	 */
 	AdminUser adminUser = UserContext.getCurrentAdminUser();
-	/**
 	 String userId = adminUser.getId()+"";
 	 String userName = adminUser.getUsername();
-	 */
-	String userId = "100102";
-	String userName = "大花脸";
+//	String userId = "100102";
+//	String userName = "大花脸";
 	 String code = getUUID();
 	 couponGradeCondition.setCode(code);
 	 couponGradeCondition.setUserId(userId);
@@ -389,12 +380,10 @@ public ResponseResult viewCouponGradeDetail(@RequestParam("id") String id){
 @GetMapping (value = "/v1/updateCouponGradeValid")
 public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	AdminUser adminUser = UserContext.getCurrentAdminUser();
-	/**
 	String userId = adminUser.getId()+"";
 	String userName = adminUser.getUsername();
-	*/
-	String userId = "100102";
-	String userName = "大花脸";
+//	String userId = "100102";
+//	String userName = "大花脸";
 	ResponseResult responseResult = couponGradeServiceClient.updateCouponGradeValid(id,userId,userName);
 	return responseResult;
 }
@@ -410,12 +399,10 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 		 * 参数校验
 		 */
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		/**
 		 String userId = adminUser.getId()+"";
 		 String userName = adminUser.getUsername();
-		 */
-		String userId = "100102";
-		String userName = "大花脸";
+//		String userId = "100102";
+//		String userName = "大花脸";
 		String code = getUUID();
 		condition.setCode(code);
 		ResponseResult responseResult = couponApplyServiceClient.addCouponApply(condition);
@@ -434,13 +421,12 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	@ApiOperation("优惠券类型设置无效")
 	@PostMapping(value = "/v1/updateCouponApplyToValid")
 	public ResponseResult updateCouponApplyToValid(@RequestParam("id") String id){
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		/**
+		 AdminUser adminUser = UserContext.getCurrentAdminUser();
 		 String userId = adminUser.getId()+"";
 		 String userName = adminUser.getUsername();
-		 */
-		String userId = "100102";
-		String userName = "大花脸";
+
+//		String userId = "100102";
+//		String userName = "大花脸";
 		ResponseResult responseResult = couponApplyServiceClient.updateCouponApplyToValid(id,userId,userName);
 		return responseResult;
 	}

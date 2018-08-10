@@ -119,7 +119,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PostMapping(value = "/user/editPassword")
+    @PostMapping(value = "/user/updatePassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);

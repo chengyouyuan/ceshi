@@ -51,7 +51,7 @@ public class ApiBrowseLogController {
             CustomerBrowseLog customerBrowseLog = new CustomerBrowseLog();
             customerBrowseLog.setStoreCustomerId(storeCustomerId);
             customerBrowseLog.setCustomerId(customerId);
-            customerBrowseLog.setLoginTime(new Date());
+            customerBrowseLog.setLoginDatetime(new Date());
             storeBrowseLogService.saveBrowseLogLogin(customerBrowseLog);
         } catch (Exception e) {
             logger.error("C端用户浏览门店进入日志接口，服务器内部错误：{}", e);
@@ -82,8 +82,8 @@ public class ApiBrowseLogController {
             logger.info("CC端用户浏览门店退出日志接口入参为 storeCustomerId:{}, customerId：{}", storeCustomerId, customerId);
             Date currentTime = new Date();
             CustomerBrowseLog customerBrowseLog = storeBrowseLogService.getIdForLoginOut(storeCustomerId, customerId);
-            customerBrowseLog.setLogoutTime(currentTime);
-            long times = (currentTime.getTime() - customerBrowseLog.getLoginTime().getTime());
+            customerBrowseLog.setLogoutDatetime(currentTime);
+            long times = (currentTime.getTime() - customerBrowseLog.getLoginDatetime().getTime());
             customerBrowseLog.setStayTimeMillis(times);
             storeBrowseLogService.modifyByPrimaryKey(customerBrowseLog);
         } catch (Exception e) {

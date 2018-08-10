@@ -5,12 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="store_customer_id" jdbcType="BIGINT" property="storeCustomerId" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
-    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
-    <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="login_datetime" jdbcType="TIMESTAMP" property="loginDatetime" />
+    <result column="logout_datetime" jdbcType="TIMESTAMP" property="logoutDatetime" />
     <result column="stay_time_millis" jdbcType="BIGINT" property="stayTimeMillis" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_customer_id, customer_id, login_time, logout_time, stay_time_millis
+    id, store_customer_id, customer_id, login_datetime, logout_datetime, stay_time_millis
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -24,9 +24,9 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     insert into customer_browse_log (id, store_customer_id, customer_id,
-      login_time, logout_time, stay_time_millis)
+      login_datetime, logout_datetime, stay_time_millis)
     values (#{id,jdbcType=BIGINT}, #{storeCustomerId,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT},
-      #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP}, #{stayTimeMillis, jdbcType=BIGINT})
+      #{loginDatetime,jdbcType=TIMESTAMP}, #{logoutDatetime,jdbcType=TIMESTAMP}, #{stayTimeMillis, jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog">
     insert into customer_browse_log
@@ -40,11 +40,11 @@
       <if test="customerId != null">
         customer_id,
       </if>
-      <if test="loginTime != null">
-        login_time,
+      <if test="loginDatetime != null">
+        login_datetime,
       </if>
-      <if test="logoutTime != null">
-        logout_time,
+      <if test="logoutDatetime != null">
+        logout_datetime,
       </if>
       <if test="stayTimeMillis != null">
         stay_time_millis,
@@ -60,8 +60,8 @@
       <if test="customerId != null">
         #{customerId,jdbcType=BIGINT},
       </if>
-      <if test="loginTime != null">
-        #{loginTime,jdbcType=TIMESTAMP},
+      <if test="loginDatetime != null">
+        #{loginDatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="stayTimeMillis != null">
         #{stayTimeMillis,jdbcType=BIGINT},
@@ -77,11 +77,11 @@
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
       </if>
-      <if test="loginTime != null">
-        login_time = #{loginTime,jdbcType=TIMESTAMP},
+      <if test="loginDatetime != null">
+        login_datetime = #{loginDatetime,jdbcType=TIMESTAMP},
       </if>
-      <if test="logoutTime != null">
-        logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+      <if test="logoutDatetime != null">
+        logout_datetime = #{logoutDatetime,jdbcType=TIMESTAMP},
       </if>
       <if test="stayTimeMillis != null">
         stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT},
@@ -93,8 +93,8 @@
     update customer_browse_log
     set store_customer_id = #{storeCustomerId,jdbcType=BIGINT},
       customer_id = #{customerId,jdbcType=BIGINT},
-      login_time = #{loginTime,jdbcType=TIMESTAMP},
-      logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+      login_datetime = #{loginDatetime,jdbcType=TIMESTAMP},
+      logout_datetime = #{logoutDatetime,jdbcType=TIMESTAMP},
       stay_time_millis = #{stayTimeMillis,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -118,6 +118,6 @@
     from customer_browse_log
     where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
     and login_datetime &gt;= #{beginDate,jdbcType=TIMESTAMP}
-    and login_time &lt;= #{endDate,jdbcType=TIMESTAMP}
+    and login_datetime &lt;= #{endDate,jdbcType=TIMESTAMP}
   </select>
 </mapper>

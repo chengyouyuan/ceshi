@@ -63,7 +63,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreProductManageController.class);
 	@Autowired
@@ -91,7 +91,7 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用！", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！", response = ResponseResult.class) })
-	@PostMapping(value = "1012/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1012/v1/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<ProductMsgVO> allowPutawayProdList(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
 		try {
@@ -188,7 +188,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", notes = "B端商品操作接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
-	@PostMapping(value = "1013/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
 		try {
@@ -291,7 +291,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
-	@PostMapping(value = "1014/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
 		try {
@@ -327,7 +327,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreSubmitProductVO.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
-	@PostMapping(value = "1015/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1015/v1/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(
 			@RequestBody StoreSubmitProductCondition condition) {
 		ResponseResult<PagedList<StoreSubmitProductVO>> responseResult = new ResponseResult<>();
@@ -370,22 +370,20 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！")})
-	@PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1018/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
 		try {
-//			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
-//				logger.error("B端搜索商品接口:登录凭证为空");
-//				return new ResponseResult<>(BusinessCode.CODE_1002);
-//			}
-//			if(!verifyParam(condition)){
-//				return new ResponseResult<>(BusinessCode.CODE_1007);
-//			}
-			//storeUser.getStoreCustomerId();
-			Long storeCustomerId = 1607479L;
-			//storeUser.getBusinessId();
-			Long businessId = 2L;
+			StoreUser storeUser = UserContext.getCurrentStoreUser();
+			if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
+				logger.error("B端搜索商品接口:登录凭证为空");
+				return new ResponseResult<>(BusinessCode.CODE_1002);
+			}
+			if(!verifyParam(condition)){
+				return new ResponseResult<>(BusinessCode.CODE_1007);
+			}
+			Long storeCustomerId = storeUser.getStoreCustomerId();
+			Long businessId = storeUser.getBusinessId();
 			//门店已经上架的商品
 			StoreProductManageCondition manageCondition = new StoreProductManageCondition();
 			manageCondition.setStoreId(businessId);
@@ -438,7 +436,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
-	@PostMapping(value = "1019/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1019/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(
 			@RequestBody StoreProductManageCondition condition) {
 		ResponseResult<PagedList<StoreProdSimpleVO>> responseResult = new ResponseResult<>();

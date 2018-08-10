@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -20,6 +21,8 @@ import com.winhxd.b2c.promotion.service.CouponActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -47,16 +50,26 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+        SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        PagedList<CouponActivityVO> pagedList = new PagedList<>();
-        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
-        PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
-        pagedList.setData(pageInfo.getList());
-        pagedList.setPageNo(pageInfo.getPageNum());
-        pagedList.setPageSize(pageInfo.getPageSize());
-        pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
+        try {
+            Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
+            Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
+            condition.setCreatedStart(createdStart);
+            condition.setCreatedEnd(createdEnd);
+            PagedList<CouponActivityVO> pagedList = new PagedList<>();
+            PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+            List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
+            PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
+            pagedList.setData(pageInfo.getList());
+            pagedList.setPageNo(pageInfo.getPageNum());
+            pagedList.setPageSize(pageInfo.getPageSize());
+            pagedList.setTotalRows(pageInfo.getTotal());
+            result.setData(pagedList);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
@@ -67,14 +80,18 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public void saveCouponActivity(CouponActivityAddCondition condition) {
         try {
+            SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+            SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+            Date activityStart = formatS.parse(formatS.format(condition.getActivityStart()));
+            Date activityEnd = formatE.parse(formatE.format(condition.getActivityEnd()));
             //CouponActivity
             CouponActivity couponActivity = new CouponActivity();
             couponActivity.setName(condition.getName());
             couponActivity.setCode(getUUID());
             couponActivity.setExolian(condition.getExolian());
             couponActivity.setRemarks(condition.getRemarks());
-            couponActivity.setActivityStart(condition.getActivityStart());
-            couponActivity.setActivityEnd(condition.getActivityEnd());
+            couponActivity.setActivityStart(activityStart);
+            couponActivity.setActivityEnd(activityEnd);
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setCreated(new Date());
@@ -98,8 +115,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
                 //领券
                 if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    couponActivityTemplate.setStartTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                    couponActivityTemplate.setEndTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                    Date couponStart = formatS.parse(formatS.format(condition.getCouponActivityTemplateList().get(i).getStartTime()));
+                    Date couponEnd = formatE.parse(formatE.format(condition.getCouponActivityTemplateList().get(i).getEndTime()));
+                    couponActivityTemplate.setStartTime(couponStart);
+                    couponActivityTemplate.setEndTime(couponEnd);
                     couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
                     couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                     couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
@@ -173,6 +192,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
         try {
+            SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+            SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+            Date activityStart = formatS.parse(formatS.format(condition.getActivityStart()));
+            Date activityEnd = formatE.parse(formatE.format(condition.getActivityEnd()));
             //更新CouponActivity
             CouponActivity couponActivity = new CouponActivity();
             couponActivity.setId(condition.getId());
@@ -180,8 +203,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setCode(getUUID());
             couponActivity.setExolian(condition.getExolian());
             couponActivity.setRemarks(condition.getRemarks());
-            couponActivity.setActivityStart(condition.getActivityStart());
-            couponActivity.setActivityEnd(condition.getActivityEnd());
+            couponActivity.setActivityStart(activityStart);
+            couponActivity.setActivityEnd(activityEnd);
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setUpdated(new Date());
@@ -215,8 +238,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
                 //领券
                 if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    couponActivityTemplate.setStartTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                    couponActivityTemplate.setEndTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                    Date couponStart = formatS.parse(formatS.format(condition.getCouponActivityTemplateList().get(i).getStartTime()));
+                    Date couponEnd = formatE.parse(formatE.format(condition.getCouponActivityTemplateList().get(i).getEndTime()));
+                    couponActivityTemplate.setStartTime(couponStart);
+                    couponActivityTemplate.setEndTime(couponEnd);
                     couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
                     couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                     couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());

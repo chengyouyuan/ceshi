@@ -8,10 +8,8 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ControllerChecker implements ApplicationListener<ContextRefreshedEvent> {
@@ -23,6 +21,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         Pattern serviceClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.controller\\.\\w+Controller$");
 
         List<String> errorList = new ArrayList<>();
+        Set<String> codes = new HashSet<>();
 
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         RequestMappingHandlerMapping rmhp = applicationContext.getBean(RequestMappingHandlerMapping.class);
@@ -31,14 +30,29 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
             Method method = entry.getValue().getMethod();
             String className = method.getDeclaringClass().getCanonicalName();
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
+            Matcher matcher;
             for (String url : patterns) {
-                if (apiPath.matcher(url).matches()) {
+                if ((matcher = apiPath.matcher(url)).matches()) {
                     if (!apiClass.matcher(className).matches()) {
                         errorList.add(className + "#" + method.getName());
+                    } else {
+                        String code = matcher.group(3);
+                        if (codes.contains(code)) {
+                            errorList.add(className + "#" + method.getName() + " 接口号重复:" + code);
+                        } else {
+                            codes.add(code);
+                        }
                     }
-                } else if (servicePath.matcher(url).matches()) {
+                } else if ((matcher = servicePath.matcher(url)).matches()) {
                     if (!serviceClass.matcher(className).matches()) {
                         errorList.add(className + "#" + method.getName());
+                    } else {
+                        String code = matcher.group(2);
+                        if (codes.contains(code)) {
+                            errorList.add(className + "#" + method.getName() + " 接口号重复:" + code);
+                        } else {
+                            codes.add(code);
+                        }
                     }
                 } else {
                     if (className.startsWith("com.winhxd.b2c")) {

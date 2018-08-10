@@ -51,12 +51,19 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_1013, message = "该账号已存在")
     })
     @PostMapping(value = "/user/add")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
     public ResponseResult add(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+
+        SysUser existsSysUser = userServiceClient.getByAccount(sysUserDTO.getAccount()).getData();
+        if(null != existsSysUser){
+            logger.warn("{} - 新增用户失败，账号已存在, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+            return new ResponseResult(BusinessCode.CODE_1013);
+        }
 
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();

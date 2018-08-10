@@ -34,7 +34,9 @@ public final class BusinessCode {
      * 验证码请求时长没有超过一分钟
      */
     public static final int CODE_1012 = 1012;
-    
+    /** 该账号已存在 */
+    public static final int CODE_1013 = 1013;
+
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
     /** 新密码与原密码相同 */

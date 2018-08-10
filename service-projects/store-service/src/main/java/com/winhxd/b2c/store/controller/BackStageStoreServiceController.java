@@ -1,4 +1,4 @@
-package com.winhxd.b2c.store.controller.backstage;
+package com.winhxd.b2c.store.controller;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -28,7 +28,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     private StoreService storeService;
 
     @Override
-    public ResponseResult<PagedList<BackStageStoreVO>> storeList(BackStageStoreInfoCondition storeCondition) {
+    public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(BackStageStoreInfoCondition storeCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
         PagedList<BackStageStoreVO> storeVOPagedList = storeService.findStoreUserInfo(storeCondition);
         responseResult.setData(storeVOPagedList);

@@ -13,7 +13,6 @@ import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreBusinessInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerOrderInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -314,7 +313,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
         if (storeUser.getBusinessId() == null) {
-            logger.error("StoreServiceController -> findStoreUserInfo获取的参数businessId为空");
+            logger.error("StoreServiceController -> findStoreUserInfo获取当前登录用户的id为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());

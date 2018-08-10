@@ -53,7 +53,7 @@ public class ApiRegionController implements RegionServiceClient {
             if(StringUtils.isNotBlank(condition.getRegionCode())){
                 SysRegion region=  sysRegionService.getRegionByCode(condition.getRegionCode());
                 if(region==null){
-                   throw  new BusinessException(BusinessCode.SysRegionCODE_310001,"查询的地理区域不存在");
+                   throw  new BusinessException(BusinessCode.CODE_320001,"查询的地理区域不存在");
                 }
                 SysRegion queryRegion=new SysRegion();
                  if(PROVINCELEVEL.getCode().equals(region.getLevel())){

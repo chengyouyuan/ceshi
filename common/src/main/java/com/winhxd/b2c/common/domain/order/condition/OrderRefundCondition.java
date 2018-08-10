@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -8,5 +9,8 @@ import lombok.Data;
  */
 @Data
 public class OrderRefundCondition {
+    @ApiModelProperty(value = "订单编号")
     private String orderNo;
+    @ApiModelProperty(value = "退款原因")
+    private String cancelReason;
 }

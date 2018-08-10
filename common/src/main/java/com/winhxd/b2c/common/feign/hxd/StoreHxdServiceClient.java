@@ -27,7 +27,7 @@ public interface StoreHxdServiceClient {
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.POST)
     ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, 
     		@RequestParam("storePassword") String storePassword); 
-    @RequestMapping(value = "/hxdStore/getStoreUserInfoByCustomerId", method = RequestMethod.GET)
+    @RequestMapping(value = "/hxdStore/getStoreUserInfoByCustomerId", method = RequestMethod.POST)
     ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId);
 
     /**

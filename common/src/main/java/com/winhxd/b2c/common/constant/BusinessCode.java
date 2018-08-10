@@ -36,6 +36,8 @@ public final class BusinessCode {
     public static final int CODE_1012 = 1012;
     /** 该账号已存在 */
     public static final int CODE_1013 = 1013;
+    /**token参数为空*/
+    public static final int CODE_1014 = 1014;
 
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
@@ -187,11 +189,13 @@ public final class BusinessCode {
     public static final int CODE_410001 = 410001;
     /** 订单号错误*/
     public static final int CODE_420003 = 420003;
-    /** 取消订单状态更新不成功*/
+    /** 取消订单状态更新失败*/
     public static final int CODE_420004 = 420004;
-    /** 订单取消处理用户退款不成功*/
+    /** 订单取消处理用户退款失败*/
     public static final int CODE_422005 = 422005;
+    /** 订单取消退优惠券失败*/
+    public static final int CODE_422006 = 422006;
 
     @ApiModelProperty("查询的地理区域不存在")
-    public static final int SysRegionCODE_310001 = 310001;
+    public static final int CODE_320001 = 320001;
 }

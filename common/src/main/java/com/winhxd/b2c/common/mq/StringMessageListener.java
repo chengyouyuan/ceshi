@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface StringMessageListener {
-    MessageQueueHandler value();
+    MQHandler value();
 
 //    String id() default "";
 //
@@ -32,8 +32,6 @@ public @interface StringMessageListener {
 
     /**
      * n-m
-     *
-     * @return
      */
     String concurrency() default "";
 

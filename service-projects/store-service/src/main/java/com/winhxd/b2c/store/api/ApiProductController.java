@@ -157,6 +157,8 @@ public class ApiProductController {
             ProductConditionByPage productConditionByPage = new ProductConditionByPage();
             productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
             productConditionByPage.setProductSkus(skusByConditon);
+            productConditionByPage.setPageNo(condition.getPageNo());
+            productConditionByPage.setPageSize(condition.getPageSize());
             responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
             logger.info("小程序店铺热销商品接口 返参：{}", JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {

@@ -134,7 +134,7 @@
         select
         prod.sku_code as skuCode
         from store_product_manage prod
-        left join store_product_statistics sps on sps.store_id = prod.store_id and sps.prod_code = prod.prod_code
+        LEFT JOIN  store_product_statistics  sps ON sps.store_id = prod.store_id AND sps.created BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND DATE_SUB(CURDATE(),INTERVAL -1 DAY)
         where 1=1
         <if test="condition.prodStatus != null">
             and prod.prod_status in 

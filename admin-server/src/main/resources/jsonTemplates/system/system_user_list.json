@@ -12,7 +12,7 @@
         "icon": null,
         "event": {
           "type": "router",
-          "url": "/config/%2ftemplate%2fsystem_user_list_add",
+          "url": "/config/%2Ftemplate%2Fsystem_user_list_add",
           "callBack": {
           }
         }
@@ -76,7 +76,7 @@
               "static": {
                 "method": "detail"
               },
-              "url": "/config/%2ftemplate%2fsystem_user_list_view"
+              "url": "/config/%2Ftemplate%2Fsystem_user_list_view"
             }
           },
           {
@@ -90,7 +90,7 @@
               "static": {
                 "method": "update"
               },
-              "url": "/config/%2ftemplate%2fsystem_user_list_edit"
+              "url": "/config/%2Ftemplate%2Fsystem_user_list_edit"
             }
           },
           {
@@ -113,7 +113,7 @@
               "params": [
                 "id"
               ],
-              "url": "/config/%2ftemplate%2fsystem_user_list_password"
+              "url": "/config/%2Ftemplate%2Fsystem_user_list_password"
             }
           }
         ]

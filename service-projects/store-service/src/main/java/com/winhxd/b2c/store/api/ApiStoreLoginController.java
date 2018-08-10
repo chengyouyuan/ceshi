@@ -93,7 +93,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效") })
-	@RequestMapping(value = "1008/v1/storeLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
@@ -113,7 +113,7 @@ public class ApiStoreLoginController {
 						.equals(cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE+storeUserInfoCondition.getStoreMobile()))) {
 					return new ResponseResult<>(BusinessCode.CODE_1008);
 				}
-				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+				storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 				DB = storeLoginService.getStoreUserInfo(storeUserInfo);
 				// 查库
 				if (DB == null) {
@@ -143,7 +143,7 @@ public class ApiStoreLoginController {
 					if (DB != null) {
 						
 						if(StringUtils.isBlank(DB.getOpenId())) {
-							storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+							storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						}
 						/**
 						 * 更新数据库
@@ -163,11 +163,11 @@ public class ApiStoreLoginController {
 					} else {
 						
 						/**
-						 * 查询openId是否 已经绑定其他手机号
+						 * 查询OpenId是否 已经绑定其他手机号
 						 */
-						StoreUserInfo openIdInfo = new StoreUserInfo();
-						openIdInfo.setOpenid(storeUserInfoCondition.getOpenid());
-						DB = storeLoginService.getStoreUserInfo(openIdInfo);
+						StoreUserInfo OpenIdInfo = new StoreUserInfo();
+						OpenIdInfo.setOpenId(storeUserInfoCondition.getOpenId());
+						DB = storeLoginService.getStoreUserInfo(OpenIdInfo);
 						/**
 						 * 如果可以查到。。证明该微信号绑定过其他账号
 						 */
@@ -177,7 +177,7 @@ public class ApiStoreLoginController {
 						/*
 						 * 插入数据库
 						 */
-						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
@@ -203,7 +203,7 @@ public class ApiStoreLoginController {
 			// 微信快捷登录
 			else if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()
 					&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+				storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 				DB = storeLoginService.getStoreUserInfo(storeUserInfo);
 				if (DB == null) {
 					return new ResponseResult<>(BusinessCode.CODE_1004);
@@ -283,7 +283,7 @@ public class ApiStoreLoginController {
 						/*
 						 * 插入数据库
 						 */
-						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
@@ -330,7 +330,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
-	@RequestMapping(value = "1009/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(@RequestBody StoreSendVerificationCodeCondition storeUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
@@ -353,14 +353,14 @@ public class ApiStoreLoginController {
 
 				StoreUserInfo DB = null;
 				/**
-				 * 如果是微信登录验证openId 是否绑定手机号是否与app传过来的一致
+				 * 如果是微信登录验证OpenId 是否绑定手机号是否与app传过来的一致
 				 */
 				if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
 					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 					DB = storeLoginService.getStoreUserInfo(info);
 					if (DB != null) {
 						if(StringUtils.isBlank(DB.getOpenId())) {
-							info.setOpenid(storeUserInfoCondition.getOpenid());
+							info.setOpenId(storeUserInfoCondition.getOpenId());
 						}
 						/**
 						 * 更新数据库
@@ -371,11 +371,11 @@ public class ApiStoreLoginController {
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					} else {
 						/**
-						 * 查询openId是否 已经绑定其他手机号
+						 * 查询OpenId是否 已经绑定其他手机号
 						 */
-						StoreUserInfo openIdInfo = new StoreUserInfo();
-						openIdInfo.setOpenid(storeUserInfoCondition.getOpenid());
-						DB = storeLoginService.getStoreUserInfo(openIdInfo);
+						StoreUserInfo OpenIdInfo = new StoreUserInfo();
+						OpenIdInfo.setOpenId(storeUserInfoCondition.getOpenId());
+						DB = storeLoginService.getStoreUserInfo(OpenIdInfo);
 						/**
 						 * 如果可以查到。。证明该微信号绑定过其他账号
 						 */
@@ -385,7 +385,7 @@ public class ApiStoreLoginController {
 						/*
 						 * 插入数据库
 						 */
-						info.setOpenid(storeUserInfoCondition.getOpenid());
+						info.setOpenId(storeUserInfoCondition.getOpenId());
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						info.setCreated(new Date());

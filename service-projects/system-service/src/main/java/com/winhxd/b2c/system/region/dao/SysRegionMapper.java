@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.dao;
+package com.winhxd.b2c.system.region.dao;
 
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.service;
+package com.winhxd.b2c.system.region.service;
 
 
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;

@@ -26,10 +26,10 @@ public class CustomerBrowseLog {
     private Long customerId;
 
     @ApiModelProperty("进入时间（浏览开始时间）")
-    private Date loginTime;
+    private Date loginDatetime;
 
     @ApiModelProperty("退出时间（浏览结束时间）")
-    private Date logoutTime;
+    private Date logoutDatetime;
 
     @ApiModelProperty("浏览时长,毫秒值")
     private Long stayTimeMillis;

@@ -36,6 +36,8 @@ public final class BusinessCode {
     public static final int CODE_1012 = 1012;
     /** 该账号已存在 */
     public static final int CODE_1013 = 1013;
+    /**token参数为空*/
+    public static final int CODE_1014 = 1014;
 
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;

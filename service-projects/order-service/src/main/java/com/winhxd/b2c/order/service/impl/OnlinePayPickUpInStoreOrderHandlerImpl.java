@@ -1,8 +1,10 @@
 package com.winhxd.b2c.order.service.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +133,9 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.UNRECEIVED.getStatusCode(),
                 OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 MessageFormat.format(OrderStatusEnum.WAIT_SELF_LIFTING.getStatusDes(), pickUpCode), MainPointEnum.MAIN);
+        //TODO 发送门店消息
+        Date pickupDateTime = orderInfo.getPickupDateTime() == null ? new Date() : orderInfo.getPickupDateTime();
+        String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
         logger.info("{},orderNo={} 确认订单后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
     

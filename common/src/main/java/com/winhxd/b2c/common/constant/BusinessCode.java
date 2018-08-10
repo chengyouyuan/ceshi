@@ -34,7 +34,11 @@ public final class BusinessCode {
      * 验证码请求时长没有超过一分钟
      */
     public static final int CODE_1012 = 1012;
-    
+    /** 该账号已存在 */
+    public static final int CODE_1013 = 1013;
+    /**token参数为空*/
+    public static final int CODE_1014 = 1014;
+
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
     /** 新密码与原密码相同 */
@@ -124,7 +128,7 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单创建优惠券使用失败")
     public static final int CODE_401009 = 401009;
-    
+
     @ApiModelProperty("订单号错误")
     public static final int WRONG_ORDERNO = 400000;
     
@@ -154,7 +158,7 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店id错误")
     public static final int WRONG_STORE_ID = 400009;
-    
+
     @ApiModelProperty("顾客id错误")
     public static final int WRONG_CUSTOMER_ID = 400010;
 
@@ -185,8 +189,28 @@ public final class BusinessCode {
     public static final int CODE_410001 = 410001;
     /** 订单号错误*/
     public static final int CODE_420003 = 420003;
-    /** 取消订单状态更新不成功*/
+    /** 取消订单状态更新失败*/
     public static final int CODE_420004 = 420004;
-    /** 订单取消处理用户退款不成功*/
+    /** 订单取消处理用户退款失败*/
     public static final int CODE_422005 = 422005;
+    /** 订单取消退优惠券失败*/
+    public static final int CODE_422006 = 422006;
+
+    @ApiModelProperty("查询的地理区域不存在")
+    public static final int CODE_320001 = 320001;
+    
+    @ApiModelProperty("当前用户没有银行卡信息")
+    public static final int CODE_6101 = 6101;
+    @ApiModelProperty("银行名称为空")
+    public static final int CODE_6111 = 6111;
+    @ApiModelProperty("银行卡卡号为空")
+    public static final int CODE_6112 = 6112;
+    @ApiModelProperty("开户人姓名为空")
+    public static final int CODE_6113 = 6113;
+    @ApiModelProperty("开户支行或分行为空")
+    public static final int CODE_6114 = 6114;
+    @ApiModelProperty("手机号为空")
+    public static final int CODE_6115 = 6115;
+    @ApiModelProperty("验证码为空")
+    public static final int CODE_6116 = 6116;
 }

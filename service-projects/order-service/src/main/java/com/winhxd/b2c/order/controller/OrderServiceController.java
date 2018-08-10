@@ -49,14 +49,8 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    public ResponseResult<OrderInfo> getOrderVo(String orderNo) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    @ApiOperation(value = "门店当天销售数据查询接口", response = StoreOrderSalesSummaryVO.class, notes = "门店当天销售数据查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreOrderSalesSummaryVO.class),
+    @ApiOperation(value = "门店当天销售数据查询接口", notes = "门店当天销售数据查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary() {
@@ -89,8 +83,8 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    @ApiOperation(value = "后台订单列表查询接口", response = PagedList.class, notes = "后台订单列表查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
+    @ApiOperation(value = "后台订单列表查询接口", notes = "后台订单列表查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<PagedList<OrderInfoDetailVO>> listOrder4Management(
@@ -109,8 +103,8 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    @ApiOperation(value = "后台订单详情查询接口", response = OrderInfoDetailVO4Management.class, notes = "后台订单详情查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO4Management.class),
+    @ApiOperation(value = "后台订单详情查询接口", notes = "后台订单详情查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(@PathVariable(value = "orderNo") String orderNo) {
@@ -134,8 +128,8 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    @ApiOperation(value = "门店销售数据查询接口", response = StoreOrderSalesSummaryVO.class, notes = "门店销售数据查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreOrderSalesSummaryVO.class),
+    @ApiOperation(value = "门店销售数据查询接口", notes = "门店销售数据查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {

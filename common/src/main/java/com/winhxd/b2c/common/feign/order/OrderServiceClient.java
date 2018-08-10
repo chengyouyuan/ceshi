@@ -27,9 +27,6 @@ import feign.hystrix.FallbackFactory;
 
 @FeignClient(value = ServiceName.ORDER_SERVICE, fallbackFactory = OrderServiceFallback.class)
 public interface OrderServiceClient {
-    @RequestMapping(value = "/order/v1/getOrderVo/", method = RequestMethod.GET)
-    ResponseResult<OrderInfo> getOrderVo(@RequestParam("orderNo") String orderNo);
-    
     @RequestMapping(value = "/order/451/v1/submitOrder/", method = RequestMethod.POST)
     ResponseResult<String> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
     
@@ -56,12 +53,6 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
 
     private OrderServiceFallback(Throwable throwable) {
         this.throwable = throwable;
-    }
-
-    @Override
-    public ResponseResult<OrderInfo> getOrderVo(String orderNo) {
-        logger.error("OrderServiceFallback -> getOrderVo", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override

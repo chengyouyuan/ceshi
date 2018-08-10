@@ -13,7 +13,11 @@ public enum MQHandler {
     NETEASE_MESSAGE_HANDLER(MQDestination.NETEASE_MESSAGE),
     NETEASE_MESSAGE_DELAYED_HANDLER(MQDestination.NETEASE_MESSAGE_DELAYED),
 
-    SMS_MESSAGE_HANDLER(MQDestination.SMS_MESSAGE);
+    SMS_MESSAGE_HANDLER(MQDestination.SMS_MESSAGE),
+    /**
+     * 订单超时未接单延时消息
+     */
+    ORDER_RECEIVE_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED);
 
     private MQDestination destination;
 

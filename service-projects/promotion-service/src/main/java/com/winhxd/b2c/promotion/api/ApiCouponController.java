@@ -41,7 +41,7 @@ public class ApiCouponController{
     private String logTitle=""; 
     @ApiOperation(value = "新人专享优惠列表", notes = "新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"), @ApiResponse(code = BusinessCode.CODE_500002, message = "该手机号已经享受过新用户福利")
     })
     @RequestMapping(value = "/501/v1/getNewUserCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponVO>> getNewUserCouponList() {

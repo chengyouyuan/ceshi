@@ -24,7 +24,7 @@
     source, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
-  <select id="checkCouponStatus" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition" resultMap="java.lang.Integer">
+  <select id="checkCouponStatus" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition" resultType="java.lang.Integer">
     SELECT
     count(cts.id)
     FROM

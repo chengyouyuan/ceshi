@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * @Author wl
  * @Date 2018/8/9 12:16
- * @Description
+ * @Description CouponApplyVO  适用对象页面用于页面显示
  **/
 public class CouponApplyVO {
     private Long id;

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Author wl
  * @Date 2018/8/9 18:09
- * @Description
+ * @Description  用于坎级规则列表引用模板列表查询
  **/
 public class GradeTempleteCountVO {
     @ApiModelProperty(value = "优惠方式规则主键")

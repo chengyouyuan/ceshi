@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * @Author wl
  * @Date 2018/8/9 18:10
- * @Description
+ * @Description  用于适用对象规则列表上的引用模板列表查询
  **/
 public class ApplyTempleteCountVO {
 

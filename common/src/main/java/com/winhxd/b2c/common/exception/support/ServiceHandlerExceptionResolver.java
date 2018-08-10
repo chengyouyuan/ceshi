@@ -31,6 +31,7 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         BusinessException businessException = findBusinessException(ex);
         if (businessException != null) {
             code = businessException.getErrorCode();
+            log.warn("Controller业务异常:{}", code);
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             Span currentSpan = tracer.currentSpan();

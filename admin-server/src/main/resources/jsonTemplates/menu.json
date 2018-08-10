@@ -1,5 +1,6 @@
 {
   "roles": "",
+  "userId": "",
   "token": "",
   "introduction": "",
   "avatar": "",
@@ -24,19 +25,33 @@
       "menuName": "顾客管理",
       "path": "",
       "permission": "",
-      "children": []
+      "children": [
+        {
+          "id": "3_1",
+          "menuName": ";(临时)顾客详情",
+          "path": "",
+          "permission": ""
+        }
+      ]
     },
     {
       "id": "4",
       "menuName": "订单管理",
       "path": "",
       "permission": "",
-      "children": []
+      "children": [
+        {
+          "id": "4_1",
+          "menuName": "(临时)订单详情",
+          "path": "/details/index",
+          "permission": ""
+        }
+      ]
     },
     {
       "id": "5",
       "menuName": "财务管理",
-      "path": "",
+      "path": "/financeManage/index",
       "permission": "",
       "children": []
     },
@@ -48,113 +63,129 @@
       "children": [
         {
           "id": "6_1",
-          "menuName": "优惠券模板管理",
+          "menuName": "优惠券坎级管理",
           "path": "",
           "children": [
             {
               "id": "6_1_1",
-              "menuName": "【优惠券】新建模版",
-              "path": "/promotion/addtemplate"
+              "menuName": "坎级规则添加",
+              "path": "/promotion/candyruleAdd"
             },
             {
               "id": "6_1_2",
-              "menuName": "【优惠券】模板列表",
+              "menuName": "坎级规则列表",
+              "path": ""
+            }
+          ]
+        },{
+          "id": "6_2",
+          "menuName": "优惠券模板管理",
+          "path": "",
+          "children": [
+            {
+              "id": "6_2_1",
+              "menuName": "新建模版",
+              "path": "/promotion/addtemplate"
+            },
+            {
+              "id": "6_2_2",
+              "menuName": "模板列表",
               "path": "/config/%2Freport%2Fmeta%2Ftemplate_management"
             }
           ]
         },
         {
-          "id": "6_2",
+          "id": "6_3",
           "menuName": "适用对象规则管理",
           "path": "",
           "children": [
             {
-              "id": "6_2_1",
-              "menuName": "适用对象规则新增",
-              "path": "/contributiveRule/index"
-            }
-          ]
-        },
-        {
-          "id": "6_3",
-          "menuName": "优惠券出资方规则",
-          "path": "",
-          "children": [
-            {
               "id": "6_3_1",
-              "menuName": "【优惠券】出资方规则",
-              "path": "/contributiveRule/index"
-            },
-            {
-              "id": "6_3_2",
-              "menuName": "【优惠券】出资方规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "menuName": "适用对象规则新增",
+              "path": "/appliyObjectRule/index"
             }
           ]
         },
         {
           "id": "6_4",
-          "menuName": "优惠券优惠方式规则",
-          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "menuName": "优惠券出资方规则",
+          "path": "",
           "children": [
             {
               "id": "6_4_1",
-              "menuName": "【优惠券】优惠方式规则",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "menuName": "出资方规则添加",
+              "path": "/contributiveRule/index"
             },
             {
               "id": "6_4_2",
-              "menuName": "【优惠券】优惠方式规则列表",
+              "menuName": "出资方规则列表",
               "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             }
           ]
         },
         {
           "id": "6_5",
-          "menuName": "优惠券领券管理",
-          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
+          "menuName": "优惠券优惠方式规则",
+          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
           "children": [
             {
               "id": "6_5_1",
-              "menuName": "【优惠券】领券管理",
-              "path": "/couponReceive/index"
+              "menuName": "【优惠券】优惠方式规则",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             },
             {
               "id": "6_5_2",
-              "menuName": "【优惠券】领券管理列表",
+              "menuName": "【优惠券】优惠方式规则列表",
               "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             }
           ]
         },
         {
           "id": "6_6",
-          "menuName": "优惠券推券管理",
-          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "menuName": "优惠券领券管理",
+          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
           "children": [
             {
               "id": "6_6_1",
-              "menuName": "【优惠券】推券管理",
-              "path": "/promotion/pushvolume"
+              "menuName": "领券管理",
+              "path": "/couponReceive/index"
             },
             {
               "id": "6_6_2",
-              "menuName": "【优惠券】推券管理列表",
+              "menuName": "领券管理列表",
               "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             }
           ]
         },
         {
           "id": "6_7",
+          "menuName": "优惠券推券管理",
+          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "children": [
+            {
+              "id": "6_7_1",
+              "menuName": "推券管理",
+              "path": "/promotion/pushvolume"
+            },
+            {
+              "id": "6_7_2",
+              "menuName": "推券管理列表",
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+            }
+          ]
+        },
+        {
+          "id": "6_8",
           "menuName": "优惠券类型规则",
           "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
           "children": [
             {
-              "id": "6_7_1",
+              "id": "6_8_1",
               "menuName": "【优惠券】类型规则",
               "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             },
             {
-              "id": "6_7_2",
+              "id": "6_8_2",
               "menuName": "【优惠券】类型规则列表",
               "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
             }
@@ -167,7 +198,26 @@
       "menuName": "消息管理",
       "path": "",
       "permission": "",
-      "children": []
+      "children": [
+        {
+          "id": "7_1",
+          "menuName": "自动推送列表",
+          "path": "",
+          "permission": ""
+        },
+        {
+          "id": "7_2",
+          "menuName": "手动推送列表",
+          "path": "",
+          "permission": ""
+        },
+        {
+          "id": "7_3",
+          "menuName": "(临时)消息编辑",
+          "path": "",
+          "permission": ""
+        }
+      ]
     },
     {
       "id": "8",
@@ -178,20 +228,20 @@
         {
           "id": "8_1",
           "menuName": "权限管理",
-          "path": "",
+          "path": "/authorization/index",
           "permission": ""
         },
         {
           "id": "8_2",
           "menuName": "成员管理",
-          "path": "/config/%2ftemplate%2fsystem_user_list",
+          "path": "/config/%2Ftemplate%2Fsystem_user_list",
           "permission": ""
         },
         {
           "id": "8_3",
           "menuName": "订单时间设置",
           "path": "",
-          "permission": ""
+          "permission": "/setOrderTime/index"
         },
         {
           "id": "8_4",

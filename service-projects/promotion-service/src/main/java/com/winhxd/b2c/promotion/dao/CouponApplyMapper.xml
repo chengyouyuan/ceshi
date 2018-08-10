@@ -178,7 +178,7 @@
 
 
 
-  <resultMap id="BaseResultMap2" type="com.winhxd.b2c.common.domain.promotion.model.CouponApply">
+  <resultMap id="BaseResultMap2" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -191,6 +191,7 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
   </resultMap>
 
   <select id="viewCouponApplyDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">
@@ -217,9 +218,9 @@
 
   <select id="getCouponApplyPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition" resultMap="BaseResultMap2">
     select
-    id, name, code, remarks, apply_rule_type, status, created_by, created_by_name, created,
-    updated_by, updated_by_name, updated
-    from coupon_apply
+    a.id, name, a.code, a.remarks, a.apply_rule_type, a.status, a.created_by, a.created_by_name, a.created,
+    a.updated_by, a.updated_by_name, a.updated,count(b.apply_rule_id) as rel_templete_count
+    from coupon_apply a left join coupon_template b on a.id = b.apply_rule_id
     where 1=1
     <if test="condition.code!=null and  condition.code!=''">
       and a.code = #{condition.code}
@@ -246,6 +247,32 @@
       )
   </insert>
 
+
+
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO">
+    <result column="apply_id" jdbcType="VARCHAR" property="applyId" />
+    <result column="apply_name" jdbcType="VARCHAR" property="applyName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+
+  <select id="findApplyTempleteCountPage" parameterType="java.lang.Long" resultMap="ResultCountPageMap">
+    SELECT
+    a.title AS templete_name,
+    a.`code` AS templete_code,
+    a.`status` AS templete_status,
+    b.`code` AS apply_code,
+    b.`name` AS apply_name,
+    b.id AS apply_id
+    FROM
+    coupon_template a
+    LEFT JOIN coupon_apply b ON a.grade_id = b.id
+    WHERE
+    a.apply_rule_id = #{applyId}
+  </select>
 
 
 </mapper>

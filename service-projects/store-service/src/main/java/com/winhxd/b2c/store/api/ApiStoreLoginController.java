@@ -121,7 +121,6 @@ public class ApiStoreLoginController {
 				if (DB == null) {
 					return new ResponseResult<>(BusinessCode.CODE_1004);
 				} else {
-					vo.setStoreCustomerId(DB.getStoreCustomerId());
 					vo.setToken(DB.getToken());
 					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
 						user.setBusinessId(DB.getId());
@@ -157,7 +156,6 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
 							user.setBusinessId(DB.getId());
@@ -177,10 +175,9 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-						storeUserInfo.setStoreStatus((byte) 0);
+						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
-						vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						vo.setToken(storeUserInfo.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 							user.setBusinessId(storeUserInfo.getId());
@@ -212,7 +209,6 @@ public class ApiStoreLoginController {
 				storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-				vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 				vo.setToken(DB.getToken());
 				if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 					user.setBusinessId(DB.getId());
@@ -236,7 +232,6 @@ public class ApiStoreLoginController {
 				if (DB == null) {
 					return new ResponseResult<>(BusinessCode.CODE_1004);
 				} else {
-					vo.setStoreCustomerId(DB.getStoreCustomerId());
 					vo.setToken(DB.getToken());
 					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
 						user.setBusinessId(DB.getId());
@@ -267,7 +262,6 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-						vo.setStoreCustomerId(DB.getStoreCustomerId());
 						vo.setToken(DB.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
 							user.setBusinessId(DB.getId());
@@ -287,10 +281,9 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-						storeUserInfo.setStoreStatus((byte) 0);
+						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
-						vo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						vo.setToken(storeUserInfo.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 							user.setBusinessId(storeUserInfo.getId());
@@ -378,7 +371,7 @@ public class ApiStoreLoginController {
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
-						info.setStoreStatus((byte) 0);
+						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -387,7 +380,7 @@ public class ApiStoreLoginController {
 				 * 不是微信登录
 				 */
 				else {
-					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCode"))));
+					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 					DB = storeLoginService.getstoreUserInfo(info);
 					/*
 					 * 插入数据库
@@ -398,7 +391,7 @@ public class ApiStoreLoginController {
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
-						info.setStoreStatus((byte) 0);
+						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -447,13 +440,13 @@ public class ApiStoreLoginController {
 		/**
 		 * 60秒以后调用短信服务
 		 */
-		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
-		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, 60);
+		cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile, verificationCode);
+		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile, 60);
 		/**
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-		messageServiceClient.sendSMS(storeMobile, content);
+	    messageServiceClient.sendSMS(storeMobile, content);
 		logger.info(storeMobile+":发送的内容为:"+content);
 		return result;
 	}

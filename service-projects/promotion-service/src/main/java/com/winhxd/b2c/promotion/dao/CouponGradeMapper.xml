@@ -189,6 +189,7 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
     <collection property="details" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail" column="grade_id">
       <result column="reduced_amt" jdbcType="DECIMAL" property="reducedAmt" />
       <result column="reduced_type" jdbcType="SMALLINT" property="reducedType" />
@@ -248,9 +249,10 @@
     a.created_by_name,a.created,a.updated_by,a.updated_by_name,
     a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
     b.discounted,b.discounted_max_amt,b.full_give_amt,
-    b.increase_amt,b.cost,b.count,b.times
+    b.increase_amt,b.cost,b.count,b.times,count(c.grade_id) as rel_templete_count
     from coupon_grade a left join  coupon_grade_detail b
     on a.id = b.grade_id
+    left join coupon_template c on a.id = c.grade_id
     where 1 = 1
     <if test="condition.name!=null and condition.name!=''">
       and a.name = #{condition.name}
@@ -263,5 +265,30 @@
     </if>
   </select>
 
+
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO">
+    <result column="grade_id" jdbcType="VARCHAR" property="gradeId" />
+    <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
+    <result column="grade_code" jdbcType="VARCHAR" property="gradeCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+
+<select id="getGradeTempleteCountPage" parameterType="java.lang.Long" resultMap="ResultCountPageMap">
+  SELECT
+      a.title AS templete_name,
+      a.`code` AS templete_code,
+      a.`status` AS templete_status,
+      b.`code` AS grade_code,
+      b.`name` AS grade_name,
+      b.id AS grade_id
+  FROM
+      coupon_template a
+  LEFT JOIN coupon_grade b ON a.grade_id = b.id
+  WHERE
+      a.grade_id = #{gradeId}
+  </select>
 
 </mapper>

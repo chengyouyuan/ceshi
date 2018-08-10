@@ -347,12 +347,12 @@ public class CouponServiceImpl implements CouponService {
         }
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
-            couponTemplateUse.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateUse.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
 
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(couponTemplateUse.getSendId());
-            couponTemplateSend.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateSend.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         return true;

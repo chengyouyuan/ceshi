@@ -42,7 +42,7 @@ public class CouponController {
 	@Autowired
 	private CouponApplyServiceClient couponApplyServiceClient;
 
-//==================================================================================================
+	//=====================================优惠券活动开始=============================================================
 	/**
 	 *
 	 *@Deccription  获取优惠券活动列表（领券、推券）
@@ -72,6 +72,124 @@ public class CouponController {
 		 */
 		return couponActivityServiceClient.addCouponActivity(condition);
 	}
+
+	/**
+	 *
+	 *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)
+	 *@Params   id
+	 *@Return   ResponseResult
+	 *@User     sjx
+	 *@Date   2018/8/8
+	 */
+	@ApiOperation("根据id 查询优惠券活动")
+	@PostMapping(value = "/v1/getCouponActivityById")
+	public ResponseResult getCouponActivityById(@RequestParam("id") String id){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.getCouponActivityById(id);
+	}
+	/**
+	 *
+	 *@Deccription 编辑优惠券活动
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/7
+	 */
+	@ApiOperation("编辑优惠券活动")
+	@PostMapping(value = "/v1/updateCouponActivity")
+	public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.updateCouponActivity(condition);
+	}
+	/**
+	 *
+	 *@Deccription 删除优惠券活动（设为无效）
+	 *@Params  id
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/8
+	 */
+	@ApiOperation("删除优惠券活动")
+	@PostMapping(value = "/v1/deleteCouponActivity")
+	public ResponseResult deleteCouponActivity(@RequestParam("id") String id){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.deleteCouponActivity(id);
+	}
+	/**
+	 *
+	 *@Deccription 撤回活动优惠券
+	 *@Params  id
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("撤回活动优惠券")
+	@PostMapping(value = "/v1/revocationActivityCoupon")
+	public ResponseResult revocationActivityCoupon(@RequestParam("id") String id){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.revocationActivityCoupon(id);
+	}
+	/**
+	 *
+	 *@Deccription 停用/开启活动
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("停用/开启活动")
+	@PostMapping(value = "/v1/updateCouponActivityStatus")
+	public ResponseResult updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.updateCouponActivityStatus(condition);
+	}
+	/**
+	 *
+	 *@Deccription 根据活动获取优惠券列表
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("根据活动获取优惠券列表")
+	@PostMapping(value = "/v1/queryCouponByActivity")
+	public ResponseResult queryCouponByActivity(@RequestBody CouponActivityCondition condition){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.queryCouponByActivity(condition);
+	}
+	/**
+	 *
+	 *@Deccription 根据活动获取小店信息
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("根据活动获取小店信息")
+	@PostMapping(value = "/v1/queryStoreByActivity")
+	public ResponseResult queryStoreByActivity(@RequestBody CouponActivityCondition condition){
+		/**
+		 * 参数验证
+		 */
+		return couponActivityServiceClient.queryStoreByActivity(condition);
+	}
+
+	//=====================================优惠券活动结束=============================================================
+
+
+
 
 
 	//=====================================优惠券模板开始=============================================================
@@ -161,7 +279,6 @@ public class CouponController {
 	}
 
 
-//============================================优惠券模板结束============================================================
 
 
 //============================================出资方开始============================================================
@@ -228,7 +345,6 @@ public class CouponController {
 		return responseResult;
 	}
 
-//============================================出资方结束============================================================
 
 
 //============================================优惠方式规则开始============================================================
@@ -283,7 +399,7 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	return responseResult;
 }
 
-//============================================优惠方式规则结束============================================================
+
 
 
 //============================================优惠券类型规则开始============================================================
@@ -337,9 +453,50 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 		return responseResult;
 	}
 
-//============================================优惠券类型规则开始============================================================
 
 
+//=====================================点模板引用数量显示分页===============================================
+
+@ApiOperation("点出资方列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findInvertorTempleteCountPage")
+public ResponseResult findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
+    if(pageNo!=null){
+		pageNo = 1;
+	}
+	if(pageSize!=null){
+		pageSize = 10;
+	}
+	ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = couponInvestorServiceClient.findInvertorTempleteCountPage(invertorId,pageNo,pageSize);
+   return responseResult;
+}
+
+
+@ApiOperation("点优惠方式规则列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findGradeTempleteCountPage")
+public ResponseResult findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
+	if(pageNo!=null){
+		pageNo = 1;
+	}
+	if(pageSize!=null){
+		pageSize = 10;
+	}
+	ResponseResult<PagedList<GradeTempleteCountVO>> responseResult = couponGradeServiceClient.findGradeTempleteCountPage(gradeId,pageNo,pageSize);
+	return responseResult;
+}
+
+
+@ApiOperation("点类型规则列表上模板引用数量表分页")
+@GetMapping(value = "/v1/findApplyTempleteCountPage")
+public ResponseResult findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
+	if(pageNo!=null){
+		pageNo = 1;
+	}
+	if(pageSize!=null){
+		pageSize = 10;
+	}
+	ResponseResult<PagedList<ApplyTempleteCountVO>> responseResult = couponApplyServiceClient.findApplyTempleteCountPage(applyId,pageNo,pageSize);
+	return responseResult;
+}
 
 
 	/**

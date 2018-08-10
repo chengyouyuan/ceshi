@@ -31,7 +31,7 @@ public class StoreSubmitProduct {
     @ApiModelProperty("商品规则")
     private String skuAttributeOption;
     @ApiModelProperty("商品状态（0 待审核 ，1 审核不通过 ，2 审核通过，3 已添加）")
-    private Integer prodStatus;
+    private Short prodStatus;
     @ApiModelProperty("审核备注")
     private String auditRemark;
     @ApiModelProperty("商品信息（语音）")
@@ -123,11 +123,11 @@ public class StoreSubmitProduct {
         this.skuAttributeOption = skuAttributeOption;
     }
 
-    public Integer getProdStatus() {
+    public Short getProdStatus() {
         return prodStatus;
     }
 
-    public void setProdStatus(Integer prodStatus) {
+    public void setProdStatus(Short prodStatus) {
         this.prodStatus = prodStatus;
     }
 

@@ -18,7 +18,7 @@ import lombok.Data;
 public class BackStageStoreInfoCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
-    private Byte storeStatus;
+    private Short storeStatus;
 
     @ApiModelProperty(value = "门店用户编码")
     private Long storeCustomerId;

@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
+import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.promotion.dao.*;
@@ -56,8 +57,8 @@ public class CouponApplyServiceImpl implements CouponApplyService {
         ResponseResult<PagedList<CouponApplyVO>> result= new ResponseResult<PagedList<CouponApplyVO>>();
         PagedList<CouponApplyVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponApplyVO> customers = couponApplyMapper.getCouponApplyPage(condition);
-        PageInfo<CouponApplyVO> pageInfo = new PageInfo<>(customers);
+        List<CouponApplyVO> couponApplyList = couponApplyMapper.getCouponApplyPage(condition);
+        PageInfo<CouponApplyVO> pageInfo = new PageInfo<>(couponApplyList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
@@ -115,6 +116,21 @@ public class CouponApplyServiceImpl implements CouponApplyService {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(String applyId, Integer pageNo, Integer pageSize) {
+        ResponseResult<PagedList<ApplyTempleteCountVO>> result= new ResponseResult<PagedList<ApplyTempleteCountVO>>();
+        PagedList<ApplyTempleteCountVO> pagedList = new PagedList<>();
+        PageHelper.startPage(pageNo,pageSize);
+        List<ApplyTempleteCountVO> couponApplyList = couponApplyMapper.findApplyTempleteCountPage(Long.parseLong(applyId));
+        PageInfo<ApplyTempleteCountVO> pageInfo = new PageInfo<>(couponApplyList);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
     }
 
 

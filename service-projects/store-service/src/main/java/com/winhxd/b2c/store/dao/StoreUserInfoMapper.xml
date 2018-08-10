@@ -24,7 +24,7 @@
     <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
     <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="source" property="source" jdbcType="CHAR" />
-    <result column="store_status" property="storeStatus" jdbcType="TINYINT" />
+    <result column="store_status" property="storeStatus" jdbcType="SMALLINT" />
      <result column="token" property="token" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -106,7 +106,7 @@
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
-      #{storeStatus,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
+      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" useGeneratedKeys="true" keyProperty="id">
     insert into store_user_info
@@ -252,7 +252,7 @@
         #{source,jdbcType=CHAR},
       </if>
       <if test="storeStatus != null" >
-        #{storeStatus,jdbcType=TINYINT},
+        #{storeStatus,jdbcType=SMALLINT},
       </if>
        <if test="token != null" >
         #{token,jdbcType=VARCHAR},
@@ -326,7 +326,7 @@
         source = #{source,jdbcType=CHAR},
       </if>
       <if test="storeStatus != null" >
-        store_status = #{storeStatus,jdbcType=TINYINT},
+        store_status = #{storeStatus,jdbcType=SMALLINT},
       </if>
         <if test="token != null" >
         token = #{token,jdbcType=VARCHAR},
@@ -357,7 +357,7 @@
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       source = #{source,jdbcType=CHAR},
-      store_status = #{storeStatus,jdbcType=TINYINT},
+      store_status = #{storeStatus,jdbcType=SMALLINT},
       token = #{token,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

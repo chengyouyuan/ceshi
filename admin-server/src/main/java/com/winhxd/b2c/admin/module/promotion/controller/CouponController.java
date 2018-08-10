@@ -1,5 +1,6 @@
 package com.winhxd.b2c.admin.module.promotion.controller;
 
+import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -7,6 +8,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
+import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -194,9 +196,9 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
-		 AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
 
 //		String userId = "100102";
 //		String userName = "大花脸";
@@ -238,10 +240,9 @@ public class CouponController {
 	@ApiOperation("单个删除/批量删除（非物理删除）/ 设为无效")
 	@PostMapping(value = "/513/v1/updateCouponTemplateToValid")
 	public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids){
-
-		 AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
 //		String userId = "100102";
 //		String userName = "大花脸";
 
@@ -271,9 +272,10 @@ public class CouponController {
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		String userId = adminUser.getId()+"";
-		String userName = adminUser.getUsername();
+
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
 
 //		String userId = "100102";
 //		String userName = "大花脸";
@@ -304,9 +306,9 @@ public class CouponController {
 	@ApiOperation("删除出资方出资方")
 	@GetMapping(value = "/516/v1/updateCouponInvestorToValid")
 	public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id){
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
 
 //		String userId = "100102";
 //		String userName = "大花脸";
@@ -331,9 +333,9 @@ public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGra
 	/**
 	 * 参数校验
 	 */
-	AdminUser adminUser = UserContext.getCurrentAdminUser();
-	 String userId = adminUser.getId()+"";
-	 String userName = adminUser.getUsername();
+	UserInfo userInfo = UserManager.getCurrentUser();
+	String userId = userInfo.getId()+"";
+	String userName = userInfo.getUsername();
 //	String userId = "100102";
 //	String userName = "大花脸";
 	 String code = getUUID();
@@ -355,9 +357,9 @@ public ResponseResult viewCouponGradeDetail(@RequestParam("id") String id){
 @ApiOperation("优惠方式规则逻辑删除/设置为无效")
 @GetMapping (value = "/520/v1/updateCouponGradeValid")
 public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
-	AdminUser adminUser = UserContext.getCurrentAdminUser();
-	String userId = adminUser.getId()+"";
-	String userName = adminUser.getUsername();
+	UserInfo userInfo = UserManager.getCurrentUser();
+	String userId = userInfo.getId()+"";
+	String userName = userInfo.getUsername();
 //	String userId = "100102";
 //	String userName = "大花脸";
 	ResponseResult responseResult = couponGradeServiceClient.updateCouponGradeValid(id,userId,userName);
@@ -374,9 +376,10 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 		/**
 		 * 参数校验
 		 */
-		AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
+
 //		String userId = "100102";
 //		String userName = "大花脸";
 		String code = getUUID();
@@ -397,9 +400,9 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	@ApiOperation("优惠券类型设置无效")
 	@PostMapping(value = "/523/v1/updateCouponApplyToValid")
 	public ResponseResult updateCouponApplyToValid(@RequestParam("id") String id){
-		 AdminUser adminUser = UserContext.getCurrentAdminUser();
-		 String userId = adminUser.getId()+"";
-		 String userName = adminUser.getUsername();
+		UserInfo userInfo = UserManager.getCurrentUser();
+		String userId = userInfo.getId()+"";
+		String userName = userInfo.getUsername();
 
 //		String userId = "100102";
 //		String userName = "大花脸";
@@ -468,8 +471,6 @@ public ResponseResult findApplyTempleteCountPage(@RequestParam("applyId") String
 	public String getUUID() {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
-
-
 
 
 

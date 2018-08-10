@@ -304,10 +304,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
-            ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
-            if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                throw new BusinessException(BusinessCode.CODE_422006, MessageFormat.format("取消订单-退优惠券返回失败-订单号={0}", orderNo));
-            }
+            couponServiceClient.orderUntreadCoupon(couponCondition).getData();
             logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
             logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);

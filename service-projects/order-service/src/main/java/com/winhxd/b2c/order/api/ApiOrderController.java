@@ -73,7 +73,7 @@ public class ApiOrderController {
         return result;
     }
 
-    @ApiOperation(value = "B端接单计价",notes = "B端接单计价")
+    @ApiOperation(value = "B端接单计价", notes = "B端接单计价")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
@@ -205,13 +205,8 @@ public class ApiOrderController {
         String logTitle = "=/api-order/order/425/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            this.orderService.cancelOrderByStore(orderCancelCondition);
-            result.setData(true);
-        } catch (Exception e) {
-            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        this.orderService.cancelOrderByStore(orderCancelCondition);
+        result.setData(true);
         LOGGER.info("{}--结束 result={}", logTitle, result);
         return result;
     }

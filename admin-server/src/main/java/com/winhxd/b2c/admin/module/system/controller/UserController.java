@@ -52,7 +52,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
-            @ApiResponse(code = BusinessCode.CODE_1013, message = "该账号已存在")
+            @ApiResponse(code = BusinessCode.CODE_1013, message = "账号已存在")
     })
     @PostMapping(value = "/user/add")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
@@ -94,7 +94,8 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_1013, message = "账号已存在")
     })
     @PostMapping(value = "/user/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
@@ -237,13 +238,13 @@ public class UserController {
     public ResponseResult<Map<String,Object>> page(){
         logger.info("{} - 用户管理页面", MODULE_NAME);
         ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        Map<String,Object> data = new HashMap<>();
-        Map<String,String> url = new HashMap<>();
+        Map<String,Object> data = new HashMap<>(1);
+        Map<String,String> url = new HashMap<>(10);
         url.put("list","/user/list");
         url.put("add","/user/add");
         url.put("edit","/user/edit");
         url.put("get","/user/get/{id}");
-        url.put("editPassword","/user/editPassword");
+        url.put("editPassword","/user/updatePassword");
         url.put("disabled","/user/disabled/{id}");
         data.put("url",url);
         result.setData(data);

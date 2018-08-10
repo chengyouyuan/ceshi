@@ -17,7 +17,7 @@ public class StoreSendVerificationCodeCondition {
 	@ApiModelProperty(value = "1、微信登录,2、账号登录")
 	private Integer loginFlag;
 	@ApiModelProperty(value = "微信openid")
-    private String openid;
+    private String openId;
 	@ApiModelProperty(value = "来源")
     private String source;
 	@ApiModelProperty(value = "头像(微信登录方式传)")

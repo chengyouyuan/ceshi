@@ -20,8 +20,8 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificationCodeCondition;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -95,13 +95,16 @@ public class ApiCustomerLoginController {
 			 * 拿code去换session_key
 			 */
 			object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
-			if (object.getCode() == 0) {
+			if (object.getCode() != 0) {
+				return new ResponseResult<>(BusinessCode.CODE_1001);
+			}
 				mini = object.getData();
-				customerUserInfo.setOpenId(mini.getOpenId());
-				customerUserInfo.setSessionKey(mini.getSessionKey());
+				customerUserInfo.setOpenId(mini.getOpenId());//"ofTZZ5EVZ9WVpxbhVNPzvSVf8_KQ"
+				customerUserInfo.setSessionKey(mini.getSessionKey());//"7iUKj6xgGMwVmhW7g5K0IQ==")
 				DB = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 				if (null == DB) {
 					customerUserInfo.setCreated(new Date());
+					customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 					customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 					customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
 					customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
@@ -137,9 +140,7 @@ public class ApiCustomerLoginController {
 					}
 					result.setData(vo);
 				}
-			} else {
-				return new ResponseResult<>(BusinessCode.CODE_1001);
-			}
+				
 		} catch (BusinessException e) {
 			logger.error("ApiCustomerLoginController -> weChatRegister异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());

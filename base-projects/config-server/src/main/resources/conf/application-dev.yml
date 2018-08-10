@@ -14,7 +14,7 @@ spring:
 RETAIL-REST-SERVICE:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://192.168.60.241:8202/
+    listOfServers: http://localhost:8080/
 # 缓存配置
 redis:
   cluster:

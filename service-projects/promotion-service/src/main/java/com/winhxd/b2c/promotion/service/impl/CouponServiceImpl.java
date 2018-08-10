@@ -69,6 +69,7 @@ public class CouponServiceImpl implements CouponService {
     @Autowired
     ProductServiceClient productServiceClient;
 
+
     @Override
     public List<CouponVO> getNewUserCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
@@ -184,9 +185,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
 	@Override
-	public Integer getCouponNumsByCustomerForStore(Long storeId, Long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
+        ResponseResult result = new ResponseResult();
+        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        result.setData(sum+"");
+		return result;
 	}
 
     /**

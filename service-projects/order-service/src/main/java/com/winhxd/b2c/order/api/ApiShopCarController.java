@@ -49,6 +49,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
@@ -85,6 +86,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -115,6 +117,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
@@ -147,6 +150,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -210,11 +214,10 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-//        if (null == customerUser || null == customerUser.getCustomerId()) {
-//            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
-//            throw new BusinessException(BusinessCode.CODE_1004);
-//        }
-//        return customerUser.getCustomerId();
-        return 123L;
+        if (null == customerUser || null == customerUser.getCustomerId()) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
+        return customerUser.getCustomerId();
     }
 }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * 惠小店管理首页数据查询返参
  * @author liutong
@@ -19,16 +21,16 @@ public class StoreManageInfoVO {
     private String storeName;
 
     @ApiModelProperty(value = "今日营业额", required = true)
-    private String turnover;
+    private BigDecimal turnover;
 
     @ApiModelProperty(value = "今日浏览人数", required = true)
-    private String browseNum;
+    private Integer browseNum;
 
     @ApiModelProperty(value = "今日下单人数", required = true)
-    private String createNum;
+    private Integer createNum;
 
     @ApiModelProperty(value = "今日订单数", required = true)
-    private String completeNum;
+    private Integer completeNum;
 
     @ApiModelProperty(value = "对比昨日营业额")
     private String turnoverCompare;

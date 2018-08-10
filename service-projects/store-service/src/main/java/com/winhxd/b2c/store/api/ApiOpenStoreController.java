@@ -3,6 +3,8 @@ package com.winhxd.b2c.store.api;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
@@ -13,6 +15,7 @@ import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import com.winhxd.b2c.store.service.StoreService;
@@ -30,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +47,7 @@ import java.util.List;
  */
 @Api(tags = "惠小店开店相关接口")
 @RestController
-@RequestMapping(value = "/api-store", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-store/store", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiOpenStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiOpenStoreController.class);
@@ -56,6 +60,9 @@ public class ApiOpenStoreController {
 
     @Resource(name = "storeBrowseLogService")
     private StoreBrowseLogService storeBrowseLogService;
+
+    @Autowired
+    private OrderServiceClient orderServiceClient;
 
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
@@ -235,18 +242,18 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1004/v1/getStoreManageInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreManageInfoVO> getStoreManageInfo() {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
-        if(UserContext.getCurrentStoreUser() == null){
-            responseResult.setCode(BusinessCode.CODE_1001);
-            logger.info("惠小店管理首页获取数据接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
-        }
+//        if(UserContext.getCurrentStoreUser() == null){
+//            responseResult.setCode(BusinessCode.CODE_1001);
+//            logger.info("惠小店管理首页获取数据接口 未获取到当前用户信息");
+//            throw new BusinessException(BusinessCode.CODE_1001);
+//        }
         try {
-            Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+//            Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+            Long storeCustomerId = 1607479L;
             logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
             Date currentDate = new Date();
             Date beginTime = getBeginTimeOfDate(currentDate);
-            storeBrowseLogService.getBrowseNum(storeCustomerId, beginTime, currentDate);
-            responseResult.setData(new StoreManageInfoVO());
+            responseResult.setData(this.getStoreSummaryInfo(storeCustomerId, beginTime, currentDate));
         } catch (Exception e) {
             logger.error("惠小店管理首页获取数据接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -331,15 +338,48 @@ public class ApiOpenStoreController {
             Date beginTime = getBeginTimeOfDate(currentDate);
             Date yesterdayEndTime = DateUtils.addDays(currentDate,-1);
             Date yesterdayBeginTime = DateUtils.addDays(beginTime,-1);
-            storeBrowseLogService.getBrowseNum(storeCustomerId, beginTime, currentDate);
-            storeBrowseLogService.getBrowseNum(storeCustomerId, yesterdayBeginTime, yesterdayEndTime);
-            responseResult.setData(new StoreManageInfoVO());
+            //今日的
+            StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(storeCustomerId, beginTime, currentDate);
+            //昨日的
+            StoreManageInfoVO yeaterdayInfo = this.getStoreSummaryInfo(storeCustomerId, yesterdayBeginTime, yesterdayEndTime);
+
+            responseResult.setData(todayInfo);
         } catch (Exception e) {
             logger.error("惠小店获取营业查询数据接口，服务器内部错误：{}", e);
             responseResult.setCode(BusinessCode.CODE_1001);
             responseResult.setMessage("服务器内部错误！");
         }
         return responseResult;
+    }
+
+    /**
+     * 查询门店营业信息，包括营业额、浏览人数、下单人数、订单数
+     *
+     * @param storeCustomerId 门店用户id
+     * @param startDatetime 开始时间
+     * @param endDatetime 结束时间
+     * @return
+     */
+    private StoreManageInfoVO getStoreSummaryInfo(Long storeCustomerId, Date startDatetime, Date endDatetime){
+        //浏览人数
+        Integer browseNum = storeBrowseLogService.getBrowseNum(storeCustomerId, startDatetime, endDatetime);
+        StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
+        todayCondition.setStartDateTime(startDatetime);
+        todayCondition.setEndDateTime(endDatetime);
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
+                orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();
+        StoreManageInfoVO storeManageInfoVO = new StoreManageInfoVO();
+        storeManageInfoVO.setBrowseNum(browseNum);
+        if(storeOrderSalesSummaryVO != null) {
+            storeManageInfoVO.setTurnover(storeOrderSalesSummaryVO.getDailyTurnover());
+            storeManageInfoVO.setCreateNum(storeOrderSalesSummaryVO.getDailyCustomerNum());
+            storeManageInfoVO.setCompleteNum(storeOrderSalesSummaryVO.getDailyOrderNum());
+        } else {
+            storeManageInfoVO.setTurnover(BigDecimal.ZERO);
+            storeManageInfoVO.setCreateNum(0);
+            storeManageInfoVO.setCompleteNum(0);
+        }
+        return storeManageInfoVO;
     }
 
     /**
@@ -351,7 +391,7 @@ public class ApiOpenStoreController {
      *            may be null
      * @return {@code Date} first time 00:00:00 or null
      */
-    public static Date getBeginTimeOfDate(final Date date) {
+    private static Date getBeginTimeOfDate(final Date date) {
         Date beginTime = null;
         if (date != null) {
             Calendar calendar = Calendar.getInstance();

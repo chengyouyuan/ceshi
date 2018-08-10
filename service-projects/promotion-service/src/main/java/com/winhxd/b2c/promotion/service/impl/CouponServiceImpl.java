@@ -12,7 +12,9 @@ import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -59,6 +62,8 @@ public class CouponServiceImpl implements CouponService {
     CouponApplyProductMapper couponApplyProductMapper;
     @Autowired
     CouponApplyProductListMapper couponApplyProductListMapper;
+    @Autowired
+    CouponTemplateMapper couponTemplateMapper;
     @Autowired
     StoreServiceClient storeServiceClient;
     @Autowired
@@ -350,12 +355,12 @@ public class CouponServiceImpl implements CouponService {
         }
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
-            couponTemplateUse.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateUse.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
 
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(couponTemplateUse.getSendId());
-            couponTemplateSend.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateSend.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         return true;
@@ -390,5 +395,28 @@ public class CouponServiceImpl implements CouponService {
 
         return this.getCouponDetail(couponVOS);
 
+    }
+
+    @Override
+    public CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+        List<Long> sendIds = couponCondition.getSendIds();
+        if(sendIds.isEmpty()||null == couponCondition.getProducts()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        for(int i=0;i<sendIds.size();i++){
+           CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
+           CouponTemplate couponTemplate = couponTemplateMapper.selectByPrimaryKey(couponTemplateSend.getTemplateId());
+           //按订单金额计算优惠金额
+           if(couponTemplate.getCalType().equals(CouponTemplateEnum.ORDER_CALTYPE.getCode())){
+               BigDecimal amountPrice = new BigDecimal(0);
+               for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
+                   BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                   amountPrice.add(productPrice);
+               }
+
+
+           }
+        }
+        return null;
     }
 }

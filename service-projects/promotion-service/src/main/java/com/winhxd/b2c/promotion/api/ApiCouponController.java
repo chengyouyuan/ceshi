@@ -39,8 +39,8 @@ public class ApiCouponController{
     private CouponService couponService;
 
     private String logTitle=""; 
-    @ApiOperation(value = "新人专享优惠列表", response = Boolean.class, notes = "新人专享优惠列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "新人专享优惠列表", notes = "新人专享优惠列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/501/v1/getNewUserCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -61,8 +61,8 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "待领取优惠券列表", response = Boolean.class, notes = "待领取优惠券列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "待领取优惠券列表", notes = "待领取优惠券列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -83,8 +83,8 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "我的优惠券列表", response = Boolean.class, notes = "我的优惠券列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "我的优惠券列表", notes = "我的优惠券列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/503/v1/myCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -106,8 +106,8 @@ public class ApiCouponController{
     }
 
 
-    @ApiOperation(value = "用户领取优惠券", response = Boolean.class, notes = "用户领取优惠券")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/504/v1/userReceiveCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -128,8 +128,8 @@ public class ApiCouponController{
         LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--结束 result={}", result);
         return result;
     }
-    @ApiOperation(value = "获取优惠券详情", response = Boolean.class, notes = "获取优惠券详情")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "获取优惠券详情", notes = "获取优惠券详情")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/506/v1/getCouponInfoByTemplateId", method = RequestMethod.GET)
@@ -147,11 +147,11 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
     }
-    @ApiOperation(value = "检查用户优惠券是否可用", response = Boolean.class, notes = "检查用户优惠券是否可用")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "检查用户优惠券是否可用", notes = "检查用户优惠券是否可用")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/507/v1/checkCouponStatus", method = RequestMethod.POST)
+	@RequestMapping(value = "/507/v1/checkCouponStatus", method = RequestMethod.POST)
 	ResponseResult<String> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
 		logTitle="=/api-promotion/coupon/507/v1/checkCouponStatus-检查用户优惠券是否可用=--";
     	LOGGER.info(logTitle+"开始--{}", condition);
@@ -166,11 +166,11 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
 	}
-    @ApiOperation(value = "获取用户可领取门店优惠券种类数", response = Boolean.class, notes = "获取用户可领取门店优惠券种类数")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "获取用户可领取门店优惠券种类数", notes = "获取用户可领取门店优惠券种类数")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/508/v1/getStoreCouponKinds", method = RequestMethod.GET)
+	@RequestMapping(value = "/508/v1/getStoreCouponKinds", method = RequestMethod.GET)
 	ResponseResult<String> getStoreCouponKinds(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId){
 		logTitle="=/api-promotion/coupon/508/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
     	LOGGER.info(logTitle+"开始--{}--","storeId="+ storeId+"--customerId="+customerId);
@@ -185,11 +185,11 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
 	}
-    @ApiOperation(value = "用户查询门店优惠券列表", response = Boolean.class, notes = "用户查询门店优惠券列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/509/v1/getStoreCouponList", method = RequestMethod.GET)
+	@RequestMapping(value = "/509/v1/getStoreCouponList", method = RequestMethod.GET)
 	ResponseResult<CouponInfoVO> getStoreCouponList(@RequestBody CouponInfoCondition condition){
 		logTitle="=/api-promotion/coupon/509/v1/getStoreCouponList-用户查询门店优惠券列表=--";
     	LOGGER.info(logTitle+"开始--{}", condition);

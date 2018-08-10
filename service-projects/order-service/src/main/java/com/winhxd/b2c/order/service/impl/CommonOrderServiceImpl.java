@@ -131,7 +131,7 @@ public class CommonOrderServiceImpl implements OrderService {
         getOrderHandler(orderInfo.getValuationType()).orderInfoAfterCreateProcess(orderInfo);
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
-        //注册订单创建成功事物提交后相关事件
+        //注册订单创建成功事务提交后相关事件
         registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo), new SubmitFailureProcessRunnerble(orderInfo, orderCreateCondition.getCouponIds()));
         return orderInfo.getOrderNo();
     }
@@ -168,7 +168,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
-        //订单支付成功事物提交后相关事件
+        //订单支付成功事务提交后相关事件
         registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
     }
@@ -366,6 +366,8 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单取消处理用户退款-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
+            //状态置为退回
+            couponCondition.setStatus("4");
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
                 logger.info("订单取消处理用户退款-退优惠券返回数据失败-订单号={}", orderNo);
@@ -403,6 +405,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_1002, "用户不存在");
         }
         Long customerId = customer.getCustomerId();
+        CustomerUserInfoVO customerUserInfoVO =   getCustomerUserInfoVO(customerId);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         if (lock.tryLock()) {
@@ -430,7 +433,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     String newOrderJsonString = JsonUtil.toJSONString(order);
                     //添加订单流转日志
                     orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), customer.getCustomerId(), "", order.getCancelReason(), MainPointEnum.MAIN);
+                            order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                     logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
                 } else {
                     logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);
@@ -519,6 +522,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void orderPickup4Store(OrderPickupCondition condition) {
         if (condition == null) {
             throw new NullPointerException("确认订单参数 OrderConfirmCondition 为空");
@@ -570,7 +574,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
-     * 注册事物提交后相关操作
+     * 注册事务提交后相关操作
      *
      * @param orderInfo
      * @author wangbin
@@ -850,6 +854,8 @@ public class CommonOrderServiceImpl implements OrderService {
                 logger.info("订单：{} 提交失败，进行优惠券回退操作.", orderInfo.getOrderNo());
                 OrderUntreadCouponCondition orderUntreadCouponCondition = new OrderUntreadCouponCondition();
                 orderUntreadCouponCondition.setOrderNo(orderInfo.getOrderNo());
+                //状态置为退回
+                orderUntreadCouponCondition.setStatus("4");
                 ResponseResult ret = couponServiceClient.orderUntreadCoupon(orderUntreadCouponCondition);
                 if (ret == null || ret.getCode() != BusinessCode.CODE_OK) {
                     logger.info("订单：{} 提交失败，进行优惠券回退操作失败，code={}.", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());

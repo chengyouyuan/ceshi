@@ -5,15 +5,13 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -30,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -57,81 +56,68 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Transactional(rollbackFor= {Exception.class})
     @Override
-    public void saveShopCar(ShopCarCondition condition){
-        List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
-        checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
-        // 加购：1、存在，则删除再保存，2、不存在，直接保存
+    public int saveShopCar(ShopCarCondition condition, Long customerId){
+        // 校验商品
+        checkShopCarProdInfo(condition);
+        // 加购：存在则更新数量，不存在保存
         ShopCar shopCar = new ShopCar();
         // 获取当前用户信息
-        Long customerId = getCurrentCustomerId();
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
-        List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
-        if (CollectionUtils.isNotEmpty(shopCars)) {
-            shopCarMapper.deleteShopCars(shopCar);
+        shopCar.setSkuCode(condition.getSkuCode());
+        ShopCar result = shopCarMapper.selectShopCarsBySkuCode(shopCar);
+        if (null != result) {
+            result.setSkuNum(condition.getSkuNum());
+            return shopCarMapper.updateByPrimaryKey(result);
         }
         Date current = new Date();
         shopCar.setCreated(current);
         shopCar.setCreatedBy(customerId);
         shopCar.setUpdated(current);
         shopCar.setUpdatedBy(customerId);
-        List<ShopCar> insertList = new ArrayList<>(orderItemConditions.size());
-        for(OrderItemCondition item : orderItemConditions){
-            shopCar.setSkuCode(item.getSkuCode());
-            shopCar.setSkuNum(item.getAmount());
-            insertList.add(shopCar);
-        }
-        shopCarMapper.insertByBatch(insertList);
+        shopCar.setSkuNum(condition.getSkuNum());
+        return shopCarMapper.insertSelective(shopCar);
     }
 
     @Override
-    public ShopCarVO findShopCar(ShopCarCondition condition) {
+    public List<ShopCarProdInfoVO> findShopCar(ShopCarCondition condition, Long customerId) {
+        List<ShopCarProdInfoVO> result = new ArrayList<>();
         ShopCar shopCar = new ShopCar();
         // 获取当前用户信息
-        Long customerId = getCurrentCustomerId();
         shopCar.setCustomerId(customerId);
         shopCar.setStoreId(condition.getStoreId());
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
-        ShopCarVO shopCarVO = new ShopCarVO();
-        if (CollectionUtils.isNotEmpty(shopCars)) {
-            BeanUtils.copyProperties(shopCars.get(0), shopCarVO);
-            // 商品详情
-            List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
-            // 组装产品信息prodInfos
-            List<ShopCarProdInfoVO> prodInfos = new ArrayList<>(shopCarProdVOs.size());
-            ShopCarProdInfoVO shopCarProdInfoVO;
-            for (ShopCar shopCar2 : shopCars){
-                for (ShopCartProdVO shopCarProdVO : shopCarProdVOs){
-                    if (shopCar2.getSkuCode().equals(shopCarProdVO.getSkuCode())) {
-                        shopCarProdInfoVO = new ShopCarProdInfoVO();
-                        shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
-                        shopCarProdInfoVO.setAmount(shopCar2.getSkuNum());
-                        shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
-                        shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
-                        // TODO 商品名称
-                        shopCarProdInfoVO.setProdName("");
-                        shopCarProdInfoVO.setProdStatus(shopCarProdVO.getProdStatus());
-                        prodInfos.add(shopCarProdInfoVO);
-                    }
+        if (CollectionUtils.isEmpty(shopCars)) {
+            return result;
+        }
+        // 商品详情
+        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
+        ShopCarProdInfoVO shopCarProdInfoVO;
+        for (ShopCar shopCar2 : shopCars){
+            for (ShopCartProdVO shopCarProdVO : shopCarProdVOs){
+                if (shopCar2.getSkuCode().equals(shopCarProdVO.getSkuCode())) {
+                    shopCarProdInfoVO = new ShopCarProdInfoVO();
+                    shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
+                    shopCarProdInfoVO.setAmount(shopCar2.getSkuNum());
+                    shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
+                    shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
+                    shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
+                    shopCarProdInfoVO.setProdStatus(shopCarProdVO.getProdStatus());
+                    result.add(shopCarProdInfoVO);
                 }
             }
-            shopCarVO.setShopCarProdInfoVOs(prodInfos);
         }
-        return shopCarVO;
-    }
-
-    @Transactional(rollbackFor= {Exception.class})
-    @Override
-    public int removeShopCar(ShopCarCondition condition) {
-        ShopCar shopCar = new ShopCar();
-        shopCar.setCustomerId(getCurrentCustomerId());
-        shopCar.setStoreId(condition.getStoreId());
-        return shopCarMapper.deleteShopCars(shopCar);
+        return result;
     }
 
     @Override
-    public void readyOrder(ShopCarCondition condition) throws InterruptedException {
-        String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + getCurrentCustomerId();
+    public int removeShopCar(Long customerId) {
+        return shopCarMapper.deleteShopCars(customerId);
+    }
+
+    @Override
+    public void readyOrder(ReadyShopCarCondition condition, Long customerId) throws InterruptedException {
+        String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
 
         if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
@@ -141,9 +127,14 @@ public class ShopCarServiceImpl implements ShopCarService {
                 // 保存订单
                 OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
                 BeanUtils.copyProperties(condition, orderCreateCondition);
+                orderCreateCondition.setCustomerId(customerId);
                 orderService.submitOrder(orderCreateCondition);
                 // 保存成功删除此用户门店的购物车
-                removeShopCar(condition);
+                ShopCar shopCar = new ShopCar();
+                shopCar.setCustomerId(customerId);
+                shopCar.setStoreId(condition.getStoreId());
+                shopCarMapper.deleteShopCarsByStoreId(shopCar);
+                removeShopCar(customerId);
             } finally {
                 lock.unlock();
             }
@@ -151,6 +142,48 @@ public class ShopCarServiceImpl implements ShopCarService {
             throw new BusinessException(BusinessCode.CODE_402014);
         }
 
+    }
+
+    private List<String> getSkuCodeListByShopCar(List<ShopCar> shopCars){
+        List<String> skuCodes = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(shopCars)) {
+            shopCars.stream().forEach(shopCar -> {
+                skuCodes.add(shopCar.getSkuCode());
+            });
+        }
+        return skuCodes;
+    }
+
+    private void checkShopCarProdInfo(List<OrderItemCondition> orderItemConditions, Long storeId){
+        List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByOrderItem(orderItemConditions), storeId);
+        for (ShopCartProdVO shopCarProdVO : list) {
+            if (StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
+                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                throw new BusinessException(BusinessCode.CODE_402010);
+            }
+            for(OrderItemCondition orderItem : orderItemConditions) {
+                if (shopCarProdVO.getSkuCode().equals(orderItem.getSkuCode())
+                        && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
+                    logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                    throw new BusinessException(BusinessCode.CODE_402012);
+                }
+            }
+        }
+    }
+
+    private void checkShopCarProdInfo(ShopCarCondition condition){
+        List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId());
+        for (ShopCartProdVO shopCarProdVO : list) {
+            if (StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
+                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                throw new BusinessException(BusinessCode.CODE_402010);
+            }
+            if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())
+                    && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(condition.getPrice())) {
+                logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                throw new BusinessException(BusinessCode.CODE_402012);
+            }
+        }
     }
 
     private List<ShopCartProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId){
@@ -174,41 +207,6 @@ public class ShopCarServiceImpl implements ShopCarService {
             });
         }
         return skuCodes;
-    }
-    private List<String> getSkuCodeListByShopCar(List<ShopCar> shopCars){
-        List<String> skuCodes = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(shopCars)) {
-            shopCars.stream().forEach(shopCar -> {
-                skuCodes.add(shopCar.getSkuCode());
-            });
-        }
-        return skuCodes;
-    }
-
-    private void checkShopCarProdInfo(List<OrderItemCondition> orderItemConditions, Long storeId){
-        List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByOrderItem(orderItemConditions), storeId);
-        for (ShopCartProdVO shopCarProdVO : list) {
-            if (StoreProductStatusEnum.PUTAWAY.getStatusCode() != shopCarProdVO.getProdStatus()) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
-            for(OrderItemCondition orderItem : orderItemConditions) {
-                if (shopCarProdVO.getSkuCode().equals(orderItem.getSkuCode())
-                        && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
-                    logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                    throw new BusinessException(BusinessCode.CODE_402012);
-                }
-            }
-        }
-    }
-
-    private Long getCurrentCustomerId(){
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser) {
-            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
-            throw new BusinessException(BusinessCode.CODE_1004);
-        }
-        return customerUser.getCustomerId();
     }
 
 }

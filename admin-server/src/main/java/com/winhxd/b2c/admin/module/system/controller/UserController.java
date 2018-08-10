@@ -51,12 +51,19 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_1013, message = "账号已存在")
     })
     @PostMapping(value = "/user/add")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ADD})
     public ResponseResult add(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+
+        SysUser existsSysUser = userServiceClient.getByAccount(sysUserDTO.getAccount()).getData();
+        if(null != existsSysUser){
+            logger.warn("{} - 新增用户失败，账号已存在, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+            return new ResponseResult(BusinessCode.CODE_1013);
+        }
 
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();
@@ -87,12 +94,19 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_1013, message = "账号已存在")
     })
     @PostMapping(value = "/user/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_EDIT})
     public ResponseResult edit(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+
+        SysUser existsSysUser = userServiceClient.getByAccount(sysUserDTO.getAccount()).getData();
+        if(null != existsSysUser && !existsSysUser.getId().equals(sysUserDTO.getId())){
+            logger.warn("{} - 编辑用户失败，账号已存在, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+            return new ResponseResult(BusinessCode.CODE_1013);
+        }
 
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();
@@ -119,7 +133,7 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
-    @PostMapping(value = "/user/editPassword")
+    @PostMapping(value = "/user/updatePassword")
     @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO passwordDTO){
         logger.info("{} - 修改密码, 参数：passwordDTO={}", MODULE_NAME, passwordDTO);
@@ -224,13 +238,13 @@ public class UserController {
     public ResponseResult<Map<String,Object>> page(){
         logger.info("{} - 用户管理页面", MODULE_NAME);
         ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        Map<String,Object> data = new HashMap<>();
-        Map<String,String> url = new HashMap<>();
+        Map<String,Object> data = new HashMap<>(1);
+        Map<String,String> url = new HashMap<>(10);
         url.put("list","/user/list");
         url.put("add","/user/add");
         url.put("edit","/user/edit");
         url.put("get","/user/get/{id}");
-        url.put("editPassword","/user/editPassword");
+        url.put("editPassword","/user/updatePassword");
         url.put("disabled","/user/disabled/{id}");
         data.put("url",url);
         result.setData(data);

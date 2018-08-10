@@ -91,7 +91,7 @@ public class HttpClientUtil implements ApplicationContextAware {
         // 创建http POST请求
         HttpPost httpPost = new HttpPost(url);
         // 构造一个form表单式的实体
-        if (params != null & params.size() > 0){
+        if (params != null && params.size() > 0){
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(params);
             // 将请求实体设置到httpPost对象中
             httpPost.setEntity(formEntity);

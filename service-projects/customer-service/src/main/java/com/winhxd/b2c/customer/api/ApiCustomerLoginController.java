@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "CustomerLogin Controller", tags = "C-Login")
 @RestController
-@RequestMapping(value = "/api-weChatLogin/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-customer/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiCustomerLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiCustomerLoginController.class);
 
@@ -68,8 +68,8 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
-	@RequestMapping(value = "2021/v1/saveWeChatLogin", method = RequestMethod.POST)
-	public ResponseResult<CustomerUserInfoSimpleVO> weChatRegister(
+	@RequestMapping(value = "2021/v1/weChatLogin", method = RequestMethod.POST)
+	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
 		ResponseResult<MiniOpenId> object = null;

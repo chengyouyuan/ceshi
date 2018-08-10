@@ -1,8 +1,8 @@
 package com.winhxd.b2c.common.mq.support;
 
 import com.winhxd.b2c.common.mq.StringMessageListener;
-import com.winhxd.b2c.common.mq.MessageQueueDestination;
-import com.winhxd.b2c.common.mq.MessageQueueHandler;
+import com.winhxd.b2c.common.mq.MQDestination;
+import com.winhxd.b2c.common.mq.MQHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +39,8 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Bean
     public List<Declarable> declarableList() {
         List<Declarable> list = new ArrayList<>();
-        for (MessageQueueHandler listener : MessageQueueHandler.values()) {
-            MessageQueueDestination dest = listener.getDestination();
+        for (MQHandler listener : MQHandler.values()) {
+            MQDestination dest = listener.getDestination();
             FanoutExchange exchange = new FanoutExchange(dest.toString(), true, false);
             exchange.setDelayed(dest.isDelayed());
             list.add(exchange);
@@ -81,7 +81,7 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
                         throw new RuntimeException("MQ消费异常", e);
                     }
                 });
-                beanFactory.registerSingleton(bean.getClass().getName() + "#" + method.getName(), listenerContainer);
+                beanFactory.registerSingleton(beanName + "#" + method.getName(), listenerContainer);
             }
         }, ReflectionUtils.USER_DECLARED_METHODS);
         return bean;

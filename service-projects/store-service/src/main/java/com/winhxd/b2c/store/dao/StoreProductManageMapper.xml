@@ -42,12 +42,12 @@
   <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"  resultMap="SimpleResultMap">
   	 	select
   	 	<include refid="Simple_Column_List"/>
-  	 	from store_product_manage 
+  	 	from store_product_manage prod
   	 	where 1=1
   	 	<if test="condition.prodStatus != null">
             and prod.prod_status in
              <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
-				#{status}
+				#{status,jdbcType=SMALLINT}
 			</foreach>  
         </if>
         <if test="condition.storeId != null">
@@ -91,7 +91,7 @@
   		<if test="condition.prodStatus != null">
             and prod.prod_status in
              <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
-				#{status}
+				#{status,jdbcType=SMALLINT}
 			</foreach>  
         </if>
         <if test="condition.storeId != null">

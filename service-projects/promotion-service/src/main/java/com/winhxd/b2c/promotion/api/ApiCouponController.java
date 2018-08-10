@@ -151,7 +151,7 @@ public class ApiCouponController{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/507/v1/checkCouponStatus", method = RequestMethod.POST)
+	@RequestMapping(value = "/507/v1/checkCouponStatus", method = RequestMethod.POST)
 	ResponseResult<String> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
 		logTitle="=/api-promotion/coupon/507/v1/checkCouponStatus-检查用户优惠券是否可用=--";
     	LOGGER.info(logTitle+"开始--{}", condition);
@@ -170,7 +170,7 @@ public class ApiCouponController{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/508/v1/getStoreCouponKinds", method = RequestMethod.GET)
+	@RequestMapping(value = "/508/v1/getStoreCouponKinds", method = RequestMethod.GET)
 	ResponseResult<String> getStoreCouponKinds(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId){
 		logTitle="=/api-promotion/coupon/508/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
     	LOGGER.info(logTitle+"开始--{}--","storeId="+ storeId+"--customerId="+customerId);
@@ -189,7 +189,7 @@ public class ApiCouponController{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-	@RequestMapping(value = "/coupon/509/v1/getStoreCouponList", method = RequestMethod.GET)
+	@RequestMapping(value = "/509/v1/getStoreCouponList", method = RequestMethod.GET)
 	ResponseResult<CouponInfoVO> getStoreCouponList(@RequestBody CouponInfoCondition condition){
 		logTitle="=/api-promotion/coupon/509/v1/getStoreCouponList-用户查询门店优惠券列表=--";
     	LOGGER.info(logTitle+"开始--{}", condition);

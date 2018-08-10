@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
@@ -80,4 +81,11 @@ public interface CouponService {
      * @return
      */
     List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
+
+    /**
+     * 计算订单优惠金额
+     * @param couponCondition
+     * @return
+     */
+    CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition);
 }

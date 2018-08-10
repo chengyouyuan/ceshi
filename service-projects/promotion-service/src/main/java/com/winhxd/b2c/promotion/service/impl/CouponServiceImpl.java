@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -387,5 +388,14 @@ public class CouponServiceImpl implements CouponService {
 
         return this.getCouponDetail(couponVOS);
 
+    }
+
+    @Override
+    public CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+        List<Long> sendIds = couponCondition.getSendIds();
+        if(sendIds.isEmpty()||null == couponCondition.getProducts()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        return null;
     }
 }

@@ -39,7 +39,7 @@ public interface StoreServiceClient {
      * @Description 门店绑定用户
      * @Param storeUserId  门店id主键
      */
-    @RequestMapping(value = "/store/1016/v1/bindCustomer", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1030/v1/bindCustomer", method = RequestMethod.GET)
     ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId);
 
     /**
@@ -53,7 +53,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日上午9:23:34
      */
-    @RequestMapping(value = "/store/1017/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1031/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**

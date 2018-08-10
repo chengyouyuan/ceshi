@@ -16,10 +16,10 @@ wechat:
   share:
     tokenUrl: https://api.weixin.qq.com/cgi-bin/token
     grantType: client_credential
-    appid: xxxx
-    secret: xxxxx
-    codeUrl: https://api.weixin.qq.com/wxa/getwxacode
-    pageUrl: pages/index/xxx
+    appid: wxdbbbd5e596ab6f4d
+    secret: 26a5cdcdf75b393d0fef50e0a4aa43ae
+    codeUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
+    pageUrl: pages/index/xxxx
     width: 430
     autoColor: true
     isHyaline: true

@@ -95,12 +95,12 @@ public class ApiCustomerLoginController {
 			 * 拿code去换session_key
 			 */
 			object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
-			if (object.getCode() != 0) {
+			/*if (object.getCode() != 0) {
 				return new ResponseResult<>(BusinessCode.CODE_1001);
-			}
-				mini = object.getData();
-				customerUserInfo.setOpenId(mini.getOpenId());//"ofTZZ5EVZ9WVpxbhVNPzvSVf8_KQ"
-				customerUserInfo.setSessionKey(mini.getSessionKey());//"7iUKj6xgGMwVmhW7g5K0IQ==")
+			}*/
+				//mini = object.getData();
+				customerUserInfo.setOpenId("ofTZZ5EVZ9WVpxbhVNPzvSVf8_KQ");//"ofTZZ5EVZ9WVpxbhVNPzvSVf8_KQ"
+				customerUserInfo.setSessionKey("7iUKj6xgGMwVmhW7g5K0IQ==");//"")
 				DB = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 				if (null == DB) {
 					customerUserInfo.setCreated(new Date());

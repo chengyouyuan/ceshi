@@ -131,7 +131,7 @@ public class ApiStoreLoginController {
 			}
 			// 微信密码登录
 			else if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()
-					&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
+ 					&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 				ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
 						storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
 				Map<String, Object> map = object.getData();

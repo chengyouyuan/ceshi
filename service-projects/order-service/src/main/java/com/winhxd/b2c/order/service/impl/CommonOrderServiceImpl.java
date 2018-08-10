@@ -518,6 +518,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void orderPickup4Store(OrderPickupCondition condition) {
         if (condition == null) {
             throw new NullPointerException("确认订单参数 OrderConfirmCondition 为空");

@@ -194,7 +194,7 @@ public class StoreUserInfo implements Serializable {
         return openId;
     }
 
-    public void setOpenid(String openId) {
+    public void setOpenId(String openId) {
         this.openId = openId == null ? null : openId.trim();
     }
     public Date getCreated() {

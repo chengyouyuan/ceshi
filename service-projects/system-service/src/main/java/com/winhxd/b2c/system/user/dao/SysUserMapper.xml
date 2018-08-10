@@ -204,6 +204,7 @@
       left join sys_user_role ur on u.id=ur.user_id
       left join sys_role r on r.id=ur.role_id
     <where>
+      u.status=1
       <if test="userId != null">
         and u.id = #{userId}
       </if>

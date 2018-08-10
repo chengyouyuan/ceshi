@@ -34,14 +34,23 @@ public interface ShopCarMapper {
      * @param: shopCar
      * @return: int
      */
-    int deleteShopCars(ShopCar shopCar);
+    int deleteShopCars(Long customerId);
 
     /**
-     * 批量新增
+     * 根据skuCode查用户购物车
      * @author: wangbaokuo
-     * @date: 2018/8/6 19:03
+     * @date: 2018/8/10 11:11
+     * @param:
+     * @return: ShopCar
+     */
+    ShopCar selectShopCarsBySkuCode(ShopCar shopCar);
+
+    /**
+     * 删除用户门店下购物车
+     * @author: wangbaokuo
+     * @date: 2018/8/10 11:15
      * @param:
      * @return:
      */
-    int insertByBatch(@Param("shopCars") List<ShopCar> shopCars);
+    int deleteShopCarsByStoreId(ShopCar shopCar);
 }

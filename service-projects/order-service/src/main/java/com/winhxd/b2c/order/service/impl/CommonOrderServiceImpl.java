@@ -366,6 +366,8 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单取消处理用户退款-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
             couponCondition.setOrderNo(orderNo);
+            //状态置为退回
+            couponCondition.setStatus("4");
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
                 logger.info("订单取消处理用户退款-退优惠券返回数据失败-订单号={}", orderNo);
@@ -852,6 +854,8 @@ public class CommonOrderServiceImpl implements OrderService {
                 logger.info("订单：{} 提交失败，进行优惠券回退操作.", orderInfo.getOrderNo());
                 OrderUntreadCouponCondition orderUntreadCouponCondition = new OrderUntreadCouponCondition();
                 orderUntreadCouponCondition.setOrderNo(orderInfo.getOrderNo());
+                //状态置为退回
+                orderUntreadCouponCondition.setStatus("4");
                 ResponseResult ret = couponServiceClient.orderUntreadCoupon(orderUntreadCouponCondition);
                 if (ret == null || ret.getCode() != BusinessCode.CODE_OK) {
                     logger.info("订单：{} 提交失败，进行优惠券回退操作失败，code={}.", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());

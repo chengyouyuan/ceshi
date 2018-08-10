@@ -92,8 +92,8 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效") })
-	@RequestMapping(value = "1008/v1/saveWeChatLogin", method = RequestMethod.POST)
-	public ResponseResult<StoreUserInfoSimpleVO> saveStoreLogin(
+	@RequestMapping(value = "1008/v1/storeLogin", method = RequestMethod.POST)
+	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
 		try {
@@ -300,10 +300,10 @@ public class ApiStoreLoginController {
 			}
 			return result;
 		} catch (BusinessException e) {
-			logger.error("ApiStoreLoginController -> saveStoreLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
+			logger.error("ApiStoreLoginController -> storeLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
 			result = new ResponseResult<>(e.getErrorCode());
 		} catch (Exception e) {
-			logger.error("ApiStoreLoginController -> saveStoreLogin异常, 异常信息{}" + e.getMessage(), e);
+			logger.error("ApiStoreLoginController -> storeLogin异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
 		return result;

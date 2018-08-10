@@ -87,7 +87,7 @@ public interface StoreServiceClient {
      * @date 2018/8/7 13:57
      * @Description 通过用户id查询绑定的门店信息
      */
-    @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1033/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
     ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
@@ -97,7 +97,7 @@ public interface StoreServiceClient {
      * @date 2018/8/7 17:58
      * @Description 根据门店id(主键)查询门店信息
      */
-    @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1032/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
     ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
 
     /**
@@ -107,7 +107,7 @@ public interface StoreServiceClient {
      * @date 2018/8/8 10:10
      * @Description 根据id批量查询门店信息
      */
-    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1034/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
     
     /**

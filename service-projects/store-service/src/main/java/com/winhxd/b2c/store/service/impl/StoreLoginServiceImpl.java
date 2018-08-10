@@ -25,7 +25,7 @@ public class StoreLoginServiceImpl implements StoreLoginService{
 		return storeUserInfoMapper.insertSelective(info);
 	}
 	@Override
-	public StoreUserInfo getstoreUserInfo(StoreUserInfo storeUserInfo) {
+	public StoreUserInfo getStoreUserInfo(StoreUserInfo storeUserInfo) {
 		return storeUserInfoMapper.selectByStoreUserInfo(storeUserInfo);
 	}
 

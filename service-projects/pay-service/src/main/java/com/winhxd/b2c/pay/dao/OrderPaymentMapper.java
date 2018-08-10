@@ -1,6 +1,6 @@
 package com.winhxd.b2c.pay.dao;
 
-import com.winhxd.b2c.common.domain.order.model.OrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.OrderPayment;
 
 public interface OrderPaymentMapper {
     int deleteByPrimaryKey(Long id);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.dao.OrderPaymentMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.OrderPayment">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
-    <result column="order_pament_no" jdbcType="VARCHAR" property="orderPamentNo" />
+    <result column="order_payment_no" jdbcType="VARCHAR" property="orderPaymentNo" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="callback_date" jdbcType="TIMESTAMP" property="callbackDate" />
@@ -18,11 +18,12 @@
     <result column="pay_type" jdbcType="SMALLINT" property="payType" />
     <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
     <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="operation_type" jdbcType="SMALLINT" property="operationType" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, order_pament_no, created, updated, callback_date, time_end, callback_status, 
+    id, order_no, order_payment_no, created, updated, callback_date, time_end, callback_status, 
     callback_reason, buyer_id, transaction_id, real_payment_money, callback_money, pay_type, 
-    cmms_amt, rate
+    cmms_amt, rate, operation_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,21 +35,21 @@
     delete from order_payment
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
-    insert into order_payment (id, order_no, order_pament_no, 
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.OrderPayment">
+    insert into order_payment (id, order_no, order_payment_no, 
       created, updated, callback_date, 
       time_end, callback_status, callback_reason, 
       buyer_id, transaction_id, real_payment_money, 
       callback_money, pay_type, cmms_amt, 
-      rate)
-    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderPamentNo,jdbcType=VARCHAR}, 
+      rate, operation_type)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderPaymentNo,jdbcType=VARCHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{callbackDate,jdbcType=TIMESTAMP}, 
       #{timeEnd,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, 
       #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{realPaymentMoney,jdbcType=DECIMAL}, 
       #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=DECIMAL})
+      #{rate,jdbcType=DECIMAL}, #{operationType,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.OrderPayment">
     insert into order_payment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -57,8 +58,8 @@
       <if test="orderNo != null">
         order_no,
       </if>
-      <if test="orderPamentNo != null">
-        order_pament_no,
+      <if test="orderPaymentNo != null">
+        order_payment_no,
       </if>
       <if test="created != null">
         created,
@@ -99,6 +100,9 @@
       <if test="rate != null">
         rate,
       </if>
+      <if test="operationType != null">
+        operation_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -107,8 +111,8 @@
       <if test="orderNo != null">
         #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="orderPamentNo != null">
-        #{orderPamentNo,jdbcType=VARCHAR},
+      <if test="orderPaymentNo != null">
+        #{orderPaymentNo,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -149,16 +153,19 @@
       <if test="rate != null">
         #{rate,jdbcType=DECIMAL},
       </if>
+      <if test="operationType != null">
+        #{operationType,jdbcType=SMALLINT},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.OrderPayment">
     update order_payment
     <set>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="orderPamentNo != null">
-        order_pament_no = #{orderPamentNo,jdbcType=VARCHAR},
+      <if test="orderPaymentNo != null">
+        order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -199,13 +206,16 @@
       <if test="rate != null">
         rate = #{rate,jdbcType=DECIMAL},
       </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=SMALLINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.OrderPayment">
     update order_payment
     set order_no = #{orderNo,jdbcType=CHAR},
-      order_pament_no = #{orderPamentNo,jdbcType=VARCHAR},
+      order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP},
       callback_date = #{callbackDate,jdbcType=TIMESTAMP},
@@ -218,7 +228,8 @@
       callback_money = #{callbackMoney,jdbcType=DECIMAL},
       pay_type = #{payType,jdbcType=SMALLINT},
       cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
-      rate = #{rate,jdbcType=DECIMAL}
+      rate = #{rate,jdbcType=DECIMAL},
+      operation_type = #{operationType,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

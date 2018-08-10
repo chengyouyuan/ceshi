@@ -187,10 +187,12 @@ public final class BusinessCode {
     public static final int CODE_410001 = 410001;
     /** 订单号错误*/
     public static final int CODE_420003 = 420003;
-    /** 取消订单状态更新不成功*/
+    /** 取消订单状态更新失败*/
     public static final int CODE_420004 = 420004;
-    /** 订单取消处理用户退款不成功*/
+    /** 订单取消处理用户退款失败*/
     public static final int CODE_422005 = 422005;
+    /** 订单取消退优惠券失败*/
+    public static final int CODE_422006 = 422006;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int SysRegionCODE_310001 = 310001;

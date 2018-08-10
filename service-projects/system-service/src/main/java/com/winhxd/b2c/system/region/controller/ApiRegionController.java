@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.api;
+package com.winhxd.b2c.system.region.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -6,7 +6,7 @@ import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
-import com.winhxd.b2c.system.service.SysRegionService;
+import com.winhxd.b2c.system.region.service.SysRegionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

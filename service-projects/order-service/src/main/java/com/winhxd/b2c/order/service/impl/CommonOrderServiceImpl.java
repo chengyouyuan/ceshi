@@ -776,9 +776,8 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
         BigDecimal orderTotal = BigDecimal.ZERO;
-        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
-            OrderItemCondition detailCondition = (OrderItemCondition) iterator.next();
-            // TODO 获取该经销商 产品价格,暂时使用传入价格
+        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
+            OrderItemCondition detailCondition = iterator.next();
             BigDecimal price = detailCondition.getPrice();
             if (price == null) {
                 return null;

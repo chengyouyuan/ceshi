@@ -30,7 +30,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/api-system/user/300/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Long> add(@RequestBody SysUser sysUser);
+    ResponseResult<Long> save(@RequestBody SysUser sysUser);
 
     /**
      * 修改用户
@@ -40,7 +40,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/api-system/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult update(@RequestBody SysUser sysUser);
+    ResponseResult modify(@RequestBody SysUser sysUser);
 
     /**
      * 修改密码
@@ -60,7 +60,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/api-system/user/303/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<PagedList<SysUser>> list(@RequestBody SysUserCondition condition);
+    ResponseResult<PagedList<SysUser>> find(@RequestBody SysUserCondition condition);
 
     /**
      * 根据登录账号获取用户信息
@@ -80,7 +80,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/api-system/user/305/v1/get/{id}", method = RequestMethod.GET)
-    ResponseResult<SysUser> getById(@PathVariable("id") Long id);
+    ResponseResult<SysUser> get(@PathVariable("id") Long id);
 
     /**
      * 根据主键获取用户信息
@@ -106,14 +106,14 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<Long> add(SysUser sysUser) {
-        logger.error("UserServiceClientFallback -> add", throwable);
+    public ResponseResult<Long> save(SysUser sysUser) {
+        logger.error("UserServiceClientFallback -> save", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult update(SysUser sysUser) {
-        logger.error("UserServiceClientFallback -> update", throwable);
+    public ResponseResult modify(SysUser sysUser) {
+        logger.error("UserServiceClientFallback -> modify", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
@@ -124,8 +124,8 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<PagedList<SysUser>> list(SysUserCondition condition) {
-        logger.error("UserServiceClientFallback -> list", throwable);
+    public ResponseResult<PagedList<SysUser>> find(SysUserCondition condition) {
+        logger.error("UserServiceClientFallback -> find", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
@@ -136,8 +136,8 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     }
 
     @Override
-    public ResponseResult<SysUser> getById(Long userId) {
-        logger.error("UserServiceClientFallback -> getById", throwable);
+    public ResponseResult<SysUser> get(Long userId) {
+        logger.error("UserServiceClientFallback -> get", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

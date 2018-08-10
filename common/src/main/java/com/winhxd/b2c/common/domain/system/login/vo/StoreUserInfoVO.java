@@ -29,8 +29,8 @@ public class StoreUserInfoVO {
     /**
      * 门店编码
      */
-    @ApiModelProperty("门店编码")
-    private Long storeId;
+    @ApiModelProperty("惠下单门店用户id(云平台crm_ws_customer表的customer_id)")
+    private Long storeCustomerId;
     /**
      * 用户账号
      */
@@ -59,7 +59,7 @@ public class StoreUserInfoVO {
      * 店主头像
      */
     @ApiModelProperty("店主头像")
-    private String shopOwnerUrl;
+    private String shopOwnerImg;
     /**
      * 取货方式（1、自提，多个用逗号分隔）
      */

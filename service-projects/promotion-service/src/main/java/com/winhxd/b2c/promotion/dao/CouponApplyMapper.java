@@ -1,6 +1,12 @@
 package com.winhxd.b2c.promotion.dao;
 
+import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApply;
+import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface CouponApplyMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +20,14 @@ public interface CouponApplyMapper {
     int updateByPrimaryKeySelective(CouponApply record);
 
     int updateByPrimaryKey(CouponApply record);
+
+    CouponApplyVO viewCouponApplyDetail(@Param("id") long id);
+
+    int updateCouponGradeValid(@Param("id")long id, @Param("userId")long userId, @Param("userName")String userName);
+
+    List<CouponApplyVO> getCouponApplyPage(@Param("condition")CouponApplyCondition condition);
+
+    long insertCouponApply(CouponApply couponApply);
+
+    List<ApplyTempleteCountVO> findApplyTempleteCountPage(@Param("applyId") long applyId);
 }

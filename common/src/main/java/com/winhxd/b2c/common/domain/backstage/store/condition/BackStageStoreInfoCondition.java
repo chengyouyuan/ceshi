@@ -18,7 +18,7 @@ import lombok.Data;
 public class BackStageStoreInfoCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
-    private Byte storeStatus;
+    private Short storeStatus;
 
     @ApiModelProperty(value = "门店用户编码")
     private Long storeCustomerId;
@@ -28,33 +28,6 @@ public class BackStageStoreInfoCondition extends BaseCondition{
 
     @ApiModelProperty(value = "门店名称")
     private String storeName;
-
-    @ApiModelProperty(value = "省code")
-    private String provinceCode;
-
-    @ApiModelProperty(value = "市code")
-    private String cityCode;
-
-    @ApiModelProperty(value = "县code")
-    private String countyCode;
-
-    @ApiModelProperty(value = "乡/镇code")
-    private String townCode;
-
-    @ApiModelProperty(value = "村code")
-    private String villageCode;
-
-    @ApiModelProperty(value = "用户编码")
-    private Long customerId;
-
-    @ApiModelProperty(value = "门店地址")
-    private String storeAddress;
-
-    @ApiModelProperty(value = "联系方式")
-    private String contactMobile;
-
-    @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
-    private Byte paymentWay;
 
     @ApiModelProperty(value = "筛选的最小级别regionCode")
     private String regionCode;

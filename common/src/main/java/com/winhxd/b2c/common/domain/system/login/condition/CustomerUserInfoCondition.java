@@ -12,8 +12,6 @@ import lombok.Data;
 @ApiModel("小程序用户请求参数")
 @Data
 public class CustomerUserInfoCondition{
-	@ApiModelProperty(value = "用户主键")
-    private Long customerId;
 	@ApiModelProperty(value = "账号")
     private String customerMobile;
 	@ApiModelProperty(value = "微信code")
@@ -25,7 +23,7 @@ public class CustomerUserInfoCondition{
 	@ApiModelProperty(value = "昵称")
     private String nickName;
 	@ApiModelProperty(value = "头像")
-    private String headurl;
+    private String headImg;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
 }

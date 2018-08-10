@@ -35,6 +35,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
@@ -88,15 +89,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList();
-        List<OrderInfoDetailVO> orderInfoList = this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode());
-        List<String> skuList = new ArrayList<>();
-        for (OrderInfoDetailVO orderInfoDetailVO : orderInfoList) {
-            List<OrderItemVO> items = orderInfoDetailVO.getOrderItemVoList();
-            for (OrderItemVO orderItemVO : items) {
-                skuList.add(orderItemVO.getSkuCode());
-            }
-        }
-        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId, condition.getPickUpCode()));
+        pagedList.setData(this.orderInfoMapper.selectOrderInfoListByCustomerId(customerId));
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -213,6 +206,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryProductInfo=true, queryStoreInfo=true)
     public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单编号不能为空");
@@ -232,9 +226,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryProductInfo=true)
     public PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId) {
         if (storeId == null) {
-            throw new BusinessException(BusinessCode.CODE_1002);
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
         }
         logger.info("查询门店订单列表开始：condition={}，storeId={}", condition, storeId);
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -245,6 +240,20 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         pagedList.setTotalRows(page.getTotal());
         logger.info("查询门店订单列表结束：condition={}，storeId={}, totalRows={}", condition, storeId, page.getTotal());
         return pagedList;
+    }
+    
+    @Override
+    public OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId) {
+        if (storeCustomerId == null) {
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
+        }
+        logger.info("查询门店各状态订单数量开始：storeId={}", storeCustomerId);
+        OrderCountByStatus4StoreVO orderCountByStatus4StoreVO = orderInfoMapper.getOrderCountByStatus(storeCustomerId);
+        if (orderCountByStatus4StoreVO == null) {
+            orderCountByStatus4StoreVO = new OrderCountByStatus4StoreVO();
+        }
+        logger.info("查询门店各状态订单数量结束：storeId={}", storeCustomerId);
+        return orderCountByStatus4StoreVO;
     }
 
     /**

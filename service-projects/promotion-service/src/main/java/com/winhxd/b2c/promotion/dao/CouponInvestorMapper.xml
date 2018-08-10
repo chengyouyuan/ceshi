@@ -10,12 +10,12 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, name, remarks, status, created_by, created_by_name, created, update_by, 
+    id, code, name, remarks, status, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -31,11 +31,11 @@
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
     insert into coupon_investor (id, code, name, 
       remarks, status, created_by, 
-      created_by_name, created, update_by, 
+      created_by_name, created, updated_by,
       updated_by_name, updated)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
       #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestor">
@@ -65,8 +65,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -100,8 +100,8 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -135,8 +135,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -156,7 +156,7 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
@@ -199,14 +199,14 @@
               coupon_investor_detail b
               on a.id = b.investor_id
               and a.id =#{id}
-              and a.status = 1
+
   </select>
 
 
   <update id="updateCouponInvestorToValid">
     update coupon_investor set
-    status = 1 ,
-    update_by = #{userId},
+    status = 0 ,
+    updated_by = #{userId},
     updated_by_name = #{userName},
     updated = now()
     where id = #{id}
@@ -217,7 +217,7 @@
     update coupon_investor
     set name = #{name,jdbcType=VARCHAR},
     remarks = #{remarks,jdbcType=VARCHAR},
-    update_by = #{updateBy,jdbcType=BIGINT},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
     updated_by_name = #{updatedByName,jdbcType=VARCHAR},
     updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
@@ -236,6 +236,7 @@
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
     <collection property="detailList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail" column="investor_id">
       <result column="percent" property="percent"/>
       <result column="names" property="names"/>
@@ -244,9 +245,10 @@
 
   <select id="getCouponInvestorPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
       select a.code,a.name,a.created_by_name,a.created,a.updated_by_name,a.updated,
-              b.percent,b.names from coupon_investor a
-              left join coupon_investor_detail b
-              on a.id = b.investor_id
+              b.percent,b.names ,count(c.investor_id) as rel_templete_count
+              from coupon_investor a
+              left join coupon_investor_detail b on a.id = b.investor_id
+              left join coupon_template c on a.id = c.investor_id
               where 1=1
               <if test="condition.code!=null and  condition.code!=''">
                   and a.code = #{condition.code}
@@ -258,5 +260,35 @@
                   and b.names = #{condition.names}
               </if>
   </select>
+
+
+
+
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO">
+    <result column="invertor_id" jdbcType="VARCHAR" property="invertorId" />
+    <result column="invertor_name" jdbcType="VARCHAR" property="invertorName" />
+    <result column="invertor_code" jdbcType="VARCHAR" property="invertorCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+  <select id="getInvertorTempleteCountPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
+    SELECT
+        a.title AS templete_name,
+        a.`code` AS templete_code,
+        a.`status` AS templete_status,
+        b.`code` AS invertor_code,
+        b.`name` AS invertor_name,
+        b.id AS invertor_id
+    FROM
+        coupon_template a
+    LEFT JOIN coupon_investor b ON a.investor_id = b.id
+    WHERE
+        a.grade_id = #{investorId}
+  </select>
+
+
+
 
 </mapper>

@@ -44,7 +44,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 店主头像
      */
-    private String shopOwnerUrl;
+    private String shopOwnerImg;
     /**
      * 取货方式（1、自提，多个用逗号分隔）
      */
@@ -82,7 +82,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 惠小店状态（0、未开店，1、有效，2、无效）
      */
-    private Byte storeStatus;
+    private Short storeStatus;
     private String token;
     private static final long serialVersionUID = 1L;
 
@@ -134,20 +134,20 @@ public class StoreUserInfo implements Serializable {
         this.storePassword = storePassword == null ? null : storePassword.trim();
     }
 
+    public String getShopOwnerImg() {
+        return shopOwnerImg;
+    }
+
+    public void setShopOwnerImg(String shopOwnerImg) {
+        this.shopOwnerImg = shopOwnerImg;
+    }
+
     public String getShopkeeper() {
         return shopkeeper;
     }
 
     public void setShopkeeper(String shopkeeper) {
         this.shopkeeper = shopkeeper == null ? null : shopkeeper.trim();
-    }
-
-    public String getShopOwnerUrl() {
-        return shopOwnerUrl;
-    }
-
-    public void setShopOwnerUrl(String shopOwnerUrl) {
-        this.shopOwnerUrl = shopOwnerUrl == null ? null : shopOwnerUrl.trim();
     }
 
     public String getPickupWay() {
@@ -253,11 +253,11 @@ public class StoreUserInfo implements Serializable {
         this.source = source == null ? null : source.trim();
     }
 
-    public Byte getStoreStatus() {
+    public Short getStoreStatus() {
         return storeStatus;
     }
 
-    public void setStoreStatus(Byte storeStatus) {
+    public void setStoreStatus(Short storeStatus) {
         this.storeStatus = storeStatus;
     }
 

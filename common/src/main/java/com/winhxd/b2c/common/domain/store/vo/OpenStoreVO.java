@@ -25,7 +25,7 @@ public class OpenStoreVO {
     private Byte perfectStatus;
 
     @ApiModelProperty(value = "未完善信息时，提示列表")
-    private List<String> noPerfectMessage;
+    private List<Integer> noPerfectMessage;
 
 
 }

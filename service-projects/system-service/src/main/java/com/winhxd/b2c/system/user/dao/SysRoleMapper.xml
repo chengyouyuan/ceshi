@@ -4,10 +4,12 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRole">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
-    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
   </resultMap>
 
   <resultMap id="RoleMap" type="com.winhxd.b2c.common.domain.system.user.model.SysRole" extends="BaseResultMap">
@@ -15,7 +17,7 @@
                 javaType="ArrayList" column="id" select="selectPermissions" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, role_name, created_by, created, updated_by, updated
+    id, role_name, created_by, created_by_name, created, updated_by, updated, updated_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -28,12 +30,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_role (id, role_name, created_by, 
-      created, updated_by, updated
-      )
-    values (#{id,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR},
-      #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
-      )
+    insert into sys_role (id, role_name, created_by,
+      created_by_name, created, updated_by,
+      updated, updated_by_name)
+    values (#{id,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+      #{updated,jdbcType=TIMESTAMP}, #{updatedByName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_role
@@ -47,6 +49,9 @@
       <if test="createdBy != null">
         created_by,
       </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
       <if test="created != null">
         created,
       </if>
@@ -55,6 +60,9 @@
       </if>
       <if test="updated != null">
         updated,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -65,16 +73,22 @@
         #{roleName,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=VARCHAR},
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -85,16 +99,22 @@
         role_name = #{roleName,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=VARCHAR},
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -102,10 +122,12 @@
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole">
     update sys_role
     set role_name = #{roleName,jdbcType=VARCHAR},
-      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP}
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

@@ -29,7 +29,7 @@ public class CouponTemplateSend {
 
     private Date created;
 
-    private Long updateBy;
+    private Long updatedBy;
 
     private String updatedByName;
 
@@ -139,12 +139,12 @@ public class CouponTemplateSend {
         this.created = created;
     }
 
-    public Long getUpdateBy() {
-        return updateBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public String getUpdatedByName() {

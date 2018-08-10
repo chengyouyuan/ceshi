@@ -11,13 +11,13 @@
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
     id, name, code, remarks, apply_rule_type, status, created_by, created_by_name, created, 
-    update_by, updated_by_name, updated
+    updated_by, updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -33,12 +33,12 @@
     insert into coupon_apply (id, name, code, 
       remarks, apply_rule_type, status, 
       created_by, created_by_name, created, 
-      update_by, updated_by_name, updated
+      updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{remarks,jdbcType=VARCHAR}, #{applyRuleType,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApply">
@@ -71,8 +71,8 @@
       <if test="created != null">
         created,
       </if>
-      <if test="updateBy != null">
-        update_by,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
       <if test="updatedByName != null">
         updated_by_name,
@@ -109,8 +109,8 @@
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
@@ -147,8 +147,8 @@
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
@@ -169,9 +169,110 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+
+  <resultMap id="BaseResultMap2" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="apply_rule_type" jdbcType="SMALLINT" property="applyRuleType" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
+  </resultMap>
+
+  <select id="viewCouponApplyDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">
+     select
+     id, name, code, remarks, apply_rule_type, status, created_by, created_by_name, created,
+     updated_by, updated_by_name, updated
+     from coupon_apply
+     where id=#{id}
+  </select>
+
+
+
+
+  <update id="updateCouponGradeValid">
+    update coupon_apply set
+    status = 0 ,
+    updated_by = #{userId},
+    updated_by_name = #{userName},
+    updated = now()
+    where id = #{id}
+  </update>
+
+
+
+  <select id="getCouponApplyPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition" resultMap="BaseResultMap2">
+    select
+    a.id, name, a.code, a.remarks, a.apply_rule_type, a.status, a.created_by, a.created_by_name, a.created,
+    a.updated_by, a.updated_by_name, a.updated,count(b.apply_rule_id) as rel_templete_count
+    from coupon_apply a left join coupon_template b on a.id = b.apply_rule_id
+    where 1=1
+    <if test="condition.code!=null and  condition.code!=''">
+      and a.code = #{condition.code}
+    </if>
+    <if test="condition.name!=null and  condition.name!=''">
+      and a.name = #{condition.name}
+    </if>
+    <if test="condition.applyRuleType!=null and  condition.applyRuleType!=''">
+      and a.apply_rule_type = #{condition.applyRuleType}
+    </if>
+  </select>
+
+
+
+
+  <insert id="insertCouponApply" keyProperty="id" useGeneratedKeys="true" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApply">
+    insert into coupon_apply (id, name, code,
+      remarks, apply_rule_type, status,
+      created_by, created_by_name, created
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR},
+      #{remarks,jdbcType=VARCHAR}, #{applyRuleType,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT},
+      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+
+
+  <resultMap id="ResultCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO">
+    <result column="apply_id" jdbcType="VARCHAR" property="applyId" />
+    <result column="apply_name" jdbcType="VARCHAR" property="applyName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
+    <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
+    <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+  </resultMap>
+
+
+  <select id="findApplyTempleteCountPage" parameterType="java.lang.Long" resultMap="ResultCountPageMap">
+    SELECT
+    a.title AS templete_name,
+    a.`code` AS templete_code,
+    a.`status` AS templete_status,
+    b.`code` AS apply_code,
+    b.`name` AS apply_name,
+    b.id AS apply_id
+    FROM
+    coupon_template a
+    LEFT JOIN coupon_apply b ON a.grade_id = b.id
+    WHERE
+    a.apply_rule_id = #{applyId}
+  </select>
+
+
 </mapper>

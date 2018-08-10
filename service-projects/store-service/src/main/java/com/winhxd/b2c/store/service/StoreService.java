@@ -19,10 +19,11 @@ public interface StoreService {
     /**
      * @param customerId  用户id
      * @param storeUserId 门店id
-     * @return 绑定状态码(0绑定失败, 1绑定成功, - 1用户已经和当前门店存在绑定关系 ， - 2用户已经和其他门店存在绑定关系)
+     * @return 绑定状态码(0绑定失败, 1绑定成功, -1用户已经和当前门店存在绑定关系 ， -2用户已经和其他门店存在绑定关系)
      * @author chengyy
      * @date 2018/8/3 13:23
      * @Description 门店用户绑定
+     *
      */
     int bindCustomer(Long customerId, Long storeUserId);
 
@@ -50,7 +51,7 @@ public interface StoreService {
      * @date 2018/8/7 14:06
      * @Description 根据用户id查询绑定的门店信息
      */
-    StoreUserInfo findStoreUserInfoByCustomerId(Long customerUserId);
+    StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId);
 
     /**
      * 根据门店编码查询门店信息
@@ -74,4 +75,11 @@ public interface StoreService {
      * @date 2018/8/8 10:16
      */
     List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids);
+
+    /**
+     * 后台管理，查询门店详细信息
+     * @param id 主键
+     * @return
+     */
+    BackStageStoreVO findByIdForBackStage(Long id);
 }

@@ -45,11 +45,11 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "新增权限组", response = Long.class)
-    public ResponseResult<Long> add(@RequestBody SysRole sysRole){
+    public ResponseResult<Long> save(@RequestBody SysRole sysRole){
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            sysRoleService.addSysRule(sysRole);
+            sysRoleService.save(sysRole);
             result.setData(sysRole.getId());
         } catch (BusinessException e){
             logger.error("{} - 新增权限组失败, 参数：sysRole={}", MODULE_NAME, sysRole, e);
@@ -70,11 +70,11 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "修改权限组")
-    public ResponseResult update(@RequestBody SysRole sysRole){
+    public ResponseResult<Integer> modify(@RequestBody SysRole sysRole){
         logger.info("{} - 修改权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
-        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        ResponseResult<Integer> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            sysRoleService.updateSysRule(sysRole);
+            result.setData(sysRoleService.modify(sysRole));
         } catch (BusinessException e){
             logger.error("{} - 修改权限组失败, 参数：sysRole={}", MODULE_NAME, sysRole, e);
             result = new ResponseResult<>(e.getErrorCode());
@@ -94,11 +94,11 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "查询权限组列表")
-    public ResponseResult<PagedList<SysRole>> list(@RequestBody SysRoleCondition condition){
+    public ResponseResult<PagedList<SysRole>> find(@RequestBody SysRoleCondition condition){
         logger.info("{} - 查询权限组列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysRole>> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            PagedList<SysRole> page = sysRoleService.selectSysRule(condition);
+            PagedList<SysRole> page = sysRoleService.find(condition);
             result.setData(page);
         } catch (BusinessException e){
             logger.error("{} - 查询权限组列表失败, 参数：condition={}", MODULE_NAME, condition, e);
@@ -119,11 +119,11 @@ public class SysRoleController implements RoleServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键获取权限组信息")
-    public ResponseResult<SysRole> getById(@PathVariable("id") Long id){
+    public ResponseResult<SysRole> get(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取权限组信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysRole> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            SysRole sysRole = sysRoleService.getSysRuleById(id);
+            SysRole sysRole = sysRoleService.get(id);
             result.setData(sysRole);
             return result;
         } catch (BusinessException e){
@@ -131,6 +131,31 @@ public class SysRoleController implements RoleServiceClient {
             result = new ResponseResult(e.getErrorCode());
         } catch (Exception e){
             logger.error("{} - 根据主键获取权限组信息失败, 参数：id={}", MODULE_NAME, id, e);
+            result = new ResponseResult(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    /**
+     * 根据主键删除权限组信息
+     * @author zhangzhengyang
+     * @date 2018/8/7
+     * @param id
+     * @return
+     */
+    @Override
+    @ApiOperation(value = "根据主键删除权限组信息")
+    public ResponseResult<Integer> remove(Long id) {
+        logger.info("{} - 根据主键删除权限组信息, 参数：id={}", MODULE_NAME, id);
+        ResponseResult<Integer> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            result.setData(sysRoleService.remove(id));
+            return result;
+        } catch (BusinessException e){
+            logger.error("{} - 根据主键删除权限组信息失败, 参数：id={}", MODULE_NAME, id, e);
+            result = new ResponseResult(e.getErrorCode());
+        } catch (Exception e){
+            logger.error("{} - 根据主键删除权限组信息失败, 参数：id={}", MODULE_NAME, id, e);
             result = new ResponseResult(BusinessCode.CODE_1001);
         }
         return result;

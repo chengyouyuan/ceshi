@@ -1,14 +1,13 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -17,7 +16,7 @@ import lombok.Data;
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午1:31:17
  */
-@ApiModel("B端门店商品基本操作入参")
+@ApiModel("B端门店商品管理入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoreProductManageCondition implements Serializable{
@@ -32,10 +31,10 @@ public class StoreProductManageCondition implements Serializable{
 	private String prodId;
 	
 	@ApiModelProperty("是否推荐 0不推荐 1推荐")
-	private Byte recommend;
+	private Short recommend;
 	
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
-	private List<Byte> prodStatus;
+	private List<Short> prodStatus;
 	
 	@ApiModelProperty("商品spu")
 	private String prodCode;
@@ -52,7 +51,7 @@ public class StoreProductManageCondition implements Serializable{
 	@ApiModelProperty("更新时间")
 	private Date updated;
 	
-	@ApiModelProperty("排序条件,0创建时间，1价格")
+	@ApiModelProperty("排序条件,0创建时间，1价格， 2销量")
 	private Integer orderBy;
 	
 	@ApiModelProperty("升序或者降序，如果默认升序 1 降序 0升序")

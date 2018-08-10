@@ -28,13 +28,15 @@ public class CouponInvestorVO {
 
     private Date created;
 
-    private Long updateBy;
+    private Long updatedBy;
 
     private String updatedByName;
 
     private Date updated;
 
     private List<CouponInvestorDetail> detailList;
+
+    private String relTempleteCount;
 
 
     public Integer getId() {
@@ -101,12 +103,12 @@ public class CouponInvestorVO {
         this.created = created;
     }
 
-    public Long getUpdateBy() {
-        return updateBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public String getUpdatedByName() {
@@ -131,5 +133,13 @@ public class CouponInvestorVO {
 
     public void setDetailList(List<CouponInvestorDetail> detailList) {
         this.detailList = detailList;
+    }
+
+    public String getRelTempleteCount() {
+        return relTempleteCount;
+    }
+
+    public void setRelTempleteCount(String relTempleteCount) {
+        this.relTempleteCount = relTempleteCount;
     }
 }

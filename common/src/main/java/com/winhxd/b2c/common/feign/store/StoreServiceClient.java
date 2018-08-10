@@ -1,23 +1,28 @@
 package com.winhxd.b2c.common.feign.store;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
-import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
-import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import java.util.List;
+import java.util.Set;
 
-import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Set;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
+import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+
+import feign.hystrix.FallbackFactory;
 
 /**
  * @author chengyy
@@ -28,7 +33,7 @@ import java.util.Set;
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
-     * @return 无
+     * @return 无  (根据状态码进行判断绑定状态 1001绑定失败, 0绑定成功, 200011用户已经和当前门店存在绑定关系 ， 200003用户已经和其他门店存在绑定关系)
      * @author chengyy
      * @date 2018/8/3 10:32
      * @Description 门店绑定用户
@@ -49,7 +54,7 @@ public interface StoreServiceClient {
      * @date 2018年8月6日上午9:23:34
      */
     @RequestMapping(value = "/store/1017/v1/findShopCarProd", method = RequestMethod.GET)
-    ResponseResult<List<ShopCarProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
+    ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**
      * B端登入时校验改门店下上架商品未设置价格信息
@@ -83,7 +88,7 @@ public interface StoreServiceClient {
      * @Description 通过用户id查询绑定的门店信息
      */
     @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
-    ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
+    ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
      * @param id 门店id
@@ -104,6 +109,18 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
+    
+    /**
+     * 更新门店商品统计信息
+    * @Title: updateStoreProductStatistics 
+    * @Description: TODO 
+    * @param conditions
+    * @return ResponseResult<Void>
+    * @author wuyuanbao
+    * @date 2018年8月9日下午4:16:00
+     */
+    @RequestMapping(value = "/store/1024/v1/findStoreUserInfoList", method = RequestMethod.POST)
+    ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
 }
 
 /**
@@ -133,7 +150,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skus, Long storeId) {
+    public ResponseResult<List<ShopCartProdVO>> findShopCarProd(List<String> skus, Long storeId) {
         logger.error("StoreServiceClientFallBack -> findShopCarProd报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -150,7 +167,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(Long customerUserId) {
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(Long customerUserId) {
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoByCustomerId，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -166,5 +183,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
         logger.error("StoreServiceClientFallBack -> findStoreUserInfoList，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+	@Override
+	public ResponseResult<Void> saveStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+		logger.error("StoreServiceClientFallBack -> saveStoreProductStatistics，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
 
 }

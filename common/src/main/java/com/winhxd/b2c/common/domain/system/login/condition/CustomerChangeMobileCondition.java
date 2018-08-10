@@ -9,4 +9,6 @@ import lombok.Data;
 public class CustomerChangeMobileCondition {
 	@ApiModelProperty(value = "换绑账号")
 	private String customerMobile;
+	@ApiModelProperty(value = "短信验证码")
+	private String verificationCode;
 }

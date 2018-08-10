@@ -1,5 +1,6 @@
 package com.winhxd.b2c.order.dao;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 
@@ -82,7 +84,7 @@ public interface OrderInfoMapper {
      * @param customerId
      * @return
      */
-    List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(@Param("customerId") Long customerId, @Param("pickUpCode") String pickUpCode);
+    List<OrderInfoDetailVO> selectOrderInfoListByCustomerId(@Param("customerId") Long customerId);
 
     /**
      * 获取用户的订单和订单商品内容
@@ -179,9 +181,10 @@ public interface OrderInfoMapper {
     /**
      * 订单退款更新状态等信息
      * @param orderNo
+     * @param reason
      * @return 更新成功影响条数
      */
-    int updateOrderStatusForRefund(String orderNo);
+    int updateOrderStatusForRefund(@Param("orderNo") String orderNo, @Param("cancelReason") String cancelReason);
 
     /**
      * 根据条件查询 
@@ -212,4 +215,24 @@ public interface OrderInfoMapper {
      * @return
      */
     int orderPickup(@Param("pickupCode") String pickupCode, @Param("orderId") Long orderId, @Param("expectOrderStatus") Short expectOrderStatus, @Param("newOrderStatus") short newOrderStatus);
+
+    /**
+     * 订单各状态数量统计
+     * @author wangbin
+     * @date  2018年8月9日 下午2:02:13
+     * @param storeCustomerId
+     * @return 
+     */
+    OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
+
+    /**
+     * 更新订单总金额
+     * @author wangbin
+     * @date  2018年8月9日 下午4:00:33
+     * @param orderTotalMoney
+     * @param realPayMoney
+     * @param orderId
+     * @return
+     */
+    int updateOrderMoney(@Param("orderTotalMoney") BigDecimal orderTotalMoney, @Param("realPayMoney") BigDecimal realPayMoney, @Param("orderId") Long orderId);
 }

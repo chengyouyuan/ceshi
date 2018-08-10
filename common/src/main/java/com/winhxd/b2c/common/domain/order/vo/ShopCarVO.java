@@ -18,6 +18,8 @@ import java.util.List;
 @Data
 public class ShopCarVO {
 
+
+
     @ApiModelProperty(value = "购物车ID")
     private Long id;
 
@@ -37,9 +39,9 @@ public class ShopCarVO {
     private Date updated;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdby;
+    private Long createdBy;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedby;
+    private Long updatedBy;
 
 }

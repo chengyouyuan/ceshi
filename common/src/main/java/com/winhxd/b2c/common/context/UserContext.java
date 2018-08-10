@@ -22,8 +22,6 @@ public class UserContext {
 
     /**
      * 获取当前后台管理员用户信息
-     *
-     * @return
      */
     public static AdminUser getCurrentAdminUser() {
         return currentAdminUser.get();
@@ -31,8 +29,6 @@ public class UserContext {
 
     /**
      * 获取当前门店用户信息
-     *
-     * @return
      */
     public static StoreUser getCurrentStoreUser() {
         return currentStoreUser.get();
@@ -40,8 +36,6 @@ public class UserContext {
 
     /**
      * 获取当前C端用户信息
-     *
-     * @return
      */
     public static CustomerUser getCurrentCustomerUser() {
         return currentCustomerUser.get();

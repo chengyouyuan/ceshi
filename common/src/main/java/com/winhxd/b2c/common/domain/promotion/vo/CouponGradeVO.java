@@ -29,7 +29,7 @@ public class CouponGradeVO {
 
     private Date created;
 
-    private Long updateBy;
+    private Long updatedBy;
 
     private String updatedByName;
 
@@ -37,6 +37,7 @@ public class CouponGradeVO {
 
     private List<CouponGradeDetail> details;
 
+    private String relTempleteCount;
 
     public Long getId() {
         return id;
@@ -110,12 +111,12 @@ public class CouponGradeVO {
         this.created = created;
     }
 
-    public Long getUpdateBy() {
-        return updateBy;
+    public Long getUpdatedBy() {
+        return updatedBy;
     }
 
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
+    public void setUpdatedBy(Long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
     public String getUpdatedByName() {
@@ -140,5 +141,13 @@ public class CouponGradeVO {
 
     public void setDetails(List<CouponGradeDetail> details) {
         this.details = details;
+    }
+
+    public String getRelTempleteCount() {
+        return relTempleteCount;
+    }
+
+    public void setRelTempleteCount(String relTempleteCount) {
+        this.relTempleteCount = relTempleteCount;
     }
 }

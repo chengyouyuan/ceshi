@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 import com.winhxd.b2c.common.feign.promotion.CouponInvestorServiceClient;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
 import io.swagger.annotations.Api;
@@ -80,6 +81,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
         return responseResult;
     }
 
+    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效",response = ResponseResult.class)
     @Override
     public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
@@ -103,6 +105,13 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
     @Override
     public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
         ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
+        return responseResult;
+    }
+
+    @ApiOperation(value = "出资方关联模板分页列表", notes = "出资方关联模板分页列表",response = ResponseResult.class)
+    @Override
+    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo") Integer pageNo,@RequestParam("pageSize") Integer pageSize) {
+        ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult =  couponInvestorService.findInvertorTempleteCountPage(invertorId,pageNo,pageSize);
         return responseResult;
     }
 

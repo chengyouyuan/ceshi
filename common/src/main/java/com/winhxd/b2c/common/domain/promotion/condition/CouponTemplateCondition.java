@@ -44,13 +44,18 @@ public class CouponTemplateCondition extends BaseCondition implements Serializab
     private String gradeName;
     @ApiModelProperty(value = "优惠券类型规则名称")
     private String applyRuleName;
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value = "创建人名称")
     private String createdByName;
+    @ApiModelProperty(value = "创建人")
+    private String createdBy;
 
     @ApiModelProperty(value = "创建时间 开始")
     private String createdBegin;
     @ApiModelProperty(value = "创建时间 结束")
     private String createdEnd;
+
+    @ApiModelProperty(value = "角标")
+    private String corner;
 
 
     public String getId() {
@@ -203,5 +208,21 @@ public class CouponTemplateCondition extends BaseCondition implements Serializab
 
     public void setCreatedEnd(String createdEnd) {
         this.createdEnd = createdEnd;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getCorner() {
+        return corner;
+    }
+
+    public void setCorner(String corner) {
+        this.corner = corner;
     }
 }

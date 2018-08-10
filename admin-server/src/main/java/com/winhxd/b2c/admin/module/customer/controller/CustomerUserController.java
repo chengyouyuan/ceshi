@@ -7,7 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition1;
+import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerOrderInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -52,14 +52,14 @@ public class CustomerUserController {
     @ApiOperation(value = "根据条件查询用户的分页数据信息", response = ResponseResult.class, notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @GetMapping(value = "/findCustomerPageInfo")
-    public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(CustomerUserInfoCondition1 condition) {
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
         return responseResult;
     }
 
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", response = ResponseEntity.class, notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/customerExport")
-    public ResponseEntity<byte[]> customerExport(CustomerUserInfoCondition1 condition) {
+    public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO> list = result.getData().getData();
         if (CollectionUtils.isEmpty(list)) {
@@ -72,7 +72,7 @@ public class CustomerUserController {
     @ApiOperation(value = "根据用户id更新status状态（有效、无效）", response = ResponseResult.class, notes = "根据用户的id更新用户的状态")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK,message = "状态更新成功"),@ApiResponse(code = BusinessCode.CODE_200008,message = "状态更新失败")})
     @PostMapping(value = "/updateStatus")
-    public ResponseResult<Void> updateStatus(CustomerUserInfoCondition1 condition){
+    public ResponseResult<Void> updateStatus(BackStageCustomerInfoCondition condition){
         if(condition.getCustomerId() == null){
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);
@@ -141,7 +141,7 @@ public class CustomerUserController {
      */
     public CustomerUserInfoVO queryCustomerById(Long customerUserId){
         //根据customerId查询用户信息
-        CustomerUserInfoCondition1 condition = new CustomerUserInfoCondition1();
+        BackStageCustomerInfoCondition condition = new BackStageCustomerInfoCondition();
         condition.setCustomerId(customerUserId);
         ResponseResult<PagedList<CustomerUserInfoVO>>  pageListResult = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO>customers = pageListResult.getData().getData();

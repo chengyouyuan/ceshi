@@ -62,26 +62,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         return responseResult;
     }
 
-    /**
-     *
-     *@Deccription 模板列表页面跳转到修改页面 根据id 查询出对应的实体类
-     *@Params   id  模板id
-     *@Return   ResponseResult
-     *@User     wl
-     *@Date   2018/8/6 14:41
-     */
-    @ApiOperation(value = "跳转到优惠券模板编辑页面", notes = "跳转到优惠券模板编辑页面",response = ResponseResult.class)
-    @Override
-    public ResponseResult toEditCouponTemplate(String id) {
-        logger.info("跳转到优惠券模板编辑页面入参: " +id);
-        ResponseResult responseResult = new ResponseResult();
-        CouponTemplateVO couponTemplateVO = couponTemplateService.getCouponTemplateById(id);
-        if(couponTemplateVO!=null){
-            responseResult.setData(couponTemplateVO);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }
-        return responseResult;
-    }
+
 
 
     /**
@@ -110,16 +91,16 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "单个删除/批量删除（非物理删除）/ 设为无效", notes = "单个删除/批量删除（非物理删除）/ 设为无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponTemplateToValid(String ids) {
+    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
         if(StringUtils.isBlank(ids)){
             responseResult.setCode(BusinessCode.CODE_1007);
             responseResult.setMessage("参数为空错误");
             return responseResult;
         }
-        Long updateBy = 100102L;
+        Long updateBy = Long.parseLong(userId);
         Date updated = new Date();
-        String updateByName = "lidabenshi";
+        String updateByName = userName ;
         String[] idsArr = ids.split(",");
         List<String> idsList = Arrays.asList(idsArr);
         couponTemplateService.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
@@ -143,29 +124,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         return responseResult;
     }
 
-    /**
-     *
-     *@Deccription 修改优惠券模板
-     *@Params  condition
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/7 16:31
-     */
-    @ApiOperation(value = "修改优惠券模板", notes = "修改优惠券模板",response = ResponseResult.class)
-    @Override
-    public ResponseResult confirmUpdateCouponTemplate(@RequestBody CouponTemplateCondition condition) {
-        ResponseResult responseResult = new ResponseResult();
-        Long updateBy = 100102L;
-        Date updated = new Date();
-        String updateByName = "lidabenshi000";
-        int count = couponTemplateService.confirmUpdateCouponTemplate(updateBy,updated,updateByName,condition);
-        if(count > 0) {
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }else{
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
-        return responseResult;
-    }
 
 
 }

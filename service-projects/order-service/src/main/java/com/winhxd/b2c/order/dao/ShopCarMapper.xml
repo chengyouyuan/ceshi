@@ -6,37 +6,37 @@
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="prod_num" jdbcType="INTEGER" property="prodNum" />
+    <result column="sku_num" jdbcType="INTEGER" property="skuNum" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-    <result column="createdby" jdbcType="BIGINT" property="createdby" />
-    <result column="updatedby" jdbcType="BIGINT" property="updatedby" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, customer_id, store_id, sku_code, prod_num, created, updated, createdby, updatedby
+    id, customer_id, store_id, sku_code, sku_num, created, updated, created_by, updated_by
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from shop_car
+    from shop_cart
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from shop_car
+    delete from shop_cart
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    insert into shop_car (id, customer_id, store_id, 
-      sku_code, prod_num, created, 
-      updated, createdby, updatedby
+    insert into shop_cart (id, customer_id, store_id, 
+      sku_code, sku_num, created, 
+      updated, created_by, updated_by
       )
     values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
-      #{skuCode,jdbcType=VARCHAR}, #{prodNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
-      #{updated,jdbcType=TIMESTAMP}, #{createdby,jdbcType=BIGINT}, #{updatedby,jdbcType=BIGINT}
+      #{skuCode,jdbcType=VARCHAR}, #{skuNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    insert into shop_car
+    insert into shop_cart
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -50,8 +50,8 @@
       <if test="skuCode != null">
         sku_code,
       </if>
-      <if test="prodNum != null">
-        prod_num,
+      <if test="skuNum != null">
+        sku_num,
       </if>
       <if test="created != null">
         created,
@@ -59,11 +59,11 @@
       <if test="updated != null">
         updated,
       </if>
-      <if test="createdby != null">
-        createdby,
+      <if test="createdBy != null">
+        created_by,
       </if>
-      <if test="updatedby != null">
-        updatedby,
+      <if test="updatedBy != null">
+        updated_by,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -79,8 +79,8 @@
       <if test="skuCode != null">
         #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="prodNum != null">
-        #{prodNum,jdbcType=INTEGER},
+      <if test="skuNum != null">
+        #{skuNum,jdbcType=INTEGER},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -88,16 +88,16 @@
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
       </if>
-      <if test="createdby != null">
-        #{createdby,jdbcType=BIGINT},
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
       </if>
-      <if test="updatedby != null">
-        #{updatedby,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    update shop_car
+    update shop_cart
     <set>
       <if test="customerId != null">
         customer_id = #{customerId,jdbcType=BIGINT},
@@ -108,8 +108,8 @@
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="prodNum != null">
-        prod_num = #{prodNum,jdbcType=INTEGER},
+      <if test="skuNum != null">
+        sku_num = #{skuNum,jdbcType=INTEGER},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -117,32 +117,32 @@
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
-      <if test="createdby != null">
-        createdby = #{createdby,jdbcType=BIGINT},
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
       </if>
-      <if test="updatedby != null">
-        updatedby = #{updatedby,jdbcType=BIGINT},
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    update shop_car
+    update shop_cart
     set customer_id = #{customerId,jdbcType=BIGINT},
       store_id = #{storeId,jdbcType=BIGINT},
       sku_code = #{skuCode,jdbcType=VARCHAR},
-      prod_num = #{prodNum,jdbcType=INTEGER},
+      sku_num = #{skuNum,jdbcType=INTEGER},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP},
-      createdby = #{createdby,jdbcType=BIGINT},
-      updatedby = #{updatedby,jdbcType=BIGINT}
+      created_by = #{createdBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
   <select id="selectShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
-    from shop_car
+    from shop_cart
     where 1 = 1
     <if test="customerId != null">
       and customer_id = #{customerId,jdbcType=BIGINT}
@@ -152,8 +152,15 @@
     </if>
     order by created
   </select>
-  <delete id="deleteShopCars" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
-    delete from shop_car
+  <delete id="deleteShopCars" parameterType="java.lang.Long">
+    delete from shop_cart
+    where 1 = 1
+    <if test="customerId != null">
+      and customer_id = #{customerId,jdbcType=BIGINT}
+    </if>
+  </delete>
+  <delete id="deleteShopCarsByStoreId" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
+    delete from shop_cart
     where 1 = 1
     <if test="customerId != null">
       and customer_id = #{customerId,jdbcType=BIGINT}
@@ -162,68 +169,17 @@
       and store_id = #{storeId,jdbcType=BIGINT}
     </if>
   </delete>
-  <insert id="insertByBatch" parameterType="java.util.List">
-    insert into shop_car
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="customerId != null">
-        customer_id,
-      </if>
-      <if test="storeId != null">
-        store_id,
-      </if>
-      <if test="skuCode != null">
-        sku_code,
-      </if>
-      <if test="prodNum != null">
-        prod_num,
-      </if>
-      <if test="created != null">
-        created,
-      </if>
-      <if test="updated != null">
-        updated,
-      </if>
-      <if test="createdby != null">
-        createdby,
-      </if>
-      <if test="updatedby != null">
-        updatedby,
-      </if>
-    </trim>
-    values
-    <foreach collection="shopCars" item="item" index="index" separator=",">
-      <trim prefix="values (" suffix=")" suffixOverrides=",">
-        <if test="item.id != null">
-          #{id,jdbcType=BIGINT},
-        </if>
-        <if test="item.customerId != null">
-          #{customerId,jdbcType=BIGINT},
-        </if>
-        <if test="item.storeId != null">
-          #{storeId,jdbcType=BIGINT},
-        </if>
-        <if test="item.skuCode != null">
-          #{skuCode,jdbcType=VARCHAR},
-        </if>
-        <if test="item.prodNum != null">
-          #{prodNum,jdbcType=INTEGER},
-        </if>
-        <if test="item.created != null">
-          #{created,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.updated != null">
-          #{updated,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.createdby != null">
-          #{createdby,jdbcType=BIGINT},
-        </if>
-        <if test="item.updatedby != null">
-          #{updatedby,jdbcType=BIGINT},
-        </if>
-      </trim>
-    </foreach>
-  </insert>
+  <select id="selectShopCarsBySkuCode" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from shop_cart where 1 = 1
+    <if test="customerId != null">
+      and customer_id = #{customerId,jdbcType=BIGINT}
+    </if>
+    <if test="storeId != null">
+      and store_id = #{storeId,jdbcType=BIGINT}
+    </if>
+    <if test="skuCode != null">
+      and sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

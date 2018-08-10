@@ -34,7 +34,9 @@ public final class BusinessCode {
      * 验证码请求时长没有超过一分钟
      */
     public static final int CODE_1012 = 1012;
-    
+    /** 该账号已存在 */
+    public static final int CODE_1013 = 1013;
+
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
     /** 新密码与原密码相同 */
@@ -58,7 +60,7 @@ public final class BusinessCode {
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
     public static final int CODE_200002 = 200002;
-    /**门店用户绑定失败*/
+    /**用户已经和其他门店绑定*/
     public static final int CODE_200003 = 200003;
     /**门店信息不存在*/
     public  static final int CODE_200004 = 200004;
@@ -70,8 +72,15 @@ public final class BusinessCode {
     public static final int CODE_200007 = 200007;
     /**更新用户状态失败*/
     public static final int CODE_200008 = 200008;
-    /**用户没有绑定的门店不存在*/
+    /**用户绑定的门店不存在*/
     public static final int CODE_200009 = 200009;
+    /**用户信息不存在*/
+    public static final int CODE_200010 = 200010;
+    /**当前用户和门店已经存在绑定关系*/
+    public static final int CODE_200011 = 200011;
+    /**门店商品skuCode无效*/
+    public static final int CODE_200012 = 200012;
+
 
 
     /** 购物车:商品下架或删除*/
@@ -115,6 +124,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单创建不支持订单类型")
     public static final int CODE_401008 = 401008;
     
+    @ApiModelProperty("订单创建优惠券使用失败")
+    public static final int CODE_401009 = 401009;
+
     @ApiModelProperty("订单号错误")
     public static final int WRONG_ORDERNO = 400000;
     
@@ -127,9 +139,9 @@ public final class BusinessCode {
     @ApiModelProperty("订单号为空")
     public static final int ORDER_NO_EMPTY = 400003;
     
-    @ApiModelProperty("订单号为空")
+    @ApiModelProperty("提货码为空")
     public static final int ORDER_PICK_UP_CODE_WRONG = 400004;
-    
+
     @ApiModelProperty("门店id为空")
     public static final int STORE_ID_EMPTY = 400005;
     
@@ -141,6 +153,18 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单提货码错误")
     public static final int WRONG_ORDER_PICKUP_CODE = 400008;
+
+    @ApiModelProperty("门店id错误")
+    public static final int WRONG_STORE_ID = 400009;
+
+    @ApiModelProperty("顾客id错误")
+    public static final int WRONG_CUSTOMER_ID = 400010;
+
+    @ApiModelProperty("订单不存在")
+    public static final int ORDER_DOES_NOT_EXIST = 400011;
+
+    @ApiModelProperty("订单正在修改中")
+    public static final int ORDER_IS_BEING_MODIFIED = 400012;
 
     /** 参数异常*/
     public static final int CODE_422001 = 422001;
@@ -161,6 +185,12 @@ public final class BusinessCode {
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
     public static final int CODE_410001 = 410001;
+    /** 订单号错误*/
+    public static final int CODE_420003 = 420003;
+    /** 取消订单状态更新不成功*/
+    public static final int CODE_420004 = 420004;
+    /** 订单取消处理用户退款不成功*/
+    public static final int CODE_422005 = 422005;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int SysRegionCODE_310001 = 310001;

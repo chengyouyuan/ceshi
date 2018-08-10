@@ -18,16 +18,14 @@ public class StoreProductManage {
     private Long id;
     @ApiModelProperty("门店id")
     private Long storeId;
-    @ApiModelProperty("商品id")
-    private String prodId;
     @ApiModelProperty("商品规则")
     private String skuAttributeOption;
     @ApiModelProperty("售卖价格")
     private BigDecimal sellMoney;
     @ApiModelProperty("是否推荐 0不推荐 1推荐")
-    private Byte recommend;
+    private Short recommend;
     @ApiModelProperty("商品状态 0下架1上架2已删除")
-    private Byte prodStatus;
+    private Short prodStatus;
     @ApiModelProperty("商品sku")
     private String prodCode;
     @ApiModelProperty("商品sku")
@@ -65,14 +63,6 @@ public class StoreProductManage {
         this.storeId = storeId;
     }
 
-    public String getProdId() {
-        return prodId;
-    }
-
-    public void setProdId(String prodId) {
-        this.prodId = prodId;
-    }
-
     public BigDecimal getSellMoney() {
         return sellMoney;
     }
@@ -81,24 +71,20 @@ public class StoreProductManage {
         this.sellMoney = sellMoney;
     }
 
-    public Byte getRecommend() {
+    public Short getRecommend() {
         return recommend;
     }
 
-    public void setRecommend(Byte recommend) {
+    public void setRecommend(Short recommend) {
         this.recommend = recommend;
     }
 
-    public Byte getProdStatus() {
+    public Short getProdStatus() {
         return prodStatus;
     }
 
-    public void setProdStatus(Byte prodStatus) {
+    public void setProdStatus(Short prodStatus) {
         this.prodStatus = prodStatus;
-    }
-
-    public String getSkuAttributeOption() {
-        return skuAttributeOption;
     }
 
     public void setSkuAttributeOption(String skuAttributeOption) {
@@ -175,5 +161,9 @@ public class StoreProductManage {
 
     public void setPutawayTime(Date putawayTime) {
         this.putawayTime = putawayTime;
+    }
+
+    public String getSkuAttributeOption() {
+        return skuAttributeOption;
     }
 }

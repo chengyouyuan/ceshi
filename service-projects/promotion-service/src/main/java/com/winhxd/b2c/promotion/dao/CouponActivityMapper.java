@@ -2,12 +2,12 @@ package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CouponActivityMapper {
     int deleteByPrimaryKey(Long id);
@@ -51,4 +51,17 @@ public interface CouponActivityMapper {
      */
     List<CouponVO> selectUnclaimedCouponList(Long storeId);
 
+    /**
+     * 根据活动获取优惠券列表
+     * @param condition
+     * @return
+     */
+    List<CouponActivityStoreVO> queryCouponByActivity(@Param("condition") CouponActivityCondition condition);
+
+    /**
+     * 根据活动获取小店信息
+     * @param condition
+     * @return
+     */
+    List<CouponActivityStoreVO> queryStoreByActivity(@Param("condition") CouponActivityCondition condition);
 }

@@ -44,6 +44,7 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 	            logger.error("StoreSubmitProductService ->saveStoreSubmitProduct查询store用户信息不存在！");
 	            throw new BusinessException(BusinessCode.CODE_200004);
 			}
+			storeSubmitProduct.setCreated(new Date());
 			storeSubmitProductMapper.insertSelective(storeSubmitProduct);
 		}else{
 			logger.error("StoreSubmitProductService ->saveStoreSubmitProduct参数异常,storeId:"+storeId+",StoreSubmitProduct:"+storeSubmitProduct);

@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
+import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -66,11 +67,14 @@ public interface CouponInvestorServiceClient {
      */
     @RequestMapping(value = "/promotion/v1/getCouponInvestorPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
+
+    @RequestMapping(value = "/promotion/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
+    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 
 @Component
 class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
-    private static final Logger logger = LoggerFactory.getLogger(CouponInvestorServiceClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(CouponInvestorServiceFallback.class);
     private Throwable throwable;
 
     @Override
@@ -82,7 +86,7 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     @Override
     public ResponseResult viewCouponInvestorDetail(String id) {
         logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+        return new ResponseResult(BusinessCode.CODE_1001);
     }
 
     @Override
@@ -94,6 +98,12 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     @Override
     public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
         logger.error("CouponInvestorServiceClient -> getCouponInvestorPage", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize) {
+        logger.error("CouponInvestorServiceClient -> findInvertorTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 

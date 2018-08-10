@@ -2,6 +2,8 @@ package com.winhxd.b2c.store.controller;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,15 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
-import com.winhxd.b2c.common.domain.store.vo.ShopCarProdVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
@@ -40,11 +49,18 @@ import com.winhxd.b2c.store.service.StoreService;
 public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private StoreService storeService;
+
     @Autowired
     private StoreProductManageService storeProductManageService;
 
     @Autowired
+    private CustomerServiceClient customerServiceClient;
+
+    @Autowired
 	private StoreProductStatisticsService storeProductStatisticsService;
+    
+    @Autowired
+    private ProductServiceClient productServiceClient;
 
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
 //    @Autowired
@@ -60,48 +76,91 @@ public class StoreServiceController implements StoreServiceClient {
             logger.error("StoreServiceController -> bindCustomer获取的门店id参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        //检查用户id和storeuserId有效
+		StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(storeUserId);
+        if(storeUserInfoVO == null){
+        	throw new BusinessException(BusinessCode.CODE_200004);
+		}
+
+		if(!checkCustomerExist(customerId)){
+        	throw new BusinessException(BusinessCode.CODE_200010);
+		}
         int status = storeService.bindCustomer(customerId,storeUserId);
-        result.setCode(status == 1 ? BusinessCode.CODE_OK : BusinessCode.CODE_200003);
+        if(status == 0){
+			result.setCode(BusinessCode.CODE_1001);
+		}else if(status == -1){
+        	result.setCode(BusinessCode.CODE_200011);
+		}else if(status == -2){
+        	result.setCode(BusinessCode.CODE_200003);
+		}
         return result;
     }
 
+    public boolean checkCustomerExist(Long customerId){
+		List<Long> ids = new ArrayList<>();
+		ids.add(customerId);
+		List<CustomerUserInfoVO>  list = customerServiceClient.findCustomerUserByIds(ids).getData();
+		if(list != null && list.size() > 0){
+			return true;
+		}
+		return false;
+	}
+
 
 	@Override
-	public ResponseResult<List<ShopCarProdVO>> findShopCarProd(List<String> skuCodes, Long storeId) {
-		ResponseResult<List<ShopCarProdVO>> result = new ResponseResult<>();
+	public ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes")List<String> skuCodes, @RequestParam("storeId")Long storeId) {
+		ResponseResult<List<ShopCartProdVO>> result = new ResponseResult<>();
 		//参数检验
 		if(storeId==null||CollectionUtils.isEmpty(skuCodes)){
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
-	          throw new BusinessException(BusinessCode.CODE_1007);
+			 result.setCode(BusinessCode.CODE_1007);
+			 result.setMessage("参数无效！");
 		}
+		String skuCodeArray[]=new String[skuCodes.size()];
+		skuCodeArray=skuCodes.toArray(skuCodeArray);
 		//查询门店下商品信息集合--判断数据权限
-		//查询有权限的数据
-		List<StoreProductManage> storeProds=this.storeProductManageService.findPutawayProdBySkuCodes(storeId, (String[])skuCodes.toArray());
+		//查询该用户sku是否上架
+		List<StoreProductManage> storeProds=this.storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
 		
 		//查询结果不为空
-		if(CollectionUtils.isEmpty(storeProds)){
-			List<String> authSkuCode=new ArrayList<>();
-			for(StoreProductManage spm:storeProds){
-				authSkuCode.add(spm.getSkuCode());
+		if(CollectionUtils.isNotEmpty(storeProds)){
+			if(storeProds.size()!=skuCodes.size()){
+				result.setCode(BusinessCode.CODE_200012);
+				result.setMessage("部分skuCode已经下架");
+				return result;
+			}
+			
+			ProductCondition prodCondition=new ProductCondition();
+			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+			prodCondition.setProductSkus(skuCodes);
+			
+			ResponseResult<List<ProductSkuVO>> prodResult=productServiceClient.getProductSkus(prodCondition);
+			if(prodResult==null||prodResult.getCode()!=0){
+				result.setCode(BusinessCode.CODE_1001);
+				result.setMessage("查询商品信息异常！");
+				return result;
 			}
 			//调用商品feigin查询商品基本信息
-			List<ProductSkuVO> productSkuList=null;
-			//productServiceClient.
-			List<ShopCarProdVO> shopCarProdList=new ArrayList<>();
-			if(CollectionUtils.isEmpty(productSkuList)){
-				 logger.error("StoreServiceController -> findShopCarProd 调用ProductServiceClient 异常！");
-		         throw new BusinessException(BusinessCode.CODE_1001);
+			List<ProductSkuVO> prodList=prodResult.getData();
+			if(prodList==null||(prodList.size()!=skuCodes.size())){
+				result.setCode(BusinessCode.CODE_200012);
+				result.setMessage("部分skuCode失效");
+				return result;
 			}
-			for(int i=0;i<productSkuList.size();i++){
-				ShopCarProdVO spVO=new ShopCarProdVO();
+			
+			//productServiceClient.
+			List<ShopCartProdVO> shopCarProdList=new ArrayList<>();
+			for(int i=0;i<prodList.size();i++){
+				ShopCartProdVO spVO=new ShopCartProdVO();
 				//sku信息
-				ProductSkuVO current=productSkuList.get(i);
+				ProductSkuVO current=prodList.get(i);
 				//门店与sku关系
 				StoreProductManage spManage=storeProds.get(i);
 				spVO.setSkuCode(current.getSkuCode());
 				spVO.setProdImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());
 				spVO.setSellMoney(spManage.getSellMoney());
+				spVO.setProdName(current.getProdName()==null? "":current.getProdName());
 				shopCarProdList.add(spVO);
 			}
 			
@@ -125,13 +184,13 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfo> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
-    	ResponseResult<StoreUserInfo> responseResult = new ResponseResult<>();
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
+    	ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {
 			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
 			throw new BusinessException(BusinessCode.CODE_200001);
 		}
-		StoreUserInfo storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
+		StoreUserInfoVO storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
 		if(storeInfo == null){
 			responseResult.setCode(BusinessCode.CODE_200009);
 		}
@@ -181,9 +240,7 @@ public class StoreServiceController implements StoreServiceClient {
 		//未设置价格
 		condition.setPriceStatus((byte)0);
 		//上架商品
-		List<Byte> prodStatus=new ArrayList<>();
-		prodStatus.add((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
-		condition.setProdStatus(prodStatus);
+		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
 		int count=storeProductManageService.countSkusByConditon(condition);
 		//设置是否有未设置价格的商品
 		if(count>0){
@@ -195,6 +252,31 @@ public class StoreServiceController implements StoreServiceClient {
 		vo.setNoSetPriceCount(count);
 		
 		result.setData(vo);
+		return result;
+	}
+
+
+	@Override
+	public ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions) {
+		ResponseResult<Void> result=new ResponseResult<>();
+		if(conditions==null||conditions.size()<=0){
+			result.setCode(BusinessCode.CODE_1007);
+			result.setMessage("参数异常！");
+		}
+		List<StoreProductStatistics> beanList=new ArrayList<>();
+		
+		for(StoreProductStatisticsCondition condition:conditions){
+			StoreProductStatistics bean=new StoreProductStatistics();
+			if(condition.getStoreId()==null||StringUtils.isEmpty(condition.getSkuCode())){
+				result.setCode(BusinessCode.CODE_1007);
+				result.setMessage("参数异常！");
+				return result;
+			}
+			BeanUtils.copyProperties(condition, bean);
+			bean.setCreated(new Date());
+			beanList.add(bean);
+		}
+		storeProductStatisticsService.bathSaveStoreProductStatistics(beanList);
 		return result;
 	}
 

@@ -167,7 +167,7 @@ public class OrderQueryAspect {
                                 for (OrderItemVO orderItemVO : orderItemVOS) {
                                     ProductSkuVO product = productListMap.get(orderItemVO.getSkuCode());
                                     if (null != product) {
-                                        orderItemVO.setProductName(product.getSkuName());
+                                        orderItemVO.setProductName(product.getSkuCode());
                                         orderItemVO.setProductPictureUrl(product.getSkuImage());
                                     }
                                 }
@@ -220,7 +220,7 @@ public class OrderQueryAspect {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
                             for (StoreUserInfoVO storeUserInfoVO : storeInfoList) {
-                                if (storeUserInfoVO.getStoreId().equals(field.get(obj))) {
+                                if (storeUserInfoVO.getId().equals(field.get(obj))) {
                                     assembleInfos(obj, STORE_MOBILE, storeUserInfoVO.getStoreMobile());
                                 }
                             }

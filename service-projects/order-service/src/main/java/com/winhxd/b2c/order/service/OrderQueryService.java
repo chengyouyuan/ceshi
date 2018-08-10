@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondi
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -93,4 +94,13 @@ public interface OrderQueryService {
      * @return
      */
     PagedList<OrderInfoDetailVO> listOrder4Store(OrderQuery4StoreCondition condition, Long storeId);
+
+    /**
+     * 根据门店Id获取各状态订单数量
+     * @author wangbin
+     * @date  2018年8月9日 上午11:27:52
+     * @param storeCustomerId
+     * @return
+     */
+    OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
 }

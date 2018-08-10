@@ -24,16 +24,17 @@
     <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
     <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
     <result column="source" property="source" jdbcType="CHAR" />
-    <result column="store_status" property="storeStatus" jdbcType="TINYINT" />
+    <result column="store_status" property="storeStatus" jdbcType="SMALLINT" />
+     <result column="token" property="token" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
     shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, open_id, 
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
-    store_status
+    store_status,token
   </sql>
- <resultMap id="storeUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO" extends="BaseResultMap"/>
-  <select id="selectStoreUserByIds" resultMap="storeUserInfoVO1">
+
+  <select id="selectStoreUserByIds" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from store_user_info where id in
     <foreach collection="ids" item="id" separator="," open="(" close=")">
       #{id}
@@ -97,7 +98,7 @@
       lat, lon, open_id, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
-      store_status)
+      store_status,token)
     values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeCustomerId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
@@ -105,9 +106,9 @@
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
-      #{storeStatus,jdbcType=TINYINT})
+      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" >
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo" useGeneratedKeys="true" keyProperty="id">
     insert into store_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -179,6 +180,9 @@
       <if test="storeStatus != null" >
         store_status,
       </if>
+      <if test="token != null" >
+        token,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -248,7 +252,10 @@
         #{source,jdbcType=CHAR},
       </if>
       <if test="storeStatus != null" >
-        #{storeStatus,jdbcType=TINYINT},
+        #{storeStatus,jdbcType=SMALLINT},
+      </if>
+       <if test="token != null" >
+        #{token,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -319,7 +326,10 @@
         source = #{source,jdbcType=CHAR},
       </if>
       <if test="storeStatus != null" >
-        store_status = #{storeStatus,jdbcType=TINYINT},
+        store_status = #{storeStatus,jdbcType=SMALLINT},
+      </if>
+        <if test="token != null" >
+        token = #{token,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -347,7 +357,8 @@
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       source = #{source,jdbcType=CHAR},
-      store_status = #{storeStatus,jdbcType=TINYINT}
+      store_status = #{storeStatus,jdbcType=SMALLINT},
+      token = #{token,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -355,7 +366,7 @@
     select
     <include refid="Base_Column_List" />
     from store_user_info
-    where storeCustomerId = #{storeCustomerId,jdbcType=BIGINT}
+    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
   </select>
 
 </mapper>

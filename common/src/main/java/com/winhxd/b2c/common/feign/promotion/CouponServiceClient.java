@@ -1,6 +1,9 @@
 package com.winhxd.b2c.common.feign.promotion;
 
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,6 +20,8 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 
 import feign.hystrix.FallbackFactory;
 
+import java.util.List;
+
 /**
  * @author liuhanning
  * @date  2018年8月6日 下午5:21:22
@@ -26,18 +31,28 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponServiceFallback.class)
 public interface CouponServiceClient {
 	
-	@RequestMapping(value = "/coupon/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
+	@RequestMapping(value = "/promotion/v1/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
 	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId);
 
-    @RequestMapping(value = "/coupon/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUseCoupon(@RequestBody CouponCondition condition);
+    @RequestMapping(value = "/promotion/v1/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
 
-    @RequestMapping(value = "/coupon/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult orderUntreadCoupon(@RequestBody CouponCondition condition);
+    @RequestMapping(value = "/promotion/v1/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Boolean> orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition);
 
-    @RequestMapping(value = "/coupon/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult revokeCoupon(@RequestBody CouponCondition condition);
-	
+    @RequestMapping(value = "/promotion/v1/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Boolean> revokeCoupon(@RequestBody RevokeCouponCodition condition);
+
+    @RequestMapping(value = "/promotion/v1/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
+
+    @RequestMapping(value = "/promotion/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition);
+
+    @RequestMapping(value = "/promotion/v1/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition);
+
+
 }
 
 
@@ -63,20 +78,38 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
 	}
 
     @Override
-    public ResponseResult orderUseCoupon(CouponCondition condition) {
+    public ResponseResult orderUseCoupon(OrderUseCouponCondition condition) {
         logger.error("CouponServiceClient -> orderUseCoupon", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult orderUntreadCoupon(CouponCondition condition) {
+    public ResponseResult orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         logger.error("CouponServiceClient -> orderUntreadCoupon", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult revokeCoupon(CouponCondition condition) {
+    public ResponseResult revokeCoupon(RevokeCouponCodition condition) {
         logger.error("CouponServiceClient -> revokeCoupon", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult couponListByOrder(OrderCouponCondition couponCondition) {
+        logger.error("CouponServiceClient -> couponListByOrder", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
+        logger.error("CouponServiceClient -> availableCouponListByOrder", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+        logger.error("CouponServiceClient -> couponAmountCompute", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 

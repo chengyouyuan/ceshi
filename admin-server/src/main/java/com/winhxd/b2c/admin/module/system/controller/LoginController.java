@@ -184,7 +184,7 @@ public class LoginController {
         return result;
     }
 
-    @ApiOperation(value = "获取菜单")
+    @ApiOperation(value = "获取菜单(样本功能)")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),

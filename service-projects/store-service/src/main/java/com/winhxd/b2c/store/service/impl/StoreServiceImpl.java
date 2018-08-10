@@ -14,6 +14,8 @@ import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ import java.util.stream.Collectors;
  */
 @Service
 public class StoreServiceImpl implements StoreService {
+
+    private Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
+
     @Autowired
     private CustomerStoreRelationMapper customerStoreRelationMapper;
     @Autowired
@@ -41,8 +46,13 @@ public class StoreServiceImpl implements StoreService {
         record.setCustomerId(customerId);
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
         if (relations != null && relations.size() > 0) {
-            //当前门店已经存在绑定关系不能再进行绑定
-            return 0;
+            //当前用户已经存在绑定关系
+            record.setStoreUserId(storeUserId);
+            List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
+            if(list != null && list.size() > 0){
+                return -1;
+            }
+            return -2;
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
@@ -53,8 +63,11 @@ public class StoreServiceImpl implements StoreService {
     public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
         StoreUserInfo info =  storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         StoreUserInfoVO infoVO1 = new StoreUserInfoVO();
-        BeanUtils.copyProperties(info,infoVO1);
-        return infoVO1;
+        if(info != null) {
+            BeanUtils.copyProperties(info, infoVO1);
+            return infoVO1;
+        }
+        return null;
 
     }
 
@@ -115,8 +128,14 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreUserInfo findStoreUserInfoByCustomerId(Long customerUserId) {
-        return storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
+    public StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId) {
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
+        if(storeUserInfo == null){
+            return null;
+        }
+        StoreUserInfoVO infoVo = new StoreUserInfoVO();
+        BeanUtils.copyProperties(storeUserInfo,infoVo);
+        return infoVo;
     }
 
     @Override
@@ -129,9 +148,32 @@ public class StoreServiceImpl implements StoreService {
         if(ids == null || ids.size() == 0){
             return null;
         }
-        List<StoreUserInfoVO> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
-        return userInfos;
+        List<StoreUserInfo> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
+        List<StoreUserInfoVO> list = new ArrayList<>();
+        if(userInfos != null && userInfos.size() > 0){
+        for(StoreUserInfo info:userInfos){
+            StoreUserInfoVO infoVO = new StoreUserInfoVO();
+            BeanUtils.copyProperties(info,infoVO);
+            list.add(infoVO);
+            }
+        }
+        return list;
 
+    }
+
+    @Override
+    public BackStageStoreVO findByIdForBackStage(Long id) {
+        BackStageStoreVO backStageStoreVO = new BackStageStoreVO();
+        StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
+        //查询省市县五级信息
+        SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
+        if(sysRegion != null) {
+            BeanUtils.copyProperties(sysRegion, backStageStoreVO);
+        } else {
+            logger.error("门店详细信息查询，未查询到该门店的行政区域！区域编码为：{}", storeUserInfo.getStoreRegionCode());
+        }
+        return backStageStoreVO;
     }
 
     @Override

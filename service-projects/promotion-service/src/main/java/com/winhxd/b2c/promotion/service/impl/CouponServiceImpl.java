@@ -506,7 +506,11 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean checkCouponStatus(CouponCheckStatusCondition condition) {
-
-        return null;
+        int count = couponTemplateSendMapper.checkCouponStatus(condition);
+        if(count > 0){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

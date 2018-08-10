@@ -168,7 +168,6 @@ public class CouponController implements CouponServiceClient{
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		try {
 			Boolean flag = couponService.checkCouponStatus(condition);
-			//返回对象
 			result.setData(flag);
 		} catch (Exception e) {
 			LOGGER.error("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--异常" + e, e);

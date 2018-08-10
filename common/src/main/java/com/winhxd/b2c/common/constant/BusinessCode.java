@@ -26,7 +26,7 @@ public final class BusinessCode {
     public static final int CODE_1008 = 1008;
     /** 未定义的API */
     public static final int CODE_1009 = 1009;
-    /** 改微信号已绑定过账号 */
+    /** 该微信号已绑定过账号 */
     public static final int CODE_1010 = 1010;
     /** 微信快捷登录绑定账号无效 */
     public static final int CODE_1011 = 1011;
@@ -38,6 +38,8 @@ public final class BusinessCode {
     public static final int CODE_1013 = 1013;
     /**token参数为空*/
     public static final int CODE_1014 = 1014;
+    /**请求超时*/
+    public static final int CODE_1015 = 1015;
 
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;

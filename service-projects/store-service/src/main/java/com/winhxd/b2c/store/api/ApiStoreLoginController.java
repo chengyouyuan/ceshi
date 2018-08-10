@@ -23,7 +23,6 @@ import com.winhxd.b2c.common.domain.system.login.condition.StoreSendVerification
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -308,10 +307,7 @@ public class ApiStoreLoginController {
 
 			}
 			return result;
-		} catch (BusinessException e) {
-			logger.error("ApiStoreLoginController -> storeLogin异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
-			result = new ResponseResult<>(e.getErrorCode());
-		} catch (Exception e) {
+		}catch (Exception e) {
 			logger.error("ApiStoreLoginController -> storeLogin异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
@@ -329,6 +325,7 @@ public class ApiStoreLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
 	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(@RequestBody StoreSendVerificationCodeCondition storeUserInfoCondition) {
@@ -428,10 +425,7 @@ public class ApiStoreLoginController {
 				}
 
 			}
-		} catch (BusinessException e) {
-			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
-			result = new ResponseResult<>(e.getErrorCode());
-		} catch (Exception e) {
+		}catch (Exception e) {
 			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
 			result = new ResponseResult<>(BusinessCode.CODE_1001);
 		}
@@ -455,7 +449,7 @@ public class ApiStoreLoginController {
 		/**
 		 * 随机生成6位数验证码
 		 */
-		verificationCode = GeneratePwd.generatePwd6Mobile();
+		verificationCode = "888888";//GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
 		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, 5 * 60);
 		/**

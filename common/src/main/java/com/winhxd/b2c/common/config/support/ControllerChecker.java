@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class ControllerChecker implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-       /* Pattern apiPath = Pattern.compile("^/api-[a-zA-Z]+/([a-zA-Z]+)(/security)?/(\\d+)/v\\d+/\\w+.*");
+        Pattern apiPath = Pattern.compile("^/api-[a-zA-Z]+/([a-zA-Z]+)(/security)?/(\\d+)/v\\d+/\\w+.*");
         Pattern apiClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.api\\.Api\\w+Controller$");
         Pattern servicePath = Pattern.compile("^/([a-zA-Z]+)/(\\d+)/v\\d+/\\w+.*");
         Pattern serviceClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.controller\\.\\w+Controller$");
@@ -76,6 +76,6 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                             + "================================Controller定义不规范================================"
                             + StringUtils.repeat(System.lineSeparator(), 6)
             );
-        }*/
+        }
     }
 }

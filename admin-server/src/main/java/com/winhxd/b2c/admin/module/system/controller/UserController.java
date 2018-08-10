@@ -101,6 +101,12 @@ public class UserController {
     public ResponseResult edit(@RequestBody SysUserDTO sysUserDTO) {
         logger.info("{} - 编辑用户, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
 
+        SysUser existsSysUser = userServiceClient.getByAccount(sysUserDTO.getAccount()).getData();
+        if(null != existsSysUser && !existsSysUser.getId().equals(sysUserDTO.getId())){
+            logger.warn("{} - 编辑用户失败，账号已存在, 参数：sysUser={}", MODULE_NAME, sysUserDTO);
+            return new ResponseResult(BusinessCode.CODE_1013);
+        }
+
         UserInfo userInfo = UserManager.getCurrentUser();
         Date date = Calendar.getInstance().getTime();
 

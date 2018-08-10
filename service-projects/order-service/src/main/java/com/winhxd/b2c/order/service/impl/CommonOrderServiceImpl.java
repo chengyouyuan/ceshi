@@ -131,7 +131,7 @@ public class CommonOrderServiceImpl implements OrderService {
         getOrderHandler(orderInfo.getValuationType()).orderInfoAfterCreateProcess(orderInfo);
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
-        //注册订单创建成功事物提交后相关事件
+        //注册订单创建成功事务提交后相关事件
         registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo), new SubmitFailureProcessRunnerble(orderInfo, orderCreateCondition.getCouponIds()));
         return orderInfo.getOrderNo();
     }
@@ -168,7 +168,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo={}，支付通知处理结束.", orderNo);
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
-        //订单支付成功事物提交后相关事件
+        //订单支付成功事务提交后相关事件
         registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
     }
@@ -574,7 +574,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
-     * 注册事物提交后相关操作
+     * 注册事务提交后相关操作
      *
      * @param orderInfo
      * @author wangbin

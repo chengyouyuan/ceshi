@@ -6,9 +6,9 @@ import com.winhxd.b2c.message.service.WechatShareService;
 import com.winhxd.b2c.message.utils.HttpClientUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 微信分享业务实现类
@@ -100,20 +102,21 @@ public class WechatShareServiceImpl implements WechatShareService {
         String url = codeUrl+"?access_token="+token;
         CloseableHttpClient client = httpClientUtil.getHttpClient();
         HttpPost httpPost = new HttpPost(url);
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("scene","storeUserId="+storeUserId));
-        params.add(new BasicNameValuePair("page",pageUrl));
-        params.add(new BasicNameValuePair("width",String.valueOf(width)));
-        params.add(new BasicNameValuePair("auto_color",autoColor?"true":"false"));
-        params.add(new BasicNameValuePair("is_hyaline",isHyaline?"true":"false"));
+        httpPost.addHeader("Content-Type", "application/json");
+        Map params = new HashMap<>();
+        params.put("scene","storeUserId="+storeUserId);
+        params.put("path",pageUrl);
+        params.put("width",width);
+        params.put("auto_color",false);
+        Map<String,Object> line_color = new HashMap<>();
+        line_color.put("r", 0);
+        line_color.put("g", 0);
+        line_color.put("b", 0);
+        params.put("line_color", line_color);
         CloseableHttpResponse response = null;
         try {
-            // 构造一个form表单式的实体
-            if (params != null & params.size() > 0){
-                UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(params);
-                // 将请求实体设置到httpPost对象中
-                httpPost.setEntity(formEntity);
-            }
+            StringEntity entity = new StringEntity(objectMapper.writeValueAsString(params),"UTF-8");
+            httpPost.setEntity(entity);
             response = client.execute(httpPost);
             if(response.getStatusLine().getStatusCode() == 200){
                 return  EntityUtils.toByteArray(response.getEntity());
@@ -132,7 +135,6 @@ public class WechatShareServiceImpl implements WechatShareService {
         }
         return null;
     }
-
 
     /**
      * @author chengyy

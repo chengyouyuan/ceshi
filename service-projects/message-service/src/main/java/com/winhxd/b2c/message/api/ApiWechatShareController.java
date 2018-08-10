@@ -40,6 +40,7 @@ public class ApiWechatShareController {
         byte[] data = wechatShareService.generateQRCodePic(storeUserId);
         if(data != null && data.length > 0){
             response.setContentType("image/png");
+            response.addHeader("Content-Disposition", "attachment;filename=code.png");
             try {
                 OutputStream  out = response.getOutputStream();
                 out.write(data);

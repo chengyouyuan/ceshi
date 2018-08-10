@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@MapperScan({"com.winhxd.b2c.system.*.dao","com.winhxd.b2c.system.*.*.dao"})
+@MapperScan({"com.winhxd.b2c.system.*.dao","com.winhxd.b2c.system.*.*.dao","com.winhxd.b2c.system.dao"})
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableFeignClients(basePackages = "com.winhxd.b2c.common.feign")
 @Import(MicroServiceConfig.class)

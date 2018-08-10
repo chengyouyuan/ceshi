@@ -33,7 +33,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/6
      */
-    @RequestMapping(value = "/promotion/v1/queryCouponActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/529/v1/queryCouponActivity/", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition);
     /**
      *
@@ -43,7 +43,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/6
      */
-    @RequestMapping(value = "/promotion/v1/addCouponActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/530/v1/addCouponActivity/", method = RequestMethod.POST)
     public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
 
     /**
@@ -54,7 +54,7 @@ public interface CouponActivityServiceClient {
      *@User     sjx
      *@Date   2018/8/8
      */
-    @RequestMapping(value = "/promotion/v1/getCouponActivityById/", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/531/v1/getCouponActivityById/", method = RequestMethod.GET)
     public ResponseResult getCouponActivityById(@RequestParam("id") String id);
     /**
      *
@@ -64,7 +64,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/7
      */
-    @RequestMapping(value = "/promotion/v1/updateCouponActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/532/v1/updateCouponActivity/", method = RequestMethod.POST)
     public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition);
     /**
      *
@@ -74,7 +74,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/8
      */
-    @RequestMapping(value = "/promotion/v1/deleteCouponActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/533/v1/deleteCouponActivity/", method = RequestMethod.POST)
     public ResponseResult deleteCouponActivity(@RequestParam("id") String id);
     /**
      *
@@ -84,7 +84,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @RequestMapping(value = "/promotion/v1/revocationActivityCoupon/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/534/v1/revocationActivityCoupon/", method = RequestMethod.POST)
     public ResponseResult revocationActivityCoupon(@RequestParam("id") String id);
 
     /**
@@ -95,7 +95,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @RequestMapping(value = "/promotion/v1/updateCouponActivityStatus/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/535/v1/updateCouponActivityStatus/", method = RequestMethod.POST)
     public ResponseResult updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition);
     /**
      *
@@ -105,7 +105,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @RequestMapping(value = "/promotion/v1/queryCouponByActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/536/v1/queryCouponByActivity/", method = RequestMethod.POST)
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition);
     /**
      *
@@ -115,7 +115,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @RequestMapping(value = "/promotion/v1/queryStoreByActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/537/v1/queryStoreByActivity/", method = RequestMethod.POST)
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition);
 
 }

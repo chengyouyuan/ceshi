@@ -52,7 +52,7 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("获取优惠券活动列表")
-	@PostMapping(value = "/v1/queryCouponActivity")
+	@PostMapping(value = "/529/v1/queryCouponActivity")
 	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
@@ -65,11 +65,8 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("添加优惠券活动")
-	@PostMapping(value = "/v1/addCouponActivity")
+	@PostMapping(value = "/530/v1/addCouponActivity")
 	public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.addCouponActivity(condition);
 	}
 
@@ -82,11 +79,8 @@ public class CouponController {
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("根据id 查询优惠券活动")
-	@PostMapping(value = "/v1/getCouponActivityById")
+	@PostMapping(value = "/531/v1/getCouponActivityById")
 	public ResponseResult getCouponActivityById(@RequestParam("id") String id){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.getCouponActivityById(id);
 	}
 	/**
@@ -98,11 +92,8 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("编辑优惠券活动")
-	@PostMapping(value = "/v1/updateCouponActivity")
+	@PostMapping(value = "/532/v1/updateCouponActivity")
 	public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.updateCouponActivity(condition);
 	}
 	/**
@@ -114,11 +105,8 @@ public class CouponController {
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("删除优惠券活动")
-	@PostMapping(value = "/v1/deleteCouponActivity")
+	@PostMapping(value = "/533/v1/deleteCouponActivity")
 	public ResponseResult deleteCouponActivity(@RequestParam("id") String id){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.deleteCouponActivity(id);
 	}
 	/**
@@ -130,11 +118,8 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("撤回活动优惠券")
-	@PostMapping(value = "/v1/revocationActivityCoupon")
+	@PostMapping(value = "/534/v1/revocationActivityCoupon")
 	public ResponseResult revocationActivityCoupon(@RequestParam("id") String id){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.revocationActivityCoupon(id);
 	}
 	/**
@@ -146,11 +131,8 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("停用/开启活动")
-	@PostMapping(value = "/v1/updateCouponActivityStatus")
+	@PostMapping(value = "/535/v1/updateCouponActivityStatus")
 	public ResponseResult updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.updateCouponActivityStatus(condition);
 	}
 	/**
@@ -162,11 +144,8 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("根据活动获取优惠券列表")
-	@PostMapping(value = "/v1/queryCouponByActivity")
+	@PostMapping(value = "/536/v1/queryCouponByActivity")
 	public ResponseResult queryCouponByActivity(@RequestBody CouponActivityCondition condition){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.queryCouponByActivity(condition);
 	}
 	/**
@@ -178,11 +157,8 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("根据活动获取小店信息")
-	@PostMapping(value = "/v1/queryStoreByActivity")
+	@PostMapping(value = "/537/v1/queryStoreByActivity")
 	public ResponseResult queryStoreByActivity(@RequestBody CouponActivityCondition condition){
-		/**
-		 * 参数验证
-		 */
 		return couponActivityServiceClient.queryStoreByActivity(condition);
 	}
 

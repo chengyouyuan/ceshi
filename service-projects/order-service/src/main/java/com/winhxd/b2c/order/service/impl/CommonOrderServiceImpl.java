@@ -74,6 +74,8 @@ import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.dao.OrderItemMapper;
@@ -516,6 +518,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @StringMessageListener(value=MQHandler.ORDER_RECEIVE_TIMEOUT_DELAYED_HANDLER)
     public void orderReceiveTimeOut(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);

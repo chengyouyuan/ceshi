@@ -6,8 +6,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -54,6 +56,9 @@ import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
@@ -63,6 +68,7 @@ import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -108,6 +114,8 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Autowired
     private CustomerServiceClient customerServiceclient;
+    
+    private ProductServiceClient productServiceClient;
 
     private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("order-thread-pool-%d").build();
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY),
@@ -584,7 +592,8 @@ public class CommonOrderServiceImpl implements OrderService {
         } else {
             last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
         }
-        String msg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+        String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+        String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
         registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo), null);
         logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
@@ -676,16 +685,32 @@ public class CommonOrderServiceImpl implements OrderService {
             orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney());
             return;
         }
-        //TODO 调用促销系统
-        CouponPreAmountCondition couponPreAmountCondition = assembleCouponPreAmountCondition(orderInfo);
-        couponPreAmountCondition.setSendIds(Arrays.asList(couponIds));
-        ResponseResult<CouponDiscountVO> ret = couponServiceClient.couponDiscountAmount(couponPreAmountCondition);
-        orderInfo.setCouponHxdMoney(BigDecimal.ZERO);
+        BigDecimal couponDiscountAmount = getCouponDiscountFromPromotionSystem(orderInfo, couponIds);
+        orderInfo.setCouponHxdMoney(couponDiscountAmount);
         orderInfo.setCouponBrandMoney(BigDecimal.ZERO);
         orderInfo.setRandomReductionMoney(BigDecimal.ZERO);
         orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney()).subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney()));
         //通知促销系统优惠券使用情况
         notifyPromotionSystem(orderInfo, couponIds);
+    }
+
+
+    public BigDecimal getCouponDiscountFromPromotionSystem(OrderInfo orderInfo, Long[] couponIds) {
+        CouponPreAmountCondition couponPreAmountCondition = assembleCouponPreAmountCondition(orderInfo);
+        couponPreAmountCondition.setSendIds(Arrays.asList(couponIds));
+        ResponseResult<CouponDiscountVO> ret = couponServiceClient.couponDiscountAmount(couponPreAmountCondition);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            //优惠券优惠金额计算失败
+            logger.error("订单：{}优惠券优惠金额接口调用失败:code={}，创建订单异常！~", orderInfo.getOrderNo(), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401009); 
+        }
+        BigDecimal couponDiscountAmount = ret.getData().getDiscountAmount();
+        if (couponDiscountAmount == null) {
+            logger.error("订单：{}优惠券优惠金额接口返回数据为空:couponDiscountAmount={}，创建订单异常！~", orderInfo.getOrderNo(), couponDiscountAmount);
+            throw new BusinessException(BusinessCode.CODE_401009); 
+        }
+        logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={}", orderInfo.getOrderNo(), couponDiscountAmount);
+        return couponDiscountAmount;
     }
 
 
@@ -707,18 +732,32 @@ public class CommonOrderServiceImpl implements OrderService {
     private CouponPreAmountCondition assembleCouponPreAmountCondition(OrderInfo orderInfo) {
         List<CouponProductCondition> couponProductConditions = new ArrayList<>();
         List<String> skuCodes = new ArrayList<>();
-        for (Iterator iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext();) {
-            OrderItem orderItem = (OrderItem) iterator.next();
+        for (Iterator<OrderItem> iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext();) {
+            OrderItem orderItem = iterator.next();
             CouponProductCondition couponProductCondition = new CouponProductCondition();
-            couponProductCondition.setNum(orderItem.getAmount().toString());
-            couponProductCondition.setPrice(orderItem.getPrice().toString());
+            couponProductCondition.setNum(orderItem.getAmount());
+            couponProductCondition.setPrice(orderItem.getPrice());
             couponProductCondition.setSkuCode(orderItem.getSkuCode());
             skuCodes.add(orderItem.getSkuCode());
         }
-        //TODO 查询品牌信息
+        ProductCondition productCondition = new ProductCondition();
+        productCondition.setProductSkus(skuCodes);
+        productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            // 优惠券使用失败
+            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
+                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        Map<String, String> skuBrandMap = new HashMap<>();
+        for (Iterator<ProductSkuVO> iterator = ret.getData().iterator(); iterator.hasNext();) {
+            ProductSkuVO productSkuVO = iterator.next();
+            skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO.getBrandCode());
+        }
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext();) {
             CouponProductCondition couponProductCondition = iterator.next();
-            couponProductCondition.setBrandCode("");
+            couponProductCondition.setBrandCode(skuBrandMap.get(couponProductCondition.getSkuCode()));
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);

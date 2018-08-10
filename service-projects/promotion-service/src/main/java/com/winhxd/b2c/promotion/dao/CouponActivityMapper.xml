@@ -300,6 +300,45 @@
     AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>
+  <select id="getStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+    SELECT
+    cat.coupon_activity_id activityId,
+    cat.template_id templateId,
+    ct.STATUS,
+    ct.reason,
+    ct.pay_type payType,
+    ct.cal_type calType,
+    cg.type type,
+    cgd.reduced_type reducedType,
+    cgd.reduced_amt reducedAmt,
+    cgd.discounted_amt discountedAmt,
+    cgd.discounted discounted,
+    cgd.discounted_max_amt discountedMaxAmt,
+    cap.apply_rule_type applyRuleType,
+    cap.id applyId,
+    ca.coupon_type couponType,
+    ca.activity_start activityStart,
+    ca.activity_end activityEnd,
+    cat.coupon_num_type couponNumType,
+    cat.coupon_num couponNum,
+    cat.customer_voucher_limit_type limitType,
+    cat.customer_voucher_limit_num limitNum
+    FROM
+    coupon_activity ca
+    JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id
+    JOIN coupon_activity_store_customer cas ON cas.coupon_activity_template_id = cat.id
+    JOIN coupon_template ct ON ct.id = cat.template_id
+    JOIN coupon_grade cg ON ct.grade_id = cg.id
+    JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
+    JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
+    WHERE
+    ca.type = 1
+    AND ca.activity_status = 1
+    AND ca. STATUS = 1
+    AND ca.activity_start &lt;=  NOW()
+    AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
+    <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from coupon_activity
     where id = #{id,jdbcType=BIGINT}

@@ -95,4 +95,11 @@ public interface CouponService {
      * @return
      */
     Boolean checkCouponStatus(CouponCheckStatusCondition condition);
+
+    /**
+     * 用户查询门店优惠券列表
+     * @return
+     */
+    List<CouponVO> getStoreCouponList();
+
 }

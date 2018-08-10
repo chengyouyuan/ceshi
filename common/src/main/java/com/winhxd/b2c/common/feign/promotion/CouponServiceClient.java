@@ -32,7 +32,7 @@ import java.util.List;
 public interface CouponServiceClient {
 	
 	@RequestMapping(value = "/promotion/538/v1/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
-	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("storeId") Long storeId,@RequestParam("customerId") Long customerId);
+	ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,@RequestParam("customerId") Long customerId);
 
     @RequestMapping(value = "/promotion/539/v1/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition);

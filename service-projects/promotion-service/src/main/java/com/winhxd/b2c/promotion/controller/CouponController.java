@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -38,7 +39,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	public ResponseResult<String> getCouponNumsByCustomerForStore(@Param("storeId") Long storeId, @Param("customerId")Long customerId) {
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId, @RequestParam("customerId")Long customerId) {
 		ResponseResult<String> result= couponService.getCouponNumsByCustomerForStore(customerId);
 		return result;
 	}

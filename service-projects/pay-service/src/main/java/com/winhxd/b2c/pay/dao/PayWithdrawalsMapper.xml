@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayWithdrawalsMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
+    <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+    <result column="real_fee" jdbcType="DECIMAL" property="realFee" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
+    <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
+    <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
+    <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="payment_account" jdbcType="CHAR" property="paymentAccount" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_id, withdrawals_no, total_fee, real_fee, cmms_amt, rate, audit_status, 
+    audit_desc, flow_direction_type, flow_direction_name, name, mobile, payment_account, 
+    created, created_by, created_by_name, updated_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_withdrawals
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_withdrawals
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    insert into pay_withdrawals (id, store_id, withdrawals_no, 
+      total_fee, real_fee, cmms_amt, 
+      rate, audit_status, audit_desc, 
+      flow_direction_type, flow_direction_name, 
+      name, mobile, payment_account, 
+      created, created_by, created_by_name, 
+      updated_by, updated_by_name, updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{withdrawalsNo,jdbcType=CHAR}, 
+      #{totalFee,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, #{cmmsAmt,jdbcType=DECIMAL}, 
+      #{rate,jdbcType=DECIMAL}, #{auditStatus,jdbcType=SMALLINT}, #{auditDesc,jdbcType=VARCHAR}, 
+      #{flowDirectionType,jdbcType=SMALLINT}, #{flowDirectionName,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{paymentAccount,jdbcType=CHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    insert into pay_withdrawals
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="withdrawalsNo != null">
+        withdrawals_no,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="realFee != null">
+        real_fee,
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="auditStatus != null">
+        audit_status,
+      </if>
+      <if test="auditDesc != null">
+        audit_desc,
+      </if>
+      <if test="flowDirectionType != null">
+        flow_direction_type,
+      </if>
+      <if test="flowDirectionName != null">
+        flow_direction_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="paymentAccount != null">
+        payment_account,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="withdrawalsNo != null">
+        #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="realFee != null">
+        #{realFee,jdbcType=DECIMAL},
+      </if>
+      <if test="cmmsAmt != null">
+        #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null">
+        #{auditStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="auditDesc != null">
+        #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="flowDirectionType != null">
+        #{flowDirectionType,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionName != null">
+        #{flowDirectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentAccount != null">
+        #{paymentAccount,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    update pay_withdrawals
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="withdrawalsNo != null">
+        withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="realFee != null">
+        real_fee = #{realFee,jdbcType=DECIMAL},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null">
+        audit_status = #{auditStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="auditDesc != null">
+        audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="flowDirectionType != null">
+        flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionName != null">
+        flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentAccount != null">
+        payment_account = #{paymentAccount,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    update pay_withdrawals
+    set store_id = #{storeId,jdbcType=BIGINT},
+      withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      total_fee = #{totalFee,jdbcType=DECIMAL},
+      real_fee = #{realFee,jdbcType=DECIMAL},
+      cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      rate = #{rate,jdbcType=DECIMAL},
+      audit_status = #{auditStatus,jdbcType=SMALLINT},
+      audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
+      flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      payment_account = #{paymentAccount,jdbcType=CHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

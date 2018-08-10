@@ -19,7 +19,7 @@ public class StoreSendVerificationCodeCondition {
 	@ApiModelProperty(value = "微信openid")
     private String openId;
 	@ApiModelProperty(value = "来源")
-    private String source;
+    private String platform;
 	@ApiModelProperty(value = "头像(微信登录方式传)")
     private String shopOwnerImg;
 }

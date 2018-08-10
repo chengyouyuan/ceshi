@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.MQDestination;
+import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -49,6 +53,9 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     
     @Autowired
     private StoreServiceClient storeServiceClient;
+    
+    @Autowired
+    private StringMessageSender stringMessageSender;
     
     private static final Logger logger = LoggerFactory.getLogger(OnlinePayPickUpInStoreOrderHandlerImpl.class);
 
@@ -147,7 +154,8 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         }
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;     
-        // TODO 发送延时MQ信息，处理超时取消操作
+        int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
+        stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
     }
 
     /**

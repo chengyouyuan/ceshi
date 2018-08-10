@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
@@ -276,7 +277,7 @@ public class ApiOpenStoreController {
      * @Description 根据token查询用户绑定的门店信息
      */
     @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
-    @GetMapping(value = "/store/security/1029/v1/findBindingStoreInfo/{token}")
+    @GetMapping(value = "/security/1029/v1/findBindingStoreInfo/{token}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(@PathVariable("token") String token) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
@@ -303,20 +304,20 @@ public class ApiOpenStoreController {
      * @Description 获取门店信息
      */
     @ApiOperation(value = "通过门店id查询门店信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002, message = "请求缺少参数门店id"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @RequestMapping(value = "/1005/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @RequestMapping(value = "/1005/v1/findStoreUserInfo", method = RequestMethod.POST)
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if (UserContext.getCurrentStoreUser() == null) {
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        if (storeUser == null) {
             logger.error("ApiOpenStoreController -> findStoreUserInfo未获取到门店登录信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
-        if (id == null) {
-            logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
+        if (storeUser.getBusinessId() == null) {
+            logger.error("StoreServiceController -> findStoreUserInfo获取的参数businessId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-        Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        StoreUserInfoVO data = storeService.findStoreUserInfo(storeCustomerId);
+        StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());
         if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
         }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 
 import feign.hystrix.FallbackFactory;
+
+import javax.ws.rs.Path;
 
 /**
  * @author wufuyun
@@ -36,8 +39,8 @@ public interface StoreHxdServiceClient {
      * @param customerId
      * @return
      */
-    @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
-    ResponseResult<List<Integer>> getStorePerfectInfo(@RequestParam("customerId") String customerId);
+    @RequestMapping(value = "/hxdStore/getStorePerfectInfo/{customerId}", method = RequestMethod.POST)
+    ResponseResult<List<Integer>> getStorePerfectInfo(@PathVariable("customerId") String customerId);
 
     /**
      * 功能描述:获得门店在惠下单购买过商品sku
@@ -55,8 +58,8 @@ public interface StoreHxdServiceClient {
      * @param customerId
      * @return
      */
-    @RequestMapping(value = "/hxdStore/getStoreBaseInfo/", method = RequestMethod.GET)
-    ResponseResult<Object> getStoreBaseInfo(@RequestParam("customerId") String customerId);
+    @RequestMapping(value = "/hxdStore/getStoreBaseInfo/{customerId}", method = RequestMethod.POST)
+    ResponseResult<Map<String, Object>> getStoreBaseInfo(@PathVariable("customerId") String customerId);
 
 }
 
@@ -92,7 +95,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<Object> getStoreBaseInfo(String storeId) {
+    public ResponseResult<Map<String, Object>> getStoreBaseInfo(String storeId) {
         logger.error("StoreHxdServiceClient -> getStoreBaseInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

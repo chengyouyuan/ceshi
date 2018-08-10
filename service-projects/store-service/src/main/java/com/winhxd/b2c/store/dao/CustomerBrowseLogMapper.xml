@@ -114,8 +114,10 @@
 
   <select id="getBrowseNum" resultType="java.lang.Integer">
     select
-    count(distinct id)
+    count(distinct customer_id)
     from customer_browse_log
     where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
+    and login_datetime &gt;= #{beginDate,jdbcType=TIMESTAMP}
+    and login_time &lt;= #{endDate,jdbcType=TIMESTAMP}
   </select>
 </mapper>

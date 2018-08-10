@@ -26,7 +26,7 @@ import java.util.Date;
  */
 @Api(tags = "C端用户浏览门店记录日志")
 @RestController
-@RequestMapping(value = "api-store/")
+@RequestMapping(value = "/api-store/store")
 public class ApiBrowseLogController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiBrowseLogController.class);
@@ -37,7 +37,7 @@ public class ApiBrowseLogController {
     @ApiOperation(value = "C端用户浏览门店进入日志", notes = "C端用户浏览门店进入日志")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
-    @PostMapping(value = "1016/v1/saveBrowseLogLogin/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/1016/v1/saveBrowseLogLogin/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult saveBrowseLogLogin(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
@@ -65,7 +65,7 @@ public class ApiBrowseLogController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
-    @PostMapping(value = "1017/v1/saveBrowseLogLogout/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/1017/v1/saveBrowseLogLogout/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult saveBrowseLogLogout(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {

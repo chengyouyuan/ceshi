@@ -366,10 +366,10 @@ public class ApiStoreProductManageController {
 	}
 
 	@ApiOperation(value = "B端搜索商品接口", notes = "B端搜索商品接口")
-	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！", response = ResponseResult.class),})
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！")})
 	@PostMapping(value = "1018/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
@@ -478,22 +478,27 @@ public class ApiStoreProductManageController {
      * @auther lvsen
      * @date 2018/8/9 11:22
      */
-    private List<String> getStoreBuyedHxdProdSkuCodes(Long storeCustomerId) {
-        if (null == storeCustomerId) {
-            return null;
-        }
+	private List<String> getStoreBuyedHxdProdSkuCodes(Long storeCustomerId) {
+		if (null == storeCustomerId) {
+			return null;
+		}
 		String hxdSkuKey = CacheName.STORE_BUYED_HXDPROD_SKU + storeCustomerId;
-		List<String> skuData;
-		if(StringUtils.isNotBlank(cache.get(hxdSkuKey))) {
-			skuData = JsonUtil.parseJSONObject(cache.get(hxdSkuKey),List.class);
+		List<String> skuData = new ArrayList<>();
+		if (StringUtils.isNotBlank(cache.get(hxdSkuKey))) {
+			skuData = JsonUtil.parseJSONObject(cache.get(hxdSkuKey), List.class);
 			return skuData;
 		}
-		ResponseResult<List<String>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(storeCustomerId);
-		skuData = storeBuyedProdSku.getData();
+		Map<String, Object> request = new HashMap<>();
+		request.put("customerId", storeCustomerId);
+		ResponseResult<List<Map<String, Object>>> storeBuyedProdSku = storeHxdServiceClient.getStoreBuyedProdSku(request);
+		List<Map<String, Object>> skuDataMap = storeBuyedProdSku.getData();
+		for (Map<String, Object> skuMap : skuDataMap) {
+			skuData.add(String.valueOf(skuMap.get("prodSku")));
+		}
 		cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
 		cache.expire(hxdSkuKey, 60 * 60 * 5);
 		return skuData;
-    }
+	}
 
     private boolean checkParam(Object condition) {
         boolean flag = false;

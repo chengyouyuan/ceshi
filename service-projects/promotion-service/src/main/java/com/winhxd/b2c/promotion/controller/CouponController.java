@@ -1,30 +1,22 @@
 package com.winhxd.b2c.promotion.controller;
 
-import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.promotion.service.CouponService;
-import org.apache.ibatis.annotations.Param;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
-
+import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Api(tags = "coupon")
@@ -159,6 +151,30 @@ public class CouponController implements CouponServiceClient{
 			result.setCode(BusinessCode.CODE_1001);
 		}
 		LOGGER.info("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "检查用户优惠券是否可用", notes = "检查用户优惠券是否可用")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	@RequestMapping(value = "/507/v1/checkCouponStatus", method = RequestMethod.POST)
+	public ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
+		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--开始--{}", condition);
+		if(condition.getSendId() == null){
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		try {
+			Boolean flag = couponService.checkCouponStatus(condition);
+			//返回对象
+			result.setData(flag);
+		} catch (Exception e) {
+			LOGGER.error("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--异常" + e, e);
+			result.setCode(BusinessCode.CODE_1001);
+		}
+		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--结束 result={}", result);
 		return result;
 	}
 

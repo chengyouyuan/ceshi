@@ -275,7 +275,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED,MessageFormat.format("订单正在修改中-订单号={0}", orderNo));
         }
     }
 
@@ -292,8 +292,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //设置提货码置为null、取消原因、取消状态等
         int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, cancelReason);
         if (updateRowNum < 1) {
-            logger.info("取消订单-状态更新不成功-订单号={}", orderNo);
-            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, "取消订单状态更新不成功");
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("取消订单-状态更新不成功-订单号={0}", orderNo));
         } else {
             //优惠券一并退回
             logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
@@ -301,7 +300,7 @@ public class CommonOrderServiceImpl implements OrderService {
             couponCondition.setOrderNo(orderNo);
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                logger.info("取消订单-退优惠券返回数据失败-订单号={}", orderNo);
+                throw new BusinessException(BusinessCode.CODE_422006, MessageFormat.format("取消订单-退优惠券返回失败-订单号={0}", orderNo));
             }
             logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
             logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);

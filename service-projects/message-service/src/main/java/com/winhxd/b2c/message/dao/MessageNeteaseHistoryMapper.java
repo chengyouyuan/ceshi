@@ -1,7 +1,9 @@
 package com.winhxd.b2c.message.dao;
 
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface MessageNeteaseHistoryMapper {
     int deleteByPrimaryKey(Long id);
 

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.feign.order;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,6 +17,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -24,9 +27,6 @@ import feign.hystrix.FallbackFactory;
 
 @FeignClient(value = ServiceName.ORDER_SERVICE, fallbackFactory = OrderServiceFallback.class)
 public interface OrderServiceClient {
-    @RequestMapping(value = "/order/v1/getOrderVo/", method = RequestMethod.GET)
-    ResponseResult<OrderInfo> getOrderVo(@RequestParam("orderNo") String orderNo);
-    
     @RequestMapping(value = "/order/451/v1/submitOrder/", method = RequestMethod.POST)
     ResponseResult<String> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
     
@@ -38,6 +38,9 @@ public interface OrderServiceClient {
     
     @RequestMapping(value = "/order/454/v1/getOrderDetail4Management/{orderNo}", method = RequestMethod.POST)
     ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(String orderNo);
+
+    @RequestMapping(value = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/", method = RequestMethod.POST)
+    ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition);
 }
 
 @Component
@@ -50,12 +53,6 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
 
     private OrderServiceFallback(Throwable throwable) {
         this.throwable = throwable;
-    }
-
-    @Override
-    public ResponseResult<OrderInfo> getOrderVo(String orderNo) {
-        logger.error("OrderServiceFallback -> getOrderVo", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
@@ -85,6 +82,12 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(String orderNo) {
         logger.error("OrderServiceFallback -> getOrderDetail4Management", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {
+        logger.error("OrderServiceFallback -> queryStoreOrderSalesSummaryByDateTimePeriod", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

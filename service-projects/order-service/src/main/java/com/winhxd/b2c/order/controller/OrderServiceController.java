@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -48,19 +49,13 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    public ResponseResult<OrderInfo> getOrderVo(String orderNo) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    @ApiOperation(value = "门店销售数据查询接口", response = StoreOrderSalesSummaryVO.class, notes = "门店销售数据查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreOrderSalesSummaryVO.class),
+    @ApiOperation(value = "门店当天销售数据查询接口", notes = "门店当天销售数据查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary() {
         String logTitle = "/order/452/v1/queryStoreOrderSalesSummary/";
-        logger.info("{} 门店销售数据接口查询开始", logTitle);
+        logger.info("{} 门店当天销售数据接口查询开始", logTitle);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
             //获取当前登录门店Id
@@ -80,16 +75,16 @@ public class OrderServiceController implements OrderServiceClient {
             logger.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
         } catch (Exception e) {
-            logger.error(logTitle + " 门店销售数据接口查询=--异常" + e.getMessage(), e);
+            logger.error(logTitle + " 门店当天销售数据接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
-        logger.info("{} 门店销售数据接口查询结束", logTitle);
+        logger.info("{} 门店当天销售数据接口查询结束", logTitle);
         return result;
     }
 
     @Override
-    @ApiOperation(value = "后台订单列表查询接口", response = PagedList.class, notes = "后台订单列表查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
+    @ApiOperation(value = "后台订单列表查询接口", notes = "后台订单列表查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<PagedList<OrderInfoDetailVO>> listOrder4Management(
@@ -108,12 +103,12 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    @ApiOperation(value = "后台订单详情查询接口", response = OrderInfoDetailVO4Management.class, notes = "后台订单详情查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO4Management.class),
+    @ApiOperation(value = "后台订单详情查询接口", notes = "后台订单详情查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(@PathVariable(value = "orderNo") String orderNo) {
-        String logTitle = "/order/453/v1/listOrder4Management/ 后台订单详情接口 ";
+        String logTitle = "/order/454/v1/getOrderDetail4Management/ 后台订单详情接口 ";
         logger.info("{}查询开始", logTitle);
         ResponseResult<OrderInfoDetailVO4Management> result = new ResponseResult<>();
         try {
@@ -129,6 +124,47 @@ public class OrderServiceController implements OrderServiceClient {
             result.setCode(BusinessCode.CODE_1001);
         }
         logger.info("{} 查询结束", logTitle);
+        return result;
+    }
+
+    @Override
+    @ApiOperation(value = "门店销售数据查询接口", notes = "门店销售数据查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {
+        String logTitle = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/ 门店销售数据接口查询";
+        logger.info("{} 开始", logTitle);
+        ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
+        try {
+            //获取当前登录门店Id
+            StoreUser storeUser = UserContext.getCurrentStoreUser();
+            if (storeUser == null || storeUser.getBusinessId() == null) {
+                throw new BusinessException(BusinessCode.CODE_1002);
+            }
+            Date startDateTime;
+            Date endDateTime;
+            if (storeOrderSalesSummaryCondition == null || storeOrderSalesSummaryCondition.getStartDateTime() == null || storeOrderSalesSummaryCondition.getEndDateTime() == null) {
+                //查询当天数据
+                //获取当天最后一秒
+                long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
+                //获取当天开始第一秒
+                long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
+                startDateTime = new Date(startSecond);
+                endDateTime = new Date(lastSecond);
+            } else {
+                startDateTime = storeOrderSalesSummaryCondition.getStartDateTime();
+                endDateTime = storeOrderSalesSummaryCondition.getEndDateTime();
+            }
+            result.setData(orderQueryService.getStoreOrderSalesSummary(storeUser.getBusinessId(), startDateTime, endDateTime));
+        } catch (BusinessException e) {
+            logger.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
+        } catch (Exception e) {
+            logger.error(logTitle + " =--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        logger.info("{} ", logTitle);
         return result;
     }
 }

@@ -1,6 +1,8 @@
 package com.winhxd.b2c.order.service;
 
+import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface ShopCarService {
      * @param: CustomerShopCar
      * @return: int
      */
-    void saveShopCar(ShopCarCondition shopCar);
+    int saveShopCar(ShopCarCondition shopCar, Long customerId);
 
     /**
      * 查询购物车
@@ -27,7 +29,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: ShopCarVO
      */
-    ShopCarVO findShopCar(ShopCarCondition condition);
+    List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId);
 
     /**
      * 删除购物车
@@ -36,7 +38,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: int
      */
-    int removeShopCar(ShopCarCondition condition);
+    int removeShopCar(Long customerId);
 
     /**
      *  预订单
@@ -45,5 +47,5 @@ public interface ShopCarService {
      * @param: condition
      * @return: void
      */
-    void readyOrder(ShopCarCondition condition) throws InterruptedException;
+    void readyOrder(ReadyShopCarCondition condition, Long customerId) throws InterruptedException;
 }

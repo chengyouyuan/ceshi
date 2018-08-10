@@ -1,7 +1,9 @@
 package com.winhxd.b2c.message.dao;
 
 import com.winhxd.b2c.common.domain.message.model.MessageWechatHistory;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface MessageWechatHistoryMapper {
     int deleteByPrimaryKey(Long id);
 

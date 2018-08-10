@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -53,6 +54,16 @@ public interface CustomerServiceClient {
      */
     @RequestMapping(value = "/customer/2007/v1/findCustomerUserByIds", method = RequestMethod.POST)
     ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody List<Long> ids);
+
+    /**
+     * @param token
+     * @return 用户信息
+     * @author chengyy
+     * @date 2018/8/10 14:55
+     * @Description 根据用户token查询用户信息
+     */
+    @RequestMapping(value = "/customer/2008/v1/findCustomerByToken", method = RequestMethod.GET)
+    ResponseResult<CustomerUserInfoVO> findCustomerByToken(@RequestParam("token") String token);
 }
 
 @Component
@@ -81,6 +92,12 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     @Override
     public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(List<Long> ids) {
         logger.error("CustomerServiceClientFallBack -> findCustomerUserByIds错误信息{}", throwable.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<CustomerUserInfoVO> findCustomerByToken(String token) {
+        logger.error("CustomerServiceClientFallBack -> findCustomerByToken错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

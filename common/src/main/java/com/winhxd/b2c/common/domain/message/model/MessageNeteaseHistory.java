@@ -31,17 +31,13 @@ public class MessageNeteaseHistory {
      */
     private String msgAttach;
     /**
+     * 消息扩展
+     */
+    private String extJson;
+    /**
      * 消息发送时间
      */
     private Date msgTimeStamp;
-    /**
-     * 组合件回话ID unicode值小的云信ID + ''_'' + unicode值大的云信ID（代码控制）
-     */
-    private String uid;
-    /**
-     * 聊天类型,0-单聊,1-群聊
-     */
-    private Integer convType;
     /**
      * 云信端消息ID
      */

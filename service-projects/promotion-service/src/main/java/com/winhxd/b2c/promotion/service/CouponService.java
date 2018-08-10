@@ -1,7 +1,9 @@
 package com.winhxd.b2c.promotion.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
@@ -24,11 +26,10 @@ public interface CouponService {
      * @author liuhanning
      * @date  2018年8月7日 上午11:03:11
      * @Description 查询门店用户的领取优惠券的数量
-     * @param storeId
      * @param customerId
      * @return
      */
-    Integer getCouponNumsByCustomerForStore(Long storeId,Long customerId);
+    ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId);
 
     /**
      * 待领取的优惠券列表
@@ -80,4 +81,18 @@ public interface CouponService {
      * @return
      */
     List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition);
+
+    /**
+     * 计算订单优惠金额
+     * @param couponCondition
+     * @return
+     */
+    CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition);
+
+    /**
+     * 校验优惠券是否可用
+     * @param condition
+     * @return
+     */
+    Boolean checkCouponStatus(CouponCheckStatusCondition condition);
 }

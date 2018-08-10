@@ -26,7 +26,11 @@ public class MiniProgramImpl implements MiniProgramService {
         ResponseResult<MiniOpenId> result = new ResponseResult<>();
         if(StringUtils.isNotEmpty(code)){
             MiniOpenId miniOpenId = openIdUtil.oauth2GetOpenid(code);
-            result.setData(miniOpenId);
+            if (StringUtils.isEmpty(miniOpenId.getOpenId())){
+                result.setData(null);
+            }else{
+                result.setData(miniOpenId);
+            }
         }else{
             LOGGER.info("/message/721/v1/getMiniOpenId,code is null,then data is null...code={}",code);
             result.setData(null);

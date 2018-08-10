@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @ApiModel("系统管理权组")
 @Data
@@ -35,7 +35,10 @@ public class SysRole {
     @ApiModelProperty("更新人")
     private String updatedByName;
 
+    @ApiModelProperty("组内人数")
+    private int userCount;
+
     @ApiModelProperty("权限范围")
-    private Set<SysRolePermission> permissions;
+    private List<SysRolePermission> permissions;
 
 }

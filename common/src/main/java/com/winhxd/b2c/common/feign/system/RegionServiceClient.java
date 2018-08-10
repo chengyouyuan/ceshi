@@ -29,8 +29,8 @@ public interface RegionServiceClient {
      * @param: SysRegionCondition
      * @return:
      */
-    @RequestMapping(value = "/api-system/region/320/v1/list", method = RequestMethod.POST)
-    ResponseResult<List<SysRegion>> getRegions(@RequestBody SysRegionCondition condition);
+    @RequestMapping(value = "/region/320/v1/list", method = RequestMethod.POST)
+    ResponseResult<List<SysRegion>> findRegionList(@RequestBody SysRegionCondition condition);
     /**
      * 功能描述: 根据指定地理区域编码获取地理区域列表
      * @auther: zhanglingke
@@ -38,8 +38,8 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api-system/region/321/v1/rangeList", method = RequestMethod.POST)
-    ResponseResult<List<SysRegion>> getRegionsByRange(@RequestBody List<String> regisonCodes);
+    @RequestMapping(value = "/region/321/v1/rangeList", method = RequestMethod.POST)
+    ResponseResult<List<SysRegion>> findRegionRangeList(@RequestBody List<String> regisonCodes);
 
     /**
      * 功能描述: 根据指定地理区域编码获取单个地理区域
@@ -48,8 +48,8 @@ public interface RegionServiceClient {
      * @param: SysRegionCodeCondition
      * @return:
      */
-    @RequestMapping(value = "/api-system/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
-    ResponseResult<SysRegion> getRegion(@PathVariable("regisonCode") String regisonCode);
+    @RequestMapping(value = "/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
+    ResponseResult<SysRegion> getRegionByCode(@PathVariable("regisonCode") String regisonCode);
 }
 
 @Component
@@ -64,19 +64,19 @@ class RegionServiceClientFallback implements RegionServiceClient, FallbackFactor
     }
 
     @Override
-    public ResponseResult<List<SysRegion>> getRegions(SysRegionCondition condition) {
+    public ResponseResult<List<SysRegion>> findRegionList(SysRegionCondition condition) {
         logger.error("RegionServiceClientFallback -> getRegions，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<List<SysRegion>> getRegionsByRange(List<String> condition) {
+    public ResponseResult<List<SysRegion>> findRegionRangeList(List<String> condition) {
         logger.error("RegionServiceClientFallback -> getRegionsByRange，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<SysRegion> getRegion(String regisonCode) {
+    public ResponseResult<SysRegion> getRegionByCode(String regisonCode) {
         logger.error("RegionServiceClientFallback -> getRegion，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

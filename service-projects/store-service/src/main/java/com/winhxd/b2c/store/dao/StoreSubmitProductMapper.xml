@@ -46,7 +46,7 @@
   	from store_submit_product
   	where 1=1
   	<if test="condition.storeId != null">
-  	 store_id=#{condition.storeId,jdbcType=BIGINT}
+  	  and store_id=#{condition.storeId,jdbcType=BIGINT}
   	</if>
   	order by created desc
   	

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@MapperScan("com.winhxd.b2c.message.dao")
+@MapperScan("com.winhxd.b2c.pay.dao")
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @Import(MicroServiceConfig.class)
 public class PayServiceApplication {

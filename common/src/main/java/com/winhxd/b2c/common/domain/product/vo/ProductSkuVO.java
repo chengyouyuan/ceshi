@@ -6,6 +6,12 @@ import lombok.Data;
 @Data
 public class ProductSkuVO {
 
+	@ApiModelProperty(value = "品牌编码")
+	private String brandCode;
+	
+	@ApiModelProperty(value = "品牌名称")
+	private String brandName;
+	
 	@ApiModelProperty(value = "商品编码")
 	private String productCode;
 	

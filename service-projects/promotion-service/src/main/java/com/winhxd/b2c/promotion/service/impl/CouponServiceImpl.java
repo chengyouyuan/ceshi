@@ -12,9 +12,11 @@ import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -26,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -60,9 +62,18 @@ public class CouponServiceImpl implements CouponService {
     @Autowired
     CouponApplyProductListMapper couponApplyProductListMapper;
     @Autowired
+    CouponTemplateMapper couponTemplateMapper;
+    @Autowired
+    CouponGradeMapper couponGradeMapper;
+    @Autowired
+    CouponApplyMapper couponApplyMapper;
+    @Autowired
+    CouponGradeDetailMapper couponGradeDetailMapper;
+    @Autowired
     StoreServiceClient storeServiceClient;
     @Autowired
     ProductServiceClient productServiceClient;
+
 
     @Override
     public List<CouponVO> getNewUserCouponList() {
@@ -179,9 +190,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
 	@Override
-	public Integer getCouponNumsByCustomerForStore(Long storeId, Long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
+        ResponseResult result = new ResponseResult();
+        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        result.setData(sum+"");
+		return result;
 	}
 
     /**
@@ -347,12 +360,12 @@ public class CouponServiceImpl implements CouponService {
         }
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
-            couponTemplateUse.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateUse.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
 
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(couponTemplateUse.getSendId());
-            couponTemplateSend.setStatus(CouponActivityEnum.UNTREAD.getCode());
+            couponTemplateSend.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         return true;
@@ -387,5 +400,117 @@ public class CouponServiceImpl implements CouponService {
 
         return this.getCouponDetail(couponVOS);
 
+    }
+
+    @Override
+    public CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+        List<Long> sendIds = couponCondition.getSendIds();
+        CouponDiscountVO couponDiscountVO = new CouponDiscountVO();
+        couponDiscountVO.setDiscountAmount(BigDecimal.valueOf(0));
+        if(sendIds.isEmpty()||null == couponCondition.getProducts()){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(0));
+        CouponTemplate couponTemplate = couponTemplateMapper.selectByPrimaryKey(couponTemplateSend.getTemplateId());
+        CouponApply couponApply = couponApplyMapper.selectByPrimaryKey(couponTemplate.getApplyRuleId());
+
+        //通用券，按订单金额计算优惠金额
+        if(couponApply.getApplyRuleType().equals(CouponApplyEnum.COMMON_COUPON.getCode())){
+            //计算订单总额
+            BigDecimal amountPrice = new BigDecimal(0);
+            for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
+                BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                amountPrice.add(productPrice);
+            }
+            BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
+            couponDiscountVO.setDiscountAmount(discountAmount);
+            return couponDiscountVO;
+        }
+        //品牌券，按品牌总额计算优惠金额
+        if(couponApply.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+            List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponApply.getId());
+            if(couponApplyBrands.isEmpty()){
+                logger.error("优惠券适用的品牌参数不存在");
+                return couponDiscountVO;
+            }
+            List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+
+            BigDecimal amountPrice = new BigDecimal(0);
+            //遍历适用的品牌并计算金额
+            for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
+                for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
+
+                    if(couponProductCondition.getBrandCode().equals(couponApplyBrandList.getBrandCode())){
+                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                        amountPrice.add(brandProductPrice);
+                    }
+                }
+            }
+            BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
+            couponDiscountVO.setDiscountAmount(discountAmount);
+            return couponDiscountVO;
+        }
+
+        //商品券，按商品总额计算优惠金额
+        if(couponApply.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+            List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponApply.getId());
+            if(couponApplyProducts.isEmpty()){
+                logger.error("优惠券适用的商品参数不存在");
+                return couponDiscountVO;
+            }
+            List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
+
+            BigDecimal amountPrice = new BigDecimal(0);
+            //遍历适用的商品并计算金额
+            for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
+                for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
+                    if(couponProductCondition.getSkuCode().equals(couponApplyProductList.getSkuCode())){
+                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                        amountPrice.add(brandProductPrice);
+                    }
+                }
+            }
+            BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
+            couponDiscountVO.setDiscountAmount(discountAmount);
+            return couponDiscountVO;
+        }
+        return couponDiscountVO;
+    }
+
+    /**
+     * 计算优惠金额
+     * @param gradeId 坎级ID
+     * @param amountPrice
+     * @return
+     */
+    public BigDecimal computeAumont(Long gradeId,BigDecimal amountPrice){
+
+        //查询满减规则
+        List<CouponGradeDetail> couponGradeDetails = couponGradeDetailMapper.selectByGradeId(gradeId);
+        CouponGradeDetail couponGradeDetail = couponGradeDetails.get(0);
+        //优惠类型 1.金额2，折扣
+        if(couponGradeDetail.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode())){
+            //订单金额大于等于满减金额,取优惠金额
+            if(amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0){
+                return couponGradeDetail.getDiscountedAmt();
+            }
+        }else{
+            BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted());
+            //优惠金额大于等于优惠最大限额,取优惠最大限额
+            if(discountAmount.compareTo(couponGradeDetail.getDiscountedMaxAmt())>=0){
+                return couponGradeDetail.getDiscountedMaxAmt();
+            }
+        }
+        return new BigDecimal(0);
+    }
+
+    @Override
+    public Boolean checkCouponStatus(CouponCheckStatusCondition condition) {
+        int count = couponTemplateSendMapper.checkCouponStatus(condition);
+        if(count > 0){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

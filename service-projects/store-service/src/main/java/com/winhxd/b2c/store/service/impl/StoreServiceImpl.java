@@ -3,7 +3,6 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.enums.BackStageStorPaymentWayeEnum;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
@@ -93,7 +92,7 @@ public class StoreServiceImpl implements StoreService {
 
         //获取regincode对应的区域名称
         List<String> reginCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
-        List<SysRegion> sysRegions = regionServiceClient.getRegionsByRange(reginCodeList).getData();
+        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(reginCodeList).getData();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();
         Set<String> codes = new HashSet<>();
@@ -102,11 +101,6 @@ public class StoreServiceImpl implements StoreService {
             BeanUtils.copyProperties(storeUserInfo1,storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
             if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())){
-                //获取支付类型
-                String[] codeArr = storeUserInfo1.getPaymentWay().split(",");
-                String paymentWayStr = Arrays.asList(codeArr).stream().map(s -> BackStageStorPaymentWayeEnum.codeOf(s).getStatusDes())
-                        .collect(Collectors.joining(","));
-                storeVO.setPaymentWay(paymentWayStr);
 
                 //获取地理区域名称
                 for (SysRegion sysRegion : sysRegions) {
@@ -167,7 +161,7 @@ public class StoreServiceImpl implements StoreService {
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
         //查询省市县五级信息
-        SysRegion sysRegion = regionServiceClient.getRegion(storeUserInfo.getStoreRegionCode()).getData();
+        SysRegion sysRegion = regionServiceClient.getRegionByCode(storeUserInfo.getStoreRegionCode()).getData();
         if(sysRegion != null) {
             BeanUtils.copyProperties(sysRegion, backStageStoreVO);
         } else {

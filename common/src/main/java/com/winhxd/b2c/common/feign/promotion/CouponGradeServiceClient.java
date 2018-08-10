@@ -25,19 +25,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponGradeServiceClientFallback.class)
 public interface CouponGradeServiceClient {
 
-    @RequestMapping(value = "/promotion/v1/addCouponGrade", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/518/v1/addCouponGrade", method = RequestMethod.POST)
     ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
 
-    @RequestMapping(value = "/promotion/v1/viewCouponGradeDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/519/v1/viewCouponGradeDetail", method = RequestMethod.POST)
     ResponseResult viewCouponGradeDetail(@RequestParam("id")String id);
 
-    @RequestMapping(value = "/promotion/v1/updateCouponGradeValid", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/520/v1/updateCouponGradeValid", method = RequestMethod.POST)
     ResponseResult updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
-    @RequestMapping(value = "/promotion/v1/getCouponGradePage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/517/v1/getCouponGradePage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
 
-    @RequestMapping(value = "/promotion/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/526/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

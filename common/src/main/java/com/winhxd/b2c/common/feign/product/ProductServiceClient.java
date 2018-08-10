@@ -72,7 +72,7 @@ public interface ProductServiceClient {
 	ResponseResult<PagedList<ProductSkuVO>> getProductSkusByPage(@RequestBody ProductConditionByPage condition);
 	
 	/**
-	 * 获取商品spu信息
+	 * 获取商品spu及包含的sku信息
 	 * @Title: getProducts
 	 * @param: @param condition
 	 * @param: @return      
@@ -105,6 +105,7 @@ public interface ProductServiceClient {
 	 */
 	@RequestMapping(value = "/product/v1/getBrandInfo/", method = RequestMethod.POST)
 	ResponseResult<List<BrandVO>> getBrandInfo(@RequestBody List<String> brandCodes);
+	
 }
 
 @Component

@@ -1,9 +1,12 @@
 package com.winhxd.b2c.order.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.ShopCarService;
 import io.swagger.annotations.Api;
@@ -14,12 +17,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -45,6 +46,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
@@ -57,8 +59,12 @@ public class ApiShopCarController {
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
         ResponseResult<Long> result = new ResponseResult<>();
         try {
-            shopCarParam(condition);
-        	shopCarService.saveShopCar(condition);
+            if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
+                    || null == condition.getSkuNum()) {
+                logger.error("商品加购异常{}  参数错误");
+                throw new BusinessException(BusinessCode.CODE_402008);
+            }
+        	shopCarService.saveShopCar(condition, getCurrentCustomerId());
         } catch (Exception e){
             logger.error("ShopCarController -> saveShopCar接口异常, 异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -77,18 +83,19 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<ShopCarVO> findShopCar(@RequestBody ShopCarCondition condition){
-        ResponseResult<ShopCarVO> result = new ResponseResult<>();
+    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestParam("storeId") Long storeId){
+        ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
         try {
-            if (null == condition || null == condition.getStoreId()) {
+            if (null == storeId || 0 == storeId) {
                 logger.error("查询购物车异常{}  参数storeId为空");
                 throw new BusinessException(BusinessCode.CODE_402001);
             }
-            ShopCarVO shopCarVO = shopCarService.findShopCar(condition);
-            result.setData(shopCarVO);
+            List<ShopCarProdInfoVO> data = shopCarService.findShopCar(storeId, getCurrentCustomerId());
+            result.setData(data);
         } catch (Exception e){
             logger.error("ShopCarController -> findShopCar接口异常, 异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -107,6 +114,7 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
@@ -116,11 +124,11 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
     })
     @RequestMapping(value = "/api-order/order/432/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> readyOrder(@RequestBody ShopCarCondition condition){
+    public ResponseResult<Long> readyOrder(@RequestBody ReadyShopCarCondition condition){
         ResponseResult<Long> result = new ResponseResult<>();
         try {
             shopCarParam(condition);
-            shopCarService.readyOrder(condition);
+            shopCarService.readyOrder(condition, getCurrentCustomerId());
         } catch (Exception e){
             logger.error("ShopCarController -> readyOrder接口异常, 异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -139,17 +147,14 @@ public class ApiShopCarController {
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> removeShopCar(@RequestBody ShopCarCondition condition){
+    public ResponseResult<Long> removeShopCar(){
         ResponseResult<Long> result = new ResponseResult<>();
         try{
-            if (null == condition || null == condition.getStoreId()) {
-                logger.error("清空购物车异常{}  参数storeId为空");
-                throw new BusinessException(BusinessCode.CODE_402001);
-            }
-            shopCarService.removeShopCar(condition);
+            shopCarService.removeShopCar(getCurrentCustomerId());
         }catch (Exception e){
             logger.error("ShopCarController -> removeShopCar接口异常, 异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -164,7 +169,7 @@ public class ApiShopCarController {
      * @param: [condition]
      * @return: void
      */
-    private void shopCarParam(ShopCarCondition condition){
+    private void shopCarParam(ReadyShopCarCondition condition){
         if (null == condition) {
             logger.error("商品加购异常{}  参数错误");
             throw new BusinessException(BusinessCode.CODE_402008);
@@ -197,5 +202,19 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数orderTotalMoney为空");
             throw new BusinessException(BusinessCode.CODE_402008);
         }*/
+    }
+    /**
+     *
+     * @author: wangbaokuo
+     * @date: 2018/8/10 10:31
+     * @return: 获取用户ID
+     */
+    private Long getCurrentCustomerId(){
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
+        return customerUser.getCustomerId();
     }
 }

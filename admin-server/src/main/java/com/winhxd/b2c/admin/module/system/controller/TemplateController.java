@@ -1,9 +1,11 @@
 package com.winhxd.b2c.admin.module.system.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.admin.utils.jsonTemplates.JsonTemplatesUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -48,6 +50,7 @@ public class TemplateController {
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
     @GetMapping(value = "/menu")
+    @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult<Map> getMenu() {
         ResponseResult<Map> result = new ResponseResult<>();
         UserInfo userInfo = UserManager.getCurrentUser();
@@ -61,7 +64,8 @@ public class TemplateController {
         //TODO 根据权限过滤菜单
 
         templateMap.put("token", userInfo.getToken());
-        templateMap.put("roles", userInfo.getRoleName());
+        templateMap.put("userId", userInfo.getId());
+        templateMap.put("roles", userInfo.getRoleName() == null ? "" : userInfo.getRoleName());
         templateMap.put("name", userInfo.getUsername());
         result.setData(templateMap);
         return result;
@@ -78,6 +82,7 @@ public class TemplateController {
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
     @GetMapping(value = "/{name}")
+    @CheckPermission({PermissionEnum.AUTHENTICATED})
     public ResponseResult<Map> getTemplateByPath(@PathVariable("name") String name) {
         ResponseResult<Map> result = new ResponseResult<>();
         Map<String, Object> map = jsonTemplatesUtils.getTemplatesByName(name);

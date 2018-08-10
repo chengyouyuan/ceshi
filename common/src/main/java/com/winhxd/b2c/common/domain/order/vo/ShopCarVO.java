@@ -18,6 +18,8 @@ import java.util.List;
 @Data
 public class ShopCarVO {
 
+
+
     @ApiModelProperty(value = "购物车ID")
     private Long id;
 

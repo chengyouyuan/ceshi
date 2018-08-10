@@ -39,7 +39,7 @@ public interface StoreServiceClient {
      * @Description 门店绑定用户
      * @Param storeUserId  门店id主键
      */
-    @RequestMapping(value = "/store/1016/v1/bindCustomer", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1030/v1/bindCustomer", method = RequestMethod.GET)
     ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId);
 
     /**
@@ -53,7 +53,7 @@ public interface StoreServiceClient {
      * @author wuyuanbao
      * @date 2018年8月6日上午9:23:34
      */
-    @RequestMapping(value = "/store/1017/v1/findShopCarProd", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1031/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
 
     /**
@@ -87,7 +87,7 @@ public interface StoreServiceClient {
      * @date 2018/8/7 13:57
      * @Description 通过用户id查询绑定的门店信息
      */
-    @RequestMapping(value = "/store/1020/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1033/v1/findStoreUserInfoByCustomerId/", method = RequestMethod.GET)
     ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
@@ -97,7 +97,7 @@ public interface StoreServiceClient {
      * @date 2018/8/7 17:58
      * @Description 根据门店id(主键)查询门店信息
      */
-    @RequestMapping(value = "/store/1021/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1032/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
     ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
 
     /**
@@ -107,7 +107,7 @@ public interface StoreServiceClient {
      * @date 2018/8/8 10:10
      * @Description 根据id批量查询门店信息
      */
-    @RequestMapping(value = "/store/1022/v1/findStoreUserInfoList", method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1034/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
     
     /**

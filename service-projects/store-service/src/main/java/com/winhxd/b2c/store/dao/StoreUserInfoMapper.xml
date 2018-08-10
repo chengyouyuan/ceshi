@@ -302,7 +302,7 @@
         lon = #{lon,jdbcType=DOUBLE},
       </if>
       <if test="openId != null" >
-        openId = #{openId,jdbcType=VARCHAR},
+        open_id = #{openId,jdbcType=VARCHAR},
       </if>
       <if test="created != null" >
         created = #{created,jdbcType=TIMESTAMP},

@@ -21,7 +21,7 @@ public interface CustomerUserInfoMapper {
     int updateByPrimaryKeySelective(CustomerUserInfo record);
 
     int updateByPrimaryKey(CustomerUserInfo record);
-    
+
     CustomerUserInfo selectCustomerModel(CustomerUserInfo customerUserInfo);
 
     /**
@@ -41,13 +41,22 @@ public interface CustomerUserInfoMapper {
      * @Description 根据用户id批量查询用户信息
      */
     List<CustomerUserInfoVO> selectCustomerUserByIds(@Param("ids") List<Long> ids);
-    
+
     /**
-     * @author wufuyun
-     * @date  2018年8月8日 下午3:59:11
-     * @Description 查询C端用户信息
      * @param customerUserInfo
      * @return
+     * @author wufuyun
+     * @date 2018年8月8日 下午3:59:11
+     * @Description 查询C端用户信息
      */
-	CustomerUserInfo selectByCustomerUserInfoByModel(CustomerUserInfo customerUserInfo);
+    CustomerUserInfo selectByCustomerUserInfoByModel(CustomerUserInfo customerUserInfo);
+
+    /**
+     * @param token
+     * @return 用户信息
+     * @author chengyy
+     * @date 2018/8/10 14:50
+     * @Description 根据用户的token查询用户信息
+     */
+    CustomerUserInfo selectCustomerByToken(@Param("token") String token);
 }

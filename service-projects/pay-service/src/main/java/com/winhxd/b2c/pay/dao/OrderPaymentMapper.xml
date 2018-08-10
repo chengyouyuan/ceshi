@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.OrderPaymentMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="order_pament_no" jdbcType="VARCHAR" property="orderPamentNo" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="callback_date" jdbcType="TIMESTAMP" property="callbackDate" />
+    <result column="time_end" jdbcType="VARCHAR" property="timeEnd" />
+    <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
+    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
+    <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney" />
+    <result column="callback_money" jdbcType="DECIMAL" property="callbackMoney" />
+    <result column="pay_type" jdbcType="SMALLINT" property="payType" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, order_pament_no, created, updated, callback_date, time_end, callback_status, 
+    callback_reason, buyer_id, transaction_id, real_payment_money, callback_money, pay_type, 
+    cmms_amt, rate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_payment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from order_payment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+    insert into order_payment (id, order_no, order_pament_no, 
+      created, updated, callback_date, 
+      time_end, callback_status, callback_reason, 
+      buyer_id, transaction_id, real_payment_money, 
+      callback_money, pay_type, cmms_amt, 
+      rate)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderPamentNo,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{callbackDate,jdbcType=TIMESTAMP}, 
+      #{timeEnd,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, 
+      #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{realPaymentMoney,jdbcType=DECIMAL}, 
+      #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, 
+      #{rate,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+    insert into order_payment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="orderPamentNo != null">
+        order_pament_no,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="callbackDate != null">
+        callback_date,
+      </if>
+      <if test="timeEnd != null">
+        time_end,
+      </if>
+      <if test="callbackStatus != null">
+        callback_status,
+      </if>
+      <if test="callbackReason != null">
+        callback_reason,
+      </if>
+      <if test="buyerId != null">
+        buyer_id,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="realPaymentMoney != null">
+        real_payment_money,
+      </if>
+      <if test="callbackMoney != null">
+        callback_money,
+      </if>
+      <if test="payType != null">
+        pay_type,
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderPamentNo != null">
+        #{orderPamentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackDate != null">
+        #{callbackDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeEnd != null">
+        #{timeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackReason != null">
+        #{callbackReason,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null">
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="realPaymentMoney != null">
+        #{realPaymentMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackMoney != null">
+        #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="payType != null">
+        #{payType,jdbcType=SMALLINT},
+      </if>
+      <if test="cmmsAmt != null">
+        #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+    update order_payment
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderPamentNo != null">
+        order_pament_no = #{orderPamentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackDate != null">
+        callback_date = #{callbackDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeEnd != null">
+        time_end = #{timeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackReason != null">
+        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null">
+        buyer_id = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="realPaymentMoney != null">
+        real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackMoney != null">
+        callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="payType != null">
+        pay_type = #{payType,jdbcType=SMALLINT},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+    update order_payment
+    set order_no = #{orderNo,jdbcType=CHAR},
+      order_pament_no = #{orderPamentNo,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      callback_date = #{callbackDate,jdbcType=TIMESTAMP},
+      time_end = #{timeEnd,jdbcType=VARCHAR},
+      callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      buyer_id = #{buyerId,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
+      real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
+      callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      pay_type = #{payType,jdbcType=SMALLINT},
+      cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      rate = #{rate,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

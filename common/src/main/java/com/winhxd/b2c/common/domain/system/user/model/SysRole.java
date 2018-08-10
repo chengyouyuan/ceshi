@@ -35,6 +35,9 @@ public class SysRole {
     @ApiModelProperty("更新人")
     private String updatedByName;
 
+    @ApiModelProperty("组内人数")
+    private int userCount;
+
     @ApiModelProperty("权限范围")
     private List<SysRolePermission> permissions;
 

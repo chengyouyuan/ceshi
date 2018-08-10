@@ -28,7 +28,7 @@ public class CustomerSearchProductCondition extends BaseCondition {
     private Integer productSortType;
 
     @ApiModelProperty(value = "商品名称")
-    private Integer productName;
+    private String productName;
 
 
 

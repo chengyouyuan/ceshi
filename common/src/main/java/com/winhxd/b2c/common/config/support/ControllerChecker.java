@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.config.support;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,6 +13,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author lixiaodong
+ */
 public class ControllerChecker implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -64,11 +68,13 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         if (errorList.size() > 0) {
             throw new RuntimeException(
                     System.lineSeparator()
+                            + StringUtils.repeat(System.lineSeparator(), 6)
                             + "================================Controller定义不规范================================"
-                            + System.lineSeparator()
+                            + StringUtils.repeat(System.lineSeparator(), 2)
                             + String.join(System.lineSeparator(), errorList)
-                            + System.lineSeparator()
+                            + StringUtils.repeat(System.lineSeparator(), 2)
                             + "================================Controller定义不规范================================"
+                            + StringUtils.repeat(System.lineSeparator(), 6)
             );
         }
     }

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
@@ -12,6 +13,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreBusinessInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -106,7 +108,7 @@ public class ApiOpenStoreController {
             if (noPerfectResult.getCode() == 1) {
                 List<Integer> list = noPerfectResult.getData();
                 byte flag = 1;
-                for(int i: list){
+                for (int i : list) {
                     if (i == 0) {
                         flag = 0;
                         break;
@@ -147,7 +149,7 @@ public class ApiOpenStoreController {
             logger.info("惠小店开店基础信息查询接口 门店用户编码:{}", storeCustomerId);
             ResponseResult<Object> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
             StoreBaseInfoVO storeBaseInfoVO = new StoreBaseInfoVO();
-            BeanUtils.copyProperties(result,storeBaseInfoVO);
+            BeanUtils.copyProperties(result, storeBaseInfoVO);
             responseResult.setData(storeBaseInfoVO);
         } catch (Exception e) {
             logger.error("惠小店开店基础信息查询接口，服务器内部错误：{}", e);
@@ -266,42 +268,56 @@ public class ApiOpenStoreController {
         return responseResult;
     }
 
-
-    /*@ApiOperation(value = "根据用户token查询绑定门店id，有则返回，没有则不返回")
-    @RequestMapping(value = "/store/security/1029/v1/findBindingStoreId/{token}")
-    public ResponseResult<Long> findBindingStoreId(@PathVariable("token")String token){
-        ResponseResult<Long> result = new ResponseResult<>();
-        if(StringUtils.isEmpty(token)){
+    /**
+     * @param token
+     * @return 门店信息
+     * @author chengyy
+     * @date 2018/8/10 15:17
+     * @Description 根据token查询用户绑定的门店信息
+     */
+    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
+    @GetMapping(value = "/security/1029/v1/findBindingStoreInfo/{token}")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
+    public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(@PathVariable("token") String token) {
+        ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
+        if (StringUtils.isEmpty(token)) {
             throw new BusinessException(BusinessCode.CODE_1014);
         }
+        CustomerUserInfoVO customerUserInfoVO = customerServiceClient.findCustomerByToken(token).getData();
+        if (customerUserInfoVO == null) {
+            throw new BusinessException(BusinessCode.CODE_200010);
+        }
+        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUserInfoVO.getCustomerId());
+        if (storeUserInfoVO != null) {
+            result.setData(storeUserInfoVO);
+        }
+        return result;
+    }
 
-    }*/
     /**
      * @param id 门店id
+     * @param id 门店id(主键)
      * @return StoreUserInfoVO 返回当前门店信息数据
      * @author chengyy
      * @date 2018/8/3 16:04
      * @Description 获取门店信息
-     * @param  id 门店id(主键)
-     * @return StoreUserInfoVO 返回当前门店信息数据
      */
     @ApiOperation(value = "通过门店id查询门店信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
-    @RequestMapping(value = "/1005/v1/findStoreUserInfo/{id}",method = RequestMethod.POST)
-
-    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id){
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @RequestMapping(value = "/1005/v1/findStoreUserInfo", method = RequestMethod.POST)
+    public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if(UserContext.getCurrentStoreUser() == null){
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        if (storeUser == null) {
             logger.error("ApiOpenStoreController -> findStoreUserInfo未获取到门店登录信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
-        if(id == null){
-            logger.error("StoreServiceController -> findStoreUserInfo获取的参数storeUserId为空");
+        if (storeUser.getBusinessId() == null) {
+            logger.error("StoreServiceController -> findStoreUserInfo获取当前登录用户的id为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-        Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        StoreUserInfoVO data = storeService.findStoreUserInfo(storeCustomerId);
-        if(data == null){
+        StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());
+        if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
         }
         result.setData(data);
@@ -315,7 +331,7 @@ public class ApiOpenStoreController {
     public ResponseResult<Integer> getStoreRegionStatus() {
         ResponseResult<Integer> responseResult = new ResponseResult<>();
 
-        if(UserContext.getCurrentStoreUser() == null){
+        if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
             logger.info("惠小店开店基础信息查询接口 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1001);
@@ -339,7 +355,7 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1026/v1/getStoreTurnoverInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreManageInfoVO> getStoreTurnoverInfo() {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
-        if(UserContext.getCurrentStoreUser() == null){
+        if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
             logger.info("惠小店获取营业查询数据接口 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1001);
@@ -349,8 +365,8 @@ public class ApiOpenStoreController {
             logger.info("惠小店获取营业查询数据接口 门店用户编码:{}", storeCustomerId);
             Date currentDate = new Date();
             Date beginTime = getBeginTimeOfDate(currentDate);
-            Date yesterdayEndTime = DateUtils.addDays(currentDate,-1);
-            Date yesterdayBeginTime = DateUtils.addDays(beginTime,-1);
+            Date yesterdayEndTime = DateUtils.addDays(currentDate, -1);
+            Date yesterdayBeginTime = DateUtils.addDays(beginTime, -1);
             //今日的
             StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(storeCustomerId, beginTime, currentDate);
             //昨日的
@@ -369,11 +385,11 @@ public class ApiOpenStoreController {
      * 查询门店营业信息，包括营业额、浏览人数、下单人数、订单数
      *
      * @param storeCustomerId 门店用户id
-     * @param startDatetime 开始时间
-     * @param endDatetime 结束时间
+     * @param startDatetime   开始时间
+     * @param endDatetime     结束时间
      * @return
      */
-    private StoreManageInfoVO getStoreSummaryInfo(Long storeCustomerId, Date startDatetime, Date endDatetime){
+    private StoreManageInfoVO getStoreSummaryInfo(Long storeCustomerId, Date startDatetime, Date endDatetime) {
         //浏览人数
         Integer browseNum = storeBrowseLogService.getBrowseNum(storeCustomerId, startDatetime, endDatetime);
         StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
@@ -383,7 +399,7 @@ public class ApiOpenStoreController {
                 orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();
         StoreManageInfoVO storeManageInfoVO = new StoreManageInfoVO();
         storeManageInfoVO.setBrowseNum(browseNum);
-        if(storeOrderSalesSummaryVO != null) {
+        if (storeOrderSalesSummaryVO != null) {
             storeManageInfoVO.setTurnover(storeOrderSalesSummaryVO.getDailyTurnover());
             storeManageInfoVO.setCreateNum(storeOrderSalesSummaryVO.getDailyCustomerNum());
             storeManageInfoVO.setCompleteNum(storeOrderSalesSummaryVO.getDailyOrderNum());
@@ -400,8 +416,7 @@ public class ApiOpenStoreController {
      * Gets first time of {@code date}
      * </p>
      *
-     * @param date
-     *            may be null
+     * @param date may be null
      * @return {@code Date} first time 00:00:00 or null
      */
     private static Date getBeginTimeOfDate(final Date date) {

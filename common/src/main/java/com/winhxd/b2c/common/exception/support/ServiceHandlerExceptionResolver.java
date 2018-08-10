@@ -5,6 +5,7 @@ import brave.Tracer;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.i18n.MessageHelper;
+import feign.codec.DecodeException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,9 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         int code;
-        if (ex instanceof BusinessException) {
-            code = ((BusinessException) ex).getErrorCode();
+        BusinessException businessException = findBusinessException(ex);
+        if (businessException != null) {
+            code = businessException.getErrorCode();
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             Span currentSpan = tracer.currentSpan();
@@ -41,6 +43,16 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         view.addStaticAttribute("code", code);
         view.addStaticAttribute("message", MessageHelper.getInstance().getMessage(String.valueOf(code)));
         return new ModelAndView(view);
+    }
+
+    private BusinessException findBusinessException(Throwable ex) {
+        if (ex == null) {
+            return null;
+        }
+        if (ex instanceof BusinessException) {
+            return (BusinessException) ex;
+        }
+        return findBusinessException(ex.getCause());
     }
 }
 

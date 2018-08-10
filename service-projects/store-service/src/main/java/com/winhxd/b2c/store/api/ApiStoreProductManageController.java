@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,17 +104,17 @@ public class ApiStoreProductManageController {
 			}
 			// 账号信息校验
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (storeUser == null) {
-//				responseResult.setCode(BusinessCode.CODE_1002);
-//				responseResult.setMessage("登录凭证无效");
-//				return responseResult;
-//			}
+			if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效");
+				return responseResult;
+			}
 
 			// 判断查询可上架商品类型
 			Byte prodType = condition.getProdType();
 			// 门店编码
-//			Long storeId = storeUser.getBusinessId();
-			Long storeId = condition.getStoreId();
+			Long storeId = storeUser.getBusinessId();
+//			Long storeId = condition.getStoreId();
 			// 已上架的商品sku
 			List<String> putawayProdSkus = null;
 
@@ -144,9 +145,14 @@ public class ApiStoreProductManageController {
 			StoreProductManageCondition spmCondition = new StoreProductManageCondition();
 			spmCondition.setStoreId(storeId);
 			// 设置状态
-			spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+			List<Short> status=new ArrayList<>();
+			status.add(StoreProductStatusEnum.PUTAWAY.getStatusCode());
+			status.add(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+			
+			spmCondition.setProdStatus(status);
+			
 			putawayProdSkus = storeProductManageService.findSkusByConditon(spmCondition);
-			// 放入已上架skus
+			// 放入已上架skus和已下架的
 			prodConditionByPage.setProductSkus(putawayProdSkus);
 
 			// 首次请求，会返回类型，品牌等信息
@@ -163,11 +169,10 @@ public class ApiStoreProductManageController {
 					prodConditionByPage.setCategoryCode(categoryCode);
 				}
 				// 品牌
-				String brandCode = condition.getBrandCode();
+				List<String> brandCodeList = condition.getBrandCode();
 
-				if (StringUtils.isNotEmpty(brandCode)) {
-					List<String> brandCodeList = new ArrayList<>();
-					brandCodeList.add(brandCode);
+				if (CollectionUtils.isNotEmpty(brandCodeList)) {
+					
 					prodConditionByPage.setBrandCodes(brandCodeList);
 				}
 				ResponseResult<PagedList<ProductVO>> prodResult = productServiceClient.getProductsByPage(prodConditionByPage);
@@ -201,15 +206,14 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (storeUser == null) {
-//				responseResult.setCode(BusinessCode.CODE_1002);
-//				return responseResult;
-//			}
+			if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				return responseResult;
+			}
 			// 操作类型
 			Byte operateType = condition.getOperateType();
 			// 门店id
-//			Long storeId = storeUser.getBusinessId();
-			Long storeId =condition.getStoreId();
+			Long storeId = storeUser.getBusinessId();
 			// skuCode集合
 			List<ProdOperateInfoCondition> prodInfo = condition.getProducts();
 			// skuCode数组
@@ -304,12 +308,11 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (storeUser == null) {
-//				responseResult.setCode(BusinessCode.CODE_1002);
-//				return responseResult;
-//			}
-//			Long storeId = storeUser.getBusinessId();
-			Long storeId = condition.getStoreId();
+			if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				return responseResult;
+			}
+			Long storeId = storeUser.getBusinessId();
 			StoreSubmitProduct storeSubmitProduct = new StoreSubmitProduct();
 			BeanUtils.copyProperties(condition, storeSubmitProduct);
 			storeSubmitProduct.setStoreId(storeId);
@@ -341,12 +344,11 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (storeUser == null) {
-//				responseResult.setCode(BusinessCode.CODE_1002);
-//				return responseResult;
-//			}
-//			Long storeId = storeUser.getBusinessId();
-			Long storeId = condition.getStoreId();
+			if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				return responseResult;
+			}
+			Long storeId = storeUser.getBusinessId();
 			condition.setStoreId(storeId);
 
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -450,12 +452,11 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-//			if (storeUser == null) {
-//				responseResult.setCode(BusinessCode.CODE_1002);
-//				return responseResult;
-//			}
-//			Long storeId = storeUser.getBusinessId();
-			Long storeId = condition.getStoreId();
+			if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				return responseResult;
+			}
+			Long storeId = storeUser.getBusinessId();
 			condition.setStoreId(storeId);
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 			PagedList<StoreProdSimpleVO> list = storeProductManageService.findSimpelVOByCondition(condition);

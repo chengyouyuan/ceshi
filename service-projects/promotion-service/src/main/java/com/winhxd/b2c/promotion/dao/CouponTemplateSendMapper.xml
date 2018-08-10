@@ -24,6 +24,19 @@
     source, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
+  <select id="checkCouponStatus" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition" resultType="java.lang.Integer">
+    SELECT
+    count(cts.id)
+    FROM
+    coupon_template_send cts
+    WHERE
+    1 = 1
+    AND cts.`status` IN ('2', '4')
+    AND cts.start_time &lt; NOW()
+    AND cts.end_time &gt; NOW()
+    AND cts.id = #{condition.sendId}
+    sendId
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

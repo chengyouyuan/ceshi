@@ -64,4 +64,10 @@ public interface CouponActivityMapper {
      * @return
      */
     List<CouponActivityStoreVO> queryStoreByActivity(@Param("condition") CouponActivityCondition condition);
+
+    /**
+     * 用户查询门店优惠券列表
+     * @return
+     */
+    List<CouponVO> getStoreCouponList(Long storeId);
 }

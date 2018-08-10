@@ -29,6 +29,10 @@
     from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
   </select>
+  <select id="selectCustomerByToken" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from customer_user_info where token = #{token,jdbcType=VARCHAR}
+  </select>
   <select id="selectByCustomerUserInfoByModel" resultMap="BaseResultMap" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
     select 
     <include refid="Base_Column_List" />

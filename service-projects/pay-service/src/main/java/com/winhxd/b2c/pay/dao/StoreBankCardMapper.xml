@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.StoreBankCardMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.StoreBankCard">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+    <result column="person_id" jdbcType="VARCHAR" property="personId" />
+    <result column="bank_user_name" jdbcType="VARCHAR" property="bankUserName" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="band_branch_name" jdbcType="VARCHAR" property="bandBranchName" />
+    <result column="swift_code" jdbcType="VARCHAR" property="swiftCode" />
+    <result column="mobile" jdbcType="CHAR" property="mobile" />
+    <result column="verification_code" jdbcType="VARCHAR" property="verificationCode" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  
+  <resultMap type="com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO" id="storeBankCardResultMap" extends="BaseResultMap">
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, store_id, card_number, person_id, bank_user_name, bank_name, band_branch_name, 
+    swift_code, mobile, verification_code, status, created_by, created_by_name, created, 
+    updated_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_bank_card
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from store_bank_card
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankCard" useGeneratedKeys="true" keyColumn="id">
+    insert into store_bank_card ( store_id, card_number, 
+      person_id, bank_user_name, bank_name, 
+      band_branch_name, swift_code, mobile, 
+      verification_code, status, created_by, 
+      created_by_name, created, updated_by, 
+      updated_by_name, updated)
+    values ( #{storeId,jdbcType=BIGINT}, #{cardNumber,jdbcType=VARCHAR}, 
+      #{personId,jdbcType=VARCHAR}, #{bankUserName,jdbcType=VARCHAR}, #{bankName,jdbcType=VARCHAR}, 
+      #{bandBranchName,jdbcType=VARCHAR}, #{swiftCode,jdbcType=VARCHAR}, #{mobile,jdbcType=CHAR}, 
+      #{verificationCode,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankCard">
+    insert into store_bank_card
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="cardNumber != null">
+        card_number,
+      </if>
+      <if test="personId != null">
+        person_id,
+      </if>
+      <if test="bankUserName != null">
+        bank_user_name,
+      </if>
+      <if test="bankName != null">
+        bank_name,
+      </if>
+      <if test="bandBranchName != null">
+        band_branch_name,
+      </if>
+      <if test="swiftCode != null">
+        swift_code,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="verificationCode != null">
+        verification_code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="cardNumber != null">
+        #{cardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="personId != null">
+        #{personId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankUserName != null">
+        #{bankUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bandBranchName != null">
+        #{bandBranchName,jdbcType=VARCHAR},
+      </if>
+      <if test="swiftCode != null">
+        #{swiftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="verificationCode != null">
+        #{verificationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankCard">
+    update store_bank_card
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="cardNumber != null">
+        card_number = #{cardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="personId != null">
+        person_id = #{personId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankUserName != null">
+        bank_user_name = #{bankUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        bank_name = #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bandBranchName != null">
+        band_branch_name = #{bandBranchName,jdbcType=VARCHAR},
+      </if>
+      <if test="swiftCode != null">
+        swift_code = #{swiftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="verificationCode != null">
+        verification_code = #{verificationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankCard">
+    update store_bank_card
+    set store_id = #{storeId,jdbcType=BIGINT},
+      card_number = #{cardNumber,jdbcType=VARCHAR},
+      person_id = #{personId,jdbcType=VARCHAR},
+      bank_user_name = #{bankUserName,jdbcType=VARCHAR},
+      bank_name = #{bankName,jdbcType=VARCHAR},
+      band_branch_name = #{bandBranchName,jdbcType=VARCHAR},
+      swift_code = #{swiftCode,jdbcType=VARCHAR},
+      mobile = #{mobile,jdbcType=CHAR},
+      verification_code = #{verificationCode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectStorBankCardInfo" parameterType="com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition" resultMap="storeBankCardResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from store_bank_card
+    where 1=1
+    <if test="id != null">
+    	and id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="storeId != null">
+       and store_id = #{storeId,jdbcType=BIGINT}
+     </if>
+     <if test="cardNumber != null">
+       and card_number = #{cardNumber,jdbcType=VARCHAR}
+     </if>
+     <if test="personId != null">
+       and person_id = #{personId,jdbcType=VARCHAR}
+     </if>
+     <if test="bankUserName != null">
+       and bank_user_name = #{bankUserName,jdbcType=VARCHAR}
+     </if>
+     <if test="bankName != null">
+      	and bank_name = #{bankName,jdbcType=VARCHAR}
+     </if>
+     <if test="bandBranchName != null">
+       and band_branch_name = #{bandBranchName,jdbcType=VARCHAR}
+     </if>
+     <if test="swiftCode != null">
+       and swift_code = #{swiftCode,jdbcType=VARCHAR}
+     </if>
+     <if test="mobile != null">
+      and mobile = #{mobile,jdbcType=CHAR}
+     </if>
+     <if test="verificationCode != null">
+       and verification_code = #{verificationCode,jdbcType=VARCHAR}
+     </if>
+     <if test="status != null">
+       and status = #{status,jdbcType=SMALLINT}
+     </if>
+     <if test="createdBy != null">
+       and created_by = #{createdBy,jdbcType=BIGINT}
+     </if>
+     <if test="createdByName != null">
+       and created_by_name = #{createdByName,jdbcType=VARCHAR}
+     </if>
+     <if test="created != null">
+       and created = #{created,jdbcType=TIMESTAMP}
+     </if>
+     <if test="updatedBy != null">
+       and updated_by = #{updatedBy,jdbcType=BIGINT}
+     </if>
+     <if test="updatedByName != null">
+       and updated_by_name = #{updatedByName,jdbcType=VARCHAR}
+     </if>
+     <if test="updated != null">
+       and updated = #{updated,jdbcType=TIMESTAMP}
+     </if>
+  </select>
+  
+  <insert id="insertStoreBankCardinfo" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankCard" useGeneratedKeys="true" keyProperty="id">
+  insert into store_bank_card
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="cardNumber != null">
+        card_number,
+      </if>
+      <if test="personId != null">
+        person_id,
+      </if>
+      <if test="bankUserName != null">
+        bank_user_name,
+      </if>
+      <if test="bankName != null">
+        bank_name,
+      </if>
+      <if test="bandBranchName != null">
+        band_branch_name,
+      </if>
+      <if test="swiftCode != null">
+        swift_code,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="verificationCode != null">
+        verification_code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="cardNumber != null">
+        #{cardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="personId != null">
+        #{personId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankUserName != null">
+        #{bankUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="bankName != null">
+        #{bankName,jdbcType=VARCHAR},
+      </if>
+      <if test="bandBranchName != null">
+        #{bandBranchName,jdbcType=VARCHAR},
+      </if>
+      <if test="swiftCode != null">
+        #{swiftCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="verificationCode != null">
+        #{verificationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

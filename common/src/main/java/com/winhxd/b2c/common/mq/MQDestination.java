@@ -16,7 +16,11 @@ public enum MQDestination {
     /**
      * 订单超时未接单延时消息
      */
-    ORDER_RECEIVE_TIMEOUT_DELAYED(true);
+    ORDER_RECEIVE_TIMEOUT_DELAYED(true),
+    /**
+     * 订单超时未自提延时消息
+     */
+    ORDER_PICKUP_TIMEOUT_DELAYED(true);
 
     private boolean delayed;
 

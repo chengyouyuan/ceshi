@@ -17,7 +17,11 @@ public enum MQHandler {
     /**
      * 订单超时未接单延时消息
      */
-    ORDER_RECEIVE_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED);
+    ORDER_RECEIVE_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED),
+    /**
+     * 订单超时未自提延时消息
+     */
+    ORDER_PICKUP_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED);
 
     private MQDestination destination;
 

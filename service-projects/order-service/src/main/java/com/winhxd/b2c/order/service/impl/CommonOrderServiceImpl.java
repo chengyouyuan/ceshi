@@ -513,6 +513,8 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getValuationType()).orderInfoConfirmProcess(orderInfo);
+        //注册确认订单成功相关操作
+        registerProcessAfterTransSuccess(new OrderConfirmSuccessRunnerble(orderInfo), null);
         logger.info("门店确认订单结束：condition={}", condition);
     }
 
@@ -539,6 +541,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @StringMessageListener(value=MQHandler.ORDER_PICKUP_TIMEOUT_DELAYED_HANDLER)
     public void orderPickupTimeOut(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
@@ -984,6 +987,27 @@ public class CommonOrderServiceImpl implements OrderService {
         @Override
         public void run() {
             //TODO 发送mq完成消息
+        }
+    }
+    /**
+     * 订单门店确认完成 处理
+     *
+     * @author wangbin
+     * @date 2018年8月8日 下午3:16:17
+     */
+    private class OrderConfirmSuccessRunnerble implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public OrderConfirmSuccessRunnerble(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            getOrderHandler(orderInfo.getValuationType())
+            .orderInfoAfterConfirmSuccessProcess(orderInfo);
         }
     }
 

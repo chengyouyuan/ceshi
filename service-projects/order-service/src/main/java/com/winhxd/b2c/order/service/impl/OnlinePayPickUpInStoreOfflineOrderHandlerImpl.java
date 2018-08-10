@@ -97,6 +97,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         }
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
+        // 发送延时MQ信息，处理超时未确认取消操作
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
     }
@@ -153,6 +154,11 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
                 OrderStatusEnum.WAIT_PAY.getStatusDes(), MainPointEnum.MAIN);
         logger.info("{},orderNo={} 订单确认后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
+    
+    @Override
+    public void orderInfoAfterConfirmSuccessProcess(OrderInfo orderInfo) {
+        logger.info("{},orderNo={} 订单确认成功后无业务处理", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+    }
 
     @Override
     public void orderInfoAfterPaySuccessProcess(OrderInfo orderInfo) {
@@ -172,7 +178,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         //TODO 发送消息给用户
         Date pickupDateTime = orderInfo.getPickupDateTime() == null ? new Date() : orderInfo.getPickupDateTime();
         String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
-        // TODO 发送延时MQ信息，处理超时未自提取消操作
+        // 发送延时MQ信息，处理超时未自提 取消操作
+        int delayMilliseconds = OrderOperateTime.ORDER_NEED_PICKUP_TIME_BY_MILLISECONDS;
+        stringMessageSender.send(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
     }
 
     private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {

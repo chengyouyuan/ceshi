@@ -28,9 +28,9 @@ import static com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum.*;
 @Api(tags = "地理区域管理")
 @RestController
 @RequestMapping
-public class ApiRegionController implements RegionServiceClient {
+public class SysRegionController implements RegionServiceClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiRegionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SysRegionController.class);
 
     private static final String MODULE_NAME = "地理区域管理";
 

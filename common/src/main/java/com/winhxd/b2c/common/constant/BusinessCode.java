@@ -161,4 +161,7 @@ public final class BusinessCode {
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
     public static final int CODE_410001 = 410001;
+
+    @ApiModelProperty("查询的地理区域不存在")
+    public static final int SysRegionCODE_310001 = 310001;
 }

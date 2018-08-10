@@ -63,7 +63,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
-@RequestMapping(value = "api-store/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "api-store/storeProductManage/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreProductManageController.class);
 	@Autowired
@@ -370,7 +370,7 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！")})
-	@PostMapping(value = "1018/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1027/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
 		try {
@@ -436,7 +436,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
-	@PostMapping(value = "1019/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "1028/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(
 			@RequestBody StoreProductManageCondition condition) {
 		ResponseResult<PagedList<StoreProdSimpleVO>> responseResult = new ResponseResult<>();

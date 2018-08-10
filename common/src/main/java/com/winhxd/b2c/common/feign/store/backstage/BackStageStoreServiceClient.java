@@ -31,8 +31,8 @@ public interface BackStageStoreServiceClient {
      * @param storeCondition
      * @return
      */
-    @RequestMapping(value = "/store/1020/v1/storeList",method = RequestMethod.GET)
-    ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeCondition);
+    @RequestMapping(value = "/store/1020/v1/findStoreList",method = RequestMethod.GET)
+    ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeCondition);
 
     /**
      * 获取门店详细信息
@@ -72,7 +72,7 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
     }
 
     @Override
-    public ResponseResult<PagedList<BackStageStoreVO>> storeList(BackStageStoreInfoCondition storeCondition) {
+    public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(BackStageStoreInfoCondition storeCondition) {
         logger.error("StoreServiceClientFallBack -> storeList报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

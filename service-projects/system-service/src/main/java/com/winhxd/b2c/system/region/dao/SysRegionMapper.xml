@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.system.dao.SysRegionMapper">
+<mapper namespace="com.winhxd.b2c.system.region.dao.SysRegionMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.region.model.SysRegion">
     <id column="region_code" jdbcType="VARCHAR" property="regionCode" />
     <result column="province" jdbcType="VARCHAR" property="province" />

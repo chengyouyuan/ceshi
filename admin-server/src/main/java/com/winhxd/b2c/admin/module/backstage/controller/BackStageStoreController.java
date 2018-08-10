@@ -46,15 +46,15 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @PostMapping(value = "/1020/v1/storeList")
-    public ResponseResult<PagedList<BackStageStoreVO>> storeList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
+    @PostMapping(value = "/1020/v1/findStoreList")
+    public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
         try {
-            logger.info("{} - #后台-门店##门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
-            responseResult = backStageStoreServiceClient.storeList(storeInfoCondition);
-            logger.info("{} - #后台-门店##门店账户列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+            logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
+            responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);
+            logger.info("{} - 门店账户列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {
-            logger.error("#后台-门店##查看门店列表，服务器内部错误：{}", e);
+            logger.error("{} - 查看门店列表，服务器内部错误：{}", MODULE_NAME, e);
             responseResult.setCode(BusinessCode.CODE_1001);
             responseResult.setMessage("服务器内部错误！");
         }
@@ -112,8 +112,8 @@ public class BackStageStoreController {
     public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult  = new ResponseResult<>();
         try {
-            logger.info("{} - #后台-门店##地理区域列表, 参数：condition={}", MODULE_NAME, condition.toString());
-            responseResult = regionServiceClient.getRegions(condition);
+            logger.info("{} - #后台-门店##地理区域列表, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
+            responseResult = regionServiceClient.findRegionList(condition);
             logger.info("{} - #后台-门店##地理区域列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         } catch (Exception e) {
             logger.error("#后台-门店##地理区域列表，服务器内部错误：{}", e);

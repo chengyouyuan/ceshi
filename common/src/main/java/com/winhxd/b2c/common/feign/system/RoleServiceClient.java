@@ -27,7 +27,7 @@ public interface RoleServiceClient {
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/api-system/role/310/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/310/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> save(@RequestBody SysRole sysRole);
 
     /**
@@ -37,7 +37,7 @@ public interface RoleServiceClient {
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/api-system/role/311/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/311/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> modify(@RequestBody SysRole sysRole);
 
     /**
@@ -47,7 +47,7 @@ public interface RoleServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/api-system/role/312/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/312/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysRole>> find(@RequestBody SysRoleCondition condition);
 
 
@@ -58,7 +58,7 @@ public interface RoleServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/api-system/role/313/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/role/313/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysRole> get(@PathVariable("id") Long id);
 
     /**
@@ -68,7 +68,7 @@ public interface RoleServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/api-system/role/314/v1/remove/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/role/314/v1/remove/{id}", method = RequestMethod.DELETE)
     ResponseResult<Integer> remove(@PathVariable("id") Long id);
 
 }

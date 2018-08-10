@@ -47,7 +47,7 @@ import java.util.List;
  */
 @Api(tags = "惠小店开店相关接口")
 @RestController
-@RequestMapping(value = "/api-store/store", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-store/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiOpenStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiOpenStoreController.class);
@@ -263,6 +263,11 @@ public class ApiOpenStoreController {
     }
 
 
+    /*@ApiOperation(value = "根据用户token查询绑定门店id，有则返回，没有则不返回")
+    @RequestMapping(value = "/store/security/1029/v1/findBindingStoreId/{token}")
+    public ResponseResult<Long> findBindingStoreId(@PathVariable("token")String token){
+
+    }*/
     /**
      * @param id 门店id
      * @return StoreUserInfoVO 返回当前门店信息数据

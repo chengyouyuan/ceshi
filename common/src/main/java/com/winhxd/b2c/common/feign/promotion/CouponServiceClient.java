@@ -1,9 +1,12 @@
 package com.winhxd.b2c.common.feign.promotion;
 
-import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,12 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.ResponseResult;
-
-import feign.hystrix.FallbackFactory;
 
 import java.util.List;
 
@@ -52,6 +49,8 @@ public interface CouponServiceClient {
     @RequestMapping(value = "/promotion/544/v1/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition);
 
+    @RequestMapping(value = "/promotion/507/v1/checkCouponStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition);
 
 }
 
@@ -113,5 +112,10 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
+    @Override
+    public ResponseResult checkCouponStatus(CouponCheckStatusCondition condition) {
+        logger.error("CouponServiceClient -> checkCouponStatus", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
 
 }

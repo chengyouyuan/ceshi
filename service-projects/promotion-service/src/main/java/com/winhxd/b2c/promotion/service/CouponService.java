@@ -88,4 +88,11 @@ public interface CouponService {
      * @return
      */
     CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition);
+
+    /**
+     * 校验优惠券是否可用
+     * @param condition
+     * @return
+     */
+    Boolean checkCouponStatus(CouponCheckStatusCondition condition);
 }

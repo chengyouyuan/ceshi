@@ -503,4 +503,10 @@ public class CouponServiceImpl implements CouponService {
         }
         return new BigDecimal(0);
     }
+
+    @Override
+    public Boolean checkCouponStatus(CouponCheckStatusCondition condition) {
+
+        return null;
+    }
 }

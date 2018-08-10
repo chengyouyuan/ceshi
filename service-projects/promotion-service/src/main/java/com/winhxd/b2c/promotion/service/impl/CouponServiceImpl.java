@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -61,9 +63,12 @@ public class CouponServiceImpl implements CouponService {
     @Autowired
     CouponApplyProductListMapper couponApplyProductListMapper;
     @Autowired
+    CouponTemplateMapper couponTemplateMapper;
+    @Autowired
     StoreServiceClient storeServiceClient;
     @Autowired
     ProductServiceClient productServiceClient;
+
 
     @Override
     public List<CouponVO> getNewUserCouponList() {
@@ -180,9 +185,11 @@ public class CouponServiceImpl implements CouponService {
     }
 
 	@Override
-	public Integer getCouponNumsByCustomerForStore(Long storeId, Long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
+        ResponseResult result = new ResponseResult();
+        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        result.setData(sum+"");
+		return result;
 	}
 
     /**
@@ -395,6 +402,20 @@ public class CouponServiceImpl implements CouponService {
         List<Long> sendIds = couponCondition.getSendIds();
         if(sendIds.isEmpty()||null == couponCondition.getProducts()){
             throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        for(int i=0;i<sendIds.size();i++){
+           CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
+           CouponTemplate couponTemplate = couponTemplateMapper.selectByPrimaryKey(couponTemplateSend.getTemplateId());
+           //按订单金额计算优惠金额
+           if(couponTemplate.getCalType().equals(CouponTemplateEnum.ORDER_CALTYPE.getCode())){
+               BigDecimal amountPrice = new BigDecimal(0);
+               for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
+                   BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                   amountPrice.add(productPrice);
+               }
+
+
+           }
         }
         return null;
     }

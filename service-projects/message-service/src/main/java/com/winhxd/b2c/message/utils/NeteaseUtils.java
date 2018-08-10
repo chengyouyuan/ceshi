@@ -168,7 +168,7 @@ public class NeteaseUtils {
         return bodyJson.toJSONString();
     }
 
-    private String buildExtJsonMsg(NeteaseMsg neteaseMsg){
+    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
         JSONObject extJson = new JSONObject();
         extJson.put("title",neteaseMsg.getMsgContent());
         extJson.put("pagetype",neteaseMsg.getPageType());

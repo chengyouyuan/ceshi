@@ -10,11 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -107,7 +109,9 @@ public class CommonOrderServiceImpl implements OrderService {
     @Autowired
     private CustomerServiceClient customerServiceclient;
 
-    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY));
+    private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("order-thread-pool-%d").build();
+    private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, new ArrayBlockingQueue<>(QUEUE_CAPACITY),
+            namedThreadFactory);
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
@@ -212,6 +216,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     orderRefund(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
                 } else {
                     orderCancel(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
+                    //TODO 发送云信给订单用户 小店因为{取消原因}取消了订单，请再看看其他的商品吧
                 }
             } finally {
                 lock.unlock();
@@ -237,6 +242,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
         }
+        CustomerUserInfoVO customer = getCustomerUserInfoVO(user.getCustomerId());
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         if (lock.tryLock()) {
@@ -252,8 +258,11 @@ public class CommonOrderServiceImpl implements OrderService {
                     throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, "订单已支付成功不能取消");
                 }
 
-                orderCancel(order, orderCancelCondition.getCancelReason(), user.getCustomerId(), null);
+                orderCancel(order, orderCancelCondition.getCancelReason(), user.getCustomerId(), customer.getNickName());
                 //TODO 订单取消发送云信
+                // 给门店【已取消】手机尾号8513张先生已取消订单
+                //给申请用户 “您的订单已取消”。
+                String mobileStr = getLast4Mobile(customer.getCustomerMobile());
             } finally {
                 lock.unlock();
             }
@@ -408,7 +417,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_1002, "用户不存在");
         }
         Long customerId = customer.getCustomerId();
-        CustomerUserInfoVO customerUserInfoVO =   getCustomerUserInfoVO(customerId);
+        CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         if (lock.tryLock()) {
@@ -438,6 +447,10 @@ public class CommonOrderServiceImpl implements OrderService {
                     orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
                             order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                     logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
+                    //发送云信--手机尾号8513顾客申请退款
+                    String mobileStr = getLast4Mobile(customerUserInfoVO.getCustomerMobile());
+                    String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
+
                 } else {
                     logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);
                     throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, "C端申请退款不成功");
@@ -932,6 +945,20 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
         return ret.getData().get(0);
+    }
+
+    /**
+     * 获取手机号后四位，如果未空或者小于4位，返回空字符串
+     *
+     * @param mobile
+     * @return
+     */
+    private String getLast4Mobile(String mobile) {
+        String mobileStr = "";
+        if (StringUtils.isNotBlank(mobile) && mobile.length() > 4) {
+            mobileStr = mobile.substring(mobile.length() - 4, mobile.length());
+        }
+        return mobileStr;
     }
 
 }

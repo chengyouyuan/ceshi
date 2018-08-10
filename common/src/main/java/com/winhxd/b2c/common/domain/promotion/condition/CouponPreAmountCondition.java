@@ -14,6 +14,8 @@ public class CouponPreAmountCondition {
     private List<Long> sendIds;
     @ApiModelProperty(value = "商品信息", required=true)
     private List<CouponProductCondition> products;
+    @ApiModelProperty(value = "支付方式", required=true)
+    private String payType;
 
     public List<Long> getSendIds() {
         return sendIds;
@@ -29,5 +31,13 @@ public class CouponPreAmountCondition {
 
     public void setProducts(List<CouponProductCondition> products) {
         this.products = products;
+    }
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setPayType(String payType) {
+        this.payType = payType;
     }
 }

@@ -13,8 +13,8 @@
     <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
     <result column="town_code" jdbcType="VARCHAR" property="townCode" />
     <result column="village_code" jdbcType="VARCHAR" property="villageCode" />
-    <result column="level" jdbcType="INTEGER" property="level" />
-    <result column="village_type" jdbcType="INTEGER" property="villageType" />
+    <result column="level" jdbcType="SMALLINT" property="level" />
+    <result column="village_type" jdbcType="SMALLINT" property="villageType" />
   </resultMap>
   <sql id="Base_Column_List">
     region_code, province, city, town, county, village, province_code, city_code, county_code, 
@@ -34,7 +34,7 @@
         AND region_code = #{regionCode,jdbcType=CHAR}
       </if>
       <if test="level != null">
-        AND level = #{level,jdbcType=INTEGER}
+        AND level = #{level,jdbcType=SMALLINT}
       </if>
       <if test="provinceCode != null">
         AND province_code = #{provinceCode,jdbcType=CHAR}
@@ -52,7 +52,7 @@
         AND village_code = #{villageCode,jdbcType=CHAR}
       </if>
       <if test="villageType != null">
-        AND village_type = #{villageType,jdbcType=INTEGER}
+        AND village_type = #{villageType,jdbcType=SMALLINT}
       </if>
   </select>
 

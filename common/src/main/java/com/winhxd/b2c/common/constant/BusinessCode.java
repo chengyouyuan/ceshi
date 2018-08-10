@@ -126,7 +126,7 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单创建优惠券使用失败")
     public static final int CODE_401009 = 401009;
-    
+
     @ApiModelProperty("订单号错误")
     public static final int WRONG_ORDERNO = 400000;
     
@@ -156,7 +156,7 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店id错误")
     public static final int WRONG_STORE_ID = 400009;
-    
+
     @ApiModelProperty("顾客id错误")
     public static final int WRONG_CUSTOMER_ID = 400010;
 
@@ -191,4 +191,7 @@ public final class BusinessCode {
     public static final int CODE_420004 = 420004;
     /** 订单取消处理用户退款不成功*/
     public static final int CODE_422005 = 422005;
+
+    @ApiModelProperty("查询的地理区域不存在")
+    public static final int SysRegionCODE_310001 = 310001;
 }

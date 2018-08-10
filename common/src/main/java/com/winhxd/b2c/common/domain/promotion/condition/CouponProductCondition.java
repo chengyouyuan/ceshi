@@ -2,6 +2,8 @@ package com.winhxd.b2c.common.domain.promotion.condition;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+
 /**
  * @Auther wangxiaoshun
  * @Date 2018/8/9 19 53
@@ -13,9 +15,9 @@ public class CouponProductCondition {
     @ApiModelProperty(value = "sku编码")
     private String skuCode;
     @ApiModelProperty(value = "商品价格")
-    private String price;
+    private BigDecimal price;
     @ApiModelProperty(value = "商品数量")
-    private String num;
+    private Integer num;
 
     public String getBrandCode() {
         return brandCode;
@@ -33,19 +35,19 @@ public class CouponProductCondition {
         this.skuCode = skuCode;
     }
 
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public String getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(String num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 }

@@ -3,8 +3,8 @@ package com.winhxd.b2c.common.config;
 import com.winhxd.b2c.common.context.support.ContextInitFilter;
 import com.winhxd.b2c.common.context.support.ContextRequestInterceptor;
 import com.winhxd.b2c.common.exception.support.ServiceHandlerExceptionResolver;
-import com.winhxd.b2c.common.i18n.MessageHelper;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
+import com.winhxd.b2c.common.config.support.ControllerChecker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -38,5 +38,10 @@ public class MicroServiceConfig extends CommonConfig {
     @Bean
     public ContextRequestInterceptor contextRequestInterceptor() {
         return new ContextRequestInterceptor();
+    }
+
+    @Bean
+    public ControllerChecker controllerChecker() {
+        return new ControllerChecker();
     }
 }

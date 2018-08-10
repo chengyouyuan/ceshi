@@ -63,7 +63,7 @@ public class MessageServiceController implements MessageServiceClient {
     public ResponseResult<Void> sendNeteaseMsg(NeteaseMsgCondition neteaseMsgCondition) {
         ResponseResult<Void> result = new ResponseResult<>();
         try{
-
+            neteaseService.sendNeteaseMsg(neteaseMsgCondition);
         }catch (Exception e){
             LOGGER.error("/message/703/v1/sendNeteaseMsg,给B端用户发云信消息出错，异常信息为={}",e);
         }

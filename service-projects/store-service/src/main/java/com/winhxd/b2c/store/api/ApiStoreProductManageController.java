@@ -100,6 +100,7 @@ public class ApiStoreProductManageController {
 			// 参数校验
 			if (!checkParam(condition)) {
 				responseResult.setCode(BusinessCode.CODE_1007);
+				responseResult.setMessage("参数无效！");
 				return responseResult;
 			}
 			// 账号信息校验
@@ -138,6 +139,7 @@ public class ApiStoreProductManageController {
 				} else {
 					// 没有下过单
 					responseResult.setCode(BusinessCode.CODE_1006);
+					responseResult.setMessage("账号未启用！");
 					return responseResult;
 				}
 			}
@@ -192,7 +194,11 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", notes = "B端商品操作接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_200012, message = "部分skuCode无效！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_200013, message = "部分商品已上架！", response = ResponseResult.class)})
 	@PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -201,13 +207,14 @@ public class ApiStoreProductManageController {
 			// 参数校验
 			if (!checkParam(condition)) {
 				responseResult.setCode(BusinessCode.CODE_1007);
-				responseResult.setMessage("参数错误");
+				responseResult.setMessage("参数无效！");
 				return responseResult;
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
 			if (storeUser == null) {
 				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
 				return responseResult;
 			}
 			// 操作类型
@@ -261,14 +268,14 @@ public class ApiStoreProductManageController {
 									prodSkuInfo);
 						}
 					} else {
-						responseResult.setCode(BusinessCode.CODE_1001);
-						responseResult.setMessage("查询商品信息异常！");
+						responseResult.setCode(BusinessCode.CODE_200012);
+						responseResult.setMessage("部分skuCode无效！");
 						return responseResult;
 					}
 				} else {
 					// 表示商品中有部分已经上架过了
-					responseResult.setCode(BusinessCode.CODE_1001);
-					responseResult.setMessage("部分商品上架过");
+					responseResult.setCode(BusinessCode.CODE_200013);
+					responseResult.setMessage("部分商品已上架");
 					return responseResult;
 				}
 
@@ -294,7 +301,8 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class)})
 	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -310,6 +318,7 @@ public class ApiStoreProductManageController {
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
 			if (storeUser == null) {
 				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
 				return responseResult;
 			}
 			Long storeId = storeUser.getBusinessId();
@@ -329,7 +338,8 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreSubmitProductVO.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class)})
 	@PostMapping(value = "1015/v1/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(
 			@RequestBody StoreSubmitProductCondition condition) {
@@ -346,6 +356,7 @@ public class ApiStoreProductManageController {
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
 			if (storeUser == null) {
 				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
 				return responseResult;
 			}
 			Long storeId = storeUser.getBusinessId();
@@ -437,7 +448,8 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class)})
 	@PostMapping(value = "1028/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(
 			@RequestBody StoreProductManageCondition condition) {
@@ -454,6 +466,7 @@ public class ApiStoreProductManageController {
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
 			if (storeUser == null) {
 				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
 				return responseResult;
 			}
 			Long storeId = storeUser.getBusinessId();

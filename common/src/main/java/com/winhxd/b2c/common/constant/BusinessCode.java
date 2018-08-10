@@ -84,6 +84,8 @@ public final class BusinessCode {
     public static final int CODE_200011 = 200011;
     /**门店商品skuCode无效*/
     public static final int CODE_200012 = 200012;
+    /**sku已上架**/
+    public static final int CODE_200013 = 200013;
 
 
 

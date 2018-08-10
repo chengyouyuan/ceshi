@@ -147,7 +147,7 @@
     <if test="customerId != null">
       and customer_id = #{customerId,jdbcType=BIGINT}
     </if>
-    <if test="storeId != null">
+    <if test="storeId != null and storeId != 0">
       and store_id = #{storeId,jdbcType=BIGINT}
     </if>
     order by created

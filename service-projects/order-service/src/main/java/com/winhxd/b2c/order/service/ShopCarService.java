@@ -29,7 +29,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: ShopCarVO
      */
-    List<ShopCarProdInfoVO> findShopCar(ShopCarCondition condition, Long customerId);
+    List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId);
 
     /**
      * 删除购物车

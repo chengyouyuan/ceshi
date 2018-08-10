@@ -80,12 +80,12 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public List<ShopCarProdInfoVO> findShopCar(ShopCarCondition condition, Long customerId) {
+    public List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId) {
         List<ShopCarProdInfoVO> result = new ArrayList<>();
         ShopCar shopCar = new ShopCar();
         // 获取当前用户信息
         shopCar.setCustomerId(customerId);
-        shopCar.setStoreId(condition.getStoreId());
+        shopCar.setStoreId(storeId);
         List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
         if (CollectionUtils.isEmpty(shopCars)) {
             return result;

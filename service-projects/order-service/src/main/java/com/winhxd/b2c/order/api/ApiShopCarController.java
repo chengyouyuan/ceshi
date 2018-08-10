@@ -17,10 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -89,15 +86,15 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarCondition condition){
+    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestParam("storeId") Long storeId){
         ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
         try {
-            if (null == condition || null == condition.getStoreId()) {
+            if (null == storeId || 0 == storeId) {
                 logger.error("查询购物车异常{}  参数storeId为空");
                 throw new BusinessException(BusinessCode.CODE_402001);
             }
-            List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition, getCurrentCustomerId());
+            List<ShopCarProdInfoVO> data = shopCarService.findShopCar(storeId, getCurrentCustomerId());
             result.setData(data);
         } catch (Exception e){
             logger.error("ShopCarController -> findShopCar接口异常, 异常信息{}" + e.getMessage(), e);
@@ -214,7 +211,7 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser || null == customerUser.getCustomerId()) {
+        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
             logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
             throw new BusinessException(BusinessCode.CODE_1004);
         }

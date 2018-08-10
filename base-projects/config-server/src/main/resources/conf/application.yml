@@ -8,6 +8,9 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null
     time-zone: GMT+8
+  sleuth:
+    sampler:
+      probability: 1.0
 
 management:
   endpoints:
@@ -15,7 +18,7 @@ management:
       exposure:
         include: "*"
       path-mapping:
-        shutdown: /hxd/shutdown
+        shutdown: /shut/down/server
   endpoint:
     shutdown:
       enabled: true

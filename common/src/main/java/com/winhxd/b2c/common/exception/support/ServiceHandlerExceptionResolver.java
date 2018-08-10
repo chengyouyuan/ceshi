@@ -1,10 +1,14 @@
 package com.winhxd.b2c.common.exception.support;
 
+import brave.Span;
+import brave.Tracer;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.i18n.MessageHelper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -17,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver {
     private static final Logger log = LoggerFactory.getLogger(ServiceHandlerExceptionResolver.class);
+    @Autowired
+    private Tracer tracer;
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
@@ -24,7 +30,11 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         if (ex instanceof BusinessException) {
             code = ((BusinessException) ex).getErrorCode();
         } else {
-            log.error("Controller未知异常", ex);
+            String stackTrace = ExceptionUtils.getStackTrace(ex);
+            Span currentSpan = tracer.currentSpan();
+            currentSpan.error(ex);
+            currentSpan.tag("error.stackTrace", stackTrace);
+            log.error("Controller未知异常,TraceId=" + currentSpan.context().traceIdString() + ",message=" + ex.getMessage(), ex);
             code = BusinessCode.CODE_1001;
         }
         MappingJackson2JsonView view = new MappingJackson2JsonView();

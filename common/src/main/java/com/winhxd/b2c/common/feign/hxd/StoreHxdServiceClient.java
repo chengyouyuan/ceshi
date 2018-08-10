@@ -37,7 +37,7 @@ public interface StoreHxdServiceClient {
      * @return
      */
     @RequestMapping(value = "/hxdStore/getStorePerfectInfo/", method = RequestMethod.GET)
-    ResponseResult<List<String>> getStorePerfectInfo(@RequestParam("customerId") String customerId);
+    ResponseResult<List<Integer>> getStorePerfectInfo(@RequestParam("customerId") String customerId);
 
     /**
      * 功能描述:获得门店在惠下单购买过商品sku
@@ -46,7 +46,7 @@ public interface StoreHxdServiceClient {
      * @auther lvsen
      * @date 2018/8/7 20:40
      */
-    @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku/", method = RequestMethod.GET)
+    @RequestMapping(value = "/hxdStore/getStoreBuyedProdSku", method = RequestMethod.POST)
     ResponseResult<List<String>> getStoreBuyedProdSku(@RequestParam("customerId") Long customerId);
 
     /**
@@ -80,7 +80,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<String>> getStorePerfectInfo(String storeId) {
+    public ResponseResult<List<Integer>> getStorePerfectInfo(String storeId) {
         logger.error("StoreHxdServiceClient -> getStorePerfectInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

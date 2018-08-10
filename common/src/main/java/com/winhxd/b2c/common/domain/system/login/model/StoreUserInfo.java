@@ -82,7 +82,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 惠小店状态（0、未开店，1、有效，2、无效）
      */
-    private Byte storeStatus;
+    private Short storeStatus;
     private String token;
     private static final long serialVersionUID = 1L;
 
@@ -253,11 +253,11 @@ public class StoreUserInfo implements Serializable {
         this.source = source == null ? null : source.trim();
     }
 
-    public Byte getStoreStatus() {
+    public Short getStoreStatus() {
         return storeStatus;
     }
 
-    public void setStoreStatus(Byte storeStatus) {
+    public void setStoreStatus(Short storeStatus) {
         this.storeStatus = storeStatus;
     }
 

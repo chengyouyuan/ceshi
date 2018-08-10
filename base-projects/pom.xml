@@ -19,7 +19,7 @@
     </modules>
 
     <build>
-        <finalName>b2c-${artifactId}</finalName>
+        <finalName>b2c-${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

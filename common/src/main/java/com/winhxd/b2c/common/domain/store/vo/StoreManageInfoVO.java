@@ -15,9 +15,6 @@ import lombok.Data;
 @Data
 public class StoreManageInfoVO {
 
-    @ApiModelProperty(value = "门店编码", required = true)
-    private Long storeId;
-
     @ApiModelProperty(value = "门店名称", required = true)
     private String storeName;
 
@@ -28,9 +25,21 @@ public class StoreManageInfoVO {
     private String browseNum;
 
     @ApiModelProperty(value = "今日下单人数", required = true)
-    private String createOrderNum;
+    private String createNum;
 
     @ApiModelProperty(value = "今日订单数", required = true)
-    private String completeOrderNum;
+    private String completeNum;
+
+    @ApiModelProperty(value = "对比昨日营业额")
+    private String turnoverCompare;
+
+    @ApiModelProperty(value = "对比昨日浏览人数")
+    private String browseNumCompare;
+
+    @ApiModelProperty(value = "对比昨日下单人数")
+    private String createNumCompare;
+
+    @ApiModelProperty(value = "对比昨日订单数")
+    private String completeNumCompare;
 
 }

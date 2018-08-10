@@ -6,11 +6,13 @@ import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * @author liutong
  * @date 2018-08-07 18:42:07
  */
-@Service
+@Service("storeBrowseLogService")
 public class StoreBrowseLogServiceImpl implements StoreBrowseLogService {
 
     @Autowired
@@ -29,5 +31,10 @@ public class StoreBrowseLogServiceImpl implements StoreBrowseLogService {
     @Override
     public void modifyByPrimaryKey(CustomerBrowseLog customerBrowseLog) {
         customerBrowseLogMapper.updateByPrimaryKey(customerBrowseLog);
+    }
+
+    @Override
+    public int getBrowseNum(Long storeCustomerId, Date beginDate, Date endDate) {
+        return customerBrowseLogMapper.getBrowseNum(storeCustomerId, beginDate, endDate);
     }
 }

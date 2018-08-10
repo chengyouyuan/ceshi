@@ -175,7 +175,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-						storeUserInfo.setStoreStatus((byte) 0);
+						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setToken(storeUserInfo.getToken());
@@ -281,7 +281,7 @@ public class ApiStoreLoginController {
 						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						storeUserInfo.setSource(storeUserInfoCondition.getSource());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-						storeUserInfo.setStoreStatus((byte) 0);
+						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
 
 						vo.setToken(storeUserInfo.getToken());
@@ -371,7 +371,7 @@ public class ApiStoreLoginController {
 						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
-						info.setStoreStatus((byte) 0);
+						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -391,7 +391,7 @@ public class ApiStoreLoginController {
 						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
 						info.setSource(storeUserInfoCondition.getSource());
 						info.setToken(GeneratePwd.getRandomUUID());
-						info.setStoreStatus((byte) 0);
+						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
 						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
 					}
@@ -446,7 +446,7 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-	    //messageServiceClient.sendSMS(storeMobile, content);
+	    messageServiceClient.sendSMS(storeMobile, content);
 		logger.info(storeMobile+":发送的内容为:"+content);
 		return result;
 	}

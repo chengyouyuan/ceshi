@@ -5,6 +5,15 @@ spring:
         url: http://localhost:1111/admin/
         instance:
           prefer-ip: true
+  zipkin:
+#    base-url: http://localhost:9411
+    sender:
+      type: rabbit
+  rabbitmq:
+    host: 192.168.60.250
+    port: 5672
+    username: guest
+    password: guest
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: retail2C_user
@@ -14,7 +23,7 @@ spring:
 RETAIL-REST-SERVICE:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://192.168.60.241:8202/
+    listOfServers: http://localhost:8080/
 # 缓存配置
 redis:
   cluster:
@@ -23,11 +32,3 @@ redis:
     maxIdle: 5000
     maxWaitMillis: 10000
     testOnBorrow: true
-#  sentinel:
-#    master: redis-master
-#    nodes: 192.168.60.241:25379
-#    password: foobared
-#    maxTotal: 500
-#    maxIdle: 5000
-#    maxWaitMillis: 10000
-#    testOnBorrow: true

@@ -89,7 +89,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setStoreId(storeId);
 					spManage.setSkuCode(skuCode);
 					spManage.setProdCode(prodSku.getProductCode());
-					spManage.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setPutawayTime(new Date());
 					//售价
 					spManage.setSellMoney(putaway.getSellMoney());
@@ -106,7 +106,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 				
 				}else{
 					//存在，可能是下架了或则删除
-					spManage.setProdStatus((byte)StoreProductStatusEnum.PUTAWAY.getStatusCode());
+					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setUpdated(new Date());
 					spManage.setUpdatedBy(storeId);
 					//上架日期
@@ -146,7 +146,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					logger.error("StoreProductManageService ->removeStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
-				spManage.setProdStatus((byte)StoreProductStatusEnum.DELETED.getStatusCode());
+				spManage.setProdStatus(StoreProductStatusEnum.DELETED.getStatusCode());
 				spManage.setUpdated(new Date());
 				spManage.setUpdatedBy(storeId);
 				//店主名称
@@ -176,7 +176,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					logger.error("StoreProductManageService ->unPutawayStoreProductManage异常,查询不到storeId:"+storeId+",skuCode:"+skuCode+"的门店商品管理信息！");
 					throw new BusinessException(BusinessCode.CODE_1001);
 				}
-				spManage.setProdStatus((byte)StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
+				spManage.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
 				spManage.setUpdated(new Date());
 				spManage.setUpdatedBy(storeId);
 				//店主名称

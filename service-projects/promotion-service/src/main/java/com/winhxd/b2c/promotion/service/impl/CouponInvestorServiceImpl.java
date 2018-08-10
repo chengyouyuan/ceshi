@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
@@ -118,6 +119,21 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponInvestorVO> couponInvestorList = couponInvestorMapper.getCouponInvestorPage(condition);
         PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(couponInvestorList);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize) {
+        ResponseResult<PagedList<InvertorTempleteCountVO>> result= new ResponseResult<PagedList<InvertorTempleteCountVO>>();
+        PagedList<InvertorTempleteCountVO> pagedList = new PagedList<>();
+        PageHelper.startPage(pageNo,pageSize);
+        List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(Long.parseLong(invertorId));
+        PageInfo<InvertorTempleteCountVO> pageInfo = new PageInfo<>(couponInvestorCountPageList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

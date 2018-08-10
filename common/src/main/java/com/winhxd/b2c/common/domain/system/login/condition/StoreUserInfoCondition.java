@@ -21,7 +21,7 @@ public class StoreUserInfoCondition{
 	@ApiModelProperty(value = "微信openid")
     private String openId;
 	@ApiModelProperty(value = "来源")
-    private String source;
+    private String platform;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
 	@ApiModelProperty(value = "1、微信登录,2、账号登录")

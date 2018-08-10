@@ -8,10 +8,12 @@ import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.customer.service.CustomerService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -56,10 +58,21 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
-    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody  List<Long> ids) {
+    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody List<Long> ids) {
         ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<>();
         List<CustomerUserInfoVO> customers = customerService.findCustomerUserByIds(ids);
         responseResult.setData(customers);
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult<CustomerUserInfoVO> findCustomerByToken(@RequestParam("token") String token) {
+        ResponseResult<CustomerUserInfoVO> responseResult = new ResponseResult<>();
+        if (StringUtils.isEmpty(token)) {
+            throw new BusinessException(BusinessCode.CODE_1014);
+        }
+        CustomerUserInfoVO customerUserInfoVO = customerService.findCustomerByToken(token);
+        responseResult.setData(customerUserInfoVO);
         return responseResult;
     }
 }

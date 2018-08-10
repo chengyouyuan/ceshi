@@ -13,11 +13,11 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
-import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
+import com.winhxd.b2c.promotion.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +41,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
-    //@Autowired
-    //private CouponServiceClient couponServiceClient;
+    @Autowired
+    private CouponService couponService;
 
     /**
      * 查询活动列表
@@ -308,7 +308,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             longList.add(Long.valueOf(id));
             RevokeCouponCodition couponCondition = new RevokeCouponCodition();
             couponCondition.setSendIds(longList);
-            //couponServiceClient.revokeCoupon(couponCondition);
+            couponService.revokeCoupon(couponCondition);
         }catch (Exception e){
             e.printStackTrace();
         }

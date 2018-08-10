@@ -105,6 +105,30 @@ public interface ProductServiceClient {
 	 */
 	@RequestMapping(value = "/product/v1/getBrandInfo/", method = RequestMethod.POST)
 	ResponseResult<List<BrandVO>> getBrandInfo(@RequestBody List<String> brandCodes);
+	
+	/**	
+	 * 根据sku获取品牌信息
+	 * @Description: TODO     
+	 * @Title: getProductSkus
+	 * @param: @param condition
+	 * @param: @return      
+	 * @return: ResponseResult<List<ProductSkuVO>>      
+	 * @throws
+	 */
+	@RequestMapping(value = "/product/v1/getBrandInfoBySku/", method = RequestMethod.POST)
+	ResponseResult<List<BrandVO>> getBrandInfoBySku(@RequestBody List<String> skuCodes);
+	
+	/**	
+	 * 根据spu获取品牌信息
+	 * @Description: TODO     
+	 * @Title: getProductSkus
+	 * @param: @param condition
+	 * @param: @return      
+	 * @return: ResponseResult<List<ProductSkuVO>>      
+	 * @throws
+	 */
+	@RequestMapping(value = "/product/v1/getBrandInfoBySpu/", method = RequestMethod.POST)
+	ResponseResult<List<BrandVO>> getBrandInfoBySpu(@RequestBody List<String> spuCodes);
 }
 
 @Component
@@ -164,6 +188,18 @@ class ProductServiceFallback implements ProductServiceClient, FallbackFactory<Pr
 	@Override
 	public ResponseResult<List<BrandVO>> getBrandInfo(List<String> brandCodes) {
 		logger.error("ProductServiceClient -> getBrandInfo", throwable);
+		return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<List<BrandVO>> getBrandInfoBySku(List<String> skuCodes) {
+		logger.error("ProductServiceClient -> getBrandInfoBySku", throwable);
+		return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<List<BrandVO>> getBrandInfoBySpu(List<String> spuCodes) {
+		logger.error("ProductServiceClient -> getBrandInfoBySpu", throwable);
 		return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 }

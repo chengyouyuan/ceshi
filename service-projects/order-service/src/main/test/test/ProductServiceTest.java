@@ -27,10 +27,9 @@ public class ProductServiceTest {
     
     @Test
     public void testGetBrands() {
-    	List<String> brandCodes = new ArrayList<String>();
-    	brandCodes.add("ABC");
-    	brandCodes.add("hongniu");
-    	ResponseResult<List<BrandVO>> s = productServiceClient.getBrandInfo(brandCodes);
+    	List<String> skuCodes = new ArrayList<String>();
+    	skuCodes.add("SanQuanJinLongYu858012");
+    	ResponseResult<List<BrandVO>> s = productServiceClient.getBrandInfoBySku(skuCodes);
     	System.out.println(s);
     }
     

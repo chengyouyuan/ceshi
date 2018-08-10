@@ -24,19 +24,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponApplyServiceClientFallback.class)
 public interface CouponApplyServiceClient {
 
-    @RequestMapping(value = "/promotion/v1/viewCouponApplyDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/522/v1/viewCouponApplyDetail", method = RequestMethod.POST)
     ResponseResult viewCouponApplyDetail(@RequestParam("id") String id);
 
-    @RequestMapping(value = "/promotion/v1/updateCouponApplyToValid", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/523/v1/updateCouponApplyToValid", method = RequestMethod.POST)
     ResponseResult updateCouponApplyToValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
-    @RequestMapping(value = "/promotion/v1/findCouponApplyPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/524/v1/findCouponApplyPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition);
 
-    @RequestMapping(value = "/promotion/v1/addCouponApply", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/521/v1/addCouponApply", method = RequestMethod.POST)
     ResponseResult addCouponApply(@RequestBody CouponApplyCondition condition);
 
-    @RequestMapping(value = "/promotion/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/527/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

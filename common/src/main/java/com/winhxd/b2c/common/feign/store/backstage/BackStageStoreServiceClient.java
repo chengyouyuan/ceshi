@@ -40,7 +40,7 @@ public interface BackStageStoreServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/store/1021/v1/getStoreInfoById",method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1035/v1/getStoreInfoById",method = RequestMethod.GET)
     ResponseResult<BackStageStoreVO> getStoreInfoById(@RequestParam("id") Long id);
 
     /**
@@ -49,7 +49,7 @@ public interface BackStageStoreServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/store/1022/v1/modifyStoreInfo",method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1036/v1/modifyStoreInfo",method = RequestMethod.POST)
     ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition);
 
 }

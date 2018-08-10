@@ -163,7 +163,7 @@ public class ShopCarServiceImpl implements ShopCarService {
             }
             for(OrderItemCondition orderItem : orderItemConditions) {
                 if (shopCarProdVO.getSkuCode().equals(orderItem.getSkuCode())
-                        && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
+                        && !shopCarProdVO.getSellMoney().equals(orderItem.getPrice())) {
                     logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                     throw new BusinessException(BusinessCode.CODE_402012);
                 }
@@ -179,7 +179,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 throw new BusinessException(BusinessCode.CODE_402010);
             }
             if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())
-                    && null != shopCarProdVO.getSellMoney() && !shopCarProdVO.getSellMoney().equals(condition.getPrice())) {
+                    && !shopCarProdVO.getSellMoney().equals(condition.getPrice())) {
                 logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402012);
             }

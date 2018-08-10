@@ -103,16 +103,17 @@ public class ApiStoreProductManageController {
 			}
 			// 账号信息校验
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				responseResult.setMessage("登录凭证无效");
-				return responseResult;
-			}
+//			if (storeUser == null) {
+//				responseResult.setCode(BusinessCode.CODE_1002);
+//				responseResult.setMessage("登录凭证无效");
+//				return responseResult;
+//			}
 
 			// 判断查询可上架商品类型
 			Byte prodType = condition.getProdType();
 			// 门店编码
-			Long storeId = storeUser.getBusinessId();
+//			Long storeId = storeUser.getBusinessId();
+			Long storeId = condition.getStoreId();
 			// 已上架的商品sku
 			List<String> putawayProdSkus = null;
 
@@ -340,18 +341,19 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				return responseResult;
-			}
-			Long storeId = storeUser.getBusinessId();
+//			if (storeUser == null) {
+//				responseResult.setCode(BusinessCode.CODE_1002);
+//				return responseResult;
+//			}
+//			Long storeId = storeUser.getBusinessId();
+			Long storeId = condition.getStoreId();
 			condition.setStoreId(storeId);
 
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 
 			PagedList<StoreSubmitProductVO> pageList = storeSubmitProductService.findSimpelVOByCondition(condition);
-			if (pageList == null) {
-
+			if(pageList==null){
+				pageList=new PagedList<>();
 			}
 			responseResult.setData(pageList);
 		} catch (Exception e) {
@@ -450,11 +452,12 @@ public class ApiStoreProductManageController {
 			}
 			// 获取当前门店用户
 			StoreUser storeUser = UserContext.getCurrentStoreUser();
-			if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				return responseResult;
-			}
-			Long storeId = storeUser.getBusinessId();
+//			if (storeUser == null) {
+//				responseResult.setCode(BusinessCode.CODE_1002);
+//				return responseResult;
+//			}
+//			Long storeId = storeUser.getBusinessId();
+			Long storeId = condition.getStoreId();
 			condition.setStoreId(storeId);
 			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 			PagedList<StoreProdSimpleVO> list = storeProductManageService.findSimpelVOByCondition(condition);
@@ -513,9 +516,7 @@ public class ApiStoreProductManageController {
             //StoreSubmitProductCondition 必须传参数校验
             if (condition instanceof StoreSubmitProductCondition) {
                 StoreSubmitProductCondition c = (StoreSubmitProductCondition) condition;
-                if (c.getProdImage1() != null) {
-                    flag = true;
-                }
+                flag = true;
             }
             //StoreProductManageCondition 必须传参数校验
             if (condition instanceof StoreProductManageCondition) {

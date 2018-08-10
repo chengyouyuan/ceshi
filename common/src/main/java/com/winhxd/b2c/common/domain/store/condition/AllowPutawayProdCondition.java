@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winhxd.b2c.common.domain.condition.MobileCondition;
 
@@ -35,7 +37,7 @@ public class AllowPutawayProdCondition extends MobileCondition {
 	private String categoryCode;
 	
 	@ApiModelProperty(value = "品牌编码")
-	private String brandCode;
+	private List<String> brandCode;
 	
 	@ApiModelProperty(value = "商品类型默认0，0 惠下单商品，1 普通商品")
 	private Byte prodType;

@@ -68,7 +68,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 
-	@RequestMapping(value = "2021/v1/weChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
@@ -162,7 +162,7 @@ public class ApiCustomerLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "2022/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {
@@ -217,7 +217,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "2023/v1/customerChangeMobile", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
 	public ResponseResult<String> customerChangeMobile(@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
 		try {

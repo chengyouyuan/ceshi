@@ -149,7 +149,8 @@ public class CouponController implements CouponServiceClient{
 		LOGGER.info("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--开始--{}", couponCondition);
 		ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
 		try {
-			//返回对象
+            CouponDiscountVO couponDiscountVO = couponService.couponDiscountAmount(couponCondition);
+            result.setData(couponDiscountVO);
 		}catch (Exception e) {
 			LOGGER.error("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--异常" + e, e);
 			result.setCode(BusinessCode.CODE_1001);

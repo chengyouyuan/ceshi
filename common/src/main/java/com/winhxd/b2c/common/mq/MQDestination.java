@@ -6,7 +6,7 @@ package com.winhxd.b2c.common.mq;
  *
  * @author lixiaodong
  */
-public enum MessageQueueDestination {
+public enum MQDestination {
     /**
      *
      */
@@ -16,11 +16,11 @@ public enum MessageQueueDestination {
 
     private boolean delayed;
 
-    MessageQueueDestination() {
+    MQDestination() {
         this(false);
     }
 
-    MessageQueueDestination(boolean delayed) {
+    MQDestination(boolean delayed) {
         this.delayed = delayed;
     }
 

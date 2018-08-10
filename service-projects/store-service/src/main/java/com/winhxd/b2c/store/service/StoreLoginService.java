@@ -9,7 +9,7 @@ public interface StoreLoginService {
 
 	int modifyStoreUserInfo(StoreUserInfo storeUserInfo);
 
-	StoreUserInfo getstoreUserInfo(StoreUserInfo storeUserInfo);
+	StoreUserInfo getStoreUserInfo(StoreUserInfo storeUserInfo);
 
 	int saveStoreInfo(StoreUserInfo info);
 

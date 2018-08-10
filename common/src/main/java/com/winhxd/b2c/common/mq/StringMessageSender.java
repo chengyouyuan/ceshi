@@ -12,11 +12,11 @@ public class StringMessageSender {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-    public void send(MessageQueueDestination destination, Object message) {
+    public void send(MQDestination destination, Object message) {
         send(destination, message, null);
     }
 
-    public void send(MessageQueueDestination destination, Object message, Integer delayMilliseconds) {
+    public void send(MQDestination destination, Object message, Integer delayMilliseconds) {
         String msgBody;
         if (message instanceof String) {
             msgBody = (String) message;
@@ -31,3 +31,5 @@ public class StringMessageSender {
         amqpTemplate.convertAndSend(destination.toString(), null, msgBody, processor);
     }
 }
+
+

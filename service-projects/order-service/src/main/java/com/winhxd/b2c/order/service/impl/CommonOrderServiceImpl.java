@@ -403,6 +403,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.CODE_1002, "用户不存在");
         }
         Long customerId = customer.getCustomerId();
+        CustomerUserInfoVO customerUserInfoVO =   getCustomerUserInfoVO(customerId);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         if (lock.tryLock()) {
@@ -430,7 +431,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     String newOrderJsonString = JsonUtil.toJSONString(order);
                     //添加订单流转日志
                     orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), customer.getCustomerId(), "", order.getCancelReason(), MainPointEnum.MAIN);
+                            order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                     logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
                 } else {
                     logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);

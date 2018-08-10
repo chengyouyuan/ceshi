@@ -41,8 +41,8 @@ public class ApiOrderQueryController {
     @Resource
     private OrderQueryService orderQueryService;
 
-    @ApiOperation(value = "C端订单列表查询接口", response = OrderInfoDetailVO.class, notes = "C端订单列表查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
+    @ApiOperation(value = "C端订单列表查询接口", notes = "C端订单列表查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
@@ -62,8 +62,8 @@ public class ApiOrderQueryController {
         return result;
     }
 
-    @ApiOperation(value = "C端订单详情查询接口", response = OrderInfoDetailVO.class, notes = "C端订单详情查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
+    @ApiOperation(value = "C端订单详情查询接口", notes = "C端订单详情查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_411001, message = "参数异常")
     })
@@ -86,8 +86,8 @@ public class ApiOrderQueryController {
         return result;
     }
 
-    @ApiOperation(value = "B端订单列表查询接口", response = OrderInfoDetailVO.class, notes = "B端订单列表查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderInfoDetailVO.class),
+    @ApiOperation(value = "B端订单列表查询接口", notes = "B端订单列表查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
@@ -118,8 +118,8 @@ public class ApiOrderQueryController {
         return result;
     }
     
-    @ApiOperation(value = "B端订单各状态数量查询接口", response = OrderCountByStatus4StoreVO.class, notes = "B端订单各状态数量查询接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = OrderCountByStatus4StoreVO.class),
+    @ApiOperation(value = "B端订单各状态数量查询接口", notes = "B端订单各状态数量查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
         @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
         @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })

@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -63,6 +64,9 @@ public class ApiOpenStoreController {
 
     @Autowired
     private OrderServiceClient orderServiceClient;
+
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
 
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
@@ -266,6 +270,10 @@ public class ApiOpenStoreController {
     /*@ApiOperation(value = "根据用户token查询绑定门店id，有则返回，没有则不返回")
     @RequestMapping(value = "/store/security/1029/v1/findBindingStoreId/{token}")
     public ResponseResult<Long> findBindingStoreId(@PathVariable("token")String token){
+        ResponseResult<Long> result = new ResponseResult<>();
+        if(StringUtils.isEmpty(token)){
+            throw new BusinessException(BusinessCode.CODE_1014);
+        }
 
     }*/
     /**

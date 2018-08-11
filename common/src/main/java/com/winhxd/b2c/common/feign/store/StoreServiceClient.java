@@ -18,7 +18,6 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
@@ -55,19 +54,6 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1031/v1/findShopCarProd", method = RequestMethod.GET)
     ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes") List<String> skuCodes, @RequestParam("storeId") Long storeId);
-
-    /**
-     * B端登入时校验改门店下上架商品未设置价格信息
-     *
-     * @param storeId
-     * @return ResponseResult<LoginCheckSellMoneyVO>
-     * @Title: loginCheckSellMoney
-     * @Description: TODO
-     * @author wuyuanbao
-     * @date 2018年8月6日下午1:40:49
-     */
-    @RequestMapping(value = "/store/1018/v1/loginCheckSellMoney", method = RequestMethod.GET)
-    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**
      * 功能描述: 统计门店商品信息
@@ -152,12 +138,6 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     @Override
     public ResponseResult<List<ShopCartProdVO>> findShopCarProd(List<String> skus, Long storeId) {
         logger.error("StoreServiceClientFallBack -> findShopCarProd报错，错误信息为{}", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
-        logger.error("StoreServiceClientFallBack -> loginCheckSellMoney报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

@@ -45,7 +45,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         try {
-            result = couponActivityService.queryCouponActivity(condition);
+            result = couponActivityService.findCouponActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -331,7 +331,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("queryCouponByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         try {
-            result = couponActivityService.queryCouponByActivity(condition);
+            result = couponActivityService.findCouponByActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryCouponByActivity/ 根据活动获取优惠券列表=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -361,7 +361,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("queryStoreByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         try {
-            result = couponActivityService.queryStoreByActivity(condition);
+            result = couponActivityService.findStoreByActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryStoreByActivity/ 根据活动获取小店信息=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

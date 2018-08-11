@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponGradeServiceClient;
 import com.winhxd.b2c.promotion.service.CouponGradeService;
 import io.swagger.annotations.Api;
@@ -39,6 +40,9 @@ public class CouponGradeController implements CouponGradeServiceClient {
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult responseResult = new ResponseResult();
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
+            if(flag!=0){
+//               throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
+            }
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("添加成功");

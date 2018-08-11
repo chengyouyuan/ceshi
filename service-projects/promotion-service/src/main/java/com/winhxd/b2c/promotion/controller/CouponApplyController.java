@@ -90,7 +90,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @ApiOperation(value = "适用对象规则添加", notes = "适用对象规则添加")
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int flag = couponApplyService.addCouponApply(condition);
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);

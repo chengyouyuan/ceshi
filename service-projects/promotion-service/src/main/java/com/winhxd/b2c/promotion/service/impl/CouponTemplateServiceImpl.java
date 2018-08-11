@@ -2,12 +2,14 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      */
     @Override
     public int saveCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
+        int flag = 0;
         CouponTemplate couponTemplate = new CouponTemplate();
         couponTemplate.setTitle(couponTemplateCondition.getTitle());
         couponTemplate.setExolian(couponTemplateCondition.getExolian());
@@ -53,7 +56,11 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         couponTemplate.setCreated(new Date());
         couponTemplate.setCreatedByName(couponTemplateCondition.getCreatedByName());
         couponTemplate.setCreatedBy(Long.parseLong(couponTemplateCondition.getCreatedBy()));
-        return couponTemplateMapper.insert(couponTemplate);
+        int n = couponTemplateMapper.insert(couponTemplate);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_500003,"优惠券模板添加失败");
+        }
+        return flag;
     }
 
 

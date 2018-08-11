@@ -109,7 +109,19 @@ public final class BusinessCode {
 
     /** 该手机号已经享受过新用户福利*/
     public static final int CODE_500002 = 500002;
-    
+
+    /** 适用对象添加失败*/
+    public static final int CODE_500003 = 500003;
+
+    /** 适用对象添加失败*/
+    public static final int CODE_500004 = 500004;
+
+    /** 坎级规则新建失败*/
+    public static final int CODE_500005 = 500005;
+
+    /** 添加出资方规则失败*/
+    public static final int CODE_500006 = 500006;
+
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;

@@ -41,7 +41,7 @@ import java.util.List;
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiProductController {
 
-    private static final String MODULE_NAME = "小程序-门店商品查询";
+    private static final String MODULE_NAME = "C端门店商品查询";
 
     private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);
 
@@ -55,37 +55,32 @@ public class ApiProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
-    @PostMapping(value = "product/2001/v1/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "product/security/2001/v1/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> searchProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
-        logger.info("小程序商品搜索接口 入参：{}", JsonUtil.toJSONString(condition));
-        try {
-            if (condition.getStoreId() == null){
-                logger.error("ApiProductController -> searchProductList获取的参数storeId为空");
-                throw new BusinessException(BusinessCode.CODE_200002);
-            }
-
-            //获取门店下的商品
-            StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
-            storeProductManageCondition.setStoreId(condition.getStoreId());
-            storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-            storeProductManageCondition.setRecommend(condition.getRecommend());
-            storeProductManageCondition.setOrderBy(condition.getProductSortType());
-            storeProductManageCondition.setDescAsc(condition.getProductSortType() != null && condition.getProductSortType().equals(1)
-                    ? (byte)0 : (byte)1);
-            List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
-
-            //获取商品列表信息
-            ProductConditionByPage productConditionByPage = new ProductConditionByPage();
-            BeanUtils.copyProperties(condition,productConditionByPage);
-            productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-            productConditionByPage.setProductSkus(skusByConditon);
-            responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
-            logger.info("小程序商品搜索接口 返参：{}", JsonUtil.toJSONString(responseResult));
-        } catch (Exception e) {
-            logger.error("ApiProductController -> searchProductList异常, 异常信息{}" , e.getMessage());
-            responseResult.setCode(BusinessCode.CODE_1001);
+        logger.info("{} - 搜索接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        if (condition.getStoreId() == null){
+            logger.error("ApiProductController -> searchProductList获取的参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_200002);
         }
+
+        //获取门店下的商品
+        StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
+        storeProductManageCondition.setStoreId(condition.getStoreId());
+        storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+        storeProductManageCondition.setRecommend(condition.getRecommend());
+        storeProductManageCondition.setOrderBy(condition.getProductSortType());
+        storeProductManageCondition.setDescAsc(condition.getProductSortType() != null && condition.getProductSortType().equals(1)
+                ? (byte)0 : (byte)1);
+        List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
+
+        //获取商品列表信息
+        ProductConditionByPage productConditionByPage = new ProductConditionByPage();
+        BeanUtils.copyProperties(condition,productConditionByPage);
+        productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        productConditionByPage.setProductSkus(skusByConditon);
+        responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
+        logger.info("{} - 搜索接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -94,39 +89,34 @@ public class ApiProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
-    @PostMapping(value = "product/2002/v1/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "product/security/2002/v1/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ProductSkuMsgVO> filtrateProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<ProductSkuMsgVO>  responseResult = new ResponseResult<>();
-        logger.info("小程序商品筛选列表初始化接口 入参：{}", JsonUtil.toJSONString(condition));
-        try {
-            if (condition.getStoreId() == null){
-                logger.error("ApiProductController -> filtrateProductList获取的参数storeId为空");
-                throw new BusinessException(BusinessCode.CODE_200002);
-            }
-
-            //查询门店下是否有推荐商品
-            Boolean flag = storeProductManageService.queryRecommendFlag(condition.getStoreId());
-
-            //获取门店下的商品
-            StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
-            storeProductManageCondition.setStoreId(condition.getStoreId());
-            storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-            storeProductManageCondition.setRecommend(flag ? (short)1 : (short)0);
-            List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
-
-            //获取分类信息 初始化商品信息
-            ProductConditionByPage productConditionByPage = new ProductConditionByPage();
-            productConditionByPage.setPageNo(condition.getPageNo());
-            productConditionByPage.setPageSize(condition.getPageSize());
-            productConditionByPage.setProductSkus(skusByConditon);
-            productConditionByPage.setRecommend(flag ? 1 : null);
-            productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-            responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
-            logger.info("小程序商品筛选列表初始化接口 返参：{}", JsonUtil.toJSONString(responseResult));
-        } catch (Exception e) {
-            logger.error("ApiProductController -> filtrateProductList异常, 异常信息{}" , e.getMessage());
-            responseResult.setCode(BusinessCode.CODE_1001);
+        logger.info("{} - 筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        if (condition.getStoreId() == null){
+            logger.error("ApiProductController -> filtrateProductList获取的参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_200002);
         }
+
+        //查询门店下是否有推荐商品
+        Boolean flag = storeProductManageService.queryRecommendFlag(condition.getStoreId());
+
+        //获取门店下的商品
+        StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
+        storeProductManageCondition.setStoreId(condition.getStoreId());
+        storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+        storeProductManageCondition.setRecommend(flag ? (short)1 : (short)0);
+        List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
+
+        //获取分类信息 初始化商品信息
+        ProductConditionByPage productConditionByPage = new ProductConditionByPage();
+        productConditionByPage.setPageNo(condition.getPageNo());
+        productConditionByPage.setPageSize(condition.getPageSize());
+        productConditionByPage.setProductSkus(skusByConditon);
+        productConditionByPage.setRecommend(flag ? 1 : null);
+        productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
+        logger.info("{} - 筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -134,37 +124,32 @@ public class ApiProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
-    @PostMapping(value = "product/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "product/security/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> hotProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
-        logger.info("小程序店铺热销商品接口 入参：{}", JsonUtil.toJSONString(condition));
-        try {
-            if (condition.getStoreId() == null){
-                logger.error("ApiProductController -> hotProductList获取的参数storeId为空");
-                throw new BusinessException(BusinessCode.CODE_200002);
-            }
-            //获取门店下的商品
-            StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
-            storeProductManageCondition.setStoreId(condition.getStoreId());
-            storeProductManageCondition.setProdStatus(Arrays.asList((short)1));
-            storeProductManageCondition.setOrderBy(2);
-            storeProductManageCondition.setDescAsc((byte)1);
-            storeProductManageCondition.setPageNo(condition.getPageNo());
-            storeProductManageCondition.setPageSize(condition.getPageSize());
-            List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
-
-            //获取商品列表信息
-            ProductConditionByPage productConditionByPage = new ProductConditionByPage();
-            productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-            productConditionByPage.setProductSkus(skusByConditon);
-            productConditionByPage.setPageNo(condition.getPageNo());
-            productConditionByPage.setPageSize(condition.getPageSize());
-            responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
-            logger.info("小程序店铺热销商品接口 返参：{}", JsonUtil.toJSONString(responseResult));
-        } catch (Exception e) {
-            logger.error("ApiProductController -> hotProductList异常, 异常信息{}" , e.getMessage());
-            responseResult.setCode(BusinessCode.CODE_1001);
+        logger.info("{} - 店铺热销商品接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        if (condition.getStoreId() == null){
+            logger.error("ApiProductController -> hotProductList获取的参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_200002);
         }
+        //获取门店下的商品
+        StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
+        storeProductManageCondition.setStoreId(condition.getStoreId());
+        storeProductManageCondition.setProdStatus(Arrays.asList((short)1));
+        storeProductManageCondition.setOrderBy(2);
+        storeProductManageCondition.setDescAsc((byte)1);
+        storeProductManageCondition.setPageNo(condition.getPageNo());
+        storeProductManageCondition.setPageSize(condition.getPageSize());
+        List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
+
+        //获取商品列表信息
+        ProductConditionByPage productConditionByPage = new ProductConditionByPage();
+        productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        productConditionByPage.setProductSkus(skusByConditon);
+        productConditionByPage.setPageNo(condition.getPageNo());
+        productConditionByPage.setPageSize(condition.getPageSize());
+        responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
+        logger.info("{} - 店铺热销商品接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 

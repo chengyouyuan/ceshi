@@ -62,8 +62,8 @@ public class BackStageStoreController {
     }
 
     @ApiOperation(value = "查询门店账户详细信息接口", notes = "查询门店账户详细信息接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @ApiParam()
     @PostMapping(value = "1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
@@ -82,9 +82,9 @@ public class BackStageStoreController {
     }
 
     @ApiOperation(value = "编辑门店保存接口", notes = "编辑门店保存接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！", response = ResponseResult.class)})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！")})
     @PostMapping(value = "1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         if(condition.getId() == null || StringUtils.isBlank(condition.getStoreName()) ||
@@ -106,8 +106,8 @@ public class BackStageStoreController {
     }
 
     @ApiOperation(value = "获取地域列表", notes = "获取地域列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult  = new ResponseResult<>();

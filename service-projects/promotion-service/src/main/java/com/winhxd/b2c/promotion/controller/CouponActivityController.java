@@ -131,7 +131,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/8
      */
-    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页")
     @Override
     public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
         if(StringUtils.isBlank(id)){

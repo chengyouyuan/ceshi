@@ -90,10 +90,10 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端获取可上架商品数据接口", notes = "B端获取可上架商品数据接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ProductMsgVO.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+			@ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用！"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！") })
 	@PostMapping(value = "1012/v1/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<ProductMsgVO> allowPutawayProdList(@RequestBody AllowPutawayProdCondition condition) {
 		ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
@@ -192,12 +192,12 @@ public class ApiStoreProductManageController {
 	}
 
 	@ApiOperation(value = "B端商品操作接口(上架(包括批量)，下架，删除，编辑)", notes = "B端商品操作接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_200012, message = "部分skuCode无效！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_200013, message = "部分商品已上架！", response = ResponseResult.class) })
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！"),
+			@ApiResponse(code = BusinessCode.CODE_200012, message = "部分skuCode无效！"),
+			@ApiResponse(code = BusinessCode.CODE_200013, message = "部分商品已上架！") })
 	@PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -288,9 +288,9 @@ public class ApiStoreProductManageController {
 	}
 
 	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -322,8 +322,8 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreSubmitProductVO.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1015/v1/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(
 			@RequestBody StoreSubmitProductCondition condition) {
@@ -422,8 +422,8 @@ public class ApiStoreProductManageController {
 
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1028/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(
 			@RequestBody StoreProductManageCondition condition) {
@@ -463,8 +463,8 @@ public class ApiStoreProductManageController {
      */
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(){
 		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();

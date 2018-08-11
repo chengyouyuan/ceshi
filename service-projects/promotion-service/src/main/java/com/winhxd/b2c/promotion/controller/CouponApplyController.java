@@ -27,13 +27,13 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @Autowired
     private CouponApplyService couponApplyService;
 
-    @ApiOperation(value = "查看优惠券类型规则", notes = "查看优惠券类型规则",response = ResponseResult.class)
+    @ApiOperation(value = "查看优惠券类型规则", notes = "查看优惠券类型规则")
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id) {
         ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id));
         return responseResult;
     }
-    @ApiOperation(value = "优惠券类型规则设置无效", notes = "优惠券类型规则设置无效",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券类型规则设置无效", notes = "优惠券类型规则设置无效")
     @Override
     public ResponseResult<Integer> updateCouponApplyToValid(String id, String userId, String userName) {
         ResponseResult responseResult = new ResponseResult();
@@ -52,7 +52,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
     }
 
 
-    @ApiOperation(value = "优惠券类型规则分页查询", notes = "优惠券类型规则分页查询",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券类型规则分页查询", notes = "优惠券类型规则分页查询")
     @Override
     public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
         ResponseResult<PagedList<CouponApplyVO>> result = couponApplyService.findCouponApplyPage(condition);
@@ -60,7 +60,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
     }
 
 
-    @ApiOperation(value = "添加优惠券类型规则", notes = "添加优惠券类型规则",response = ResponseResult.class)
+    @ApiOperation(value = "添加优惠券类型规则", notes = "添加优惠券类型规则")
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
         ResponseResult responseResult = new ResponseResult();
@@ -80,7 +80,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
     }
 
 
-    @ApiOperation(value = "优惠券类型规则关联模板分页查询", notes = "优惠券类型规则关联模板分页查询",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券类型规则关联模板分页查询", notes = "优惠券类型规则关联模板分页查询")
     @Override
     public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo") Integer pageNo,@RequestParam("pageSize") Integer pageSize) {
         ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(applyId,pageNo,pageSize);

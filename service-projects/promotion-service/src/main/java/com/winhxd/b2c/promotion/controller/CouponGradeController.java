@@ -27,7 +27,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
      private CouponGradeService couponGradeService;
 
 
-    @ApiOperation(value = "添加优惠方式规则", notes = "添加优惠方式规则",response = ResponseResult.class)
+    @ApiOperation(value = "添加优惠方式规则", notes = "添加优惠方式规则")
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult responseResult = new ResponseResult();
@@ -45,14 +45,14 @@ public class CouponGradeController implements CouponGradeServiceClient {
         return responseResult;
     }
 
-    @ApiOperation(value = "优惠方式规则详情查看", notes = "优惠方式规则详情查看",response = ResponseResult.class)
+    @ApiOperation(value = "优惠方式规则详情查看", notes = "优惠方式规则详情查看")
     @Override
     public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
         ResponseResult<CouponGradeVO> responseResult = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
         return responseResult;
     }
 
-    @ApiOperation(value = "优惠方式规则设为无效/逻辑删除", notes = "优惠方式规则设为无效/逻辑删除",response = ResponseResult.class)
+    @ApiOperation(value = "优惠方式规则设为无效/逻辑删除", notes = "优惠方式规则设为无效/逻辑删除")
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
@@ -70,14 +70,14 @@ public class CouponGradeController implements CouponGradeServiceClient {
         return responseResult;
     }
 
-    @ApiOperation(value = "优惠方式规则分页查询", notes = "优惠方式规则分页查询",response = ResponseResult.class)
+    @ApiOperation(value = "优惠方式规则分页查询", notes = "优惠方式规则分页查询")
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
         ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);
         return result;
     }
 
-    @ApiOperation(value = "优惠方式规则关联模板分页查询", notes = "优惠方式规则关联模板分页查询",response = ResponseResult.class)
+    @ApiOperation(value = "优惠方式规则关联模板分页查询", notes = "优惠方式规则关联模板分页查询")
     @Override
     public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize")Integer pageSize) {
         ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(gradeId,pageNo,pageSize);

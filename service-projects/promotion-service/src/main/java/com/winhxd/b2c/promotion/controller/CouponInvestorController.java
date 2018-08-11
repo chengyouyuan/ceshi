@@ -43,7 +43,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
        *@User  wl
        *@Date   2018/8/8 12:30
        */
-      @ApiOperation(value = "添加出资方", notes = "添加出资方",response = ResponseResult.class)
+      @ApiOperation(value = "添加出资方", notes = "添加出资方")
       @Override
       public ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult responseResult = new ResponseResult();
@@ -74,14 +74,14 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       *@User  wl
       *@Date   2018/8/8 14:06
       */
-    @ApiOperation(value = "查看出资方详情", notes = "查看出资方详情",response = ResponseResult.class)
+    @ApiOperation(value = "查看出资方详情", notes = "查看出资方详情")
     @Override
     public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id) {
         ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
         return responseResult;
     }
 
-    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效",response = ResponseResult.class)
+    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效")
     @Override
     public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
@@ -101,14 +101,14 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
 
 
 
-    @ApiOperation(value = "多条件分页查询 出资方列表", notes = "多条件分页查询 出资方列表",response = ResponseResult.class)
+    @ApiOperation(value = "多条件分页查询 出资方列表", notes = "多条件分页查询 出资方列表")
     @Override
     public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition) {
         ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
         return responseResult;
     }
 
-    @ApiOperation(value = "出资方关联模板分页列表", notes = "出资方关联模板分页列表",response = ResponseResult.class)
+    @ApiOperation(value = "出资方关联模板分页列表", notes = "出资方关联模板分页列表")
     @Override
     public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo") Integer pageNo,@RequestParam("pageSize") Integer pageSize) {
         ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult =  couponInvestorService.findInvertorTempleteCountPage(invertorId,pageNo,pageSize);

@@ -1,10 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
-import io.swagger.annotations.ApiModelProperty;
-
-import java.math.BigDecimal;
-import java.util.List;
+import com.winhxd.b2c.common.domain.common.BaseCondition;
 
 /**
  * @Auther wangxiaoshun

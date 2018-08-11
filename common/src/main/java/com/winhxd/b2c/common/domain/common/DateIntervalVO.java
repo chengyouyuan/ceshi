@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @ApiModel("接收日期区间搜索条件参数")
 @Data
-public class DateIntervalCondition {
+public class DateIntervalVO {
 
     @ApiModelProperty(value = "开始时间")
     private Date startDate;

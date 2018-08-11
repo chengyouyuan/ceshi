@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.product.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.BaseCondition;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

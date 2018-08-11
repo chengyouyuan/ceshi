@@ -45,18 +45,20 @@ public interface OrderService {
 
     /**
      * C端申请退款
+     *
      * @param orderRefundCondition
      */
     void orderRefundByCustomer(OrderRefundCondition orderRefundCondition);
 
     /**
      * 门店接单
-     * @author wangbin
-     * @date  2018年8月7日 下午4:41:43
+     *
      * @param condition
+     * @author wangbin
+     * @date 2018年8月7日 下午4:41:43
      */
     void orderConfirm4Store(OrderConfirmCondition condition);
-    
+
     /**
      * 订单超时未接单接口
      *
@@ -65,7 +67,7 @@ public interface OrderService {
      * @date 2018年8月2日 下午5:51:46
      */
     void orderReceiveTimeOut(String orderNo);
-    
+
     /**
      * 订单超时未自提接口
      *
@@ -77,21 +79,45 @@ public interface OrderService {
 
     /**
      * 订单提货
-     * @author wangbin
-     * @date  2018年8月8日 下午5:24:30
+     *
      * @param condition
+     * @author wangbin
+     * @date 2018年8月8日 下午5:24:30
      */
     void orderPickup4Store(OrderPickupCondition condition);
 
     /**
      * B端取消订单
+     *
      * @param orderCancelCondition 入参
      */
     void cancelOrderByStore(OrderCancelCondition orderCancelCondition);
 
     /**
      * C端取消订单
+     *
      * @param orderCancelCondition 入参
      */
     void cancelOrderByCustomer(OrderCancelCondition orderCancelCondition);
+
+    /**
+     * C端申请退款订单3天未确认
+     *
+     * @param orderNo 订单号
+     */
+    void orderRefundTimeOut3DaysUnconfirmed(String orderNo);
+
+    /**
+     * C端申请退款订单1天未确认
+     *
+     * @param orderNo 订单号
+     */
+    void orderRefundTimeOut1DayUnconfirmed(String orderNo);
+
+    /**
+     * C端申请退款订单1小时未确认
+     *
+     * @param orderNo 订单号
+     */
+    void orderRefundTimeOut1HourUnconfirmed(String orderNo);
 }

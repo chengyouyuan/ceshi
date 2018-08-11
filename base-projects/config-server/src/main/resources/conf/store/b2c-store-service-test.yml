@@ -1,0 +1,6 @@
+picture:
+  savepath: retail2cPic
+  baseimgpath: /opt/www/mobile_img
+  baseimgurl: /retail2cPic/
+  baseimgport: 8202
+  basehost: http://192.168.60.53

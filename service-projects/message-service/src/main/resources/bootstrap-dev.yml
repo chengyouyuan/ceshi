@@ -4,37 +4,3 @@ eureka:
       defaultZone: http://localhost:1111/eureka/
 
 
-
-
-httpClient:
-  maxTotal: 200
-  maxPerRoute: 40
-  requestTimeout: 500
-  socketTimeout: 10000
-
-wechat:
-  share:
-    tokenUrl: https://api.weixin.qq.com/cgi-bin/token
-    grantType: client_credential
-    appid: wxdbbbd5e596ab6f4d
-    secret: 26a5cdcdf75b393d0fef50e0a4aa43ae
-    codeUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
-    pageUrl: pages/index/store
-    width: 430
-    autoColor: true
-    isHyaline: true
-
-  miniProgram:
-      appid: wxdbbbd5e596ab6f4d
-      secret: 0361d3faa4e51758343f6e7043210cf9
-      grantType: authorization_code
-      openidUrl: https://api.weixin.qq.com/sns/jscode2session
-
-##云信配置##
-netease:
-  baseUrl: https://api.netease.im/nimserver/
-  appKey: 6fe22febac816a1607a55ed3cdabd03f
-  appSecret: 20d6bb5ecaad
-  accidSuffix: _message_uat
-
-

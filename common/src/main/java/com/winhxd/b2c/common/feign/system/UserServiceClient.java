@@ -40,7 +40,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult modify(@RequestBody SysUser sysUser);
+    ResponseResult<Void> modify(@RequestBody SysUser sysUser);
 
     /**
      * 修改密码
@@ -50,7 +50,7 @@ public interface UserServiceClient {
      * @return
      */
     @RequestMapping(value = "/user/302/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser);
+    ResponseResult<Void> updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
      * 查询用户列表
@@ -89,7 +89,7 @@ public interface UserServiceClient {
      * @param id
      */
     @RequestMapping(value = "/user/306/v1/disabled/{id}", method = RequestMethod.PUT)
-    ResponseResult disabled(@PathVariable("id") Long id);
+    ResponseResult<Void> disabled(@PathVariable("id") Long id);
 
 }
 

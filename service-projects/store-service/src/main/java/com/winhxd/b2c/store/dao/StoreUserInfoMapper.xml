@@ -66,7 +66,7 @@
         </if>
       </where>
   </select>
-    <select id="findStoreUserInfo" resultType="com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo">
+    <select id="findStoreUserInfo" resultMap="BaseResultMap">
       SELECT
         <include refid="Base_Column_List" />
       FROM

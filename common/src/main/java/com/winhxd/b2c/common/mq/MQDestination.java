@@ -20,7 +20,19 @@ public enum MQDestination {
     /**
      * 订单超时未自提延时消息
      */
-    ORDER_PICKUP_TIMEOUT_DELAYED(true);
+    ORDER_PICKUP_TIMEOUT_DELAYED(true),
+    /**
+     * C端申请退款订单剩3天未确认延时消息
+     */
+    ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED(true),
+    /**
+     * C端申请退款订单剩1天未确认延时消息
+     */
+    ORDER__REFUND__TIME_OUT_1_DAY__UNCONFIRMED(true),
+    /**
+     * C端申请退款订单剩1小时未确认延时消息
+     */
+    ORDER__REFUND__TIME_OUT_1_HOUR__UNCONFIRMED(true);
 
     private boolean delayed;
 

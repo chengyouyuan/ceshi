@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.domain.store.condition.StorePutawayProdSearchCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -199,19 +201,18 @@ public class ApiStoreProductManageController {
 	@PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
-
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null || null == storeUser.getBusinessId()) {
+			responseResult.setCode(BusinessCode.CODE_1002);
+			responseResult.setMessage("登录凭证无效！");
+			return responseResult;
+		}
 		logger.info("B端商品操作接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数无效！");
-			return responseResult;
-		}
-		// 获取当前门店用户
-		StoreUser storeUser = UserContext.getCurrentStoreUser();
-		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
 			return responseResult;
 		}
 		// 操作类型
@@ -221,11 +222,11 @@ public class ApiStoreProductManageController {
 		// skuCode集合
 		List<ProdOperateInfoCondition> prodInfo = condition.getProducts();
 		// skuCode数组
-		List<String> skucodes = new ArrayList<>();
-		String skucodeArray[] = new String[prodInfo.size()];
+		List<String> skuCodes = new ArrayList<>();
+		String[] skuCodeArray = new String[prodInfo.size()];
 		for (int i = 0; i < prodInfo.size(); i++) {
-			skucodes.add(prodInfo.get(i).getSkuCode());
-			skucodeArray[i] = prodInfo.get(i).getSkuCode();
+			skuCodes.add(prodInfo.get(i).getSkuCode());
+			skuCodeArray[i] = prodInfo.get(i).getSkuCode();
 		}
 		// 判断操作类型
 		if (StoreProdOperateEnum.PUTAWAY.getOperateCode() == operateType) {
@@ -234,15 +235,14 @@ public class ApiStoreProductManageController {
 			StoreProductManageCondition spmCondition = new StoreProductManageCondition();
 			spmCondition.setStoreId(storeId);
 			spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-			List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId, skucodeArray);
+			List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
 			// 上架操作
 			// 表示还没上架过
 			if (spms == null || spms.size() == 0) {
 				// 调用商品接口获取商品相关信息
-				List<ProductSkuVO> prodSkuList = new ArrayList<>();
 				ProductCondition prodCondition = new ProductCondition();
 				prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-				prodCondition.setProductSkus(skucodes);
+				prodCondition.setProductSkus(skuCodes);
 				// 查询商品详情
 				ResponseResult<List<ProductSkuVO>> productResult = productServiceClient.getProductSkus(prodCondition);
 				if (productResult.getCode() == 0) {
@@ -276,15 +276,14 @@ public class ApiStoreProductManageController {
 
 		} else if (StoreProdOperateEnum.UNPUTAWAY.getOperateCode() == operateType) {
 			// 下架操作
-			storeProductManageService.unPutawayStoreProductManage(storeId, skucodeArray);
+			storeProductManageService.unPutawayStoreProductManage(storeId, skuCodeArray);
 		} else if (StoreProdOperateEnum.DELETE.getOperateCode() == operateType) {
 			// 删除操作
-			storeProductManageService.removeStoreProductManage(storeId, skucodeArray);
+			storeProductManageService.removeStoreProductManage(storeId, skuCodeArray);
 		} else if (StoreProdOperateEnum.EDIT.getOperateCode() == operateType) {
 			// 编辑（不支持批量）
 			storeProductManageService.modifyStoreProductManage(storeId, prodInfo.get(0));
 		}
-
 		return responseResult;
 	}
 
@@ -364,9 +363,8 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！") })
 	@PostMapping(value = "1027/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
+	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody StorePutawayProdSearchCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
-
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
 			logger.error("B端搜索商品接口:登录凭证为空");
@@ -401,7 +399,7 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	private boolean verifyParam(AllowPutawayProdCondition condition) {
+	private boolean verifyParam(StorePutawayProdSearchCondition condition) {
 		boolean flag = true;
 		if (StringUtils.isBlank(condition.getProdName())) {
 			logger.error("B端搜索商品接口:参数ProdName为空");
@@ -451,6 +449,56 @@ public class ApiStoreProductManageController {
 		PagedList<StoreProdSimpleVO> list = storeProductManageService.findSimpelVOByCondition(condition);
 		responseResult.setData(list);
 
+		return responseResult;
+	}
+	
+    /**
+     *
+     * @param
+     * @return ResponseResult<LoginCheckSellMoneyVO>
+     * @Title: loginCheckSellMoney
+     * @Description: B端登入时校验改门店下上架商品未设置价格信息
+     * @author wuyuanbao
+     * @date 2018年8月6日下午1:40:49
+     */
+	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(){
+		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
+		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
+		
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
+				return responseResult;
+		}
+		Long storeId = storeUser.getBusinessId();
+		
+		vo.setStoreId(storeId);
+		//查询上架未设置价格商品
+		StoreProductManageCondition condition=new StoreProductManageCondition();
+		condition.setStoreId(storeId);
+		//未设置价格
+		condition.setPriceStatus((byte)0);
+		//上架商品
+		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+		int count=storeProductManageService.countSkusByConditon(condition);
+		//设置是否有未设置价格的商品
+		if(count>0){
+			vo.setCheckResult(true);	
+		}else{
+			vo.setCheckResult(false);
+		}
+		//设置为设置价格商品的数量
+		vo.setNoSetPriceCount(count);
+		
+		responseResult.setData(vo);
+		
 		return responseResult;
 	}
 

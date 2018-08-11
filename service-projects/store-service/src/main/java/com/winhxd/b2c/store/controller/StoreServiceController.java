@@ -2,11 +2,14 @@ package com.winhxd.b2c.store.controller;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.store.service.StoreRegionService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -25,10 +28,8 @@ import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
-import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -62,9 +63,13 @@ public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private ProductServiceClient productServiceClient;
 
+    @Autowired
+    private StoreRegionService storeRegionService;
+
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
 //    @Autowired
 //    private ProductServiceClient productServiceClient;
+
     @Override
     public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
@@ -212,38 +217,6 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
-		ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
-		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
-		//参数检验
-		if (storeId == null) {
-			logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
-			throw new BusinessException(BusinessCode.CODE_1007);
-		}
-		vo.setStoreId(storeId);
-		//查询上架未设置价格商品
-		StoreProductManageCondition condition=new StoreProductManageCondition();
-		condition.setStoreId(storeId);
-		//未设置价格
-		condition.setPriceStatus((byte)0);
-		//上架商品
-		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-		int count=storeProductManageService.countSkusByConditon(condition);
-		//设置是否有未设置价格的商品
-		if(count>0){
-			vo.setCheckResult(true);	
-		}else{
-			vo.setCheckResult(false);
-		}
-		//设置为设置价格商品的数量
-		vo.setNoSetPriceCount(count);
-		
-		result.setData(vo);
-		return result;
-	}
-
-
-	@Override
 	public ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions) {
 		ResponseResult<Void> result=new ResponseResult<>();
 		if(conditions==null||conditions.size()<=0){
@@ -265,6 +238,26 @@ public class StoreServiceController implements StoreServiceClient {
 		}
 		storeProductStatisticsService.bathSaveStoreProductStatistics(beanList);
 		return result;
+	}
+
+	@Override
+	public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(StoreRegionCondition conditions) {
+		ResponseResult<PagedList<StoreRegionVO>> result = new ResponseResult<>();
+		PagedList<StoreRegionVO> data = storeRegionService.findStoreRegions(conditions);
+		result.setData(data);
+		return result;
+	}
+
+	@Override
+	public ResponseResult<Void> removeStoreRegion(Long id) {
+		storeRegionService.removeStoreRegion(id);
+		return new ResponseResult<>();
+	}
+
+	@Override
+	public ResponseResult<Void> saveStoreRegion(StoreRegionCondition conditions) {
+	 	storeRegionService.saveStoreRegion(conditions);
+		return new ResponseResult<>();
 	}
 
 }

@@ -63,29 +63,28 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	@Override
 	@Transactional
 	public void batchPutawayStoreProductManage(Long storeId, Map<String, ProdOperateInfoCondition> putawayInfo,
-			Map<String, ProductSkuVO> prodSkuInfo) {
-		//
-		if(storeId!=null&&putawayInfo!=null&&prodSkuInfo!=null){
+											   Map<String, ProductSkuVO> prodSkuInfo) {
+		if (storeId != null && putawayInfo != null && prodSkuInfo != null) {
 			//查询门店用户信息
-			StoreUserInfo storeUserInfo=storeUserInfoMapper.selectByPrimaryKey(storeId);
-			if(storeUserInfo==null){
-	            logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询store用户信息不存在！");
-	            throw new BusinessException(BusinessCode.CODE_200004);
+			StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(storeId);
+			if (storeUserInfo == null) {
+				logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询store用户信息不存在！");
+				throw new BusinessException(BusinessCode.CODE_200004);
 			}
-			for(String skuCode:putawayInfo.keySet()){
+			for (String skuCode : putawayInfo.keySet()) {
 				//上架信息（价格，是否推荐（默认0），）
-				ProdOperateInfoCondition putaway =putawayInfo.get(skuCode);
-				
-				StoreProductManage spManage=storeProductManageMapper.selectBySkuCodeAndStoreId(storeId, skuCode);
-				if(spManage==null){
+				ProdOperateInfoCondition putaway = putawayInfo.get(skuCode);
+
+				StoreProductManage spManage = storeProductManageMapper.selectBySkuCodeAndStoreId(storeId, skuCode);
+				if (spManage == null) {
 					//产品的信息
-					ProductSkuVO prodSku= prodSkuInfo.get(skuCode);
-					if(prodSku==null){
-						logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询不到skuCode:"+skuCode+"的商品信息");
+					ProductSkuVO prodSku = prodSkuInfo.get(skuCode);
+					if (prodSku == null) {
+						logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询不到skuCode:" + skuCode + "的商品信息");
 						throw new BusinessException(BusinessCode.CODE_1001);
 					}
 					//不存在需要重新插入
-					spManage=new StoreProductManage();
+					spManage = new StoreProductManage();
 					spManage.setStoreId(storeId);
 					spManage.setSkuCode(skuCode);
 					spManage.setProdCode(prodSku.getProductCode());
@@ -103,8 +102,8 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setCreatedByName(storeUserInfo.getShopkeeper());
 					//保存门店商品管理信息
 					storeProductManageMapper.insert(spManage);
-				
-				}else{
+
+				} else {
 					//存在，可能是下架了或则删除
 					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setUpdated(new Date());
@@ -121,13 +120,13 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					storeProductManageMapper.updateByPrimaryKeySelective(spManage);
 				}
 			}
-			
-		}else{
-			logger.error("StoreProductManageService ->batchPutawayStoreProductManage参数异常,storeId:"+storeId+",putawayInfo:"
-								+putawayInfo+",prodSkuInfo:"+prodSkuInfo);
+
+		} else {
+			logger.error("StoreProductManageService ->batchPutawayStoreProductManage参数异常,storeId:" + storeId + ",putawayInfo:"
+					+ putawayInfo + ",prodSkuInfo:" + prodSkuInfo);
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
-		
+
 	}
 
 	@Override
@@ -245,6 +244,11 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<String> findRecommendProductSku(Long storeId) {
+		return storeProductManageMapper.findRecommendProductSku(storeId);
 	}
 
 }

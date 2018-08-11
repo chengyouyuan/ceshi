@@ -79,21 +79,17 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
     private boolean checkObjectType(Type type) {
         if (type instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) type;
-            boolean b = checkObjectType(pType.getRawType());
-            if (!b) {
+            if (!checkObjectType(pType.getRawType())) {
                 return false;
             }
             for (Type t : pType.getActualTypeArguments()) {
-                b = checkObjectType(t);
-                if (!b) {
+                if (!checkObjectType(t)) {
                     return false;
                 }
             }
         } else if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
-            if (clazz.equals(Object.class) || Map.class.isAssignableFrom(clazz)) {
-                return false;
-            }
+            return !clazz.equals(Object.class) && !Map.class.isAssignableFrom(clazz);
         }
         return true;
     }

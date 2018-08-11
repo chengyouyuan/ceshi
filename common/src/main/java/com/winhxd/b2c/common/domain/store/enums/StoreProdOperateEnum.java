@@ -7,10 +7,21 @@ package com.winhxd.b2c.common.domain.store.enums;
  * @date: 2018年8月7日 上午9:28:55
  */
 public enum StoreProdOperateEnum {
-	
+	/**
+     * 商品下架
+     */
 	UNPUTAWAY((byte)0,"商品下架"),
+	/**
+     * 商品上架
+     */
 	PUTAWAY((byte)1,"商品上架"),
+	/**
+     * 商品删除
+     */
 	DELETE((byte)2,"商品删除"),
+	/**
+     * 商品编辑
+     */
 	EDIT((byte)3,"商品编辑");
 	
 	private byte operateCode;

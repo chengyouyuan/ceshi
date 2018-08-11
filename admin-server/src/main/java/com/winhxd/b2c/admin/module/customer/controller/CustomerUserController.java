@@ -57,7 +57,7 @@ public class CustomerUserController {
         return responseResult;
     }
 
-    @ApiOperation(value = "导出根据条件查询用户的分页数据信息", response = ResponseEntity.class, notes = "导出根据条件查询用户的分页数据信息")
+    @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
@@ -102,7 +102,7 @@ public class CustomerUserController {
          result.setOrderInfoDetailVOList(queryOrderPageInfo(customerUserId,pageNo,pageSize));
         return  responseResult;
     }
-    @ApiOperation(value = "查询订单详情信息",response = OrderInfoDetailVO4Management.class,notes = "根据订单查询订单详情已经订单状态信息")
+    @ApiOperation(value = "查询订单详情信息",notes = "根据订单查询订单详情已经订单状态信息")
     @GetMapping(value = "/queryOderInfoDetail/{orderNum}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功"),@ApiResponse(code = BusinessCode.CODE_1001,message = "服务器内部错误")})
     public ResponseResult<OrderInfoDetailVO4Management> queryOderInfoDetail(@PathVariable("orderNum")String orderNum){

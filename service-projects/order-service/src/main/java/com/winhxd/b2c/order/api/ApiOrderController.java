@@ -128,8 +128,8 @@ public class ApiOrderController {
         return result;
     }
 
-    @ApiOperation(value = "C端订单申请退款接口", response = Boolean.class, notes = "C端订单申请退款接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "C端订单申请退款接口", notes = "C端订单申请退款接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),

@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.winhxd.b2c.common.domain.store.condition.StorePutawayProdSearchCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,9 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
@@ -43,6 +40,7 @@ import com.winhxd.b2c.common.domain.store.condition.AllowPutawayProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.condition.StorePutawayProdSearchCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProdOperateEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
@@ -170,7 +168,7 @@ public class ApiStoreProductManageController {
 		prodConditionByPage.setProductSkus(putawayProdSkus);
 
 		// 首次请求，会返回类型，品牌等信息
-		if (condition.getFirst()) {// ProductBaseMsgVO
+		if (condition.getFirst()) {
 
 			responseResult = productServiceClient.getProductMsg(prodConditionByPage);
 		} else {
@@ -300,18 +298,46 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+			@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！"),
+			@ApiResponse(code = BusinessCode.CODE_200014, message = "图片上传失败！")})
 	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) {
+	public ResponseResult<Void> saveStoreSubmitProduct(MultipartHttpServletRequest imageFiles) throws IOException {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
-
-		logger.info("B端添加门店提报商品接口入参为：{}", condition);
-		// 参数校验
-		if (!checkParam(condition)) {
+		
+		logger.info("B端添加门店提报商品接口入参为：{}", imageFiles.toString());
+		if(imageFiles==null){
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数错误");
 			return responseResult;
 		}
+		StoreSubmitProductCondition condition=new StoreSubmitProductCondition();
+		//设置参数
+		String pageSize=imageFiles.getParameter("pageSize");
+		if(StringUtils.isNotEmpty(pageSize)){
+			condition.setPageSize(Integer.valueOf(pageSize));
+		}
+		String pageNo=imageFiles.getParameter("pageNo");
+		if(StringUtils.isNotEmpty(pageNo)){
+			condition.setPageNo(Integer.valueOf(pageNo));
+		}
+		String prodInfoText=imageFiles.getParameter("prodInfoText");
+		if(StringUtils.isNotEmpty(prodInfoText)){
+			condition.setProdInfoText(prodInfoText);
+		}
+		String prodInfoVoice=imageFiles.getParameter("prodInfoVoice");
+		if(StringUtils.isNotEmpty(prodInfoVoice)){
+			condition.setProdInfoVoice(prodInfoVoice);;
+		}
+		
+		//上传图片
+		ResponseResult<List<ProductImageVO>> imageResult=this.uploadSubmitProductImg(imageFiles);
+		if(imageResult.getCode()!=0){
+			responseResult.setCode(imageResult.getCode());
+			responseResult.setMessage(imageResult.getMessage());
+			return responseResult;
+		}
+		
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
@@ -401,8 +427,8 @@ public class ApiStoreProductManageController {
 		if (HXD_PROD_TYPE.equals(condition.getProdType())) {
 			productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
 		}
-		productCondition.setPageNo(condition.getPageNo());
-		productCondition.setPageSize(condition.getPageSize());
+//		productCondition.setPageNo(condition.getPageNo());
+//		productCondition.setPageSize(condition.getPageSize());
 		ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
 		responseResult.setData(productVo.getData());
 
@@ -419,14 +445,14 @@ public class ApiStoreProductManageController {
 			logger.error("B端搜索商品接口:参数ProdType为空");
 			return false;
 		}
-		if (null == condition.getPageNo()) {
-			logger.error("B端搜索商品接口:参数PageNo为空");
-			return false;
-		}
-		if (null == condition.getPageSize()) {
-			logger.error("B端搜索商品接口:参数PageSize为空");
-			return false;
-		}
+//		if (null == condition.getPageNo()) {
+//			logger.error("B端搜索商品接口:参数PageNo为空");
+//			return false;
+//		}
+//		if (null == condition.getPageSize()) {
+//			logger.error("B端搜索商品接口:参数PageSize为空");
+//			return false;
+//		}
 		return flag;
 	}
 
@@ -512,35 +538,41 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 	
-	@ApiOperation(value = "提报商品图片上传接口", notes = "提报商品图片上传接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-		@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！"),
-		@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！")})
-	@PostMapping(value = "1040/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(
-			@RequestParam("imageFiles") MultipartFile imageFiles, HttpServletRequest request) throws IOException {
+	/**
+	 * 上传图片
+	* @Title: uploadSubmitProductImg 
+	* @Description: TODO 
+	* @param imageFiles
+	* @return
+	* @throws IOException ResponseResult<List<ProductImageVO>>
+	* @author wuyuanbao
+	* @date 2018年8月11日下午5:53:13
+	 */
+	private ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles) throws IOException {
 		ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
-		// 获取当前门店用户
-		StoreUser storeUser = UserContext.getCurrentStoreUser();
-		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
-			return responseResult;
-		}
+
 		logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
 		if (imageFiles == null) {
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数错误");
 			return responseResult;
 		}
-		String ip = request.getServerName();
-		int port = request.getServerPort();
-		Map<String, byte[]> mapFile = new HashMap<>();
-		mapFile.put(imageFiles.getOriginalFilename(), imageFiles.getBytes());
 
-		responseResult = imageUploadUtil.uploadImage(ip, port, mapFile);
+		List<MultipartFile> multipartFiles = imageFiles.getFiles("file");
+		if(multipartFiles==null||multipartFiles.size()<=0){
+			responseResult.setCode(BusinessCode.CODE_1007);
+			responseResult.setMessage("请至少上传一张图片");
+			return responseResult;
+		}
+		List<ProductImageVO> imageVOList=new ArrayList<>();
+		for(MultipartFile mFile:multipartFiles){
+			ResponseResult<ProductImageVO> imageVOResult=imageUploadUtil.uploadImage(mFile);
+			if(imageVOResult!=null&&imageVOResult.getCode()==0){
+				imageVOList.add(imageVOResult.getData());
+			}
+		}
+				
+		responseResult.setData(imageVOList);
 		return responseResult;
 	}
 

@@ -52,12 +52,34 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
         SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+        if(condition.getCreatedStart() != null && condition.getCreatedEnd() != null){
+            try {
+                Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
+                Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
+                condition.setCreatedStart(createdStart);
+                condition.setCreatedEnd(createdEnd);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        if(condition.getCreatedStart() != null && condition.getCreatedEnd() == null){
+            try {
+                Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
+                condition.setCreatedStart(createdStart);
+            }catch (Exception e ){
+                e.printStackTrace();
+            }
+        }
+        if(condition.getCreatedStart() == null && condition.getCreatedEnd() != null){
+            try {
+                Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
+                condition.setCreatedEnd(createdEnd);
+            }catch (Exception e ){
+                e.printStackTrace();
+            }
+        }
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         try {
-            Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
-            Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
-            condition.setCreatedStart(createdStart);
-            condition.setCreatedEnd(createdEnd);
             PagedList<CouponActivityVO> pagedList = new PagedList<>();
             PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
             List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
@@ -67,11 +89,12 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             pagedList.setPageSize(pageInfo.getPageSize());
             pagedList.setTotalRows(pageInfo.getTotal());
             result.setData(pagedList);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
+
 
     /**
      * 新增活动

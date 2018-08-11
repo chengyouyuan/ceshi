@@ -115,7 +115,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     @Override
     public ResponseResult checkCouponStatus(CouponCheckStatusCondition condition) {
         logger.error("CouponServiceClient -> checkCouponStatus", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
+        return new ResponseResult<Boolean>(BusinessCode.CODE_1001);
     }
 
 }

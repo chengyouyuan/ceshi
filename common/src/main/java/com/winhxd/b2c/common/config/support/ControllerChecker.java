@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -115,7 +116,10 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                     errorList.add(className + "#" + methodName + " 外部接口必须是POST");
                 }
                 Class<?>[] classes = method.getParameterTypes();
-                if (classes == null || classes.length == 0 || !ApiCondition.class.isAssignableFrom(classes[0])) {
+                if (classes == null || classes.length == 0 || !(
+                        ApiCondition.class.isAssignableFrom(classes[0])
+                                || MultipartRequest.class.isAssignableFrom(classes[0]))
+                        ) {
                     errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
                 }
             }

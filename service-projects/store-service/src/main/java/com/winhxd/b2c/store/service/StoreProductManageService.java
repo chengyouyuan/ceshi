@@ -114,4 +114,11 @@ public interface StoreProductManageService {
 	 * @return
 	 */
 	Boolean queryRecommendFlag(Long storeId);
+
+	/**
+	 * 查询店主推荐的商品sku集合
+	 * @param storeId
+	 * @return
+	 */
+    List<String> findRecommendProductSku(Long storeId);
 }

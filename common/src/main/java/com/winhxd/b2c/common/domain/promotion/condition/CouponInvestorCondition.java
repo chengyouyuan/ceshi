@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.BaseCondition;
 import java.io.Serializable;
 import java.util.List;
 

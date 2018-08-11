@@ -77,4 +77,9 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setStatus(StoreRegionEnum.EFFICTIVE.getCode());
         return storeRegionMapper.insertSelective(storeRegion);
     }
+
+    @Override
+    public StoreRegion selectByRegionCode(String regionCode) {
+        return storeRegionMapper.selectByRegionCode(regionCode);
+    }
 }

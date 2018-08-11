@@ -59,4 +59,16 @@ public class StoreUserInfoVO {
     @ApiModelProperty("商品的月销量")
     private Integer monthlySales;
 
+    /**
+     * 区域编码
+     */
+    @ApiModelProperty("区域编码")
+    private String storeRegionCode;
+
+    /**
+     * 用户账号
+     */
+    @ApiModelProperty("用户账号")
+    private String storeMobile;
+
 }

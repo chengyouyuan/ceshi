@@ -219,4 +219,7 @@ public final class BusinessCode {
     public static final int CODE_6115 = 6115;
     @ApiModelProperty("验证码为空")
     public static final int CODE_6116 = 6116;
+
+    /** 测试门店区域:区域重复*/
+    public static final int CODE_103901 = 103901;
 }

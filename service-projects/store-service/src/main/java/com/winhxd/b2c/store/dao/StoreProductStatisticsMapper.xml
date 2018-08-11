@@ -175,13 +175,4 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-    <update id="updateQuantitySoldOutByStoreIdAndProdCode" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition">
-        update store_product_statistics
-        set
-        quantity_sold_out = quantity_sold_out + 1,
-        updated_by = #{updatedBy,jdbcType=BIGINT},
-        updated = now()
-        where  store_id = #{storeId,jdbcType=BIGINT}
-        and prod_code = #{prodCode,jdbcType=VARCHAR}
-    </update>
 </mapper>

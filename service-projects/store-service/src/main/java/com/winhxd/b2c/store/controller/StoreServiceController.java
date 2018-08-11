@@ -168,19 +168,6 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
-		if (condition != null) {
-			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
-			throw new BusinessException(BusinessCode.CODE_1007);
-		}
-		if (null != condition.getStoreId() || StringUtils.isNotBlank(condition.getProdId()) || null != condition.getUpdatedBy()) {
-			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
-			throw new BusinessException(BusinessCode.CODE_1007);
-		}
-		storeProductStatisticsService.modifyQuantitySoldOutByStoreIdAndProdId(condition);
-	}
-
-	@Override
 	public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
     	ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {

@@ -565,4 +565,14 @@ public class CouponServiceImpl implements CouponService {
         return this.getCouponDetail(results);
     }
 
+    /**
+     * 订单可用优惠券
+     * @param couponCondition
+     * @return
+     */
+    @Override
+    public List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
+        return null;
+    }
+
 }

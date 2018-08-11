@@ -86,14 +86,14 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         if(condition.getId() == null || StringUtils.isBlank(condition.getStoreName()) ||
                 StringUtils.isBlank(condition.getStoreAddress()) || StringUtils.isBlank(condition.getShopkeeper()) ||
                 StringUtils.isBlank(condition.getContactMobile())){
             logger.error("编辑门店保存接口，参数错误");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
         try {
             logger.info("编辑门店保存接口入参为：{}", condition.toString());
             backStageStoreServiceClient.modifyStoreInfo(condition);

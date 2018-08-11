@@ -6,9 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -112,14 +110,7 @@ public class ApiCouponController{
         logTitle="=/api-promotion/coupon/508/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
         LOGGER.info(logTitle+"开始--{}--");
         ResponseResult<Integer> result = new ResponseResult<>();
-        List<CouponVO> pages = couponService.findStoreCouponList();
-        int count = 0 ;
-        for (int i = 0; i < pages.size(); i++){
-            if(pages.get(i).getReceiveStatus().equals("0")){
-                count++;
-            }
-        }
-        Integer StoreCouponKinds = count;
+        Integer StoreCouponKinds = couponService.getStoreCouponKinds();
         result.setData(StoreCouponKinds);
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;

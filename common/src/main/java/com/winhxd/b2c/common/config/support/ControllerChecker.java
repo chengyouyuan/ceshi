@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.config.support;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -39,7 +40,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
             Method method = entry.getValue().getMethod();
 
-            checkMethod(errorList, method);
+            checkMethodOutput(errorList, method);
 
             Set<RequestMethod> requestMethods = entry.getKey().getMethodsCondition().getMethods();
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
@@ -62,7 +63,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         }
     }
 
-    private void checkMethod(List<String> errorList, Method method) {
+    private void checkMethodOutput(List<String> errorList, Method method) {
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();
         if (!className.startsWith("com.winhxd.b2c")) {
             return;
@@ -112,6 +113,10 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                 }
                 if (CollectionUtils.isEmpty(requestMethods) || !requestMethods.contains(RequestMethod.POST)) {
                     errorList.add(className + "#" + methodName + " 外部接口必须是POST");
+                }
+                Class<?>[] classes = method.getParameterTypes();
+                if (classes == null || classes.length == 0 || !ApiCondition.class.isAssignableFrom(classes[0])) {
+                    errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
                 }
             }
         } else if ((matcher = servicePath.matcher(path)).matches()) {

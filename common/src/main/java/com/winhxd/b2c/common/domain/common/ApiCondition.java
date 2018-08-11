@@ -7,6 +7,8 @@ import lombok.Data;
 public class ApiCondition {
     @ApiModelProperty("版本号")
     private String ver;
+    @ApiModelProperty(value = "lang")
+    private String lang;
     @ApiModelProperty("App客户端信息")
     private MobileInfo mobileInfo;
 
@@ -23,9 +25,6 @@ public class ApiCondition {
 
         @ApiModelProperty(value = "src")
         private String src;
-
-        @ApiModelProperty(value = "lang")
-        private String lang;
 
         @ApiModelProperty(value = "安卓模拟器ID，用于记录日志使用")
         private String emulatordId;

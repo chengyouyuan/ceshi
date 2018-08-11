@@ -23,3 +23,6 @@ spring:
       - uri: lb://b2c-system-service
         predicates:
         - Path=/api-system/**
+      - uri: lb://product-microservice
+        predicates:
+        - Path=/api-product/**

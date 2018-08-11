@@ -1,7 +1,7 @@
 {
   "meta": {
     "type": "base-form",
-    "url": "",
+    "path": "",
     "id": "system_user_list_add",
     "title": "成员添加",
     "buttons": [
@@ -10,7 +10,7 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "url": "/user/add",
+          "path": "/user/add",
           "callback": {
             "refresh": false
           }

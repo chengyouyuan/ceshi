@@ -224,6 +224,7 @@
   </select>
   <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
+    count(*) couponNum,
     ct.STATUS,
     ct.reason,
     ct.pay_type payType,
@@ -264,7 +265,7 @@
     <if test="couponType != null">
       AND ca.coupon_type = #{couponType}
     </if>
-    GROUP BY cts.template_id
+    GROUP BY ca.id,cts.template_id
   </select>
   <select id="selectUnclaimedCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT

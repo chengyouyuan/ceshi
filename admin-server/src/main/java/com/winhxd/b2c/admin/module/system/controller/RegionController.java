@@ -22,7 +22,7 @@ import java.util.List;
 public class RegionController {
     private static final Logger logger = LoggerFactory.getLogger(RegionController.class);
 
-    private static final String MODULE_NAME = "地理区域管理";
+    //private static final String MODULE_NAME = "地理区域管理";
     @Resource
     private RegionServiceClient userServiceClient;
 

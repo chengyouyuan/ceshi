@@ -45,7 +45,7 @@ public class SysUserController implements UserServiceClient {
      * @return
      */
     @Override
-    @ApiOperation(value = "新增用户", response = Long.class)
+    @ApiOperation(value = "新增用户")
     public ResponseResult<Long> save(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);

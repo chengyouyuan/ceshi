@@ -4,9 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 
-public class CommonCondition extends BaseCondition {
+public class CommonCondition extends PagedCondition {
 	
 	@Override
 	public String toString() {

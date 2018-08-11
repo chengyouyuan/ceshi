@@ -6,9 +6,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,66 +40,46 @@ public class ApiCouponController{
     private String logTitle=""; 
     @ApiOperation(value = "新人专享优惠列表", notes = "新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"), @ApiResponse(code = BusinessCode.CODE_500002, message = "该手机号已经享受过新用户福利")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_500002, message = "该手机号已经享受过新用户福利"),
+            @ApiResponse(code = BusinessCode.CODE_500001, message = "不存在符合的优惠券活动")
     })
     @RequestMapping(value = "/501/v1/getNewUserCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponVO>> getNewUserCouponList() {
         LOGGER.info("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        try {
-            List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
-            result.setData(couponVOs);
-        }catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        }catch (Exception e) {
-            LOGGER.error("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
+        result.setData(couponVOs);
         LOGGER.info("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--结束 result={}", result);
         return result;
     }
 
     @ApiOperation(value = "待领取优惠券列表", notes = "待领取优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponVO>> unclaimedCouponList() {
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        try {
-            List<CouponVO> pages = couponService.unclaimedCouponList();
-            result.setData(pages);
-        }catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        } catch (Exception e) {
-            LOGGER.error("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        List<CouponVO> pages = couponService.unclaimedCouponList();
+        result.setData(pages);
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--结束 result={}", result);
         return result;
     }
 
     @ApiOperation(value = "我的优惠券列表", notes = "我的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/503/v1/myCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponVO>> myCouponList(@RequestBody CouponCondition couponCondition) {
         LOGGER.info("=/api-promotion/coupon/503/v1/myCouponList-我的优惠券列表=--开始--{}", couponCondition);
         ResponseResult<PagedList<CouponVO>> result = new ResponseResult<>();
-        try {
-            PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
-            result.setData(pages);
-        } catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/myCouponList-我的优惠券列表=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        } catch (Exception e) {
-            LOGGER.error("=/api-promotion/coupon/503/v1/myCouponList-我的优惠券列表=--异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        PagedList<CouponVO> pages = couponService.myCouponList(couponCondition);
+        result.setData(pages);
         LOGGER.info("=/api-promotion/coupon/503/v1/myCouponList-我的优惠券列表=--结束 result={}", result);
         return result;
     }
@@ -109,74 +87,46 @@ public class ApiCouponController{
 
     @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/504/v1/userReceiveCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {
         LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--开始--{}", condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            //返回对象
-            Boolean flag =  couponService.userReceiveCoupon(condition);
-            result.setData(flag);
-        } catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/userReceiveCoupon-用户领取优惠券=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        } catch (Exception e) {
-            LOGGER.error("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        Boolean flag =  couponService.userReceiveCoupon(condition);
+        result.setData(flag);
         LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--结束 result={}", result);
         return result;
     }
+
     @ApiOperation(value = "获取用户可领取门店优惠券种类数", notes = "获取用户可领取门店优惠券种类数")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/508/v1/getStoreCouponKinds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> getStoreCouponKinds(){
         logTitle="=/api-promotion/coupon/508/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
         LOGGER.info(logTitle+"开始--{}--");
         ResponseResult<Integer> result = new ResponseResult<>();
-        try {
-            List<CouponVO> pages = couponService.findStoreCouponList();
-            int count = 0 ;
-            for (int i = 0; i < pages.size(); i++){
-                if(pages.get(i).getReceiveStatus().equals("0")){
-                    count++;
-                }
-            }
-            Integer StoreCouponKinds = count;
-            result.setData(StoreCouponKinds);
-        }catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        }catch (Exception e) {
-            LOGGER.error(logTitle+"异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        Integer StoreCouponKinds = couponService.getStoreCouponKinds();
+        result.setData(StoreCouponKinds);
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
     }
     @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/509/v1/getStoreCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> getStoreCouponList(){
         logTitle="=/api-promotion/coupon/509/v1/getStoreCouponList-用户查询门店优惠券列表=--";
         LOGGER.info(logTitle+"开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        try {
-            List<CouponVO> pages = couponService.findStoreCouponList();
-            result.setData(pages);
-        } catch (BusinessException e){
-            LOGGER.error("=/api-promotion/coupon/501/v1/getStoreCouponList-用户查询门店优惠券列表=--异常" + e, e);
-            result.setCode(e.getErrorCode());
-        } catch (Exception e) {
-            LOGGER.error(logTitle+"异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        List<CouponVO> pages = couponService.findStoreCouponList();
+        result.setData(pages);
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
     }
@@ -187,17 +137,11 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/545/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition){
-        logTitle="=/api-promotion/coupon/509/v1/availableCouponListByOrder-订单可用的优惠券列表=--";
-        LOGGER.info(logTitle+"开始--{}");
+        LOGGER.info("=/api-promotion/coupon/509/v1/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
-        try {
-            List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
-            result.setData(pages);
-        }  catch (Exception e) {
-            LOGGER.error(logTitle+"异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        LOGGER.info(logTitle+"结束 result={}", result);
+        List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
+        result.setData(pages);
+        LOGGER.info("=/api-promotion/coupon/509/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
         return result;
     }
 }

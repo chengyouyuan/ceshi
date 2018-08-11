@@ -20,7 +20,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -74,9 +73,11 @@ public class OrderServiceController implements OrderServiceClient {
         } catch (BusinessException e) {
             logger.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             logger.error(logTitle + " 门店当天销售数据接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         logger.info("{} 门店当天销售数据接口查询结束", logTitle);
         return result;
@@ -97,6 +98,7 @@ public class OrderServiceController implements OrderServiceClient {
         } catch (Exception e) {
             logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         logger.info("{} 后台订单列表查询结束", logTitle);
         return result;
@@ -119,9 +121,11 @@ public class OrderServiceController implements OrderServiceClient {
         } catch (BusinessException e) {
             logger.error(logTitle + "查询=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             logger.error(logTitle + " 查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         logger.info("{} 查询结束", logTitle);
         return result;
@@ -137,14 +141,12 @@ public class OrderServiceController implements OrderServiceClient {
         logger.info("{} 开始", logTitle);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
-            //获取当前登录门店Id
-            StoreUser storeUser = UserContext.getCurrentStoreUser();
-            if (storeUser == null || storeUser.getBusinessId() == null) {
-                throw new BusinessException(BusinessCode.CODE_1002);
+            if (storeOrderSalesSummaryCondition == null) {
+                throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
             }
             Date startDateTime;
             Date endDateTime;
-            if (storeOrderSalesSummaryCondition == null || storeOrderSalesSummaryCondition.getStartDateTime() == null || storeOrderSalesSummaryCondition.getEndDateTime() == null) {
+            if (storeOrderSalesSummaryCondition.getStartDateTime() == null || storeOrderSalesSummaryCondition.getEndDateTime() == null) {
                 //查询当天数据
                 //获取当天最后一秒
                 long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
@@ -156,13 +158,15 @@ public class OrderServiceController implements OrderServiceClient {
                 startDateTime = storeOrderSalesSummaryCondition.getStartDateTime();
                 endDateTime = storeOrderSalesSummaryCondition.getEndDateTime();
             }
-            result.setData(orderQueryService.getStoreOrderSalesSummary(storeUser.getBusinessId(), startDateTime, endDateTime));
+            result.setData(orderQueryService.getStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), startDateTime, endDateTime));
         } catch (BusinessException e) {
             logger.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             logger.error(logTitle + " =--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         logger.info("{} ", logTitle);
         return result;

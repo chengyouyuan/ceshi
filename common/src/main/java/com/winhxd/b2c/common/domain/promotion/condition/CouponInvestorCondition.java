@@ -1,8 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
-import io.swagger.annotations.ApiModelProperty;
-
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,24 +9,16 @@ import java.util.List;
  * @Date 2018/8/4 14:31
  * @Description
  **/
-public class CouponInvestorCondition extends BaseCondition implements Serializable {
-    @ApiModelProperty(value = "出资方规则ID")
+public class CouponInvestorCondition extends PagedCondition implements Serializable {
     private String id;
-    @ApiModelProperty(value = "出资方规则编码")
     private String code;
-    @ApiModelProperty(value = "出资方规则名称")
-    private String name;
-    @ApiModelProperty(value = "出资方名称")
-    private String names;
-    @ApiModelProperty(value = "备注")
+    private String name;  //规则名称
+    private String names; //出资方名称
     private String remarks;
-    @ApiModelProperty(value = "0 无效 1 有效")
-    private Short status;
-    @ApiModelProperty(value = "出资方详情列表")
+    private Short status; // 0 无效 1 有效
+
     private List details;
-    @ApiModelProperty(value = "当前操作人id")
     private String userId;
-    @ApiModelProperty(value = "当前操作人名称")
     private String userName;
 
     public String getCode() {

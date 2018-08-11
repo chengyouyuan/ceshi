@@ -1,9 +1,8 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList;
-import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,25 +12,22 @@ import java.util.List;
  * @Date 2018/8/9 11:03
  * @Description
  **/
-public class CouponApplyCondition extends BaseCondition implements Serializable {
-
-    @ApiModelProperty(value = "适用对象规则名称")
+public class CouponApplyCondition extends PagedCondition implements Serializable {
     private String name;
-    @ApiModelProperty(value = "适用对象规则编码")
+
     private String code;
-    @ApiModelProperty(value = "备注")
+
     private String remarks;
-    @ApiModelProperty(value = "适用对象类型 1、通用 2、品牌 3、品类4、商品")
+
     private Short applyRuleType;
-    @ApiModelProperty(value = "状态")
+
     private Short status;
-    @ApiModelProperty(value = "当前操作人id")
+
     private String userId;
-    @ApiModelProperty(value = "当前操作人名称")
+
     private String userName;
-    @ApiModelProperty(value = "品牌信息列表")
+
     private List<CouponApplyBrandList> couponApplyBrandList;
-    @ApiModelProperty(value = "商品信息列表")
     private List<CouponApplyProductList> couponApplyProductList;
 
     public String getName() {

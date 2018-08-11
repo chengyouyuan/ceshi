@@ -44,12 +44,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        try {
-            result = couponActivityService.findCouponActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findCouponActivity(condition);
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询结束");
         return result;
     }
@@ -113,13 +108,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
 
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.saveCouponActivity(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.saveCouponActivity(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -215,13 +205,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
 
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.updateCouponActivity(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.updateCouponActivity(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -299,13 +284,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.updateCouponActivityStatus(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.updateCouponActivityStatus(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -330,12 +310,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryCouponByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        try {
-            result = couponActivityService.findCouponByActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryCouponByActivity/ 根据活动获取优惠券列表=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findCouponByActivity(condition);
         return result;
     }
 
@@ -360,12 +335,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryStoreByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        try {
-            result = couponActivityService.findStoreByActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryStoreByActivity/ 根据活动获取小店信息=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findStoreByActivity(condition);
         return result;
     }
 

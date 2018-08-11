@@ -638,4 +638,16 @@ public class CouponServiceImpl implements CouponService {
         return couponDetailS;
     }
 
+    @Override
+    public Integer getStoreCouponKinds() {
+        List<CouponVO> couponVOList =  findStoreCouponList();
+        int count = 0 ;
+        for (int i = 0; i < couponVOList.size(); i++){
+            if(couponVOList.get(i).getReceiveStatus().equals("0")){
+                count++;
+            }
+        }
+        return count;
+    }
+
 }

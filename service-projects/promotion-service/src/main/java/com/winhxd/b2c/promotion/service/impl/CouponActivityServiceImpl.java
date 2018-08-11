@@ -79,19 +79,15 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             }
         }
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        try {
-            PagedList<CouponActivityVO> pagedList = new PagedList<>();
-            PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-            List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
-            PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
-            pagedList.setData(pageInfo.getList());
-            pagedList.setPageNo(pageInfo.getPageNum());
-            pagedList.setPageSize(pageInfo.getPageSize());
-            pagedList.setTotalRows(pageInfo.getTotal());
-            result.setData(pagedList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        PagedList<CouponActivityVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
+        PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
         return result;
     }
 
@@ -316,25 +312,21 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public void revocationActivityCoupon(String id) {
-        try {
-            //停止活动
-            CouponActivity couponActivity = new CouponActivity();
-            couponActivity.setId(Long.valueOf(id));
-            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
-            couponActivity.setUpdated(new Date());
-            couponActivity.setUpdatedBy(123456L);
-            couponActivity.setUpdatedByName("测试用户");
+        //停止活动
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setId(Long.valueOf(id));
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
+        couponActivity.setUpdated(new Date());
+        couponActivity.setUpdatedBy(123456L);
+        couponActivity.setUpdatedByName("测试用户");
 
-            couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
-            //撤销已发放的优惠券
-            List<Long> longList = null;
-            longList.add(Long.valueOf(id));
-            RevokeCouponCodition couponCondition = new RevokeCouponCodition();
-            couponCondition.setSendIds(longList);
-            couponService.revokeCoupon(couponCondition);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        //撤销已发放的优惠券
+        List<Long> longList = null;
+        longList.add(Long.valueOf(id));
+        RevokeCouponCodition couponCondition = new RevokeCouponCodition();
+        couponCondition.setSendIds(longList);
+        couponService.revokeCoupon(couponCondition);
     }
 
     /**

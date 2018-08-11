@@ -100,7 +100,7 @@ public interface CouponService {
      * 用户查询门店优惠券列表
      * @return
      */
-    List<CouponVO> getStoreCouponList();
+    List<CouponVO> findStoreCouponList();
 
     /**
      * 订单可用优惠券

@@ -41,14 +41,8 @@ public class StoreRegionController {
     })
     @PostMapping(value = "/store/1037/v1/findStoreRegions")
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
-        ResponseResult<PagedList<StoreRegionVO>> result = new ResponseResult<>();
-        try{
-            checkCurrentAdminUser();
-            result = storeServiceClient.findStoreRegions(condition);
-        }catch (Exception e){
-            logger.error("StoreRegionController -> findStoreRegions接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        checkCurrentAdminUser();
+        ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
     }
     @ApiOperation("删除测试区域配置")
@@ -60,15 +54,9 @@ public class StoreRegionController {
     })
     @GetMapping(value = "/store/1038/v1/removeStoreRegion")
     public ResponseResult<Void> removeStoreRegion(@RequestParam("id") Long id){
-        ResponseResult<Void> result = new ResponseResult<>();
-        try{
-            checkCurrentAdminUser();
-            storeServiceClient.removeStoreRegion(id);
-        }catch (Exception e){
-            logger.error("StoreRegionController -> removeStoreRegion接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        return result;
+        checkCurrentAdminUser();
+        storeServiceClient.removeStoreRegion(id);
+        return new ResponseResult<>();
     }
     @ApiOperation("保存测试区域配置")
     @ApiResponses({
@@ -79,15 +67,9 @@ public class StoreRegionController {
     })
     @PostMapping(value = "/store/1039/v1/saveStoreRegion")
     public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition condition){
-        ResponseResult<Void> result = new ResponseResult<>();
-        try{
-            checkCurrentAdminUser();
-            storeServiceClient.saveStoreRegion(condition);
-        }catch (Exception e){
-            logger.error("StoreRegionController -> saveStoreRegion接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        return result;
+        checkCurrentAdminUser();
+        storeServiceClient.saveStoreRegion(condition);
+        return new ResponseResult<>();
     }
 
     /**

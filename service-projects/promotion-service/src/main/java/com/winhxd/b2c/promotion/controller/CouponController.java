@@ -159,7 +159,6 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	@RequestMapping(value = "/507/v1/checkCouponStatus", method = RequestMethod.POST)
 	public ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
 		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--开始--{}", condition);
 		if(condition.getSendId() == null){

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.domain.store.condition.StorePutawayProdSearchCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -362,9 +363,8 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！") })
 	@PostMapping(value = "1027/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody AllowPutawayProdCondition condition) {
+	public ResponseResult<PagedList<ProductVO>> searchProductByKey(@RequestBody StorePutawayProdSearchCondition condition) {
 		ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
-
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
 			logger.error("B端搜索商品接口:登录凭证为空");
@@ -399,7 +399,7 @@ public class ApiStoreProductManageController {
 		return responseResult;
 	}
 
-	private boolean verifyParam(AllowPutawayProdCondition condition) {
+	private boolean verifyParam(StorePutawayProdSearchCondition condition) {
 		boolean flag = true;
 		if (StringUtils.isBlank(condition.getProdName())) {
 			logger.error("B端搜索商品接口:参数ProdName为空");
@@ -453,12 +453,11 @@ public class ApiStoreProductManageController {
 	}
 	
     /**
-     * B端登入时校验改门店下上架商品未设置价格信息
      *
-     * @param storeId
+     * @param
      * @return ResponseResult<LoginCheckSellMoneyVO>
      * @Title: loginCheckSellMoney
-     * @Description: TODO
+     * @Description: B端登入时校验改门店下上架商品未设置价格信息
      * @author wuyuanbao
      * @date 2018年8月6日下午1:40:49
      */

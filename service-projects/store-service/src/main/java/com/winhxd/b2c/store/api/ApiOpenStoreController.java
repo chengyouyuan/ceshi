@@ -419,9 +419,9 @@ public class ApiOpenStoreController {
         StoreManageInfoVO storeManageInfoVO = new StoreManageInfoVO();
         storeManageInfoVO.setBrowseNum(browseNum);
         if (storeOrderSalesSummaryVO != null) {
-            storeManageInfoVO.setTurnover(storeOrderSalesSummaryVO.getDailyTurnover());
-            storeManageInfoVO.setCreateNum(storeOrderSalesSummaryVO.getDailyCustomerNum());
-            storeManageInfoVO.setCompleteNum(storeOrderSalesSummaryVO.getDailyOrderNum());
+            storeManageInfoVO.setTurnover(storeOrderSalesSummaryVO.getTurnover());
+            storeManageInfoVO.setCreateNum(storeOrderSalesSummaryVO.getCustomerNum());
+            storeManageInfoVO.setCompleteNum(storeOrderSalesSummaryVO.getOrderNum());
         } else {
             storeManageInfoVO.setTurnover(BigDecimal.ZERO);
             storeManageInfoVO.setCreateNum(0);

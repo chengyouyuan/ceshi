@@ -49,17 +49,17 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/8
      */
-    void deleteCouponActivity(String id);
+    void deleteCouponActivity(CouponActivityCondition condition);
 
     /**
      *
      *@Deccription 撤回活动优惠券
-     *@Params  id
+     *@Params  condition
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/9
      */
-    void revocationActivityCoupon(String id);
+    void revocationActivityCoupon(CouponActivityCondition condition);
 
     /**
      *

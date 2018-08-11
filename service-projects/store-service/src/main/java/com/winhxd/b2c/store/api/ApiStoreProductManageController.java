@@ -99,7 +99,7 @@ public class ApiStoreProductManageController {
 	private static final Byte COMMON_PROD_TYPE = 1;
 
 	@ApiOperation(value = "B端获取可上架商品数据接口", notes = "B端获取可上架商品数据接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ProductMsgVO.class),
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 			@ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用！"),
@@ -331,7 +331,7 @@ public class ApiStoreProductManageController {
 	}
 
 	@ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = StoreSubmitProductVO.class),
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1015/v1/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -431,7 +431,7 @@ public class ApiStoreProductManageController {
 	}
 
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1028/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -472,7 +472,7 @@ public class ApiStoreProductManageController {
      * @date 2018年8月6日下午1:40:49
      */
 	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -513,9 +513,9 @@ public class ApiStoreProductManageController {
 	}
 	
 	@ApiOperation(value = "提报商品图片上传接口", notes = "提报商品图片上传接口")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
 		@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！"),
 		@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！")})
 	@PostMapping(value = "1040/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

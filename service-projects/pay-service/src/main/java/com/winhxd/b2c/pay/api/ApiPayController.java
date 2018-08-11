@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @Api(tags = "ApiPay")
 @RequestMapping(value = "/api-pay/pay")
-public class ApiOrderPayController {
+public class ApiPayController {
 
 	 
 	@ApiOperation(value = "订单支付", notes = "订单支付")

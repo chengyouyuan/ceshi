@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.pay.dao.OutInAccountDetailMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.OutInAccountDetail">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
     <result column="trade_no" jdbcType="VARCHAR" property="tradeNo" />
@@ -36,15 +36,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from out_in_account_detail
+    from pay_finance_account_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from out_in_account_detail
+    delete from pay_finance_account_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.OutInAccountDetail">
-    insert into out_in_account_detail (id, order_no, trade_no, 
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    insert into pay_finance_account_detail (id, order_no, trade_no, 
       money, store_id, region_code, 
       region_name, type, out_type, 
       wechat_account_status, status, data_status, 
@@ -63,8 +63,8 @@
       #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
       #{updated,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.OutInAccountDetail">
-    insert into out_in_account_detail
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    insert into pay_finance_account_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -214,8 +214,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.OutInAccountDetail">
-    update out_in_account_detail
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    update pay_finance_account_detail
     <set>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
@@ -289,8 +289,8 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.OutInAccountDetail">
-    update out_in_account_detail
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    update pay_finance_account_detail
     set order_no = #{orderNo,jdbcType=CHAR},
       trade_no = #{tradeNo,jdbcType=VARCHAR},
       money = #{money,jdbcType=DECIMAL},

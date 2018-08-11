@@ -102,4 +102,10 @@ public interface CouponService {
      */
     List<CouponVO> getStoreCouponList();
 
+    /**
+     * 订单可用优惠券
+     * @param couponCondition
+     * @return
+     */
+    List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition);
 }

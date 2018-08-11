@@ -918,8 +918,12 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void aseembleOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
         List<OrderItem> items = new ArrayList<>();
+        int skuQuantity = 0;
+        int skuCategoryQuantity = 0;
         for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = iterator.next();
+            skuQuantity += condition.getAmount();
+            skuCategoryQuantity += 1;
             OrderItem item = new OrderItem();
             BeanUtils.copyProperties(condition, item);
             item.setOrderNo(orderInfo.getOrderNo());
@@ -931,6 +935,8 @@ public class CommonOrderServiceImpl implements OrderService {
         if (items.isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
+        orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
+        orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
     }
 

@@ -171,7 +171,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
+	public ResponseResult<Void> statisticsStoreProdInfo(StoreProductManageCondition condition) {
 		if (condition != null) {
 			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
 			throw new BusinessException(BusinessCode.CODE_1007);
@@ -180,7 +180,8 @@ public class StoreServiceController implements StoreServiceClient {
 			logger.error("StoreServiceController -> statisticsStoreProdInfo获取的参数异常！");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		storeProductStatisticsService.modifyQuantitySoldOutByStoreIdAndProdId(condition);
+		int flag = storeProductStatisticsService.modifyQuantitySoldOutByStoreIdAndProdId(condition);
+		return new ResponseResult<>();
 	}
 
 	@Override

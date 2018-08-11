@@ -119,27 +119,32 @@
     cat.coupon_num,
     (
     SELECT
-    count(id)
+    count(cts.id)
     FROM
-    coupon_template_send
+    coupon_template_send cts
+    LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
     WHERE
-    STATUS IN ('2', '4')
+    cat.coupon_activity_id = ca.id
     ) AS getNum,
     (
     SELECT
-    count(id)
+    count(cts.id)
     FROM
-    coupon_template_send
+    coupon_template_send cts
+    LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
     WHERE
-    STATUS = '1'
+    cat.coupon_activity_id = ca.id
+    AND cts. STATUS = '1'
     ) AS useNum,
     (
     SELECT
-    count(id)
+    count(cts.id)
     FROM
-    coupon_template_send
+    coupon_template_send cts
+    LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
     WHERE
-    STATUS = '0'
+    cat.coupon_activity_id = ca.id
+    AND cts. STATUS = '0'
     ) AS revocationNum,
     ca.activity_start,
     ca.activity_end,

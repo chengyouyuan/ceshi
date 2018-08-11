@@ -78,7 +78,7 @@ public interface StoreServiceClient {
      * @date: 2018/8/6 15:10
      */
     @RequestMapping(value = "/store/1019/v1/statisticsStoreProdInfo/", method = RequestMethod.GET)
-    void statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
+    ResponseResult<Void> statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
 
     /**
      * @param customerUserId 用户id
@@ -162,8 +162,9 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public void statisticsStoreProdInfo(StoreProductManageCondition condition) {
+    public ResponseResult<Void> statisticsStoreProdInfo(StoreProductManageCondition condition) {
         logger.error("StoreServiceClientFallBack -> statisticsStoreProdInfo，错误信息为{}", throwable);
+        return new ResponseResult<>();
     }
 
     @Override

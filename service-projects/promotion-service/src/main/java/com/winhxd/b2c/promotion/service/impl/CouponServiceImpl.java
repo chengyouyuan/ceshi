@@ -540,9 +540,9 @@ public class CouponServiceImpl implements CouponService {
                 if(templateNum < couponVO.getCouponNum()){
                     int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getStoreCustomerId(),customerUser.getCustomerId());
                     if(userNum < couponVO.getLimitNum()){
-                        couponVO.setReceiveStatus("0");
-                    }else{
                         couponVO.setReceiveStatus("1");
+                    }else{
+                        couponVO.setReceiveStatus("0");
                     }
                 }else{
                     // 优惠券已领完
@@ -555,9 +555,9 @@ public class CouponServiceImpl implements CouponService {
                 if(storeNum < couponVO.getCouponNum()){
                     int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getStoreCustomerId(),customerUser.getCustomerId());
                     if(userNum < couponVO.getLimitNum()){
-                        couponVO.setReceiveStatus("0");
-                    }else{
                         couponVO.setReceiveStatus("1");
+                    }else{
+                        couponVO.setReceiveStatus("0");
                     }
                 }else{
                     // 当前门店优惠券已领完
@@ -597,7 +597,7 @@ public class CouponServiceImpl implements CouponService {
                 }
                 //订单金额大于等于满减金额优惠券可用
                 if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                    couponVO.setUseStatus("1");
+                    couponVO.setAvailableStatus("1");
                 }
             }else if(couponVO.getReducedType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 //商品券
@@ -611,7 +611,7 @@ public class CouponServiceImpl implements CouponService {
                             amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                                couponVO.setUseStatus("1");
+                                couponVO.setAvailableStatus("1");
                             }
                         }
                     }
@@ -628,7 +628,7 @@ public class CouponServiceImpl implements CouponService {
                             amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                                couponVO.setUseStatus("1");
+                                couponVO.setAvailableStatus("1");
                             }
                         }
                     }

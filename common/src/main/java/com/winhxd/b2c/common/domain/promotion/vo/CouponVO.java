@@ -22,7 +22,7 @@ public class CouponVO {
     private Long sendId;
     @ApiModelProperty(value = "适用规则id", required=true)
     private Long applyId;
-    @ApiModelProperty(value = "是否有效", required=true)
+    @ApiModelProperty(value = "是否有效 0 无效 1 有效", required=true)
     private String status;
     @ApiModelProperty(value = "无效原因", required=true)
     private String reason;
@@ -52,14 +52,14 @@ public class CouponVO {
     private Date activityEnd;
     @ApiModelProperty(value = "优惠券状态", required=true)
     private String useStatus;
-    @ApiModelProperty(value = "优惠券领取状态 0 未领取  1 已领取", required=true)
+    @ApiModelProperty(value = "优惠券是否可领取 0 已领取  1 可领取", required=true)
     private String receiveStatus;
     @ApiModelProperty(value = "适用品牌信息")
     private List<BrandVO> brands;
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
     @ApiModelProperty(value = "优惠券是否可用 0 不可用  1 可用", required=true)
-    private String ustStatus = "0";
+    private String availableStatus = "0";
 
     private String couponNumType;
 
@@ -277,11 +277,11 @@ public class CouponVO {
         this.sendId = sendId;
     }
 
-    public String getUstStatus() {
-        return ustStatus;
+    public String getAvailableStatus() {
+        return availableStatus;
     }
 
-    public void setUstStatus(String ustStatus) {
-        this.ustStatus = ustStatus;
+    public void setAvailableStatus(String availableStatus) {
+        this.availableStatus = availableStatus;
     }
 }

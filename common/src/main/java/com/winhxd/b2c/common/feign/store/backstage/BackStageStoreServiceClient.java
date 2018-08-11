@@ -50,7 +50,7 @@ public interface BackStageStoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/1036/v1/modifyStoreInfo",method = RequestMethod.POST)
-    ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition);
+    ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition);
 
 }
 /**
@@ -84,7 +84,7 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
     }
 
     @Override
-    public ResponseResult modifyStoreInfo(BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfo(BackStageModifyStoreCondition condition) {
         logger.error("StoreServiceClientFallBack -> modifyStoreInfo 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

@@ -24,10 +24,6 @@ public class StoreProductStatisticsServiceImpl implements StoreProductStatistics
     @Autowired
     StoreProductStatisticsMapper storeProductStatisticsMapper;
 
-    @Override
-    public int modifyQuantitySoldOutByStoreIdAndProdId(StoreProductManageCondition condition) {
-        return storeProductStatisticsMapper.updateQuantitySoldOutByStoreIdAndProdCode(condition);
-    }
 
 	@Override
 	public void saveStoreProductStatistics(StoreProductStatistics record) {
@@ -42,22 +38,13 @@ public class StoreProductStatisticsServiceImpl implements StoreProductStatistics
 	}
 
 	@Override
-	public List<StoreProductStatistics> findStoreProductStatisticsByCondition(
-			StoreProductStatisticsCondition condition) {
-		
-		return storeProductStatisticsMapper.selectByCondition(condition);
-	}
-
-	@Override
 	@Transactional
 	public void bathSaveStoreProductStatistics(List<StoreProductStatistics> records) {
-		if(records!=null){
-			for(StoreProductStatistics record:records){
+		if (records != null) {
+			for (StoreProductStatistics record : records) {
 				this.saveStoreProductStatistics(record);
 			}
 		}
-		
 	}
-	
-	
+
 }

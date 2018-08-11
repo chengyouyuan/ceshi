@@ -28,23 +28,5 @@ public interface StoreProductStatisticsMapper {
     int updateByPrimaryKeySelective(StoreProductStatistics record);
 
     int updateByPrimaryKey(StoreProductStatistics record);
-    /**
-     * 通过condition获取门店商品统计信息
-    * @Title: selectByCondition 
-    * @Description: TODO 
-    * @param condition
-    * @return List<StoreProductStatistics>
-    * @author wuyuanbao
-    * @date 2018年8月7日上午10:11:09
-     */
-    List<StoreProductStatistics> selectByCondition(@Param("condition")StoreProductStatisticsCondition condition);
 
-    /**
-     * 功能描述: 修改门店售卖数量
-     * @param condition
-     * @return
-     * @auther lvsen
-     * @date 2018/8/6 17:45
-     */
-    int updateQuantitySoldOutByStoreIdAndProdCode(StoreProductManageCondition condition);
 }

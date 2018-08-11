@@ -28,13 +28,13 @@ public class CouponApplyController implements CouponApplyServiceClient {
 
     @ApiOperation(value = "查看优惠券类型规则", notes = "查看优惠券类型规则",response = ResponseResult.class)
     @Override
-    public ResponseResult viewCouponApplyDetail(@RequestParam("id") String id) {
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id) {
         ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id));
         return responseResult;
     }
     @ApiOperation(value = "优惠券类型规则设置无效", notes = "优惠券类型规则设置无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponApplyToValid(String id, String userId, String userName) {
+    public ResponseResult<Integer> updateCouponApplyToValid(String id, String userId, String userName) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int count = couponApplyService.updateCouponApplyToValid(Long.parseLong(id),Long.parseLong(userId),userName);
@@ -61,7 +61,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
 
     @ApiOperation(value = "添加优惠券类型规则", notes = "添加优惠券类型规则",response = ResponseResult.class)
     @Override
-    public ResponseResult addCouponApply(CouponApplyCondition condition) {
+    public ResponseResult<Integer> addCouponApply(CouponApplyCondition condition) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int flag = couponApplyService.addCouponApply(condition);

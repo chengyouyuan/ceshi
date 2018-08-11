@@ -56,7 +56,7 @@ public class ApiWechatShareController {
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
     @GetMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
-    public void generateQRCodePic(HttpServletResponse response) {
+    public ResponseResult<Void> generateQRCodePic(HttpServletResponse response) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
@@ -75,6 +75,7 @@ public class ApiWechatShareController {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     /**

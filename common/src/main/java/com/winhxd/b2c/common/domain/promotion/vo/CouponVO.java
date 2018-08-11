@@ -62,7 +62,7 @@ public class CouponVO {
     private String availableStatus = "0";
 
     private String couponNumType;
-
+    @ApiModelProperty(value = "优惠券数量", required=true)
     private Integer couponNum;
 
     private String limitType;

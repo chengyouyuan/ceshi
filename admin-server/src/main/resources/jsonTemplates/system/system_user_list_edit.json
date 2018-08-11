@@ -1,7 +1,7 @@
 {
   "meta": {
     "type": "base-form",
-    "url": "/user/get/{id}",
+    "path": "/user/get/{id}",
     "id": "system_user_list_edit",
     "title": "成员编辑",
     "buttons": [
@@ -10,7 +10,7 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "url": "/user/edit",
+          "path": "/user/edit",
           "callback": {
             "refresh": false
           }

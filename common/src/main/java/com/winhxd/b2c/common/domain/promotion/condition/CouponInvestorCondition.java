@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @Date 2018/8/4 14:31
  * @Description
  **/
-public class CouponInvestorCondition extends BaseCondition implements Serializable {
+public class CouponInvestorCondition extends PagedCondition implements Serializable {
     private String id;
     private String code;
     private String name;  //规则名称

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @Date 2018/8/9 11:03
  * @Description
  **/
-public class CouponApplyCondition extends BaseCondition implements Serializable {
+public class CouponApplyCondition extends PagedCondition implements Serializable {
     private String name;
 
     private String code;

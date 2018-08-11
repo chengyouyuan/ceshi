@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.backstage.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.Data;
 @ApiModel("后台门店账户管理请求参数")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class BackStageStoreInfoCondition extends BaseCondition{
+public class BackStageStoreInfoCondition extends PagedCondition {
 
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Short storeStatus;

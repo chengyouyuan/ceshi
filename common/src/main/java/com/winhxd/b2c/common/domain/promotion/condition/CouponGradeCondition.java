@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * @Date 2018/8/8 16:43
  * @Description
  **/
-public class CouponGradeCondition extends BaseCondition implements Serializable {
+public class CouponGradeCondition extends PagedCondition implements Serializable {
     private Long id;
 
     private String code;

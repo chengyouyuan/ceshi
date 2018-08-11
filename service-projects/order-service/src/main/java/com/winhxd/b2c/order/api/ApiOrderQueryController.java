@@ -57,6 +57,7 @@ public class ApiOrderQueryController {
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/410/v1/orderListByCustomer-C端订单列表查询接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("=/api-order/order/410/v1/orderListByCustomer-C端订单列表查询接口=--结束");
         return result;
@@ -78,9 +79,11 @@ public class ApiOrderQueryController {
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("{}--结束 result={}", result);
         return result;
@@ -110,9 +113,11 @@ public class ApiOrderQueryController {
             if (BusinessCode.STORE_ID_EMPTY == e.getErrorCode()) {
                 result.setCode(BusinessCode.CODE_1002);
             }
+            throw e;
         } catch (Exception e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("{}=--结束", logTitle);
         return result;
@@ -132,8 +137,6 @@ public class ApiOrderQueryController {
             StoreUser storeUser = UserContext.getCurrentStoreUser();
             if (storeUser == null || storeUser.getBusinessId() == null) {
                 throw new BusinessException(BusinessCode.CODE_1002);
-//                storeUser = new StoreUser();
-//                storeUser.setStoreCustomerId(0L);
             }
             LOGGER.info("{}=--开始--storeId={}", logTitle, storeUser.getBusinessId());
             OrderCountByStatus4StoreVO orderCountByStatus4StoreVO = this.orderQueryService.getOrderCountByStatus(storeUser.getBusinessId());
@@ -144,9 +147,11 @@ public class ApiOrderQueryController {
             if (BusinessCode.STORE_ID_EMPTY == e.getErrorCode()) {
                 result.setCode(BusinessCode.CODE_1002);
             }
+            throw e;
         } catch (Exception e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("{}=--结束", logTitle);
         return result;

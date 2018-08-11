@@ -108,4 +108,11 @@ public interface CouponService {
      * @return
      */
     List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition);
+
+    /**
+     * 获取用户可领取门店优惠券种类数
+     * @return
+     */
+    Integer getStoreCouponKinds();
+
 }

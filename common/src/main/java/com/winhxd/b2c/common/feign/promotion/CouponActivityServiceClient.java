@@ -44,7 +44,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/6
      */
     @RequestMapping(value = "/promotion/530/v1/addCouponActivity/", method = RequestMethod.POST)
-    public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition);
+    public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition);
 
     /**
      *
@@ -55,7 +55,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/8
      */
     @RequestMapping(value = "/promotion/531/v1/getCouponActivityById/", method = RequestMethod.GET)
-    public ResponseResult getCouponActivityById(@RequestParam("id") String id);
+    public ResponseResult<CouponActivityVO> getCouponActivityById(@RequestParam("id") String id);
     /**
      *
      *@Deccription 编辑优惠券活动
@@ -65,7 +65,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/7
      */
     @RequestMapping(value = "/promotion/532/v1/updateCouponActivity/", method = RequestMethod.POST)
-    public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition);
+    public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition);
     /**
      *
      *@Deccription 删除优惠券活动（设为无效）
@@ -75,7 +75,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/8
      */
     @RequestMapping(value = "/promotion/533/v1/deleteCouponActivity/", method = RequestMethod.POST)
-    public ResponseResult deleteCouponActivity(@RequestParam("id") String id);
+    public ResponseResult<Integer> deleteCouponActivity(@RequestParam("id") String id);
     /**
      *
      *@Deccription 撤回活动优惠券
@@ -85,7 +85,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/9
      */
     @RequestMapping(value = "/promotion/534/v1/revocationActivityCoupon/", method = RequestMethod.POST)
-    public ResponseResult revocationActivityCoupon(@RequestParam("id") String id);
+    public ResponseResult<Integer> revocationActivityCoupon(@RequestParam("id") String id);
 
     /**
      *
@@ -96,7 +96,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/9
      */
     @RequestMapping(value = "/promotion/535/v1/updateCouponActivityStatus/", method = RequestMethod.POST)
-    public ResponseResult updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition);
+    public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition);
     /**
      *
      *@Deccription 根据活动获取优惠券列表
@@ -132,37 +132,37 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     }
 
     @Override
-    public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {
         logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult getCouponActivityById(String id) {
+    public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
         logger.error("CouponActivityServiceFallback -> getCouponActivityById", throwable);
+        return new ResponseResult<CouponActivityVO>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> updateCouponActivity(CouponActivityAddCondition condition) {
+        logger.error("CouponActivityServiceFallback -> updateCouponActivity", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponActivity(CouponActivityAddCondition condition) {
-        logger.error("CouponActivityServiceFallback -> updateCouponActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult deleteCouponActivity(String id) {
+    public ResponseResult<Integer> deleteCouponActivity(String id) {
         logger.error("CouponActivityServiceFallback -> deleteCouponActivity", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult revocationActivityCoupon(String id) {
+    public ResponseResult<Integer> revocationActivityCoupon(String id) {
         logger.error("CouponActivityServiceFallback -> revocationActivityCoupon", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponActivityStatus(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> updateCouponActivityStatus(CouponActivityAddCondition condition) {
         logger.error("CouponActivityServiceFallback -> updateCouponActivityStatus", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

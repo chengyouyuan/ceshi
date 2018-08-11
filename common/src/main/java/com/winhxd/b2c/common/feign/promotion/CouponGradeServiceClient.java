@@ -26,13 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CouponGradeServiceClient {
 
     @RequestMapping(value = "/promotion/518/v1/addCouponGrade", method = RequestMethod.POST)
-    ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
+    ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
 
     @RequestMapping(value = "/promotion/519/v1/viewCouponGradeDetail", method = RequestMethod.POST)
-    ResponseResult viewCouponGradeDetail(@RequestParam("id")String id);
+    ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id")String id);
 
     @RequestMapping(value = "/promotion/520/v1/updateCouponGradeValid", method = RequestMethod.POST)
-    ResponseResult updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     @RequestMapping(value = "/promotion/517/v1/getCouponGradePage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
@@ -48,19 +48,19 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     private Throwable throwable;
 
     @Override
-    public ResponseResult addCouponGrade(CouponGradeCondition couponGradeCondition) {
+    public ResponseResult<Integer> addCouponGrade(CouponGradeCondition couponGradeCondition) {
         logger.error("CouponGradeServiceClient -> addCouponGrade", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult viewCouponGradeDetail(String id) {
+    public ResponseResult<CouponGradeVO> viewCouponGradeDetail(String id) {
         logger.error("CouponGradeServiceClient -> viewCouponGradeDetail", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<CouponGradeVO>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponGradeValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponGradeValid(String id,String userId,String userName) {
         logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

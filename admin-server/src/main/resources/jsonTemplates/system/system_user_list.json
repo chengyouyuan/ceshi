@@ -24,7 +24,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "get",
-          "url": "/user/list"
+          "path": "/user/list"
         }
       },
       {
@@ -32,7 +32,7 @@
         "icon": null,
         "event": {
           "type": "reset",
-          "url": ""
+          "path": ""
         }
       }
     ],

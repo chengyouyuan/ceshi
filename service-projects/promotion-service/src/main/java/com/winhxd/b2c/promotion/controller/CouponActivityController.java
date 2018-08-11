@@ -64,7 +64,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     @ApiOperation(value = "添加优惠券活动", notes = "添加优惠券活动")
-    public ResponseResult addCouponActivity(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {
         //判断必填参数
         if(null == condition){
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -133,7 +133,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页",response = ResponseResult.class)
     @Override
-    public ResponseResult getCouponActivityById(String id) {
+    public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
         if(StringUtils.isBlank(id)){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -159,7 +159,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     @ApiOperation(value = "编辑优惠券活动", notes = "编辑优惠券活动")
-    public ResponseResult updateCouponActivity(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> updateCouponActivity(CouponActivityAddCondition condition) {
         //判断必填参数
         //活动有效期内不允许修改活动！！
         Date activityStart = condition.getActivityStart();
@@ -235,7 +235,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "删除优惠券活动", notes = "删除优惠券活动")
     @Override
-    public ResponseResult deleteCouponActivity(String id) {
+    public ResponseResult<Integer> deleteCouponActivity(String id) {
         if(StringUtils.isBlank(id)){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -263,7 +263,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "撤回活动优惠券", notes = "撤回活动优惠券")
     @Override
-    public ResponseResult revocationActivityCoupon(String id) {
+    public ResponseResult<Integer> revocationActivityCoupon(String id) {
         if(StringUtils.isBlank(id)){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -290,7 +290,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@Date   2018/8/9
      */
     @Override
-    public ResponseResult updateCouponActivityStatus(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> updateCouponActivityStatus(CouponActivityAddCondition condition) {
         //判断必填参数
         if(condition == null){
             throw new BusinessException(BusinessCode.CODE_1007);

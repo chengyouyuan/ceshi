@@ -247,4 +247,9 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		return false;
 	}
 
+	@Override
+	public List<String> findRecommendProductSku(Long storeId) {
+		return storeProductManageMapper.findRecommendProductSku(storeId);
+	}
+
 }

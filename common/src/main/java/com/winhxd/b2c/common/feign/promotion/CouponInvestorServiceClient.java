@@ -33,7 +33,7 @@ public interface CouponInvestorServiceClient {
      *@Date   2018/8/7 20:59
      */
     @RequestMapping(value = "/promotion/514/v1/addCouponInvestor", method = RequestMethod.POST)
-    ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition);
+    ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition);
 
     /**
      *
@@ -44,7 +44,7 @@ public interface CouponInvestorServiceClient {
      *@Date   2018/8/8 13:59
      */
     @RequestMapping(value = "/promotion/515/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
-    ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id);
+    ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id);
 
     /**
      *
@@ -55,7 +55,7 @@ public interface CouponInvestorServiceClient {
      *@Date   2018/8/8 14:47
      */
     @RequestMapping(value = "/promotion/516/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
-    ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     /**
      *
@@ -78,19 +78,19 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     private Throwable throwable;
 
     @Override
-    public ResponseResult addCouponInvestor(CouponInvestorCondition condition) {
+    public ResponseResult<Integer> addCouponInvestor(CouponInvestorCondition condition) {
         logger.error("CouponInvestorServiceClient -> addCouponInvestor", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult viewCouponInvestorDetail(String id) {
+    public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(String id) {
         logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<CouponInvestorVO>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponInvestorToValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponInvestorToValid(String id,String userId,String userName) {
         logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

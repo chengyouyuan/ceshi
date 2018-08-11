@@ -30,7 +30,15 @@ public interface OrderServiceClient {
     @RequestMapping(value = "/order/451/v1/submitOrder/", method = RequestMethod.POST)
     ResponseResult<String> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
     
+    /**
+     * @author wangbin
+     * @date  2018年8月11日 下午5:11:54
+     * @Description 
+     * @return
+     * @deprecated 使用queryStoreOrderSalesSummaryByDateTimePeriod
+     */
     @RequestMapping(value = "/order/452/v1/queryStoreOrderSalesSummary/", method = RequestMethod.POST)
+    @Deprecated()
     ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary();
     
     @RequestMapping(value = "/order/453/v1/listOrder4Management/", method = RequestMethod.POST)

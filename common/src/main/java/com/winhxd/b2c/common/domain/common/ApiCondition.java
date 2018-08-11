@@ -3,11 +3,14 @@ package com.winhxd.b2c.common.domain.common;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * 通用Api请求参数
+ */
 @Data
 public class ApiCondition {
-    @ApiModelProperty("版本号")
+    @ApiModelProperty(value = "版本号", required = true)
     private String ver;
-    @ApiModelProperty(value = "客户端语言")
+    @ApiModelProperty(value = "客户端语言", required = true)
     private String lang;
     @ApiModelProperty("App客户端信息")
     private MobileInfo mobileInfo;

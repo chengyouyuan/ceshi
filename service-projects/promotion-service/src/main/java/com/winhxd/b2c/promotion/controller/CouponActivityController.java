@@ -220,18 +220,13 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "删除优惠券活动", notes = "删除优惠券活动")
     @Override
-    public ResponseResult<Integer> deleteCouponActivity(String id) {
-        if(StringUtils.isBlank(id)){
+    public ResponseResult<Integer> deleteCouponActivity(CouponActivityCondition condition) {
+        if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("deleteCouponActivity--Id:" + id);
+        logger.info("deleteCouponActivity--Id:" + condition.getId());
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(id)){
-            responseResult.setCode(BusinessCode.CODE_1007);
-            responseResult.setMessage("参数为空错误");
-            return responseResult;
-        }
-        couponActivityService.deleteCouponActivity(id);
+        couponActivityService.deleteCouponActivity(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("删除成功");
 
@@ -248,18 +243,13 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "撤回活动优惠券", notes = "撤回活动优惠券")
     @Override
-    public ResponseResult<Integer> revocationActivityCoupon(String id) {
-        if(StringUtils.isBlank(id)){
+    public ResponseResult<Integer> revocationActivityCoupon(CouponActivityCondition condition) {
+        if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("revocationActivityCoupon--Id:" + id);
+        logger.info("revocationActivityCoupon--Id:" + condition.getId());
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(id)){
-            responseResult.setCode(BusinessCode.CODE_1007);
-            responseResult.setMessage("参数为空错误");
-            return responseResult;
-        }
-        couponActivityService.revocationActivityCoupon(id);
+        couponActivityService.revocationActivityCoupon(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("撤销成功");
 

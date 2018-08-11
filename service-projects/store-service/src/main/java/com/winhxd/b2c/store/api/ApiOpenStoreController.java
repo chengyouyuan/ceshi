@@ -262,7 +262,7 @@ public class ApiOpenStoreController {
      * @Description 根据token查询用户绑定的门店信息
      */
     @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
-    @GetMapping(value = "/security/1029/v1/findBindingStoreInfo/{token}")
+    @PostMapping(value = "/security/1029/v1/findBindingStoreInfo/{token}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(@PathVariable("token") String token) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
@@ -275,6 +275,16 @@ public class ApiOpenStoreController {
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUserInfoVO.getCustomerId());
         if (storeUserInfoVO != null) {
+            StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
+            Date now = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.DATE, -30);
+            condition.setEndDateTime(now);
+            condition.setStartDateTime(calendar.getTime());
+            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
+            //设置月销售量
+            storeUserInfoVO.setMonthlySales(storeOrderSalesSummaryVO.getSkuQuantity());
             result.setData(storeUserInfoVO);
         }
         return result;

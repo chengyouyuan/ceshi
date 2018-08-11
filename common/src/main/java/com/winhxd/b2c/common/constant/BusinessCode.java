@@ -110,7 +110,7 @@ public final class BusinessCode {
     /** 该手机号已经享受过新用户福利*/
     public static final int CODE_500002 = 500002;
 
-    /** 适用对象添加失败*/
+    /** 优惠券模板添加失败*/
     public static final int CODE_500003 = 500003;
 
     /** 适用对象添加失败*/

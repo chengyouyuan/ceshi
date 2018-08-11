@@ -1,8 +1,6 @@
 package com.winhxd.b2c.admin.module.promotion.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
-import com.winhxd.b2c.common.context.AdminUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
@@ -68,7 +66,7 @@ public class CouponController {
 	 */
 	@ApiOperation("添加优惠券活动")
 	@PostMapping(value = "/530/v1/addCouponActivity")
-	public ResponseResult addCouponActivity(@RequestBody CouponActivityAddCondition condition){
+	public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition){
 		return couponActivityServiceClient.addCouponActivity(condition);
 	}
 
@@ -82,7 +80,7 @@ public class CouponController {
 	 */
 	@ApiOperation("根据id 查询优惠券活动")
 	@PostMapping(value = "/531/v1/getCouponActivityById")
-	public ResponseResult getCouponActivityById(@RequestParam("id") String id){
+	public ResponseResult<CouponActivityVO> getCouponActivityById(@RequestParam("id") String id){
 		return couponActivityServiceClient.getCouponActivityById(id);
 	}
 	/**
@@ -95,7 +93,7 @@ public class CouponController {
 	 */
 	@ApiOperation("编辑优惠券活动")
 	@PostMapping(value = "/532/v1/updateCouponActivity")
-	public ResponseResult updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
+	public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
 		return couponActivityServiceClient.updateCouponActivity(condition);
 	}
 	/**
@@ -108,7 +106,7 @@ public class CouponController {
 	 */
 	@ApiOperation("删除优惠券活动")
 	@PostMapping(value = "/533/v1/deleteCouponActivity")
-	public ResponseResult deleteCouponActivity(@RequestParam("id") String id){
+	public ResponseResult<Integer> deleteCouponActivity(@RequestParam("id") String id){
 		return couponActivityServiceClient.deleteCouponActivity(id);
 	}
 	/**
@@ -121,7 +119,7 @@ public class CouponController {
 	 */
 	@ApiOperation("撤回活动优惠券")
 	@PostMapping(value = "/534/v1/revocationActivityCoupon")
-	public ResponseResult revocationActivityCoupon(@RequestParam("id") String id){
+	public ResponseResult<Integer> revocationActivityCoupon(@RequestParam("id") String id){
 		return couponActivityServiceClient.revocationActivityCoupon(id);
 	}
 	/**
@@ -134,7 +132,7 @@ public class CouponController {
 	 */
 	@ApiOperation("停用/开启活动")
 	@PostMapping(value = "/535/v1/updateCouponActivityStatus")
-	public ResponseResult updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
+	public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
 		return couponActivityServiceClient.updateCouponActivityStatus(condition);
 	}
 	/**
@@ -147,7 +145,7 @@ public class CouponController {
 	 */
 	@ApiOperation("根据活动获取优惠券列表")
 	@PostMapping(value = "/536/v1/queryCouponByActivity")
-	public ResponseResult queryCouponByActivity(@RequestBody CouponActivityCondition condition){
+	public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryCouponByActivity(condition);
 	}
 	/**
@@ -160,7 +158,7 @@ public class CouponController {
 	 */
 	@ApiOperation("根据活动获取小店信息")
 	@PostMapping(value = "/537/v1/queryStoreByActivity")
-	public ResponseResult queryStoreByActivity(@RequestBody CouponActivityCondition condition){
+	public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryStoreByActivity(condition);
 	}
 

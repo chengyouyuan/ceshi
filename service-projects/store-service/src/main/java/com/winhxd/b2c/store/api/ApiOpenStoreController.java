@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -28,6 +29,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -255,25 +257,21 @@ public class ApiOpenStoreController {
     }
 
     /**
-     * @param token
      * @return 门店信息
      * @author chengyy
      * @date 2018/8/10 15:17
      * @Description 根据token查询用户绑定的门店信息
      */
     @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
-    @PostMapping(value = "/security/1029/v1/findBindingStoreInfo/{token}")
+    @PostMapping(value = "/security/1029/v1/findBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
-    public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(@PathVariable("token") String token) {
+    public ResponseResult<StoreUserInfoVO> findBindingStoreInfo() {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
-        if (StringUtils.isEmpty(token)) {
-            throw new BusinessException(BusinessCode.CODE_1014);
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if(customerUser == null){
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
-        CustomerUserInfoVO customerUserInfoVO = customerServiceClient.findCustomerByToken(token).getData();
-        if (customerUserInfoVO == null) {
-            throw new BusinessException(BusinessCode.CODE_200010);
-        }
-        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUserInfoVO.getCustomerId());
+        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
             StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
             Date now = new Date();
@@ -282,6 +280,7 @@ public class ApiOpenStoreController {
             calendar.add(Calendar.DATE, -30);
             condition.setEndDateTime(now);
             condition.setStartDateTime(calendar.getTime());
+            condition.setStoreId(storeUserInfoVO.getId());
             StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
             //设置月销售量
             storeUserInfoVO.setMonthlySales(storeOrderSalesSummaryVO.getSkuQuantity());

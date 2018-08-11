@@ -214,7 +214,7 @@
       b.increase_amt,b.cost,b.count,b.times
     from coupon_grade a left join  coupon_grade_detail b
     on a.id = b.grade_id
-    where id = #{id}
+    where a.id = #{id}
   </select>
 
 

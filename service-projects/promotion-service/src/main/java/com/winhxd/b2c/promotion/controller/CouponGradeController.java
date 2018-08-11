@@ -38,7 +38,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @ApiOperation(value = "坎级规则添加", notes = "坎级规则添加")
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
             if(flag!=0){
 //               throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
@@ -76,7 +76,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @ApiOperation(value = "坎级规则设为无效/逻辑删除", notes = "坎级规则设为无效/逻辑删除")
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int count = couponGradeService.updateCouponGradeValid(Long.parseLong(id),Long.parseLong(userId),userName);
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);

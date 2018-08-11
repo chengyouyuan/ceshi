@@ -46,7 +46,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       @ApiOperation(value = "出资方添加", notes = "出资方添加")
       @Override
       public ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
-            ResponseResult responseResult = new ResponseResult();
+            ResponseResult<Integer> responseResult = new ResponseResult();
             // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
             int flag = couponInvestorService.saveCouponInvestor(condition);
             responseResult.setCode(flag);
@@ -93,7 +93,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
     @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效")
     @Override
     public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id),Long.parseLong(userId),userName);
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);

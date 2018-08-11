@@ -54,7 +54,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @ApiOperation(value = "适用对象规则设置无效", notes = "适用对象规则设置无效")
     @Override
     public ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id") String id,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int count = couponApplyService.updateCouponApplyToValid(Long.parseLong(id),Long.parseLong(userId),userName);
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);

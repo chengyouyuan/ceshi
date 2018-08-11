@@ -4,7 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 
-public class CouponCheckStatusCondition extends CommonCondition {
+import org.apache.commons.lang3.time.DateFormatUtils;
+
+import com.winhxd.b2c.common.domain.common.PagedCondition;
+
+public class CouponCheckStatusCondition extends PagedCondition {
 	@ApiModelProperty(value = "用户id")
 	private Long customerId;
 

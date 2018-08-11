@@ -29,7 +29,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
 
     @ApiOperation(value = "添加优惠方式规则", notes = "添加优惠方式规则",response = ResponseResult.class)
     @Override
-    public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
+    public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
@@ -47,14 +47,14 @@ public class CouponGradeController implements CouponGradeServiceClient {
 
     @ApiOperation(value = "优惠方式规则详情查看", notes = "优惠方式规则详情查看",response = ResponseResult.class)
     @Override
-    public ResponseResult viewCouponGradeDetail(@RequestParam("id") String id) {
+    public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
         ResponseResult<CouponGradeVO> responseResult = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
         return responseResult;
     }
 
     @ApiOperation(value = "优惠方式规则设为无效/逻辑删除", notes = "优惠方式规则设为无效/逻辑删除",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
+    public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int count = couponGradeService.updateCouponGradeValid(Long.parseLong(id),Long.parseLong(userId),userName);

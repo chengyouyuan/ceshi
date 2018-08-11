@@ -45,7 +45,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
        */
       @ApiOperation(value = "添加出资方", notes = "添加出资方",response = ResponseResult.class)
       @Override
-      public ResponseResult addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
+      public ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult responseResult = new ResponseResult();
             // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
             int flag = couponInvestorService.saveCouponInvestor(condition);
@@ -76,14 +76,14 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       */
     @ApiOperation(value = "查看出资方详情", notes = "查看出资方详情",response = ResponseResult.class)
     @Override
-    public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id) {
+    public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id) {
         ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
         return responseResult;
     }
 
     @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
+    public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id),Long.parseLong(userId),userName);

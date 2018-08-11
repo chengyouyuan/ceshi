@@ -32,7 +32,7 @@ public interface CouponTemplateServiceClient {
  *@Date   2018/8/6 10:42
  */
 @RequestMapping(value = "/promotion/511/v1/addCouponTemplate", method = RequestMethod.POST)
-public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition);
+public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
 
 
@@ -56,7 +56,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@Date   2018/8/6 20:39
      */
     @RequestMapping(value = "/promotion/513/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
-    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName);
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName);
 
     /**
      *
@@ -88,7 +88,7 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
      *@Date   2018/8/6 10:42
      */
     @Override
-    public ResponseResult addCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<Integer> addCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> addCouponTemplate", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
@@ -110,9 +110,9 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     }
 
     @Override
-    public ResponseResult updateCouponTemplateToValid(String ids,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(String ids,String userId,String userName) {
         logger.error("CouponTemplateServiceClient -> updateCouponTemplateToValid", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     /**

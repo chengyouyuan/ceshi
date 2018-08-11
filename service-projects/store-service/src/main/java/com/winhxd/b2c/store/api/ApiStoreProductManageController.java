@@ -42,6 +42,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -448,6 +449,57 @@ public class ApiStoreProductManageController {
 		PagedList<StoreProdSimpleVO> list = storeProductManageService.findSimpelVOByCondition(condition);
 		responseResult.setData(list);
 
+		return responseResult;
+	}
+	
+    /**
+     * B端登入时校验改门店下上架商品未设置价格信息
+     *
+     * @param storeId
+     * @return ResponseResult<LoginCheckSellMoneyVO>
+     * @Title: loginCheckSellMoney
+     * @Description: TODO
+     * @author wuyuanbao
+     * @date 2018年8月6日下午1:40:49
+     */
+	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class) })
+	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(){
+		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
+		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
+		
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null) {
+				responseResult.setCode(BusinessCode.CODE_1002);
+				responseResult.setMessage("登录凭证无效！");
+				return responseResult;
+		}
+		Long storeId = storeUser.getBusinessId();
+		
+		vo.setStoreId(storeId);
+		//查询上架未设置价格商品
+		StoreProductManageCondition condition=new StoreProductManageCondition();
+		condition.setStoreId(storeId);
+		//未设置价格
+		condition.setPriceStatus((byte)0);
+		//上架商品
+		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+		int count=storeProductManageService.countSkusByConditon(condition);
+		//设置是否有未设置价格的商品
+		if(count>0){
+			vo.setCheckResult(true);	
+		}else{
+			vo.setCheckResult(false);
+		}
+		//设置为设置价格商品的数量
+		vo.setNoSetPriceCount(count);
+		
+		responseResult.setData(vo);
+		
 		return responseResult;
 	}
 

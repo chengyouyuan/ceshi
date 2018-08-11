@@ -44,7 +44,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "添加优惠换模板", notes = "添加优惠换模板",response = ResponseResult.class)
     @Override
-    public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         /**
          * 校验必填参数
          */
@@ -91,7 +91,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "单个删除/批量删除（非物理删除）/ 设为无效", notes = "单个删除/批量删除（非物理删除）/ 设为无效",response = ResponseResult.class)
     @Override
-    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
         if(StringUtils.isBlank(ids)){
             responseResult.setCode(BusinessCode.CODE_1007);

@@ -3,7 +3,6 @@ package com.winhxd.b2c.store.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,11 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 
 /**
  * 上传图片工具类
@@ -22,27 +26,22 @@ import org.springframework.beans.factory.annotation.Value;
  * @author: wuyuanbao
  * @date: 2018年8月11日 上午9:51:00
  */
+@Component
 public class ImageUploadUtil{
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUploadUtil.class);
 
 	@Value("${picture.savepath}")
-	private String savePath;
+	private String savePath="htvpic";
 
 	@Value("${picture.baseimgpath}")
-	private String baseImgPath;
-
-	@Value("${picture.baseimgurl}")
-	private String baseImgUrl;
-
-	@Value("${picture.baseimgport}")
-	private String baseImgPort;
+	private String baseImgPath="/opt/www/mobile_img";
 
 	@Value("${picture.basehost}")
-	private String baseHost;
+	private String baseHost="http://cdn.winhxd.com";
 
 	
-	public List<Map<String, String>> updateUserHead(String ip, int port, Map<String, byte[]> files) {
-
+	public ResponseResult<List<ProductImageVO>> uploadImage(String ip, int port, Map<String, byte[]> files) {
+		ResponseResult<List<ProductImageVO>> result=new ResponseResult<>();
 		Set<Map.Entry<String, byte[]>> set = files.entrySet();
 		String postFix;
 		String picFileName;
@@ -52,38 +51,48 @@ public class ImageUploadUtil{
 		String temPicUrl;
 		String uuid = generateUUID();
 		String destFolder = getPicPath(uuid);
-		List<Map<String, String>> retList = new ArrayList<>();
+		List<ProductImageVO> retList = new ArrayList<>();
 
 		Iterator<Map.Entry<String, byte[]>> it = set.iterator();
-		Map<String, String> tempMap;
+		ProductImageVO imageVo=null;
 
 		while (it.hasNext()) {
-			tempMap = new HashMap<>();
+			imageVo = new ProductImageVO();
 			Map.Entry<String, byte[]> entry;
 			entry = it.next();
 			byte[] datas = entry.getValue();
 			fileName = entry.getKey();
 			postFixIndex = fileName.lastIndexOf(".");
 			postFix = fileName.substring(postFixIndex);
-			picFileName = generateUUID() + postFix;
-			File newFile = new File(destFolder, picFileName);
-			try {
-				writeFile(newFile.toString(), datas);
-			} catch (IOException e) {
-				LOGGER.info("错误", e);
+			if(postFix.equalsIgnoreCase(".jpg")||postFix.equalsIgnoreCase(".JPG")
+					||postFix.equalsIgnoreCase(".jpeg")||postFix.equalsIgnoreCase(".JPEG")
+					||postFix.equalsIgnoreCase(".png")||postFix.equalsIgnoreCase(".PNG")){
+				picFileName = generateUUID() + postFix;
+				File newFile = new File(destFolder, picFileName);
+				try {
+					writeFile(newFile.toString(), datas);
+				} catch (IOException e) {
+					LOGGER.info("错误", e);
+				}
+				temPicId = generateUUID();
+				imageVo.setImageName(fileName);
+				temPicUrl = getPicUrl(ip, port, uuid, picFileName);
+				imageVo.setImageUrl(temPicUrl);
+				retList.add(imageVo);
+				try {
+					Thread.sleep(500);
+				} catch (Exception e1) {
+					LOGGER.info("错误", e1);
+				}
+			}else{
+				result.setCode(BusinessCode.CODE_200014);
+				result.setMessage("上传图片格式不正确");
+				return result;
 			}
-			temPicId = generateUUID();
-			tempMap.put("pid", fileName);
-			temPicUrl = getPicUrl(ip, port, uuid, picFileName);
-			tempMap.put("purl", temPicUrl);
-			retList.add(tempMap);
-			try {
-				Thread.sleep(500);
-			} catch (Exception e1) {
-				LOGGER.info("错误", e1);
-			}
+			
 		}
-		return retList;
+		result.setData(retList);
+		return result;
 	}
 
 	private void writeFile(String file, byte[] data) throws IOException {
@@ -129,9 +138,9 @@ public class ImageUploadUtil{
 		if (!baseImgPath.startsWith(URL_SEPARATOR)) {
 			baseImgPath = URL_SEPARATOR + baseImgPath;
 		}
-		String imgPort = getBaseImgPort();
+		//String imgPort = getBaseImgPort();
 		StringBuilder builder = new StringBuilder();
-		builder.append(baseHost).append(baseImgUrl).append(uuid).append(URL_SEPARATOR).append(picFileName);
+		builder.append(baseHost).append("/"+savePath+"/").append(uuid).append(URL_SEPARATOR).append(picFileName);
 		return builder.toString();
 	}
 
@@ -140,7 +149,7 @@ public class ImageUploadUtil{
 	 *
 	 * @return
 	 */
-	private String getBaseImgPort() {
-		return baseImgPort;
-	}
+//	private String getBaseImgPort() {
+//		return baseImgPort;
+//	}
 }

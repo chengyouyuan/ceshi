@@ -1,10 +1,13 @@
 package com.winhxd.b2c.store.api;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.winhxd.b2c.common.domain.store.condition.StorePutawayProdSearchCondition;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,7 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
@@ -27,6 +32,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.condition.MobileCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -44,6 +50,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
+import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -51,6 +58,7 @@ import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreSubmitProductService;
+import com.winhxd.b2c.store.util.ImageUploadUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,6 +87,8 @@ public class ApiStoreProductManageController {
 	private StoreSubmitProductService storeSubmitProductService;
 	@Autowired
 	private Cache cache;
+	@Autowired
+	private ImageUploadUtil imageUploadUtil;
 	/**
 	 * 惠下单商品
 	 */
@@ -466,7 +476,7 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(){
+    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestBody MobileCondition condition){
 		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
 		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
 		
@@ -481,13 +491,13 @@ public class ApiStoreProductManageController {
 		
 		vo.setStoreId(storeId);
 		//查询上架未设置价格商品
-		StoreProductManageCondition condition=new StoreProductManageCondition();
-		condition.setStoreId(storeId);
+		StoreProductManageCondition spmcondition=new StoreProductManageCondition();
+		spmcondition.setStoreId(storeId);
 		//未设置价格
-		condition.setPriceStatus((byte)0);
+		spmcondition.setPriceStatus((byte)0);
 		//上架商品
-		condition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-		int count=storeProductManageService.countSkusByConditon(condition);
+		spmcondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+		int count=storeProductManageService.countSkusByConditon(spmcondition);
 		//设置是否有未设置价格的商品
 		if(count>0){
 			vo.setCheckResult(true);	
@@ -499,6 +509,38 @@ public class ApiStoreProductManageController {
 		
 		responseResult.setData(vo);
 		
+		return responseResult;
+	}
+	
+	@ApiOperation(value = "提报商品图片上传接口", notes = "提报商品图片上传接口")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = PagedList.class),
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
+		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！", response = ResponseResult.class),
+		@ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！"),
+		@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！")})
+	@PostMapping(value = "1040/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(
+			@RequestParam("imageFiles") MultipartFile imageFiles, HttpServletRequest request) throws IOException {
+		ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null) {
+			responseResult.setCode(BusinessCode.CODE_1002);
+			responseResult.setMessage("登录凭证无效！");
+			return responseResult;
+		}
+		logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
+		if (imageFiles == null) {
+			responseResult.setCode(BusinessCode.CODE_1007);
+			responseResult.setMessage("参数错误");
+			return responseResult;
+		}
+		String ip = request.getServerName();
+		int port = request.getServerPort();
+		Map<String, byte[]> mapFile = new HashMap<>();
+		mapFile.put(imageFiles.getOriginalFilename(), imageFiles.getBytes());
+
+		responseResult = imageUploadUtil.uploadImage(ip, port, mapFile);
 		return responseResult;
 	}
 

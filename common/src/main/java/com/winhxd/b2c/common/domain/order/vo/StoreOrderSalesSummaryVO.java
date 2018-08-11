@@ -29,9 +29,9 @@ public class StoreOrderSalesSummaryVO {
     private Long storeId;
     
     @ApiModelProperty(value = "订单商品总数量")
-    private Integer skuQuantity;
+    private Integer skuQuantity = 0;
     
     @ApiModelProperty(value = "订单商品种类数量")
-    private Integer skuCategoryQuantity;
+    private Integer skuCategoryQuantity = 0;
     
 }

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class ApiNeteaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiNeteaseController.class);
 
-    @ApiOperation(value = "获取云信用户消息接口", response = NeteaseAccountVO.class, notes = "获取云信用户消息接口")
+    @ApiOperation(value = "获取云信用户消息接口", notes = "获取云信用户消息接口")
     @ApiResponses({
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")

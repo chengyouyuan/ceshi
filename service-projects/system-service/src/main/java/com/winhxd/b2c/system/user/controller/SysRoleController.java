@@ -44,7 +44,7 @@ public class SysRoleController implements RoleServiceClient {
      * @return
      */
     @Override
-    @ApiOperation(value = "新增权限组", response = Long.class)
+    @ApiOperation(value = "新增权限组")
     public ResponseResult<Long> save(@RequestBody SysRole sysRole){
         logger.info("{} - 新增权限组, 参数：sysRole={}", MODULE_NAME, sysRole);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);

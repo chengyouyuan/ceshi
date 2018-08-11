@@ -86,7 +86,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestParam("storeId") Long storeId){
         ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
         try {

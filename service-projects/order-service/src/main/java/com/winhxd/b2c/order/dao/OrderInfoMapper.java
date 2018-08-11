@@ -115,7 +115,7 @@ public interface OrderInfoMapper {
      * @date 2018年8月4日 上午11:53:22
      * @Description
      */
-    Integer getStoreOrderCustomerNum(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+    StoreOrderSalesSummaryVO getStoreOrderCustomerNum(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 
     /**
      * 取消订单

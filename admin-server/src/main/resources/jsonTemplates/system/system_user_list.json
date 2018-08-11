@@ -142,10 +142,11 @@
       },
       {
         "name": "roleName",
-        "inputModel": "input",
+        "inputModel": "inputDia",
         "title": "权限组",
         "placeholder": "请输入成员权限组",
-        "value": "",
+        "path": "",
+        "configKey": "/template/module/system/system_role_list_win.json",
         "isHidden": false
       }
     ]

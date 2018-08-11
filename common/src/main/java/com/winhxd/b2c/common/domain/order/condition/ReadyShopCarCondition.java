@@ -1,10 +1,8 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;

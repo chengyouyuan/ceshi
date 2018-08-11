@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.condition.MobileCondition;
+import com.winhxd.b2c.common.domain.common.MobileCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

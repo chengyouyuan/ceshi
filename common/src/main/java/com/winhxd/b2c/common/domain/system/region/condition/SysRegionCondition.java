@@ -1,10 +1,6 @@
 package com.winhxd.b2c.common.domain.system.region.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
-import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.Date;
 
 /**
  * @description: ${description}

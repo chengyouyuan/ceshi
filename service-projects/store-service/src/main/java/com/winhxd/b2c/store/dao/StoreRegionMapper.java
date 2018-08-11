@@ -1,6 +1,5 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import org.apache.ibatis.annotations.Param;

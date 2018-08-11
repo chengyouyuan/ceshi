@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/role/list",
+    "type": "report",
+    "id": "system_role_list_win",
+    "code": "system_role_list_win",
+    "title": "权限选择",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/role/list"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "id",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "roleName",
+        "title": "权限组名"
+      },
+      {
+        "name": "permissions",
+        "title": "权限范围"
+      },
+      {
+        "name": "userCount",
+        "title": "组内人数"
+      }
+    ],
+    "params": [
+      {
+        "name": "ruleName",
+        "inputModel": "input",
+        "title": "权限组名",
+        "value": "",
+        "placeholder": "请输入权限组名",
+        "isHidden": false
+      }
+    ],
+    "display": "ruleName",
+    "value": "id"
+  }
+}

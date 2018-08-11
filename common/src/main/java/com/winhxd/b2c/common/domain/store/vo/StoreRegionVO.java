@@ -21,9 +21,6 @@ public class StoreRegionVO {
     @ApiModelProperty(value = "地理区域级别")
     private Short level;
 
-    @ApiModelProperty(value = "状态(是否有效 0无效1有效)")
-    private Short status;
-
     @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 

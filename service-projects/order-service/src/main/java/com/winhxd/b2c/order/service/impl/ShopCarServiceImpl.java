@@ -102,7 +102,6 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
                     shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
                     shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
-                    shopCarProdInfoVO.setProdStatus(shopCarProdVO.getProdStatus());
                     result.add(shopCarProdInfoVO);
                 }
             }

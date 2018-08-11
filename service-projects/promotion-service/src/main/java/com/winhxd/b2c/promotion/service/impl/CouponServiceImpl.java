@@ -523,7 +523,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     @Override
-    public List<CouponVO> getStoreCouponList() {
+    public List<CouponVO> findStoreCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
@@ -531,7 +531,7 @@ public class CouponServiceImpl implements CouponService {
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         StoreUserInfoVO storeUserInfo = result.getData();
 
-        List<CouponVO> couponVOS = couponActivityMapper.getStoreCouponList(storeUserInfo.getStoreCustomerId());
+        List<CouponVO> couponVOS = couponActivityMapper.selectStoreCouponList(storeUserInfo.getStoreCustomerId());
         List<CouponVO> results = new ArrayList<>();
         for(CouponVO couponVO : couponVOS){
             //根据优惠券总数限制用户领取

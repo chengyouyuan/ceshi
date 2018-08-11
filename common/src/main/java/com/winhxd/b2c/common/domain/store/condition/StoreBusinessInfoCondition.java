@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +15,7 @@ import lombok.Data;
 @ApiModel("惠小店营业信息保存入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreBusinessInfoCondition {
+public class StoreBusinessInfoCondition extends ApiCondition {
 
     @ApiModelProperty(value = "店铺名称", required = true)
     private String storeName;

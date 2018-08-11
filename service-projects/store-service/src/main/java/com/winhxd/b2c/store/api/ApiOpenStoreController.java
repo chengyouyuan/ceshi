@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
@@ -80,7 +81,7 @@ public class ApiOpenStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1025/v1/getStoreRegionStatus", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenStoreVO> getStoreRegionStatus() {
+    public ResponseResult<OpenStoreVO> getStoreRegionStatus(@RequestBody ApiCondition apiCondition) {
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -121,7 +122,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1000/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OpenStoreVO> checkStoreInfo() {
+    public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -152,7 +153,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1001/v1/getStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo() {
+    public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<StoreBaseInfoVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -265,7 +266,7 @@ public class ApiOpenStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1004/v1/getStoreManageInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreManageInfoVO> getStoreManageInfo() {
+    public ResponseResult<StoreManageInfoVO> getStoreManageInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
@@ -348,7 +349,7 @@ public class ApiOpenStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1026/v1/getStoreTurnoverInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreManageInfoVO> getStoreTurnoverInfo() {
+    public ResponseResult<StoreManageInfoVO> getStoreTurnoverInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);

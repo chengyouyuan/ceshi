@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackStageStoreServiceController implements BackStageStoreServiceClient {
 
-    private Logger logger = LoggerFactory.getLogger(BackStageStoreServiceController.class);
-
     @Autowired
     private StoreService storeService;
 
@@ -44,11 +42,11 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         BeanUtils.copyProperties(condition, storeUserInfo);
         storeService.updateByPrimaryKeySelective(storeUserInfo);
-        return new ResponseResult();
+        return new ResponseResult<>();
     }
 
 }

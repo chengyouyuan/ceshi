@@ -226,7 +226,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class),
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！", response = ResponseResult.class)})
     @PostMapping(value = "/1003/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
+    public ResponseResult<Integer> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
         if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
                 storeBusinessInfoCondition.getPaymentWay() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
@@ -234,7 +234,7 @@ public class ApiOpenStoreController {
             logger.error("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
         }
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult();
 //        if(UserContext.getCurrentStoreUser() == null){
 //            responseResult.setCode(BusinessCode.CODE_1001);
 //            logger.info("惠小店开店店铺信息保存接口 未获取到当前用户信息");
@@ -389,18 +389,10 @@ public class ApiOpenStoreController {
             //昨日的
             StoreManageInfoVO yesterdayInfo = this.getStoreSummaryInfo(storeCustomerId, yesterdayBeginTime, yesterdayEndTime);
             //对比昨日百分比
-            if (yesterdayInfo.getTurnover().compareTo(BigDecimal.ZERO) == 0 || todayInfo.getTurnover().compareTo(BigDecimal.ZERO) == 0) {
-                todayInfo.setTurnoverCompare("暂无对比数据");
-            } else {
-                BigDecimal today = todayInfo.getTurnover();
-                BigDecimal yesterday = yesterdayInfo.getTurnover();
-                (today.subtract(yesterday)).divide(yesterdayInfo.getTurnover(),RoundingMode.HALF_UP);
-                yesterdayInfo.getTurnover();
-            }
-            todayInfo.setTurnoverCompare(yesterdayInfo.getTurnover().compareTo(BigDecimal.ZERO) == 0?"暂无对比数据":"");
-            todayInfo.setBrowseNumCompare(yesterdayInfo.getBrowseNum() == 0?"暂无对比数据":"");
-            todayInfo.setCreateNumCompare(yesterdayInfo.getCreateNum() == 0?"暂无对比数据":"");
-            todayInfo.setCompleteNumCompare(yesterdayInfo.getCompleteNum() == 0?"暂无对比数据":"");
+            todayInfo.setTurnoverCompare(calculatePercent(todayInfo.getTurnover(), yesterdayInfo.getTurnover()));
+            todayInfo.setBrowseNumCompare(calculatePercent(new BigDecimal(todayInfo.getBrowseNum()), new BigDecimal(yesterdayInfo.getBrowseNum())));
+            todayInfo.setCreateNumCompare(calculatePercent(new BigDecimal(todayInfo.getCreateNum()), new BigDecimal(yesterdayInfo.getCreateNum())));
+            todayInfo.setCompleteNumCompare(calculatePercent(new BigDecimal(todayInfo.getCompleteNum()), new BigDecimal(yesterdayInfo.getCompleteNum())));
             responseResult.setData(todayInfo);
         } catch (Exception e) {
             logger.error("惠小店获取营业查询数据接口，服务器内部错误：{}", e);
@@ -424,6 +416,7 @@ public class ApiOpenStoreController {
         StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
         todayCondition.setStartDateTime(startDatetime);
         todayCondition.setEndDateTime(endDatetime);
+        //营业额、下单人数、订单数
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
                 orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();
         StoreManageInfoVO storeManageInfoVO = new StoreManageInfoVO();
@@ -460,5 +453,19 @@ public class ApiOpenStoreController {
             beginTime = calendar.getTime();
         }
         return beginTime;
+    }
+
+    /**
+     * 计算百分比，保留2位小数
+     * @param a
+     * @param b
+     * @return
+     */
+    private static String calculatePercent(BigDecimal a, BigDecimal b){
+        String result = "暂无对比数据";
+        if (a.compareTo(BigDecimal.ZERO) != 0 && b.compareTo(BigDecimal.ZERO) != 0){
+            result = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP).toBigInteger().toString();
+        }
+        return result;
     }
 }

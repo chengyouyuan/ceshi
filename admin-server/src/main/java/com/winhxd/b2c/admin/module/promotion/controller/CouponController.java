@@ -384,6 +384,8 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 //		String userName = "大花脸";
 		String code = getUUID();
 		condition.setCode(code);
+		condition.setUserId(userId);
+		condition.setUserName(userName);
 		ResponseResult responseResult = couponApplyServiceClient.addCouponApply(condition);
 		return responseResult;
 

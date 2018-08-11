@@ -70,17 +70,6 @@ public interface StoreServiceClient {
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestParam("storeId") Long storeId);
 
     /**
-     * 功能描述: 统计门店商品信息
-     *
-     * @param: storeProdCondition
-     * @return: ResponseResult
-     * @auther: lvsen
-     * @date: 2018/8/6 15:10
-     */
-    @RequestMapping(value = "/store/1019/v1/statisticsStoreProdInfo/", method = RequestMethod.GET)
-    ResponseResult<Void> statisticsStoreProdInfo(@RequestBody StoreProductManageCondition condition);
-
-    /**
      * @param customerUserId 用户id
      * @return 门店信息
      * @author chengyy
@@ -159,12 +148,6 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(Long storeId) {
         logger.error("StoreServiceClientFallBack -> loginCheckSellMoney报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<Void> statisticsStoreProdInfo(StoreProductManageCondition condition) {
-        logger.error("StoreServiceClientFallBack -> statisticsStoreProdInfo，错误信息为{}", throwable);
-        return new ResponseResult<>();
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface BackStageStoreServiceClient {
      * @param storeCondition
      * @return
      */
-    @RequestMapping(value = "/store/1020/v1/findStoreList",method = RequestMethod.GET)
+    @RequestMapping(value = "/store/1020/v1/findStoreList",method = RequestMethod.POST)
     ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeCondition);
 
     /**

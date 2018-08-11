@@ -74,11 +74,9 @@ public class StoreServiceController implements StoreServiceClient {
     public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
         if(customerId == null) {
-            logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
             throw new BusinessException(BusinessCode.CODE_200001);
         }
         if (storeUserId == null) {
-            logger.error("StoreServiceController -> bindCustomer获取的门店id参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         //检查用户id和storeuserId有效
@@ -179,7 +177,6 @@ public class StoreServiceController implements StoreServiceClient {
 	public ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId")Long customerUserId) {
     	ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(customerUserId == null) {
-			logger.error("StoreServiceController ->bindCustomer获取的用户id参数为空");
 			throw new BusinessException(BusinessCode.CODE_200001);
 		}
 		StoreUserInfoVO storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
@@ -194,7 +191,6 @@ public class StoreServiceController implements StoreServiceClient {
 	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id) {
 		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(id == null){
-			logger.error("StoreServiceController -> findStoreUserInfo获取门店的id为空");
 			throw new BusinessException(BusinessCode.CODE_200002);
 		}
 		StoreUserInfoVO data = storeService.findStoreUserInfo(id);

@@ -49,16 +49,12 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
          * 校验必填参数
          */
         ResponseResult responseResult = new ResponseResult();
-        try {
             int count = couponTemplateService.saveCouponTemplate(couponTemplateCondition);
             if(count > 0) {
                 responseResult.setCode(BusinessCode.CODE_OK);
             }else{
                 responseResult.setCode(BusinessCode.CODE_1001);
             }
-        }catch (Exception e){
-          e.printStackTrace();
-        }
         return responseResult;
     }
 

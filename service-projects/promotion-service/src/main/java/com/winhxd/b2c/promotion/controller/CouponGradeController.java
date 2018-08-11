@@ -38,17 +38,11 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult responseResult = new ResponseResult();
-        try {
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("添加成功");
             }
-        }catch (Exception e){
-            responseResult.setCode(BusinessCode.CODE_1001);
-            responseResult.setMessage("添加失败");
-            e.printStackTrace();
-        }
         return responseResult;
     }
 
@@ -79,17 +73,11 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
         ResponseResult responseResult = new ResponseResult();
-        try {
             int count = couponGradeService.updateCouponGradeValid(Long.parseLong(id),Long.parseLong(userId),userName);
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");
             }
-        }catch (Exception e){
-            responseResult.setCode(BusinessCode.CODE_1001);
-            responseResult.setMessage("删除失败");
-            e.printStackTrace();
-        }
         return responseResult;
     }
 

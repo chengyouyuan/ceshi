@@ -16,16 +16,22 @@ import lombok.Data;
 @Data
 public class StoreOrderSalesSummaryVO {
     
-    @ApiModelProperty(value = "今日营业额：统计当日24h内小店付款金额（=当面付款金额+微信在线付款金额-退款金额）")
-    private BigDecimal dailyTurnover = BigDecimal.ZERO;
+    @ApiModelProperty(value = "营业额：统计指定时间内小店付款金额（=当面付款金额+微信在线付款金额-退款金额）")
+    private BigDecimal turnover = BigDecimal.ZERO;
     
-    @ApiModelProperty(value = "今日下单人数：统计当日24h内下单成功的UV")
-    private Integer dailyCustomerNum = 0;
+    @ApiModelProperty(value = "下单人数：统计指定时间内下单成功的UV")
+    private Integer customerNum = 0;
     
-    @ApiModelProperty(value = "今日付款单数：统计当日24h内已付款单数（=微信在线付款单数+微信扫码付款单数-已退款单数）")
-    private Integer dailyOrderNum = 0;
+    @ApiModelProperty(value = "付款单数：统计指定时间内已付款单数（=微信在线付款单数+微信扫码付款单数-已退款单数）")
+    private Integer orderNum = 0;
     
     @ApiModelProperty(value = "门店ID")
     private Long storeId;
+    
+    @ApiModelProperty(value = "订单商品总数量")
+    private Integer skuQuantity;
+    
+    @ApiModelProperty(value = "订单商品种类数量")
+    private Integer skuCategoryQuantity;
     
 }

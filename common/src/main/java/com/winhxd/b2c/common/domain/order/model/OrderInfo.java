@@ -64,6 +64,16 @@ public class OrderInfo {
      * 实付金额
      */
     private BigDecimal realPaymentMoney;
+    
+    /**
+     * 订单商品总数量
+     */
+    private Integer skuQuantity;
+    
+    /**
+     * 订单商品种类数量
+     */
+    private Integer skuCategoryQuantity;
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */

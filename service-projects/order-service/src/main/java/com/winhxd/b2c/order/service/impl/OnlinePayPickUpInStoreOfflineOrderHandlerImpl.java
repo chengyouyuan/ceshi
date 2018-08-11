@@ -98,8 +98,10 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
         // 发送延时MQ信息，处理超时未确认取消操作
+        logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
+        logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
     
     @Override

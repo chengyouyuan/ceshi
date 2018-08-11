@@ -143,7 +143,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (dailyCustomerNum == null) {
             dailyCustomerNum = 0;
         }
-        storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
+        storeOrderSalesSummaryVO.setOrderNum(dailyCustomerNum);
         storeOrderSalesSummaryVO.setStoreId(storeId);
         cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒

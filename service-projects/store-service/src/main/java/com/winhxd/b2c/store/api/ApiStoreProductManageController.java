@@ -419,11 +419,11 @@ public class ApiStoreProductManageController {
 			logger.error("B端搜索商品接口:参数ProdType为空");
 			return false;
 		}
-		if (null == condition.getPageNo()) {
+		if (0 == condition.getPageNo()) {
 			logger.error("B端搜索商品接口:参数PageNo为空");
 			return false;
 		}
-		if (null == condition.getPageSize()) {
+		if (0 == condition.getPageSize()) {
 			logger.error("B端搜索商品接口:参数PageSize为空");
 			return false;
 		}

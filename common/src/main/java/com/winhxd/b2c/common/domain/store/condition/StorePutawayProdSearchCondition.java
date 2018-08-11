@@ -30,10 +30,4 @@ public class StorePutawayProdSearchCondition extends PagedCondition {
     @ApiModelProperty(value = "是否是首次请求默认true，true是 false否")
     private Boolean first = true;
 
-    @ApiModelProperty(value = "页大小")
-    private Integer pageSize;
-
-    @ApiModelProperty(value = "页号")
-    private Integer pageNo;
-
 }

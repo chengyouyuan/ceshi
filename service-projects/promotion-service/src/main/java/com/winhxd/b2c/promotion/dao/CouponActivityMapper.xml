@@ -56,7 +56,7 @@
     activity_status, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
-  <select id="queryStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+  <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
     sui.`store_name`,
@@ -73,7 +73,7 @@
       AND ca.id = #{condition.id}
     </if>
   </select>
-  <select id="queryCouponByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+  <select id="selectCouponByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
     ct.title AS couponName,
@@ -94,7 +94,7 @@
       AND ca.id = #{condition.id}
     </if>
   </select>
-  <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
+  <select id="selectCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
     ca.`code`,

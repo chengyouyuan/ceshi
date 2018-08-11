@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @Author wl
  * @Date 2018/8/9 12:10
- * @Description   适用对象Controller
+ * @Description
  **/
 @Api(tags = "CouponApply")
 @RestController
@@ -27,33 +27,15 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @Autowired
     private CouponApplyService couponApplyService;
 
-    /**
-     *
-     *@Deccription 查看适用对象规则
-     *@Params  id
-     *@Return  ResponseResult<CouponApplyVO>
-     *@User  wl
-     *@Date   2018/8/11 14:34
-     */
-    @ApiOperation(value = "适用对象规则查看", notes = "适用对象规则查看",response = ResponseResult.class)
+    @ApiOperation(value = "查看优惠券类型规则", notes = "查看优惠券类型规则")
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id) {
         ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id));
         return responseResult;
     }
-
-
-    /**
-     *
-     *@Deccription 适用对象规则设置无效
-     *@Params  id userId userName
-     *@Return ResponseResult<Integer> 0 成功
-     *@User  wl
-     *@Date   2018/8/11 14:35
-     */
-    @ApiOperation(value = "适用对象规则设置无效", notes = "适用对象规则设置无效",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券类型规则设置无效", notes = "优惠券类型规则设置无效")
     @Override
-    public ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id")String id, @RequestParam("userId")String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponApplyToValid(String id, String userId, String userName) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int count = couponApplyService.updateCouponApplyToValid(Long.parseLong(id),Long.parseLong(userId),userName);
@@ -69,36 +51,22 @@ public class CouponApplyController implements CouponApplyServiceClient {
         return responseResult;
     }
 
-    /**
-     *
-     *@Deccription 适用对象规则分页查询
-     *@Params  condition 查询条件
-     *@Return  ResponseResult<PagedList<CouponApplyVO>>
-     *@User  wl
-     *@Date   2018/8/11 14:36
-     */
-    @ApiOperation(value = "适用对象规则分页查询", notes = "适用对象规则分页查询",response = ResponseResult.class)
+
+    @ApiOperation(value = "优惠券类型规则分页查询", notes = "优惠券类型规则分页查询")
     @Override
-    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition) {
+    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
         ResponseResult<PagedList<CouponApplyVO>> result = couponApplyService.findCouponApplyPage(condition);
         return result;
     }
 
-    /**
-     *
-     *@Deccription 添加适用对象规则
-     *@Params  condition
-     *@Return  ResponseResult<Integer> 0 表示成功
-     *@User  wl
-     *@Date   2018/8/11 14:38
-     */
-    @ApiOperation(value = "适用对象规则添加", notes = "适用对象规则添加",response = ResponseResult.class)
+
+    @ApiOperation(value = "添加优惠券类型规则", notes = "添加优惠券类型规则")
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int flag = couponApplyService.addCouponApply(condition);
-            if(flag==0){
+            if(flag>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("添加成功");
             }
@@ -111,15 +79,8 @@ public class CouponApplyController implements CouponApplyServiceClient {
 
     }
 
-    /**
-     *
-     *@Deccription 适用对象规则关联模板分页查询
-     *@Params  applyId pageNo pageSize
-     *@Return  ResponseResult<PagedList<ApplyTempleteCountVO>>
-     *@User  wl
-     *@Date   2018/8/11 14:38
-     */
-    @ApiOperation(value = "适用对象规则关联模板分页查询", notes = "适用对象规则关联模板分页查询",response = ResponseResult.class)
+
+    @ApiOperation(value = "优惠券类型规则关联模板分页查询", notes = "优惠券类型规则关联模板分页查询")
     @Override
     public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo") Integer pageNo,@RequestParam("pageSize") Integer pageSize) {
         ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(applyId,pageNo,pageSize);

@@ -35,8 +35,8 @@ public class ApiBrowseLogController {
     private StoreBrowseLogService storeBrowseLogService;
 
     @ApiOperation(value = "C端用户浏览门店进入日志", notes = "C端用户浏览门店进入日志")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class)})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1016/v1/saveBrowseLogLogin/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogin(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult<Integer> responseResult = new ResponseResult<>();
@@ -62,9 +62,9 @@ public class ApiBrowseLogController {
     }
 
     @ApiOperation(value = "C端用户浏览门店退出日志", notes = "C端用户浏览门店退出日志")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！", response = ResponseResult.class)})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1017/v1/saveBrowseLogLogout/{storeCustomerId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogout(@PathVariable("storeCustomerId") Long storeCustomerId) {
         ResponseResult<Integer> responseResult = new ResponseResult<>();

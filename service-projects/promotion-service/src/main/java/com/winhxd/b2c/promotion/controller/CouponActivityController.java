@@ -38,14 +38,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private CouponActivityService couponActivityService;
 
     @Override
-    @ApiOperation(value = "领券推券活动列表接口", response = CouponActivityVO.class, notes = "领券推券活动列表接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = CouponActivityVO.class),
+    @ApiOperation(value = "领券推券活动列表接口", notes = "领券推券活动列表接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         try {
-            result = couponActivityService.queryCouponActivity(condition);
+            result = couponActivityService.findCouponActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -131,7 +131,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/8
      */
-    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页")
     @Override
     public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
         if(StringUtils.isBlank(id)){
@@ -317,8 +317,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "根据活动获取优惠券列表", response = CouponActivityStoreVO.class, notes = "根据活动获取优惠券列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = CouponActivityStoreVO.class),
+    @ApiOperation(value = "根据活动获取优惠券列表", notes = "根据活动获取优惠券列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
@@ -331,7 +331,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("queryCouponByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         try {
-            result = couponActivityService.queryCouponByActivity(condition);
+            result = couponActivityService.findCouponByActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryCouponByActivity/ 根据活动获取优惠券列表=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
@@ -347,8 +347,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "根据活动获取小店信息", response = CouponActivityVO.class, notes = "根据活动获取小店信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = CouponActivityVO.class),
+    @ApiOperation(value = "根据活动获取小店信息", notes = "根据活动获取小店信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
@@ -361,7 +361,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("queryStoreByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         try {
-            result = couponActivityService.queryStoreByActivity(condition);
+            result = couponActivityService.findStoreByActivity(condition);
         }catch (Exception e){
             logger.error("/promotion/v1/queryStoreByActivity/ 根据活动获取小店信息=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

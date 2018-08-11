@@ -49,7 +49,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition) {
         SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
         SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         if(condition.getCreatedStart() != null && condition.getCreatedEnd() != null){
@@ -82,7 +82,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         try {
             PagedList<CouponActivityVO> pagedList = new PagedList<>();
             PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-            List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
+            List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
             PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
             pagedList.setData(pageInfo.getList());
             pagedList.setPageNo(pageInfo.getPageNum());
@@ -358,11 +358,11 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> findCouponByActivity(CouponActivityCondition condition) {
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponActivityStoreVO> coupon = couponActivityMapper.queryCouponByActivity(condition);
+        List<CouponActivityStoreVO> coupon = couponActivityMapper.selectCouponByActivity(condition);
         PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(coupon);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
@@ -377,11 +377,11 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> findStoreByActivity(CouponActivityCondition condition) {
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponActivityStoreVO> store = couponActivityMapper.queryStoreByActivity(condition);
+        List<CouponActivityStoreVO> store = couponActivityMapper.selectStoreByActivity(condition);
         PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(store);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

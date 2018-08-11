@@ -120,22 +120,16 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中")
     })
     @RequestMapping(value = "/422/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
+    public ResponseResult<Void> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
         LOGGER.info("=/api-order/order/422/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}", condition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            this.orderService.handleOrderRefundByStore(condition);
-            result.setData(true);
-        } catch (Exception e) {
-            LOGGER.error("=/api-order/order/422/v1/orderRefundByCustomer-B端退款订单处理接口=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        ResponseResult<Void> result = new ResponseResult<>();
+        this.orderService.handleOrderRefundByStore(condition);
         LOGGER.info("=/api-order/order/422/v1/orderRefundByCustomer-B端退款订单处理接口=--结束 result={}", result);
         return result;
     }
 
-    @ApiOperation(value = "C端订单申请退款接口", response = Boolean.class, notes = "C端订单申请退款接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "C端订单申请退款接口", notes = "C端订单申请退款接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
@@ -147,23 +141,16 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.CODE_421002, message = "订单状态不允许退款")
     })
     @RequestMapping(value = "/421/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
+    public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
         LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}", orderRefundCondition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            this.orderService.orderRefundByCustomer(orderRefundCondition);
-            //优惠券一并退回
-            result.setData(true);
-        } catch (Exception e) {
-            LOGGER.error("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--异常-" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        ResponseResult<Void> result = new ResponseResult<>();
+        this.orderService.orderRefundByCustomer(orderRefundCondition);
         LOGGER.info("=/api-order/order/421/v1/orderRefundByCustomer-C端订单退款接口=--结束 result={}", result);
         return result;
     }
 
-    @ApiOperation(value = "C端订单取消接口", response = Boolean.class, notes = "订单取消接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "C端订单取消接口", notes = "订单取消接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
@@ -174,22 +161,16 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中")
     })
     @RequestMapping(value = "/420/v1/cancelOrderByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> cancelOrderByCustomer(@RequestBody OrderCancelCondition orderCancelCondition) {
+    public ResponseResult<Void> cancelOrderByCustomer(@RequestBody OrderCancelCondition orderCancelCondition) {
         LOGGER.info("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--开始--{}", orderCancelCondition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
-        try {
-            this.orderService.cancelOrderByCustomer(orderCancelCondition);
-            result.setData(true);
-        } catch (Exception e) {
-            LOGGER.error("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        ResponseResult<Void> result = new ResponseResult<>();
+        this.orderService.cancelOrderByCustomer(orderCancelCondition);
         LOGGER.info("=/api-order/order/420/v1/cancelOrderByCustomer-订单取消接口=--结束 result={}", result);
         return result;
     }
 
-    @ApiOperation(value = "B端订单取消接口", response = Boolean.class, notes = "订单取消接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+    @ApiOperation(value = "B端订单取消接口", notes = "订单取消接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
@@ -201,12 +182,11 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中")
     })
     @RequestMapping(value = "/425/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Boolean> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
+    public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
         String logTitle = "=/api-order/order/425/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
-        ResponseResult<Boolean> result = new ResponseResult<>();
+        ResponseResult<Void> result = new ResponseResult<>();
         this.orderService.cancelOrderByStore(orderCancelCondition);
-        result.setData(true);
         LOGGER.info("{}--结束 result={}", logTitle, result);
         return result;
     }

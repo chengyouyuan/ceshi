@@ -12,7 +12,7 @@
         "icon": null,
         "event": {
           "type": "router",
-          "path": "",
+          "path": "/authorization/index",
           "configKey": "",
           "callBack": {
           }

@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +17,7 @@ import lombok.Data;
 @ApiModel("B端门店上架商品搜索")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StorePutawayProdSearchCondition extends ApiCondition {
+public class StorePutawayProdSearchCondition extends PagedCondition {
 
     private static final long serialVersionUID = 1L;
 

@@ -199,19 +199,18 @@ public class ApiStoreProductManageController {
 	@PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
-
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null || null == storeUser.getBusinessId()) {
+			responseResult.setCode(BusinessCode.CODE_1002);
+			responseResult.setMessage("登录凭证无效！");
+			return responseResult;
+		}
 		logger.info("B端商品操作接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数无效！");
-			return responseResult;
-		}
-		// 获取当前门店用户
-		StoreUser storeUser = UserContext.getCurrentStoreUser();
-		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
 			return responseResult;
 		}
 		// 操作类型
@@ -221,11 +220,11 @@ public class ApiStoreProductManageController {
 		// skuCode集合
 		List<ProdOperateInfoCondition> prodInfo = condition.getProducts();
 		// skuCode数组
-		List<String> skucodes = new ArrayList<>();
-		String skucodeArray[] = new String[prodInfo.size()];
+		List<String> skuCodes = new ArrayList<>();
+		String[] skuCodeArray = new String[prodInfo.size()];
 		for (int i = 0; i < prodInfo.size(); i++) {
-			skucodes.add(prodInfo.get(i).getSkuCode());
-			skucodeArray[i] = prodInfo.get(i).getSkuCode();
+			skuCodes.add(prodInfo.get(i).getSkuCode());
+			skuCodeArray[i] = prodInfo.get(i).getSkuCode();
 		}
 		// 判断操作类型
 		if (StoreProdOperateEnum.PUTAWAY.getOperateCode() == operateType) {
@@ -234,15 +233,14 @@ public class ApiStoreProductManageController {
 			StoreProductManageCondition spmCondition = new StoreProductManageCondition();
 			spmCondition.setStoreId(storeId);
 			spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-			List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId, skucodeArray);
+			List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
 			// 上架操作
 			// 表示还没上架过
 			if (spms == null || spms.size() == 0) {
 				// 调用商品接口获取商品相关信息
-				List<ProductSkuVO> prodSkuList = new ArrayList<>();
 				ProductCondition prodCondition = new ProductCondition();
 				prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-				prodCondition.setProductSkus(skucodes);
+				prodCondition.setProductSkus(skuCodes);
 				// 查询商品详情
 				ResponseResult<List<ProductSkuVO>> productResult = productServiceClient.getProductSkus(prodCondition);
 				if (productResult.getCode() == 0) {
@@ -276,15 +274,14 @@ public class ApiStoreProductManageController {
 
 		} else if (StoreProdOperateEnum.UNPUTAWAY.getOperateCode() == operateType) {
 			// 下架操作
-			storeProductManageService.unPutawayStoreProductManage(storeId, skucodeArray);
+			storeProductManageService.unPutawayStoreProductManage(storeId, skuCodeArray);
 		} else if (StoreProdOperateEnum.DELETE.getOperateCode() == operateType) {
 			// 删除操作
-			storeProductManageService.removeStoreProductManage(storeId, skucodeArray);
+			storeProductManageService.removeStoreProductManage(storeId, skuCodeArray);
 		} else if (StoreProdOperateEnum.EDIT.getOperateCode() == operateType) {
 			// 编辑（不支持批量）
 			storeProductManageService.modifyStoreProductManage(storeId, prodInfo.get(0));
 		}
-
 		return responseResult;
 	}
 

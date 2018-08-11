@@ -1,8 +1,10 @@
 package com.winhxd.b2c.common.domain.common;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
-public abstract class PagedCondition extends ApiCondition {
+@Data
+public class PagedCondition extends ApiCondition {
 
     @ApiModelProperty("页号")
     protected int pageNo = 1;
@@ -12,28 +14,4 @@ public abstract class PagedCondition extends ApiCondition {
 
     @ApiModelProperty("排序字段和排序方式(例：name asc,age desc)")
     private String orderBy;
-
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-    }
 }

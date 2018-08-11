@@ -305,7 +305,7 @@
     AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>
-  <select id="getStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+  <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
     cat.coupon_activity_id activityId,
     cat.template_id templateId,

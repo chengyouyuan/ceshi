@@ -69,5 +69,5 @@ public interface CouponActivityMapper {
      * 用户查询门店优惠券列表
      * @return
      */
-    List<CouponVO> getStoreCouponList(Long storeId);
+    List<CouponVO> selectStoreCouponList(Long storeId);
 }

@@ -176,7 +176,7 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"开始--{}--");
         ResponseResult<Integer> result = new ResponseResult<>();
         try {
-            List<CouponVO> pages = couponService.getStoreCouponList();
+            List<CouponVO> pages = couponService.findStoreCouponList();
             int count = 0 ;
             for (int i = 0; i < pages.size(); i++){
                 if(pages.get(i).getReceiveStatus().equals("0")){
@@ -205,7 +205,7 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         try {
-            List<CouponVO> pages = couponService.getStoreCouponList();
+            List<CouponVO> pages = couponService.findStoreCouponList();
             result.setData(pages);
         } catch (BusinessException e){
             LOGGER.error("=/api-promotion/coupon/501/v1/getStoreCouponList-用户查询门店优惠券列表=--异常" + e, e);

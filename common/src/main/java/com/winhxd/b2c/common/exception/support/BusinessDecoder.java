@@ -33,7 +33,7 @@ public class BusinessDecoder implements Decoder {
         if (obj instanceof ResponseResult) {
             ResponseResult result = (ResponseResult) obj;
             if (result.getCode() != 0) {
-                throw new BusinessException(result.getCode());
+                throw new BusinessException(result.getCode(), result.getMessage());
             }
         }
         return obj;

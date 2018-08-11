@@ -1,8 +1,7 @@
-package com.winhxd.b2c.common.domain.condition;
+package com.winhxd.b2c.common.domain.common;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
 
 /**
  * 接收手机端参数
@@ -10,9 +9,7 @@ import java.io.Serializable;
  *
  * @author yuluyuan
  */
-public class MobileCondition implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class MobileCondition extends ApiCondition {
 
     @ApiModelProperty(value = "记录订单下单渠道,如ios,android等")
     private String platform;
@@ -26,14 +23,11 @@ public class MobileCondition implements Serializable {
     @ApiModelProperty(value = "src")
     private String src;
 
-    @ApiModelProperty(value = "版本号")
-    private String ver;
-
     @ApiModelProperty(value = "lang")
     private String lang;
 
     @ApiModelProperty(value = "安卓模拟器ID，用于记录日志使用")
-    private String emulatordid;
+    private String emulatordId;
 
     @ApiModelProperty(value = "数盟ID，用于判断手机是否多终端登录")
     private String smDid;
@@ -62,14 +56,6 @@ public class MobileCondition implements Serializable {
         this.src = src;
     }
 
-    public String getVer() {
-        return ver;
-    }
-
-    public void setVer(String ver) {
-        this.ver = ver;
-    }
-
     public String getLang() {
         return lang;
     }
@@ -86,12 +72,12 @@ public class MobileCondition implements Serializable {
         this.did = did;
     }
 
-    public String getEmulatordid() {
-        return emulatordid;
+    public String getEmulatordId() {
+        return emulatordId;
     }
 
-    public void setEmulatordid(String emulatordid) {
-        this.emulatordid = emulatordid;
+    public void setEmulatordId(String emulatordId) {
+        this.emulatordId = emulatordId;
     }
 
     public String getSmDid() {

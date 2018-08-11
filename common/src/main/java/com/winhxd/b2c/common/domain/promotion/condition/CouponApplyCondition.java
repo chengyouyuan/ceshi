@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.BaseCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList;
 

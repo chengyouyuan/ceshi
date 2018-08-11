@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import org.apache.ibatis.annotations.Param;
@@ -32,4 +33,11 @@ public interface StoreRegionMapper {
      * @return List<StoreRegion>
      */
     List<StoreRegion> selectRepeatStoreRegion(@Param("areaCode") String areaCode);
+
+    /**
+     * 根据区域编码查询是否是有效的测试区域
+     * @param regionCode
+     * @return
+     */
+    StoreRegion selectByRegionCode(String regionCode);
 }

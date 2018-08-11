@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInfoVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
@@ -128,44 +129,6 @@ public class ApiCouponController{
         LOGGER.info("=/api-promotion/coupon/504/v1/userReceiveCoupon-用户领取优惠券=--结束 result={}", result);
         return result;
     }
-    @ApiOperation(value = "获取优惠券详情", notes = "获取优惠券详情")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
-    })
-    @RequestMapping(value = "/506/v1/getCouponInfoByTemplateId", method = RequestMethod.GET)
-	ResponseResult<CouponInfoVO> getCouponInfoByTemplateId(Long couponTemPlateId){
-    	logTitle="=/api-promotion/coupon/506/v1/getCouponInfoByTemplateId-获取优惠券详情=--";
-    	LOGGER.info(logTitle+"开始--{}", couponTemPlateId);
-        ResponseResult<CouponInfoVO> result = new ResponseResult<>();
-        try {
-            //返回对象
-            result.setData(null);
-        } catch (Exception e) {
-            LOGGER.error(logTitle+"异常" + e, e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        LOGGER.info(logTitle+"结束 result={}", result);
-        return result;
-    }
-    //@ApiOperation(value = "检查用户优惠券是否可用", notes = "检查用户优惠券是否可用")
-    //@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-    //       @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
-    //})
-    //@RequestMapping(value = "/507/v1/checkCouponStatus", method = RequestMethod.POST)
-    //ResponseResult<String> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
-    //	logTitle="=/api-promotion/coupon/507/v1/checkCouponStatus-检查用户优惠券是否可用=--";
-    //LOGGER.info(logTitle+"开始--{}", condition);
-    //   ResponseResult<String> result = new ResponseResult<>();
-    //   try {
-    //       //返回对象
-    //       result.setData(null);
-    //   } catch (Exception e) {
-    //       LOGGER.error(logTitle+"异常" + e, e);
-    //       result.setCode(BusinessCode.CODE_1001);
-    //   }
-    //   LOGGER.info(logTitle+"结束 result={}", result);
-    //   return result;
-    //}
     @ApiOperation(value = "获取用户可领取门店优惠券种类数", notes = "获取用户可领取门店优惠券种类数")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
@@ -211,6 +174,26 @@ public class ApiCouponController{
             LOGGER.error("=/api-promotion/coupon/501/v1/getStoreCouponList-用户查询门店优惠券列表=--异常" + e, e);
             result.setCode(e.getErrorCode());
         } catch (Exception e) {
+            LOGGER.error(logTitle+"异常" + e, e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        LOGGER.info(logTitle+"结束 result={}", result);
+        return result;
+    }
+
+    @ApiOperation(value = "订单可用的优惠券列表", notes = "订单可用的优惠券列表")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/545/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition){
+        logTitle="=/api-promotion/coupon/509/v1/availableCouponListByOrder-订单可用的优惠券列表=--";
+        LOGGER.info(logTitle+"开始--{}");
+        ResponseResult<List<CouponVO>> result = new ResponseResult<>();
+        try {
+            List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
+            result.setData(pages);
+        }  catch (Exception e) {
             LOGGER.error(logTitle+"异常" + e, e);
             result.setCode(BusinessCode.CODE_1001);
         }

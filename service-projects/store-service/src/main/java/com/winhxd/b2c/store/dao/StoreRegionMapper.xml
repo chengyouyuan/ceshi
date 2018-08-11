@@ -150,7 +150,7 @@
     and status = 0
     order by created desc
   </select>
-  
+
   <select id="selectRepeatStoreRegion" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from store_region where 1 = 1
     <if test="areaCode != null and areaCode != ''">
@@ -159,5 +159,13 @@
     <!--<if test="level != null and level != 0">
       and level &gt;= #{level, jdbc=SMALLINT}
     </if>-->
+  </select>
+
+  <select id="selectByRegionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from store_region
+    where area_code = #{areaCode,jdbcType=BIGINT}
+    limit 1
   </select>
 </mapper>

@@ -32,7 +32,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.condition.MobileCondition;
+import com.winhxd.b2c.common.domain.common.MobileCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;

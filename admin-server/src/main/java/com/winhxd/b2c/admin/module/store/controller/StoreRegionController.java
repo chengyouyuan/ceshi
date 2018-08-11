@@ -98,9 +98,9 @@ public class StoreRegionController {
      */
     private void checkCurrentAdminUser() {
         AdminUser adminUser = UserContext.getCurrentAdminUser();
-//        if (null == adminUser) {
-//            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
-//            throw new BusinessException(BusinessCode.CODE_1004);
-//        }
+        if (null == adminUser) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
     }
 }

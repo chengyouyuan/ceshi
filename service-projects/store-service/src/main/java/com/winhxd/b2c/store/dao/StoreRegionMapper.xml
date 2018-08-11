@@ -138,4 +138,26 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectStoreRegions" parameterType="com.winhxd.b2c.common.domain.store.model.StoreRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region
+    where 1 = 1
+    <if test="areaName != null and areaName != ''">
+      and area_name = #{areaName, jdbc=VARCHAR}
+    </if>
+    <if test="level != null and level != 0">
+      and level = #{level, jdbc=SMALLINT}
+    </if>
+    and status = 0
+    order by created desc
+  </select>
+  
+  <select id="selectRepeatStoreRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region where 1 = 1
+    <if test="areaCode != null and areaCode != ''">
+      and area_code like #{areaCode, jdbc=VARCHAR}'%'
+    </if>
+    <!--<if test="level != null and level != 0">
+      and level &gt;= #{level, jdbc=SMALLINT}
+    </if>-->
+  </select>
 </mapper>

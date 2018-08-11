@@ -207,6 +207,12 @@
         from store_product_manage
         where  prod_status = 1 and recommend = 1
     </select>
+    <select id="findRecommendProductSku" resultType="java.lang.String">
+         select
+           sku_code
+        from store_product_manage
+        where  prod_status = 1 and recommend = 1
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from store_product_manage
     where id = #{id,jdbcType=BIGINT}

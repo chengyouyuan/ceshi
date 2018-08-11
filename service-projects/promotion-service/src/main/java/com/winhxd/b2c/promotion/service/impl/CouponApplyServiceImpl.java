@@ -91,6 +91,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                 if(list!=null && list.size()>0){
                     for(int i=0;i<list.size();i++){
                         CouponApplyBrandList couponApplyBrandList = list.get(i);
+                        couponApplyBrandList.setApplyBrandId(bkey);
                         couponApplyBrandListMapper.insert(couponApplyBrandList);
                     }
                 }
@@ -106,6 +107,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                 if(list!=null && list.size()>0){
                     for(int i=0;i<list.size();i++){
                         CouponApplyProductList couponApplyProductList = list.get(i);
+                        couponApplyProductList.setApplyProductId(pkey);
                         couponApplyProductListMapper.insert(couponApplyProductList);
                     }
                 }

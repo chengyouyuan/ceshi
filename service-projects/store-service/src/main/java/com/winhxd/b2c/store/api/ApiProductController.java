@@ -51,10 +51,10 @@ public class ApiProductController {
     @Autowired
     private ProductServiceClient productServiceClient;
 
-    @ApiOperation(value = "小程序商品搜索接口", response = ResponseResult.class, notes = "小程序商品搜索接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
+    @ApiOperation(value = "小程序商品搜索接口", notes = "小程序商品搜索接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
     @PostMapping(value = "product/security/2001/v1/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> searchProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
@@ -85,10 +85,10 @@ public class ApiProductController {
     }
 
 
-    @ApiOperation(value = "小程序商品筛选列表初始化接口", response = ResponseResult.class, notes = "小程序商品筛选列表初始化接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
+    @ApiOperation(value = "小程序商品筛选列表初始化接口", notes = "小程序商品筛选列表初始化接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
     @PostMapping(value = "product/security/2002/v1/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ProductSkuMsgVO> filtrateProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<ProductSkuMsgVO>  responseResult = new ResponseResult<>();
@@ -98,14 +98,13 @@ public class ApiProductController {
             throw new BusinessException(BusinessCode.CODE_200002);
         }
 
-        //查询门店下是否有推荐商品
-        Boolean flag = storeProductManageService.queryRecommendFlag(condition.getStoreId());
+        //查询推荐商品
+        List<String> recommendSkus = storeProductManageService.findRecommendProductSku(condition.getStoreId());
 
         //获取门店下的商品
         StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
         storeProductManageCondition.setStoreId(condition.getStoreId());
         storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-        storeProductManageCondition.setRecommend(flag ? (short)1 : (short)0);
         List<String> skusByConditon = storeProductManageService.findSkusByConditon(storeProductManageCondition);
 
         //获取分类信息 初始化商品信息
@@ -113,17 +112,18 @@ public class ApiProductController {
         productConditionByPage.setPageNo(condition.getPageNo());
         productConditionByPage.setPageSize(condition.getPageSize());
         productConditionByPage.setProductSkus(skusByConditon);
-        productConditionByPage.setRecommend(flag ? 1 : null);
+        productConditionByPage.setRecommend(recommendSkus.isEmpty() ? null : 1);
+        productConditionByPage.setRecommendSkus(recommendSkus);
         productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
         responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
         logger.info("{} - 筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
-    @ApiOperation(value = "店铺热销商品", response = ResponseResult.class, notes = "店铺热销商品")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！", response = ResponseResult.class),
-            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id", response = ResponseResult.class)})
+    @ApiOperation(value = "店铺热销商品", notes = "店铺热销商品")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
     @PostMapping(value = "product/security/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> hotProductList(@RequestBody CustomerSearchProductCondition condition) {
         ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();

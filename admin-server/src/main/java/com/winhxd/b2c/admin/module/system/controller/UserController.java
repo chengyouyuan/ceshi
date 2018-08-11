@@ -220,7 +220,7 @@ public class UserController {
     })
     @DeleteMapping("/user/disabled/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
-    public ResponseResult<SysUser> disabled(@PathVariable("id") Long id){
+    public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.disabled(id);
     }

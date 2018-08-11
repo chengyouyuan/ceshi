@@ -6,6 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.store.service.StoreRegionService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -59,9 +63,13 @@ public class StoreServiceController implements StoreServiceClient {
     @Autowired
     private ProductServiceClient productServiceClient;
 
+    @Autowired
+    private StoreRegionService storeRegionService;
+
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
 //    @Autowired
 //    private ProductServiceClient productServiceClient;
+
     @Override
     public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
         ResponseResult<Void> result = new ResponseResult<>();
@@ -230,6 +238,26 @@ public class StoreServiceController implements StoreServiceClient {
 		}
 		storeProductStatisticsService.bathSaveStoreProductStatistics(beanList);
 		return result;
+	}
+
+	@Override
+	public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(StoreRegionCondition conditions) {
+		ResponseResult<PagedList<StoreRegionVO>> result = new ResponseResult<>();
+		PagedList<StoreRegionVO> data = storeRegionService.findStoreRegions(conditions);
+		result.setData(data);
+		return result;
+	}
+
+	@Override
+	public ResponseResult<Void> removeStoreRegion(Long id) {
+		storeRegionService.removeStoreRegion(id);
+		return new ResponseResult<>();
+	}
+
+	@Override
+	public ResponseResult<Void> saveStoreRegion(StoreRegionCondition conditions) {
+	 	storeRegionService.saveStoreRegion(conditions);
+		return new ResponseResult<>();
 	}
 
 }

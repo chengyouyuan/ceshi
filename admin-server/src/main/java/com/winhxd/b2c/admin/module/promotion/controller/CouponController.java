@@ -199,9 +199,6 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-
-//		String userId = "100102";
-//		String userName = "大花脸";
 		String code = getUUID();
 		condition.setCode(code);
 		condition.setCreatedBy(userId);
@@ -243,9 +240,6 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-//		String userId = "100102";
-//		String userName = "大花脸";
-
 		ResponseResult responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(ids,userId,userName);
 		return responseResult;
 	}
@@ -255,7 +249,14 @@ public class CouponController {
 
 //============================================出资方开始============================================================
 
-
+   /**
+    *
+    *@Deccription 获取出资方分页列表
+    *@Params  condition  查询条件
+    *@Return  ResponseResult<PagedList<CouponInvestorVO>>
+    *@User  wl
+    *@Date   2018/8/11 12:27
+    */
 	@ApiOperation("获取出资方分页列表")
 	@PostMapping(value = "/528/v1/getCouponInvestorPage")
 	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
@@ -263,6 +264,14 @@ public class CouponController {
 		return responseResult;
 	}
 
+	/**
+	 *
+	 *@Deccription 新建出资方
+	 *@Params  detailData  新建参数
+	 *@Return  是否成功  0 成功
+	 *@User  wl
+	 *@Date   2018/8/11 12:26
+	 */
 	@ApiOperation("新建出资方")
 	@PostMapping(value = "/514/v1/addCouponInvestor")
 	public ResponseResult addCouponInvestor(@RequestBody LinkedHashMap detailData){
@@ -276,9 +285,6 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-
-//		String userId = "100102";
-//		String userName = "大花脸";
 		String code = getUUID();
 		CouponInvestorCondition condition = new CouponInvestorCondition();
 		condition.setCode(code);
@@ -294,7 +300,14 @@ public class CouponController {
 
 
 
-
+	/**
+	 *
+	 *@Deccription 查看出资方详情
+	 *@Params  id  出资方id
+	 *@Return  ResponseResult<CouponInvestorVO>
+	 *@User  wl
+	 *@Date   2018/8/11 12:25
+	 */
 	@ApiOperation("查看出资方详情")
 	@GetMapping(value = "/515/v1/viewCouponInvestorDetail")
 	public ResponseResult viewCouponInvestorDetail(@RequestParam("id") String id){
@@ -309,9 +322,6 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-
-//		String userId = "100102";
-//		String userName = "大花脸";
 		ResponseResult responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id,userId,userName);
 		return responseResult;
 	}
@@ -319,49 +329,75 @@ public class CouponController {
 
 
 //============================================优惠方式规则开始============================================================
-
-@ApiOperation("多条件分页查询优惠方式规则")
+/**
+ *
+ *@Deccription 多条件分页查询坎级
+ *@Params  condition  查询条件
+ *@Return  ResponseResult<PagedList<CouponGradeVO>>
+ *@User  wl
+ *@Date   2018/8/11 12:24
+ */
+@ApiOperation("多条件分页查询坎级")
 @PostMapping(value = "/517/v1/getCouponGradePage")
 public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition){
 	ResponseResult<PagedList<CouponGradeVO>> responseResult = couponGradeServiceClient.getCouponGradePage(condition);
 	return responseResult;
 }
 
-@ApiOperation("新建优惠方式规则")
+/**
+ *
+ *@Deccription 新建坎级规则
+ *@Params  couponGradeCondition  新建参数
+ *@Return  是否成功 0 表示成功
+ *@User  wl
+ *@Date   2018/8/11 12:23
+ */
+@ApiOperation("新建坎级规则")
 @PostMapping(value = "/518/v1/addCouponGrade")
 public ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition){
 	/**
 	 * 参数校验
 	 */
-	UserInfo userInfo = UserManager.getCurrentUser();
-	String userId = userInfo.getId()+"";
-	String userName = userInfo.getUsername();
-//	String userId = "100102";
-//	String userName = "大花脸";
+	 UserInfo userInfo = UserManager.getCurrentUser();
+	 String userId = userInfo.getId()+"";
+	 String userName = userInfo.getUsername();
 	 String code = getUUID();
 	 couponGradeCondition.setCode(code);
 	 couponGradeCondition.setUserId(userId);
-	couponGradeCondition.setUserName(userName);
+	 couponGradeCondition.setUserName(userName);
 	 ResponseResult responseResult = couponGradeServiceClient.addCouponGrade(couponGradeCondition);
 	 return responseResult;
 }
 
-@ApiOperation("查看优惠方式规则详情")
+/**
+ *
+ *@Deccription 查看坎级详情
+ *@Params   id  坎级id
+ *@Return  CouponGradeVO
+ *@User  wl
+ *@Date   2018/8/11 12:22
+ */
+@ApiOperation("查看坎级详情")
 @GetMapping(value = "/519/v1/viewCouponGradeDetail")
 public ResponseResult viewCouponGradeDetail(@RequestParam("id") String id){
 	ResponseResult responseResult = couponGradeServiceClient.viewCouponGradeDetail(id);
 	return responseResult;
 }
 
-
-@ApiOperation("优惠方式规则逻辑删除/设置为无效")
+/**
+ *
+ *@Deccription 坎级逻辑删除/设置为无效
+ *@Params  id  坎级id
+ *@Return  是否成功 0 表示成功
+ *@User  wl
+ *@Date   2018/8/11 12:21
+ */
+@ApiOperation("坎级逻辑删除/设置为无效")
 @GetMapping (value = "/520/v1/updateCouponGradeValid")
 public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 	UserInfo userInfo = UserManager.getCurrentUser();
 	String userId = userInfo.getId()+"";
 	String userName = userInfo.getUsername();
-//	String userId = "100102";
-//	String userName = "大花脸";
 	ResponseResult responseResult = couponGradeServiceClient.updateCouponGradeValid(id,userId,userName);
 	return responseResult;
 }
@@ -370,7 +406,15 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 
 
 //============================================优惠券类型规则开始============================================================
-	@ApiOperation("新建优惠券类型")
+	/**
+	 *
+	 *@Deccription 新建适用对象
+	 *@Params  condition  新建参数
+	 *@Return  是否成功 0表示成功
+	 *@User  wl
+	 *@Date   2018/8/11 12:20
+	 */
+	@ApiOperation("新建适用对象")
 	@PostMapping(value = "/521/v1/addCouponApply")
 	public ResponseResult addCouponApply(@RequestBody CouponApplyCondition  condition){
 		/**
@@ -379,39 +423,57 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-
-//		String userId = "100102";
-//		String userName = "大花脸";
 		String code = getUUID();
 		condition.setCode(code);
+		condition.setUserId(userId);
+		condition.setUserName(userName);
 		ResponseResult responseResult = couponApplyServiceClient.addCouponApply(condition);
 		return responseResult;
 
 	}
 
-	@ApiOperation("查看优惠券类型")
+	/**
+	 *
+	 *@Deccription 查看适用对象类型
+	 *@Params  id  查询条件
+	 *@Return   CouponApplyVO
+	 *@User  wl
+	 *@Date   2018/8/11 12:16
+	 */
+	@ApiOperation("查看适用对象类型")
 	@PostMapping(value = "/522/v1/viewCouponApplyDetail")
 	public ResponseResult viewCouponApplyDetail(@RequestParam("id") String id){
 		ResponseResult responseResult = couponApplyServiceClient.viewCouponApplyDetail(id);
 		return responseResult;
 	}
 
-
-	@ApiOperation("优惠券类型设置无效")
+	/**
+	 *
+	 *@Deccription 适用对象设置无效
+	 *@Params  id
+	 *@Return  是否成功 0 表示成功
+	 *@User  wl
+	 *@Date   2018/8/11 12:16
+	 */
+	@ApiOperation("适用对象设置无效")
 	@PostMapping(value = "/523/v1/updateCouponApplyToValid")
 	public ResponseResult updateCouponApplyToValid(@RequestParam("id") String id){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-
-//		String userId = "100102";
-//		String userName = "大花脸";
 		ResponseResult responseResult = couponApplyServiceClient.updateCouponApplyToValid(id,userId,userName);
 		return responseResult;
 	}
 
-
-	@ApiOperation("优惠券类型列表分页条件查询")
+	/**
+	 *
+	 *@Deccription 适用对象列表分页条件查询
+	 *@Params  condition  查询条件
+	 *@Return   ResponseResult<PagedList<CouponApplyVO>>
+	 *@User  wl
+	 *@Date   2018/8/11 12:16
+	 */
+	@ApiOperation("适用对象列表分页条件查询")
 	@PostMapping(value = "/524/v1/findCouponApplyPage")
 	public ResponseResult findCouponApplyPage(@RequestBody CouponApplyCondition  condition){
 		ResponseResult<PagedList<CouponApplyVO>> responseResult = couponApplyServiceClient.findCouponApplyPage(condition);
@@ -421,7 +483,14 @@ public ResponseResult updateCouponGradeValid(@RequestParam("id") String id){
 
 
 //=====================================点模板引用数量显示分页===============================================
-
+	/**
+	 *
+	 *@Deccription 点出资方列表上模板引用数量表分页
+	 *@Params  invertorId  出资方规则ID  pageNo  页码  pageSize 页大小
+	 *@Return  ResponseResult<PagedList<InvertorTempleteCountVO>>
+	 *@User  wl
+	 *@Date   2018/8/11 12:11
+	 */
 @ApiOperation("点出资方列表上模板引用数量表分页")
 @GetMapping(value = "/525/v1/findInvertorTempleteCountPage")
 public ResponseResult findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
@@ -435,8 +504,15 @@ public ResponseResult findInvertorTempleteCountPage(@RequestParam("invertorId") 
    return responseResult;
 }
 
-
-@ApiOperation("点优惠方式规则列表上模板引用数量表分页")
+	/**
+	 *
+	 *@Deccription 点坎级规则列表上模板引用数量表分页
+	 *@Params  gradeId  坎级ID  pageNo  页码  pageSize 页大小
+	 *@Return  ResponseResult<PagedList<GradeTempleteCountVO>>
+	 *@User  wl
+	 *@Date   2018/8/11 12:11
+	 */
+@ApiOperation("点坎级列表上模板引用数量表分页")
 @GetMapping(value = "/526/v1/findGradeTempleteCountPage")
 public ResponseResult findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
 	if(pageNo!=null){
@@ -450,7 +526,16 @@ public ResponseResult findGradeTempleteCountPage(@RequestParam("gradeId") String
 }
 
 
-@ApiOperation("点类型规则列表上模板引用数量表分页")
+
+/**
+ *
+ *@Deccription 点适用对象列表上模板引用数量表分页
+ *@Params  applyId  应用对象ID  pageNo  页码  pageSize 页大小
+ *@Return  ResponseResult<PagedList<ApplyTempleteCountVO>>
+ *@User  wl
+ *@Date   2018/8/11 12:11
+ */
+@ApiOperation("点适用对象列表上模板引用数量表分页")
 @GetMapping(value = "/527/v1/findApplyTempleteCountPage")
 public ResponseResult findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
 	if(pageNo!=null){

@@ -12,6 +12,7 @@ import com.winhxd.b2c.promotion.service.CouponApplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,7 +62,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
 
     @ApiOperation(value = "添加优惠券类型规则", notes = "添加优惠券类型规则",response = ResponseResult.class)
     @Override
-    public ResponseResult<Integer> addCouponApply(CouponApplyCondition condition) {
+    public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
         ResponseResult responseResult = new ResponseResult();
         try {
             int flag = couponApplyService.addCouponApply(condition);

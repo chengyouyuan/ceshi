@@ -58,6 +58,8 @@ public class CouponVO {
     private List<BrandVO> brands;
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
+    @ApiModelProperty(value = "优惠券是否可用 0 不可用  1 可用", required=true)
+    private String ustStatus = "0";
 
     private String couponNumType;
 
@@ -273,5 +275,13 @@ public class CouponVO {
 
     public void setSendId(Long sendId) {
         this.sendId = sendId;
+    }
+
+    public String getUstStatus() {
+        return ustStatus;
+    }
+
+    public void setUstStatus(String ustStatus) {
+        this.ustStatus = ustStatus;
     }
 }

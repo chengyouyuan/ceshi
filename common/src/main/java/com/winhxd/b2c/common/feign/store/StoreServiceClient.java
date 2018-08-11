@@ -3,6 +3,9 @@ package com.winhxd.b2c.common.feign.store;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -84,18 +87,49 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1034/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> findStoreUserInfoList(@RequestBody Set<Long> ids);
-    
+
     /**
      * 更新门店商品统计信息
-    * @Title: updateStoreProductStatistics 
-    * @Description: TODO 
-    * @param conditions
-    * @return ResponseResult<Void>
-    * @author wuyuanbao
-    * @date 2018年8月9日下午4:16:00
+     * @Title: updateStoreProductStatistics
+     * @Description: TODO
+     * @param conditions
+     * @return ResponseResult<Void>
+     * @author wuyuanbao
+     * @date 2018年8月9日下午4:16:00
      */
     @RequestMapping(value = "/store/1024/v1/findStoreUserInfoList", method = RequestMethod.POST)
     ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions);
+
+    /**
+     * 查询测试区域配置
+     * @author: wangbaokuo
+     * @date: 2018/8/10 15:26
+     * @param: [conditions]
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.PagedList<com.winhxd.b2c.common.domain.store.vo.StoreRegionVO>>
+     */
+    @RequestMapping(value = "/store/1037/v1/findStoreRegions", method = RequestMethod.POST)
+    ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition conditions);
+
+    /**
+     * 删除测试区域配置
+     * @author: wangbaokuo
+     * @date: 2018/8/10 15:27
+     * @param: [id]
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Void>
+     */
+    @RequestMapping(value = "/store/1038/v1/removeStoreRegion", method = RequestMethod.GET)
+    ResponseResult<Void> removeStoreRegion(@RequestParam("id") Long id);
+
+    /**
+     * 保存测试区域配置
+     * @author: wangbaokuo
+     * @date: 2018/8/10 15:27
+     * @param: [conditions]
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<java.lang.Void>
+     */
+    @RequestMapping(value = "/store/1039/v1/saveStoreRegion", method = RequestMethod.POST)
+    ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition conditions);
+
 }
 
 /**
@@ -148,11 +182,29 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
-	@Override
-	public ResponseResult<Void> saveStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
-		logger.error("StoreServiceClientFallBack -> saveStoreProductStatistics，错误信息为{}", throwable);
+    @Override
+    public ResponseResult<Void> saveStoreProductStatistics(List<StoreProductStatisticsCondition> conditions) {
+        logger.error("StoreServiceClientFallBack -> saveStoreProductStatistics，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
-	}
+    }
+
+    @Override
+    public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(StoreRegionCondition conditions) {
+        logger.error("StoreServiceClientFallBack -> findStoreRegions，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> removeStoreRegion(Long id) {
+        logger.error("StoreServiceClientFallBack -> removeStoreRegion，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> saveStoreRegion(StoreRegionCondition conditions) {
+        logger.error("StoreServiceClientFallBack -> saveStoreRegion，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
 
 
 }

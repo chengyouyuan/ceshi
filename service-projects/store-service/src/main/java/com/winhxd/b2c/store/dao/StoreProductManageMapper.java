@@ -1,14 +1,13 @@
 package com.winhxd.b2c.store.dao;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @description:
@@ -91,4 +90,11 @@ public interface StoreProductManageMapper {
      * @return
      */
     Integer queryRecommendFlag(Long storeId);
+
+    /**
+     * 查询门店推荐商品
+     * @param storeId
+     * @return
+     */
+    List<String> findRecommendProductSku(Long storeId);
 }

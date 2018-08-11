@@ -98,7 +98,7 @@ public class ApiCustomerLoginController {
 				return result;
 			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
-			CustomerUserInfo DB = null;
+			CustomerUserInfo db = null;
 			/**
 			 * 拿code去换session_key
 			 */
@@ -111,8 +111,8 @@ public class ApiCustomerLoginController {
 			mini = object.getData();
 			customerUserInfo.setOpenId(mini.getOpenId());
 			customerUserInfo.setSessionKey(mini.getSessionKey());
-			DB = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
-			if (null == DB) {
+			db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
+			if (null == db) {
 				customerUserInfo.setCreated(new Date());
 				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 				customerUserInfo.setToken(GeneratePwd.getRandomUUID());
@@ -130,20 +130,20 @@ public class ApiCustomerLoginController {
 				cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
 				result.setData(vo);
 			} else {
-				if (!DB.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
+				if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
 					logger.info("{} - , 该微信号已被其他手机号绑定");
 					result = new ResponseResult<>(BusinessCode.CODE_1010);
 					return result;
 				}
-				customerUserInfo.setCustomerId(DB.getCustomerId());
+				customerUserInfo.setCustomerId(db.getCustomerId());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
 				vo = new CustomerUserInfoSimpleVO();
-				vo.setCustomerMobile(DB.getCustomerMobile());
-				vo.setToken(DB.getToken());
-				if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + DB.getToken())) {
+				vo.setCustomerMobile(db.getCustomerMobile());
+				vo.setToken(db.getToken());
+				if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken())) {
 					CustomerUser user = new CustomerUser();
-					user.setOpenId(DB.getOpenId());
-					user.setCustomerId(DB.getCustomerId());
+					user.setOpenId(db.getOpenId());
+					user.setCustomerId(db.getCustomerId());
 					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 							JsonUtil.toJSONString(user));
 					cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
@@ -242,8 +242,8 @@ public class ApiCustomerLoginController {
 			}
 			CustomerUserInfo info = new CustomerUserInfo();
 			CustomerUser user = UserContext.getCurrentCustomerUser();
-			if (null == user.getCustomerId()) {
-				logger.info("{} - 未取到用户主键", "", user.getCustomerId());
+			if (null == user) {
+				logger.info("{} - 未取到用户主键", "", JsonUtil.toJSONString(user));
 				result = new ResponseResult<>(BusinessCode.CODE_1002);
 				return result;
 			}

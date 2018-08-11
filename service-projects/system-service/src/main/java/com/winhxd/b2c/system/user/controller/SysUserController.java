@@ -71,9 +71,9 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "修改用户")
-    public ResponseResult modify(@RequestBody SysUser sysUser){
+    public ResponseResult<Void> modify(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.modify(sysUser);
         } catch (BusinessException e){
@@ -95,9 +95,9 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "修改密码")
-    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
+    public ResponseResult<Void> updatePassword(@RequestBody SysUserPasswordDTO sysUser){
         logger.info("{} - 修改密码, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.modifyPassword(sysUser);
         } catch (BusinessException e){
@@ -195,9 +195,9 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键禁用用户")
-    public ResponseResult disabled(@PathVariable("id") Long id){
+    public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
-        ResponseResult result = new ResponseResult(BusinessCode.CODE_OK);
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
             sysUserService.disabled(id);
         } catch (BusinessException e){

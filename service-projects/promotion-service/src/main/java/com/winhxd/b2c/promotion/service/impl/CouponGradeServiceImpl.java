@@ -48,7 +48,6 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     @Override
     public int addCouponGrade(CouponGradeCondition condition) {
         int flag = 0;
-        try {
             CouponGrade couponGrade = new CouponGrade();
             couponGrade.setCode(condition.getCode());
             couponGrade.setName(condition.getName());
@@ -75,10 +74,6 @@ public class CouponGradeServiceImpl implements CouponGradeService {
             couponGradeDetail.setFullGiveAmt(condition.getFullGiveAmt());
             couponGradeDetail.setIncreaseAmt(condition.getIncreaseAmt());
             int n = couponGradeDetailMapper.insert(couponGradeDetail);
-        }catch (Exception e){
-            flag = 1;
-         e.printStackTrace();
-        }
 
         return flag;
     }

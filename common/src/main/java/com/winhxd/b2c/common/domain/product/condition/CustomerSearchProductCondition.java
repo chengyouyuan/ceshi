@@ -1,13 +1,13 @@
 package com.winhxd.b2c.common.domain.product.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class CustomerSearchProductCondition extends BaseCondition {
+public class CustomerSearchProductCondition extends PagedCondition {
 
     @ApiModelProperty(value = "门店编号", required = true)
     private Long storeId;

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.common;
+package com.winhxd.b2c.common.domain.common.inputmodel;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  */
 @ApiModel("接收数字/金额区间搜索条件参数")
 @Data
-public class NumIntervalVO {
+public class NumInterval {
 
     @ApiModelProperty(value = "开始数字")
     private BigDecimal startNum;

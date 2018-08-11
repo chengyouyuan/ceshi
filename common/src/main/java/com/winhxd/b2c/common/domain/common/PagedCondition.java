@@ -2,7 +2,7 @@ package com.winhxd.b2c.common.domain.common;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public abstract class BaseCondition extends ApiCondition {
+public abstract class PagedCondition extends ApiCondition {
 
     @ApiModelProperty("页号")
     protected int pageNo = 1;

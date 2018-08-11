@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.system.user.condition;
 
-import com.winhxd.b2c.common.domain.common.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @ApiModel("系统用户列表查询参数")
 @Data
-public class SysUserCondition extends BaseCondition {
+public class SysUserCondition extends PagedCondition {
 
     @ApiModelProperty(value = "编号")
     private Long userId;

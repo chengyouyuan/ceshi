@@ -1,6 +1,4 @@
 picture:
-  savepath: retail2cPic
+  savepath: htvpic
   baseimgpath: /opt/www/mobile_img
-  baseimgurl: /retail2cPic/
-  baseimgport: 8202
-  basehost: http://192.168.60.53
+  basehost: http://cdn.winhxd.com

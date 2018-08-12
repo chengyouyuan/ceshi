@@ -17,7 +17,7 @@ public class VerifyController {
     private VerifyService verifyService;
 
     @ApiOperation(value = "订单费用记账", notes = "返回该订单共有多少笔费用")
-    @GetMapping("/pay/verify/6xx/v1/recordAccounting")
+    @GetMapping("/pay/697/v1/recordAccounting")
     public ResponseResult<Integer> recordAccounting(@RequestParam("orderNo") String orderNo) {
         int count = verifyService.saveAccountingDetailsByOrderNo(orderNo);
         return new ResponseResult(count);

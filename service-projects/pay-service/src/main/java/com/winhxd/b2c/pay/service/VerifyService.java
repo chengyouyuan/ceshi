@@ -11,14 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-/**
- * 惠下单与门店结算
- */
 @Service
-public class StoreVerifyService {
+public class VerifyService {
 
     @Autowired
     private AccountingDetailMapper accountingDetailMapper;
+
+    /**
+     * 保存订单费用明细
+     *
+     * @param orderNo
+     * @return
+     */
+    public int saveAccountingDetailsByOrderNo(String orderNo) {
+        // TODO 调用订单服务，获取订单实付款
+        // TODO 调用优惠券服务，获取促销费用
+        // TODO 保存费用
+        return 0;
+    }
 
     /**
      * 查询结算汇总

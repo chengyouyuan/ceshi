@@ -37,10 +37,10 @@ public class ApiNeteaseController {
         try {
             result.setData(null);
         }catch (BusinessException e) {
-            LOGGER.error("/api-message/netease/701/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e.getErrorCode());
+            LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e.getErrorCode());
             result.setCode(e.getErrorCode());
         } catch (Exception e) {
-            LOGGER.error("/api-message/netease/701/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e);
+            LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;

@@ -93,7 +93,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效") })
-	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/108/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		logger.info("{} - B端登录验证, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(storeUserInfoCondition));
@@ -348,7 +348,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
-	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/109/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
 		logger.info("{} -账号发送验证码, 参数：storeUserInfoCondition={}", "",

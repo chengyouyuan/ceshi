@@ -41,25 +41,9 @@ public final class BusinessCode {
     /**请求超时*/
     public static final int CODE_1015 = 1015;
 
-    /** 原密码输入错误 */
-    public static final int CODE_300021 = 302001;
-    /** 新密码与原密码相同 */
-    public static final int CODE_302002 = 302002;
+    /** 测试门店区域:区域重复*/
+    public static final int CODE_103901 = 103901;
 
-    /** 购物车:门店ID为空*/
-    public static final int CODE_402001 = 402001;
-    /** 购物车:自提地址为空*/
-    public static final int CODE_402002 = 402002;
-    /** 购物车:自提时间为空*/
-    public static final int CODE_402003 = 402003;
-    /** 购物车:商品信息为空*/
-    public static final int CODE_402004 = 402004;
-    /** 购物车:支付方式*/
-    public static final int CODE_402006 = 402006;
-    /** 购物车:参数错误*/
-    public static final int CODE_402008 = 402008;
-    /**订单id参数为空*/
-    public static final int CODE_402013 = 402013;
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
@@ -94,7 +78,25 @@ public final class BusinessCode {
     public static final int CODE_200016 = 200016;
 
 
+    /** 原密码输入错误 */
+    public static final int CODE_300021 = 302001;
+    /** 新密码与原密码相同 */
+    public static final int CODE_302002 = 302002;
 
+    /** 购物车:门店ID为空*/
+    public static final int CODE_402001 = 402001;
+    /** 购物车:自提地址为空*/
+    public static final int CODE_402002 = 402002;
+    /** 购物车:自提时间为空*/
+    public static final int CODE_402003 = 402003;
+    /** 购物车:商品信息为空*/
+    public static final int CODE_402004 = 402004;
+    /** 购物车:支付方式*/
+    public static final int CODE_402006 = 402006;
+    /** 购物车:参数错误*/
+    public static final int CODE_402008 = 402008;
+    /**订单id参数为空*/
+    public static final int CODE_402013 = 402013;
     /** 购物车:商品下架或删除*/
     public static final int CODE_402010 = 402010;
     /** 购物车:商品信息不存在或获取商品数量不正确*/
@@ -222,20 +224,18 @@ public final class BusinessCode {
     public static final int CODE_320001 = 320001;
     
     @ApiModelProperty("当前用户没有银行卡信息")
-    public static final int CODE_6101 = 6101;
+    public static final int CODE_610001 = 610001;
     @ApiModelProperty("银行名称为空")
-    public static final int CODE_6111 = 6111;
+    public static final int CODE_610011 = 610011;
     @ApiModelProperty("银行卡卡号为空")
-    public static final int CODE_6112 = 6112;
+    public static final int CODE_610012 = 610012;
     @ApiModelProperty("开户人姓名为空")
-    public static final int CODE_6113 = 6113;
+    public static final int CODE_610013 = 610013;
     @ApiModelProperty("开户支行或分行为空")
-    public static final int CODE_6114 = 6114;
+    public static final int CODE_610014 = 610014;
     @ApiModelProperty("手机号为空")
-    public static final int CODE_6115 = 6115;
+    public static final int CODE_610015 = 610015;
     @ApiModelProperty("验证码为空")
-    public static final int CODE_6116 = 6116;
+    public static final int CODE_610016 = 610016;
 
-    /** 测试门店区域:区域重复*/
-    public static final int CODE_103901 = 103901;
 }

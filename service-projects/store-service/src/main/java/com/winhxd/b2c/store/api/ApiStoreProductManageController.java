@@ -434,8 +434,6 @@ public class ApiStoreProductManageController {
 		if (HXD_PROD_TYPE.equals(condition.getProdType())) {
 			productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
 		}
-//		productCondition.setPageNo(condition.getPageNo());
-//		productCondition.setPageSize(condition.getPageSize());
 		ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
 		responseResult.setData(productVo.getData());
 
@@ -546,9 +544,8 @@ public class ApiStoreProductManageController {
 	}
 	
 	/**
-	 * 上传图片
-	* @Title: uploadSubmitProductImg 
-	* @Description: TODO 
+	* @Title: uploadSubmitProductImg
+	* @Description: 上传图片
 	* @param imageFiles
 	* @return
 	* @throws IOException ResponseResult<List<ProductImageVO>>

@@ -94,7 +94,9 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
             }
         } else if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
-            return !clazz.equals(Object.class) && !Map.class.isAssignableFrom(clazz);
+            return !clazz.equals(Object.class)
+                    && !Map.class.isAssignableFrom(clazz)
+                    && !ResponseResult.class.isAssignableFrom(clazz);
         }
         return true;
     }

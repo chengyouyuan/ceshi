@@ -142,6 +142,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         logger.info("{},orderNo={} 订单确认后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         orderInfo.setOrderStatus(OrderStatusEnum.ALREADY_VALUATION.getStatusCode());
+        //设置订单 接单时间
+        Date confirmDate = new Date();
+        orderInfo.setAcceptOrderDatetime(confirmDate);
         String newOrderJson = JsonUtil.toJSONString(orderInfo);
         // 生成订单流转日志
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.UNRECEIVED.getStatusCode(),
@@ -208,7 +211,10 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
                     MessageFormat.format("订单orderNo={0},支付成功业务逻辑处理,状态错误：期望当前订单状态：{1}，实际订单状态：{2}",
                             orderInfo.getOrderNo(), expectedStatusCode, orderInfo.getOrderStatus()));
         }
-        // 在线支付后，订单状态流转到待接单
+        //如果是确认订单，则更新订单确认时间
+        if (expectedStatusCode.shortValue() == OrderStatusEnum.UNRECEIVED.getStatusCode()) {
+            orderInfoMapper.updateOrderConfirmDate(orderInfo.getAcceptOrderDatetime(), orderInfo.getId());
+        }
         int changeNum = orderInfoMapper.updateOrderStatus(expectedStatusCode, newStatusCode, orderInfo.getId());
         if (changeNum != 1) {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE,

@@ -1,12 +1,14 @@
 package com.winhxd.b2c.admin.module.promotion.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -223,6 +223,11 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
+		if(condition==null || condition.getTitle()==null || condition.getInvestorId()==null
+		   || condition.getGradeId()==null || condition.getApplyRuleId()==null
+		   || condition.getPayType()==null || condition.getCalType()==null	){
+           throw new BusinessException(BusinessCode.CODE_500010,"优惠券模板必填参数错误");
+		}
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
@@ -305,6 +310,11 @@ public class CouponController {
 		/**
 		 *  校验参数
 		 */
+         if(detailData.get("name")==null || detailData.get("listDetail")==null){
+			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
+		 }
+
+
 		String name = detailData.get("name").toString();
 		String remark = detailData.get("remark").toString();
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
@@ -321,6 +331,7 @@ public class CouponController {
 		condition.setUserName(userName);
 		condition.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
 		condition.setDetails(list);
+		checkCondition(condition);
 		ResponseResult<Integer> responseResult = couponInvestorServiceClient.addCouponInvestor(condition);
 		return responseResult;
 	}
@@ -585,5 +596,42 @@ public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPag
 	}
 
 
+	/**
+	 *
+	 *@Deccription 新增出资方信息时校验是否符合提交规则
+	 *@Params  condition
+	 *@Return  flag
+	 *@User  wl
+	 *@Date   2018/8/8 15:18
+	 */
+	public void checkCondition(CouponInvestorCondition condition){
+
+		List deatils = condition.getDetails();
+		if(deatils == null){
+			throw new BusinessException(BusinessCode.CODE_500011,"出资方详情必填参数为空");
+		}
+		if(deatils!=null && deatils.size()>0){
+			Float tempPercent = 0.00f;
+			for(int i=0;i<deatils.size();i++){
+				LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
+				tempPercent += Float.parseFloat(map.get("percent").toString());
+			}
+			//占比之和必须等于100
+			if(tempPercent!=100.00f){
+				throw new BusinessException(BusinessCode.CODE_500012,"出资方占比之和不等于等于100");
+			}
+			//如果不止一个出资方，但是参数中的出资方的类型 或者品牌编码相等 , 返回出资方不能重复
+			if(deatils.size()>1){
+				Set set = new HashSet();
+				for(int i=0;i<deatils.size();i++){
+					LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
+					boolean isContains =  set.add(map.get("investor_type").toString());
+					if(isContains == false){
+						throw new BusinessException(BusinessCode.CODE_500013,"出资方不能重复");
+					}
+				}
+			}
+		}
+	}
 
 }

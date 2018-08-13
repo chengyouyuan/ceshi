@@ -137,6 +137,20 @@ public final class BusinessCode {
     /** 出资方规则不存在*/
     public static final int CODE_500009 = 500009;
 
+    /** 必填参数错误*/
+    public static final int CODE_500010 = 500010;
+
+    /** 出资方详情必填参数为空*/
+    public static final int CODE_500011 = 500011;
+
+    /** 出资方占比之和不等于等于100*/
+    public static final int CODE_500012 = 500012;
+
+    /** 出资方不能重复*/
+    public static final int CODE_500013 = 500013;
+
+
+
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
     

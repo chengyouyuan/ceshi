@@ -182,4 +182,22 @@
       and sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
   </select>
+    <select id="queryShopCartBySelective" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from shop_cart
+      where 1 = 1
+      <if test="customerId != null">
+        and customer_id = #{customerId,jdbcType=BIGINT}
+      </if>
+      <if test="storeId != null and storeId != 0">
+        and store_id = #{storeId,jdbcType=BIGINT}
+      </if>
+      <if test="skuCodes != null and skuCodes.size > 0">
+        and sku_code in
+        <foreach collection="skuCodes" item="sku" open="(" close=")" separator=",">
+          #{sku}
+        </foreach>
+      </if>
+    </select>
 </mapper>

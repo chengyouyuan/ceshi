@@ -43,7 +43,6 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 
 	@Override
 	public List<String> findSkusByConditon(StoreProductManageCondition condition) {
-		
 		return storeProductManageMapper.selectSkusByConditon(condition);
 	}
 
@@ -249,6 +248,11 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	@Override
 	public List<String> findRecommendProductSku(Long storeId) {
 		return storeProductManageMapper.findRecommendProductSku(storeId);
+	}
+
+	@Override
+	public List<StoreProductManage> findProductBySelective(StoreProductManageCondition storeProductManageCondition) {
+		return storeProductManageMapper.findProductBySelective(storeProductManageCondition);
 	}
 
 }

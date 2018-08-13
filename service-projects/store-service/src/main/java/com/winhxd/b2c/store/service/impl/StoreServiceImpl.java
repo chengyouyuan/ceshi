@@ -171,6 +171,11 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo) {
+        storeUserInfoMapper.updateReginCodeByCustomerId(storeUserInfo);
+    }
+
+    @Override
     public int updateByPrimaryKeySelective(StoreUserInfo record) {
         return storeUserInfoMapper.updateByPrimaryKeySelective(record);
     }

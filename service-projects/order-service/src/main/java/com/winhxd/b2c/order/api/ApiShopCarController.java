@@ -60,7 +60,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
     })
-    @RequestMapping(value = "/api-order/order/430/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/4030/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
         if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
                 || null == condition.getSkuNum()) {
@@ -85,7 +85,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/4031/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarQueryCondition condition){
         ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
         if (null == condition || null == condition.getStoreId()) {
@@ -117,7 +117,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
     })
-    @RequestMapping(value = "/api-order/order/432/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> readyOrder(@RequestBody ReadyShopCarCondition condition){
         shopCarParam(condition);
         shopCarService.readyOrder(condition, getCurrentCustomerId());
@@ -138,7 +138,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/4033/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> removeShopCar(@RequestBody ApiCondition apiCondition){
         shopCarService.removeShopCar(getCurrentCustomerId());
         return new ResponseResult<>();

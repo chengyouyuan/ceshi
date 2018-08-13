@@ -141,6 +141,8 @@ public class NeteaseServiceImpl implements NeteaseService {
         history.setMsgType(Short.valueOf("0"));
         history.setMsgBody(neteaseMsg.getMsgContent());
         history.setExtJson(NeteaseUtils.buildExtJsonMsg(neteaseMsg));
+        history.setPageType(neteaseMsg.getPageType());
+        history.setTreeCode(neteaseMsg.getTreeCode());
         history.setMsgIdServer(msgIdServer);
         history.setMsgTimeStamp(new Date());
         neteaseHistoryMapper.insert(history);

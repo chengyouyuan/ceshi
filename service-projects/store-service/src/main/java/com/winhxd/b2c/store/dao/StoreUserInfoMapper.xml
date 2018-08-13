@@ -11,8 +11,8 @@
     <result column="store_password" property="storePassword" jdbcType="CHAR" />
     <result column="shopkeeper" property="shopkeeper" jdbcType="VARCHAR" />
     <result column="shop_owner_img" property="shopOwnerImg" jdbcType="VARCHAR" />
-    <result column="pickup_way" property="pickupWay" jdbcType="VARCHAR" />
-    <result column="payment_way" property="paymentWay" jdbcType="VARCHAR" />
+    <result column="pickup_type" property="pickupType" jdbcType="VARCHAR" />
+    <result column="pay_type" property="payType" jdbcType="VARCHAR" />
     <result column="contact_mobile" property="contactMobile" jdbcType="CHAR" />
     <result column="lat" property="lat" jdbcType="DOUBLE" />
     <result column="lon" property="lon" jdbcType="DOUBLE" />
@@ -29,7 +29,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
-    shopkeeper, shop_owner_img, pickup_way, payment_way, contact_mobile, lat, lon, open_id, 
+    shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, open_id,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status,token
   </sql>
@@ -94,7 +94,7 @@
     insert into store_user_info (id, store_name, store_customer_id, 
       store_mobile, store_address, store_region_code, 
       store_password, shopkeeper, shop_owner_img, 
-      pickup_way, payment_way, contact_mobile, 
+      pickup_type, pay_type, contact_mobile,
       lat, lon, open_id, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
@@ -102,7 +102,7 @@
     values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeCustomerId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
-      #{pickupWay,jdbcType=VARCHAR}, #{paymentWay,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
+      #{pickupType,jdbcType=VARCHAR}, #{payType,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
@@ -138,11 +138,11 @@
       <if test="shopOwnerImg != null" >
         shop_owner_img,
       </if>
-      <if test="pickupWay != null" >
-        pickup_way,
+      <if test="pickupType != null" >
+        pickup_type,
       </if>
-      <if test="paymentWay != null" >
-        payment_way,
+      <if test="payType != null" >
+        pay_type,
       </if>
       <if test="contactMobile != null" >
         contact_mobile,
@@ -212,11 +212,11 @@
       <if test="shopOwnerImg != null" >
         #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
-      <if test="pickupWay != null" >
-        #{pickupWay,jdbcType=VARCHAR},
+      <if test="pickupType != null" >
+        #{pickupType,jdbcType=VARCHAR},
       </if>
-      <if test="paymentWay != null" >
-        #{paymentWay,jdbcType=VARCHAR},
+      <if test="payType != null" >
+        #{payType,jdbcType=VARCHAR},
       </if>
       <if test="contactMobile != null" >
         #{contactMobile,jdbcType=CHAR},
@@ -286,11 +286,11 @@
       <if test="shopOwnerImg != null" >
         shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
       </if>
-      <if test="pickupWay != null" >
-        pickup_way = #{pickupWay,jdbcType=VARCHAR},
+      <if test="pickupType != null" >
+        pickup_type = #{pickupType,jdbcType=VARCHAR},
       </if>
-      <if test="paymentWay != null" >
-        payment_way = #{paymentWay,jdbcType=VARCHAR},
+      <if test="payType != null" >
+        pay_type = #{payType,jdbcType=VARCHAR},
       </if>
       <if test="contactMobile != null" >
         contact_mobile = #{contactMobile,jdbcType=CHAR},
@@ -344,8 +344,8 @@
       store_password = #{storePassword,jdbcType=CHAR},
       shopkeeper = #{shopkeeper,jdbcType=VARCHAR},
       shop_owner_img = #{shopOwnerImg,jdbcType=VARCHAR},
-      pickup_way = #{pickupWay,jdbcType=VARCHAR},
-      payment_way = #{paymentWay,jdbcType=VARCHAR},
+      pickup_type = #{pickupType,jdbcType=VARCHAR},
+      pay_type = #{payType,jdbcType=VARCHAR},
       contact_mobile = #{contactMobile,jdbcType=CHAR},
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},

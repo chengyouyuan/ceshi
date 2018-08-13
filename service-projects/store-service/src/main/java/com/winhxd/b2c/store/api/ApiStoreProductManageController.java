@@ -332,10 +332,21 @@ public class ApiStoreProductManageController {
 		
 		//上传图片
 		ResponseResult<List<ProductImageVO>> imageResult=this.uploadSubmitProductImg(imageFiles);
-		if(imageResult.getCode()!=0){
+		if(imageResult.getCode()!=0||imageResult.getData()==null){
 			responseResult.setCode(imageResult.getCode());
 			responseResult.setMessage(imageResult.getMessage());
 			return responseResult;
+		}
+		//设置图片
+		List<ProductImageVO> images=imageResult.getData();
+		for(int i=0;i<images.size();i++){
+			if(i==0){
+				condition.setProdImage1(images.get(i).getImageUrl());
+			}else if(i==1){
+				condition.setProdImage2(images.get(i).getImageUrl());	
+			}else if(i==2){
+				condition.setProdImage3(images.get(i).getImageUrl());
+			}
 		}
 		
 		// 获取当前门店用户

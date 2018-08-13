@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @className ApiNeteaseController
  * @description 网易云信接口
  */
-@Api(value = "api message", tags = "api message")
+@Api(value = "消息盒子", tags = "云信消息列表接口")
 @RestController
 @RequestMapping(value = "api-message/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiNeteaseController {

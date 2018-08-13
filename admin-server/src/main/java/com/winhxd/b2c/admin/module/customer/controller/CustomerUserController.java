@@ -100,6 +100,7 @@ public class CustomerUserController {
         result.setCouponCount(count == null ? 0 : count);
         //调用Fegin查询订单信息
          result.setOrderInfoDetailVOList(queryOrderPageInfo(customerUserId,pageNo,pageSize));
+         responseResult.setData(result);
         return  responseResult;
     }
     @ApiOperation(value = "查询订单详情信息",notes = "根据订单查询订单详情已经订单状态信息")

@@ -153,7 +153,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/547/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage( CouponInStoreGetedAndUsedCodition codition){
+    public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestBody CouponInStoreGetedAndUsedCodition codition){
         LOGGER.info("=/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ codition.getStoreId());
         Integer pageNo = 1 ;
         Integer pageSize = 10;

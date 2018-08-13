@@ -23,7 +23,7 @@ public interface StoreUserInfoMapper {
 
     StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeUserInfo);
 
-    List<StoreUserInfo> findStoreUserInfo(StoreUserInfo storeUserInfo);
+    List<StoreUserInfo> selectStoreUserInfo(StoreUserInfo storeUserInfo);
 
     /**
      * @param customerUserId 用户id

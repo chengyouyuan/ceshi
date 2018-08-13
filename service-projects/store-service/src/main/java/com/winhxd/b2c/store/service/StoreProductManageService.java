@@ -108,19 +108,6 @@ public interface StoreProductManageService {
 	 */
 	PagedList<StoreProdSimpleVO> findSimpelVOByCondition(StoreProductManageCondition condition);
 
-	/**
-	 * 查询门店上架商品中是否有推荐商品 true为有
-	 * @param storeId
-	 * @return
-	 */
-	Boolean queryRecommendFlag(Long storeId);
-
-	/**
-	 * 查询店主推荐的商品sku集合
-	 * @param storeId
-	 * @return
-	 */
-    List<String> findRecommendProductSku(Long storeId);
 
 	/**
 	 * 根据参数搜索商品集合

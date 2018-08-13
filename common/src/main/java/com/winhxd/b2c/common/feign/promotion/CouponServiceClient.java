@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -52,6 +53,8 @@ public interface CouponServiceClient {
     @RequestMapping(value = "/promotion/507/v1/checkCouponStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition);
 
+    @RequestMapping(value = "/promotion/546/v1/getCouponInvestorAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody OrderCouponCondition condition);
 }
 
 
@@ -115,7 +118,13 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     @Override
     public ResponseResult checkCouponStatus(CouponCheckStatusCondition condition) {
         logger.error("CouponServiceClient -> checkCouponStatus", throwable);
-        return new ResponseResult<Boolean>(BusinessCode.CODE_1001);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult getCouponInvestorAmount(OrderCouponCondition condition) {
+        logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
+        return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
 }

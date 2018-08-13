@@ -20,37 +20,37 @@ public class VerifyController {
     private VerifyService verifyService;
 
     @ApiOperation("结算列表查询")
-    @PostMapping("/691/v1/verifyList")
+    @PostMapping("/pay/691/v1/verifyList")
     public ResponseResult<VerifyResultVO> verifyList(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
     @ApiOperation("结算-按汇总结算")
-    @PostMapping("/692/v1/verifyBySummary")
+    @PostMapping("/pay/692/v1/verifyBySummary")
     public ResponseResult<VerifyResultVO> verifyBySummary(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
     @ApiOperation("费用明细列表查询")
-    @PostMapping("/693/v1/accountingDetailList")
+    @PostMapping("/pay/693/v1/accountingDetailList")
     public ResponseResult<VerifyResultVO> accountingDetailList(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
     @ApiOperation("结算-按明细结算")
-    @PostMapping("/694/v1/verifyByDetail")
+    @PostMapping("/pay/694/v1/verifyByDetail")
     public ResponseResult<VerifyResultVO> verifyByDetail(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
     @ApiOperation("门店提现申请列表查询")
-    @PostMapping("/695/v1/storeWithdrawList")
+    @PostMapping("/pay/695/v1/storeWithdrawList")
     public ResponseResult<VerifyResultVO> storeWithdrawList(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
     @ApiOperation("批准门店提现申请")
-    @PostMapping("/696/v1/approveStoreWithdraw")
+    @PostMapping("/pay/696/v1/approveStoreWithdraw")
     public ResponseResult<VerifyResultVO> approveStoreWithdraw(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }

@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
 import java.util.List;
@@ -116,5 +116,10 @@ public interface CouponService {
      */
     Integer getStoreCouponKinds();
 
-    PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize);
+    /**
+     * 根据订单获取优惠券费用承担信息
+     * @param condition
+     * @return
+     */
+    List<CouponInvestorAmountVO> getCouponInvestorAmount(OrderCouponCondition condition);
 }

@@ -47,7 +47,7 @@
         {
           "id": "3_1",
           "menuName": ";(临时)顾客详情",
-          "path": "",
+          "path": "/customerDetails/index",
           "configKey": "",
           "permission": ""
         }

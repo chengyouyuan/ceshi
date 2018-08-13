@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.message.service.WechatShareService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +57,9 @@ public class ApiWechatShareController {
     @Autowired
     private WechatShareService wechatShareService;
 
+    @Autowired
+    private StoreServiceClient storeServiceClient;
+
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
     @PostMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
@@ -101,6 +105,9 @@ public class ApiWechatShareController {
         configVO.setAppid(appid);
         configVO.setPageUrl(pageUrl);
         configVO.setSecret(secret);
+        //查询门店id
+        String storeName = storeServiceClient.findStoreUserInfo(storeUser.getBusinessId()).getData().getStoreName();
+        configVO.setStoreName(storeName);
         responseResult.setData(configVO);
         return responseResult;
 

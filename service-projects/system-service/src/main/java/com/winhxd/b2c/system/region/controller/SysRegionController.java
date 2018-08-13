@@ -1,8 +1,10 @@
 package com.winhxd.b2c.system.region.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
@@ -95,6 +97,16 @@ public class SysRegionController implements RegionServiceClient {
             SysRegion sysRegion = sysRegionService.getRegionByCode(regisonCode);
             result.setData(sysRegion);
         }
+        return  result;
+    }
+
+    @Override
+    @ApiOperation(value = "模糊搜索所有地理区域")
+    public ResponseResult<PagedList<SysRegion>> findRegionByPage(@RequestBody SysRegionPagedCondition condition) {
+        logger.info("{} - 模糊搜索所有地理区域, 参数：condition={}", MODULE_NAME, condition);
+        ResponseResult<PagedList<SysRegion>> result = new ResponseResult<>();
+        PagedList<SysRegion> resData= sysRegionService.findRegionByPage(condition);
+        result.setData(resData);  ;
         return  result;
     }
 }

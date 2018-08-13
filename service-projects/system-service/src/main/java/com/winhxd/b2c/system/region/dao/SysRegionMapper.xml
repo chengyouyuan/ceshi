@@ -64,5 +64,30 @@
       #{item}
     </foreach>
   </select>
-
+  <select id="selectRegionFilterList" parameterType="com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition" resultType="com.winhxd.b2c.common.domain.system.region.model.SysRegion">
+    select
+    <include refid="Base_Column_List" /> -- 测试环境 active=1 AND
+    from sys_region WHERE 1=1
+    <if test="regionCode != null">
+      AND region_code = #{regionCode,jdbcType=CHAR}
+    </if>
+    <if test="level != null">
+      AND level = #{level,jdbcType=SMALLINT}
+    </if>
+    <if test="province != null and province != ''">
+      AND province like '%${province}%'
+    </if>
+    <if test="city != null and city != ''">
+      AND city  like '%${city}%'
+    </if>
+    <if test="county != null and county != ''">
+      AND county like '%${county}%'
+    </if>
+    <if test="town != null and town != ''">
+      AND town like '%${town}%'
+    </if>
+    <if test="village != null and village != ''">
+      AND village like '%${village}%'
+    </if>
+  </select>
 </mapper>

@@ -2,8 +2,10 @@ package com.winhxd.b2c.common.feign.system;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -50,6 +52,16 @@ public interface RegionServiceClient {
      */
     @RequestMapping(value = "/region/322/v1/get/{regisonCode}", method = RequestMethod.GET)
     ResponseResult<SysRegion> getRegionByCode(@PathVariable("regisonCode") String regisonCode);
+
+    /**
+     * 功能描述: 根据条件筛选所有地理区域
+     * @auther: zhanglingke
+     * @date: 2018-08-06 11:46
+     * @param: SysRegionCodeCondition
+     * @return:
+     */
+    @RequestMapping(value = "/region/323/v1/filterlist", method = RequestMethod.POST)
+    ResponseResult<PagedList<SysRegion>> findRegionByPage(@RequestBody SysRegionPagedCondition condition);
 }
 
 @Component
@@ -65,19 +77,25 @@ class RegionServiceClientFallback implements RegionServiceClient, FallbackFactor
 
     @Override
     public ResponseResult<List<SysRegion>> findRegionList(SysRegionCondition condition) {
-        logger.error("RegionServiceClientFallback -> getRegions，错误信息为{}",throwable);
+        logger.error("RegionServiceClientFallback -> findRegionList，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<List<SysRegion>> findRegionRangeList(List<String> condition) {
-        logger.error("RegionServiceClientFallback -> getRegionsByRange，错误信息为{}",throwable);
+        logger.error("RegionServiceClientFallback -> findRegionRangeList，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<SysRegion> getRegionByCode(String regisonCode) {
-        logger.error("RegionServiceClientFallback -> getRegion，错误信息为{}",throwable);
+        logger.error("RegionServiceClientFallback -> getRegionByCode，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<SysRegion>> findRegionByPage(SysRegionPagedCondition condition) {
+        logger.error("RegionServiceClientFallback -> findRegionByPage，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

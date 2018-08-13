@@ -1,5 +1,12 @@
 package com.winhxd.b2c.system.region.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import com.winhxd.b2c.system.region.dao.SysRegionMapper;
@@ -39,5 +46,17 @@ public class SysRegionServiceImpl implements SysRegionService {
     @Override
     public List<SysRegion> findRegionByCodes(List<String> regionCodes) {
         return  sysRegionMapper.selectRegionRangeList(regionCodes);
+    }
+
+    @Override
+    public PagedList<SysRegion> findRegionByPage(SysRegionPagedCondition condition) {
+        PagedList<SysRegion> pagedList=new PagedList<>();
+        Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        List<SysRegion> list= sysRegionMapper.selectRegionFilterList(condition);
+        pagedList.setPageNo(page.getPageNum());
+        pagedList.setPageSize(page.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        pagedList.setData(list);
+        return pagedList;
     }
 }

@@ -609,6 +609,7 @@ public class CommonOrderServiceImpl implements OrderService {
             return;
         }
         //TODO 退款或取消
+        registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnerable(orderInfo), null);
     }
 
 
@@ -630,6 +631,7 @@ public class CommonOrderServiceImpl implements OrderService {
             return;
         }
         // TODO 退款
+        registerProcessAfterTransSuccess(new PickupTimeOutProcessSuccessRunnerable(orderInfo), null);
     }
 
     @Override
@@ -1118,6 +1120,55 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterConfirmSuccessProcess(orderInfo);
+        }
+    }
+    
+    /**
+     * 订单门店 超时未确认处理成功
+     *
+     * @author wangbin
+     * @date 2018年8月13日 下午3:16:17
+     */
+    private class ReceiveTimeOutProcessSuccessRunnerable implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public ReceiveTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            //客户信息发送
+            String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
+        }
+    }
+    
+    /**
+     * 订单客户 超时未提货处理成功
+     *
+     * @author wangbin
+     * @date 2018年8月13日 下午3:16:17
+     */
+    private class PickupTimeOutProcessSuccessRunnerable implements Runnable {
+        
+        private OrderInfo orderInfo;
+        
+        public PickupTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+        
+        @Override
+        public void run() {
+            //客户信息发送
+            String customerMsg;
+            if (orderInfo.getPayStatus().shortValue() == PayStatusEnum.PAID.getStatusCode()) {
+                customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
+            }else {
+                customerMsg = OrderNotifyMsg.ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER;
+            }
         }
     }
 

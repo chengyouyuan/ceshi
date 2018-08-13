@@ -77,7 +77,7 @@ public class OrderInfoDetailVO implements Serializable {
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */
-    @ApiModelProperty(value = "支付类型:1为微信扫码付款;2为微信在线支付;", required = true)
+    @ApiModelProperty(value = "支付类型:2为微信扫码付款;1为微信在线支付;", required = true)
     private Short payType;
     @ApiModelProperty(value = "支付类型描述", required = true)
     private String payTypeDesc;

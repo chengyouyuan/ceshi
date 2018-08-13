@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
@@ -31,7 +32,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId, @RequestParam("customerId")Long customerId) {
+	public ResponseResult<String> getCouponNumsByCustomerForStore( @RequestParam("customerId")Long customerId) {
 		ResponseResult<String> result= couponService.getCouponNumsByCustomerForStore(customerId);
 		return result;
 	}
@@ -138,6 +139,20 @@ public class CouponController implements CouponServiceClient{
 		Boolean flag = couponService.checkCouponStatus(condition);
 		result.setData(flag);
 		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "根据订单获取优惠券费用承担信息", notes = "根据订单获取优惠券费用承担信息")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	public ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(OrderCouponCondition condition) {
+		LOGGER.info("=/promotion/546/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--开始--{}", condition);
+		ResponseResult<List<CouponInvestorAmountVO>> result = new ResponseResult<>();
+		List<CouponInvestorAmountVO>  couponInvestorAmountVOs = couponService.getCouponInvestorAmount(condition);
+		result.setData(couponInvestorAmountVOs);
+		LOGGER.info("=/promotion/546/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--结束 result={}", result);
 		return result;
 	}
 

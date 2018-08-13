@@ -87,26 +87,13 @@ public interface StoreProductManageMapper {
      */
     Page<StoreProdSimpleVO> selectVoByCondition(@Param("condition")StoreProductManageCondition condition);
 
-    /**
-     * 查询是否有推荐商品
-     * @param storeId
-     * @return
-     */
-    Integer queryRecommendFlag(Long storeId);
-
-    /**
-     * 查询门店推荐商品
-     * @param storeId
-     * @return
-     */
-    List<String> findRecommendProductSku(Long storeId);
 
     /**
      * 查询商品集合
      * @param storeProductManageCondition
      * @return
      */
-    List<StoreProductManage> findProductBySelective(@Param("condition") StoreProductManageCondition storeProductManageCondition);
+    List<StoreProductManage> selectProductBySelective(@Param("condition") StoreProductManageCondition storeProductManageCondition);
     
     /**
      * 查询返回后台VO

@@ -1,15 +1,28 @@
 package com.winhxd.b2c.store.controller;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.store.service.StoreProductManageService;
+import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreRegionService;
+import com.winhxd.b2c.store.service.StoreService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,25 +34,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
-import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
-import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
-import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
-import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.store.service.StoreProductManageService;
-import com.winhxd.b2c.store.service.StoreProductStatisticsService;
-import com.winhxd.b2c.store.service.StoreService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @Description: 门店服务控制器
@@ -237,7 +235,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(StoreRegionCondition conditions) {
+	public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition conditions) {
 		ResponseResult<PagedList<StoreRegionVO>> result = new ResponseResult<>();
 		PagedList<StoreRegionVO> data = storeRegionService.findStoreRegions(conditions);
 		result.setData(data);
@@ -245,13 +243,13 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<Void> removeStoreRegion(Long id) {
+	public ResponseResult<Void> removeStoreRegion(@RequestParam("id") Long id) {
 		storeRegionService.removeStoreRegion(id);
 		return new ResponseResult<>();
 	}
 
 	@Override
-	public ResponseResult<Void> saveStoreRegion(StoreRegionCondition conditions) {
+	public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition conditions) {
 	 	storeRegionService.saveStoreRegion(conditions);
 		return new ResponseResult<>();
 	}

@@ -9,11 +9,8 @@ import com.winhxd.b2c.common.domain.product.condition.CustomerSearchProductCondi
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.ProductService;
-import com.winhxd.b2c.store.service.StoreProductManageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,20 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "api - 小程序查询门店商品相关接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class ApiProductController {
+public class ApiCustomerProductController {
 
     private static final String MODULE_NAME = "C端门店商品查询";
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);
-
-    @Autowired
-    private StoreProductManageService storeProductManageService;
-
-    @Autowired
-    private ProductServiceClient productServiceClient;
-
-    @Autowired
-    private ShopCartServiceClient shopCartServiceClient;
+    private static final Logger logger = LoggerFactory.getLogger(ApiCustomerProductController.class);
 
     @Autowired
     private ProductService productService;

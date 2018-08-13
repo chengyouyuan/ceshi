@@ -48,11 +48,11 @@ public class StoreUserInfo implements Serializable {
     /**
      * 取货方式（1、自提，多个用逗号分隔）
      */
-    private String pickupWay;
+    private String pickupType;
     /**
      * 支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）
      */
-    private String paymentWay;
+    private String payType;
     /**
      * 联系方式 
      */
@@ -81,6 +81,7 @@ public class StoreUserInfo implements Serializable {
     private String source;
     /**
      * 惠小店状态（0、未开店，1、有效，2、无效）
+     * StoreStatusEnum
      */
     private Short storeStatus;
     private String token;
@@ -150,20 +151,20 @@ public class StoreUserInfo implements Serializable {
         this.shopkeeper = shopkeeper == null ? null : shopkeeper.trim();
     }
 
-    public String getPickupWay() {
-        return pickupWay;
+    public String getPickupType() {
+        return pickupType;
     }
 
-    public void setPickupWay(String pickupWay) {
-        this.pickupWay = pickupWay;
+    public void setPickuppickupType(String pickupType) {
+        this.pickupType = pickupType;
     }
 
-    public String getPaymentWay() {
-        return paymentWay;
+    public String getPayType() {
+        return payType;
     }
 
-    public void setPaymentWay(String paymentWay) {
-        this.paymentWay = paymentWay;
+    public void setPayType(String payType) {
+        this.payType = payType;
     }
 
     public String getContactMobile() {

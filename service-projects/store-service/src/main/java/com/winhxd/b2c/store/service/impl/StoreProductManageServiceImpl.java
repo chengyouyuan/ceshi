@@ -242,22 +242,8 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	}
 
 	@Override
-	public Boolean queryRecommendFlag(Long storeId) {
-		Integer count = storeProductManageMapper.queryRecommendFlag(storeId);
-		if (count != null && count > 0){
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public List<String> findRecommendProductSku(Long storeId) {
-		return storeProductManageMapper.findRecommendProductSku(storeId);
-	}
-
-	@Override
 	public List<StoreProductManage> findProductBySelective(StoreProductManageCondition storeProductManageCondition) {
-		return storeProductManageMapper.findProductBySelective(storeProductManageCondition);
+		return storeProductManageMapper.selectProductBySelective(storeProductManageCondition);
 	}
 
 	@Override

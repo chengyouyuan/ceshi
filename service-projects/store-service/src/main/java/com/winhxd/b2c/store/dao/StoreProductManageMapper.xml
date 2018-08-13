@@ -259,19 +259,7 @@
         from store_product_manage
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <select id="queryRecommendFlag" resultType="java.lang.Integer">
-          select
-            count(1)
-        from store_product_manage
-        where  prod_status = 1 and recommend = 1
-    </select>
-    <select id="findRecommendProductSku" resultType="java.lang.String">
-         select
-           sku_code
-        from store_product_manage
-        where  prod_status = 1 and recommend = 1
-    </select>
-    <select id="findProductBySelective"  parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"
+    <select id="selectProductBySelective"  parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"
             resultMap="BaseResultMap">
         select
           <include refid="alias_Simple_Column_List"></include>

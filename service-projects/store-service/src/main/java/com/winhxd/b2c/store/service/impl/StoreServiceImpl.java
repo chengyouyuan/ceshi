@@ -85,7 +85,7 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
-        List<StoreUserInfo> userInfoList = storeUserInfoMapper.findStoreUserInfo(storeUserInfo);
+        List<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
         if (userInfoList.isEmpty()){
             return pagedList;
         }
@@ -100,7 +100,7 @@ public class StoreServiceImpl implements StoreService {
             BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1,storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
-            if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())){
+            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())){
 
                 //获取地理区域名称
                 for (SysRegion sysRegion : sysRegions) {

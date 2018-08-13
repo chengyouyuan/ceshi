@@ -23,6 +23,7 @@
         <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime"/>
         <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime"/>
         <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime"/>
+        <result column="refund_datetime" jdbcType="TIMESTAMP" property="refundDateTime"/>
         <result column="pickup_type" jdbcType="SMALLINT" property="pickupType"/>
         <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
@@ -38,7 +39,7 @@
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime,
+        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
     </sql>
@@ -69,7 +70,7 @@
         sku_quantity, sku_category_quantity,
         pay_type, pay_status, created,
         pay_finish_datetime, pickup_datetime,
-        finish_datetime, cancel_datetime, pickup_type,
+        finish_datetime, cancel_datetime, refund_datetime, pickup_type,
         inviter_code, updated, cancel_reason,
         remarks, region_code, imie,
         created_by, updated_by, updated_by_name,
@@ -81,7 +82,7 @@
         #{sku_quantity,jdbcType=INTEGER}, #{sku_category_quantity,jdbcType=INTEGER},
         #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP},
         #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
-        #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
+        #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{refundDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
         #{inviterCode,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{cancelReason,jdbcType=VARCHAR},
         #{remarks,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR},
         #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
@@ -152,6 +153,9 @@
             </if>
             <if test="cancelDateTime != null">
                 cancel_datetime,
+            </if>
+            <if test="refundDateTime != null">
+                refund_datetime,
             </if>
             <if test="pickupType != null">
                 pickup_type,
@@ -247,6 +251,9 @@
             </if>
             <if test="finishDateTime != null">
                 #{finishDateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refundDateTime != null">
+                #{refundDateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="cancelDateTime != null">
                 #{cancelDateTime,jdbcType=TIMESTAMP},
@@ -346,6 +353,9 @@
             <if test="finishDateTime != null">
                 finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="refundDateTime != null">
+                refund_datetime = #{refundDateTime,jdbcType=TIMESTAMP},
+            </if>
             <if test="cancelDateTime != null">
                 cancel_datetime = #{cancelDateTime,jdbcType=TIMESTAMP},
             </if>
@@ -407,6 +417,7 @@
       pickup_datetime = #{pickupDateTime,jdbcType=TIMESTAMP},
       finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
       cancel_datetime = #{cancelDateTime,jdbcType=TIMESTAMP},
+      refund_datetime = #{refundDateTime,jdbcType=TIMESTAMP},
       pickup_type = #{pickupType,jdbcType=SMALLINT},
       inviter_code = #{inviterCode,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
@@ -600,6 +611,11 @@
         where id=#{orderId,jdbcType=BIGINT}
         and pickup_code=#{pickupCode,jdbcType=VARCHAR}
         and order_status=#{expectOrderStatus,jdbcType=SMALLINT}
+    </update>
+    <update id="updateOrderStatusForRefundCallback">
+        update order_info
+        set order_status=77,pickup_code=null,refund_datetime = now()
+        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
     </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>

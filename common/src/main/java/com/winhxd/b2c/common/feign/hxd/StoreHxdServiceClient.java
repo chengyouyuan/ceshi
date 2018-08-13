@@ -82,7 +82,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<List<Integer>> getStorePerfectInfo(String storeId) {
+    public ResponseResult<List<Integer>> getStorePerfectInfo(String customerId) {
         logger.error("StoreHxdServiceClient -> getStorePerfectInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -94,7 +94,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<Map<String, Object>> getStoreBaseInfo(String storeId) {
+    public ResponseResult<Map<String, Object>> getStoreBaseInfo(String customerId) {
         logger.error("StoreHxdServiceClient -> getStoreBaseInfo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

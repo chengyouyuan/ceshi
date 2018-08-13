@@ -72,14 +72,12 @@ public class ApiOpenStoreController {
     private OrderServiceClient orderServiceClient;
 
     @Autowired
-    private CustomerServiceClient customerServiceClient;
-
-    @Autowired
     private StoreRegionService storeRegionService;
 
     @ApiOperation(value = "惠小店是否在测试区域接口", notes = "惠小店是否在测试区域接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200004, message = "服务器内部错误！")})
     @PostMapping(value = "/1000/v1/getStoreRegionStatus", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> getStoreRegionStatus(@RequestBody ApiCondition apiCondition) {
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
@@ -99,6 +97,16 @@ public class ApiOpenStoreController {
             return responseResult;
         }
         OpenStoreVO openStoreVO = new OpenStoreVO();
+        //是否在测试区域
+        StoreRegion storeRegion = storeRegionService.selectByRegionCode(storeUserInfo.getStoreRegionCode());
+        if (storeRegion != null) {
+            openStoreVO.setRegionStatus((byte) 1);
+        } else {
+            openStoreVO.setRegionStatus((byte) 0);
+            openStoreVO.setStoreStatus((byte) 0);
+            responseResult.setData(openStoreVO);
+            return responseResult;
+        }
         //是否开过小店，0未开店
         if (storeUserInfo.getStoreStatus() != 0) {
             openStoreVO.setStoreStatus((byte) 1);
@@ -108,12 +116,6 @@ public class ApiOpenStoreController {
             openStoreVO.setStoreStatus((byte) 0);
         }
 
-        StoreRegion storeRegion = storeRegionService.selectByRegionCode(storeUserInfo.getStoreRegionCode());
-        if (storeRegion != null) {
-            openStoreVO.setRegionStatus((byte) 1);
-        } else {
-            openStoreVO.setRegionStatus((byte) 0);
-        }
         responseResult.setData(openStoreVO);
         return responseResult;
     }

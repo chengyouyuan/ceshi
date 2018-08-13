@@ -38,10 +38,10 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     private ConnectionFactory connectionFactory;
 
     @Bean
-    public StringMessageSender stringMessageSender(){
+    public StringMessageSender stringMessageSender() {
         return new StringMessageSender();
     }
-    
+
     @Bean
     public List<Declarable> declarableList() {
         List<Declarable> list = new ArrayList<>();

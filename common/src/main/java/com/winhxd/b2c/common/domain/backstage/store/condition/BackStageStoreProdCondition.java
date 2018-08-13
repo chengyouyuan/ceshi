@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.backstage.store.condition;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,6 +52,9 @@ public class BackStageStoreProdCondition {
 
     @ApiModelProperty("用户账号")
     private String storeMobile;
+    
+    @ApiModelProperty("商品sku集合")
+    private List<String> skuCodeList;
     
     @ApiModelProperty("页大小")
     private Integer pageSize=10;

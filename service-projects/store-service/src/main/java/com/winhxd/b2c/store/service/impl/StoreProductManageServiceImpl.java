@@ -1,8 +1,22 @@
 package com.winhxd.b2c.store.service.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
@@ -15,15 +29,6 @@ import com.winhxd.b2c.store.dao.StoreProductManageMapper;
 import com.winhxd.b2c.store.dao.StoreProductStatisticsMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreProductManageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 /**
  * 门店商品管理Service实现类
  * @ClassName: StoreProductManageServiceImpl 
@@ -239,6 +244,58 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	@Override
 	public List<StoreProductManage> findProductBySelective(StoreProductManageCondition storeProductManageCondition) {
 		return storeProductManageMapper.selectProductBySelective(storeProductManageCondition);
+	}
+
+	@Override
+	public PagedList<BackStageStoreProdVO> findStoreProdManageList(BackStageStoreProdCondition condition) {
+		PagedList<BackStageStoreProdVO> list=null;
+		if(condition!=null){
+	
+			Page<BackStageStoreProdVO> page=storeProductManageMapper.selectBackStageVoByCondition(condition);
+			list=new PagedList<>();
+			list.setPageNo(condition.getPageNo());
+			list.setPageSize(condition.getPageSize());
+			list.setData(page.getResult());
+			list.setTotalRows(page.getTotal());
+			return list;
+		}else{
+			logger.error("StoreProductManageService ->findStoreProdManageList参数异常,condition:"+condition);
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+	}
+
+	@Override
+	public void modifyStoreProdManageByBackStage(BackStageStoreProdCondition condition) {
+		AdminUser adminUser=UserContext.getCurrentAdminUser();
+		if(adminUser==null){
+			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage用户未登入");
+			throw new BusinessException(BusinessCode.CODE_1002);
+		}
+		if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
+			short status=condition.getProdStatus();
+			//主键
+			Long id=condition.getId();
+			//查询门店商品信息
+			StoreProductManage spm=this.storeProductManageMapper.selectByPrimaryKey(id);
+			if(spm==null){
+				logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为："+id+"的门店商品信息");
+				throw new BusinessException(BusinessCode.CODE_1001);
+			}
+			if(StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(status)){
+				//上架
+				spm.setPutawayTime(new Date());
+				
+			}
+			spm.setUpdated(new Date());
+			spm.setUpdatedBy(adminUser.getId());
+			spm.setUpdatedByName(adminUser.getUsername());
+			spm.setProdStatus(status);
+			this.storeProductManageMapper.updateByPrimaryKeySelective(spm);
+		}else{
+			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage参数异常,condition:"+condition);
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		
 	}
 
 }

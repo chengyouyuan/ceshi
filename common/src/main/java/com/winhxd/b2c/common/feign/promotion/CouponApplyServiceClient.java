@@ -31,7 +31,7 @@ public interface CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:19
      */
-    @RequestMapping(value = "/promotion/522/v1/viewCouponApplyDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5022/v1/viewCouponApplyDetail", method = RequestMethod.POST)
     ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id);
 
     /**
@@ -42,7 +42,7 @@ public interface CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:20
      */
-    @RequestMapping(value = "/promotion/523/v1/updateCouponApplyToValid", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5023/v1/updateCouponApplyToValid", method = RequestMethod.POST)
     ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     /**
@@ -53,7 +53,7 @@ public interface CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:22
      */
-    @RequestMapping(value = "/promotion/524/v1/findCouponApplyPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5024/v1/findCouponApplyPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition);
 
     /**
@@ -64,7 +64,7 @@ public interface CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:23
      */
-    @RequestMapping(value = "/promotion/521/v1/addCouponApply", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5021/v1/addCouponApply", method = RequestMethod.POST)
     ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition);
 
     /**
@@ -75,7 +75,7 @@ public interface CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:24
      */
-    @RequestMapping(value = "/promotion/527/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5027/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

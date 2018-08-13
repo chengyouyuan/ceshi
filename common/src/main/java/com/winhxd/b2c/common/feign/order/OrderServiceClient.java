@@ -27,7 +27,7 @@ import feign.hystrix.FallbackFactory;
 
 @FeignClient(value = ServiceName.ORDER_SERVICE, fallbackFactory = OrderServiceFallback.class)
 public interface OrderServiceClient {
-    @RequestMapping(value = "/order/451/v1/submitOrder/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4051/v1/submitOrder/", method = RequestMethod.POST)
     ResponseResult<String> submitOrder(@RequestBody OrderCreateCondition orderCreateCondition);
 
     /**
@@ -37,21 +37,21 @@ public interface OrderServiceClient {
      * @return
      * @deprecated 使用queryStoreOrderSalesSummaryByDateTimePeriod
      */
-    @RequestMapping(value = "/order/452/v1/queryStoreOrderSalesSummary/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4052/v1/queryStoreOrderSalesSummary/", method = RequestMethod.POST)
     @Deprecated()
     ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary();
     
-    @RequestMapping(value = "/order/453/v1/listOrder4Management/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4053/v1/listOrder4Management/", method = RequestMethod.POST)
     ResponseResult<PagedList<OrderInfoDetailVO>> listOrder4Management(@RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
     
-    @RequestMapping(value = "/order/454/v1/getOrderDetail4Management/{orderNo}", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4054/v1/getOrderDetail4Management/{orderNo}", method = RequestMethod.POST)
     ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(@PathVariable(value = "orderNo") String orderNo);
 
-    @RequestMapping(value = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4055/v1/queryStoreOrderSalesSummaryByDateTimePeriod/", method = RequestMethod.POST)
     ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition);
     
-    @RequestMapping(value = "/order/456/v1/listOrder4ManagementWithNoPage/", method = RequestMethod.POST)
-    ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(@RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
+    @RequestMapping(value = "/order/4056/v1/listOrderWithNoPage/", method = RequestMethod.POST)
+    ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(@RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
 
     /**
      * 申请退款回调（设置订单状态为退款中）
@@ -59,7 +59,7 @@ public interface OrderServiceClient {
      * @param orderRefundCallbackCondition 入参
      * @return 是否成功
      */
-    @RequestMapping(value = "/order/457/v1/updateOrderRefundCallback/", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4057/v1/updateOrderRefundCallback/", method = RequestMethod.POST)
     ResponseResult<Boolean> updateOrderRefundCallback(@RequestBody OrderRefundCallbackCondition orderRefundCallbackCondition);
 
 
@@ -114,9 +114,9 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     }
 
     @Override
-    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+    public ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(
             OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
-        logger.error("OrderServiceFallback -> listOrder4ManagementWithNoPage", throwable);
+        logger.error("OrderServiceFallback -> listOrderWithNoPage", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

@@ -52,6 +52,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "提货码", required = true)
     private String pickupCode;
+    
+    /**
+     * 提货码
+     */
+    @ApiModelProperty(value = "所以用优惠券标题", required = true)
+    private String couponTitles;
+    
     /**
      * 订单总金额
      */
@@ -77,7 +84,7 @@ public class OrderInfoDetailVO implements Serializable {
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */
-    @ApiModelProperty(value = "支付类型:1为微信扫码付款;2为微信在线支付;", required = true)
+    @ApiModelProperty(value = "支付类型:2为微信扫码付款;1为微信在线支付;", required = true)
     private Short payType;
     @ApiModelProperty(value = "支付类型描述", required = true)
     private String payTypeDesc;
@@ -113,6 +120,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "订单取消时间", required = true)
     private Date cancelDateTime;
+
+    @ApiModelProperty(value = "接单时间", required = true)
+    private Date acceptOrderDatetime;
+    @ApiModelProperty(value = "退款完成时间", required = true)
+    private Date refundDateTime;
+    @ApiModelProperty(value = "申请退款时间", required = true)
+    private Date applyRefundDatetime;
     /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */

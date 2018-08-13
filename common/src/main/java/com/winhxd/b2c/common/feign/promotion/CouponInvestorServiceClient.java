@@ -32,7 +32,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/7 20:59
      */
-    @RequestMapping(value = "/promotion/514/v1/addCouponInvestor", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5014/v1/addCouponInvestor", method = RequestMethod.POST)
     ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition);
 
     /**
@@ -43,7 +43,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 13:59
      */
-    @RequestMapping(value = "/promotion/515/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/5015/v1/viewCouponInvestorDetail", method = RequestMethod.GET)
     ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id);
 
     /**
@@ -54,7 +54,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 14:47
      */
-    @RequestMapping(value = "/promotion/516/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/5016/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
     ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     /**
@@ -65,7 +65,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 20:31
      */
-    @RequestMapping(value = "/promotion/528/v1/getCouponInvestorPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5028/v1/getCouponInvestorPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 
     /**
@@ -76,7 +76,7 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:30
      */
-    @RequestMapping(value = "/promotion/525/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5025/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

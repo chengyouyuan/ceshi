@@ -31,7 +31,7 @@ public interface CouponTemplateServiceClient {
  *@User  wl
  *@Date   2018/8/6 10:42
  */
-@RequestMapping(value = "/promotion/511/v1/addCouponTemplate", method = RequestMethod.POST)
+@RequestMapping(value = "/promotion/5011/v1/addCouponTemplate", method = RequestMethod.POST)
 public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
 
@@ -44,7 +44,7 @@ public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCond
   *@User  wl
   *@Date   2018/8/6 17:53
   */
-@RequestMapping(value = "/promotion/510/v1/findCouponTemplatePageByCondition", method = RequestMethod.POST)
+@RequestMapping(value = "/promotion/5010/v1/findCouponTemplatePageByCondition", method = RequestMethod.POST)
 public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition);
 
     /**
@@ -55,7 +55,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@User  wl
      *@Date   2018/8/6 20:39
      */
-    @RequestMapping(value = "/promotion/513/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5013/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
     public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName);
 
     /**
@@ -66,7 +66,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@User  wl
      *@Date   2018/8/6 20:45
      */
-    @RequestMapping(value = "/promotion/512/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
+    @RequestMapping(value = "/promotion/5012/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id);
 
 

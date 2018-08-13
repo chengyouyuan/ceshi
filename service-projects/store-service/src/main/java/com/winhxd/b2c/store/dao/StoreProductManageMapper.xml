@@ -29,6 +29,19 @@
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
     </resultMap>
+    <resultMap id="BackStageResultMap" type="com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="store_id" jdbcType="BIGINT" property="storeId"/>
+        <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
+        <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
+        <result column="recommend" jdbcType="SMALLINT" property="recommend"/>
+        <result column="prod_status" jdbcType="SMALLINT" property="prodStatus"/>
+        <result column="prod_code" jdbcType="VARCHAR" property="prodCode"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
+        <result column="store_name" jdbcType="VARCHAR" property="storeName"/>
+        <result column="store_mobile" jdbcType="VARCHAR" property="storeMobile"/>
+    </resultMap>
    <sql id="Base_Column_List">
     id, store_id, sku_attribute_option, sell_money, recommend, prod_status,
     prod_code, sku_code, putaway_time, created_by, created_by_name, created, updated_by,
@@ -42,6 +55,47 @@
     id, store_id, sku_attribute_option, sell_money, recommend, prod_status,
     prod_code, sku_code, putaway_time
   </sql>
+  <sql id="BackStage_Column_List">
+  	prod.id, prod.store_id, prod.sku_attribute_option, prod.sell_money, prod.recommend, prod.prod_status,
+    prod.prod_code, prod.sku_code, prod.putaway_time,u.store_name,u.store_mobile
+  </sql>
+	
+  <select id="selectBackStageVoByCondition" 
+  			parameterType="com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition" 
+  			resultMap="BackStageResultMap">
+  	select 
+  	<include refid="BackStage_Column_List"/>
+  		from store_product_manage prod
+		LEFT JOIN store_user_info u on u.id=prod.store_id
+  	<if test="condition.prodStatus != null">
+  		and prod.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
+  	</if>
+  	<if test="condition.recommend != null">
+  		and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
+  	</if>
+  	<if test="condition.storeId != null">
+  		and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+  	</if>
+  	<if test="condition.prodCode != null">
+  		and prod.prod_code=#{condition.prodCode ,jdbcType=VARCHAR}
+  	</if>
+  	<if test="condition.skuCode != null">
+  		and prod.sku_code=#{condition.skuCode ,jdbcType=VARCHAR}
+  	</if>
+  	<if test="condition.skuCodeList != null">
+  		and prod.sku_code in 
+  			<foreach item="skuItem" index="index" collection="condition.skuCodeList" open="(" separator="," close=")">
+				#{skuItem,jdbcType=VARCHAR}
+			</foreach> 
+  	</if>
+  	<if test="condition.storeName != null">
+  		and u.store_name like '%' + #{condition.storeName} + '%' 
+  	</if>
+  	<if test="condition.storeMobile != null">
+  		and u.store_mobile = #{condition.storeMobile,jdbcType=VARCHAR} 
+  	</if>
+  	order by prod.created desc
+  </select>
   
   <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"  resultMap="SimpleResultMap">
   	 	select

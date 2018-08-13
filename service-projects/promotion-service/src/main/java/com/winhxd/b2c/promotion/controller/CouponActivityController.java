@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
@@ -59,7 +60,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     @ApiOperation(value = "添加优惠券活动", notes = "添加优惠券活动")
-    public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
         if(null == condition){
             throw new BusinessException(BusinessCode.CODE_1007);

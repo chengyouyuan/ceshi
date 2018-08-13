@@ -1,28 +1,38 @@
-spring:
-  cloud:
-    gateway:
-      routes:
-      - uri: lb://b2c-order-service
-        predicates:
-        - Path=/api-order/**
-      - uri: lb://b2c-store-service
-        predicates:
-        - Path=/api-store/**
-      - uri: lb://b2c-customer-service
-        predicates:
-        - Path=/api-customer/**
-      - uri: lb://b2c-message-service
-        predicates:
-        - Path=/api-message/**
-      - uri: lb://b2c-pay-service
-        predicates:
-        - Path=/api-pay/**
-      - uri: lb://b2c-promotion-service
-        predicates:
-        - Path=/api-promotion/**
-      - uri: lb://b2c-system-service
-        predicates:
-        - Path=/api-system/**
-      - uri: lb://product-microservice
-        predicates:
-        - Path=/api-product/**
+zuul:
+  routes:
+    api-orde:
+      strip-prefix: false
+      service-id: b2c-order-service
+      path: /api-order/**
+    api-store:
+      strip-prefix: false
+      service-id: b2c-store-service
+      path: /api-store/**
+    api-customer:
+      strip-prefix: false
+      service-id: b2c-customer-service
+      path: /api-customer/**
+    api-message:
+      strip-prefix: false
+      service-id: b2c-message-service
+      path: /api-message/**
+    api-pay:
+      strip-prefix: false
+      service-id: b2c-pay-service
+      path: /api-pay/**
+    api-promotion:
+      strip-prefix: false
+      service-id: b2c-promotion-service
+      path: /api-promotion/**
+    api-system:
+      strip-prefix: false
+      service-id: b2c-system-service
+      path: /api-system/**
+    api-product:
+      strip-prefix: false
+      service-id: product-microservice
+      path: /api-product/**
+    api-task:
+      strip-prefix: false
+      path: /api-task/**
+      service-id: b2c-task-service

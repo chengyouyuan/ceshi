@@ -24,6 +24,9 @@ public class OpenStoreVO {
     @ApiModelProperty(value = "是否创建过了惠小店(0未创建，1已创建)")
     private Byte storeStatus;
 
+    @ApiModelProperty(value = "信息是否完善(0未完善，1已完善)")
+    private Byte storePerfectStatus;
+
     @ApiModelProperty(value = "信息列表(基础信息、经营信息、店铺信息、证照、门头照、30天内是否有订货)，0未完善，1已完善")
     private List<Integer> noPerfectMessage;
 

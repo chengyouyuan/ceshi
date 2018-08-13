@@ -12,20 +12,16 @@ import lombok.Data;
  */
 @ApiModel("云信用户消息")
 @Data
-public class NeteaseMsgVO extends PagedCondition {
+public class NeteaseMsgVO {
 
     @ApiModelProperty("消息主键")
-    private Long msgid;
+    private Long msgId;
     @ApiModelProperty("消息内容")
     private String message;
     @ApiModelProperty("页面类型")
-    private String pagetype;
+    private String pageType;
     @ApiModelProperty("点击事件")
-    private String treecode;
+    private String treeCode;
     @ApiModelProperty("消息发送时间")
-    private String alerttime;
-    @ApiModelProperty("语音文件路径")
-    private String audioURL;
-    @ApiModelProperty("是否转换为语音进行播放。1：转语音;0:不转语音。")
-    private String transferaudio;
+    private String alertTime;
 }

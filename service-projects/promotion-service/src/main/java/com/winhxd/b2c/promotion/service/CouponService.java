@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 
@@ -121,5 +122,8 @@ public interface CouponService {
      * @param condition
      * @return
      */
-    List<CouponInvestorAmountVO> getCouponInvestorAmount(OrderCouponCondition condition);
+    List<CouponInvestorAmountVO> getCouponInvestorAmount(CouponInvestorAmountCondition condition);
+
+
+    PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize);
 }

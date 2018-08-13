@@ -41,7 +41,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
         ResponseResult<Integer> responseResult = new ResponseResult();
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
             if(flag!=0){
-//               throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
+             throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
             }
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);
@@ -81,6 +81,8 @@ public class CouponGradeController implements CouponGradeServiceClient {
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");
+            }else {
+                throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
             }
         return responseResult;
     }

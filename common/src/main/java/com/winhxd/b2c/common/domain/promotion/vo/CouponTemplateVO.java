@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
@@ -8,109 +10,55 @@ import java.util.Date;
  * @Description  用于页面显示查询返回的数据信息
  **/
 public class CouponTemplateVO {
-    /**
-     * 主键
-     */
+    @ApiModelProperty(value = "主键")
     private Long id;
-    /**
-     * 优惠券标题
-     */
+    @ApiModelProperty(value = "优惠券标题")
     private String title;
-    /**
-     * 优惠券说明
-     */
+    @ApiModelProperty(value = "优惠券说明")
     private String exolian;
-    /**
-     * 备注
-     */
+    @ApiModelProperty(value = "备注")
     private String remarks;
-    /**
-     * 出资方规则ID
-     */
+    @ApiModelProperty(value = "出资方规则ID")
     private Long investorId;
-    /**
-     * 使用范围规则ID
-     */
+    @ApiModelProperty(value = "使用范围规则ID")
     private Long gradeId;
-    /**
-     * 适用对象规则ID
-     */
+    @ApiModelProperty(value = "适用对象规则ID")
     private Long applyRuleId;
-    /**
-     * 角标
-     */
+    @ApiModelProperty(value = "角标")
     private String corner;
-    /**
-     * 优惠券标签
-     */
+    @ApiModelProperty(value = "优惠券标签")
     private String couponLabel;
-    /**
-     * 优惠券标签颜色
-     */
+    @ApiModelProperty(value = "优惠券标签颜色")
     private Integer couponLabelColor;
-    /**
-     * 是否有效 0有效1无效
-     */
+    @ApiModelProperty(value = "是否有效 0有效1无效")
     private Short status;
-    /**
-     * 无效原因
-     */
+    @ApiModelProperty(value = "无效原因")
     private String reason;
-    /**
-     * 优惠券模板编码(UUID）
-     */
+    @ApiModelProperty(value = "优惠券模板编码(UUID）")
     private String code;
-    /**
-     * 优惠券金额计算方式  1订单金额 2商品金额
-     */
+    @ApiModelProperty(value = "优惠券金额计算方式  1订单金额 2商品金额")
     private Short calType;
-    /**
-     *支付方式 1扫码支付 2线上支付
-     */
+    @ApiModelProperty(value = "支付方式 1扫码支付 2线上支付")
     private Short payType;
-    /**
-     * '创建人id
-     */
+    @ApiModelProperty(value = "创建人id")
     private Long createdBy;
-    /**
-     * 创建人
-     */
+    @ApiModelProperty(value = "创建人")
     private String createdByName;
-    /**
-     * 创建时间(使用时间)
-     */
+    @ApiModelProperty(value = "创建时间(使用时间)")
     private Date created;
-    /**
-     * 修改人id
-     */
+    @ApiModelProperty(value = "修改人id")
     private Long updatedBy;
-    /**
-     * 修改人
-     */
+    @ApiModelProperty(value = "修改人")
     private String updatedByName;
-    /**
-     * 修改时间
-     */
+    @ApiModelProperty(value = "修改时间")
     private Date updated;
-
-
-    /**
-     * 出资方规则名称
-     */
+    @ApiModelProperty(value = "出资方规则名称")
     private String investorName;
-
-    /**
-     * 优惠券优惠方式名称
-     */
+    @ApiModelProperty(value = "优惠券优惠方式名称")
     private String gradeName;
-
-    /**
-     * 优惠券类型规则名称
-     */
+    @ApiModelProperty(value = "优惠券类型规则名称")
     private String applyRuleName;
-    /**
-     * 优惠券类型规则类型
-     */
+    @ApiModelProperty(value = "优惠券类型规则类型")
     private Short applyRuleType;
 
 

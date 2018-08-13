@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
@@ -90,16 +91,17 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
     public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
         if(StringUtils.isBlank(ids)){
-            responseResult.setCode(BusinessCode.CODE_1007);
-            responseResult.setMessage("参数为空错误");
-            return responseResult;
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
         }
         Long updateBy = Long.parseLong(userId);
         Date updated = new Date();
         String updateByName = userName ;
         String[] idsArr = ids.split(",");
         List<String> idsList = Arrays.asList(idsArr);
-        couponTemplateService.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
+        int count = couponTemplateService.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
+        if(count!=1){
+           throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
+        }
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("修改成功");
         return responseResult;

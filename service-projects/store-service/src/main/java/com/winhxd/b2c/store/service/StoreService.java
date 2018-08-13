@@ -4,6 +4,7 @@ package com.winhxd.b2c.store.service;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 
@@ -19,11 +20,10 @@ public interface StoreService {
     /**
      * @param customerId  用户id
      * @param storeUserId 门店id
-     * @return 绑定状态码(0绑定失败, 1绑定成功, -1用户已经和当前门店存在绑定关系 ， -2用户已经和其他门店存在绑定关系)
+     * @return 绑定状态码(0绑定失败, 1绑定成功, - 1用户已经和当前门店存在绑定关系 ， - 2用户已经和其他门店存在绑定关系)
      * @author chengyy
      * @date 2018/8/3 13:23
      * @Description 门店用户绑定
-     *
      */
     int bindCustomer(Long customerId, Long storeUserId);
 
@@ -63,6 +63,7 @@ public interface StoreService {
 
     /**
      * 修改门店信息非空的字段
+     *
      * @param record
      * @return
      */
@@ -78,6 +79,7 @@ public interface StoreService {
 
     /**
      * 后台管理，查询门店详细信息
+     *
      * @param id 主键
      * @return
      */
@@ -85,7 +87,17 @@ public interface StoreService {
 
     /**
      * 根据customerid 更改 regincode
+     *
      * @param storeUserInfo
      */
     void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
+
+    /**
+     * @param condition 分页条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/13 19:33
+     * @Description 根据条件查询分页门店信息数据
+     */
+    PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition);
 }

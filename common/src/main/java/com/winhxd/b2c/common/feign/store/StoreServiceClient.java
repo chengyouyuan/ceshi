@@ -6,6 +6,7 @@ import java.util.Set;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -46,10 +46,9 @@ public interface StoreServiceClient {
 
     /**
      * 获取购物车内商品信息
-     *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List       <       ShopCarProdVO>>
+     * @return ResponseResult<List                               <                               ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
@@ -90,10 +89,10 @@ public interface StoreServiceClient {
 
     /**
      * 更新门店商品统计信息
-     * @Title: updateStoreProductStatistics
-     * @Description: TODO
      * @param conditions
      * @return ResponseResult<Void>
+     * @Title: updateStoreProductStatistics
+     * @Description: TODO
      * @author wuyuanbao
      * @date 2018年8月9日下午4:16:00
      */
@@ -105,7 +104,7 @@ public interface StoreServiceClient {
      * @author: wangbaokuo
      * @date: 2018/8/10 15:26
      * @param: [conditions]
-     * @return: com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.PagedList<com.winhxd.b2c.common.domain.store.vo.StoreRegionVO>>
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.PagedList       <       com.winhxd.b2c.common.domain.store.vo.StoreRegionVO>>
      */
     @RequestMapping(value = "/store/1037/v1/findStoreRegions", method = RequestMethod.POST)
     ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition conditions);
@@ -130,6 +129,15 @@ public interface StoreServiceClient {
     @RequestMapping(value = "/store/1039/v1/saveStoreRegion", method = RequestMethod.POST)
     ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition conditions);
 
+    /**
+     * @param condition 分页条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/13 19:17
+     * @Description 根据条件查询门店分页列表
+     */
+    @RequestMapping(value = "/store/1050/v1/queryStorePageInfo",method = RequestMethod.POST)
+    ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition);
 }
 
 /**
@@ -201,6 +209,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     @Override
     public ResponseResult<Void> saveStoreRegion(StoreRegionCondition conditions) {
         logger.error("StoreServiceClientFallBack -> saveStoreRegion，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(BackStageStoreInfoSimpleCondition condition) {
+        logger.error("StoreServiceClientFallBack -> queryStorePageInfo，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

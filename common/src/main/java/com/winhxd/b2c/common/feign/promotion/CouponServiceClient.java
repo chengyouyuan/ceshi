@@ -29,32 +29,33 @@ import java.util.List;
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponServiceFallback.class)
 public interface CouponServiceClient {
 	
-	@RequestMapping(value = "/promotion/538/v1/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
-	ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,@RequestParam("customerId") Long customerId);
+	@RequestMapping(value = "/promotion/5038/v1/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
+	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("customerId") Long customerId);
 
-    @RequestMapping(value = "/promotion/539/v1/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5039/v1/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
 
-    @RequestMapping(value = "/promotion/540/v1/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5040/v1/orderUntreadCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition);
 
-    @RequestMapping(value = "/promotion/541/v1/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5041/v1/revokeCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> revokeCoupon(@RequestBody RevokeCouponCodition condition);
 
-    @RequestMapping(value = "/promotion/542/v1/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5042/v1/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
 
-    @RequestMapping(value = "/promotion/543/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5043/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition);
 
-    @RequestMapping(value = "/promotion/544/v1/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5044/v1/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition);
 
-    @RequestMapping(value = "/promotion/507/v1/checkCouponStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/promotion/5007/v1/checkCouponStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition);
 
-    @RequestMapping(value = "/promotion/546/v1/getCouponInvestorAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody OrderCouponCondition condition);
+    @RequestMapping(value = "/promotion/5046/v1/getCouponInvestorAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody CouponInvestorAmountCondition condition);
+
 }
 
 
@@ -74,7 +75,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
         return new CouponServiceFallback(throwable);
     }
 	@Override
-	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,Long customerId) {
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
 		 logger.error("CouponServiceClient -> getCouponNumsByCustomerForStore", throwable);
 	     return new ResponseResult<String>(BusinessCode.CODE_1001);
 	}
@@ -122,7 +123,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     }
 
     @Override
-    public ResponseResult getCouponInvestorAmount(OrderCouponCondition condition) {
+    public ResponseResult getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
         logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }

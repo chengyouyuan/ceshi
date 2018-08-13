@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import feign.hystrix.FallbackFactory;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -29,7 +28,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/300/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/3000/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> save(@RequestBody SysUser sysUser);
 
     /**
@@ -39,7 +38,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/301/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/3001/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Void> modify(@RequestBody SysUser sysUser);
 
     /**
@@ -49,7 +48,7 @@ public interface UserServiceClient {
      * @param sysUser
      * @return
      */
-    @RequestMapping(value = "/user/302/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/3002/v1/updatePassword", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Void> updatePassword(@RequestBody SysUserPasswordDTO sysUser);
 
     /**
@@ -59,7 +58,7 @@ public interface UserServiceClient {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/user/303/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/user/3003/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysUser>> find(@RequestBody SysUserCondition condition);
 
     /**
@@ -69,7 +68,7 @@ public interface UserServiceClient {
      * @param account
      * @return
      */
-    @RequestMapping(value = "/user/304/v1/get/{account}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/3004/v1/get/{account}", method = RequestMethod.GET)
     ResponseResult<SysUser> getByAccount(@PathVariable("account") String account);
 
     /**
@@ -79,7 +78,7 @@ public interface UserServiceClient {
      * @param id
      * @return
      */
-    @RequestMapping(value = "/user/305/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/3005/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysUser> get(@PathVariable("id") Long id);
 
     /**
@@ -88,7 +87,7 @@ public interface UserServiceClient {
      * @date 2018/8/7
      * @param id
      */
-    @RequestMapping(value = "/user/306/v1/disabled/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/3006/v1/disabled/{id}", method = RequestMethod.PUT)
     ResponseResult<Void> disabled(@PathVariable("id") Long id);
 
 }

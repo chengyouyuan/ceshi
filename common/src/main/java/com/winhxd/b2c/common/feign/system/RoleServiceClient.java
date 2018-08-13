@@ -21,54 +21,49 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface RoleServiceClient {
 
     /**
-     * 新增权限组
-     * @author zhangzhengyang
+     * 新增权限�     * @author zhangzhengyang
      * @date 2018/8/7
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/role/310/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/3010/v1/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Long> save(@RequestBody SysRole sysRole);
 
     /**
-     * 修改权限组
-     * @author zhangzhengyang
+     * 修改权限�     * @author zhangzhengyang
      * @date 2018/8/7
      * @param sysRole
      * @return
      */
-    @RequestMapping(value = "/role/311/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/3011/v1/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> modify(@RequestBody SysRole sysRole);
 
     /**
-     * 查询权限组列表
-     * @author zhangzhengyang
+     * 查询权限组列�     * @author zhangzhengyang
      * @date 2018/8/7
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/role/312/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/role/3012/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<SysRole>> find(@RequestBody SysRoleCondition condition);
 
 
     /**
-     * 根据主键获取权限组信息
-     * @author zhangzhengyang
+     * 根据主键获取权限组信�     * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
      * @return
      */
-    @RequestMapping(value = "/role/313/v1/get/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/role/3013/v1/get/{id}", method = RequestMethod.GET)
     ResponseResult<SysRole> get(@PathVariable("id") Long id);
 
     /**
-     * 根据主键获取权限组信息
-     * @author zhangzhengyang
+     * 根据主键获取权限组信�     * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
      * @return
      */
-    @RequestMapping(value = "/role/314/v1/remove/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/role/3014/v1/remove/{id}", method = RequestMethod.DELETE)
     ResponseResult<Integer> remove(@PathVariable("id") Long id);
 
 }

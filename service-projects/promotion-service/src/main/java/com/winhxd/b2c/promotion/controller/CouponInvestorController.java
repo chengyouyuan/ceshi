@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponInvestorServiceClient;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
 import io.swagger.annotations.Api;
@@ -52,12 +53,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             responseResult.setCode(flag);
             if(flag==0){
                   responseResult.setMessage("添加成功");
-            }else if(flag==1){
-                  responseResult.setMessage("新增失败！占比之和不等于100");
-            }else if(flag==2){
-                  responseResult.setMessage("新增失败！出资方重复");
-            }else if(flag==3){
-                  responseResult.setMessage("新增失败！出资方明细为空");
             }else {
                   responseResult.setMessage("服务器内部错误");
             }
@@ -98,6 +93,8 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");
+            }else {
+                throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
             }
         return responseResult;
     }

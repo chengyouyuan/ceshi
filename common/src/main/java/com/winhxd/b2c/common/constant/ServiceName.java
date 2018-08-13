@@ -26,4 +26,7 @@ public final class ServiceName {
 
     //消息服务
     public static final String MESSAGE_SERVICE = "b2c-message-service";
+
+    /**支付服务*/
+    public static final String PAY_SERVICE = "b2c-pay-service";
 }

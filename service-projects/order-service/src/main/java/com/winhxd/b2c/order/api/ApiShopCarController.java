@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.ShopCarService;
@@ -18,7 +19,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -82,7 +86,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarCondition condition){
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarQueryCondition condition){
         ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
         if (null == condition || null == condition.getStoreId()) {
             logger.error("查询购物车异常{}  参数storeId为空");

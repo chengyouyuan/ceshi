@@ -416,6 +416,7 @@ public class ApiStoreProductManageController {
 		if (!verifyParam(condition)) {
 			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
+		//1607456L;
 		Long storeCustomerId = storeUser.getStoreCustomerId();
 		Long businessId = storeUser.getBusinessId();
 		// 门店已经上架的商品
@@ -428,8 +429,10 @@ public class ApiStoreProductManageController {
 		List<String> putwaySkusByConditon = storeProductManageService.findSkusByConditon(manageCondition);
 
 		ProductConditionByPage productCondition = new ProductConditionByPage();
-		productCondition.setProductName(condition.getProdName());
+		productCondition.setProductName(condition.getProdName().trim());
 		productCondition.setProductSkus(putwaySkusByConditon);
+		productCondition.setPageNo(condition.getPageNo());
+		productCondition.setPageSize(condition.getPageSize());
 		// hxd购买过的商品
 		if (HXD_PROD_TYPE.equals(condition.getProdType())) {
 			productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
@@ -602,16 +605,14 @@ public class ApiStoreProductManageController {
 			skuData = JsonUtil.parseJSONObject(cache.get(hxdSkuKey), List.class);
 			return skuData;
 		}
-		Map<String, Object> request = new HashMap<>();
-		request.put("customerId", storeCustomerId);
 		ResponseResult<List<Map<String, Object>>> storeBuyedProdSku = storeHxdServiceClient
-				.getStoreBuyedProdSku(request);
+				.getStoreBuyedProdSku(storeCustomerId);
 		List<Map<String, Object>> skuDataMap = storeBuyedProdSku.getData();
 		for (Map<String, Object> skuMap : skuDataMap) {
 			skuData.add(String.valueOf(skuMap.get("prodSku")));
 		}
 		cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
-		cache.expire(hxdSkuKey, 60 * 60 * 5);
+		cache.expire(hxdSkuKey, 60 * 60 * 2);
 		return skuData;
 	}
 

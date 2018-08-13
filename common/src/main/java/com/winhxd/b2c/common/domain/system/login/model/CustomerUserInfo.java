@@ -180,7 +180,7 @@ public class CustomerUserInfo implements Serializable {
 	}
 
 	public void setToken(String token) {
-		this.token = token;
+		this.token = token == null ? null : token.trim();
 	}
     
 }

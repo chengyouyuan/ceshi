@@ -93,7 +93,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效") })
-	@RequestMapping(value = "store/security/108/v1/storeLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
 		logger.info("{} - B端登录验证, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(storeUserInfoCondition));
@@ -190,6 +190,7 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
+						storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(map.getStoreMobile());
@@ -309,7 +310,7 @@ public class ApiStoreLoginController {
 						 */
 						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
-						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+						storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 						storeUserInfo.setCreated(new Date());
 						storeUserInfo.setStoreMobile(map.getStoreMobile());
 						storeUserInfo.setSource(storeUserInfoCondition.getPlatform());
@@ -348,7 +349,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
-	@RequestMapping(value = "store/security/109/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
 		logger.info("{} -账号发送验证码, 参数：storeUserInfoCondition={}", "",
@@ -410,6 +411,7 @@ public class ApiStoreLoginController {
 						 */
 						info.setOpenId(storeSendVerificationCodeCondition.getOpenId());
 						info.setStoreCustomerId(map.getStoreCustomerId());
+						info.setStoreRegionCode(map.getStoreRegionCode());
 						info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 						info.setCreated(new Date());
 						info.setStoreMobile(map.getStoreMobile());
@@ -433,6 +435,7 @@ public class ApiStoreLoginController {
 						info.setCreated(new Date());
 						info.setStoreMobile(map.getStoreMobile());
 						info.setStoreCustomerId(map.getStoreCustomerId());
+						info.setStoreRegionCode(map.getStoreRegionCode());
 						info.setSource(storeSendVerificationCodeCondition.getPlatform());
 						info.setToken(GeneratePwd.getRandomUUID());
 						info.setStoreStatus((short) 0);

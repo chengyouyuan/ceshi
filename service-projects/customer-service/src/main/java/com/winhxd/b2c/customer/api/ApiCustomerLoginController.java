@@ -70,7 +70,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "网络请求超时") })
 
-	@RequestMapping(value = "customer/security/221/v1/weChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(customerUserInfoCondition));
@@ -107,9 +107,9 @@ public class ApiCustomerLoginController {
 			}
 			mini = object.getData();
 			customerUserInfo.setOpenId(mini.getOpenId());
-			customerUserInfo.setSessionKey(mini.getSessionKey());
 			db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 			if (null == db) {
+				customerUserInfo.setSessionKey(mini.getSessionKey());
 				customerUserInfo.setCreated(new Date());
 				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
 				customerUserInfo.setToken(GeneratePwd.getRandomUUID());
@@ -132,6 +132,7 @@ public class ApiCustomerLoginController {
 					throw new BusinessException(BusinessCode.CODE_1010);
 				}
 				customerUserInfo.setCustomerId(db.getCustomerId());
+				customerUserInfo.setSessionKey(mini.getSessionKey());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
 				vo = new CustomerUserInfoSimpleVO();
 				vo.setCustomerMobile(db.getCustomerMobile());
@@ -161,7 +162,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/security/222/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
@@ -211,12 +212,13 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/223/v1/customerChangeMobile", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
 	public ResponseResult<String> customerChangeMobile(
 			@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		logger.info("{} - 用户换绑手机号, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(customerChangeMobileCondition));
 		ResponseResult<String> result = new ResponseResult<>();
+		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 			if (null == customerChangeMobileCondition) {
 				logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
 						JsonUtil.toJSONString(customerChangeMobileCondition));
@@ -225,12 +227,18 @@ public class ApiCustomerLoginController {
 			CustomerUserInfo info = new CustomerUserInfo();
 			CustomerUser user = UserContext.getCurrentCustomerUser();
 			if (null == user) {
-				logger.info("{} - 未取到用户主键", "", JsonUtil.toJSONString(user));
+				logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
 				throw new BusinessException(BusinessCode.CODE_1002);
 			}
+			customerUserInfo.setCustomerId(user.getCustomerId());
+		    customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
+		    if( null == customerUserInfo){
+		    	logger.info("{} - 账号无效");
+				throw new BusinessException(BusinessCode.CODE_1004);
+		    }
 			if (!customerChangeMobileCondition.getVerificationCode()
 					.equals(cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE
-							+ customerChangeMobileCondition.getCustomerMobile()))) {
+							+ customerUserInfo.getCustomerMobile()))) {
 				logger.info("{} - 用户验证码错误");
 				throw new BusinessException(BusinessCode.CODE_1008);
 			}

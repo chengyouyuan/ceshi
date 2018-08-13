@@ -34,6 +34,10 @@
     prod_code, sku_code, putaway_time, created_by, created_by_name, created, updated_by,
     updated_by_name, updated
   </sql>
+    <sql id="alias_Simple_Column_List">
+    prod.id, prod.store_id, prod.sku_attribute_option, prod.sell_money, prod.recommend, prod.prod_status,
+    prod.prod_code, prod.sku_code, prod.putaway_time
+  </sql>
   <sql id="Simple_Column_List">
     id, store_id, sku_attribute_option, sell_money, recommend, prod_status,
     prod_code, sku_code, putaway_time
@@ -212,6 +216,72 @@
            sku_code
         from store_product_manage
         where  prod_status = 1 and recommend = 1
+    </select>
+    <select id="findProductBySelective"  parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition"
+            resultMap="BaseResultMap">
+        select
+          <include refid="alias_Simple_Column_List"></include>
+        from store_product_manage prod
+        LEFT JOIN  store_product_statistics  sps ON sps.store_id = prod.store_id AND sps.created BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND DATE_SUB(CURDATE(),INTERVAL -1 DAY)
+        where 1=1
+        <if test="condition.prodStatus != null">
+            and prod.prod_status in
+            <foreach item="status" index="index" collection="condition.prodStatus" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+        </if>
+        <if test="condition.storeId != null">
+            and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.recommend != null">
+            and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
+        </if>
+        group by prod.sku_code
+        <choose>
+            <!-- 加排序字段目前支持，价格和创建时间升降序 -->
+            <when test="condition.orderBy != null">
+                <choose>
+                    <when test="condition.orderBy==1">
+                        <choose>
+                            <when test="condition.descAsc != null and condition.descAsc==1">
+                                order by prod.sell_money desc
+                            </when>
+                            <otherwise>
+                                order by when sell_money is null then 1 else 0 end, prod.sell_money asc
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <when test="condition.orderBy==0">
+                        <choose>
+                            <when test="condition.descAsc != null and condition.descAsc==1">
+                                order by prod.created desc
+                            </when>
+                            <otherwise>
+                                order by prod.created asc
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <when test="condition.orderBy==2">
+                        <choose>
+                            <when test="condition.descAsc != null and condition.descAsc==1">
+                                order by sum(sps.quantity_sold_out) desc
+                            </when>
+                            <otherwise>
+                                order by sum(sps.quantity_sold_out) asc
+                            </otherwise>
+                        </choose>
+                    </when>
+                    <otherwise>
+                        order by prod.created desc
+                    </otherwise>
+                </choose>
+
+            </when>
+            <!-- 默认创建时间 desc -->
+            <otherwise>
+                order by prod.created desc
+            </otherwise>
+        </choose>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from store_product_manage

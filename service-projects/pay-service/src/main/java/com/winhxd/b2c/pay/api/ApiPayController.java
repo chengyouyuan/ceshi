@@ -1,10 +1,6 @@
 package com.winhxd.b2c.pay.api;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +47,7 @@ public class ApiPayController {
 	@PostMapping(value = "/602/v1/refund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<RefundVO> refund(@RequestBody OrderPayCondition condition){
 		ResponseResult<RefundVO> result=new ResponseResult<>();
+		
 		return result;
 	}
 	@ApiOperation(value = "审核退款", notes = "审核退款")

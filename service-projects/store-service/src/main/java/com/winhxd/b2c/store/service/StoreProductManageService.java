@@ -121,4 +121,11 @@ public interface StoreProductManageService {
 	 * @return
 	 */
     List<String> findRecommendProductSku(Long storeId);
+
+	/**
+	 * 根据参数搜索商品集合
+	 * @param storeProductManageCondition
+	 * @return
+	 */
+	List<StoreProductManage> findProductBySelective(StoreProductManageCondition storeProductManageCondition);
 }

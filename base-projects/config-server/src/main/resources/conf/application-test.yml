@@ -32,3 +32,7 @@ redis:
     maxIdle: 5000
     maxWaitMillis: 10000
     testOnBorrow: true
+#eureka注册中心首页默认跳转到各服务的swagger-ui页面
+eureka:
+  instance:
+    status-page-url: http://192.168.60.250:${server.port}/swagger-ui.html

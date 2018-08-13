@@ -237,5 +237,7 @@ public final class BusinessCode {
     public static final int CODE_610015 = 610015;
     @ApiModelProperty("验证码为空")
     public static final int CODE_610016 = 610016;
+    @ApiModelProperty("B端绑定银行卡失败")
+    public static final int CODE_610017 = 610017;
 
 }

@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 
 import io.swagger.annotations.Api;
@@ -38,6 +41,9 @@ public class ApiPayStoreBindBankCardController {
 	
 	@Autowired
 	private PayStoreBankCardServiceImpl storeBankCardService;
+	
+	@Autowired
+	private MessageServiceClient messageServiceClient;
 
 	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -53,7 +59,7 @@ public class ApiPayStoreBindBankCardController {
         	storeBankCardInfo = storeBankCardService.findStoreBankCardInfo(condition);
         	if(storeBankCardInfo == null){
         		LOGGER.info("当前用户没有银行卡信息");
-        		throw new BusinessException(BusinessCode.CODE_6101);
+        		throw new BusinessException(BusinessCode.CODE_610001);
         	}else{
         		result.setData(storeBankCardInfo);
         	}
@@ -70,71 +76,46 @@ public class ApiPayStoreBindBankCardController {
 	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_6111, message = "银行名称为空"),
-            @ApiResponse(code = BusinessCode.CODE_6112, message = "银行卡卡号为空"),
-            @ApiResponse(code = BusinessCode.CODE_6113, message = "开户人姓名为空"),
-            @ApiResponse(code = BusinessCode.CODE_6114, message = "开户支行或分行为空"),
-            @ApiResponse(code = BusinessCode.CODE_6115, message = "手机号为空"),
-            @ApiResponse(code = BusinessCode.CODE_6116, message = "验证码为空")
+            @ApiResponse(code = BusinessCode.CODE_610011, message = "银行名称为空"),
+            @ApiResponse(code = BusinessCode.CODE_610012, message = "银行卡卡号为空"),
+            @ApiResponse(code = BusinessCode.CODE_610013, message = "开户人姓名为空"),
+            @ApiResponse(code = BusinessCode.CODE_610014, message = "开户支行或分行为空"),
+            @ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
+            @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空")
     })
     @RequestMapping(value = "/611/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
         String logTitle = "/api-pay/bankCard/611/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
-        Integer res = null;
-        try {
-        	// 校验用户填入的信息是否完善
-        	String bankName = condition.getBankName();
-        	if(StringUtils.isEmpty(bankName)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6111);
-        		throw new BusinessException(BusinessCode.CODE_6111);
-        	}
-        	String cardNumber = condition.getCardNumber();
-        	if(StringUtils.isEmpty(cardNumber)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6112);
-        		throw new BusinessException(BusinessCode.CODE_6112);
-        	}
-        	String bankUserName = condition.getBankUserName();
-        	if(StringUtils.isEmpty(bankUserName)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6113);
-        		throw new BusinessException(BusinessCode.CODE_6113);
-        	}
-        	String bandBranchName = condition.getBandBranchName();
-        	if(StringUtils.isEmpty(bandBranchName)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6114);
-        		throw new BusinessException(BusinessCode.CODE_6114);
-        	}
-        	String mobile = condition.getMobile();
-        	if(StringUtils.isEmpty(mobile)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6115);
-        		throw new BusinessException(BusinessCode.CODE_6115);
-        	}
-        	String verificationCode = condition.getVerificationCode();
-        	if(StringUtils.isEmpty(verificationCode)){
-        		LOGGER.info("业务异常："+BusinessCode.CODE_6116);
-        		throw new BusinessException(BusinessCode.CODE_6116);
-        	}
-        	StoreBankCard storeBankCard = new StoreBankCard();
-        	BeanUtils.copyProperties(condition, storeBankCard);
-        	storeBankCard.setCreated(new Date());
-        	storeBankCard.setUpdated(new Date());
-        	storeBankCard.setCreatedBy(condition.getStoreId());
-        	storeBankCard.setUpdatedBy(condition.getStoreId());
-        	storeBankCard.setCreatedByName(bankUserName);
-        	storeBankCard.setUpdatedByName(bankUserName);
-        	System.out.print("storeBankCard----"+storeBankCard);
-        	res = storeBankCardService.saveStoreBankCard(storeBankCard);
-        	if(res > 0){
-        		// 银行卡绑定成功之后，需要给用户发送短信提醒
-        		
-        	}
-        	result.setCode(res);
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.error("B端绑定银行卡失败；失败原因---："+ e);
-		}
+    	StoreBankCard storeBankCard = new StoreBankCard();
+    	BeanUtils.copyProperties(condition, storeBankCard);
+    	System.out.print("storeBankCard----"+storeBankCard);
+    	Integer res = storeBankCardService.saveStoreBankCard(storeBankCard);
+    	if(res > 0){
+    		// 银行卡绑定成功之后，需要给用户发送短信提醒
+    		result.setCode(0);
+    	}else{
+    		result.setCode(BusinessCode.CODE_610017);
+    		LOGGER.info("B端绑定银行卡失败；");
+    	}
+		 
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
+	
+	/**获取短信验证码*/
+	@ApiOperation(value = "获取短信验证码", notes = "获取短信验证码")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
+    })
+    @RequestMapping(value = "/612/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
+		ResponseResult<String> result = new ResponseResult<String>();
+		
+		messageServiceClient.sendSMS(condition.getMobile(), null);
+		
+		return result;
+	}
+	
 }

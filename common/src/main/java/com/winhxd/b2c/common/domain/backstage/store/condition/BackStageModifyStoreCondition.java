@@ -34,6 +34,13 @@ public class BackStageModifyStoreCondition {
     @ApiModelProperty(value = "联系方式")
     private String contactMobile;
 
+    @ApiModelProperty(value = "门店用户编号")
+    private Long storeCustomerId;
+
+    @ApiModelProperty(value = "门店地理code")
+    private String storeReginCode;
+
+
 
 
 }

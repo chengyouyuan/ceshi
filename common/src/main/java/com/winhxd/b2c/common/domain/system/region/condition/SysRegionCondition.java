@@ -17,4 +17,7 @@ public class SysRegionCondition extends ApiCondition {
 
     @ApiModelProperty(value = "区域行政级别（1=省，2=市，3=区县，4=乡/镇，5=村/居委会）")
     private Integer level;
+
+    @ApiModelProperty(value = "门店customerId")
+    private Long customerId;
 }

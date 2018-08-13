@@ -16,11 +16,15 @@ public class NeteaseMsg {
      */
     private String msgContent;
     /**
-     * 页面类型
+     * 页面类型/消息跳转类型：
+     * 1--跳转至APP内部某个页面。通过393的treecode跳转
+     * 3--跳转到订单详情页面
+     * 4--后台下载，此时跳转页面为：downUrl下载地址
+     * 5--后台上报数据 0--跳转至在线网页。此时跳转页面为网页链接
      */
     private short pageType;
     /**
-     * 消息跳转类型：需和手机端商定
+     * treeCode
      */
     private String treeCode;
     /**

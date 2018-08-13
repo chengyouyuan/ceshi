@@ -3,6 +3,8 @@ package com.winhxd.b2c.common.domain.product.vo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ProductSkuVO {
 
@@ -26,5 +28,11 @@ public class ProductSkuVO {
 	
 	@ApiModelProperty(value = "商品规格")
 	private String skuAttributeOption;
+
+	@ApiModelProperty(value = "商品价格")
+	private BigDecimal sellMoney;
+
+	@ApiModelProperty(value = "购物车数量")
+	private Integer skuNum;
 	
 }

@@ -11,6 +11,9 @@ public final class ServiceName {
 
     // 商品服务
     public static final String PRODUCT_SERVICE = "product-microservice";
+    
+    // 惠下单用户服务
+    public static final String USER_SERVICE = "user-service";
 
     //优惠券服务
     public static final String PROMOTION_SERVICE = "b2c-promotion-service";

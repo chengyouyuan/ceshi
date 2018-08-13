@@ -20,11 +20,11 @@ public class StoreBusinessInfoCondition extends ApiCondition {
     @ApiModelProperty(value = "店铺名称", required = true)
     private String storeName;
 
-    @ApiModelProperty(value = "取货方式", required = true)
-    private Byte pickupWay;
+    @ApiModelProperty(value = "取货方式（1、自提，多个用逗号分隔）", required = true)
+    private String pickupType;
 
-    @ApiModelProperty(value = "支付方式", required = true)
-    private Byte paymentWay;
+    @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）", required = true)
+    private String payType;
 
     @ApiModelProperty(value = "店主姓名", required = true)
     private String shopkeeper;

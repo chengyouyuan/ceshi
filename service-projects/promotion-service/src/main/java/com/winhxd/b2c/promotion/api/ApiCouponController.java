@@ -46,7 +46,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_500001, message = "不存在符合的优惠券活动")
     })
     @RequestMapping(value = "/501/v1/getNewUserCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<CouponVO>> getNewUserCouponList(ApiCondition condition) {
+    public ResponseResult<List<CouponVO>> getNewUserCouponList(@RequestBody ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
@@ -61,7 +61,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<CouponVO>> unclaimedCouponList(ApiCondition condition) {
+    public ResponseResult<List<CouponVO>> unclaimedCouponList(@RequestBody ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.unclaimedCouponList();

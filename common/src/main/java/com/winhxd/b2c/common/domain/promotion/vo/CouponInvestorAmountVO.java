@@ -10,14 +10,24 @@ import java.math.BigDecimal;
  * @Description
  */
 public class CouponInvestorAmountVO {
+    @ApiModelProperty(value = "订单号", required=true)
+    private String orderNo;
     @ApiModelProperty(value = "优惠券id", required=true)
     private Long templateId;
     @ApiModelProperty(value = "优惠券名称", required=true)
-    private String couponName;
+    private String couponTitle;
     @ApiModelProperty(value = "平台承担金额", required=true)
     private BigDecimal platformAmount;
     @ApiModelProperty(value = "品牌商承担金额", required=true)
     private BigDecimal brandAmount;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public Long getTemplateId() {
         return templateId;
@@ -27,12 +37,12 @@ public class CouponInvestorAmountVO {
         this.templateId = templateId;
     }
 
-    public String getCouponName() {
-        return couponName;
+    public String getCouponTitle() {
+        return couponTitle;
     }
 
-    public void setCouponName(String couponName) {
-        this.couponName = couponName;
+    public void setCouponTitle(String couponTitle) {
+        this.couponTitle = couponTitle;
     }
 
     public BigDecimal getPlatformAmount() {

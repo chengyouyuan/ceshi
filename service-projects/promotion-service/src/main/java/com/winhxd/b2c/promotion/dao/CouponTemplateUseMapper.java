@@ -23,4 +23,11 @@ public interface CouponTemplateUseMapper {
      * @return
      */
     List<CouponTemplateUse> selectByOrderNo(String orderNo);
+
+    /**
+     * 根据订单号查询使用的优惠券
+     * @param orderNos
+     * @return
+     */
+    List<CouponTemplateUse> selectByOrderNos(List<String> orderNos);
 }

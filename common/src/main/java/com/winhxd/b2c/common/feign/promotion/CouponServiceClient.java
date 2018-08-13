@@ -54,7 +54,8 @@ public interface CouponServiceClient {
     ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition);
 
     @RequestMapping(value = "/promotion/546/v1/getCouponInvestorAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody OrderCouponCondition condition);
+    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody CouponInvestorAmountCondition condition);
+
 }
 
 
@@ -122,7 +123,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     }
 
     @Override
-    public ResponseResult getCouponInvestorAmount(OrderCouponCondition condition) {
+    public ResponseResult getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
         logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }

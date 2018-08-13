@@ -75,7 +75,7 @@ public class OrderInfo {
      */
     private Integer skuCategoryQuantity;
     /**
-     * 支付类型:1为微信扫码付款;2为微信在线支付;
+     * 支付类型:2:微信扫码付款;1为微信在线支付;
      */
     private Short payType;
     /**

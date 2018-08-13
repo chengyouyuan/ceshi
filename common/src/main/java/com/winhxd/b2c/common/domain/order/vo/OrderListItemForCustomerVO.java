@@ -13,8 +13,6 @@ import java.util.List;
  */
 @Data
 public class OrderListItemForCustomerVO {
-    @ApiModelProperty(value = "订单编号", required = true)
-    private String orderNo;
     @ApiModelProperty(value = "商品图片URL", required = true)
     private String productPictureUrl;
     @ApiModelProperty(value = "商品名称", required = true)

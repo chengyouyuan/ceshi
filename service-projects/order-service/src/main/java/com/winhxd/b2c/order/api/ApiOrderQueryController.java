@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.api;
 import javax.annotation.Resource;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
 import com.winhxd.b2c.common.domain.order.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,33 @@ public class ApiOrderQueryController {
         ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
         try {
             OrderInfoDetailVO orderVO = this.orderQueryService.findOrderByCustomerId(orderQueryByCustomerCondition);
+            result.setData(orderVO);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+            throw e;
+        }
+        LOGGER.info("{}--结束 result={}", result);
+        return result;
+    }
+
+
+    @ApiOperation(value = "B端订单详情查询接口", notes = "B端订单详情查询接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_411001, message = "参数异常")
+    })
+    @RequestMapping(value = "/414/v1/getOrderDetailForStoreByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<OrderInfoDetailVO> getOrderDetailForStoreByOrderNo(@RequestBody OrderQueryByStoreCondition condition) {
+        String logTitle = "=/api-order/order/414/v1/getOrderDetailForStoreByOrderNo-B端订单详情查询接口=";
+        LOGGER.info("{}--开始--condition={}", logTitle, condition);
+        ResponseResult<OrderInfoDetailVO> result = new ResponseResult<>();
+        try {
+            OrderInfoDetailVO orderVO = this.orderQueryService.findOrderForStore(condition);
             result.setData(orderVO);
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);

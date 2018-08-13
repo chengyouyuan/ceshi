@@ -59,4 +59,8 @@ public class CacheName {
      * JSON模板文件缓存
      */
     public static final String JSON_TEMPLATES = "JSON_TEMPLATES:";
+    
+    /**B端绑定银行卡存入验证码 key
+     * */
+    public static final String PAY_VERIFICATION_CODE = "PAY:MOBILE:VERIFICATION:";
 }

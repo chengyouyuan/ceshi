@@ -103,6 +103,10 @@ public class OrderInfo {
      */
     private Date cancelDateTime;
     /**
+     * 退款时间
+     */
+    private Date refundDateTime;
+    /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */
     private Short pickupType;

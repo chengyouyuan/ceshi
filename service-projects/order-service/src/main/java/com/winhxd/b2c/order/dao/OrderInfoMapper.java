@@ -235,4 +235,11 @@ public interface OrderInfoMapper {
      * @return
      */
     int updateOrderMoney(@Param("orderTotalMoney") BigDecimal orderTotalMoney, @Param("realPayMoney") BigDecimal realPayMoney, @Param("orderId") Long orderId);
+
+    /**
+     * 更新订单状态为已退款状态
+     * @param orderNo
+     * @return
+     */
+    int updateOrderStatusForRefundCallback(String orderNo);
 }

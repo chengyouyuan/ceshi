@@ -121,5 +121,5 @@ public interface OrderService {
      * 订单退款回调（状态置为已退款）
      * @param orderRefundCallbackCondition 入参
      */
-    void updateOrderRefundCallback(OrderRefundCallbackCondition orderRefundCallbackCondition);
+    boolean updateOrderRefundCallback(OrderRefundCallbackCondition orderRefundCallbackCondition);
 }

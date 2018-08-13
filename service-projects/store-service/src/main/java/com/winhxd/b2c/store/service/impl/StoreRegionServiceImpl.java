@@ -85,7 +85,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
     }
 
     @Override
-    public StoreRegion selectByRegionCode(String regionCode) {
+    public StoreRegion getByRegionCode(String regionCode) {
         //查询省市县五级信息
         SysRegion sysRegion = regionServiceClient.getRegionByCode(regionCode).getData();
         if(sysRegion == null) {

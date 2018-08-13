@@ -43,5 +43,5 @@ public interface StoreRegionService {
      * @param regionCode 区域编码
      * @return
      */
-    StoreRegion selectByRegionCode(String regionCode);
+    StoreRegion getByRegionCode(String regionCode);
 }

@@ -19,4 +19,10 @@ public class OrderNotifyMsg {
     public static final String ORDER_COMPLETE_MSG_4_STORE = "【已完成】 手机尾号{0}订单已完成";
     
     public static final String ORDER_COMPLETE_MSG_4_CUSTOMER = "您购买的商品已成功取货";
+    
+    public static final String ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER = "小店没有接收到订单，再试一次吧";
+
+    public static final String ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消，订单金额已退回至您的付款账户，请注意查收";
+    
+    public static final String ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消";
 }

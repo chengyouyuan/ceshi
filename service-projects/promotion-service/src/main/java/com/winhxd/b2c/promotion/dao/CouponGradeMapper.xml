@@ -207,7 +207,7 @@
 
   <select id="viewCouponGradeDetail" parameterType="java.lang.Long" resultMap="ResultDetailMap">
     select
-      a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
+      a.id,a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
       a.created_by_name,a.created,a.updated_by,a.updated_by_name,
       a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
       b.discounted,b.discounted_max_amt,b.full_give_amt,

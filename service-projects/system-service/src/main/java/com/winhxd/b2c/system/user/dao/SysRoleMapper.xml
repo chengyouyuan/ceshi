@@ -41,9 +41,6 @@
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRole" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="roleName != null">
         role_name,
       </if>
@@ -67,9 +64,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="roleName != null">
         #{roleName,jdbcType=VARCHAR},
       </if>

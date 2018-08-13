@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.config.support;
 
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import org.apache.commons.lang3.StringUtils;
@@ -24,9 +25,7 @@ import java.util.regex.Pattern;
  * @author lixiaodong
  */
 public class ControllerChecker implements ApplicationListener<ContextRefreshedEvent> {
-    private Pattern apiPath = Pattern.compile("^/api-[a-zA-Z]+/([a-zA-Z]+)(/security)?/(\\d+)/v\\d+/\\w+.*");
     private Pattern apiClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.api\\.Api\\w+Controller$");
-    private Pattern servicePath = Pattern.compile("^/([a-zA-Z]+)/(\\d+)/v\\d+/\\w+.*");
     private Pattern serviceClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.controller\\.\\w+Controller$");
 
     @Override
@@ -50,17 +49,17 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
             }
         }
         if (errorList.size() > 0) {
-            System.out.print(
-                    System.lineSeparator()
-                            + StringUtils.repeat(System.lineSeparator(), 4)
-                            + "================================Controller定义不规范================================"
-                            + StringUtils.repeat(System.lineSeparator(), 2)
-                            + String.join(System.lineSeparator(), errorList)
-                            + StringUtils.repeat(System.lineSeparator(), 2)
-                            + "================================Controller定义不规范================================"
-                            + StringUtils.repeat(System.lineSeparator(), 2)
-            );
-            System.exit(1);
+//            System.out.print(
+//                    System.lineSeparator()
+//                            + StringUtils.repeat(System.lineSeparator(), 4)
+//                            + "================================Controller定义不规范================================"
+//                            + StringUtils.repeat(System.lineSeparator(), 2)
+//                            + String.join(System.lineSeparator(), errorList)
+//                            + StringUtils.repeat(System.lineSeparator(), 2)
+//                            + "================================Controller定义不规范================================"
+//                            + StringUtils.repeat(System.lineSeparator(), 2)
+//            );
+//            System.exit(1);
         }
     }
 
@@ -104,7 +103,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
     private void checkPath(List<String> errorList, Set<String> codes, String path, Method method, Set<RequestMethod> requestMethods) {
         Matcher matcher;
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();
-        if ((matcher = apiPath.matcher(path)).matches()) {
+        if ((matcher = ContextHelper.PATTERN_API_PATH.matcher(path)).matches()) {
             if (!apiClass.matcher(className).matches()) {
                 errorList.add(className + "#" + methodName);
             } else {
@@ -125,7 +124,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                     errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
                 }
             }
-        } else if ((matcher = servicePath.matcher(path)).matches()) {
+        } else if ((matcher = ContextHelper.PATTERN_SERVICE_PATH.matcher(path)).matches()) {
             if (!serviceClass.matcher(className).matches()) {
                 errorList.add(className + "#" + methodName);
             } else {

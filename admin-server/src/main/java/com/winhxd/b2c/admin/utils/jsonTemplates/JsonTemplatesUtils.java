@@ -5,9 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -44,11 +43,10 @@ public class JsonTemplatesUtils {
                 jsonTemplatesPath = "/" + jsonTemplatesPath;
             }
 
-            URL uri = this.getClass().getResource(rootTemplatesPath + jsonTemplatesPath);
-            File file = new File(uri.getPath());
+            InputStream in = this.getClass().getResourceAsStream(rootTemplatesPath + jsonTemplatesPath);
 
             try {
-                dataNode = mapper.readValue(file, Map.class);
+                dataNode = mapper.readValue(in, Map.class);
             } catch (IOException e) {
                 LOGGER.error("{} - JSON模板文件读取错误: {}", jsonTemplatesPath, e);
             }

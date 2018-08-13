@@ -40,7 +40,7 @@ public class ApiOrderController {
     @Resource
     private OrderService orderService;
 
-    @ApiOperation(value = "B端接单计价", notes = "B端接单计价")
+    @ApiOperation(value = "B端自提完成", notes = "B端自提完成")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
@@ -49,7 +49,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.WRONG_ORDER_PICKUP_CODE, message = "提货码错误"),
             @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
-    @RequestMapping(value = "/424/v1/orderConfirm4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/424/v1/orderPickup4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderPickup4Store(@RequestBody OrderPickupCondition condition) {
         String logTitle = "/api-order/order/424/v1/orderPickup4Store-B端订单提货接口";
         LOGGER.info("{}=--开始--{}", logTitle, condition);

@@ -197,6 +197,10 @@ public class CouponServiceImpl implements CouponService {
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
+                    if(0!=result.getCode()){
+                        logger.error("CouponServiceImpl.getCouponDetail-product》调用商品服务异常");
+                        throw new BusinessException(result.getCode());
+                    }
                     couponVO.setProducts(result.getData());
                 }
             }
@@ -212,6 +216,10 @@ public class CouponServiceImpl implements CouponService {
                     }
                     //调用获取商品信息接口
                     ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                    if(0!=result.getCode()){
+                        logger.error("CouponServiceImpl.getCouponDetail-BRAND》调用商品服务异常");
+                        throw new BusinessException(result.getCode());
+                    }
                     couponVO.setBrands(result.getData());
                 }
             }
@@ -239,6 +247,10 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if(0!=result.getCode()){
+            logger.error("CouponServiceImpl.unclaimedCouponList调用门店服务异常");
+            throw new BusinessException(result.getCode());
+        }
         StoreUserInfoVO storeUserInfo = result.getData();
 
 
@@ -582,6 +594,10 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if(0!=result.getCode()){
+            logger.error("CouponServiceImpl.findStoreCouponList-》调用门店服务异常");
+            throw new BusinessException(result.getCode());
+        }
         StoreUserInfoVO storeUserInfo = result.getData();
 
         List<CouponVO> couponVOS = couponActivityMapper.selectStoreCouponList(storeUserInfo.getId());

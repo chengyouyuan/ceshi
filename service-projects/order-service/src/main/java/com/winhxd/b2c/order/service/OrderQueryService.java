@@ -1,6 +1,7 @@
 package com.winhxd.b2c.order.service;
 
 import java.util.Date;
+import java.util.List;
 
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
@@ -103,4 +104,14 @@ public interface OrderQueryService {
      * @return
      */
     OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
+
+    /**
+     * 无分页订单信息查询
+     * @author wangbin
+     * @date  2018年8月13日 上午10:27:11
+     * @param infoQuery4ManagementCondition
+     * @return
+     */
+    List<OrderInfoDetailVO> listOrder4ManagementWithNoPage(
+            OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
 }

@@ -70,7 +70,7 @@ import io.swagger.annotations.ApiResponses;
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午2:58:37
  */
-@Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "api B端门店商品管理相关接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "api-store/storeProductManage/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {

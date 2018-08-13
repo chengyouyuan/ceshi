@@ -50,8 +50,8 @@ public interface OrderServiceClient {
     @RequestMapping(value = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/", method = RequestMethod.POST)
     ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition);
     
-    @RequestMapping(value = "/order/456/v1/listOrder4ManagementWithNoPage/", method = RequestMethod.POST)
-    ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(@RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
+    @RequestMapping(value = "/order/456/v1/listOrderWithNoPage/", method = RequestMethod.POST)
+    ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(@RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
 
     /**
      * 申请退款回调（设置订单状态为退款中）
@@ -114,9 +114,9 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     }
 
     @Override
-    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+    public ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(
             OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
-        logger.error("OrderServiceFallback -> listOrder4ManagementWithNoPage", throwable);
+        logger.error("OrderServiceFallback -> listOrderWithNoPage", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

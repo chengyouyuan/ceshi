@@ -15,7 +15,7 @@ public class VerifyResultVO {
         return result.put(key, value);
     }
 
-    public Map<String, Object> getMap() {
+    public Map<String, Object> getResult() {
         return result;
     }
 }

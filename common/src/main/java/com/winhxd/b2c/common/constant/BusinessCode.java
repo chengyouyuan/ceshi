@@ -220,19 +220,19 @@ public final class BusinessCode {
     public static final int CODE_320001 = 320001;
     
     @ApiModelProperty("当前用户没有银行卡信息")
-    public static final int CODE_6101 = 6101;
+    public static final int CODE_610001 = 610001;
     @ApiModelProperty("银行名称为空")
-    public static final int CODE_6111 = 6111;
+    public static final int CODE_610011 = 610011;
     @ApiModelProperty("银行卡卡号为空")
-    public static final int CODE_6112 = 6112;
+    public static final int CODE_610012 = 610012;
     @ApiModelProperty("开户人姓名为空")
-    public static final int CODE_6113 = 6113;
+    public static final int CODE_610013 = 610013;
     @ApiModelProperty("开户支行或分行为空")
-    public static final int CODE_6114 = 6114;
+    public static final int CODE_610014 = 610014;
     @ApiModelProperty("手机号为空")
-    public static final int CODE_6115 = 6115;
+    public static final int CODE_610015 = 610015;
     @ApiModelProperty("验证码为空")
-    public static final int CODE_6116 = 6116;
+    public static final int CODE_610016 = 610016;
 
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;

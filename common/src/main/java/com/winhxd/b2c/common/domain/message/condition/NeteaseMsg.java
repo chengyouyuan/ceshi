@@ -18,7 +18,7 @@ public class NeteaseMsg {
     /**
      * 页面类型
      */
-    private int pageType;
+    private short pageType;
     /**
      * 消息跳转类型：需和手机端商定
      */

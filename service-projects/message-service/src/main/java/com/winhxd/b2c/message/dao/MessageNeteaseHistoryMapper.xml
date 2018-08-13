@@ -5,17 +5,18 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="from_accid" jdbcType="VARCHAR" property="fromAccid" />
     <result column="to_accid" jdbcType="VARCHAR" property="toAccid" />
-    <result column="msg_type" jdbcType="INTEGER" property="msgType" />
+    <result column="msg_type" jdbcType="SMALLINT" property="msgType" />
     <result column="msg_body" jdbcType="VARCHAR" property="msgBody" />
     <result column="msg_attach" jdbcType="VARCHAR" property="msgAttach" />
+    <result column="ext_json" jdbcType="VARCHAR" property="extJson" />
+    <result column="page_type" jdbcType="SMALLINT" property="pageType" />
+    <result column="tree_code" jdbcType="VARCHAR" property="treeCode" />
     <result column="msg_time_stamp" jdbcType="TIMESTAMP" property="msgTimeStamp" />
-    <result column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="conv_type" jdbcType="INTEGER" property="convType" />
     <result column="msg_id_server" jdbcType="VARCHAR" property="msgIdServer" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, from_accid, to_accid, msg_type, msg_body, msg_attach, msg_time_stamp, uid, conv_type, 
-    msg_id_server
+    id, from_accid, to_accid, msg_type, msg_body, msg_attach, ext_json, page_type, tree_code, 
+    msg_time_stamp, msg_id_server
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,12 +31,12 @@
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
     insert into message_netease_history (id, from_accid, to_accid, 
       msg_type, msg_body, msg_attach, 
-      msg_time_stamp, uid, conv_type, 
-      msg_id_server)
+      ext_json, page_type, tree_code, 
+      msg_time_stamp, msg_id_server)
     values (#{id,jdbcType=BIGINT}, #{fromAccid,jdbcType=VARCHAR}, #{toAccid,jdbcType=VARCHAR}, 
-      #{msgType,jdbcType=INTEGER}, #{msgBody,jdbcType=VARCHAR}, #{msgAttach,jdbcType=VARCHAR}, 
-      #{msgTimeStamp,jdbcType=TIMESTAMP}, #{uid,jdbcType=VARCHAR}, #{convType,jdbcType=INTEGER}, 
-      #{msgIdServer,jdbcType=VARCHAR})
+      #{msgType,jdbcType=SMALLINT}, #{msgBody,jdbcType=VARCHAR}, #{msgAttach,jdbcType=VARCHAR}, 
+      #{extJson,jdbcType=VARCHAR}, #{pageType,jdbcType=SMALLINT}, #{treeCode,jdbcType=VARCHAR}, 
+      #{msgTimeStamp,jdbcType=TIMESTAMP}, #{msgIdServer,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
     insert into message_netease_history
@@ -58,14 +59,17 @@
       <if test="msgAttach != null">
         msg_attach,
       </if>
+      <if test="extJson != null">
+        ext_json,
+      </if>
+      <if test="pageType != null">
+        page_type,
+      </if>
+      <if test="treeCode != null">
+        tree_code,
+      </if>
       <if test="msgTimeStamp != null">
         msg_time_stamp,
-      </if>
-      <if test="uid != null">
-        uid,
-      </if>
-      <if test="convType != null">
-        conv_type,
       </if>
       <if test="msgIdServer != null">
         msg_id_server,
@@ -82,7 +86,7 @@
         #{toAccid,jdbcType=VARCHAR},
       </if>
       <if test="msgType != null">
-        #{msgType,jdbcType=INTEGER},
+        #{msgType,jdbcType=SMALLINT},
       </if>
       <if test="msgBody != null">
         #{msgBody,jdbcType=VARCHAR},
@@ -90,14 +94,17 @@
       <if test="msgAttach != null">
         #{msgAttach,jdbcType=VARCHAR},
       </if>
+      <if test="extJson != null">
+        #{extJson,jdbcType=VARCHAR},
+      </if>
+      <if test="pageType != null">
+        #{pageType,jdbcType=SMALLINT},
+      </if>
+      <if test="treeCode != null">
+        #{treeCode,jdbcType=VARCHAR},
+      </if>
       <if test="msgTimeStamp != null">
         #{msgTimeStamp,jdbcType=TIMESTAMP},
-      </if>
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="convType != null">
-        #{convType,jdbcType=INTEGER},
       </if>
       <if test="msgIdServer != null">
         #{msgIdServer,jdbcType=VARCHAR},
@@ -114,7 +121,7 @@
         to_accid = #{toAccid,jdbcType=VARCHAR},
       </if>
       <if test="msgType != null">
-        msg_type = #{msgType,jdbcType=INTEGER},
+        msg_type = #{msgType,jdbcType=SMALLINT},
       </if>
       <if test="msgBody != null">
         msg_body = #{msgBody,jdbcType=VARCHAR},
@@ -122,14 +129,17 @@
       <if test="msgAttach != null">
         msg_attach = #{msgAttach,jdbcType=VARCHAR},
       </if>
+      <if test="extJson != null">
+        ext_json = #{extJson,jdbcType=VARCHAR},
+      </if>
+      <if test="pageType != null">
+        page_type = #{pageType,jdbcType=SMALLINT},
+      </if>
+      <if test="treeCode != null">
+        tree_code = #{treeCode,jdbcType=VARCHAR},
+      </if>
       <if test="msgTimeStamp != null">
         msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
-      </if>
-      <if test="uid != null">
-        uid = #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="convType != null">
-        conv_type = #{convType,jdbcType=INTEGER},
       </if>
       <if test="msgIdServer != null">
         msg_id_server = #{msgIdServer,jdbcType=VARCHAR},
@@ -141,12 +151,13 @@
     update message_netease_history
     set from_accid = #{fromAccid,jdbcType=VARCHAR},
       to_accid = #{toAccid,jdbcType=VARCHAR},
-      msg_type = #{msgType,jdbcType=INTEGER},
+      msg_type = #{msgType,jdbcType=SMALLINT},
       msg_body = #{msgBody,jdbcType=VARCHAR},
       msg_attach = #{msgAttach,jdbcType=VARCHAR},
+      ext_json = #{extJson,jdbcType=VARCHAR},
+      page_type = #{pageType,jdbcType=SMALLINT},
+      tree_code = #{treeCode,jdbcType=VARCHAR},
       msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
-      uid = #{uid,jdbcType=VARCHAR},
-      conv_type = #{convType,jdbcType=INTEGER},
       msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

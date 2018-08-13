@@ -378,7 +378,7 @@ public class ApiStoreLoginController {
 				/**
 				 * 如果是微信登录验证OpenId 是否绑定手机号是否与app传过来的一致
 				 */
-				if (LOGIN_LAG == storeSendVerificationCodeCondition.getLoginFlag()) {
+				if (LOGIN_LAG.equals(storeSendVerificationCodeCondition.getLoginFlag())) {
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					db = storeLoginService.getStoreUserInfo(info);
 					if (db != null) {

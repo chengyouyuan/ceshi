@@ -5,6 +5,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -310,23 +312,22 @@ public class CouponController {
 		/**
 		 *  校验参数
 		 */
+		 CouponInvestorCondition condition = new CouponInvestorCondition();
          if(detailData.get("name")==null || detailData.get("listDetail")==null){
 			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
 		 }
-
-
-		String name = detailData.get("name").toString();
-		String remark = detailData.get("remark").toString();
+		 String name = detailData.get("name").toString();
+         if(detailData.get("remark")!=null){
+			 condition.setRemarks(detailData.get("remark").toString());
+		 }
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
-
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
 		String code = getUUID();
-		CouponInvestorCondition condition = new CouponInvestorCondition();
+
 		condition.setCode(code);
 		condition.setName(name);
-		condition.setRemarks(remark);
 		condition.setUserId(userId);
 		condition.setUserName(userName);
 		condition.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
@@ -396,6 +397,26 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	/**
 	 * 参数校验
 	 */
+	if(couponGradeCondition.getName()==null || couponGradeCondition.getType()==null ||
+			couponGradeCondition.getReducedAmt()==null || couponGradeCondition.getReducedType()==null){
+            throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+	}
+	if(couponGradeCondition.getReducedType()!=null){
+         if(couponGradeCondition.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode())){
+			 if(couponGradeCondition.getCost()==null || couponGradeCondition.getDiscountedAmt()==null){
+				 throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+			 }
+		 }
+	}
+
+	if(couponGradeCondition.getReducedType()!=null){
+		if(couponGradeCondition.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_DISC.getCode())){
+			if(couponGradeCondition.getDiscountedMaxAmt()==null || couponGradeCondition.getDiscounted()==null){
+				throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+			}
+		}
+	}
+
 	 UserInfo userInfo = UserManager.getCurrentUser();
 	 String userId = userInfo.getId()+"";
 	 String userName = userInfo.getUsername();
@@ -458,6 +479,22 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 		/**
 		 * 参数校验
 		 */
+		if(condition!=null || condition.getName()==null || condition.getApplyRuleType()==null){
+			throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+		}
+		if(condition.getApplyRuleType()!=null){
+			if(condition.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+				if(condition.getCouponApplyBrandList()==null){
+					throw new BusinessException(BusinessCode.CODE_500010,"品牌券必填参数为空");
+				}
+			}
+			if(condition.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+				if(condition.getCouponApplyProductList()==null){
+					throw new BusinessException(BusinessCode.CODE_500010,"商品券必填参数为空");
+				}
+			}
+		}
+
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();

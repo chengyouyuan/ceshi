@@ -81,7 +81,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
-    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
+    @OrderInfoConvertAnnotation()
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (customer == null) {

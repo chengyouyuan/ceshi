@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.user.service.impl;
+package com.winhxd.b2c.system.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -10,10 +10,10 @@ import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.model.SysUserRole;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.system.user.dao.SysRolePermissionMapper;
-import com.winhxd.b2c.system.user.dao.SysUserMapper;
-import com.winhxd.b2c.system.user.dao.SysUserRoleMapper;
-import com.winhxd.b2c.system.user.service.SysUserService;
+import com.winhxd.b2c.system.dao.SysRolePermissionMapper;
+import com.winhxd.b2c.system.dao.SysUserMapper;
+import com.winhxd.b2c.system.dao.SysUserRoleMapper;
+import com.winhxd.b2c.system.service.SysUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

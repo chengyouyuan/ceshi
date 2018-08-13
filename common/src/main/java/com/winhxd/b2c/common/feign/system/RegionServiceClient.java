@@ -37,7 +37,7 @@ public interface RegionServiceClient {
      * 功能描述: 根据指定地理区域编码获取地理区域列表
      * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: regisonCodes
      * @return:
      */
     @RequestMapping(value = "/region/3201/v1/rangeList", method = RequestMethod.POST)
@@ -47,7 +47,7 @@ public interface RegionServiceClient {
      * 功能描述: 根据指定地理区域编码获取单个地理区域
      * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: regisonCode
      * @return:
      */
     @RequestMapping(value = "/region/3202/v1/get/{regisonCode}", method = RequestMethod.GET)
@@ -57,7 +57,7 @@ public interface RegionServiceClient {
      * 功能描述: 根据条件筛选所有地理区域
      * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: SysRegionPagedCondition
      * @return:
      */
     @RequestMapping(value = "/region/3203/v1/filterlist", method = RequestMethod.POST)

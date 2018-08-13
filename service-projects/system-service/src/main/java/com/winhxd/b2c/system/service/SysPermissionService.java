@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.user.service;
+package com.winhxd.b2c.system.service;
 
 import com.winhxd.b2c.common.domain.system.user.model.SysPermission;
 

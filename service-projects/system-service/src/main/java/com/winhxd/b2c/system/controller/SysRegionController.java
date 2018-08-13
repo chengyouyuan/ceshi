@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.region.controller;
+package com.winhxd.b2c.system.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -8,7 +8,7 @@ import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondit
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
-import com.winhxd.b2c.system.region.service.SysRegionService;
+import com.winhxd.b2c.system.service.SysRegionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

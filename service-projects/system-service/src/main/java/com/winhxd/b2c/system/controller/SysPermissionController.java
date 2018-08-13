@@ -1,10 +1,10 @@
-package com.winhxd.b2c.system.user.controller;
+package com.winhxd.b2c.system.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.user.model.SysPermission;
 import com.winhxd.b2c.common.feign.system.PermissionServiceClient;
-import com.winhxd.b2c.system.user.service.SysPermissionService;
+import com.winhxd.b2c.system.service.SysPermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;

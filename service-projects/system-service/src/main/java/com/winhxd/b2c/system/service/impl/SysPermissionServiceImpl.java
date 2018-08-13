@@ -1,8 +1,8 @@
-package com.winhxd.b2c.system.user.service.impl;
+package com.winhxd.b2c.system.service.impl;
 
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysPermission;
-import com.winhxd.b2c.system.user.service.SysPermissionService;
+import com.winhxd.b2c.system.service.SysPermissionService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

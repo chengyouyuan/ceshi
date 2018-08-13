@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.region.dao;
+package com.winhxd.b2c.system.dao;
 
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;

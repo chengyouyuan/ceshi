@@ -1,8 +1,7 @@
-package com.winhxd.b2c.system.region.service;
+package com.winhxd.b2c.system.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;

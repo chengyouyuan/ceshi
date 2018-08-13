@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponInStoreGetedAndUsedCodition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
@@ -146,26 +147,29 @@ public class ApiCouponController{
 
 
 
-    /***
+
     @ApiOperation(value = "门店优惠券列表领取使/用情况统计", notes = "门店优惠券列表领取使/用情况统计")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/547/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId,@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize){
-        LOGGER.info("=/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+storeId +"pageNo:"+pageNo +"pageSize:"+pageSize);
-        if(pageNo==null){
-            pageNo = 1 ;
+    public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage( CouponInStoreGetedAndUsedCodition codition){
+        LOGGER.info("=/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ codition.getStoreId());
+        Integer pageNo = 1 ;
+        Integer pageSize = 10;
+        if(codition.getPageNo()!=null){
+            pageNo = codition.getPageNo();
         }
-        if(pageSize==null){
-            pageNo = 10;
+        if(codition.getPageNo()!=null){
+            pageSize = codition.getPageNo();
         }
+
         ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
-        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,pageNo,pageSize);
+        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(codition.getStoreId(),pageNo,pageSize);
         result.setData(pages);
         LOGGER.info("/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
         return result;
     }
-   **/
+
 
 }

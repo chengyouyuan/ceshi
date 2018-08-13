@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
@@ -697,6 +698,18 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponInvestorAmountVO> getCouponInvestorAmount(OrderCouponCondition condition) {
         return null;
+    }
+
+    @Override
+    public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize) {
+        Page page = PageHelper.startPage(pageNo, pageSize);
+        PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
+        List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+        pagedList.setData(list);
+        pagedList.setPageNo(pageNo);
+        pagedList.setPageSize(pageSize);
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
     }
 
 }

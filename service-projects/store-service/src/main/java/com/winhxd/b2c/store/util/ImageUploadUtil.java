@@ -36,7 +36,7 @@ import com.winhxd.b2c.common.util.JsonUtil;
  */
 @Component
 public class ImageUploadUtil {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ImageUploadUtil.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImageUploadUtil.class);
 	private static final int SUCCESS_CODE = 200;
 
 	@Value("${picture.basehost}")
@@ -68,6 +68,7 @@ public class ImageUploadUtil {
 		long fileSize = imageFile.getSize();
 		// 判断图片大小是否超过300KB
 		if (KB_300 < fileSize) {
+			logger.error("上传图片："+fileName+",size:"+fileSize+",图片大小超过300KB!");
 			result.setCode(BusinessCode.CODE_200016);
 			result.setMessage("图片大小超过300KB!");
 			return result;
@@ -84,12 +85,14 @@ public class ImageUploadUtil {
 				// 上传文件
 				imageVo = httpClientUploadFile(imageFile);
 				if (imageVo == null) {
+					logger.error("上传图片："+fileName+",size:"+fileSize+",图片上传失败!");
 					result.setCode(BusinessCode.CODE_200015);
 					result.setMessage("图片上传失败");
 					return result;
 				}
 
 			} else {
+				logger.error("上传图片："+fileName+",size:"+fileSize+",图片格式不正确!");
 				result.setCode(BusinessCode.CODE_200014);
 				result.setMessage("上传图片格式不正确");
 				return result;

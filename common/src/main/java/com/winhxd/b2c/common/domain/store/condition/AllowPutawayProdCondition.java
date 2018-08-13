@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,7 +21,7 @@ import lombok.Data;
 @ApiModel("B端门店可上架商品列表入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class AllowPutawayProdCondition extends PagedCondition {
+public class AllowPutawayProdCondition extends PagedCondition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

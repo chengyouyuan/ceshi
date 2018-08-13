@@ -1,23 +1,19 @@
-package com.winhxd.b2c.common.domain.backstage.store.condition;
+package com.winhxd.b2c.common.domain.backstage.store.vo;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
- * 门店商品后台condition
- * @ClassName: BackStageStoreProdCondition 
+ * 门店商品管理后台返回的VO
+ * @ClassName: BackStageStoreProdVO 
  * @Description: TODO
  * @author: wuyuanbao
- * @date: 2018年8月11日 下午3:26:39
+ * @date: 2018年8月13日 上午11:29:08
  */
-@Data
-public class BackStageStoreProdCondition {
-
-    @ApiModelProperty("id主键")
+public class BackStageStoreProdVO {
+	@ApiModelProperty("id主键")
     private Long id;
     
     @ApiModelProperty("门店id")
@@ -52,15 +48,5 @@ public class BackStageStoreProdCondition {
 
     @ApiModelProperty("用户账号")
     private String storeMobile;
-    
-    @ApiModelProperty("商品sku集合")
-    private List<String> skuCodeList;
-    
-    @ApiModelProperty("页大小")
-    private Integer pageSize=10;
-    
-    @ApiModelProperty("页号")
-    private Integer pageNo=1;
-
 
 }

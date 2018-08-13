@@ -1,14 +1,16 @@
 package com.winhxd.b2c.store.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 门段商品管理service
@@ -115,4 +117,25 @@ public interface StoreProductManageService {
 	 * @return
 	 */
 	List<StoreProductManage> findProductBySelective(StoreProductManageCondition storeProductManageCondition);
+	
+	/**
+	 * 后台分页查询
+	* @Title: findStoreProdManageList 
+	* @Description: TODO 
+	* @param condition
+	* @return PagedList<BackStageStoreProdVO>
+	* @author wuyuanbao
+	* @date 2018年8月13日下午1:45:33
+	 */
+	PagedList<BackStageStoreProdVO> findStoreProdManageList(BackStageStoreProdCondition condition);
+	
+	/**
+	 * 后台更新信息
+	* @Title: modifyStoreProdManageByBackStage 
+	* @Description: TODO 
+	* @param condition void
+	* @author wuyuanbao
+	* @date 2018年8月13日下午1:47:50
+	 */
+	void modifyStoreProdManageByBackStage(BackStageStoreProdCondition condition);
 }

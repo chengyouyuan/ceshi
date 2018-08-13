@@ -303,11 +303,11 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_200015, message = "图片上传失败！"),
 			@ApiResponse(code = BusinessCode.CODE_200016, message = "图片大小超过300KB！")})
 	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<Void> saveStoreSubmitProduct(MultipartHttpServletRequest imageFiles) throws IOException {
+	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) throws IOException {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
 
-		logger.info("B端添加门店提报商品接口入参为：{}", imageFiles.toString());
-		if (imageFiles == null) {
+		logger.info("B端添加门店提报商品接口入参为：{}", condition);
+		if (condition == null||StringUtils.isEmpty(condition.getProdImage1())) {
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数错误");
 			return responseResult;
@@ -321,38 +321,6 @@ public class ApiStoreProductManageController {
 //		}
 //		Long storeId = storeUser.getBusinessId();
 		Long storeId = 3L;
-		StoreSubmitProductCondition condition = new StoreSubmitProductCondition();
-		condition.setStoreId(storeId);
-		// 设置参数
-		String prodInfoText = imageFiles.getParameter("prodInfoText");
-		if (StringUtils.isNotEmpty(prodInfoText)) {
-			condition.setProdInfoText(prodInfoText);
-		}
-		String prodInfoVoice = imageFiles.getParameter("prodInfoVoice");
-		if (StringUtils.isNotEmpty(prodInfoVoice)) {
-			condition.setProdInfoVoice(prodInfoVoice);
-		}
-
-		// 上传图片
-		ResponseResult<List<ProductImageVO>> imageResult = this.uploadSubmitProductImg(imageFiles);
-		if (imageResult.getCode() != 0 || imageResult.getData() == null) {
-			responseResult.setCode(imageResult.getCode());
-			responseResult.setMessage(imageResult.getMessage());
-			return responseResult;
-		}
-		// 设置图片
-		List<ProductImageVO> images = imageResult.getData();
-		for (int i = 0; i < images.size(); i++) {
-			if (i == 0) {
-				condition.setProdImage1(images.get(i).getImageUrl());
-			} else if (i == 1) {
-				condition.setProdImage2(images.get(i).getImageUrl());
-			} else if (i == 2) {
-				condition.setProdImage3(images.get(i).getImageUrl());
-			}
-		}
-
-
 		StoreSubmitProduct storeSubmitProduct = new StoreSubmitProduct();
 		BeanUtils.copyProperties(condition, storeSubmitProduct);
 		storeSubmitProduct.setStoreId(storeId);
@@ -550,14 +518,22 @@ public class ApiStoreProductManageController {
 	
 	/**
 	* @Title: uploadSubmitProductImg
-	* @Description: 上传图片
+	* @Description: 上传图片接口支持多张上传
 	* @param imageFiles
 	* @return
 	* @throws IOException ResponseResult<List<ProductImageVO>>
 	* @author wuyuanbao
 	* @date 2018年8月11日下午5:53:13
 	 */
-	private ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles) throws IOException {
+	@ApiOperation(value = "B端上传图片接口", notes = "B端上传图片接口")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+			@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！"),
+			@ApiResponse(code = BusinessCode.CODE_200015, message = "图片上传失败！"),
+			@ApiResponse(code = BusinessCode.CODE_200016, message = "图片大小超过300KB！")})
+	@PostMapping(value = "1049/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles) throws IOException {
 		ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
 
 		logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
@@ -578,11 +554,12 @@ public class ApiStoreProductManageController {
 			ResponseResult<ProductImageVO> imageVOResult=imageUploadUtil.uploadImage(mFile);
 			if(imageVOResult!=null&&imageVOResult.getCode()==0){
 				imageVOList.add(imageVOResult.getData());
-			}else{
-				responseResult.setCode(imageVOResult.getCode());
-				responseResult.setMessage(imageVOResult.getMessage());
-				return responseResult;
 			}
+//			else{
+//				responseResult.setCode(imageVOResult.getCode());
+//				responseResult.setMessage(imageVOResult.getMessage());
+//				return responseResult;
+//			}
 		}
 				
 		responseResult.setData(imageVOList);

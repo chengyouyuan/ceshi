@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/customer/user/findCustomerPageInfo",
+    "type": "report",
+    "id": "order_customer_list_win",
+    "code": "order_customer_list_win",
+    "title": "用户选择",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/customer/user/findCustomerPageInfo"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "id",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "customerId",
+        "title": "顾客编码"
+      },
+      {
+        "name": "nickName",
+        "title": "顾客姓名"
+      },
+      {
+        "name": "customerMobile",
+        "title": "手机"
+      }
+    ],
+    "params": [
+      {
+        "name": "customerId",
+        "inputModel": "input",
+        "title": "客户编码",
+        "value": "",
+        "placeholder": "请输入客户编码",
+        "isHidden": false
+      },
+      {
+        "name": "nickName",
+        "inputModel": "input",
+        "title": "客户姓名",
+        "value": "",
+        "placeholder": "请输入客户姓名",
+        "isHidden": false
+      },
+      {
+        "name": "customerMobile",
+        "inputModel": "input",
+        "title": "手机",
+        "value": "",
+        "placeholder": "请输入手机号",
+        "isHidden": false
+      }
+    ],
+    "returnDisplay": "nickName",
+    "returnValue": "customerId"
+  }
+}

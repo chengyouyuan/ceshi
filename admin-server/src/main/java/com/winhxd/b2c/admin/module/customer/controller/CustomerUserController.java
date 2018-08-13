@@ -33,7 +33,7 @@ import java.util.List;
  * @Description: 小程序用户信息控制器
  * @date 2018/8/4 16:08
  */
-@Api(value = "小程序用户管理控制器", tags = "后台小程序用户信息管理接口")
+@Api(value = "后台小程序用户管理控制器", tags = "后台小程序用户信息管理接口")
 @RestController
 @RequestMapping(value = "customer/user")
 public class CustomerUserController {

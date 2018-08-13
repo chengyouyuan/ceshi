@@ -181,9 +181,13 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+    @ApiOperation(value = "订单列表查询", notes = "订单列表查询")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    public ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(
             OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
-        String logTitle = "/order/456/v1/listOrder4ManagementWithNoPage/";
+        String logTitle = "/order/456/v1/listOrderWithNoPage/";
         logger.info("{} 后台订单列表查询开始", logTitle);
         ResponseResult<List<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {

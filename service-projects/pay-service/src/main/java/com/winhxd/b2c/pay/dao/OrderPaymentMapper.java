@@ -1,17 +1,17 @@
 package com.winhxd.b2c.pay.dao;
 
-import com.winhxd.b2c.common.domain.order.model.OrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 
 public interface OrderPaymentMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(OrderPayment record);
+    int insert(PayOrderPayment record);
 
-    int insertSelective(OrderPayment record);
+    int insertSelective(PayOrderPayment record);
 
-    OrderPayment selectByPrimaryKey(Long id);
+    PayOrderPayment selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(OrderPayment record);
+    int updateByPrimaryKeySelective(PayOrderPayment record);
 
-    int updateByPrimaryKey(OrderPayment record);
+    int updateByPrimaryKey(PayOrderPayment record);
 }

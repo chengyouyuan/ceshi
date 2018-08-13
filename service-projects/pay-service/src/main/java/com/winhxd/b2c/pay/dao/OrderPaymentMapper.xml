@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.dao.OrderPaymentMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
     <result column="order_pament_no" jdbcType="VARCHAR" property="orderPamentNo" />
@@ -34,7 +34,7 @@
     delete from order_payment
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     insert into order_payment (id, order_no, order_pament_no, 
       created, updated, callback_date, 
       time_end, callback_status, callback_reason, 
@@ -48,7 +48,7 @@
       #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, 
       #{rate,jdbcType=DECIMAL})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     insert into order_payment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -151,7 +151,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     update order_payment
     <set>
       <if test="orderNo != null">
@@ -202,7 +202,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.order.model.OrderPayment">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     update order_payment
     set order_no = #{orderNo,jdbcType=CHAR},
       order_pament_no = #{orderPamentNo,jdbcType=VARCHAR},

@@ -22,7 +22,8 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 		storeBankCard = storeBankCardMapper.selectStorBankCardInfo(condition);
 		return storeBankCard;
 	}
-
+	
+	@Override
 	public int saveStoreBankCard(StoreBankCard condition) {
 		int res = storeBankCardMapper.insertStoreBankCardinfo(condition);
 		return res;

@@ -1,13 +1,16 @@
 package com.winhxd.b2c.store.dao;
 
-import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
-import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
-import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 
 /**
  * @description:
@@ -104,4 +107,15 @@ public interface StoreProductManageMapper {
      * @return
      */
     List<StoreProductManage> findProductBySelective(@Param("condition") StoreProductManageCondition storeProductManageCondition);
+    
+    /**
+     * 查询返回后台VO
+    * @Title: selectBackStageVoByCondition 
+    * @Description: TODO 
+    * @param condition
+    * @return Page<BackStageStoreProdVO>
+    * @author wuyuanbao
+    * @date 2018年8月13日下午1:51:42
+     */
+    Page<BackStageStoreProdVO> selectBackStageVoByCondition(@Param("condition")BackStageStoreProdCondition condition);
 }

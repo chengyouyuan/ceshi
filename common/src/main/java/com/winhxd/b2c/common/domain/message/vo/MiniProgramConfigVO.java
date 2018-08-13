@@ -30,4 +30,10 @@ public class MiniProgramConfigVO {
     @ApiModelProperty("扫描二维码跳转默认页面")
     private String pageUrl;
 
+    /**
+     *门店名称
+     */
+    @ApiModelProperty("门店名称")
+    private String storeName;
+
 }

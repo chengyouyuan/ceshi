@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
@@ -63,6 +67,13 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		LOGGER.info("业务异常："+BusinessCode.CODE_610016);
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
+    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    	condition.setCreated(new Date());
+    	condition.setUpdated(new Date());
+    	condition.setCreatedBy(currentStoreUser.getBusinessId());
+    	condition.setUpdatedBy(currentStoreUser.getBusinessId());
+    	condition.setCreatedByName(condition.getBankUserName());
+    	condition.setUpdatedByName(condition.getBankUserName());
 		int res = storeBankCardMapper.insertStoreBankCardinfo(condition);
 		return res;
 	}

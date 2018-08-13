@@ -96,7 +96,7 @@ public class CustomerUserController {
         //查询设置用户信息
        result.setCustomer(queryCustomerById(customerUserId));
         //查询优惠券领取的总次数
-        Integer count = Integer.valueOf(couponServiceClient.getCouponNumsByCustomerForStore(null,customerUserId).getData());
+        Integer count = Integer.valueOf(couponServiceClient.getCouponNumsByCustomerForStore(customerUserId).getData());
         result.setCouponCount(count == null ? 0 : count);
         //调用Fegin查询订单信息
          result.setOrderInfoDetailVOList(queryOrderPageInfo(customerUserId,pageNo,pageSize));

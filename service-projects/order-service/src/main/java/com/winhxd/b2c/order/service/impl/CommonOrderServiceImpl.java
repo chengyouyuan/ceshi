@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -532,7 +533,7 @@ public class CommonOrderServiceImpl implements OrderService {
                                 order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                         logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
                         //发送云信--手机尾号8513顾客申请退款
-                        String mobileStr = getLast4Mobile(customerUserInfoVO.getCustomerMobile());
+                        String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
                         String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
                         //发送MQ延时消息
                         logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
@@ -1263,7 +1264,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 case 1:
                     // 给门店【已取消】手机尾号8513张先生已取消订单
                     CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
-                    String mobileStr = getLast4Mobile(customer.getCustomerMobile());
+                    String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
                     NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                     neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
                     String storeMsgContent = "【已取消】手机尾号" + mobileStr + "的顾客已取消订单";
@@ -1307,20 +1308,6 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
-     * 获取手机号后四位，如果未空或者小于4位，返回空字符串
-     *
-     * @param mobile
-     * @return
-     */
-    private String getLast4Mobile(String mobile) {
-        String mobileStr = "";
-        if (StringUtils.isNotBlank(mobile) && mobile.length() > 4) {
-            mobileStr = mobile.substring(mobile.length() - 4, mobile.length());
-        }
-        return mobileStr;
-    }
-
-    /**
      * 退优惠券
      *
      * @param orderNo 订单号
@@ -1359,7 +1346,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderRefundTimeOutSendMsg(int type, OrderInfo orderInfo) {
         CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
-        String mobileStr = getLast4Mobile(customer.getCustomerMobile());
+        String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
         neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
         //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款

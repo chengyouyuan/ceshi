@@ -1,4 +1,2 @@
 picture:
-  savepath: htvpic
-  baseimgpath: /opt/www/mobile_img
-  basehost: http://cdn.winhxd.com
+  basehost: http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson

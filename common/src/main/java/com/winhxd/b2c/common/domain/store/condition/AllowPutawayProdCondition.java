@@ -3,7 +3,7 @@ package com.winhxd.b2c.common.domain.store.condition;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +20,7 @@ import lombok.Data;
 @ApiModel("B端门店可上架商品列表入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class AllowPutawayProdCondition extends ApiCondition {
+public class AllowPutawayProdCondition extends PagedCondition {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,11 +44,5 @@ public class AllowPutawayProdCondition extends ApiCondition {
 	
 	@ApiModelProperty(value = "是否是首次请求默认true，true是 false否")
 	private Boolean first=true;
-	
-	@ApiModelProperty(value = "页大小")
-	private Integer pageSize;
-	
-	@ApiModelProperty(value = "页号")
-	private Integer pageNo;
 
 }

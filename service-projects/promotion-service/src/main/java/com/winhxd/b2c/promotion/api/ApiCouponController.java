@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.api;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
@@ -45,7 +46,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_500001, message = "不存在符合的优惠券活动")
     })
     @RequestMapping(value = "/501/v1/getNewUserCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<CouponVO>> getNewUserCouponList() {
+    public ResponseResult<List<CouponVO>> getNewUserCouponList(ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/501/v1/getNewUserCouponList-查询新人专享优惠列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> couponVOs =  couponService.getNewUserCouponList();
@@ -60,7 +61,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/502/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<CouponVO>> unclaimedCouponList() {
+    public ResponseResult<List<CouponVO>> unclaimedCouponList(ApiCondition condition) {
         LOGGER.info("=/api-promotion/coupon/502/v1/unclaimedCouponList-待领取优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.unclaimedCouponList();
@@ -106,7 +107,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/508/v1/getStoreCouponKinds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Integer> getStoreCouponKinds(){
+    ResponseResult<Integer> getStoreCouponKinds(ApiCondition condition){
         logTitle="=/api-promotion/coupon/508/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
         LOGGER.info(logTitle+"开始--{}--");
         ResponseResult<Integer> result = new ResponseResult<>();
@@ -121,7 +122,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/509/v1/getStoreCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponVO>> getStoreCouponList(){
+    ResponseResult<List<CouponVO>> getStoreCouponList(ApiCondition condition){
         logTitle="=/api-promotion/coupon/509/v1/getStoreCouponList-用户查询门店优惠券列表=--";
         LOGGER.info(logTitle+"开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();

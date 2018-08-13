@@ -15,5 +15,5 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	 private static final Logger logger = LoggerFactory.getLogger(PayFinancialManagerServiceImpl.class);
 	 
 	 /**出入帐汇总查询*/
-
+	 
 }

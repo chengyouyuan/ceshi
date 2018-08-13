@@ -7,9 +7,21 @@ package com.winhxd.b2c.common.domain.store.enums;
  * @date: 2018年8月8日 下午7:23:59
  */
 public enum StoreSubmitProductStatusEnum {
+	/**
+	 * 待审核
+	 */
     CREATE((short) 0, "待审核"),
+    /**
+	 * 审核通过
+	 */
     PASS((short) 1, "审核通过"),
+    /**
+	 * 未通过
+	 */
     NOTPASS((short) 2, "未通过"),
+    /**
+	 * 添加到商品库
+	 */
     ADDPROD((short) 3, "添加到商品库");
     private short statusCode;
     private String statusDes;

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("C端发送验证码请求参数")
 @Data
-public class CustomerSendVerificationCodeCondition {
+public class CustomerSendVerificationCodeCondition extends ApiCondition{
 	@ApiModelProperty(value = "用户账号")
     private String customerMobile;
 }

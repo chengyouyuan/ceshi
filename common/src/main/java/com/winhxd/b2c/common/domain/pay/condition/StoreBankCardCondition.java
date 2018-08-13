@@ -2,13 +2,15 @@ package com.winhxd.b2c.common.domain.pay.condition;
 
 import java.util.Date;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @ApiModel("门店银行卡信息")
 @Data
-public class StoreBankCardCondition{
+public class StoreBankCardCondition extends ApiCondition{
 	@ApiModelProperty("主键")
     private Long id;
 	@ApiModelProperty("门店id")

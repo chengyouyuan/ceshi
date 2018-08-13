@@ -3,11 +3,14 @@ package com.winhxd.b2c.common.domain.common;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * 通用Api请求参数
+ */
 @Data
 public class ApiCondition {
-    @ApiModelProperty("版本号")
+    @ApiModelProperty(value = "版本号", required = true)
     private String ver;
-    @ApiModelProperty(value = "lang")
+    @ApiModelProperty(value = "客户端语言", required = true)
     private String lang;
     @ApiModelProperty("App客户端信息")
     private MobileInfo mobileInfo;
@@ -27,7 +30,7 @@ public class ApiCondition {
         private String src;
 
         @ApiModelProperty(value = "安卓模拟器ID，用于记录日志使用")
-        private String emulatordId;
+        private String emulatordid;
 
         @ApiModelProperty(value = "数盟ID，用于判断手机是否多终端登录")
         private String smDid;

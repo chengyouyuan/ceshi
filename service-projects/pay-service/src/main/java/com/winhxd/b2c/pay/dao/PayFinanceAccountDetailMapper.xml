@@ -1,5 +1,298 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<<<<<<< HEAD
+<mapper namespace="com.winhxd.b2c.pay.dao.OutInAccountDetailMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="trade_no" jdbcType="VARCHAR" property="tradeNo" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="region_code" jdbcType="CHAR" property="regionCode" />
+    <result column="region_name" jdbcType="VARCHAR" property="regionName" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="out_type" jdbcType="SMALLINT" property="outType" />
+    <result column="wechat_account_status" jdbcType="SMALLINT" property="wechatAccountStatus" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="data_status" jdbcType="SMALLINT" property="dataStatus" />
+    <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
+    <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
+    <result column="payment_account" jdbcType="VARCHAR" property="paymentAccount" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="out_in_date" jdbcType="TIMESTAMP" property="outInDate" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, trade_no, money, store_id, region_code, region_name, type, out_type, 
+    wechat_account_status, status, data_status, flow_direction_type, flow_direction_name, 
+    payment_account, cmms_amt, rate, out_in_date, created_by, created_by_name, created, 
+    updated_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from out_in_account_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from out_in_account_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    insert into out_in_account_detail (id, order_no, trade_no, 
+      money, store_id, region_code, 
+      region_name, type, out_type, 
+      wechat_account_status, status, data_status, 
+      flow_direction_type, flow_direction_name, 
+      payment_account, cmms_amt, rate, 
+      out_in_date, created_by, created_by_name, 
+      created, updated_by, updated_by_name, 
+      updated)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{tradeNo,jdbcType=VARCHAR}, 
+      #{money,jdbcType=DECIMAL}, #{storeId,jdbcType=BIGINT}, #{regionCode,jdbcType=CHAR}, 
+      #{regionName,jdbcType=VARCHAR}, #{type,jdbcType=SMALLINT}, #{outType,jdbcType=SMALLINT}, 
+      #{wechatAccountStatus,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, #{dataStatus,jdbcType=SMALLINT}, 
+      #{flowDirectionType,jdbcType=SMALLINT}, #{flowDirectionName,jdbcType=VARCHAR}, 
+      #{paymentAccount,jdbcType=VARCHAR}, #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, 
+      #{outInDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
+      #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    insert into out_in_account_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="tradeNo != null">
+        trade_no,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
+      <if test="regionName != null">
+        region_name,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="outType != null">
+        out_type,
+      </if>
+      <if test="wechatAccountStatus != null">
+        wechat_account_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="dataStatus != null">
+        data_status,
+      </if>
+      <if test="flowDirectionType != null">
+        flow_direction_type,
+      </if>
+      <if test="flowDirectionName != null">
+        flow_direction_name,
+      </if>
+      <if test="paymentAccount != null">
+        payment_account,
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="outInDate != null">
+        out_in_date,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="tradeNo != null">
+        #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=CHAR},
+      </if>
+      <if test="regionName != null">
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="outType != null">
+        #{outType,jdbcType=SMALLINT},
+      </if>
+      <if test="wechatAccountStatus != null">
+        #{wechatAccountStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="dataStatus != null">
+        #{dataStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionType != null">
+        #{flowDirectionType,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionName != null">
+        #{flowDirectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentAccount != null">
+        #{paymentAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="cmmsAmt != null">
+        #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="outInDate != null">
+        #{outInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    update out_in_account_detail
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="tradeNo != null">
+        trade_no = #{tradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=CHAR},
+      </if>
+      <if test="regionName != null">
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="outType != null">
+        out_type = #{outType,jdbcType=SMALLINT},
+      </if>
+      <if test="wechatAccountStatus != null">
+        wechat_account_status = #{wechatAccountStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="dataStatus != null">
+        data_status = #{dataStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionType != null">
+        flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionName != null">
+        flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentAccount != null">
+        payment_account = #{paymentAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="outInDate != null">
+        out_in_date = #{outInDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
+    update out_in_account_detail
+=======
 <mapper namespace="com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -291,6 +584,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail">
     update pay_finance_account_detail
+>>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
     set order_no = #{orderNo,jdbcType=CHAR},
       trade_no = #{tradeNo,jdbcType=VARCHAR},
       money = #{money,jdbcType=DECIMAL},

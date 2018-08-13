@@ -1,14 +1,15 @@
 package com.winhxd.b2c.common.domain.pay.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PayOrderPayment {
+public class PayOrderPayment implements Serializable {
     private Long id;
 
     private String orderNo;
 
-    private String orderPaymentNo;
+    private String orderPamentNo;
 
     private Date created;
 
@@ -36,7 +37,7 @@ public class PayOrderPayment {
 
     private BigDecimal rate;
 
-    private Short operationType;
+    private static final long serialVersionUID = 1L;
 
     public Long getId() {
         return id;
@@ -51,15 +52,15 @@ public class PayOrderPayment {
     }
 
     public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+        this.orderNo = orderNo == null ? null : orderNo.trim();
     }
 
-    public String getOrderPaymentNo() {
-        return orderPaymentNo;
+    public String getOrderPamentNo() {
+        return orderPamentNo;
     }
 
-    public void setOrderPaymentNo(String orderPaymentNo) {
-        this.orderPaymentNo = orderPaymentNo;
+    public void setOrderPamentNo(String orderPamentNo) {
+        this.orderPamentNo = orderPamentNo == null ? null : orderPamentNo.trim();
     }
 
     public Date getCreated() {
@@ -91,7 +92,7 @@ public class PayOrderPayment {
     }
 
     public void setTimeEnd(String timeEnd) {
-        this.timeEnd = timeEnd;
+        this.timeEnd = timeEnd == null ? null : timeEnd.trim();
     }
 
     public Short getCallbackStatus() {
@@ -107,7 +108,7 @@ public class PayOrderPayment {
     }
 
     public void setCallbackReason(String callbackReason) {
-        this.callbackReason = callbackReason;
+        this.callbackReason = callbackReason == null ? null : callbackReason.trim();
     }
 
     public String getBuyerId() {
@@ -115,7 +116,7 @@ public class PayOrderPayment {
     }
 
     public void setBuyerId(String buyerId) {
-        this.buyerId = buyerId;
+        this.buyerId = buyerId == null ? null : buyerId.trim();
     }
 
     public String getTransactionId() {
@@ -123,7 +124,7 @@ public class PayOrderPayment {
     }
 
     public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
+        this.transactionId = transactionId == null ? null : transactionId.trim();
     }
 
     public BigDecimal getRealPaymentMoney() {
@@ -164,13 +165,5 @@ public class PayOrderPayment {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
-    }
-
-    public Short getOperationType() {
-        return operationType;
-    }
-
-    public void setOperationType(Short operationType) {
-        this.operationType = operationType;
     }
 }

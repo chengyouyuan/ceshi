@@ -24,6 +24,7 @@ import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificat
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -69,7 +70,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "网络请求超时") })
 
-	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/221/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(customerUserInfoCondition));
@@ -77,11 +78,9 @@ public class ApiCustomerLoginController {
 		ResponseResult<MiniOpenId> object = null;
 		MiniOpenId mini = null;
 		CustomerUserInfoSimpleVO vo;
-		try {
 			if (null == customerUserInfoCondition) {
 				logger.info("{} - , 参数无效");
-				result = new ResponseResult<>(BusinessCode.CODE_1007);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			if (StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())) {
 				logger.info("{} - , 参数无效");
@@ -94,8 +93,7 @@ public class ApiCustomerLoginController {
 			if (!customerUserInfoCondition.getVerificationCode().equals(cache.get(
 					CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile()))) {
 				logger.info("{} - ,验证码错误");
-				result = new ResponseResult<>(BusinessCode.CODE_1008);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1008);
 			}
 			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
 			CustomerUserInfo db = null;
@@ -105,8 +103,7 @@ public class ApiCustomerLoginController {
 			object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
 			if (object.getCode() != 0) {
 				logger.info("{} - ,网络请求超时");
-				result = new ResponseResult<>(BusinessCode.CODE_1015);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1015);
 			}
 			mini = object.getData();
 			customerUserInfo.setOpenId(mini.getOpenId());
@@ -132,8 +129,7 @@ public class ApiCustomerLoginController {
 			} else {
 				if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
 					logger.info("{} - , 该微信号已被其他手机号绑定");
-					result = new ResponseResult<>(BusinessCode.CODE_1010);
-					return result;
+					throw new BusinessException(BusinessCode.CODE_1010);
 				}
 				customerUserInfo.setCustomerId(db.getCustomerId());
 				customerLoginService.updateCustomerInfo(customerUserInfo);
@@ -150,10 +146,6 @@ public class ApiCustomerLoginController {
 				}
 				result.setData(vo);
 			}
-		} catch (Exception e) {
-			logger.error("ApiCustomerLoginController -> weChatLogin异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
 		return result;
 	}
 
@@ -169,22 +161,19 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/222/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
-		try {
 			if (null == customerUserInfoCondition) {
 				logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
 						JsonUtil.toJSONString(customerUserInfoCondition));
-				result = new ResponseResult<>(BusinessCode.CODE_1007);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			if (cache.exists(
 					CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
 				logger.info("{} -发送验证码未超过一分钟");
-				result = new ResponseResult<>(BusinessCode.CODE_1012);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1012);
 			}
 			/**
 			 * 随机生成6位数验证码
@@ -208,11 +197,6 @@ public class ApiCustomerLoginController {
 			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
 			logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 			return result;
-		} catch (Exception e) {
-			logger.error("ApiCustomerLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
 	}
 
 	/**
@@ -227,41 +211,32 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/223/v1/customerChangeMobile", method = RequestMethod.POST)
 	public ResponseResult<String> customerChangeMobile(
 			@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		logger.info("{} - 用户换绑手机号, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(customerChangeMobileCondition));
 		ResponseResult<String> result = new ResponseResult<>();
-		try {
 			if (null == customerChangeMobileCondition) {
 				logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
 						JsonUtil.toJSONString(customerChangeMobileCondition));
-				result = new ResponseResult<>(BusinessCode.CODE_1007);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			CustomerUserInfo info = new CustomerUserInfo();
 			CustomerUser user = UserContext.getCurrentCustomerUser();
 			if (null == user) {
 				logger.info("{} - 未取到用户主键", "", JsonUtil.toJSONString(user));
-				result = new ResponseResult<>(BusinessCode.CODE_1002);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1002);
 			}
 			if (!customerChangeMobileCondition.getVerificationCode()
 					.equals(cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE
 							+ customerChangeMobileCondition.getCustomerMobile()))) {
 				logger.info("{} - 用户验证码错误");
-				result = new ResponseResult<>(BusinessCode.CODE_1008);
-				return result;
+				throw new BusinessException(BusinessCode.CODE_1008);
 			}
 			info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
 			info.setCustomerId(user.getCustomerId());
 			customerLoginService.updateCustomerInfo(info);
 			return result;
-		} catch (Exception e) {
-			logger.error("ApiCustomerLoginController -> customerChangeMobile异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
 	}
 }

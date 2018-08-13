@@ -31,16 +31,16 @@ public class ApiNeteaseController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @RequestMapping(value = "netease/701/v1/findNeteaseMsgBox", method = RequestMethod.POST)
+    @RequestMapping(value = "netease/7011/v1/findNeteaseMsgBox", method = RequestMethod.POST)
     public ResponseResult<NeteaseMsgBoxVO> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition neteaseMsgBoxCondition){
         ResponseResult<NeteaseMsgBoxVO> result = new ResponseResult<>();
         try {
             result.setData(null);
         }catch (BusinessException e) {
-            LOGGER.error("/api-message/netease/701/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e.getErrorCode());
+            LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e.getErrorCode());
             result.setCode(e.getErrorCode());
         } catch (Exception e) {
-            LOGGER.error("/api-message/netease/701/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e);
+            LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;

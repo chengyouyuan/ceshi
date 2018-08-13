@@ -197,6 +197,10 @@ public class CouponServiceImpl implements CouponService {
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
                     couponVO.setProducts(result.getData());
                 }
             }
@@ -212,6 +216,10 @@ public class CouponServiceImpl implements CouponService {
                     }
                     //调用获取商品信息接口
                     ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
                     couponVO.setBrands(result.getData());
                 }
             }
@@ -239,8 +247,11 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+            logger.error("优惠券：{}获取门店信息接口调用失败:code={}，待领取优惠券异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+            throw new BusinessException(result.getCode());
+        }
         StoreUserInfoVO storeUserInfo = result.getData();
-
 
         List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getId());
         List<CouponVO> results = new ArrayList<>();
@@ -582,6 +593,10 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+            logger.error("优惠券：{}获取门店信息接口调用失败:code={}，用户查询门店优惠券列表异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+            throw new BusinessException(result.getCode());
+        }
         StoreUserInfoVO storeUserInfo = result.getData();
 
         List<CouponVO> couponVOS = couponActivityMapper.selectStoreCouponList(storeUserInfo.getId());
@@ -732,8 +747,8 @@ public class CouponServiceImpl implements CouponService {
             }
             //调用订单系统获取订单信息
             ResponseResult<OrderInfoDetailVO4Management> result = orderServiceClient.getOrderDetail4Management(couponTemplateUse.getOrderNo());
-            if(result.getCode()!=0){
-                logger.error("CouponServiceImpl.getCouponInvestorAmount-》调用订单系统获取订单信息异常");
+            if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                logger.error("优惠券：{}获取订单信息接口调用失败:code={}，获取优惠券费用承担信息异常！~", couponTemplateUse.getOrderNo(), result == null ? null : result.getCode());
                 throw new BusinessException(result.getCode());
             }
             BigDecimal discountMoney = result.getData().getOrderInfoDetailVO().getDiscountMoney();

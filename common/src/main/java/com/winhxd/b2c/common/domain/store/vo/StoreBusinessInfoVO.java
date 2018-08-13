@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 惠小店基础信息保存返参
  *
@@ -22,11 +24,11 @@ public class StoreBusinessInfoVO {
     @ApiModelProperty(value = "店主姓名", required = true)
     private String shopkeeper;
 
-    @ApiModelProperty(value = "取货方式（1、自提，多个用逗号分隔）", required = true)
-    private String pickupType;
+    @ApiModelProperty(value = "取货方式列表（1、自提）", required = true)
+    private List<StoreEnumObject> pickupType;
 
-    @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）", required = true)
-    private String payType;
+    @ApiModelProperty(value = "支付方式列表（1、微信在线付款2、微信扫码付款）", required = true)
+    private List<StoreEnumObject> payType;
 
     @ApiModelProperty(value = "联系方式", required = true)
     private String contactMobile;

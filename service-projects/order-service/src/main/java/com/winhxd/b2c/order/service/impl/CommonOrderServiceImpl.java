@@ -507,7 +507,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     orderApplyRefund(order, orderRefundCondition.getCancelReason(), customerId, customerUserInfoVO.getNickName());
                 } else {
                     //更新订单状态为待退款，并更新相关属性
-                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId);
+                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId,orderRefundCondition.getCancelReason());
                     //添加订单流转日志
                     if (updateResult > 0) {
                         logger.info("C端申请退款-添加流转日志开始-订单号={}", orderNo);
@@ -578,7 +578,7 @@ public class CommonOrderServiceImpl implements OrderService {
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
         String orderNo = order.getOrderNo();
         //更新订单状态为退款中
-        int updateResult = this.orderInfoMapper.updateOrderStatusForRefund(order.getOrderNo(), reason);
+        int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
         //添加订单流转日志
         if (updateResult > 0) {
             //TODO 调用订单退款接口 请求返回成功状态改为退款中
@@ -596,7 +596,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单退款-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
-            order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
+            order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
             String newOrderJsonString = JsonUtil.toJSONString(order);
             //添加订单流转日志
             orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
@@ -852,7 +852,8 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.error("订单：{}优惠券优惠金额接口返回数据为空:couponDiscountAmount={}，创建订单异常！~", orderInfo.getOrderNo(), couponDiscountAmount);
             throw new BusinessException(BusinessCode.CODE_401009);
         }
-        logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={}", orderInfo.getOrderNo(), couponDiscountAmount);
+        orderInfo.setCouponTitles(ret.getData().getCouponTitle());
+        logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={},couponTitles={}", orderInfo.getOrderNo(), couponDiscountAmount, orderInfo.getCouponTitles());
         return couponDiscountAmount;
     }
 

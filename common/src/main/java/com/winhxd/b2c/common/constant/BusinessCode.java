@@ -129,7 +129,7 @@ public final class BusinessCode {
     public static final int CODE_500006 = 500006;
 
     /** 订单使用的优惠券信息不存在*/
-    public static final int CODE_500007 = 500006;
+    public static final int CODE_500007 = 500007;
 
     /** 模板不存在*/
     public static final int CODE_500008 = 500008;

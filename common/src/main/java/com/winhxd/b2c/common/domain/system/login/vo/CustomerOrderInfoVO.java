@@ -25,4 +25,7 @@ public class CustomerOrderInfoVO {
     @ApiModelProperty("关联的用户订单分页信息")
     private List<OrderInfoDetailVO> orderInfoDetailVOList;
 
+    @ApiModelProperty("订单次数")
+    private Long orderCount;
+
 }

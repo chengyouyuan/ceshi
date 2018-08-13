@@ -243,4 +243,6 @@ public final class BusinessCode {
     public static final int CODE_610018 = 610018;
     @ApiModelProperty("验证码输入不正确")
     public static final int CODE_610019 = 610019;
+    @ApiModelProperty("请先获取验证码")
+    public static final int CODE_610020 = 610020;
 }

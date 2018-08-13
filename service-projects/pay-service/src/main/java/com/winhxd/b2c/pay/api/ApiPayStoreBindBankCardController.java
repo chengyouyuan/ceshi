@@ -18,9 +18,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
-import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 
@@ -60,20 +58,15 @@ public class ApiPayStoreBindBankCardController {
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<StoreBankCardVO> result = new ResponseResult<>();
         StoreBankCardVO storeBankCardInfo = new StoreBankCardVO();
-        try {
-        	storeBankCardInfo = storeBankCardService.findStoreBankCardInfo(condition);
-        	if(storeBankCardInfo == null){
-        		LOGGER.info("当前用户没有银行卡信息");
-        		throw new BusinessException(BusinessCode.CODE_610001);
-        	}else{
-        		result.setData(storeBankCardInfo);
-        	}
-        	LOGGER.info("B端获取银行卡信息返回数据---："+storeBankCardInfo);
-		} catch (Exception e) {
-			e.printStackTrace();
-			LOGGER.error("B端获取银行卡信息失败；失败原因---："+ e);
-		}
-        
+        storeBankCardInfo = storeBankCardService.findStoreBankCardInfo(condition);
+    	if(storeBankCardInfo == null){
+    		LOGGER.info("当前用户没有银行卡信息");
+    		result.setCode(BusinessCode.CODE_610001);
+    	}else{
+    		result.setData(storeBankCardInfo);
+    		result.setCode(BusinessCode.CODE_OK);
+    	}
+    	LOGGER.info("B端获取银行卡信息返回数据---："+storeBankCardInfo);
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
@@ -88,7 +81,8 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
             @ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定银行卡失败"),
-            @ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确")
+            @ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
+            @ApiResponse(code = BusinessCode.CODE_610020, message = "请先获取验证码")
     })
     @RequestMapping(value = "/611/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
@@ -97,15 +91,14 @@ public class ApiPayStoreBindBankCardController {
         ResponseResult<Integer> result = new ResponseResult<>();
     	StoreBankCard storeBankCard = new StoreBankCard();
     	BeanUtils.copyProperties(condition, storeBankCard);
-    	System.out.print("storeBankCard----"+storeBankCard);
+    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+storeBankCard);
     	Integer res = storeBankCardService.saveStoreBankCard(storeBankCard);
+    	result.setCode(res);
+    	System.out.print("绑定银行卡返回值：-------"+res);
     	if(res > 0){
-    		result.setCode(0);
-    	}else{
-    		result.setCode(BusinessCode.CODE_610017);
+    		result.setData(BusinessCode.CODE_610017);
     		LOGGER.info("B端绑定银行卡失败；");
-    	}
-		 
+    	} 
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
@@ -119,9 +112,19 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/612/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
+		String logTitle = "/api-pay/bankCard/612/v1/verificationCode-获取短信验证码";
+		LOGGER.info("{}=--开始--{}", logTitle,condition);
 		ResponseResult<String> result = new ResponseResult<String>();
+		
+		/////////////////////////////// 测试数据
+//		StoreUser currentStoreUser = new StoreUser();
+//		currentStoreUser.setBusinessId(1l);
+//		Long businessId = currentStoreUser.getBusinessId();
+		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+businessId);
+		LOGGER.info("验证码:------"+modileVerifyCode);
 		//生成验证码
 		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
@@ -133,6 +136,7 @@ public class ApiPayStoreBindBankCardController {
 		cache.set(CacheName.PAY_VERIFICATION_CODE+businessId, modileVerifyCode);
 		cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
 		messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
+		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
 	}
 	

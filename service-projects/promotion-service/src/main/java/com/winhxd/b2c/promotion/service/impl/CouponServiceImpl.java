@@ -198,7 +198,7 @@ public class CouponServiceImpl implements CouponService {
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
+                        logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
                     couponVO.setProducts(result.getData());
@@ -217,7 +217,7 @@ public class CouponServiceImpl implements CouponService {
                     //调用获取商品信息接口
                     ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
+                        logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
                     couponVO.setBrands(result.getData());

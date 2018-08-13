@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -41,13 +42,6 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
@@ -203,6 +197,19 @@ public class CommonOrderServiceImpl implements OrderService {
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut3DaysUnconfirmed(String orderNo) {
         //TODO 待定（使用计划任务）
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        if (lock.tryLock()) {
+            try {
+                OrderInfo order = getOrderInfo(orderNo);
+                if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
+                    orderRefund(order, "申请退款超时3天系统自动退款", null, "sys");
+                    orderRefundTimeOutSendMsg(3, order);
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     /**
@@ -232,6 +239,24 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo order = getOrderInfo(orderNo);
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             orderRefundTimeOutSendMsg(1, order);
+        }
+    }
+
+    /**
+     * 订单退款回调（状态置为已退款）
+     *
+     * @param orderRefundCallbackCondition 入参
+     */
+    @Override
+    public void updateOrderRefundCallback(OrderRefundCallbackCondition condition) {
+        String orderNo = condition.getOrderNo();
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+        }
+        OrderInfo order = getOrderInfo(orderNo);
+        //状态是待退款的订单才能把状态置为已退款
+        if(order.getOrderStatus()==OrderStatusEnum.WAIT_REFUND.getStatusCode()){
+            this.orderInfoMapper.updateOrderStatusForRefundCallback(order.getOrderNo());
         }
     }
 
@@ -1219,10 +1244,24 @@ public class CommonOrderServiceImpl implements OrderService {
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
         neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
         //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款
-        String msg = type == 1 ? "顾客申请退款，系统1小时后将自动退款" : "顾客申请退款，系统1天后将自动退款";
-        String customerMsgContent = "【申请退款】手机尾号" + mobileStr + msg;
+        String msgContent = "";
+        switch (type) {
+            case 1:
+                msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
+                break;
+            case 2:
+                msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
+                break;
+            case 3:
+                msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
+                break;
+            default:
+        }
+        if (StringUtils.isBlank(msgContent)) {
+            return;
+        }
         NeteaseMsg neteaseMsg = new NeteaseMsg();
-        neteaseMsg.setMsgContent(customerMsgContent);
+        neteaseMsg.setMsgContent(msgContent);
         neteaseMsg.setAudioType(0);
         neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
         messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);

@@ -1,16 +1,13 @@
-package com.winhxd.b2c.system.region.service.impl;
+package com.winhxd.b2c.system.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
-import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
-import com.winhxd.b2c.system.region.dao.SysRegionMapper;
-import com.winhxd.b2c.system.region.service.SysRegionService;
+import com.winhxd.b2c.system.dao.SysRegionMapper;
+import com.winhxd.b2c.system.service.SysRegionService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

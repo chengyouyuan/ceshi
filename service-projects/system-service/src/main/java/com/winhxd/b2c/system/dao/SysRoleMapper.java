@@ -1,4 +1,4 @@
-package com.winhxd.b2c.system.user.dao;
+package com.winhxd.b2c.system.dao;
 
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;

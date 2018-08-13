@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**

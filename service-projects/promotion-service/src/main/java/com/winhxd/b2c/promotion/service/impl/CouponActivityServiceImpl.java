@@ -18,8 +18,6 @@ import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -175,14 +173,16 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             }
             couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
 
-            //coupon_activity_store_customer
-            CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
-            for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
-                couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
-                couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
-                couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
-                couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+                //coupon_activity_store_customer
+                CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
+                for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
+                    couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
+                    couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
+                    couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
+                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                    couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+                }
             }
         }
     }

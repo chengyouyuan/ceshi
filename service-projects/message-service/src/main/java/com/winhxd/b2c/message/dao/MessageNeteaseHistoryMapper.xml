@@ -11,18 +11,34 @@
     <result column="ext_json" jdbcType="VARCHAR" property="extJson" />
     <result column="page_type" jdbcType="SMALLINT" property="pageType" />
     <result column="tree_code" jdbcType="VARCHAR" property="treeCode" />
-    <result column="msg_time_stamp" jdbcType="TIMESTAMP" property="msgTimeStamp" />
+    <result column="msg_time" jdbcType="TIMESTAMP" property="msgTimeStamp" />
     <result column="msg_id_server" jdbcType="VARCHAR" property="msgIdServer" />
   </resultMap>
   <sql id="Base_Column_List">
     id, from_accid, to_accid, msg_type, msg_body, msg_attach, ext_json, page_type, tree_code, 
-    msg_time_stamp, msg_id_server
+    msg_time, msg_id_server
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from message_netease_history
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectVoByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message_netease_history
+    where 1=1
+    <if test="accid != null">
+      and to_accid=#{accid,jdbcType=STRING}
+    </if>
+    <if test="startTime != null">
+      and msg_time>=#{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+      and #{endTime,jdbcType=TIMESTAMP}>=msg_time
+    </if>
+    order by msg_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from message_netease_history
@@ -32,7 +48,7 @@
     insert into message_netease_history (id, from_accid, to_accid, 
       msg_type, msg_body, msg_attach, 
       ext_json, page_type, tree_code, 
-      msg_time_stamp, msg_id_server)
+      msg_time, msg_id_server)
     values (#{id,jdbcType=BIGINT}, #{fromAccid,jdbcType=VARCHAR}, #{toAccid,jdbcType=VARCHAR}, 
       #{msgType,jdbcType=SMALLINT}, #{msgBody,jdbcType=VARCHAR}, #{msgAttach,jdbcType=VARCHAR}, 
       #{extJson,jdbcType=VARCHAR}, #{pageType,jdbcType=SMALLINT}, #{treeCode,jdbcType=VARCHAR}, 
@@ -69,7 +85,7 @@
         tree_code,
       </if>
       <if test="msgTimeStamp != null">
-        msg_time_stamp,
+        msg_time,
       </if>
       <if test="msgIdServer != null">
         msg_id_server,
@@ -139,7 +155,7 @@
         tree_code = #{treeCode,jdbcType=VARCHAR},
       </if>
       <if test="msgTimeStamp != null">
-        msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
+        msg_time = #{msgTimeStamp,jdbcType=TIMESTAMP},
       </if>
       <if test="msgIdServer != null">
         msg_id_server = #{msgIdServer,jdbcType=VARCHAR},
@@ -157,7 +173,7 @@
       ext_json = #{extJson,jdbcType=VARCHAR},
       page_type = #{pageType,jdbcType=SMALLINT},
       tree_code = #{treeCode,jdbcType=VARCHAR},
-      msg_time_stamp = #{msgTimeStamp,jdbcType=TIMESTAMP},
+      msg_time = #{msgTimeStamp,jdbcType=TIMESTAMP},
       msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

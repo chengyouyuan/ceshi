@@ -31,7 +31,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId, @RequestParam("customerId")Long customerId) {
+	public ResponseResult<String> getCouponNumsByCustomerForStore( @RequestParam("customerId")Long customerId) {
 		ResponseResult<String> result= couponService.getCouponNumsByCustomerForStore(customerId);
 		return result;
 	}

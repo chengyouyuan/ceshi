@@ -74,6 +74,8 @@ public final class BusinessCode {
     public static final int CODE_200014 = 200014;
     /**上传图片是失败**/
     public static final int CODE_200015 = 200015;
+    /**图片大小超过300KB**/
+    public static final int CODE_200016 = 200016;
 
 
     /** 原密码输入错误 */

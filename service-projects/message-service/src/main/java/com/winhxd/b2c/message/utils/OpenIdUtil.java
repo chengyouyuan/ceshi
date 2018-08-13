@@ -24,6 +24,7 @@ import java.util.Map;
 @Component
 public class OpenIdUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(OpenIdUtil.class);
+    private static final String RETURN_NULL = "null";
     /**
      * 小程序APPID
      */
@@ -62,14 +63,21 @@ public class OpenIdUtil {
             String data = httpClientUtil.doGet(openidUrl,params);
             //解析相应内容（转换成json对象）
             Map map = JsonUtil.parseJSONObject(data);
-            //用户的唯一标识（openid）
-            String openid =String.valueOf(map.get("openid"));
-            String sessionKey =String.valueOf(map.get("session_key"));
-            String unionId =String.valueOf(map.get("unionid"));
-            miniOpenId.setOpenId(openid);
-            miniOpenId.setSessionKey(sessionKey);
-            miniOpenId.setUnionId(unionId);
-            LOGGER.info("OpenIdUtil ->oauth2GetOpenid,小程序根据code获取openid，openid为={}",openid);
+            //错误码，成功的时候不会返回,获取到的是"null"(字符串null)，错误的时候返回错误码
+            String errcode = String.valueOf(map.get("errcode"));
+            if (RETURN_NULL.equals(errcode)){
+                //用户的唯一标识（openid）,获取不到的时候返回"null"(字符串null)
+                String openid =String.valueOf(map.get("openid"));
+                String sessionKey =String.valueOf(map.get("session_key"));
+                String unionId =String.valueOf(map.get("unionid"));
+                miniOpenId.setOpenId(openid);
+                miniOpenId.setSessionKey(sessionKey);
+                miniOpenId.setUnionId(unionId);
+                LOGGER.info("OpenIdUtil ->oauth2GetOpenid,小程序根据code获取openid，openid为={}",openid);
+            }else{
+                LOGGER.error("OpenIdUtil ->oauth2GetOpenid,小程序根据code获取openid出错，需查询错误码，错误码为={}",errcode);
+                return null;
+            }
         } catch (IOException e) {
             LOGGER.error("OpenIdUtil ->oauth2GetOpenid,小程序根据code获取openid出错，异常信息为={}",e);
         } catch (URISyntaxException e) {

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +36,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import javax.annotation.Resource;
+
 @RestController
 @Api(tags = "OrderService")
 public class OrderServiceController implements OrderServiceClient {
     
     @Autowired
     private OrderQueryService orderQueryService;
+    @Resource
+    private OrderService orderService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
     
@@ -181,6 +188,29 @@ public class OrderServiceController implements OrderServiceClient {
         ResponseResult<List<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
             result.setData(orderQueryService.listOrder4ManagementWithNoPage(infoQuery4ManagementCondition));
+        } catch (Exception e) {
+            logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+            throw e;
+        }
+        logger.info("{} 后台订单列表查询结束", logTitle);
+        return result;
+    }
+
+    /**
+     * 申请退款回调（设置订单状态为退款中）
+     *
+     * @param orderRefundCallbackCondition 入参
+     * @return 是否成功
+     */
+    @Override
+    public ResponseResult<Boolean> updateOrderRefundCallback(@RequestBody OrderRefundCallbackCondition orderRefundCallbackCondition) {
+        String logTitle = "/order/457/v1/updateOrderRefundCallback/";
+        logger.info("{} 后台订单列表查询开始", logTitle);
+        ResponseResult<Boolean> result = new ResponseResult<>();
+        try {
+            orderService.updateOrderRefundCallback(orderRefundCallbackCondition);
+            result.setData(null);
         } catch (Exception e) {
             logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

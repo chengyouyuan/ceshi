@@ -15,6 +15,10 @@ public class StoreUserSimpleInfo implements Serializable {
      * 用户账号
      */
     private String storeMobile;
+    /**
+     * 区域编码
+     */
+    private String storeRegionCode;
 	public Long getStoreCustomerId() {
 		return storeCustomerId;
 	}
@@ -27,7 +31,11 @@ public class StoreUserSimpleInfo implements Serializable {
 	public void setStoreMobile(String storeMobile) {
 		this.storeMobile = storeMobile;
 	}
-    
-    
+	public String getStoreRegionCode() {
+		return storeRegionCode;
+	}
+	public void setStoreRegionCode(String storeRegionCode) {
+		this.storeRegionCode = storeRegionCode;
+	}
     
 }

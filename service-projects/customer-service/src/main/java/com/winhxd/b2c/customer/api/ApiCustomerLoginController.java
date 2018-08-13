@@ -70,7 +70,7 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "网络请求超时") })
 
-	@RequestMapping(value = "customer/security/221/v1/weChatLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
 			@RequestBody CustomerUserInfoCondition customerUserInfoCondition) {
 		logger.info("{} -微信小程序登录, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(customerUserInfoCondition));
@@ -78,74 +78,74 @@ public class ApiCustomerLoginController {
 		ResponseResult<MiniOpenId> object = null;
 		MiniOpenId mini = null;
 		CustomerUserInfoSimpleVO vo;
-			if (null == customerUserInfoCondition) {
-				logger.info("{} - , 参数无效");
-				throw new BusinessException(BusinessCode.CODE_1007);
-			}
-			if (StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())) {
-				logger.info("{} - , 参数无效");
-				result = new ResponseResult<>(BusinessCode.CODE_1007);
-				return result;
-			}
-			/**
-			 * 根据手机号去取缓存verificationCode对比是否一致
-			 */
-			if (!customerUserInfoCondition.getVerificationCode().equals(cache.get(
-					CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile()))) {
-				logger.info("{} - ,验证码错误");
-				throw new BusinessException(BusinessCode.CODE_1008);
-			}
-			CustomerUserInfo customerUserInfo = new CustomerUserInfo();
-			CustomerUserInfo db = null;
-			/**
-			 * 拿code去换session_key
-			 */
-			object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
-			if (object.getCode() != 0) {
-				logger.info("{} - ,网络请求超时");
-				throw new BusinessException(BusinessCode.CODE_1015);
-			}
-			mini = object.getData();
-			customerUserInfo.setOpenId(mini.getOpenId());
+		if (null == customerUserInfoCondition) {
+			logger.info("{} - , 参数无效");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (StringUtils.isBlank(customerUserInfoCondition.getCustomerMobile())) {
+			logger.info("{} - , 参数无效");
+			result = new ResponseResult<>(BusinessCode.CODE_1007);
+			return result;
+		}
+		/**
+		 * 根据手机号去取缓存verificationCode对比是否一致
+		 */
+		if (!customerUserInfoCondition.getVerificationCode().equals(cache
+				.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile()))) {
+			logger.info("{} - ,验证码错误");
+			throw new BusinessException(BusinessCode.CODE_1008);
+		}
+		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+		CustomerUserInfo db = null;
+		/**
+		 * 拿code去换session_key
+		 */
+		object = messageServiceClient.getMiniOpenId(customerUserInfoCondition.getCode());
+		if (object.getCode() != 0) {
+			logger.info("{} - ,网络请求超时");
+			throw new BusinessException(BusinessCode.CODE_1015);
+		}
+		mini = object.getData();
+		customerUserInfo.setOpenId(mini.getOpenId());
+		db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
+		if (null == db) {
 			customerUserInfo.setSessionKey(mini.getSessionKey());
-			db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
-			if (null == db) {
-				customerUserInfo.setCreated(new Date());
-				customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
-				customerUserInfo.setToken(GeneratePwd.getRandomUUID());
-				customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
-				customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
-				customerLoginService.saveLoginInfo(customerUserInfo);
-				vo = new CustomerUserInfoSimpleVO();
-				vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
-				vo.setToken(customerUserInfo.getToken());
+			customerUserInfo.setCreated(new Date());
+			customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
+			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
+			customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
+			customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
+			customerLoginService.saveLoginInfo(customerUserInfo);
+			vo = new CustomerUserInfoSimpleVO();
+			vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
+			vo.setToken(customerUserInfo.getToken());
+			CustomerUser user = new CustomerUser();
+			user.setCustomerId(customerUserInfo.getCustomerId());
+			user.setOpenId(mini.getOpenId());
+			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
+			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+			result.setData(vo);
+		} else {
+			if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
+				logger.info("{} - , 该微信号已被其他手机号绑定");
+				throw new BusinessException(BusinessCode.CODE_1010);
+			}
+			customerUserInfo.setCustomerId(db.getCustomerId());
+			customerUserInfo.setSessionKey(mini.getSessionKey());
+			customerLoginService.updateCustomerInfo(customerUserInfo);
+			vo = new CustomerUserInfoSimpleVO();
+			vo.setCustomerMobile(db.getCustomerMobile());
+			vo.setToken(db.getToken());
+			if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken())) {
 				CustomerUser user = new CustomerUser();
-				user.setCustomerId(customerUserInfo.getCustomerId());
-				user.setOpenId(mini.getOpenId());
+				user.setOpenId(db.getOpenId());
+				user.setCustomerId(db.getCustomerId());
 				cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
 						JsonUtil.toJSONString(user));
 				cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
-				result.setData(vo);
-			} else {
-				if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
-					logger.info("{} - , 该微信号已被其他手机号绑定");
-					throw new BusinessException(BusinessCode.CODE_1010);
-				}
-				customerUserInfo.setCustomerId(db.getCustomerId());
-				customerLoginService.updateCustomerInfo(customerUserInfo);
-				vo = new CustomerUserInfoSimpleVO();
-				vo.setCustomerMobile(db.getCustomerMobile());
-				vo.setToken(db.getToken());
-				if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken())) {
-					CustomerUser user = new CustomerUser();
-					user.setOpenId(db.getOpenId());
-					user.setCustomerId(db.getCustomerId());
-					cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
-							JsonUtil.toJSONString(user));
-					cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
-				}
-				result.setData(vo);
 			}
+			result.setData(vo);
+		}
 		return result;
 	}
 
@@ -161,42 +161,41 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/security/222/v1/sendVerification", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/security/2022/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
-			if (null == customerUserInfoCondition) {
-				logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
-						JsonUtil.toJSONString(customerUserInfoCondition));
-				throw new BusinessException(BusinessCode.CODE_1007);
-			}
-			if (cache.exists(
-					CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
-				logger.info("{} -发送验证码未超过一分钟");
-				throw new BusinessException(BusinessCode.CODE_1012);
-			}
-			/**
-			 * 随机生成6位数验证码
-			 */
-			String verificationCode = "888888";// GeneratePwd.generatePwd6Mobile();
-			cache.set(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
-					verificationCode);
-			cache.expire(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
-					5 * 60);
-			/**
-			 * 60秒以后调用短信服务
-			 */
-			cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
-					verificationCode);
-			cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
-					60);
-			/**
-			 * 发送模板内容
-			 */
-			String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-			messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
-			logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
-			return result;
+		if (null == customerUserInfoCondition) {
+			logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
+					JsonUtil.toJSONString(customerUserInfoCondition));
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		if (cache.exists(
+				CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile())) {
+			logger.info("{} -发送验证码未超过一分钟");
+			throw new BusinessException(BusinessCode.CODE_1012);
+		}
+		/**
+		 * 随机生成6位数验证码
+		 */
+		String verificationCode = "888888";// GeneratePwd.generatePwd6Mobile();
+		cache.set(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
+				verificationCode);
+		cache.expire(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
+				5 * 60);
+		/**
+		 * 60秒以后调用短信服务
+		 */
+		cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
+				verificationCode);
+		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(), 60);
+		/**
+		 * 发送模板内容
+		 */
+		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
+		messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
+		return result;
 	}
 
 	/**
@@ -211,32 +210,38 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "customer/223/v1/customerChangeMobile", method = RequestMethod.POST)
+	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
 	public ResponseResult<String> customerChangeMobile(
 			@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		logger.info("{} - 用户换绑手机号, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(customerChangeMobileCondition));
 		ResponseResult<String> result = new ResponseResult<>();
-			if (null == customerChangeMobileCondition) {
-				logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
-						JsonUtil.toJSONString(customerChangeMobileCondition));
-				throw new BusinessException(BusinessCode.CODE_1007);
-			}
-			CustomerUserInfo info = new CustomerUserInfo();
-			CustomerUser user = UserContext.getCurrentCustomerUser();
-			if (null == user) {
-				logger.info("{} - 未取到用户主键", "", JsonUtil.toJSONString(user));
-				throw new BusinessException(BusinessCode.CODE_1002);
-			}
-			if (!customerChangeMobileCondition.getVerificationCode()
-					.equals(cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE
-							+ customerChangeMobileCondition.getCustomerMobile()))) {
-				logger.info("{} - 用户验证码错误");
-				throw new BusinessException(BusinessCode.CODE_1008);
-			}
-			info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
-			info.setCustomerId(user.getCustomerId());
-			customerLoginService.updateCustomerInfo(info);
-			return result;
+		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+		if (null == customerChangeMobileCondition) {
+			logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
+					JsonUtil.toJSONString(customerChangeMobileCondition));
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		CustomerUserInfo info = new CustomerUserInfo();
+		CustomerUser user = UserContext.getCurrentCustomerUser();
+		if (null == user) {
+			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
+			throw new BusinessException(BusinessCode.CODE_1002);
+		}
+		customerUserInfo.setCustomerId(user.getCustomerId());
+		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
+		if (null == customerUserInfo) {
+			logger.info("{} - 账号无效");
+			throw new BusinessException(BusinessCode.CODE_1004);
+		}
+		if (!customerChangeMobileCondition.getVerificationCode().equals(
+				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfo.getCustomerMobile()))) {
+			logger.info("{} - 用户验证码错误");
+			throw new BusinessException(BusinessCode.CODE_1008);
+		}
+		info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
+		info.setCustomerId(user.getCustomerId());
+		customerLoginService.updateCustomerInfo(info);
+		return result;
 	}
 }

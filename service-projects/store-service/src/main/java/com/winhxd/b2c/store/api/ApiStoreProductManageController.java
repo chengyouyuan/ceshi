@@ -70,7 +70,7 @@ import io.swagger.annotations.ApiResponses;
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午2:58:37
  */
-@Api(value = "api storeProductManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@Api(value = "api B端门店商品管理相关接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "api-store/storeProductManage/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreProductManageController {
@@ -411,9 +411,11 @@ public class ApiStoreProductManageController {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
 			logger.error("B端搜索商品接口:登录凭证为空");
+            responseResult.setCode(BusinessCode.CODE_1002);
 			return new ResponseResult<>(BusinessCode.CODE_1002);
 		}
 		if (!verifyParam(condition)) {
+            responseResult.setCode(BusinessCode.CODE_1007);
 			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
 		//1607456L;

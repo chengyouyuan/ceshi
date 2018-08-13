@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
@@ -55,7 +56,7 @@ public class CouponGradeServiceImpl implements CouponGradeService {
             couponGrade.setCode(condition.getCode());
             couponGrade.setName(condition.getName());
             couponGrade.setRemarks(condition.getRemarks());
-            couponGrade.setStatus(condition.getStatus());
+            couponGrade.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
             couponGrade.setType(condition.getType());
             couponGrade.setCreatedBy(Long.parseLong(condition.getUserId()));
             couponGrade.setCreatedByName(condition.getUserName());

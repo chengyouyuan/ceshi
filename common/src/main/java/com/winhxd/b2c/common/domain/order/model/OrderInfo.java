@@ -36,8 +36,8 @@ public class OrderInfo {
      */
     private Short valuationType;
     /**
-     * 订单状态 1:已提交;3:待接单;5:待计价;7:已计价;
-     * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
+     * 订单状态 1:已提交;2:待付款；3:待接单;7:已计价;
+     * 9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；
      */
     private Short orderStatus;
     /**
@@ -75,7 +75,7 @@ public class OrderInfo {
      */
     private Integer skuCategoryQuantity;
     /**
-     * 支付类型:1为微信扫码付款;2为微信在线支付;
+     * 支付类型:2:微信扫码付款;1为微信在线支付;
      */
     private Short payType;
     /**

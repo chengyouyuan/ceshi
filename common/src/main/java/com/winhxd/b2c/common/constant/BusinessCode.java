@@ -128,6 +128,14 @@ public final class BusinessCode {
     /** 添加出资方规则失败*/
     public static final int CODE_500006 = 500006;
 
+    /** 订单使用的优惠券信息不存在*/
+    public static final int CODE_500007 = 500007;
+
+    /** 模板不存在*/
+    public static final int CODE_500008 = 500008;
+
+    /** 出资方规则不存在*/
+    public static final int CODE_500009 = 500009;
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
@@ -243,4 +251,6 @@ public final class BusinessCode {
     public static final int CODE_610018 = 610018;
     @ApiModelProperty("验证码输入不正确")
     public static final int CODE_610019 = 610019;
+    @ApiModelProperty("请先获取验证码")
+    public static final int CODE_610020 = 610020;
 }

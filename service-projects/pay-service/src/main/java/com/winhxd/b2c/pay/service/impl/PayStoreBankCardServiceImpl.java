@@ -30,8 +30,8 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	@Resource
 	private StoreBankCardMapper storeBankCardMapper;
 	
-	@Autowired
-	private Cache cache;
+	@Resource
+	private Cache redisClusterCache;
 
 	@Override
 	public StoreBankCardVO findStoreBankCardInfo(StoreBankCardCondition condition) {
@@ -42,50 +42,73 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	
 	@Override
 	public int saveStoreBankCard(StoreBankCard condition) {
+		int res = 0;
 		// 校验用户填入的信息是否完善
     	String bankName = condition.getBankName();
     	if(StringUtils.isEmpty(bankName)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610011);
+    		res = BusinessCode.CODE_610011;
     		throw new BusinessException(BusinessCode.CODE_610011);
     	}
     	String cardNumber = condition.getCardNumber();
     	if(StringUtils.isEmpty(cardNumber)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610012);
+    		res = BusinessCode.CODE_610012;
     		throw new BusinessException(BusinessCode.CODE_610012);
     	}
     	String bankUserName = condition.getBankUserName();
     	if(StringUtils.isEmpty(bankUserName)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610013);
+    		res = BusinessCode.CODE_610013;
     		throw new BusinessException(BusinessCode.CODE_610013);
     	}
     	String bandBranchName = condition.getBandBranchName();
     	if(StringUtils.isEmpty(bandBranchName)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610014);
+    		res = BusinessCode.CODE_610014;
     		throw new BusinessException(BusinessCode.CODE_610014);
     	}
     	String mobile = condition.getMobile();
     	if(StringUtils.isEmpty(mobile)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610015);
+    		res = BusinessCode.CODE_610015;
     		throw new BusinessException(BusinessCode.CODE_610015);
     	}
     	String verificationCode = condition.getVerificationCode();
     	if(StringUtils.isEmpty(verificationCode)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610016);
+    		res = BusinessCode.CODE_610016;
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
-    	String code = cache.get(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
-    	if(!code.equals(verificationCode)){
-    		LOGGER.info("业务异常："+BusinessCode.CODE_610019);
-    		throw new BusinessException(BusinessCode.CODE_610019);
+    ///////////////////测试假数据///////////////////////
+//    	StoreUser currentStoreUser = new StoreUser();
+//    	currentStoreUser.setBusinessId(1l);
+   ////////////////////////////////////////////////////
+    
+    	if(currentStoreUser != null){
+    		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
+    		System.out.print("exists-----------"+exists);
+    		if(exists){
+    			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
+    			if(!verificationCode.equals(code)){
+    				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+    				res = BusinessCode.CODE_610019;
+    				throw new BusinessException(BusinessCode.CODE_610019);
+    			}
+    		}else{
+    			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
+    			res = BusinessCode.CODE_610020;
+    			throw new BusinessException(BusinessCode.CODE_610020);
+    		} 
+    		condition.setCreated(new Date());
+    		condition.setUpdated(new Date());
+    		condition.setCreatedBy(currentStoreUser.getBusinessId());
+    		condition.setUpdatedBy(currentStoreUser.getBusinessId());
+    		condition.setCreatedByName(condition.getBankUserName());
+    		condition.setUpdatedByName(condition.getBankUserName());
+    		res = storeBankCardMapper.insertStoreBankCardinfo(condition);
     	}
-    	condition.setCreated(new Date());
-    	condition.setUpdated(new Date());
-    	condition.setCreatedBy(currentStoreUser.getBusinessId());
-    	condition.setUpdatedBy(currentStoreUser.getBusinessId());
-    	condition.setCreatedByName(condition.getBankUserName());
-    	condition.setUpdatedByName(condition.getBankUserName());
-		int res = storeBankCardMapper.insertStoreBankCardinfo(condition);
 		return res;
 	}
 

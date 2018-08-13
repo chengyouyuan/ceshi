@@ -5,8 +5,10 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponInStoreGetedAndUsedCodition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
@@ -16,10 +18,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -145,4 +144,32 @@ public class ApiCouponController{
         LOGGER.info("=/api-promotion/coupon/509/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
         return result;
     }
+
+
+
+
+    @ApiOperation(value = "门店优惠券列表领取使/用情况统计", notes = "门店优惠券列表领取使/用情况统计")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/547/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage( CouponInStoreGetedAndUsedCodition codition){
+        LOGGER.info("=/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ codition.getStoreId());
+        Integer pageNo = 1 ;
+        Integer pageSize = 10;
+        if(codition.getPageNo()!=null){
+            pageNo = codition.getPageNo();
+        }
+        if(codition.getPageNo()!=null){
+            pageSize = codition.getPageNo();
+        }
+
+        ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
+        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(codition.getStoreId(),pageNo,pageSize);
+        result.setData(pages);
+        LOGGER.info("/api-promotion/coupon/547/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
+        return result;
+    }
+
+
 }

@@ -3,8 +3,10 @@ package com.winhxd.b2c.order.api;
 import javax.annotation.Resource;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.order.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.OrderQueryService;
 
@@ -28,6 +28,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author pangjianhua
@@ -49,12 +52,32 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
     })
     @RequestMapping(value = "/410/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PagedList<OrderInfoDetailVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
+    public ResponseResult<PagedList<OrderListForCustomerVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
         LOGGER.info("=/api-order/order/410/v1/orderListByCustomer-C端订单列表查询接口=--开始--{}");
-        ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
+        ResponseResult<PagedList<OrderListForCustomerVO>> result = new ResponseResult<>();
         try {
+            PagedList<OrderListForCustomerVO> data  = new PagedList<>();
             PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(condition);
-            result.setData(list);
+            List<OrderInfoDetailVO> orderInfoDetailVOS = list.getData();
+            List<OrderListForCustomerVO> orderListForCustomerVOList = new ArrayList<>();
+            for (OrderInfoDetailVO orderInfoDetailVO : orderInfoDetailVOS) {
+                OrderListForCustomerVO orderListForCustomerVO = new OrderListForCustomerVO();
+                List<OrderItemVO> orderItemVoList = orderInfoDetailVO.getOrderItemVoList();
+                List<OrderListItemForCustomerVO> orderListItemForCustomerVOList = new ArrayList<>();
+                for (OrderItemVO orderItemVO : orderItemVoList) {
+                    OrderListItemForCustomerVO orderListItemForCustomerVO = new OrderListItemForCustomerVO();
+                    BeanUtils.copyProperties(orderItemVO,orderListItemForCustomerVO);
+                    orderListItemForCustomerVOList.add(orderListItemForCustomerVO);
+                }
+                BeanUtils.copyProperties(orderInfoDetailVO,orderListForCustomerVO);
+                orderListForCustomerVO.setOrderItemVoList(orderListItemForCustomerVOList);
+                orderListForCustomerVOList.add(orderListForCustomerVO);
+            }
+            data.setTotalRows(list.getTotalRows());
+            data.setPageNo(list.getPageNo());
+            data.setPageSize(list.getPageSize());
+            data.setData(orderListForCustomerVOList);
+            result.setData(data);
         } catch (Exception e) {
             LOGGER.error("=/api-order/order/410/v1/orderListByCustomer-C端订单列表查询接口=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

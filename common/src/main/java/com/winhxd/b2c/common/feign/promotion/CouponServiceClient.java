@@ -30,7 +30,7 @@ import java.util.List;
 public interface CouponServiceClient {
 	
 	@RequestMapping(value = "/promotion/538/v1/getCouponNumsByCustomerForStore", method = RequestMethod.GET)
-	ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,@RequestParam("customerId") Long customerId);
+	ResponseResult<String> getCouponNumsByCustomerForStore(@RequestParam("customerId") Long customerId);
 
     @RequestMapping(value = "/promotion/539/v1/orderUseCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition);
@@ -54,7 +54,8 @@ public interface CouponServiceClient {
     ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition);
 
     @RequestMapping(value = "/promotion/546/v1/getCouponInvestorAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody OrderCouponCondition condition);
+    ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody CouponInvestorAmountCondition condition);
+
 }
 
 
@@ -74,7 +75,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
         return new CouponServiceFallback(throwable);
     }
 	@Override
-	public ResponseResult<String> getCouponNumsByCustomerForStore(Long storeId,Long customerId) {
+	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
 		 logger.error("CouponServiceClient -> getCouponNumsByCustomerForStore", throwable);
 	     return new ResponseResult<String>(BusinessCode.CODE_1001);
 	}
@@ -122,7 +123,7 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
     }
 
     @Override
-    public ResponseResult getCouponInvestorAmount(OrderCouponCondition condition) {
+    public ResponseResult getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
         logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }

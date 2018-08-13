@@ -1,6 +1,9 @@
 package com.winhxd.b2c.system.region.service;
 
 
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 
@@ -48,4 +51,13 @@ public interface SysRegionService {
      * @return: 地理区域列表
      */
     List<SysRegion> findRegionByCodes(List<String> regionCodes);
+
+    /**
+     * 功能描述:查询指定地理区域列表
+     * @auther: zhanglingke
+     * @date: 2018-08-02 17:09
+     * @param: 地理区域编号数组
+     * @return: 地理区域列表
+     */
+    PagedList<SysRegion> findRegionByPage(SysRegionPagedCondition condition);
 }

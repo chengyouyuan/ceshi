@@ -152,9 +152,10 @@
   </select>
 
   <select id="selectRepeatStoreRegion" resultMap="BaseResultMap">
+    <bind name="pattern" value="areaCode + '%'" />
     select <include refid="Base_Column_List"/> from store_region where 1 = 1
     <if test="areaCode != null and areaCode != ''">
-      and area_code like #{areaCode, jdbc=VARCHAR}'%'
+      and area_code like #{pattern}
     </if>
     <!--<if test="level != null and level != 0">
       and level &gt;= #{level, jdbc=SMALLINT}

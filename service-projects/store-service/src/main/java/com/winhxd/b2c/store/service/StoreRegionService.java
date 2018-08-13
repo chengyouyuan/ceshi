@@ -1,7 +1,6 @@
 package com.winhxd.b2c.store.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
@@ -40,8 +39,8 @@ public interface StoreRegionService {
     int saveStoreRegion(StoreRegionCondition condition);
 
     /**
-     * 根据区域编码查询是否是有效的测试区域
-     * @param regionCode
+     * 根据区域编码和级别查询是否是有效的测试区域
+     * @param regionCode 区域编码
      * @return
      */
     StoreRegion selectByRegionCode(String regionCode);

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import lombok.Data;
 
 import java.util.List;

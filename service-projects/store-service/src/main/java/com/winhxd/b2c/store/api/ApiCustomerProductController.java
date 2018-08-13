@@ -32,11 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "api - 小程序查询门店商品相关接口", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 @RestController
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class ApiProductController {
+public class ApiCustomerProductController {
 
     private static final String MODULE_NAME = "C端门店商品查询";
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiProductController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiCustomerProductController.class);
 
     @Autowired
     private ProductService productService;

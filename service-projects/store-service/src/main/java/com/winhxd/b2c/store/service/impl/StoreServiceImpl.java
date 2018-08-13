@@ -85,7 +85,7 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
-        List<StoreUserInfo> userInfoList = storeUserInfoMapper.findStoreUserInfo(storeUserInfo);
+        List<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
         if (userInfoList.isEmpty()){
             return pagedList;
         }

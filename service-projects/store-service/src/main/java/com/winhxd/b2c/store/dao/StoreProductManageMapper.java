@@ -97,4 +97,11 @@ public interface StoreProductManageMapper {
      * @return
      */
     List<String> findRecommendProductSku(Long storeId);
+
+    /**
+     * 查询商品集合
+     * @param storeProductManageCondition
+     * @return
+     */
+    List<StoreProductManage> findProductBySelective(@Param("condition") StoreProductManageCondition storeProductManageCondition);
 }

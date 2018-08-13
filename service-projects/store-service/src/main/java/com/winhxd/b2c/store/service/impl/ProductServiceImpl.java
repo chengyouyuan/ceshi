@@ -1,0 +1,178 @@
+package com.winhxd.b2c.store.service.impl;
+
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.vo.ShopCartProductVO;
+import com.winhxd.b2c.common.domain.product.condition.CustomerSearchProductCondition;
+import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuMsgVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.store.service.ProductService;
+import com.winhxd.b2c.store.service.StoreProductManageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @author caiyulong
+ */
+@Service
+public class ProductServiceImpl implements ProductService {
+
+    @Autowired
+    private StoreProductManageService storeProductManageService;
+
+    @Autowired
+    private ProductServiceClient productServiceClient;
+
+    @Autowired
+    private ShopCartServiceClient shopCartServiceClient;
+
+    private ProductConditionByPage buildProductConditionByPage(CustomerSearchProductCondition condition, List<StoreProductManage> storeProductManages) {
+        ProductConditionByPage productConditionByPage = new ProductConditionByPage();
+        productConditionByPage.setPageNo(condition.getPageNo());
+        productConditionByPage.setPageSize(condition.getPageSize());
+        productConditionByPage.setProductName(condition.getProductName());
+        productConditionByPage.setBrandCodes(condition.getBrandCodes());
+        productConditionByPage.setCategoryCodes(condition.getCategoryCodes());
+        productConditionByPage.setCategoryCode(condition.getCategoryCode());
+        productConditionByPage.setProductSkus(storeProductManages.stream()
+                .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
+        productConditionByPage.setRecommend(storeProductManages.stream()
+                .anyMatch(storeProductManage -> storeProductManage.getRecommend() == 1) ? 1 : null);
+        productConditionByPage.setRecommendSkus(storeProductManages.stream()
+                .filter(storeProductManage -> storeProductManage.getRecommend() == 1)
+                .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
+        productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        return productConditionByPage;
+    }
+
+    private StoreProductManageCondition biuldStoreProductManageCondition(CustomerSearchProductCondition condition) {
+        StoreProductManageCondition storeProductManageCondition = new StoreProductManageCondition();
+        storeProductManageCondition.setPageSize(condition.getPageSize());
+        storeProductManageCondition.setPageNo(condition.getPageNo());
+        storeProductManageCondition.setStoreId(condition.getStoreId());
+        storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
+        storeProductManageCondition.setRecommend(condition.getRecommend());
+        storeProductManageCondition.setOrderBy(condition.getProductSortType());
+        storeProductManageCondition.setDescAsc(condition.getProductSortType() != null && condition.getProductSortType().equals(1)
+                ? (byte)0 : (byte)1);
+        return  storeProductManageCondition;
+    }
+
+    private void assignSkuNum(List<ProductSkuVO> productSkuVOS, CustomerUser currentCustomerUser, CustomerSearchProductCondition condition) {
+        List<String> collect = productSkuVOS.stream().map(productSkuVO -> productSkuVO.getSkuCode()).collect(Collectors.toList());
+        ShopCartProductCondition shopCartProductCondition = buildShopCartProductCondition(condition,collect,currentCustomerUser);
+        List<ShopCartProductVO> shopCartProductVOS = shopCartServiceClient.queryShopCartBySelective(shopCartProductCondition).getData();
+
+        for (ProductSkuVO datum : productSkuVOS) {
+            for (ShopCartProductVO shopCartProductVO : shopCartProductVOS) {
+                if (datum.getSkuCode().equals(shopCartProductVO.getSkuCode())){
+                    datum.setSkuNum(shopCartProductVO.getSkuNum());
+                    break;
+                }
+            }
+        }
+    }
+
+    private void assignSellMoney(List<ProductSkuVO> data, List<StoreProductManage> storeProductManages) {
+        for (ProductSkuVO datum : data) {
+            for (StoreProductManage storeProductManage : storeProductManages) {
+                if (datum.getSkuCode().equals(storeProductManage.getSkuCode())){
+                    datum.setSellMoney(storeProductManage.getSellMoney());
+                    break;
+                }
+            }
+        }
+    }
+
+    private ShopCartProductCondition buildShopCartProductCondition(CustomerSearchProductCondition condition, List<String> skus, CustomerUser currentCustomerUser) {
+        ShopCartProductCondition shopCartProductCondition = new ShopCartProductCondition();
+        shopCartProductCondition.setCustomerId(currentCustomerUser.getCustomerId());
+        shopCartProductCondition.setStoreId(condition.getStoreId());
+        shopCartProductCondition.setSkuCodes(skus);
+        return shopCartProductCondition;
+    }
+
+    @Override
+    public ResponseResult<ProductSkuMsgVO> filtrateProductList(CustomerSearchProductCondition condition, CustomerUser currentCustomerUser) {
+        ResponseResult<ProductSkuMsgVO> responseResult = new ResponseResult<>();
+        //获取门店下的商品
+        StoreProductManageCondition storeProductManageCondition = biuldStoreProductManageCondition(condition);
+        List<StoreProductManage> storeProductManages = storeProductManageService.findProductBySelective(storeProductManageCondition);
+        if (storeProductManages.isEmpty()){
+            return responseResult;
+        }
+        //获取分类信息 初始化商品信息
+        ProductConditionByPage productConditionByPage = buildProductConditionByPage(condition,storeProductManages);
+        responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
+
+        //赋值商品价格
+        assignSellMoney(responseResult.getData().getProductSkus().getData(), storeProductManages);
+
+        if (currentCustomerUser != null){
+            //查询商品购物车数量
+            assignSkuNum(responseResult.getData().getProductSkus().getData(), currentCustomerUser, condition);
+        }
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult<PagedList<ProductSkuVO>> searchProductList(CustomerSearchProductCondition condition, CustomerUser currentCustomerUser) {
+        ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
+
+        StoreProductManageCondition storeProductManageCondition = biuldStoreProductManageCondition(condition);
+        List<StoreProductManage> storeProductManages = storeProductManageService.findProductBySelective(storeProductManageCondition);
+        if (storeProductManages.isEmpty()){
+            return responseResult;
+        }
+
+        //获取商品列表信息
+        ProductConditionByPage productConditionByPage = buildProductConditionByPage(condition, storeProductManages);
+        responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
+        //价格赋值
+        assignSellMoney(responseResult.getData().getData(),storeProductManages);
+        if (currentCustomerUser != null){
+            //查询商品购物车数量
+            assignSkuNum(responseResult.getData().getData(),currentCustomerUser,condition);
+        }
+        return responseResult;
+    }
+
+    @Override
+    public ResponseResult<PagedList<ProductSkuVO>> hotProductList(CustomerSearchProductCondition condition) {
+        ResponseResult<PagedList<ProductSkuVO>> responseResult = new ResponseResult<>();
+        //获取门店下的商品
+        condition.setProductSortType(2);
+        StoreProductManageCondition storeProductManageCondition = biuldStoreProductManageCondition(condition);
+        List<StoreProductManage> storeProductManages = storeProductManageService.findProductBySelective(storeProductManageCondition);
+        if (storeProductManages.isEmpty()){
+            return responseResult;
+        }
+
+        //获取商品列表信息
+        ProductConditionByPage productConditionByPage = new ProductConditionByPage();
+        productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        productConditionByPage.setProductSkus(storeProductManages.stream()
+                .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
+        productConditionByPage.setPageNo(condition.getPageNo());
+        productConditionByPage.setPageSize(condition.getPageSize());
+        responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
+
+        //价格赋值
+        assignSellMoney(responseResult.getData().getData(), storeProductManages);
+        return responseResult;
+    }
+
+}

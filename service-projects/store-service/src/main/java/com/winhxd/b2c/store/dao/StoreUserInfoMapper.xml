@@ -361,6 +361,9 @@
       token = #{token,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateReginCodeByCustomerId">
+    update store_user_info set store_region_code = #{storeRegionCode} where store_customer_id = #{storeCustomerId}
+  </update>
 
   <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select

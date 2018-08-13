@@ -1,7 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -51,4 +50,10 @@ public interface StoreUserInfoMapper {
      * @Description 根据ids进行批量查询门店信息
      */
     List<StoreUserInfo> selectStoreUserByIds(@Param("ids") Set<Long> ids);
+
+    /**
+     * 根据customerid 更改 regincode
+     * @param storeUserInfo
+     */
+    void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
 }

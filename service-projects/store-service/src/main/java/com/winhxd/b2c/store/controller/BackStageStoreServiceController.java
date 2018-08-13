@@ -46,4 +46,13 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
         return new ResponseResult<>();
     }
 
+    @Override
+    public ResponseResult<Integer> modifyStoreInfoReginCode(BackStageModifyStoreCondition condition) {
+        ResponseResult<Integer> responseResult = new ResponseResult<>();
+        StoreUserInfo storeUserInfo = new StoreUserInfo();
+        BeanUtils.copyProperties(condition, storeUserInfo);
+        storeService.updateReginCodeByCustomerId(storeUserInfo);
+        return  responseResult;
+    }
+
 }

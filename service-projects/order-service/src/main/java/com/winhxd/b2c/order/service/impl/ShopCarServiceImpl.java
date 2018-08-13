@@ -6,10 +6,7 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
@@ -141,6 +138,11 @@ public class ShopCarServiceImpl implements ShopCarService {
         } finally {
             lock.unlock();
         }
+    }
+
+    @Override
+    public List<ShopCar> queryShopCartBySelective(ShopCartProductCondition condition) {
+        return shopCarMapper.queryShopCartBySelective(condition);
     }
 
     private List<String> getSkuCodeListByShopCar(List<ShopCar> shopCars){

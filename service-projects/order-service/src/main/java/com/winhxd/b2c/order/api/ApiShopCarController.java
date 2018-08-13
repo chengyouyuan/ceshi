@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -57,19 +58,13 @@ public class ApiShopCarController {
     })
     @RequestMapping(value = "/api-order/order/430/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
-        ResponseResult<Long> result = new ResponseResult<>();
-        try {
-            if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
-                    || null == condition.getSkuNum()) {
-                logger.error("商品加购异常{}  参数错误");
-                throw new BusinessException(BusinessCode.CODE_402008);
-            }
-        	shopCarService.saveShopCar(condition, getCurrentCustomerId());
-        } catch (Exception e){
-            logger.error("ShopCarController -> saveShopCar接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
+        if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
+                || null == condition.getSkuNum()) {
+            logger.error("商品加购异常{}  参数错误");
+            throw new BusinessException(BusinessCode.CODE_402008);
         }
-        return result;
+        shopCarService.saveShopCar(condition, getCurrentCustomerId());
+        return new ResponseResult<>();
     }
 
     /**
@@ -86,20 +81,15 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
-    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestParam("storeId") Long storeId){
+    @RequestMapping(value = "/api-order/order/431/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarCondition condition){
         ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
-        try {
-            if (null == storeId || 0 == storeId) {
-                logger.error("查询购物车异常{}  参数storeId为空");
-                throw new BusinessException(BusinessCode.CODE_402001);
-            }
-            List<ShopCarProdInfoVO> data = shopCarService.findShopCar(storeId, getCurrentCustomerId());
-            result.setData(data);
-        } catch (Exception e){
-            logger.error("ShopCarController -> findShopCar接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
+        if (null == condition || null == condition.getStoreId()) {
+            logger.error("查询购物车异常{}  参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_402001);
         }
+        List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
+        result.setData(data);
         return result;
     }
 
@@ -125,15 +115,9 @@ public class ApiShopCarController {
     })
     @RequestMapping(value = "/api-order/order/432/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> readyOrder(@RequestBody ReadyShopCarCondition condition){
-        ResponseResult<Long> result = new ResponseResult<>();
-        try {
-            shopCarParam(condition);
-            shopCarService.readyOrder(condition, getCurrentCustomerId());
-        } catch (Exception e){
-            logger.error("ShopCarController -> readyOrder接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        return result;
+        shopCarParam(condition);
+        shopCarService.readyOrder(condition, getCurrentCustomerId());
+        return new ResponseResult<>();
     }
 
     /**
@@ -151,15 +135,9 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> removeShopCar(){
-        ResponseResult<Long> result = new ResponseResult<>();
-        try{
-            shopCarService.removeShopCar(getCurrentCustomerId());
-        }catch (Exception e){
-            logger.error("ShopCarController -> removeShopCar接口异常, 异常信息{}" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        return result;
+    public ResponseResult<Long> removeShopCar(@RequestBody ApiCondition apiCondition){
+        shopCarService.removeShopCar(getCurrentCustomerId());
+        return new ResponseResult<>();
     }
 
     /**

@@ -1,10 +1,9 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +16,7 @@ import java.util.List;
  */
 @ApiModel("用户加购传参")
 @Data
-public class ReadyShopCarCondition {
+public class ReadyShopCarCondition extends ApiCondition {
 
     @ApiModelProperty(value = "门店ID")
     private Long storeId;

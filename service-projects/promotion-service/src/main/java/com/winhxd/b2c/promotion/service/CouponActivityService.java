@@ -19,7 +19,7 @@ public interface CouponActivityService {
      * @param condition
      * @return CouponActivityVO
      */
-    ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition);
+    ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition);
     /**
      *
      *@Deccription 添加优惠券活动
@@ -49,17 +49,17 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/8
      */
-    void deleteCouponActivity(String id);
+    void deleteCouponActivity(CouponActivityCondition condition);
 
     /**
      *
      *@Deccription 撤回活动优惠券
-     *@Params  id
+     *@Params  condition
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/9
      */
-    void revocationActivityCoupon(String id);
+    void revocationActivityCoupon(CouponActivityCondition condition);
 
     /**
      *
@@ -79,7 +79,7 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/9
      */
-    ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition);
+    ResponseResult<PagedList<CouponActivityStoreVO>> findCouponByActivity(CouponActivityCondition condition);
 
     /**
      *
@@ -89,5 +89,5 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/9
      */
-    ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition);
+    ResponseResult<PagedList<CouponActivityStoreVO>> findStoreByActivity(CouponActivityCondition condition);
 }

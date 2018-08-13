@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
+import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel(value = "用户请求参数",description = "后台用户列表请求参数")
-public class CouponActivityCondition extends BaseCondition implements Serializable {
+public class CouponActivityCondition extends PagedCondition implements Serializable {
 
     @ApiModelProperty(value = "优惠券活动ID")
     private Long id;
@@ -47,105 +48,16 @@ public class CouponActivityCondition extends BaseCondition implements Serializab
     @ApiModelProperty(value = "创建人")
     private String createdByName;
 
+    @ApiModelProperty(value = "创建人")
+    private Long createdBy;
+
     @ApiModelProperty(value = "创建时间开始")
     private Date createdStart;
 
     @ApiModelProperty(value = "创建时间结束")
     private Date createdEnd;
 
-    public String getCustomerMobile() {
-        return customerMobile;
-    }
+    @ApiModelProperty(value = "创建时间")
+    private DateInterval dateInterval;
 
-    public void setCustomerMobile(String customerMobile) {
-        this.customerMobile = customerMobile;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getTemplateCode() {
-        return templateCode;
-    }
-
-    public void setTemplateCode(String templateCode) {
-        this.templateCode = templateCode;
-    }
-
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
-    public Short getCouponNumType() {
-        return couponNumType;
-    }
-
-    public void setCouponNumType(Short couponNumType) {
-        this.couponNumType = couponNumType;
-    }
-
-    public Short getCustomerVoucherLimitType() {
-        return customerVoucherLimitType;
-    }
-
-    public void setCustomerVoucherLimitType(Short customerVoucherLimitType) {
-        this.customerVoucherLimitType = customerVoucherLimitType;
-    }
-
-    public String getCreatedByName() {
-        return createdByName;
-    }
-
-    public void setCreatedByName(String createdByName) {
-        this.createdByName = createdByName;
-    }
-
-    public Date getCreatedStart() {
-        return createdStart;
-    }
-
-    public void setCreatedStart(Date createdStart) {
-        this.createdStart = createdStart;
-    }
-
-    public Date getCreatedEnd() {
-        return createdEnd;
-    }
-
-    public void setCreatedEnd(Date createdEnd) {
-        this.createdEnd = createdEnd;
-    }
 }

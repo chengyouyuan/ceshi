@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Date 2018/8/6 09:56
  * @Description
  **/
-public class CouponTemplateCondition extends BaseCondition implements Serializable {
+public class CouponTemplateCondition extends PagedCondition implements Serializable {
     @ApiModelProperty(value = "主键")
     private String id;
     @ApiModelProperty(value = "优惠券标题")

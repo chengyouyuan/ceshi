@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("惠小店用户请求参数")
 @Data
-public class StoreUserInfoCondition{
+public class StoreUserInfoCondition extends ApiCondition{
 	@ApiModelProperty(value = "用户账号")
     private String storeMobile;
 	@ApiModelProperty(value = "密码")
@@ -20,12 +22,12 @@ public class StoreUserInfoCondition{
     private String shopOwnerImg;
 	@ApiModelProperty(value = "微信openid")
     private String openId;
-	@ApiModelProperty(value = "来源")
-    private String platform;
 	@ApiModelProperty(value = "短信验证码")
 	private String verificationCode;
 	@ApiModelProperty(value = "1、微信登录,2、账号登录")
 	private Integer loginFlag;
 	@ApiModelProperty(value = "1、验证码登录，2、密码登录,3、快捷登录")
 	private Integer loginPasswordFlag;
+    @ApiModelProperty(value = "记录订单下单渠道,如ios,android等")
+    private String platform;
 }

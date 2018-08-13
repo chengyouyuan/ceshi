@@ -65,9 +65,11 @@ public class ApiOrderController {
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
@@ -98,9 +100,11 @@ public class ApiOrderController {
         } catch (BusinessException e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
+            throw e;
         } catch (Exception e) {
             LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
+            throw e;
         }
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;

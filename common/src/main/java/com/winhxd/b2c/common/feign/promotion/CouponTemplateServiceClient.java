@@ -67,7 +67,7 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
      *@Date   2018/8/6 20:45
      */
     @RequestMapping(value = "/promotion/512/v1/viewCouponTemplateDetail", method = RequestMethod.GET)
-    public ResponseResult viewCouponTemplateDetail(@RequestParam("id") String id);
+    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id);
 
 
 }
@@ -79,14 +79,6 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     private static final Logger logger = LoggerFactory.getLogger(CouponTemplateServiceFallback.class);
     private Throwable throwable;
 
-    /**
-     *
-     *@Deccription 添加优惠换模板
-     *@Params  [couponTemplateCondition]
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/6 10:42
-     */
     @Override
     public ResponseResult<Integer> addCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> addCouponTemplate", throwable);
@@ -94,20 +86,12 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
     }
 
 
-
-    /**
-     *
-     *@Deccription 多条件分页查询 优惠券模板列表
-     *@Params  CouponTemplateCondition
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/6 17:53
-     */
     @Override
     public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
         logger.error("CouponTemplateServiceClient -> findCouponTemplatePageByCondition", throwable);
         return new ResponseResult<PagedList<CouponTemplateVO>>(BusinessCode.CODE_1001);
     }
+
 
     @Override
     public ResponseResult<Integer> updateCouponTemplateToValid(String ids,String userId,String userName) {
@@ -115,18 +99,11 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
-    /**
-     *
-     *@Deccription 查看优惠券模板详情
-     *@Params  id
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/6 20:45
-     */
+
     @Override
-    public ResponseResult viewCouponTemplateDetail(String id) {
+    public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(String id) {
         logger.error("CouponTemplateServiceClient -> viewCouponTemplateDetail", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<CouponTemplateVO>(BusinessCode.CODE_1001);
     }
 
 

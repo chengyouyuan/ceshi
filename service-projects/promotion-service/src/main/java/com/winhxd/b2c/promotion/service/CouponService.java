@@ -100,7 +100,7 @@ public interface CouponService {
      * 用户查询门店优惠券列表
      * @return
      */
-    List<CouponVO> getStoreCouponList();
+    List<CouponVO> findStoreCouponList();
 
     /**
      * 订单可用优惠券
@@ -108,4 +108,11 @@ public interface CouponService {
      * @return
      */
     List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition);
+
+    /**
+     * 获取用户可领取门店优惠券种类数
+     * @return
+     */
+    Integer getStoreCouponKinds();
+
 }

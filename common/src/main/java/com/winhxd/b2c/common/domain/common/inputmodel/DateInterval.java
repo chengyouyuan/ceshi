@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.common;
+package com.winhxd.b2c.common.domain.common.inputmodel;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @ApiModel("接收日期区间搜索条件参数")
 @Data
-public class DateIntervalCondition {
+public class DateInterval {
 
     @ApiModelProperty(value = "开始时间")
     private Date startDate;

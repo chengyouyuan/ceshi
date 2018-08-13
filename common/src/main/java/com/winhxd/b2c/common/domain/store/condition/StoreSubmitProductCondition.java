@@ -1,7 +1,7 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.winhxd.b2c.common.domain.condition.MobileCondition;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,7 +18,7 @@ import lombok.Data;
 @ApiModel("B端门店提报商品基本操作入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class StoreSubmitProductCondition extends MobileCondition {
+public class StoreSubmitProductCondition extends ApiCondition {
 	 
 	private static final long serialVersionUID = 1L;
 

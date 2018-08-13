@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel("门店处理退款入参")
-public class OrderRefundStoreHandleCondition {
+public class OrderRefundStoreHandleCondition extends ApiCondition {
     @ApiModelProperty(value = "订单编码", required = true)
     private String orderNo;
     @ApiModelProperty(value = "是否同意 1为同意，0为不同意", required = true)

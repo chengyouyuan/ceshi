@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -139,11 +140,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (storeOrderSalesSummaryVO == null) {
             storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
         }
-        Integer dailyCustomerNum = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
-        if (dailyCustomerNum == null) {
-            dailyCustomerNum = 0;
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO1 != null) {
+            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO);
         }
-        storeOrderSalesSummaryVO.setDailyOrderNum(dailyCustomerNum);
         storeOrderSalesSummaryVO.setStoreId(storeId);
         cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author wangbin
  * @date 2018/8/3 17:12
  */
-public class OrderQuery4StoreCondition extends BaseCondition {
+public class OrderQuery4StoreCondition extends PagedCondition {
     
     @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提;22:已完成;99:已取消;77:已退款;33:待退款;")
     private Short orderStatus;

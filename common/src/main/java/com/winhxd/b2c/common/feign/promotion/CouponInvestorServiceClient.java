@@ -68,6 +68,14 @@ public interface CouponInvestorServiceClient {
     @RequestMapping(value = "/promotion/528/v1/getCouponInvestorPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 
+    /**
+     *
+     *@Deccription 出资方规则引用模板列表
+     *@Params  id pageNo pageSize
+     *@Return  ResponseResult<PagedList<InvertorTempleteCountVO>>
+     *@User  wl
+     *@Date   2018/8/11 14:30
+     */
     @RequestMapping(value = "/promotion/525/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }

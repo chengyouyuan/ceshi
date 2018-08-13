@@ -262,8 +262,8 @@
         {
           "id": "8_1",
           "menuName": "权限管理",
-          "path": "/authorization/index",
-          "configKey": "",
+          "path": "",
+          "configKey": "/template/module/system/system_role_list.json",
           "permission": ""
         },
         {

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
  */
 @ApiModel("加购")
 @Data
-public class ShopCarCondition {
+public class ShopCarCondition extends ApiCondition {
     @ApiModelProperty(value = "门店ID")
     private Long storeId;
 

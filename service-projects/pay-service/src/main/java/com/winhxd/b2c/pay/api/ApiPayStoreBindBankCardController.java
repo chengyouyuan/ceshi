@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = "ApiPay")
-@RequestMapping(value = "/api-pay/bankCard")
+@RequestMapping(value = "/api-pay/pay")
 public class ApiPayStoreBindBankCardController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreBindBankCardController.class);
 	
@@ -134,7 +134,6 @@ public class ApiPayStoreBindBankCardController {
 			e.printStackTrace();
 			LOGGER.error("B端绑定银行卡失败；失败原因---："+ e);
 		}
-        
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }

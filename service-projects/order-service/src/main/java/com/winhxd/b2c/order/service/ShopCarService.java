@@ -47,5 +47,5 @@ public interface ShopCarService {
      * @param: condition
      * @return: void
      */
-    void readyOrder(ReadyShopCarCondition condition, Long customerId) throws InterruptedException;
+    void readyOrder(ReadyShopCarCondition condition, Long customerId);
 }

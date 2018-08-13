@@ -1,11 +1,15 @@
 package com.winhxd.b2c.common.config.support;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -37,11 +41,12 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
             Method method = entry.getValue().getMethod();
 
-            checkMethod(errorList, method);
+            checkMethodOutput(errorList, method);
 
+            Set<RequestMethod> requestMethods = entry.getKey().getMethodsCondition().getMethods();
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
             for (String path : patterns) {
-                checkPath(errorList, codes, path, method);
+                checkPath(errorList, codes, path, method, requestMethods);
             }
         }
         if (errorList.size() > 0) {
@@ -59,7 +64,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         }
     }
 
-    private void checkMethod(List<String> errorList, Method method) {
+    private void checkMethodOutput(List<String> errorList, Method method) {
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();
         if (!className.startsWith("com.winhxd.b2c")) {
             return;
@@ -94,7 +99,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         return true;
     }
 
-    private void checkPath(List<String> errorList, Set<String> codes, String path, Method method) {
+    private void checkPath(List<String> errorList, Set<String> codes, String path, Method method, Set<RequestMethod> requestMethods) {
         Matcher matcher;
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();
         if ((matcher = apiPath.matcher(path)).matches()) {
@@ -106,6 +111,16 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                     errorList.add(className + "#" + methodName + " 接口号重复:" + code);
                 } else {
                     codes.add(code);
+                }
+                if (CollectionUtils.isEmpty(requestMethods) || !requestMethods.contains(RequestMethod.POST)) {
+                    errorList.add(className + "#" + methodName + " 外部接口必须是POST");
+                }
+                Class<?>[] classes = method.getParameterTypes();
+                if (classes == null || classes.length == 0 || !(
+                        ApiCondition.class.isAssignableFrom(classes[0])
+                                || MultipartRequest.class.isAssignableFrom(classes[0]))
+                        ) {
+                    errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
                 }
             }
         } else if ((matcher = servicePath.matcher(path)).matches()) {

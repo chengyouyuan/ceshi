@@ -16,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.mq.MQDestination;
+import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.OrderServiceApplication;
 import com.winhxd.b2c.order.service.OrderQueryService;
@@ -31,6 +33,9 @@ public class OrderServiceTest {
     
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private StringMessageSender stringMessageSender;
     
     @Test
     public void testGetStoreOrderSalesSummary() {
@@ -65,5 +70,11 @@ public class OrderServiceTest {
     @Test
     public void testOrderPayNotify() {
         orderService.orderPaySuccessNotify("C18080417612761795");
+    }
+    
+    @Test
+    public void testStringMessageSender() {
+        stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, "123", 10000);
+        System.out.println("finished" + new Date());
     }
 }

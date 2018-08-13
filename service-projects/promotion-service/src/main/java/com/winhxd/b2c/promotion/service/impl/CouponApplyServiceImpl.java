@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
@@ -11,6 +12,7 @@ import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,6 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     @Override
     public int addCouponApply(CouponApplyCondition condition) {
         int flag = 0;
-        try {
             CouponApply couponApply = new CouponApply();
             couponApply.setApplyRuleType(condition.getApplyRuleType());
             couponApply.setCode(condition.getCode());
@@ -79,45 +80,57 @@ public class CouponApplyServiceImpl implements CouponApplyService {
             couponApply.setRemarks(condition.getRemarks());
             couponApply.setCreatedBy(Long.parseLong(condition.getUserId()));
             couponApply.setCreatedByName(condition.getUserName());
+            //couponApply.setCreatedBy(100123L);
+            //couponApply.setCreatedByName("HAHA");
             couponApply.setCreated(new Date());
             long mainKey = couponApplyMapper.insertCouponApply(couponApply);
-            //品牌券插入
-            if(condition.getApplyRuleType().shortValue() == CouponApplyEnum.BRAND_COUPON.getCode()){
-                CouponApplyBrand couponApplyBrand = new CouponApplyBrand();
-                couponApplyBrand.setApplyId(mainKey);
-                long bkey = couponApplyBrandMapper.insertCouponApplyBrand(couponApplyBrand);
-                //插入list
-                List<CouponApplyBrandList> list = condition.getCouponApplyBrandList();
-                if(list!=null && list.size()>0){
-                    for(int i=0;i<list.size();i++){
-                        CouponApplyBrandList couponApplyBrandList = list.get(i);
-                        couponApplyBrandList.setApplyBrandId(bkey);
-                        couponApplyBrandListMapper.insert(couponApplyBrandList);
+            if(mainKey==0){
+                throw new BusinessException(BusinessCode.CODE_500004,"适用对象插入失败");
+            }
+                //品牌券插入
+                if(condition.getApplyRuleType().shortValue() == CouponApplyEnum.BRAND_COUPON.getCode()){
+                    CouponApplyBrand couponApplyBrand = new CouponApplyBrand();
+                    couponApplyBrand.setApplyId(couponApply.getId());
+                    long bkey = couponApplyBrandMapper.insertCouponApplyBrand(couponApplyBrand);
+                    if(bkey==0){
+                        throw new BusinessException(BusinessCode.CODE_500004,"适用对象插入失败");
+                    }
+                    if(bkey!=0){
+                        //插入list
+                        List<CouponApplyBrandList> list = condition.getCouponApplyBrandList();
+                        if(list!=null && list.size()>0){
+                            for(int i=0;i<list.size();i++){
+                                CouponApplyBrandList couponApplyBrandList = list.get(i);
+                                couponApplyBrandList.setApplyBrandId(couponApplyBrand.getId());
+                                couponApplyBrandList.setStatus((short)1);
+                                couponApplyBrandListMapper.insert(couponApplyBrandList);
+                            }
+                        }
+                    }
+                }
+                //商品券插入
+                if(condition.getApplyRuleType().shortValue() == CouponApplyEnum.PRODUCT_COUPON.getCode()){
+                    CouponApplyProduct couponApplyProduct = new CouponApplyProduct();
+                    couponApplyProduct.setApplyId(couponApply.getId());
+                    long pkey = couponApplyProductMapper.insertCouponApplyProduct(couponApplyProduct);
+                    if(pkey==0){
+                        throw new BusinessException(BusinessCode.CODE_500004,"适用对象插入失败");
+                    }
+                    if(pkey!=0){
+                        //插入list
+                        List<CouponApplyProductList> list = condition.getCouponApplyProductList();
+                        if(list!=null && list.size()>0){
+                            for(int i=0;i<list.size();i++){
+                                CouponApplyProductList couponApplyProductList = list.get(i);
+                                couponApplyProductList.setApplyProductId(couponApplyProduct.getId());
+                                couponApplyProductList.setStatus((short)1);
+                                couponApplyProductListMapper.insert(couponApplyProductList);
+                            }
+                        }
                     }
                 }
 
-            }
-            //商品券插入
-            if(condition.getApplyRuleType().shortValue() == CouponApplyEnum.PRODUCT_COUPON.getCode()){
-                CouponApplyProduct couponApplyProduct = new CouponApplyProduct();
-                couponApplyProduct.setApplyId(mainKey);
-                long pkey = couponApplyProductMapper.insertCouponApplyProduct(couponApplyProduct);
-                //插入list
-                List<CouponApplyProductList> list = condition.getCouponApplyProductList();
-                if(list!=null && list.size()>0){
-                    for(int i=0;i<list.size();i++){
-                        CouponApplyProductList couponApplyProductList = list.get(i);
-                        couponApplyProductList.setApplyProductId(pkey);
-                        couponApplyProductListMapper.insert(couponApplyProductList);
-                    }
-                }
-
-            }
-        }catch (Exception e){
-            flag = 1;
-            e.printStackTrace();
-        }
-        return 0;
+        return flag;
     }
 
     @Override

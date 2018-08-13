@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("门店测试区域配置查询条件")
-public class StoreRegionCondition extends BaseCondition{
+public class StoreRegionCondition extends PagedCondition {
 
     @ApiModelProperty(value = "区域code")
     private String areaCode;

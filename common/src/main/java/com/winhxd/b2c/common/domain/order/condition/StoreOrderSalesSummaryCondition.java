@@ -19,4 +19,7 @@ public class StoreOrderSalesSummaryCondition {
     
     @ApiModelProperty(value = "查询开始区间")
     private Date endDateTime;
+
+    @ApiModelProperty(value = "门店Id")
+    public Long storeId;
 }

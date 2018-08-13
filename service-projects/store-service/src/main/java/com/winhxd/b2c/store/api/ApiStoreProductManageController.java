@@ -29,7 +29,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.condition.MobileCondition;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -445,14 +445,14 @@ public class ApiStoreProductManageController {
 			logger.error("B端搜索商品接口:参数ProdType为空");
 			return false;
 		}
-//		if (null == condition.getPageNo()) {
-//			logger.error("B端搜索商品接口:参数PageNo为空");
-//			return false;
-//		}
-//		if (null == condition.getPageSize()) {
-//			logger.error("B端搜索商品接口:参数PageSize为空");
-//			return false;
-//		}
+		if (0 == condition.getPageNo()) {
+			logger.error("B端搜索商品接口:参数PageNo为空");
+			return false;
+		}
+		if (0 == condition.getPageSize()) {
+			logger.error("B端搜索商品接口:参数PageSize为空");
+			return false;
+		}
 		return flag;
 	}
 
@@ -502,7 +502,7 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(@RequestBody MobileCondition condition){
+    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition){
 		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
 		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
 		

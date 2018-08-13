@@ -56,7 +56,7 @@
     activity_status, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
-  <select id="queryStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+  <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
     sui.`store_name`,
@@ -73,7 +73,7 @@
       AND ca.id = #{condition.id}
     </if>
   </select>
-  <select id="queryCouponByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
+  <select id="selectCouponByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
     ct.title AS couponName,
@@ -94,7 +94,7 @@
       AND ca.id = #{condition.id}
     </if>
   </select>
-  <select id="queryCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
+  <select id="selectCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
     SELECT
     ca.id,
     ca.`code`,
@@ -224,6 +224,7 @@
   </select>
   <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
+    count(*) couponNum,
     ct.STATUS,
     ct.reason,
     ct.pay_type payType,
@@ -264,7 +265,7 @@
     <if test="couponType != null">
       AND ca.coupon_type = #{couponType}
     </if>
-    GROUP BY cts.template_id
+    GROUP BY ca.id,cts.template_id
   </select>
   <select id="selectUnclaimedCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
@@ -305,7 +306,7 @@
     AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>
-  <select id="getStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+  <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
     cat.coupon_activity_id activityId,
     cat.template_id templateId,

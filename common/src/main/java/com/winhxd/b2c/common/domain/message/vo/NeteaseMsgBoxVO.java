@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.message.vo;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 @ApiModel("云信用户消息历史")
 @Data
-public class NeteaseMsgBoxVO extends BaseCondition {
+public class NeteaseMsgBoxVO extends PagedCondition {
 
     @ApiModelProperty("当前页")
     private int curpage;

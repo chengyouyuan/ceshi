@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -897,8 +898,8 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
-        for (Iterator iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
-            OrderItemCondition condition = (OrderItemCondition) iterator.next();
+        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
+            OrderItemCondition condition = iterator.next();
             if (condition.getAmount() == null || condition.getAmount().intValue() < 1) {
                 throw new BusinessException(BusinessCode.CODE_401006);
             }
@@ -918,8 +919,12 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void aseembleOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
         List<OrderItem> items = new ArrayList<>();
+        int skuQuantity = 0;
+        int skuCategoryQuantity = 0;
         for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = iterator.next();
+            skuQuantity += condition.getAmount();
+            skuCategoryQuantity += 1;
             OrderItem item = new OrderItem();
             BeanUtils.copyProperties(condition, item);
             item.setOrderNo(orderInfo.getOrderNo());
@@ -931,6 +936,8 @@ public class CommonOrderServiceImpl implements OrderService {
         if (items.isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
+        orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
+        orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
     }
 
@@ -942,21 +949,50 @@ public class CommonOrderServiceImpl implements OrderService {
      * @date 2018年8月3日 上午11:34:29
      */
     private String generateOrderNo() {
-        UUID uuid = UUID.randomUUID();
-        int hashCodeV = (uuid.toString() + System.currentTimeMillis()).hashCode();
-        if (hashCodeV < 0) {
-            // 有可能是负数
-            hashCodeV = -hashCodeV;
-        }
-        while (hashCodeV > 999999999) {
-            hashCodeV = hashCodeV >> 1;
-        }
+        String orderNo = null;
+        Date date = new Date();
+        do {
+            UUID uuid = UUID.randomUUID();
+            int hashCodeV = (uuid.toString() + System.currentTimeMillis()).hashCode();
+            if (hashCodeV < 0) {
+                // 有可能是负数
+                hashCodeV = -hashCodeV;
+            }
+            while (hashCodeV > 999999999) {
+                hashCodeV = hashCodeV >> 1;
+            }
+            String orderNoDateTimeFormatter = "yyMMddHH";
+            // 0 代表前面补充0       
+            // 9 代表长度为4       
+            // d 代表参数为正数型 
+            String randomFormat = "%09d";
+            orderNo = "C" + DateFormatUtils.format(date, orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
+        }while(!checkOrderNoAvailable(orderNo, date));
+        return orderNo;
+    }
+    
+    /**
+     * 校验订单号生成是否重复
+     * @author wangbin
+     * @date  2018年8月11日 下午5:32:33
+     * @param orderNo
+     * @param date
+     * @return
+     */
+    private boolean checkOrderNoAvailable(String orderNo, Date date) {
+        
         String orderNoDateTimeFormatter = "yyMMddHH";
-        // 0 代表前面补充0       
-        // 9 代表长度为4       
-        // d 代表参数为正数型 
-        String randomFormat = "%09d";
-        return "C" + DateFormatUtils.format(new Date(), orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
+        String val = cache.hget(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, orderNoDateTimeFormatter), orderNo);
+        if (StringUtils.isNotBlank(val)) {
+            logger.info("订单号生成出现重复：orderNo={}", orderNo);
+            return false;
+        } else {
+            cache.hset(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, orderNoDateTimeFormatter), orderNo, orderNo);
+            //下一小时就过期
+            Long expires = (DateUtils.truncate(DateUtils.addHours(date, 1), Calendar.HOUR_OF_DAY).getTime()-date.getTime())/1000;
+            cache.expire(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, orderNoDateTimeFormatter), expires.intValue());
+            return true;
+        }
     }
 
     /**

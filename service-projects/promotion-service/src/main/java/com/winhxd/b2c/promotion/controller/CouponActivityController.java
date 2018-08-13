@@ -44,12 +44,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        try {
-            result = couponActivityService.queryCouponActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findCouponActivity(condition);
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询结束");
         return result;
     }
@@ -113,13 +108,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
 
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.saveCouponActivity(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.saveCouponActivity(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -215,13 +205,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
 
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.updateCouponActivity(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.updateCouponActivity(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -235,18 +220,13 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "删除优惠券活动", notes = "删除优惠券活动")
     @Override
-    public ResponseResult<Integer> deleteCouponActivity(String id) {
-        if(StringUtils.isBlank(id)){
+    public ResponseResult<Integer> deleteCouponActivity(CouponActivityCondition condition) {
+        if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("deleteCouponActivity--Id:" + id);
+        logger.info("deleteCouponActivity--Id:" + condition.getId());
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(id)){
-            responseResult.setCode(BusinessCode.CODE_1007);
-            responseResult.setMessage("参数为空错误");
-            return responseResult;
-        }
-        couponActivityService.deleteCouponActivity(id);
+        couponActivityService.deleteCouponActivity(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("删除成功");
 
@@ -263,18 +243,13 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "撤回活动优惠券", notes = "撤回活动优惠券")
     @Override
-    public ResponseResult<Integer> revocationActivityCoupon(String id) {
-        if(StringUtils.isBlank(id)){
+    public ResponseResult<Integer> revocationActivityCoupon(CouponActivityCondition condition) {
+        if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
-        logger.info("revocationActivityCoupon--Id:" + id);
+        logger.info("revocationActivityCoupon--Id:" + condition.getId());
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(id)){
-            responseResult.setCode(BusinessCode.CODE_1007);
-            responseResult.setMessage("参数为空错误");
-            return responseResult;
-        }
-        couponActivityService.revocationActivityCoupon(id);
+        couponActivityService.revocationActivityCoupon(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("撤销成功");
 
@@ -299,13 +274,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         ResponseResult responseResult = new ResponseResult();
-        try {
-            couponActivityService.updateCouponActivityStatus(condition);
-            responseResult.setCode(BusinessCode.CODE_OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            responseResult.setCode(BusinessCode.CODE_1001);
-        }
+        couponActivityService.updateCouponActivityStatus(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
     }
 
@@ -330,12 +300,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryCouponByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        try {
-            result = couponActivityService.queryCouponByActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryCouponByActivity/ 根据活动获取优惠券列表=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findCouponByActivity(condition);
         return result;
     }
 
@@ -360,12 +325,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryStoreByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        try {
-            result = couponActivityService.queryStoreByActivity(condition);
-        }catch (Exception e){
-            logger.error("/promotion/v1/queryStoreByActivity/ 根据活动获取小店信息=--异常" + e.getMessage(), e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
+        result = couponActivityService.findStoreByActivity(condition);
         return result;
     }
 

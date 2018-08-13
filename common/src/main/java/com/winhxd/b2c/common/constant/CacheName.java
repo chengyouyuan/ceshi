@@ -20,9 +20,13 @@ public class CacheName {
      */
     public static final String CACHE_KEY_MODIFY_ORDER = "CACHE:KEY:MODIFY:ORDER:";
     /**
-     * 订单修改锁KEY 全局唯一，订单修改统一用这个
+     * 门店订单汇总信息KEY
      */
     public static final String CACHE_KEY_STORE_ORDER_SALESSUMMARY = "STORE:SALESSUMMARY:";
+    /**
+     * 订单号生成重复redis验证KEY
+     */
+    public static final String CACHE_KEY_ORDERNO_CHECK_EXISTS = "ORDERNO:CHECK:";
     /**
      * B端用户登录key
      */

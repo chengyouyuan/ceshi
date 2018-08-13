@@ -18,10 +18,11 @@ import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -49,13 +50,14 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
-        SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-        SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+    public ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition) {
+        String createdStartStr = DateFormatUtils.format(condition.getDateInterval().getStartDate(),"yyyy-MM-dd 00:00:00");
+        String createdEndStr = DateFormatUtils.format(condition.getDateInterval().getEndDate(),"yyyy-MM-dd 23:59:59");
+
         if(condition.getCreatedStart() != null && condition.getCreatedEnd() != null){
             try {
-                Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
-                Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
+                Date createdStart  = DateUtils.parseDate(createdStartStr);
+                Date createdEnd  = DateUtils.parseDate(createdEndStr);
                 condition.setCreatedStart(createdStart);
                 condition.setCreatedEnd(createdEnd);
             }catch (Exception e){
@@ -64,7 +66,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
         if(condition.getCreatedStart() != null && condition.getCreatedEnd() == null){
             try {
-                Date createdStart = formatS.parse(formatS.format(condition.getCreatedStart()));
+                Date createdStart  = DateUtils.parseDate(createdStartStr);
                 condition.setCreatedStart(createdStart);
             }catch (Exception e ){
                 e.printStackTrace();
@@ -72,26 +74,22 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
         if(condition.getCreatedStart() == null && condition.getCreatedEnd() != null){
             try {
-                Date createdEnd = formatE.parse(formatE.format(condition.getCreatedEnd()));
+                Date createdEnd  = DateUtils.parseDate(createdEndStr);
                 condition.setCreatedEnd(createdEnd);
             }catch (Exception e ){
                 e.printStackTrace();
             }
         }
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        try {
-            PagedList<CouponActivityVO> pagedList = new PagedList<>();
-            PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-            List<CouponActivityVO> activity = couponActivityMapper.queryCouponActivity(condition);
-            PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
-            pagedList.setData(pageInfo.getList());
-            pagedList.setPageNo(pageInfo.getPageNum());
-            pagedList.setPageSize(pageInfo.getPageSize());
-            pagedList.setTotalRows(pageInfo.getTotal());
-            result.setData(pagedList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        PagedList<CouponActivityVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
+        PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
         return result;
     }
 
@@ -103,14 +101,14 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public void saveCouponActivity(CouponActivityAddCondition condition) {
         try {
-            SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-            SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
-            Date activityStart = formatS.parse(formatS.format(condition.getActivityStart()));
-            Date activityEnd = formatE.parse(formatE.format(condition.getActivityEnd()));
+            String createdStartStr = DateFormatUtils.format(condition.getDateInterval().getStartDate(),"yyyy-MM-dd 00:00:00");
+            String createdEndStr = DateFormatUtils.format(condition.getDateInterval().getEndDate(),"yyyy-MM-dd 23:59:59");
+            Date activityStart  = DateUtils.parseDate(createdStartStr);
+            Date activityEnd  = DateUtils.parseDate(createdEndStr);
             //CouponActivity
             CouponActivity couponActivity = new CouponActivity();
             couponActivity.setName(condition.getName());
-            couponActivity.setCode(getUUID());
+            couponActivity.setCode(condition.getCode());
             couponActivity.setExolian(condition.getExolian());
             couponActivity.setRemarks(condition.getRemarks());
             couponActivity.setActivityStart(activityStart);
@@ -118,8 +116,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setCreated(new Date());
-            couponActivity.setCreatedBy(123456L);
-            couponActivity.setCreatedByName("测试用户");
+            couponActivity.setCreatedBy(condition.getCreatedBy());
+            couponActivity.setCreatedByName(condition.getCreatedByName());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
@@ -138,8 +136,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
                 //领券
                 if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    Date couponStart = formatS.parse(formatS.format(condition.getCouponActivityTemplateList().get(i).getStartTime()));
-                    Date couponEnd = formatE.parse(formatE.format(condition.getCouponActivityTemplateList().get(i).getEndTime()));
+                    String couponStartStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getStartTime(),"yyyy-MM-dd 00:00:00");
+                    String couponEndStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getEndTime(),"yyyy-MM-dd 23:59:59");
+                    Date couponStart  = DateUtils.parseDate(couponStartStr);
+                    Date couponEnd  = DateUtils.parseDate(couponEndStr);
                     couponActivityTemplate.setStartTime(couponStart);
                     couponActivityTemplate.setEndTime(couponEnd);
                     couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
@@ -215,15 +215,16 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
         try {
-            SimpleDateFormat formatS = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-            SimpleDateFormat formatE = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
-            Date activityStart = formatS.parse(formatS.format(condition.getActivityStart()));
-            Date activityEnd = formatE.parse(formatE.format(condition.getActivityEnd()));
+
+            String activityStartStr = DateFormatUtils.format(condition.getActivityStart(),"yyyy-MM-dd 00:00:00");
+            String activityEndStr = DateFormatUtils.format(condition.getActivityEnd(),"yyyy-MM-dd 23:59:59");
+            Date activityStart  = DateUtils.parseDate(activityStartStr);
+            Date activityEnd  = DateUtils.parseDate(activityEndStr);
             //更新CouponActivity
             CouponActivity couponActivity = new CouponActivity();
             couponActivity.setId(condition.getId());
             couponActivity.setName(condition.getName());
-            couponActivity.setCode(getUUID());
+            couponActivity.setCode(condition.getCode());
             couponActivity.setExolian(condition.getExolian());
             couponActivity.setRemarks(condition.getRemarks());
             couponActivity.setActivityStart(activityStart);
@@ -231,8 +232,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
             couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
             couponActivity.setUpdated(new Date());
-            couponActivity.setUpdatedBy(123456L);
-            couponActivity.setUpdatedByName("测试用户");
+            couponActivity.setUpdatedBy(condition.getCreatedBy());
+            couponActivity.setUpdatedByName(condition.getCreatedByName());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
@@ -261,8 +262,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
                 //领券
                 if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    Date couponStart = formatS.parse(formatS.format(condition.getCouponActivityTemplateList().get(i).getStartTime()));
-                    Date couponEnd = formatE.parse(formatE.format(condition.getCouponActivityTemplateList().get(i).getEndTime()));
+                    String couponStartStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getStartTime(),"yyyy-MM-dd 00:00:00");
+                    String couponEndStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getEndTime(),"yyyy-MM-dd 23:59:59");
+                    Date couponStart  = DateUtils.parseDate(couponStartStr);
+                    Date couponEnd  = DateUtils.parseDate(couponEndStr);
                     couponActivityTemplate.setStartTime(couponStart);
                     couponActivityTemplate.setEndTime(couponEnd);
                     couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
@@ -297,44 +300,40 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
     /**
      * 删除活动信息（更新活动状态为无效）
-     * @param id
+     * @param condition
      */
     @Override
-    public void deleteCouponActivity(String id) {
+    public void deleteCouponActivity(CouponActivityCondition condition) {
         CouponActivity couponActivity = new CouponActivity();
-        couponActivity.setId(Long.valueOf(id));
+        couponActivity.setId(condition.getId());
         couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
         couponActivity.setUpdated(new Date());
-        couponActivity.setUpdatedBy(123456L);
-        couponActivity.setUpdatedByName("测试用户");
+        couponActivity.setUpdatedBy(condition.getCreatedBy());
+        couponActivity.setUpdatedByName(condition.getCreatedByName());
         couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
     }
 
     /**
      * 停止活动，撤销优惠券
-     * @param id
+     * @param condition
      */
     @Override
-    public void revocationActivityCoupon(String id) {
-        try {
-            //停止活动
-            CouponActivity couponActivity = new CouponActivity();
-            couponActivity.setId(Long.valueOf(id));
-            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
-            couponActivity.setUpdated(new Date());
-            couponActivity.setUpdatedBy(123456L);
-            couponActivity.setUpdatedByName("测试用户");
+    public void revocationActivityCoupon(CouponActivityCondition condition) {
+        //停止活动
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setId(condition.getId());
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
+        couponActivity.setUpdated(new Date());
+        couponActivity.setUpdatedBy(condition.getCreatedBy());
+        couponActivity.setUpdatedByName(condition.getCreatedByName());
 
-            couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
-            //撤销已发放的优惠券
-            List<Long> longList = null;
-            longList.add(Long.valueOf(id));
-            RevokeCouponCodition couponCondition = new RevokeCouponCodition();
-            couponCondition.setSendIds(longList);
-            couponService.revokeCoupon(couponCondition);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        //撤销已发放的优惠券
+        List<Long> longList = null;
+        longList.add(condition.getId());
+        RevokeCouponCodition couponCondition = new RevokeCouponCodition();
+        couponCondition.setSendIds(longList);
+        couponService.revokeCoupon(couponCondition);
     }
 
     /**
@@ -348,8 +347,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setId(condition.getId());
         couponActivity.setActivityStatus(condition.getActivityStatus());
         couponActivity.setUpdated(new Date());
-        couponActivity.setUpdatedBy(123456L);
-        couponActivity.setUpdatedByName("测试用户");
+        couponActivity.setUpdatedBy(condition.getCreatedBy());
+        couponActivity.setUpdatedByName(condition.getCreatedByName());
 
         couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
     }
@@ -358,11 +357,11 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> findCouponByActivity(CouponActivityCondition condition) {
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponActivityStoreVO> coupon = couponActivityMapper.queryCouponByActivity(condition);
+        List<CouponActivityStoreVO> coupon = couponActivityMapper.selectCouponByActivity(condition);
         PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(coupon);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
@@ -377,11 +376,11 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> findStoreByActivity(CouponActivityCondition condition) {
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
         PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<CouponActivityStoreVO> store = couponActivityMapper.queryStoreByActivity(condition);
+        List<CouponActivityStoreVO> store = couponActivityMapper.selectStoreByActivity(condition);
         PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(store);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

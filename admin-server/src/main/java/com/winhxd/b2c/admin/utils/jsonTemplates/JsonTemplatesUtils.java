@@ -50,8 +50,7 @@ public class JsonTemplatesUtils {
             try {
                 dataNode = mapper.readValue(file, Map.class);
             } catch (IOException e) {
-                LOGGER.error("JSON模板文件读取错误: {}", jsonTemplatesPath);
-                e.printStackTrace();
+                LOGGER.error("{} - JSON模板文件读取错误: {}", jsonTemplatesPath, e);
             }
         }
         return  dataNode;

@@ -852,7 +852,8 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.error("订单：{}优惠券优惠金额接口返回数据为空:couponDiscountAmount={}，创建订单异常！~", orderInfo.getOrderNo(), couponDiscountAmount);
             throw new BusinessException(BusinessCode.CODE_401009);
         }
-        logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={}", orderInfo.getOrderNo(), couponDiscountAmount);
+        orderInfo.setCouponTitles(ret.getData().getCouponTitle());
+        logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={},couponTitles={}", orderInfo.getOrderNo(), couponDiscountAmount, orderInfo.getCouponTitles());
         return couponDiscountAmount;
     }
 

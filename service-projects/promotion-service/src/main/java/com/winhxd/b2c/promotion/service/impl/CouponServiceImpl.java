@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -691,6 +692,11 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         return count;
+    }
+
+    @Override
+    public List<CouponInvestorAmountVO> getCouponInvestorAmount(OrderCouponCondition condition) {
+        return null;
     }
 
 }

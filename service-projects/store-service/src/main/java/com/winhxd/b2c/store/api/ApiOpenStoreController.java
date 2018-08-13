@@ -280,8 +280,7 @@ public class ApiOpenStoreController {
         Long businessId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
         Date currentDate = new Date();
-        Date beginTime = getBeginTimeOfDate(currentDate);
-        responseResult.setData(this.getStoreSummaryInfo(businessId, storeCustomerId, beginTime, currentDate));
+        responseResult.setData(this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate));
         return responseResult;
     }
 
@@ -361,7 +360,7 @@ public class ApiOpenStoreController {
         Long businessId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店获取营业查询数据接口 门店用户编码:{}", storeCustomerId);
         Date currentDate = new Date();
-        Date beginTime = getBeginTimeOfDate(currentDate);
+        Date beginTime = DateUtils.truncate(currentDate, Calendar.DATE);
         Date yesterdayEndTime = DateUtils.addDays(currentDate, -1);
         Date yesterdayBeginTime = DateUtils.addDays(beginTime, -1);
         //今日的
@@ -408,28 +407,6 @@ public class ApiOpenStoreController {
             storeManageInfoVO.setCompleteNum(0);
         }
         return storeManageInfoVO;
-    }
-
-    /**
-     * <p>
-     * Gets first time of {@code date}
-     * </p>
-     *
-     * @param date may be null
-     * @return {@code Date} first time 00:00:00 or null
-     */
-    private static Date getBeginTimeOfDate(final Date date) {
-        Date beginTime = null;
-        if (date != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            beginTime = calendar.getTime();
-        }
-        return beginTime;
     }
 
     /**

@@ -411,9 +411,11 @@ public class ApiStoreProductManageController {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
 			logger.error("B端搜索商品接口:登录凭证为空");
+            responseResult.setCode(BusinessCode.CODE_1002);
 			return new ResponseResult<>(BusinessCode.CODE_1002);
 		}
 		if (!verifyParam(condition)) {
+            responseResult.setCode(BusinessCode.CODE_1007);
 			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
 		//1607456L;

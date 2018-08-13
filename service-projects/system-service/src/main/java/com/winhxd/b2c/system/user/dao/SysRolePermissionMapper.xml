@@ -29,9 +29,6 @@
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysRolePermission">
     insert into sys_role_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="roleId != null">
         role_id,
       </if>
@@ -43,9 +40,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="roleId != null">
         #{roleId,jdbcType=BIGINT},
       </if>

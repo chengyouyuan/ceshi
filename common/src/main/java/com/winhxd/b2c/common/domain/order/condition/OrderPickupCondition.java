@@ -1,9 +1,10 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
 
-public class OrderPickupCondition {
+public class OrderPickupCondition extends ApiCondition {
 
     @ApiModelProperty(value = "订单编号", required = true)
     private String orderNo;

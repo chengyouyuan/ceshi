@@ -9,7 +9,7 @@ import com.winhxd.b2c.store.service.StoreLoginService;
 /**
  * @author wufuyun
  * @date  2018年8月6日 上午10:41:39
- * @Description 门店服务层
+ * @Description 门店登录服务层
  * @version
  */
 @Service

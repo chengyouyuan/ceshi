@@ -102,7 +102,6 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
                     shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
                     shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
-                    shopCarProdInfoVO.setProdStatus(shopCarProdVO.getProdStatus());
                     result.add(shopCarProdInfoVO);
                 }
             }
@@ -116,12 +115,11 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public void readyOrder(ReadyShopCarCondition condition, Long customerId) throws InterruptedException {
+    public void readyOrder(ReadyShopCarCondition condition, Long customerId) {
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
-
-        if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
-            try {
+        try {
+            if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
                 List<OrderItemCondition> orderItemConditions = condition.getOrderItemConditions();
                 checkShopCarProdInfo(orderItemConditions, condition.getStoreId());
                 // 保存订单
@@ -135,13 +133,14 @@ public class ShopCarServiceImpl implements ShopCarService {
                 shopCar.setStoreId(condition.getStoreId());
                 shopCarMapper.deleteShopCarsByStoreId(shopCar);
                 removeShopCar(customerId);
-            } finally {
-                lock.unlock();
+            } else {
+                throw new BusinessException(BusinessCode.CODE_402014);
             }
-        } else {
-            throw new BusinessException(BusinessCode.CODE_402014);
+        } catch (InterruptedException e){
+            throw new BusinessException(BusinessCode.CODE_1001);
+        } finally {
+            lock.unlock();
         }
-
     }
 
     private List<String> getSkuCodeListByShopCar(List<ShopCar> shopCars){

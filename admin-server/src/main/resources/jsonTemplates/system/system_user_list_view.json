@@ -1,7 +1,7 @@
 {
   "meta": {
     "type": "base-form",
-    "url": "/user/get/{id}",
+    "path": "/user/get/{id}",
     "id": "system_user_list_view",
     "title": "成员查看",
     "buttons": [

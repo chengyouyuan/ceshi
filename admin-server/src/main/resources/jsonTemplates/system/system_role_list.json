@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/role/list",
+    "type": "report",
+    "id": "system_role_list",
+    "code": "system_role_list",
+    "title": "权限管理",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/authorization/index",
+          "configKey": "",
+          "callBack": {
+          }
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/role/list"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "name": "roleName",
+        "title": "权限组名"
+      },
+      {
+        "name": "permissions",
+        "title": "权限范围"
+      },
+      {
+        "name": "userCount",
+        "title": "组内人数"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "删除",
+            "icon": null,
+            "event": {
+              "ajaxType": "delete",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/role/remove/{id}"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "ruleName",
+        "inputModel": "input",
+        "title": "权限组名",
+        "value": "",
+        "placeholder": "请输入权限组名",
+        "isHidden": false
+      }
+    ]
+  }
+}

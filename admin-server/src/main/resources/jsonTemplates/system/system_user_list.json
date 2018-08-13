@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "get",
-    "url": "/user/list",
+    "path": "/user/list",
     "type": "report",
     "id": "system_user_list",
     "code": "system_user_list",
@@ -12,7 +12,8 @@
         "icon": null,
         "event": {
           "type": "router",
-          "url": "/config/%2Ftemplate%2Fsystem_user_list_add",
+          "path": "",
+          "configKey": "/template/module/system/system_user_list_add.json",
           "callBack": {
           }
         }
@@ -23,7 +24,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "get",
-          "url": "/user/list"
+          "path": "/user/list"
         }
       },
       {
@@ -31,7 +32,7 @@
         "icon": null,
         "event": {
           "type": "reset",
-          "url": ""
+          "path": ""
         }
       }
     ],
@@ -76,7 +77,8 @@
               "static": {
                 "method": "detail"
               },
-              "url": "/config/%2Ftemplate%2Fsystem_user_list_view"
+              "path": "",
+              "configKey": "/template/module/system/system_user_list_view.json"
             }
           },
           {
@@ -90,7 +92,8 @@
               "static": {
                 "method": "update"
               },
-              "url": "/config/%2Ftemplate%2Fsystem_user_list_edit"
+              "path": "",
+              "configKey": "/template/module/system/system_user_list_edit.json"
             }
           },
           {
@@ -102,7 +105,7 @@
               "params": [
                 "id"
               ],
-              "url": "/user/disabled/{id}"
+              "path": "/user/disabled/{id}"
             }
           },
           {
@@ -113,7 +116,8 @@
               "params": [
                 "id"
               ],
-              "url": "/config/%2Ftemplate%2Fsystem_user_list_password"
+              "path": "",
+              "configKey": "/template/module/system/system_user_list_password.json"
             }
           }
         ]
@@ -138,10 +142,11 @@
       },
       {
         "name": "roleName",
-        "inputModel": "input",
+        "inputModel": "inputDia",
         "title": "权限组",
         "placeholder": "请输入成员权限组",
-        "value": "",
+        "path": "",
+        "configKey": "/template/module/system/system_role_list_win.json",
         "isHidden": false
       }
     ]

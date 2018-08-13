@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "用户请求参数",description = "后台用户列表请求参数")
-public class BackStageCustomerInfoCondition extends BaseCondition {
+public class BackStageCustomerInfoCondition extends PagedCondition {
     /**用户id*/
     private Long customerId;
     /**用户账号*/

@@ -1,9 +1,10 @@
 package com.winhxd.b2c.common.mq;
 
-import com.winhxd.b2c.common.util.JsonUtil;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.winhxd.b2c.common.util.JsonUtil;
 
 /**
  * @author lixiaodong

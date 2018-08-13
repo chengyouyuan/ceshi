@@ -5,12 +5,9 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
-
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.store.service.StoreService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,13 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BackStageStoreServiceController implements BackStageStoreServiceClient {
 
-    private Logger logger = LoggerFactory.getLogger(BackStageStoreServiceController.class);
-
     @Autowired
     private StoreService storeService;
 
     @Override
-    public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(BackStageStoreInfoCondition storeCondition) {
+    public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
         PagedList<BackStageStoreVO> storeVOPagedList = storeService.findStoreUserInfo(storeCondition);
         responseResult.setData(storeVOPagedList);
@@ -44,11 +39,11 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         BeanUtils.copyProperties(condition, storeUserInfo);
         storeService.updateByPrimaryKeySelective(storeUserInfo);
-        return new ResponseResult();
+        return new ResponseResult<>();
     }
 
 }

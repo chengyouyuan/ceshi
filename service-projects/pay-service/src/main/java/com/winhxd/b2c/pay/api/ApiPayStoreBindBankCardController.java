@@ -32,15 +32,15 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @Api(tags = "ApiPay")
-@RequestMapping(value = "/api-pay/bankCard")
+@RequestMapping(value = "/api-pay/pay")
 public class ApiPayStoreBindBankCardController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreBindBankCardController.class);
 	
 	@Autowired
 	private PayStoreBankCardServiceImpl storeBankCardService;
 
-	@ApiOperation(value = "B端获取银行卡信息", response = Boolean.class, notes = "B端获取银行卡信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
     })
     @RequestMapping(value = "/610/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -67,8 +67,8 @@ public class ApiPayStoreBindBankCardController {
         return result;
     }
 	
-	@ApiOperation(value = "B端绑定银行卡", response = Boolean.class, notes = "B端绑定银行卡")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功", response = Boolean.class),
+	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_6111, message = "银行名称为空"),
             @ApiResponse(code = BusinessCode.CODE_6112, message = "银行卡卡号为空"),
@@ -134,7 +134,6 @@ public class ApiPayStoreBindBankCardController {
 			e.printStackTrace();
 			LOGGER.error("B端绑定银行卡失败；失败原因---："+ e);
 		}
-        
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }

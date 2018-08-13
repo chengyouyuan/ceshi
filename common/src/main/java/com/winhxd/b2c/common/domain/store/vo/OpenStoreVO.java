@@ -18,13 +18,13 @@ import java.util.List;
 @Data
 public class OpenStoreVO {
 
-    @ApiModelProperty(value = "是否创建过了惠小店，0未创建，1已创建", required = true)
+    @ApiModelProperty(value = "是否在测试区域范围(0否，1是)")
+    private Byte regionStatus;
+
+    @ApiModelProperty(value = "是否创建过了惠小店(0未创建，1已创建)")
     private Byte storeStatus;
 
-    @ApiModelProperty(value = "门店是否完善全部信息，0未完善，1已完善", required = true)
-    private Byte perfectStatus;
-
-    @ApiModelProperty(value = "未完善信息时，提示列表")
+    @ApiModelProperty(value = "信息列表(基础信息、经营信息、店铺信息、证照、门头照、30天内是否有订货)，0未完善，1已完善")
     private List<Integer> noPerfectMessage;
 
 

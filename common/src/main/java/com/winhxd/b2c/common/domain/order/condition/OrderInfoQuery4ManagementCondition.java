@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -10,7 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @date  2018年8月6日 下午2:58:44
  * @version 
  */
-public class OrderInfoQuery4ManagementCondition extends BaseCondition {
+public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     @ApiModelProperty(value = "门店id")
     private Long storeId;

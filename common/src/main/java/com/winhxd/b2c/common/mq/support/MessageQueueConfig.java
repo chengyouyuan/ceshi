@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.mq.support;
 
 import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.MQHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,11 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Autowired
     private ConnectionFactory connectionFactory;
 
+    @Bean
+    public StringMessageSender stringMessageSender(){
+        return new StringMessageSender();
+    }
+    
     @Bean
     public List<Declarable> declarableList() {
         List<Declarable> list = new ArrayList<>();

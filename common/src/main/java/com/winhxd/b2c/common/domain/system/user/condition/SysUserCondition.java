@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.winhxd.b2c.common.domain.system.user.condition;
 
 import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
@@ -30,3 +31,37 @@ public class SysUserCondition extends BaseCondition {
     private String roleName;
 
 }
+=======
+package com.winhxd.b2c.common.domain.system.user.condition;
+
+import com.winhxd.b2c.common.domain.common.PagedCondition;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * @author zhangzhengyang
+ * @description 系统用户condition
+ * @date 2018/8/1
+ */
+@ApiModel("系统用户列表查询参数")
+@Data
+public class SysUserCondition extends PagedCondition {
+
+    @ApiModelProperty(value = "编号")
+    private Long userId;
+
+    @ApiModelProperty(value = "账号")
+    private String account;
+
+    @ApiModelProperty(value = "姓名")
+    private String username;
+
+    @ApiModelProperty(value = "手机")
+    private String mobile;
+
+    @ApiModelProperty(value = "角色名称")
+    private String roleName;
+
+}
+>>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git

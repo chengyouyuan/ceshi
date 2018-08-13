@@ -32,8 +32,8 @@ public class BusinessDecoder implements Decoder {
         Object obj = delegate.decode(response, type);
         if (obj instanceof ResponseResult) {
             ResponseResult result = (ResponseResult) obj;
-            if (result.getCode() > 0) {
-                throw new BusinessException(result.getCode());
+            if (result.getCode() != 0) {
+                throw new BusinessException(result.getCode(), result.getMessage());
             }
         }
         return obj;

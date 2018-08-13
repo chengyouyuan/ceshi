@@ -1,7 +1,6 @@
 package com.winhxd.b2c.store.api;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +21,9 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreSendVerificationCodeCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserSimpleInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -95,93 +96,104 @@ public class ApiStoreLoginController {
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
+		logger.info("{} - B端登录验证, 参数：storeUserInfoCondition={}", "", JsonUtil.toJSONString(storeUserInfoCondition));
 		ResponseResult<StoreUserInfoSimpleVO> result = new ResponseResult<>();
-		try {
 			if (null == storeUserInfoCondition) {
-				return new ResponseResult<>(BusinessCode.CODE_1007);
+				logger.info("{} - , 参数无效");
+				throw new BusinessException(BusinessCode.CODE_1007);
 			}
-			StoreUserInfo DB = null;
+			StoreUserInfo db = null;
 			StoreUserInfo storeUserInfo = new StoreUserInfo();
 			StoreUser user = new StoreUser();
-			
 			StoreUserInfoSimpleVO vo = new StoreUserInfoSimpleVO();
-			// 微信验证码登录
-			if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()
+			/**
+			 * 微信验证码登录
+			 */
+			if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag()) 
 					&& LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-				if (!storeUserInfoCondition.getVerificationCode()
-						.equals(cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE+storeUserInfoCondition.getStoreMobile()))) {
-					return new ResponseResult<>(BusinessCode.CODE_1008);
+				if (!storeUserInfoCondition.getVerificationCode().equals(cache
+						.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeUserInfoCondition.getStoreMobile()))) {
+					logger.info("{} - , 验证码错误");
+					throw new BusinessException(BusinessCode.CODE_1008);
 				}
 				storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
-				DB = storeLoginService.getStoreUserInfo(storeUserInfo);
-				// 查库
-				if (DB == null) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				db = storeLoginService.getStoreUserInfo(storeUserInfo);
+				/**
+				 * 查库
+				 */
+				if (db == null) {
+					logger.info("{} - , 账号无效");
+					result = new ResponseResult<>(BusinessCode.CODE_1004);
+					return result;
 				} else {
-					vo.setToken(DB.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
-						user.setBusinessId(DB.getId());
-						user.setStoreCustomerId(DB.getStoreCustomerId());
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+					vo.setToken(db.getToken());
+					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
+						user.setBusinessId(db.getId());
+						user.setStoreCustomerId(db.getStoreCustomerId());
+						cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
+						cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
 					}
 					result.setData(vo);
 				}
 			}
-			// 微信密码登录
-			else if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()
- 					&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-				ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
+			/**
+			 * 微信密码登录
+			 */
+			else if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
+					&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
+				ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient.getStoreUserInfo(
 						storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
-				Map<String, Object> map = object.getData();
-				if (map.isEmpty()) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				StoreUserSimpleInfo map = object.getData();
+				if (map==null) {
+					logger.info("{} - , 账号无效");
+					throw new BusinessException(BusinessCode.CODE_1004);
 				} else {
-					storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-					DB = storeLoginService.getStoreUserInfo(storeUserInfo);
-					if (DB != null) {
-						
-						if(StringUtils.isBlank(DB.getOpenId())) {
+					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
+					db = storeLoginService.getStoreUserInfo(storeUserInfo);
+					if (db != null) {
+
+						if (StringUtils.isBlank(db.getOpenId())) {
 							storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 						}
 						/**
 						 * 更新数据库
 						 */
-						storeUserInfo.setId(DB.getId());
-						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
+						storeUserInfo.setId(db.getId());
+						storeUserInfo.setStoreMobile(map.getStoreMobile());
 						storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-						vo.setToken(DB.getToken());
-						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
-							user.setBusinessId(DB.getId());
-							user.setStoreCustomerId(DB.getStoreCustomerId());
-							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						vo.setToken(db.getToken());
+						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
+							user.setBusinessId(db.getId());
+							user.setStoreCustomerId(db.getStoreCustomerId());
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
 						}
 						result.setData(vo);
 					} else {
-						
+
 						/**
 						 * 查询OpenId是否 已经绑定其他手机号
 						 */
 						StoreUserInfo OpenIdInfo = new StoreUserInfo();
 						OpenIdInfo.setOpenId(storeUserInfoCondition.getOpenId());
-						DB = storeLoginService.getStoreUserInfo(OpenIdInfo);
+						db = storeLoginService.getStoreUserInfo(OpenIdInfo);
 						/**
 						 * 如果可以查到。。证明该微信号绑定过其他账号
 						 */
-						if(null != DB){
-							return new ResponseResult<>(BusinessCode.CODE_1010);
+						if (null != db) {
+							logger.info("{} - , 该微信号已绑定过账号");
+							throw new BusinessException(BusinessCode.CODE_1010);
 						}
 						/*
 						 * 插入数据库
 						 */
 						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
-						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
+						storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
-						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
-						storeUserInfo.setSource(storeUserInfoCondition.getSource());
+						storeUserInfo.setStoreMobile(map.getStoreMobile());
+						storeUserInfo.setSource(storeUserInfoCondition.getPlatform());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
@@ -189,7 +201,7 @@ public class ApiStoreLoginController {
 						vo.setToken(storeUserInfo.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 							user.setBusinessId(storeUserInfo.getId());
-							user.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
+							user.setStoreCustomerId(map.getStoreCustomerId());
 							cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(),
 									JsonUtil.toJSONString(user));
 							cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
@@ -199,83 +211,96 @@ public class ApiStoreLoginController {
 				}
 
 			}
-			// 微信快捷登录
-			else if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()
+			/**
+			 * 微信快捷登录
+			 */
+			else if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
 					&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 				storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
-				DB = storeLoginService.getStoreUserInfo(storeUserInfo);
-				if (DB == null) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				db = storeLoginService.getStoreUserInfo(storeUserInfo);
+				if (db == null) {
+					logger.info("{} - , 账号无效");
+					throw new BusinessException(BusinessCode.CODE_1004);
 				}
-				ResponseResult<Map<String, Object>> object = storeHxdServiceClient
-						.getStoreUserInfoByCustomerId(DB.getStoreCustomerId());
-				Map<String, Object> map = object.getData();
-				if (map.isEmpty()) {
-					return new ResponseResult<>(BusinessCode.CODE_1011);
+				ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
+						.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
+				StoreUserSimpleInfo map = object.getData();
+				if (map==null) {
+					logger.info("{} - , 微信快捷登录绑定账号无效");
+					throw new BusinessException(BusinessCode.CODE_1011);
 				}
-				storeUserInfo.setId(DB.getId());
-				storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
+				storeUserInfo.setId(db.getId());
+				storeUserInfo.setStoreMobile(map.getStoreMobile());
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-				vo.setToken(DB.getToken());
+				vo.setToken(db.getToken());
 				if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
-					user.setBusinessId(DB.getId());
-					user.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
+					user.setBusinessId(db.getId());
+					user.setStoreCustomerId(map.getStoreCustomerId());
 					cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
 					cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
 				}
 				result.setData(vo);
 
 			}
-			// 账号验证码登录
-			else if (LOGIN_LAG_2 == storeUserInfoCondition.getLoginFlag()
+			/**
+			 * 账号验证码登录
+			 */
+			else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag())
 					&& LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-				if (!storeUserInfoCondition.getVerificationCode()
-						.equals(cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE+storeUserInfoCondition.getStoreMobile()))) {
-					return new ResponseResult<>(BusinessCode.CODE_1008);
+				if (!storeUserInfoCondition.getVerificationCode().equals(cache
+						.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeUserInfoCondition.getStoreMobile()))) {
+					logger.info("{} - , 验证码错误");
+					throw new BusinessException(BusinessCode.CODE_1008);
 				}
 				storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
-				DB = storeLoginService.getStoreUserInfo(storeUserInfo);
-				// 查库
-				if (DB == null) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				db = storeLoginService.getStoreUserInfo(storeUserInfo);
+				/**
+				 * 查库
+				 */
+				if (db == null) {
+					logger.info("{} - , 账号无效");
+					throw new BusinessException(BusinessCode.CODE_1004);
 				} else {
-					vo.setToken(DB.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
-						user.setBusinessId(DB.getId());
-						user.setStoreCustomerId(DB.getStoreCustomerId());
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+					vo.setToken(db.getToken());
+					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
+						user.setBusinessId(db.getId());
+						user.setStoreCustomerId(db.getStoreCustomerId());
+						cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
+						cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
 					}
 					result.setData(vo);
 				}
 			}
-			// 账号密码登录
-			else if (LOGIN_LAG_2 == storeUserInfoCondition.getLoginFlag()
+			/**
+			 * 账号密码登录
+			 */
+			else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag()) 
 					&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 
-				ResponseResult<Map<String, Object>> object = storeHxdServiceClient.getStoreUserInfo(
+				ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient.getStoreUserInfo(
 						storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
-				Map<String, Object> map = object.getData();
-				if (map.isEmpty()) {
-					return new ResponseResult<>(BusinessCode.CODE_1004);
+				StoreUserSimpleInfo map = object.getData();
+				if (map==null) {
+					logger.info("{} - , 账号无效");
+					throw new BusinessException(BusinessCode.CODE_1004);
 				} else {
-					storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-					DB = storeLoginService.getStoreUserInfo(storeUserInfo);
-					if (DB != null) {
+					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
+					db = storeLoginService.getStoreUserInfo(storeUserInfo);
+					if (db != null) {
 						/**
 						 * 更新数据库
 						 */
-						storeUserInfo.setId(DB.getId());
-						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
+						storeUserInfo.setId(db.getId());
+						storeUserInfo.setStoreMobile(map.getStoreMobile());
 						storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
-						vo.setToken(DB.getToken());
-						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + DB.getToken())) {
-							user.setBusinessId(DB.getId());
-							user.setStoreCustomerId(DB.getStoreCustomerId());
-							cache.set(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), JsonUtil.toJSONString(user));
-							cache.expire(CacheName.STORE_USER_INFO_TOKEN + DB.getToken(), 30 * 24 * 60 * 60);
+						vo.setToken(db.getToken());
+						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
+							user.setBusinessId(db.getId());
+							user.setStoreCustomerId(db.getStoreCustomerId());
+							cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
+							cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
 						}
 						result.setData(vo);
 					} else {
@@ -283,11 +308,11 @@ public class ApiStoreLoginController {
 						 * 插入数据库
 						 */
 						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
-						storeUserInfo.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
+						storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 						storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 						storeUserInfo.setCreated(new Date());
-						storeUserInfo.setStoreMobile(String.valueOf(map.get("storeMobile")));
-						storeUserInfo.setSource(storeUserInfoCondition.getSource());
+						storeUserInfo.setStoreMobile(map.getStoreMobile());
+						storeUserInfo.setSource(storeUserInfoCondition.getPlatform());
 						storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 						storeUserInfo.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(storeUserInfo);
@@ -295,7 +320,7 @@ public class ApiStoreLoginController {
 						vo.setToken(storeUserInfo.getToken());
 						if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 							user.setBusinessId(storeUserInfo.getId());
-							user.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
+							user.setStoreCustomerId(map.getStoreCustomerId());
 							BeanUtils.copyProperties(vo, user);
 							cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(),
 									JsonUtil.toJSONString(user));
@@ -307,11 +332,6 @@ public class ApiStoreLoginController {
 
 			}
 			return result;
-		}catch (Exception e) {
-			logger.error("ApiStoreLoginController -> storeLogin异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
 	}
 
 	/**
@@ -326,109 +346,111 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
+			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
 	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
-	public ResponseResult<String> sendVerification(@RequestBody StoreSendVerificationCodeCondition storeUserInfoCondition) {
+	public ResponseResult<String> sendVerification(
+			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
+		logger.info("{} -账号发送验证码, 参数：storeUserInfoCondition={}", "",
+				JsonUtil.toJSONString(storeSendVerificationCodeCondition));
 		ResponseResult<String> result = new ResponseResult<>();
-		try {
-			if (null == storeUserInfoCondition) {
-				return new ResponseResult<>(BusinessCode.CODE_1007);
+			if (null == storeSendVerificationCodeCondition) {
+				logger.info("{} - , 参数无效");
+				throw new BusinessException(BusinessCode.CODE_1004);
 			}
 			/**
 			 * 掉惠下单服务查询门店用户信息
 			 */
-			ResponseResult<Map<String, Object>> object = storeHxdServiceClient
-					.getStoreUserInfo(storeUserInfoCondition.getStoreMobile(), "");
-			Map<String, Object> map = object.getData();
-			if (map.isEmpty()) {
-				return new ResponseResult<>(BusinessCode.CODE_1004);
+			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
+					.getStoreUserInfo(storeSendVerificationCodeCondition.getStoreMobile(), "");
+			StoreUserSimpleInfo map = object.getData();
+			if (map==null) {
+				logger.info("{} - , 账号无效");
+				throw new BusinessException(BusinessCode.CODE_1004);
 			} else {
 				/**
 				 * 用惠下单StoreCustomerId查询惠小店数据库是否已经存在
 				 */
 				StoreUserInfo info = new StoreUserInfo();
 
-				StoreUserInfo DB = null;
+				StoreUserInfo db = null;
 				/**
 				 * 如果是微信登录验证OpenId 是否绑定手机号是否与app传过来的一致
 				 */
-				if (LOGIN_LAG == storeUserInfoCondition.getLoginFlag()) {
-					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-					DB = storeLoginService.getStoreUserInfo(info);
-					if (DB != null) {
-						if(StringUtils.isBlank(DB.getOpenId())) {
-							info.setOpenId(storeUserInfoCondition.getOpenId());
+				if (LOGIN_LAG == storeSendVerificationCodeCondition.getLoginFlag()) {
+					info.setStoreCustomerId(map.getStoreCustomerId());
+					db = storeLoginService.getStoreUserInfo(info);
+					if (db != null) {
+						if (StringUtils.isBlank(db.getOpenId())) {
+							info.setOpenId(storeSendVerificationCodeCondition.getOpenId());
 						}
 						/**
 						 * 更新数据库
 						 */
-						info.setId(DB.getId());
-						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
+						info.setId(db.getId());
+						info.setStoreMobile(map.getStoreMobile());
 						storeLoginService.modifyStoreUserInfo(info);
-						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(map.getStoreMobile());
 					} else {
 						/**
 						 * 查询OpenId是否 已经绑定其他手机号
 						 */
 						StoreUserInfo OpenIdInfo = new StoreUserInfo();
-						OpenIdInfo.setOpenId(storeUserInfoCondition.getOpenId());
-						DB = storeLoginService.getStoreUserInfo(OpenIdInfo);
+						OpenIdInfo.setOpenId(storeSendVerificationCodeCondition.getOpenId());
+						db = storeLoginService.getStoreUserInfo(OpenIdInfo);
 						/**
 						 * 如果可以查到。。证明该微信号绑定过其他账号
 						 */
-						if(null != DB){
-							return new ResponseResult<>(BusinessCode.CODE_1010);
+						if (null != db) {
+							logger.info("{} - , 该微信号已绑定过账号");
+							throw new BusinessException(BusinessCode.CODE_1010);
 						}
 						/*
 						 * 插入数据库
 						 */
-						info.setOpenId(storeUserInfoCondition.getOpenId());
-						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						info.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+						info.setOpenId(storeSendVerificationCodeCondition.getOpenId());
+						info.setStoreCustomerId(map.getStoreCustomerId());
+						info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 						info.setCreated(new Date());
-						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
-						info.setSource(storeUserInfoCondition.getSource());
+						info.setStoreMobile(map.getStoreMobile());
+						info.setSource(storeSendVerificationCodeCondition.getPlatform());
 						info.setToken(GeneratePwd.getRandomUUID());
 						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
-						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(map.getStoreMobile());
 					}
 				}
 				/**
 				 * 不是微信登录
 				 */
 				else {
-					info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-					DB = storeLoginService.getStoreUserInfo(info);
+					info.setStoreCustomerId(map.getStoreCustomerId());
+					db = storeLoginService.getStoreUserInfo(info);
 					/*
 					 * 插入数据库
 					 */
-					if (DB == null) {
+					if (db == null) {
 						info.setCreated(new Date());
-						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
-						info.setStoreCustomerId(Long.parseLong(String.valueOf(map.get("storeCustomerId"))));
-						info.setSource(storeUserInfoCondition.getSource());
+						info.setStoreMobile(map.getStoreMobile());
+						info.setStoreCustomerId(map.getStoreCustomerId());
+						info.setSource(storeSendVerificationCodeCondition.getPlatform());
 						info.setToken(GeneratePwd.getRandomUUID());
 						info.setStoreStatus((short) 0);
 						storeLoginService.saveStoreInfo(info);
-						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(map.getStoreMobile());
 					}
 					/**
 					 * 更新数据库
 					 */
 					else {
-						info.setId(DB.getId());
-						info.setStoreMobile(String.valueOf(map.get("storeMobile")));
+						info.setId(db.getId());
+						info.setStoreMobile(map.getStoreMobile());
 						storeLoginService.modifyStoreUserInfo(info);
-						result = sendVerificationCode(String.valueOf(map.get("storeMobile")));
+						result = sendVerificationCode(map.getStoreMobile());
 					}
 				}
 
 			}
-		}catch (Exception e) {
-			logger.error("ApiStoreLoginController -> sendVerification异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
 		return result;
 	}
 
@@ -444,12 +466,13 @@ public class ApiStoreLoginController {
 		String content = "";
 		String verificationCode = "";
 		if (cache.exists(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile)) {
-			return new ResponseResult<>(BusinessCode.CODE_1012);
+			logger.info("{} - , 请求验证码时长为超过一分钟");
+			throw new BusinessException(BusinessCode.CODE_1012);
 		}
 		/**
 		 * 随机生成6位数验证码
 		 */
-		verificationCode = "888888";//GeneratePwd.generatePwd6Mobile();
+		verificationCode = "888888";// GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
 		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, 5 * 60);
 		/**
@@ -461,8 +484,8 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-	    messageServiceClient.sendSMS(storeMobile, content);
-		logger.info(storeMobile+":发送的内容为:"+content);
+		//messageServiceClient.sendSMS(storeMobile, content);
+		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}
 
@@ -472,81 +495,89 @@ public class ApiStoreLoginController {
 	 * @Description 登录成功后查看惠小店产品有无未填写价格的商品提示
 	 * @param storeUserInfoCondition
 	 * @return
-	 *//*
-	@ApiOperation(value = "登录成功查看惠小店有误未填写商品价格")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@RequestMapping(value = "1010/v1/verificationProductPrice", method = RequestMethod.POST)
-	public ResponseResult<LoginCheckSellMoneyVO> verificationProductPrice(
-			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
-		ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
-		try {
-			if (null == storeUserInfoCondition) {
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoneyVO = storeServiceClient
-					.loginCheckSellMoney(1L);
-			return loginCheckSellMoneyVO;
-		} catch (BusinessException e) {
-			logger.error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" + e.getMessage(),
-					e.getErrorCode());
-			result = new ResponseResult<>(e.getErrorCode());
-		} catch (Exception e) {
-			logger.error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
-	}
-
-	*//**
-	 * @author wufuyun
-	 * @date 2018年8月6日 上午10:12:38
-	 * @Description 忘记密码
-	 * @param storeUserInfoCondition
-	 * @return
-	 *//*
-	@ApiOperation(value = "忘记密码,修改密码")
-	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
-			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
-	@RequestMapping(value = "1011/v1/modifyPassword", method = RequestMethod.POST)
-	public ResponseResult<String> modifyPassword(@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
-		ResponseResult<String> result = new ResponseResult<>();
-		StoreUserInfo storeUserInfo = new StoreUserInfo();
-		try {
-			if (null == storeUserInfoCondition) {
-				return new ResponseResult<>(BusinessCode.CODE_1007);
-			}
-			String cacheVerificationCode = cache.get(storeUserInfoCondition.getStoreMobile());
-			*//**
-			 * 验证App端传过的验证码是否和服务器一致
-			 *//*
-			logger.info("App 传过来的验证码：" + storeUserInfoCondition.getVerificationCode() + "************服务端的验证码："
-					+ cacheVerificationCode);
-			if (!cacheVerificationCode.equals(storeUserInfoCondition.getVerificationCode())) {
-				result = new ResponseResult<>(BusinessCode.CODE_1008);
-			}
-			*//**
-			 * 设置密码和确认密码不一致
-			 *//*
-			if (!storeUserInfoCondition.getStorePassword().equals(storeUserInfoCondition.getConfirmPassword())) {
-				result = new ResponseResult<>(BusinessCode.CODE_1005);
-			}
-			storeUserInfo.setId(1L);
-			storeUserInfo.setStorePassword(storeUserInfoCondition.getStorePassword());
-			storeLoginService.modifyStoreUserInfo(storeUserInfo);
-			return result;
-		} catch (BusinessException e) {
-			logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" + e.getMessage(), e.getErrorCode());
-			result = new ResponseResult<>(e.getErrorCode());
-		} catch (Exception e) {
-			logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" + e.getMessage(), e);
-			result = new ResponseResult<>(BusinessCode.CODE_1001);
-		}
-		return result;
-	}*/
+	 */
+	/*
+	 * @ApiOperation(value = "登录成功查看惠小店有误未填写商品价格")
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message =
+	 * "成功"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+	 * 
+	 * @RequestMapping(value = "1010/v1/verificationProductPrice", method =
+	 * RequestMethod.POST) public ResponseResult<LoginCheckSellMoneyVO>
+	 * verificationProductPrice(
+	 * 
+	 * @RequestBody StoreUserInfoCondition storeUserInfoCondition) {
+	 * ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
+	 * try { if (null == storeUserInfoCondition) { return new
+	 * ResponseResult<>(BusinessCode.CODE_1007); }
+	 * ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoneyVO =
+	 * storeServiceClient .loginCheckSellMoney(1L); return
+	 * loginCheckSellMoneyVO; } catch (BusinessException e) { logger.
+	 * error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" +
+	 * e.getMessage(), e.getErrorCode()); result = new
+	 * ResponseResult<>(e.getErrorCode()); } catch (Exception e) { logger.
+	 * error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" +
+	 * e.getMessage(), e); result = new
+	 * ResponseResult<>(BusinessCode.CODE_1001); } return result; }
+	 * 
+	 *//**
+		 * @author wufuyun
+		 * @date 2018年8月6日 上午10:12:38
+		 * @Description 忘记密码
+		 * @param storeUserInfoCondition
+		 * @return
+		 */
+	/*
+	 * @ApiOperation(value = "忘记密码,修改密码")
+	 * 
+	 * @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message =
+	 * "成功"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+	 * 
+	 * @ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
+	 * 
+	 * @RequestMapping(value = "1011/v1/modifyPassword", method =
+	 * RequestMethod.POST) public ResponseResult<String>
+	 * modifyPassword(@RequestBody StoreUserInfoCondition
+	 * storeUserInfoCondition) { ResponseResult<String> result = new
+	 * ResponseResult<>(); StoreUserInfo storeUserInfo = new StoreUserInfo();
+	 * try { if (null == storeUserInfoCondition) { return new
+	 * ResponseResult<>(BusinessCode.CODE_1007); } String cacheVerificationCode
+	 * = cache.get(storeUserInfoCondition.getStoreMobile());
+	 *//**
+		 * 验证App端传过的验证码是否和服务器一致
+		 */
+	/*
+	 * logger.info("App 传过来的验证码：" + storeUserInfoCondition.getVerificationCode()
+	 * + "************服务端的验证码：" + cacheVerificationCode); if
+	 * (!cacheVerificationCode.equals(storeUserInfoCondition.getVerificationCode
+	 * ())) { result = new ResponseResult<>(BusinessCode.CODE_1008); }
+	 *//**
+		 * 设置密码和确认密码不一致
+		 *//*
+		 * if (!storeUserInfoCondition.getStorePassword().equals(
+		 * storeUserInfoCondition.getConfirmPassword())) { result = new
+		 * ResponseResult<>(BusinessCode.CODE_1005); } storeUserInfo.setId(1L);
+		 * storeUserInfo.setStorePassword(storeUserInfoCondition.
+		 * getStorePassword());
+		 * storeLoginService.modifyStoreUserInfo(storeUserInfo); return result;
+		 * } catch (BusinessException e) {
+		 * logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" +
+		 * e.getMessage(), e.getErrorCode()); result = new
+		 * ResponseResult<>(e.getErrorCode()); } catch (Exception e) {
+		 * logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" +
+		 * e.getMessage(), e); result = new
+		 * ResponseResult<>(BusinessCode.CODE_1001); } return result; }
+		 */
 }

@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.message.service.WechatShareService;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -55,8 +58,8 @@ public class ApiWechatShareController {
 
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
-    @GetMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
-    public void generateQRCodePic(HttpServletResponse response) {
+    @PostMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
+    public ResponseResult<Void> generateQRCodePic(@RequestBody ApiCondition codition, HttpServletResponse response) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
@@ -75,6 +78,7 @@ public class ApiWechatShareController {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     /**
@@ -85,8 +89,8 @@ public class ApiWechatShareController {
      */
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
-    @GetMapping(value = "/api-message/message/7002/v1/fetchMiniProgramConfig")
-    public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig() {
+    @PostMapping(value = "/api-message/message/7002/v1/fetchMiniProgramConfig")
+    public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig(@RequestBody ApiCondition condition) {
         ResponseResult<MiniProgramConfigVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {

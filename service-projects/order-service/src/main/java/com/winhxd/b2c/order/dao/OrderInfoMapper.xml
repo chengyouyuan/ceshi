@@ -14,6 +14,8 @@
         <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney"/>
         <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney"/>
         <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney"/>
+        <result column="sku_quantity" jdbcType="INTEGER" property="skuQuantity"/>
+        <result column="sku_category_quantity" jdbcType="INTEGER" property="skuCategoryQuantity"/>
         <result column="pay_type" jdbcType="SMALLINT" property="payType"/>
         <result column="pay_status" jdbcType="SMALLINT" property="payStatus"/>
         <result column="created" jdbcType="TIMESTAMP" property="created"/>
@@ -35,7 +37,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
-        coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, pay_type,
+        coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
@@ -64,6 +66,7 @@
         store_id, valuation_type, order_status,
         pickup_code, random_reduction_money, coupon_hxd_money,
         coupon_brand_money, order_total_money, real_payment_money,
+        sku_quantity, sku_category_quantity,
         pay_type, pay_status, created,
         pay_finish_datetime, pickup_datetime,
         finish_datetime, cancel_datetime, pickup_type,
@@ -75,6 +78,7 @@
         #{storeId,jdbcType=BIGINT}, #{valuationType,jdbcType=SMALLINT}, #{orderStatus,jdbcType=SMALLINT},
         #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponHxdMoney,jdbcType=DECIMAL},
         #{couponBrandMoney,jdbcType=DECIMAL}, #{orderTotalMoney,jdbcType=DECIMAL}, #{realPaymentMoney,jdbcType=DECIMAL},
+        #{sku_quantity,jdbcType=INTEGER}, #{sku_category_quantity,jdbcType=INTEGER},
         #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP},
         #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
         #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
@@ -121,6 +125,12 @@
             </if>
             <if test="realPaymentMoney != null">
                 real_payment_money,
+            </if>
+            <if test="skuQuantity != null">
+                sku_quantity,
+            </if>
+            <if test="skuCategoryQuantity != null">
+                sku_category_quantity,
             </if>
             <if test="payType != null">
                 pay_type,
@@ -214,6 +224,12 @@
             <if test="realPaymentMoney != null">
                 #{realPaymentMoney,jdbcType=DECIMAL},
             </if>
+            <if test="skuQuantity != null">
+            	#{skuQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="skuCategoryQuantity != null">
+            	#{skuCategoryQuantity,jdbcType=INTEGER},
+            </if>
             <if test="payType != null">
                 #{payType,jdbcType=SMALLINT},
             </if>
@@ -306,6 +322,12 @@
             <if test="realPaymentMoney != null">
                 real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
             </if>
+            <if test="skuQuantity != null">
+            	sku_quantity = #{skuQuantity,jdbcType=INTEGER},
+            </if>
+            <if test="skuCategoryQuantity != null">
+            	sku_category_quantity = #{skuCategoryQuantity,jdbcType=INTEGER},
+            </if>
             <if test="payType != null">
                 pay_type = #{payType,jdbcType=SMALLINT},
             </if>
@@ -376,6 +398,8 @@
       coupon_brand_money = #{couponBrandMoney,jdbcType=DECIMAL},
       order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
       real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
+      sku_quantity = #{skuQuantity,jdbcType=INTEGER},
+      sku_category_quantity = #{skuCategoryQuantity,jdbcType=INTEGER},
       pay_type = #{payType,jdbcType=SMALLINT},
       pay_status = #{payStatus,jdbcType=SMALLINT},
       created = #{created,jdbcType=TIMESTAMP},
@@ -477,14 +501,14 @@
     </update>
 
     <resultMap id="StoreOrderSalesSummaryMap" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
-        <result column="dailyTurnover" jdbcType="DECIMAL" property="dailyTurnover"/>
-        <result column="dailyOrderNum" jdbcType="INTEGER" property="dailyOrderNum"/>
+        <result column="turnover" jdbcType="DECIMAL" property="turnover"/>
+        <result column="orderNum" jdbcType="INTEGER" property="orderNum"/>
         <result column="storeId" jdbcType="BIGINT" property="storeId"/>
     </resultMap>
     <select id="getStoreOrderTurnover" resultMap="StoreOrderSalesSummaryMap">
         select
-        	ifnull(sum(order_total_money),0) dailyTurnover,
-        	ifnull(count(*),0) dailyOrderNum,
+        	ifnull(sum(order_total_money),0) turnover,
+        	ifnull(count(*),0) orderNum,
         	store_id storeId
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
@@ -494,9 +518,16 @@
         and order_status not in (33, 77, 99)
         group by store_id
     </select>
-    <select id="getStoreOrderCustomerNum" resultType="java.lang.Integer">
+    <resultMap id="StoreOrderSalesSummaryMap1" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
+        <result column="customerNum" jdbcType="INTEGER" property="customerNum"/>
+        <result column="skuQuantity" jdbcType="INTEGER" property="skuQuantity"/>
+        <result column="skuCategoryQuantity" jdbcType="INTEGER" property="skuCategoryQuantity"/>
+    </resultMap>
+    <select id="getStoreOrderCustomerNum" resultMap="StoreOrderSalesSummaryMap1">
         select
-        	ifnull(count(distinct customer_id),0) dailyCustomerNum
+        	ifnull(count(distinct customer_id),0) customerNum,
+        	ifnull(sum(sku_quantity),0) skuQuantity,
+        	ifnull(sum(sku_category_quantity),0) skuCategoryQuantity
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
         and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}

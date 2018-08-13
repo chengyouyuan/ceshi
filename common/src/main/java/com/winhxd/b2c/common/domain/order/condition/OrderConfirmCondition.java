@@ -2,9 +2,10 @@ package com.winhxd.b2c.common.domain.order.condition;
 
 import java.math.BigDecimal;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
 
-public class OrderConfirmCondition {
+public class OrderConfirmCondition extends ApiCondition {
 
     @ApiModelProperty(value = "订单编号", required = true)
     private String orderNo;

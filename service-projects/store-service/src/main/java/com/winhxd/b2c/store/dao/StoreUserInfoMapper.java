@@ -41,7 +41,7 @@ public interface StoreUserInfoMapper {
      * @param storeCustomerId 门店编码
      * @return 门店信息
      */
-    StoreUserInfo selectByStoreCustomerId(@Param("storeCustomerId")Long storeCustomerId);
+    StoreUserInfo selectByStoreCustomerId(@Param("storeCustomerId") Long storeCustomerId);
 
     /**
      * @param ids 门店id

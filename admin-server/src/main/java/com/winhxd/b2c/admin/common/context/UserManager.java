@@ -8,23 +8,20 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
 
 /**
  * @author lixiaodong
  */
 @Component
-public class UserManager implements ApplicationContextAware {
+public class UserManager implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
     private static Cache cache;
@@ -38,20 +35,20 @@ public class UserManager implements ApplicationContextAware {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
         Cookie[] requestCookies = request.getCookies();
-        if(null != requestCookies){
-            for(Cookie cookie : requestCookies){
-                if(cookie.getName().equals(Constant.TOKEN_NAME)){
+        if (null != requestCookies) {
+            for (Cookie cookie : requestCookies) {
+                if (cookie.getName().equals(Constant.TOKEN_NAME)) {
                     String token = cookie.getValue();
                     String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 
                     String json = cache.exists(cacheKey) ? cache.get(cacheKey) : null;
-                    logger.info("根据token获取用户信息{} ---> {}", token, json );
+                    logger.info("根据token获取用户信息{} ---> {}", token, json);
 
-                    if(StringUtils.isNotBlank(json)){
+                    if (StringUtils.isNotBlank(json)) {
                         UserInfo userInfo = JsonUtil.parseJSONObject(json, UserInfo.class);
 
                         // 重置会话过期时长
-                        cache.setex(cacheKey,30 * 60, json);
+                        cache.setex(cacheKey, 30 * 60, json);
                         return userInfo;
                     }
                     break;
@@ -62,7 +59,7 @@ public class UserManager implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        cache = applicationContext.getBean(Cache.class);
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        cache = event.getApplicationContext().getBean(Cache.class);
     }
 }

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayRefundMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayRefund">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="order_transaction_no" jdbcType="VARCHAR" property="orderTransactionNo" />
+    <result column="refund_no" jdbcType="CHAR" property="refundNo" />
+    <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+    <result column="refund_fee" jdbcType="DECIMAL" property="refundFee" />
+    <result column="refund_fee_type" jdbcType="VARCHAR" property="refundFeeType" />
+    <result column="real_refund_fee" jdbcType="DECIMAL" property="realRefundFee" />
+    <result column="refund_desc" jdbcType="VARCHAR" property="refundDesc" />
+    <result column="channel" jdbcType="SMALLINT" property="channel" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, order_transaction_no, refund_no, total_fee, refund_fee, refund_fee_type, 
+    real_refund_fee, refund_desc, channel, channel_id, cmms_amt, rate, status, created, 
+    updated, created_by, created_by_name, updated_by, updated_by_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_refund
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_refund
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefund">
+    insert into pay_refund (id, order_no, order_transaction_no, 
+      refund_no, total_fee, refund_fee, 
+      refund_fee_type, real_refund_fee, refund_desc, 
+      channel, channel_id, cmms_amt, 
+      rate, status, created, 
+      updated, created_by, created_by_name, 
+      updated_by, updated_by_name)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderTransactionNo,jdbcType=VARCHAR}, 
+      #{refundNo,jdbcType=CHAR}, #{totalFee,jdbcType=DECIMAL}, #{refundFee,jdbcType=DECIMAL}, 
+      #{refundFeeType,jdbcType=VARCHAR}, #{realRefundFee,jdbcType=DECIMAL}, #{refundDesc,jdbcType=VARCHAR}, 
+      #{channel,jdbcType=SMALLINT}, #{channelId,jdbcType=VARCHAR}, #{cmmsAmt,jdbcType=DECIMAL}, 
+      #{rate,jdbcType=DECIMAL}, #{status,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefund">
+    insert into pay_refund
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="orderTransactionNo != null">
+        order_transaction_no,
+      </if>
+      <if test="refundNo != null">
+        refund_no,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="refundFee != null">
+        refund_fee,
+      </if>
+      <if test="refundFeeType != null">
+        refund_fee_type,
+      </if>
+      <if test="realRefundFee != null">
+        real_refund_fee,
+      </if>
+      <if test="refundDesc != null">
+        refund_desc,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderTransactionNo != null">
+        #{orderTransactionNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundNo != null">
+        #{refundNo,jdbcType=CHAR},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFee != null">
+        #{refundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFeeType != null">
+        #{refundFeeType,jdbcType=VARCHAR},
+      </if>
+      <if test="realRefundFee != null">
+        #{realRefundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundDesc != null">
+        #{refundDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=SMALLINT},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="cmmsAmt != null">
+        #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefund">
+    update pay_refund
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="orderTransactionNo != null">
+        order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR},
+      </if>
+      <if test="refundNo != null">
+        refund_no = #{refundNo,jdbcType=CHAR},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFee != null">
+        refund_fee = #{refundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundFeeType != null">
+        refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+      </if>
+      <if test="realRefundFee != null">
+        real_refund_fee = #{realRefundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="refundDesc != null">
+        refund_desc = #{refundDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=SMALLINT},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefund">
+    update pay_refund
+    set order_no = #{orderNo,jdbcType=CHAR},
+      order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR},
+      refund_no = #{refundNo,jdbcType=CHAR},
+      total_fee = #{totalFee,jdbcType=DECIMAL},
+      refund_fee = #{refundFee,jdbcType=DECIMAL},
+      refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+      real_refund_fee = #{realRefundFee,jdbcType=DECIMAL},
+      refund_desc = #{refundDesc,jdbcType=VARCHAR},
+      channel = #{channel,jdbcType=SMALLINT},
+      channel_id = #{channelId,jdbcType=VARCHAR},
+      cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      rate = #{rate,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

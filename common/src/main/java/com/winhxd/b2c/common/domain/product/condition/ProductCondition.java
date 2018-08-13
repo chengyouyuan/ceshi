@@ -28,6 +28,9 @@ public class ProductCondition {
     @ApiModelProperty(value = "门店已上架商品sku", required = true)
     private List<String> productSkus;
     
+    @ApiModelProperty(value = "店主推荐sku集合")
+    private List<String> recommendSkus;
+    
     @ApiModelProperty(value = "是否是推荐商品 1 推荐  ")
     private Integer recommend;
     

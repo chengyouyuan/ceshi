@@ -42,23 +42,19 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 10:45
      */
-    @ApiOperation(value = "添加优惠换模板", notes = "添加优惠换模板",response = ResponseResult.class)
+    @ApiOperation(value = "优惠换模板添加", notes = "优惠换模板添加")
     @Override
-    public ResponseResult addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         /**
          * 校验必填参数
          */
-        ResponseResult responseResult = new ResponseResult();
-        try {
+        ResponseResult<Integer> responseResult = new ResponseResult();
             int count = couponTemplateService.saveCouponTemplate(couponTemplateCondition);
             if(count > 0) {
                 responseResult.setCode(BusinessCode.CODE_OK);
             }else{
                 responseResult.setCode(BusinessCode.CODE_1001);
             }
-        }catch (Exception e){
-          e.printStackTrace();
-        }
         return responseResult;
     }
 
@@ -73,9 +69,9 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 17:53
      */
-    @ApiOperation(value = "多条件分页查询 优惠券模板列表", notes = "多条件分页查询 优惠券模板列表",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券模板列表多条件分页查询", notes = "优惠券模板列表多条件分页查询")
     @Override
-    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:" + JsonUtil.toJSONString(couponTemplateCondition));
         ResponseResult<PagedList<CouponTemplateVO>> responseResult =  couponTemplateService.findCouponTemplatePageByCondition(couponTemplateCondition);
         return responseResult;
@@ -89,9 +85,9 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 20:39
      */
-    @ApiOperation(value = "单个删除/批量删除（非物理删除）/ 设为无效", notes = "单个删除/批量删除（非物理删除）/ 设为无效",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券模板设为无效", notes = "优惠券模板设为无效")
     @Override
-    public ResponseResult updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
         if(StringUtils.isBlank(ids)){
             responseResult.setCode(BusinessCode.CODE_1007);
@@ -117,7 +113,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 20:45
      */
-    @ApiOperation(value = "查看优惠券模板详情", notes = "查看优惠券模板详情",response = ResponseResult.class)
+    @ApiOperation(value = "优惠券模板详情查看", notes = "优惠券模板详情查看")
     @Override
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id) {
         ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);

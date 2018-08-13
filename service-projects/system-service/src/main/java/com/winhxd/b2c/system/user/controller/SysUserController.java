@@ -45,20 +45,12 @@ public class SysUserController implements UserServiceClient {
      * @return
      */
     @Override
-    @ApiOperation(value = "新增用户", response = Long.class)
+    @ApiOperation(value = "新增用户")
     public ResponseResult<Long> save(@RequestBody SysUser sysUser){
         logger.info("{} - 新增用户, 参数：sysUser={}", MODULE_NAME, sysUser);
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            sysUserService.save(sysUser);
-            result.setData(sysUser.getId());
-        } catch (BusinessException e){
-            logger.error("{} - 新增用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 新增用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(BusinessCode.CODE_1001);
-        }
+        sysUserService.save(sysUser);
+        result.setData(sysUser.getId());
         return result;
     }
 
@@ -71,18 +63,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "修改用户")
-    public ResponseResult modify(@RequestBody SysUser sysUser){
+    public ResponseResult<Void> modify(@RequestBody SysUser sysUser){
         logger.info("{} - 修改用户, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            sysUserService.modify(sysUser);
-        } catch (BusinessException e){
-            logger.error("{} - 修改用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 修改用户失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(BusinessCode.CODE_1001);
-        }
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
+        sysUserService.modify(sysUser);
         return result;
     }
 
@@ -95,18 +79,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "修改密码")
-    public ResponseResult updatePassword(@RequestBody SysUserPasswordDTO sysUser){
+    public ResponseResult<Void> updatePassword(@RequestBody SysUserPasswordDTO sysUser){
         logger.info("{} - 修改密码, 参数：sysUser={}", MODULE_NAME, sysUser);
-        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            sysUserService.modifyPassword(sysUser);
-        } catch (BusinessException e){
-            logger.error("{} - 修改密码失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 修改密码失败, 参数：sysUser={}", MODULE_NAME, sysUser, e);
-            result = new ResponseResult<>(BusinessCode.CODE_1001);
-        }
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
+        sysUserService.modifyPassword(sysUser);
         return result;
     }
 
@@ -122,16 +98,8 @@ public class SysUserController implements UserServiceClient {
     public ResponseResult<PagedList<SysUser>> find(@RequestBody SysUserCondition condition){
         logger.info("{} - 查询用户列表, 参数：condition={}", MODULE_NAME, condition);
         ResponseResult<PagedList<SysUser>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            PagedList<SysUser> page = sysUserService.find(condition);
-            result.setData(page);
-        } catch (BusinessException e){
-            logger.error("{} - 查询用户列表失败, 参数：condition={}", MODULE_NAME, condition, e);
-            result = new ResponseResult(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 查询用户列表失败, 参数：condition={}", MODULE_NAME, condition, e);
-            result = new ResponseResult(BusinessCode.CODE_1001);
-        }
+        PagedList<SysUser> page = sysUserService.find(condition);
+        result.setData(page);
         return result;
     }
 
@@ -147,16 +115,8 @@ public class SysUserController implements UserServiceClient {
     public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            SysUser sysUser = sysUserService.getByAccount(account);
-            result.setData(sysUser);
-        } catch (BusinessException e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：account={}", MODULE_NAME, account, e);
-            result = new ResponseResult(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 根据登录账号获取用户信息失败, 参数：account={}", MODULE_NAME, account, e);
-            result = new ResponseResult(BusinessCode.CODE_1001);
-        }
+        SysUser sysUser = sysUserService.getByAccount(account);
+        result.setData(sysUser);
         return result;
     }
 
@@ -172,17 +132,8 @@ public class SysUserController implements UserServiceClient {
     public ResponseResult<SysUser> get(@PathVariable("id") Long id){
         logger.info("{} - 根据主键获取用户信息, 参数：id={}", MODULE_NAME, id);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        try {
-            SysUser sysUser = sysUserService.get(id);
-            result.setData(sysUser);
-            return result;
-        } catch (BusinessException e){
-            logger.error("{} - 根据主键获取用户信息失败, 参数：id={}", MODULE_NAME, id, e);
-            result = new ResponseResult(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 根据主键获取用户信息失败, 参数：id={}", MODULE_NAME, id, e);
-            result = new ResponseResult(BusinessCode.CODE_1001);
-        }
+        SysUser sysUser = sysUserService.get(id);
+        result.setData(sysUser);
         return result;
     }
 
@@ -195,18 +146,10 @@ public class SysUserController implements UserServiceClient {
      */
     @Override
     @ApiOperation(value = "根据主键禁用用户")
-    public ResponseResult disabled(@PathVariable("id") Long id){
+    public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
-        ResponseResult result = new ResponseResult(BusinessCode.CODE_OK);
-        try {
-            sysUserService.disabled(id);
-        } catch (BusinessException e){
-            logger.error("{} - 根据主键禁用用户失败, 参数：id={}", MODULE_NAME, id, e);
-            result = new ResponseResult(e.getErrorCode());
-        } catch (Exception e){
-            logger.error("{} - 根据主键禁用用户失败, 参数：id={}", MODULE_NAME, id, e);
-            result = new ResponseResult(BusinessCode.CODE_1001);
-        }
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
+        sysUserService.disabled(id);
         return result;
     }
 }

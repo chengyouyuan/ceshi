@@ -36,7 +36,6 @@ public class CustomerServiceController implements CustomerServiceClient {
             PagedList<CustomerUserInfoVO> page = customerService.findCustomerPageInfo(condition);
             responseResult.setData(page);
         } catch (Exception e) {
-            logger.error("CustomerServiceController ->queryCustomerPageInfo报错，错误信息为{}", e);
             e.printStackTrace();
             responseResult.setCode(BusinessCode.CODE_1001);
         }

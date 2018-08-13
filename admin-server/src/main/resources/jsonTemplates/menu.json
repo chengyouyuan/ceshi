@@ -10,6 +10,7 @@
       "id": "1",
       "menuName": "商品管理",
       "path": "",
+      "configKey": "",
       "permission": "",
       "children": []
     },
@@ -17,6 +18,7 @@
       "id": "2",
       "menuName": "店铺管理",
       "path": "",
+      "configKey": "",
       "permission": "",
       "children": []
     },
@@ -24,12 +26,14 @@
       "id": "3",
       "menuName": "顾客管理",
       "path": "",
+      "configKey": "",
       "permission": "",
       "children": [
         {
           "id": "3_1",
           "menuName": ";(临时)顾客详情",
           "path": "",
+          "configKey": "",
           "permission": ""
         }
       ]
@@ -38,12 +42,14 @@
       "id": "4",
       "menuName": "订单管理",
       "path": "",
+      "configKey": "",
       "permission": "",
       "children": [
         {
           "id": "4_1",
           "menuName": "(临时)订单详情",
           "path": "/details/index",
+          "configKey": "",
           "permission": ""
         }
       ]
@@ -52,6 +58,7 @@
       "id": "5",
       "menuName": "财务管理",
       "path": "/financeManage/index",
+      "configKey": "",
       "permission": "",
       "children": []
     },
@@ -59,38 +66,45 @@
       "id": "6",
       "menuName": "促销管理",
       "path": "",
+      "configKey": "",
       "permission": "",
       "children": [
         {
           "id": "6_1",
           "menuName": "优惠券坎级管理",
           "path": "",
+          "configKey": "",
           "children": [
             {
               "id": "6_1_1",
               "menuName": "坎级规则添加",
-              "path": "/promotion/candyruleAdd"
+              "path": "/promotion/candyruleAdd",
+              "configKey": ""
             },
             {
               "id": "6_1_2",
               "menuName": "坎级规则列表",
-              "path": ""
+              "path": "",
+              "configKey": ""
             }
           ]
         },{
           "id": "6_2",
           "menuName": "优惠券模板管理",
           "path": "",
+          "configKey": "",
           "children": [
             {
               "id": "6_2_1",
               "menuName": "新建模版",
-              "path": "/promotion/addtemplate"
+              "path": "/promotion/addtemplate",
+              "configKey": ""
             },
             {
               "id": "6_2_2",
               "menuName": "模板列表",
-              "path": "/config/%2Freport%2Fmeta%2Ftemplate_management"
+              "path": "/config/%2Freport%2Fmeta%2Ftemplate_management",
+              "configKey": ""
             }
           ]
         },
@@ -98,11 +112,13 @@
           "id": "6_3",
           "menuName": "适用对象规则管理",
           "path": "",
+          "configKey": "",
           "children": [
             {
               "id": "6_3_1",
               "menuName": "适用对象规则新增",
-              "path": "/appliyObjectRule/index"
+              "path": "/appliyObjectRule/index",
+              "configKey": ""
             }
           ]
         },
@@ -110,16 +126,19 @@
           "id": "6_4",
           "menuName": "优惠券出资方规则",
           "path": "",
+          "configKey": "",
           "children": [
             {
               "id": "6_4_1",
               "menuName": "出资方规则添加",
-              "path": "/contributiveRule/index"
+              "path": "/contributiveRule/index",
+              "configKey": ""
             },
             {
               "id": "6_4_2",
               "menuName": "出资方规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             }
           ]
         },
@@ -127,16 +146,19 @@
           "id": "6_5",
           "menuName": "优惠券优惠方式规则",
           "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "configKey": "",
           "children": [
             {
               "id": "6_5_1",
               "menuName": "【优惠券】优惠方式规则",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             },
             {
               "id": "6_5_2",
               "menuName": "【优惠券】优惠方式规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             }
           ]
         },
@@ -144,16 +166,19 @@
           "id": "6_6",
           "menuName": "优惠券领券管理",
           "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
+          "configKey": "",
           "children": [
             {
               "id": "6_6_1",
               "menuName": "领券管理",
-              "path": "/couponReceive/index"
+              "path": "/couponReceive/index",
+              "configKey": ""
             },
             {
               "id": "6_6_2",
               "menuName": "领券管理列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             }
           ]
         },
@@ -161,16 +186,19 @@
           "id": "6_7",
           "menuName": "优惠券推券管理",
           "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
+          "configKey": "",
           "children": [
             {
               "id": "6_7_1",
               "menuName": "推券管理",
-              "path": "/promotion/pushvolume"
+              "path": "/promotion/pushvolume",
+              "configKey": ""
             },
             {
               "id": "6_7_2",
               "menuName": "推券管理列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             }
           ]
         },
@@ -178,16 +206,19 @@
           "id": "6_8",
           "menuName": "优惠券类型规则",
           "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
+          "configKey": "",
           "children": [
             {
               "id": "6_8_1",
               "menuName": "【优惠券】类型规则",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             },
             {
               "id": "6_8_2",
               "menuName": "【优惠券】类型规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management"
+              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
+              "configKey": ""
             }
           ]
         }
@@ -203,18 +234,21 @@
           "id": "7_1",
           "menuName": "自动推送列表",
           "path": "",
+          "configKey": "",
           "permission": ""
         },
         {
           "id": "7_2",
           "menuName": "手动推送列表",
           "path": "",
+          "configKey": "",
           "permission": ""
         },
         {
           "id": "7_3",
           "menuName": "(临时)消息编辑",
           "path": "",
+          "configKey": "",
           "permission": ""
         }
       ]
@@ -228,25 +262,22 @@
         {
           "id": "8_1",
           "menuName": "权限管理",
-          "path": "/authorization/index",
+          "path": "",
+          "configKey": "/template/module/system/system_role_list.json",
           "permission": ""
         },
         {
           "id": "8_2",
           "menuName": "成员管理",
-          "path": "/config/%2Ftemplate%2Fsystem_user_list",
+          "path": "",
+          "configKey": "/template/module/system/system_user_list.json",
           "permission": ""
         },
         {
           "id": "8_3",
           "menuName": "订单时间设置",
-          "path": "",
-          "permission": "/setOrderTime/index"
-        },
-        {
-          "id": "8_4",
-          "menuName": "修改密码",
-          "path": "",
+          "path": "/setOrderTime/index",
+          "configKey": "",
           "permission": ""
         }
       ]

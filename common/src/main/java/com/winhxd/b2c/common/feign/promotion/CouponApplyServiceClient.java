@@ -19,23 +19,62 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @Author wl
  * @Date 2018/8/9 12:02
- * @Description
+ * @Description  优惠券适用对象接口
  **/
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponApplyServiceClientFallback.class)
 public interface CouponApplyServiceClient {
-
+    /**
+     *
+     *@Deccription  适用对象查看详情
+     *@Params  id
+     *@Return  ResponseResult<CouponApplyVO>
+     *@User  wl
+     *@Date   2018/8/11 14:19
+     */
     @RequestMapping(value = "/promotion/522/v1/viewCouponApplyDetail", method = RequestMethod.POST)
-    ResponseResult viewCouponApplyDetail(@RequestParam("id") String id);
+    ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id);
 
+    /**
+     *
+     *@Deccription  适用对象设置无效
+     *@Params  id  userId userName
+     *@Return  ResponseResult<Integer> 0 表示成功
+     *@User  wl
+     *@Date   2018/8/11 14:20
+     */
     @RequestMapping(value = "/promotion/523/v1/updateCouponApplyToValid", method = RequestMethod.POST)
-    ResponseResult updateCouponApplyToValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
+    /**
+     *
+     *@Deccription 适用对象分页查询
+     *@Params  condition 查询条件
+     *@Return
+     *@User  wl
+     *@Date   2018/8/11 14:22
+     */
     @RequestMapping(value = "/promotion/524/v1/findCouponApplyPage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition);
 
+    /**
+     *
+     *@Deccription 添加适用对象
+     *@Params  condition
+     *@Return  ResponseResult<Integer>  0 表示成功
+     *@User  wl
+     *@Date   2018/8/11 14:23
+     */
     @RequestMapping(value = "/promotion/521/v1/addCouponApply", method = RequestMethod.POST)
-    ResponseResult addCouponApply(@RequestBody CouponApplyCondition condition);
+    ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition);
 
+    /**
+     *
+     *@Deccription 适用对象引用模板列表
+     *@Params
+     *@Return  ResponseResult<PagedList<ApplyTempleteCountVO>>
+     *@User  wl
+     *@Date   2018/8/11 14:24
+     */
     @RequestMapping(value = "/promotion/527/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
@@ -46,15 +85,15 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     private Throwable throwable;
 
     @Override
-    public ResponseResult viewCouponApplyDetail(String id) {
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(String id) {
         logger.error("CouponApplyServiceClient -> viewCouponApplyDetail", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<CouponApplyVO>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponApplyToValid(String id, String userId, String userName) {
+    public ResponseResult<Integer> updateCouponApplyToValid(String id, String userId, String userName) {
         logger.error("CouponApplyServiceClient -> updateCouponApplyToValid", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override
@@ -64,9 +103,9 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     }
 
     @Override
-    public ResponseResult addCouponApply(CouponApplyCondition condition) {
+    public ResponseResult<Integer> addCouponApply(CouponApplyCondition condition) {
         logger.error("CouponApplyServiceClient -> addCouponApply", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override

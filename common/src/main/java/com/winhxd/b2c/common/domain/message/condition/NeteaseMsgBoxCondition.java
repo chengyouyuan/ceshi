@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
-import com.winhxd.b2c.common.domain.base.condition.BaseCondition;
+import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @ApiModel("云信用户消息历史记录")
 @Data
-public class NeteaseMsgBoxCondition extends BaseCondition {
+public class NeteaseMsgBoxCondition extends PagedCondition {
     @ApiModelProperty("用户登录的手机号")
     private String usr;
     @ApiModelProperty("模糊搜索关键字，目前只是对消息内容进行过滤")

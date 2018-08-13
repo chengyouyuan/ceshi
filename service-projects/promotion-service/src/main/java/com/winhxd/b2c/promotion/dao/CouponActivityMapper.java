@@ -34,7 +34,7 @@ public interface CouponActivityMapper {
      * @param condition
      * @return
      */
-    List<CouponActivityVO> queryCouponActivity(@Param("condition") CouponActivityCondition condition);
+    List<CouponActivityVO> selectCouponActivity(@Param("condition") CouponActivityCondition condition);
 
     /**
      * 查询优惠券列表
@@ -56,18 +56,18 @@ public interface CouponActivityMapper {
      * @param condition
      * @return
      */
-    List<CouponActivityStoreVO> queryCouponByActivity(@Param("condition") CouponActivityCondition condition);
+    List<CouponActivityStoreVO> selectCouponByActivity(@Param("condition") CouponActivityCondition condition);
 
     /**
      * 根据活动获取小店信息
      * @param condition
      * @return
      */
-    List<CouponActivityStoreVO> queryStoreByActivity(@Param("condition") CouponActivityCondition condition);
+    List<CouponActivityStoreVO> selectStoreByActivity(@Param("condition") CouponActivityCondition condition);
 
     /**
      * 用户查询门店优惠券列表
      * @return
      */
-    List<CouponVO> getStoreCouponList(Long storeId);
+    List<CouponVO> selectStoreCouponList(Long storeId);
 }

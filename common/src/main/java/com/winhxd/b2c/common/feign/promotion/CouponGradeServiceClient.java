@@ -24,19 +24,58 @@ import org.springframework.web.bind.annotation.RequestParam;
  **/
 @FeignClient(value = ServiceName.PROMOTION_SERVICE, fallbackFactory = CouponGradeServiceClientFallback.class)
 public interface CouponGradeServiceClient {
-
+    /**
+     *
+     *@Deccription 坎级规则添加
+     *@Params  couponGradeCondition
+     *@Return  ResponseResult<Integer> 0 表示成功
+     *@User  wl
+     *@Date   2018/8/11 14:25
+     */
     @RequestMapping(value = "/promotion/518/v1/addCouponGrade", method = RequestMethod.POST)
-    ResponseResult addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
+    ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
 
+    /**
+     *
+     *@Deccription  坎级规则查看详情
+     *@Params  id
+     *@Return  ResponseResult<CouponGradeVO>
+     *@User  wl
+     *@Date   2018/8/11 14:26
+     */
     @RequestMapping(value = "/promotion/519/v1/viewCouponGradeDetail", method = RequestMethod.POST)
-    ResponseResult viewCouponGradeDetail(@RequestParam("id")String id);
+    ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id")String id);
 
+    /**
+     *
+     *@Deccription 坎级规则设置无效
+     *@Params  id userId userName
+     *@Return  ResponseResult<Integer>  0 表示成功
+     *@User  wl
+     *@Date   2018/8/11 14:27
+     */
     @RequestMapping(value = "/promotion/520/v1/updateCouponGradeValid", method = RequestMethod.POST)
-    ResponseResult updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
+    /**
+     *
+     *@Deccription 坎级规则分页查询
+     *@Params  CouponGradeCondition
+     *@Return ResponseResult<PagedList<CouponGradeVO>>
+     *@User  wl
+     *@Date   2018/8/11 14:28
+     */
     @RequestMapping(value = "/promotion/517/v1/getCouponGradePage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
 
+    /**
+     *
+     *@Deccription  坎级规则引用模板数列表
+     *@Params  gradeId pageNo  pageSize
+     *@Return  ResponseResult<PagedList<GradeTempleteCountVO>>
+     *@User  wl
+     *@Date   2018/8/11 14:28
+     */
     @RequestMapping(value = "/promotion/526/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
@@ -48,19 +87,19 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     private Throwable throwable;
 
     @Override
-    public ResponseResult addCouponGrade(CouponGradeCondition couponGradeCondition) {
+    public ResponseResult<Integer> addCouponGrade(CouponGradeCondition couponGradeCondition) {
         logger.error("CouponGradeServiceClient -> addCouponGrade", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult viewCouponGradeDetail(String id) {
+    public ResponseResult<CouponGradeVO> viewCouponGradeDetail(String id) {
         logger.error("CouponGradeServiceClient -> viewCouponGradeDetail", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+        return new ResponseResult<CouponGradeVO>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult updateCouponGradeValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponGradeValid(String id,String userId,String userName) {
         logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

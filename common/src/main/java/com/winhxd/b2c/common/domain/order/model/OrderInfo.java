@@ -49,6 +49,10 @@ public class OrderInfo {
      */
     private BigDecimal randomReductionMoney;
     /**
+     * 优惠券标题
+     */
+    private String couponTitles;
+    /**
      * 惠下单优惠金额
      */
     private BigDecimal couponHxdMoney;

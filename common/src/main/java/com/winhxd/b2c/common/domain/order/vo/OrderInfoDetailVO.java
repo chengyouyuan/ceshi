@@ -52,6 +52,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "提货码", required = true)
     private String pickupCode;
+    
+    /**
+     * 提货码
+     */
+    @ApiModelProperty(value = "所以用优惠券标题", required = true)
+    private String couponTitles;
+    
     /**
      * 订单总金额
      */

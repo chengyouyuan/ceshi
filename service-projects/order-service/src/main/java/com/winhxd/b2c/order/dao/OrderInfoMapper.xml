@@ -10,6 +10,7 @@
         <result column="order_status" jdbcType="SMALLINT" property="orderStatus"/>
         <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode"/>
         <result column="random_reduction_money" jdbcType="DECIMAL" property="randomReductionMoney"/>
+        <result column="coupon_titles" jdbcType="VARCHAR" property="couponTitles"/>
         <result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney"/>
         <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney"/>
         <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney"/>
@@ -37,7 +38,7 @@
         <result column="created_by_name" jdbcType="VARCHAR" property="createdByName"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
+        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money, coupon_titles,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
@@ -65,7 +66,7 @@
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
         insert into order_info (id, order_no, customer_id,
         store_id, valuation_type, order_status,
-        pickup_code, random_reduction_money, coupon_hxd_money,
+        pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
         coupon_brand_money, order_total_money, real_payment_money,
         sku_quantity, sku_category_quantity,
         pay_type, pay_status, created,
@@ -77,7 +78,7 @@
         created_by_name)
         values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{customerId,jdbcType=BIGINT},
         #{storeId,jdbcType=BIGINT}, #{valuationType,jdbcType=SMALLINT}, #{orderStatus,jdbcType=SMALLINT},
-        #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponHxdMoney,jdbcType=DECIMAL},
+        #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponTitles,jdbcType=VARCHAR}, #{couponHxdMoney,jdbcType=DECIMAL},
         #{couponBrandMoney,jdbcType=DECIMAL}, #{orderTotalMoney,jdbcType=DECIMAL}, #{realPaymentMoney,jdbcType=DECIMAL},
         #{sku_quantity,jdbcType=INTEGER}, #{sku_category_quantity,jdbcType=INTEGER},
         #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP},
@@ -114,6 +115,9 @@
             </if>
             <if test="randomReductionMoney != null">
                 random_reduction_money,
+            </if>
+            <if test="couponTitles != null">
+                coupon_titles,
             </if>
             <if test="couponHxdMoney != null">
                 coupon_hxd_money,
@@ -216,6 +220,9 @@
             <if test="randomReductionMoney != null">
                 #{randomReductionMoney,jdbcType=DECIMAL},
             </if>
+            <if test="couponTitles != null">
+                #{couponTitles,jdbcType=VARCHAR},
+            </if>
             <if test="couponHxdMoney != null">
                 #{couponHxdMoney,jdbcType=DECIMAL},
             </if>
@@ -317,6 +324,9 @@
             <if test="randomReductionMoney != null">
                 random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
             </if>
+            <if test="couponTitles != null">
+                coupon_titles = #{couponTitles,jdbcType=VARCHAR},
+            </if>
             <if test="couponHxdMoney != null">
                 coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
             </if>
@@ -404,6 +414,7 @@
       order_status = #{orderStatus,jdbcType=SMALLINT},
       pickup_code = #{pickupCode,jdbcType=VARCHAR},
       random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
+      coupon_titles = #{couponTitles,jdbcType=VARCHAR},
       coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
       coupon_brand_money = #{couponBrandMoney,jdbcType=DECIMAL},
       order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
@@ -441,7 +452,7 @@
         </collection>
     </resultMap>
     <sql id="Order_Info_List">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remarks
@@ -480,7 +491,7 @@
         order by info.created desc
     </select>
     <sql id="Order_Info_List_4_store">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remarks

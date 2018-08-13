@@ -67,6 +67,12 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "订单实付金额", required = true)
     private BigDecimal realPaymentMoney;
+    
+    @ApiModelProperty(value = "订单商品总数量", required = true)
+    private Integer skuQuantity;
+    
+    @ApiModelProperty(value = "订单商品种类数量", required = true)
+    private Integer skuCategoryQuantity;
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */

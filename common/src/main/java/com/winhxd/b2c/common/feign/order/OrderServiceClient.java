@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.feign.order;
 
-import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
@@ -18,7 +17,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -49,6 +47,9 @@ public interface OrderServiceClient {
 
     @RequestMapping(value = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/", method = RequestMethod.POST)
     ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition);
+    
+    @RequestMapping(value = "/order/456/v1/listOrder4ManagementWithNoPage/", method = RequestMethod.POST)
+    ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
 }
 
 @Component
@@ -96,6 +97,13 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {
         logger.error("OrderServiceFallback -> queryStoreOrderSalesSummaryByDateTimePeriod", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+            OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
+        logger.error("OrderServiceFallback -> listOrder4ManagementWithNoPage", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

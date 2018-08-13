@@ -21,7 +21,7 @@ public class MessageNeteaseHistory {
     /**
      * 消息类型 0-TEXT/1-PICTURE/2-AUDIO/4-ADDRESS/100-CUSTOM
      */
-    private Integer msgType;
+    private Short msgType;
     /**
      * 消息内容
      */
@@ -34,6 +34,14 @@ public class MessageNeteaseHistory {
      * 消息扩展
      */
     private String extJson;
+    /**
+     * 页面类型
+     */
+    private Short pageType;
+    /**
+     * 消息跳转类型
+     */
+    private String treeCode;
     /**
      * 消息发送时间
      */

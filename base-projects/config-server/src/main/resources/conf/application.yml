@@ -22,3 +22,8 @@ management:
   endpoint:
     shutdown:
       enabled: true
+
+#eureka注册中心首页默认跳转到各服务的swagger-ui页面
+eureka:
+  instance:
+    status-page-url: http://localhost:${server.port}/swagger-ui.html

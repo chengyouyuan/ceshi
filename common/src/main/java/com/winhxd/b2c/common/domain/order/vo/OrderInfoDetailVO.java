@@ -120,6 +120,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "订单取消时间", required = true)
     private Date cancelDateTime;
+
+    @ApiModelProperty(value = "接单时间", required = true)
+    private Date acceptOrderDatetime;
+    @ApiModelProperty(value = "退款完成时间", required = true)
+    private Date refundDateTime;
+    @ApiModelProperty(value = "申请退款时间", required = true)
+    private Date applyRefundDatetime;
     /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */

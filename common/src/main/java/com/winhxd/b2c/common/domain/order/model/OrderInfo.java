@@ -111,6 +111,14 @@ public class OrderInfo {
      */
     private Date refundDateTime;
     /**
+     * 申请退款时间
+     */
+    private Date applyRefundDatetime;
+    /**
+     * 接单时间
+     */
+    private Date acceptOrderDatetime;
+    /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */
     private Short pickupType;

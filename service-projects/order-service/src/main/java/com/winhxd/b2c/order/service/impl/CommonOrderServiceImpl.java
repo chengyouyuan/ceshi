@@ -596,7 +596,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单退款-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
-            order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
+            order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
             String newOrderJsonString = JsonUtil.toJSONString(order);
             //添加订单流转日志
             orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,

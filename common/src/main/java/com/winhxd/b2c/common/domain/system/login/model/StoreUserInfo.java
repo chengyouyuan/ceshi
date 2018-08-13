@@ -81,6 +81,7 @@ public class StoreUserInfo implements Serializable {
     private String source;
     /**
      * 惠小店状态（0、未开店，1、有效，2、无效）
+     * StoreStatusEnum
      */
     private Short storeStatus;
     private String token;

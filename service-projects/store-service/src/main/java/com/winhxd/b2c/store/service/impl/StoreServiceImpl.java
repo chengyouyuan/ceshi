@@ -100,7 +100,7 @@ public class StoreServiceImpl implements StoreService {
             BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1,storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
-            if (!StringUtils.isEmpty(storeUserInfo1.getPaymentWay())){
+            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())){
 
                 //获取地理区域名称
                 for (SysRegion sysRegion : sysRegions) {

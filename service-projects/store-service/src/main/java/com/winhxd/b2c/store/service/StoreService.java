@@ -82,4 +82,10 @@ public interface StoreService {
      * @return
      */
     BackStageStoreVO findByIdForBackStage(Long id);
+
+    /**
+     * 根据customerid 更改 regincode
+     * @param storeUserInfo
+     */
+    void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
 }

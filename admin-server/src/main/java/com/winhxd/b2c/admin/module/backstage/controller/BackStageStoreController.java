@@ -48,16 +48,9 @@ public class BackStageStoreController {
     })
     @PostMapping(value = "/1020/v1/findStoreList")
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
-        ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
-        try {
-            logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
-            responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);
-            logger.info("{} - 门店账户列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
-        } catch (Exception e) {
-            logger.error("{} - 查看门店列表，服务器内部错误：{}", MODULE_NAME, e);
-            responseResult.setCode(BusinessCode.CODE_1001);
-            responseResult.setMessage("服务器内部错误！");
-        }
+        logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
+        ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);
+        logger.info("{} - 门店账户列表, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -120,6 +113,17 @@ public class BackStageStoreController {
             responseResult.setCode(BusinessCode.CODE_1001);
             responseResult.setMessage("服务器内部错误！");
         }
+        return responseResult;
+    }
+
+    @ApiOperation(value = "更改门店区域信息", notes = "更改门店区域信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
+    @PostMapping(value = "/1024/v1/updateReginCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Integer> updateReginCode(@RequestBody BackStageModifyStoreCondition condition) {
+        logger.info("{} - 更改门店区域信息, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        ResponseResult<Integer> responseResult = backStageStoreServiceClient.modifyStoreInfoReginCode(condition);
+        logger.info("{} - 更改门店区域信息, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 

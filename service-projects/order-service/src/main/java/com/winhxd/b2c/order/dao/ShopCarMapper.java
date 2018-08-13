@@ -1,7 +1,7 @@
 package com.winhxd.b2c.order.dao;
 
+import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -53,4 +53,11 @@ public interface ShopCarMapper {
      * @return:
      */
     int deleteShopCarsByStoreId(ShopCar shopCar);
+
+    /**
+     * 根据门店 用户 sku集合 获取集合信息
+     * @param condition
+     * @return
+     */
+    List<ShopCar> queryShopCartBySelective(ShopCartProductCondition condition);
 }

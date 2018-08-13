@@ -23,14 +23,21 @@
     order_price, status, created_by, created_by_name, created, updated_by, updated_by_name,
     updated
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from coupon_template_use
     where order_no = #{orderNo} AND status = 1'
   </select>
 
-  <select id="selectByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByOrderNos" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_template_use
+    where order_no IN #{orderNos} AND status = 1'
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from coupon_template_use

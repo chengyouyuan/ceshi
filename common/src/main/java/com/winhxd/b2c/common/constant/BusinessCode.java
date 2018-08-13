@@ -41,25 +41,9 @@ public final class BusinessCode {
     /**请求超时*/
     public static final int CODE_1015 = 1015;
 
-    /** 原密码输入错误 */
-    public static final int CODE_300021 = 302001;
-    /** 新密码与原密码相同 */
-    public static final int CODE_302002 = 302002;
+    /** 测试门店区域:区域重复*/
+    public static final int CODE_103901 = 103901;
 
-    /** 购物车:门店ID为空*/
-    public static final int CODE_402001 = 402001;
-    /** 购物车:自提地址为空*/
-    public static final int CODE_402002 = 402002;
-    /** 购物车:自提时间为空*/
-    public static final int CODE_402003 = 402003;
-    /** 购物车:商品信息为空*/
-    public static final int CODE_402004 = 402004;
-    /** 购物车:支付方式*/
-    public static final int CODE_402006 = 402006;
-    /** 购物车:参数错误*/
-    public static final int CODE_402008 = 402008;
-    /**订单id参数为空*/
-    public static final int CODE_402013 = 402013;
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
@@ -92,7 +76,25 @@ public final class BusinessCode {
     public static final int CODE_200015 = 200015;
 
 
+    /** 原密码输入错误 */
+    public static final int CODE_300021 = 302001;
+    /** 新密码与原密码相同 */
+    public static final int CODE_302002 = 302002;
 
+    /** 购物车:门店ID为空*/
+    public static final int CODE_402001 = 402001;
+    /** 购物车:自提地址为空*/
+    public static final int CODE_402002 = 402002;
+    /** 购物车:自提时间为空*/
+    public static final int CODE_402003 = 402003;
+    /** 购物车:商品信息为空*/
+    public static final int CODE_402004 = 402004;
+    /** 购物车:支付方式*/
+    public static final int CODE_402006 = 402006;
+    /** 购物车:参数错误*/
+    public static final int CODE_402008 = 402008;
+    /**订单id参数为空*/
+    public static final int CODE_402013 = 402013;
     /** 购物车:商品下架或删除*/
     public static final int CODE_402010 = 402010;
     /** 购物车:商品信息不存在或获取商品数量不正确*/
@@ -234,6 +236,4 @@ public final class BusinessCode {
     @ApiModelProperty("验证码为空")
     public static final int CODE_610016 = 610016;
 
-    /** 测试门店区域:区域重复*/
-    public static final int CODE_103901 = 103901;
 }

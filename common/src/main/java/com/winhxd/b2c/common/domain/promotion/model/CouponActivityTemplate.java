@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CouponActivityTemplate {
+
     private Long id;
 
     private Long couponActivityId;

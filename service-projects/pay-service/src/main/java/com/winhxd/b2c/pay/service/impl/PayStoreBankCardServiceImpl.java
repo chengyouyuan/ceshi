@@ -7,9 +7,12 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
@@ -26,6 +29,9 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	
 	@Resource
 	private StoreBankCardMapper storeBankCardMapper;
+	
+	@Autowired
+	private Cache cache;
 
 	@Override
 	public StoreBankCardVO findStoreBankCardInfo(StoreBankCardCondition condition) {
@@ -68,6 +74,11 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    	String code = cache.get(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
+    	if(!code.equals(verificationCode)){
+    		LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+    		throw new BusinessException(BusinessCode.CODE_610019);
+    	}
     	condition.setCreated(new Date());
     	condition.setUpdated(new Date());
     	condition.setCreatedBy(currentStoreUser.getBusinessId());

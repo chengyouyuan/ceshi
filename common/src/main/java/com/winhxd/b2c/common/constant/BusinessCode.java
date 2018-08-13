@@ -239,5 +239,8 @@ public final class BusinessCode {
     public static final int CODE_610016 = 610016;
     @ApiModelProperty("B端绑定银行卡失败")
     public static final int CODE_610017 = 610017;
-
+    @ApiModelProperty("验证码已经生成，请勿重复操作")
+    public static final int CODE_610018 = 610018;
+    @ApiModelProperty("验证码输入不正确")
+    public static final int CODE_610019 = 610019;
 }

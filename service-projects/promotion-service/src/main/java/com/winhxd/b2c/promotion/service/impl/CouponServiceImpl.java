@@ -120,13 +120,35 @@ public class CouponServiceImpl implements CouponService {
                 couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
                 couponTemplateSend.setCustomerId(customerUser.getCustomerId());
                 couponTemplateSend.setCustomerMobile("");
-                couponTemplateSend.setStartTime(activityTemplate.getStartTime());
-                couponTemplateSend.setEndTime(activityTemplate.getEndTime());
                 couponTemplateSend.setCount(1);
                 couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
                 couponTemplateSend.setCreated(new Date());
                 //TODO 用户名称
                 couponTemplateSend.setCreatedByName("");
+
+                if(activityTemplate.getEffectiveDays()==null){
+                    couponTemplateSend.setStartTime(activityTemplate.getStartTime());
+                    couponTemplateSend.setEndTime(activityTemplate.getEndTime());
+                }else{
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    couponTemplateSend.setStartTime(calendar.getTime());
+
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(new Date());
+                    c.add(Calendar.DATE,activityTemplate.getEffectiveDays());
+                    c.set(Calendar.HOUR_OF_DAY, 23);
+                    c.set(Calendar.MINUTE, 59);
+                    c.set(Calendar.SECOND, 59);
+                    c.set(Calendar.MILLISECOND, 59);
+                    couponTemplateSend.setEndTime(c.getTime());
+                }
+
                 couponTemplateSendMapper.insertSelective(couponTemplateSend);
 
                 CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
@@ -295,13 +317,34 @@ public class CouponServiceImpl implements CouponService {
         couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
         couponTemplateSend.setCustomerId(customerUser.getCustomerId());
         couponTemplateSend.setCustomerMobile("");
-        couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
-        couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
         couponTemplateSend.setCount(1);
         couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
         couponTemplateSend.setCreated(new Date());
         //TODO 用户名称
         couponTemplateSend.setCreatedByName("");
+
+        if(couponActivityTemplates.get(0).getEffectiveDays()==null){
+            couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
+            couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
+        }else{
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            couponTemplateSend.setStartTime(calendar.getTime());
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.DATE,couponActivityTemplates.get(0).getEffectiveDays());
+            c.set(Calendar.HOUR_OF_DAY, 23);
+            c.set(Calendar.MINUTE, 59);
+            c.set(Calendar.SECOND, 59);
+            c.set(Calendar.MILLISECOND, 59);
+            couponTemplateSend.setEndTime(c.getTime());
+        }
         couponTemplateSendMapper.insertSelective(couponTemplateSend);
 
         CouponActivityRecord couponActivityRecord = new CouponActivityRecord();

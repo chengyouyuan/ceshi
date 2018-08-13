@@ -42,7 +42,7 @@
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money, coupon_titles,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime,accept_order_datetime,
+        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime, accept_order_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
     </sql>
@@ -516,7 +516,7 @@
     <sql id="Order_Info_List_4_store">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime, refund_datetime, accept_order_datetime, apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
     <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
@@ -648,6 +648,11 @@
         update order_info
         set order_status=77,pickup_code=null,refund_datetime = now()
         where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+    </update>
+    <update id="updateOrderConfirmDate">
+        update order_info
+        set accept_order_datetime = #{date,jdbcType=TIMESTAMP}
+        where id=#{orderId,jdbcType=BIGINT}
     </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>

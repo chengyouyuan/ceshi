@@ -236,4 +236,12 @@ public interface OrderInfoMapper {
      * @return
      */
     int updateOrderStatusForRefundCallback(String orderNo);
+
+    /**
+     * 更新订单 接单时间
+     * @author wangbin
+     * @date  2018年8月13日 下午7:59:27
+     * @param date
+     */
+    void updateOrderConfirmDate(@Param("date") Date date, @Param("orderId") Long orderId);
 }

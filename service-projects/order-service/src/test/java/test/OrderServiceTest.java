@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.mq.MQDestination;
@@ -48,6 +49,13 @@ public class OrderServiceTest {
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
         System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
+    }
+    
+    @Test
+    public void testListOrder4ManagementWithNoPage() {
+        OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition = new OrderInfoQuery4ManagementCondition();
+        infoQuery4ManagementCondition.setOrderNos(new String[]{"12312"});
+        System.out.println(JsonUtil.toJSONString(orderQueryService.listOrder4ManagementWithNoPage(infoQuery4ManagementCondition)));
     }
     
     @Test

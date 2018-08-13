@@ -431,7 +431,7 @@
     </resultMap>
     <sql id="Order_Info_List">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
-        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
+        real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
@@ -459,11 +459,18 @@
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
         </if>
+        <if test="condition.orderNos != null and condition.orderNos.length > 0">
+            and info.order_no in 
+        	<foreach item="item" index="index" collection="condition.orderNos" 
+                         open="(" separator="," close=")">
+                        #{item}
+            </foreach>
+        </if>
         order by info.created desc
     </select>
     <sql id="Order_Info_List_4_store">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
-        real_payment_money, order_total_money-real_payment_money discount_money, pay_type,
+        real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
         pickup_type, cancel_reason, remarks
     </sql>

@@ -35,7 +35,22 @@
       "path": "",
       "configKey": "",
       "permission": "",
-      "children": []
+      "children": [
+        {
+          "id": "2_1",
+          "menuName": "门店管理",
+          "path": "",
+          "configKey": "/template/module/store/store_user_list.json",
+          "permission": ""
+        },
+        {
+          "id": "2_3",
+          "menuName": "门店测试区域管理",
+          "path": "/setOrderTime/index",
+          "configKey": "",
+          "permission": ""
+        }
+      ]
     },
     {
       "id": "3",

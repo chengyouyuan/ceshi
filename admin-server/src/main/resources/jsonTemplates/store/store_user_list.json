@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/store/1020/v1/findStoreList",
+    "type": "report",
+    "id": "store_user_list",
+    "code": "store_user_list",
+    "title": "门店管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/store/1020/v1/findStoreList"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "name": "roleName",
+        "title": "权限组名"
+      },
+      {
+        "name": "permissions",
+        "title": "权限范围"
+      },
+      {
+        "name": "userCount",
+        "title": "组内人数"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": ""
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "ruleName",
+        "inputModel": "input",
+        "title": "查询条件",
+        "value": "",
+        "placeholder": "请输入权限组名",
+        "isHidden": false
+      }
+    ]
+  }
+}

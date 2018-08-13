@@ -2,6 +2,7 @@ package com.winhxd.b2c.order.api;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -129,7 +130,7 @@ public class ApiOrderQueryController {
         @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
     @RequestMapping(value = "/413/v1/getOrderCountByStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OrderCountByStatus4StoreVO> getOrderCountByStatus() {
+    public ResponseResult<OrderCountByStatus4StoreVO> getOrderCountByStatus(@RequestBody ApiCondition apiCondition) {
         String logTitle = "/api-order/order/413/v1/getOrderCountByStatus-B端订单各状态数量查询接口";
         ResponseResult<OrderCountByStatus4StoreVO> result = new ResponseResult<>();
         try {

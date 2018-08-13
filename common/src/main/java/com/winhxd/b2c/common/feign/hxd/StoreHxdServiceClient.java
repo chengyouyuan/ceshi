@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.system.login.model.StoreUserSimpleInfo;
 
 import feign.hystrix.FallbackFactory;
-
-import javax.ws.rs.Path;
 
 /**
  * @author wufuyun
@@ -28,10 +27,10 @@ import javax.ws.rs.Path;
 public interface StoreHxdServiceClient {
 
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.POST)
-    ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, 
+    ResponseResult<StoreUserSimpleInfo> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, 
     		@RequestParam("storePassword") String storePassword); 
     @RequestMapping(value = "/hxdStore/getStoreUserInfoByCustomerId", method = RequestMethod.POST)
-    ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId);
+    ResponseResult<StoreUserSimpleInfo> getStoreUserInfoByCustomerId(@RequestParam("customerId") Long customerId);
 
     /**
      * 查询门店信息是否完善
@@ -77,7 +76,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
     @Override
-    public ResponseResult<Map<String, Object>> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword) {
+    public ResponseResult<StoreUserSimpleInfo> getStoreUserInfo(@RequestParam("storeMobile") String storeMobile, @RequestParam("storePassword") String storePassword) {
         logger.error("惠下单 StoreHxdServiceClientFallBack -> getStotrUserInfo报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
@@ -101,7 +100,7 @@ class StoreHxdServiceClientFallBack implements StoreHxdServiceClient, FallbackFa
     }
 
 	@Override
-	public ResponseResult<Map<String, Object>> getStoreUserInfoByCustomerId(Long customerId) {
+	public ResponseResult<StoreUserSimpleInfo> getStoreUserInfoByCustomerId(Long customerId) {
 		  logger.error("惠下单 StoreHxdServiceClientFallBack -> getStoreUserInfoByCustomerId报错，错误信息为{}", throwable);
 	        return new ResponseResult<>(BusinessCode.CODE_1001);
 	}

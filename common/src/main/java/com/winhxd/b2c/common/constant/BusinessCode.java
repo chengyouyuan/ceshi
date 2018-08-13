@@ -88,6 +88,8 @@ public final class BusinessCode {
     public static final int CODE_200013 = 200013;
     /**上传图片格式不正确**/
     public static final int CODE_200014 = 200014;
+    /**上传图片是失败**/
+    public static final int CODE_200015 = 200015;
 
 
 
@@ -109,7 +111,19 @@ public final class BusinessCode {
 
     /** 该手机号已经享受过新用户福利*/
     public static final int CODE_500002 = 500002;
-    
+
+    /** 优惠券模板添加失败*/
+    public static final int CODE_500003 = 500003;
+
+    /** 适用对象添加失败*/
+    public static final int CODE_500004 = 500004;
+
+    /** 坎级规则新建失败*/
+    public static final int CODE_500005 = 500005;
+
+    /** 添加出资方规则失败*/
+    public static final int CODE_500006 = 500006;
+
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;

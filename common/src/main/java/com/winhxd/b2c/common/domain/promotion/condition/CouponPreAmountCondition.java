@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  * @Date 2018/8/9 19 49
  * @Description 计算优惠券最终优惠金额
  */
-public class CouponPreAmountCondition {
+public class CouponPreAmountCondition extends ApiCondition{
     @ApiModelProperty(value = "优惠券发放id", required=true)
     private List<Long> sendIds;
     @ApiModelProperty(value = "商品信息", required=true)

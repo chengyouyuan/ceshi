@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
@@ -42,7 +43,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         int flag = 0 ;
         flag = checkCondition(condition);
         if(flag==0){
-            try {
                 CouponInvestor couponInvestor = new CouponInvestor();
                 couponInvestor.setCode(condition.getCode());
                 couponInvestor.setName(condition.getName());
@@ -53,6 +53,9 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                 couponInvestor.setCreatedByName(condition.getUserName());
                 //插入主表
                 Long keyId = couponInvestorMapper.insertCouponInvestor(couponInvestor);
+                if(keyId==0){
+                   throw new BusinessException(BusinessCode.CODE_500006,"添加出资方规则失败");
+                }
                 //插入详情
                 for(int i=0;i<deatils.size();i++){
                     CouponInvestorDetail detail = new CouponInvestorDetail();
@@ -64,13 +67,12 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                     detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
                     detail.setPercent(Float.parseFloat(map.get("percent").toString()));
                     detail.setNames(map.get("names").toString());
-                    couponInvestorDetailMapper.insert(detail);
+                    int n = couponInvestorDetailMapper.insert(detail);
+                    if(n==0){
+                        throw new BusinessException(BusinessCode.CODE_500006,"添加出资方规则失败");
+                    }
                 }
-                flag = BusinessCode.CODE_OK ;
-            }catch (Exception e){
-                flag = BusinessCode.CODE_1001;
-                e.printStackTrace();
-            }
+
         }
         return flag;
     }

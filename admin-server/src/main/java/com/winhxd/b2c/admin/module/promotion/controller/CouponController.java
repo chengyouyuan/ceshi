@@ -67,6 +67,13 @@ public class CouponController {
 	@ApiOperation("添加优惠券活动")
 	@PostMapping(value = "/530/v1/addCouponActivity")
 	public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		String code = getUUID();
+		condition.setCode(code);
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
 		return couponActivityServiceClient.addCouponActivity(condition);
 	}
 
@@ -94,33 +101,50 @@ public class CouponController {
 	@ApiOperation("编辑优惠券活动")
 	@PostMapping(value = "/532/v1/updateCouponActivity")
 	public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		String code = getUUID();
+		condition.setCode(code);
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
 		return couponActivityServiceClient.updateCouponActivity(condition);
 	}
 	/**
 	 *
 	 *@Deccription 删除优惠券活动（设为无效）
-	 *@Params  id
+	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("删除优惠券活动")
 	@PostMapping(value = "/533/v1/deleteCouponActivity")
-	public ResponseResult<Integer> deleteCouponActivity(@RequestParam("id") String id){
-		return couponActivityServiceClient.deleteCouponActivity(id);
+	public ResponseResult<Integer> deleteCouponActivity(@RequestBody CouponActivityCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
+		return couponActivityServiceClient.deleteCouponActivity(condition);
 	}
 	/**
 	 *
 	 *@Deccription 撤回活动优惠券
-	 *@Params  id
+	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("撤回活动优惠券")
 	@PostMapping(value = "/534/v1/revocationActivityCoupon")
-	public ResponseResult<Integer> revocationActivityCoupon(@RequestParam("id") String id){
-		return couponActivityServiceClient.revocationActivityCoupon(id);
+	public ResponseResult<Integer> revocationActivityCoupon(@RequestBody CouponActivityCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
+		return couponActivityServiceClient.revocationActivityCoupon(condition);
 	}
 	/**
 	 *
@@ -133,6 +157,11 @@ public class CouponController {
 	@ApiOperation("停用/开启活动")
 	@PostMapping(value = "/535/v1/updateCouponActivityStatus")
 	public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
 		return couponActivityServiceClient.updateCouponActivityStatus(condition);
 	}
 	/**

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.AccountingDetailMapper">
+
+  <insert id="insertAccountingDetail" parameterType="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
+    insert into pay_accounting_detail (
+      order_no, detail_type, detail_money, store_id, recorded_time, insert_time
+    ) values (
+      #{orderNo}, #{detailType}, #{detailMoney}, #{storeId}, #{recordedTime}, now()
+    )
+  </insert>
+
+  <resultMap id="AccountingDetailMap" type="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
+    <id column="id" property="id"></id>
+    <result column="order_no" property="orderNo"></result>
+    <result column="detail_type" property="detailType"></result>
+    <result column="detail_money" property="detailMoney"></result>
+    <result column="store_id" property="storeId"></result>
+    <result column="recorded_time" property="recordedTime"></result>
+    <result column="insert_time" property="insertTime"></result>
+    <result column="third_party_verify_status" property="thirdPartyVerifyStatus"></result>
+    <result column="third_party_verify_time" property="thirdPartyVerifyTime"></result>
+    <result column="verify_status" property="verifyStatus"></result>
+    <result column="verify_code" property="verifyCode"></result>
+    <result column="verify_time" property="verifyTime"></result>
+    <result column="operated_time" property="operatedTime"></result>
+    <result column="operated_by" property="operatedBy"></result>
+    <result column="operated_by_name" property="operatedByName"></result>
+  </resultMap>
+
+  <select id="selectAccountingDetailList" resultMap="AccountingDetailMap">
+    select *
+    from pay_accounting_detail d
+    where 1 = 1
+    <if test="verifyStatus != null">
+      and d.verify_status = #{verifyStatus}
+    </if>
+  </select>
+
+  <select id="selectVerifyList" resultMap="AccountingDetailMap">
+    select d.verify_status, d.store_id
+    from pay_accounting_detail d
+    where 1 = 1
+    <if test="verifyStatus != null">
+      and d.verify_status = #{verifyStatus}
+    </if>
+    group by d.verify_status, d.store_id
+  </select>
+
+  <update id="updateAccountingDetailVerifiedByThirdParty">
+    update pay_accounting_detail set
+      third_party_verify_status = 1,
+      third_party_verify_time = now()
+    where order_no = #{orderNo}
+  </update>
+
+  <insert id="insertVerifyHistory">
+    insert into pay_verify_history (
+      verify_status, verify_code, verify_remark, operated_time, operated_by, operated_by_name
+    ) values (
+      #{verifyStatus}, #{verifyCode}, #{verifyRemark}, now(), #{operatedBy}, #{operatedByName}
+    )
+  </insert>
+
+  <update id="updateAccountingDetailVerifyStatusBySummary">
+    update d set
+      d.verify_status = h.verify_status,
+      d.verify_code = h.verify_code,
+      d.verify_time = h.operated_time,
+      d.operated_time = h.operated_time,
+      d.operated_by = h.operated_by,
+      d.operated_by_name = h.operated_by_name
+    from pay_accounting_detail d, pay_verify_history h
+    where h.verify_code = #{verifyCode}
+    and d.store_id = #{storeId}
+    and d.recorded_time &lt; #{toVerifyDateBefore}
+  </update>
+
+  <update id="updateAccountingDetailVerifyStatusByDetailId">
+    update d set
+      d.verify_status = h.verify_status,
+      d.verify_code = h.verify_code,
+      d.verify_time = h.operated_time,
+      d.operated_time = h.operated_time,
+      d.operated_by = h.operated_by,
+      d.operated_by_name = h.operated_by_name
+    from pay_accounting_detail d, pay_verify_history h
+    where h.verify_code = #{verifyCode}
+    and d.id in
+    <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </update>
+
+</mapper>

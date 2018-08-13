@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -134,7 +135,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
     })
     @RequestMapping(value = "/api-order/order/433/v1/remove", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> removeShopCar(){
+    public ResponseResult<Long> removeShopCar(@RequestBody ApiCondition apiCondition){
         shopCarService.removeShopCar(getCurrentCustomerId());
         return new ResponseResult<>();
     }

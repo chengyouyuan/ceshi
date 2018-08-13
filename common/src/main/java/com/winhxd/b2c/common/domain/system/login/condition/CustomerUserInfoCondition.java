@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.system.login.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("小程序用户请求参数")
 @Data
-public class CustomerUserInfoCondition{
+public class CustomerUserInfoCondition extends ApiCondition{
 	@ApiModelProperty(value = "账号")
     private String customerMobile;
 	@ApiModelProperty(value = "微信code")

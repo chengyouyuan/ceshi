@@ -507,7 +507,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     orderApplyRefund(order, orderRefundCondition.getCancelReason(), customerId, customerUserInfoVO.getNickName());
                 } else {
                     //更新订单状态为待退款，并更新相关属性
-                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId);
+                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId,orderRefundCondition.getCancelReason());
                     //添加订单流转日志
                     if (updateResult > 0) {
                         logger.info("C端申请退款-添加流转日志开始-订单号={}", orderNo);
@@ -578,7 +578,7 @@ public class CommonOrderServiceImpl implements OrderService {
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
         String orderNo = order.getOrderNo();
         //更新订单状态为退款中
-        int updateResult = this.orderInfoMapper.updateOrderStatusForRefund(order.getOrderNo(), reason);
+        int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
         //添加订单流转日志
         if (updateResult > 0) {
             //TODO 调用订单退款接口 请求返回成功状态改为退款中

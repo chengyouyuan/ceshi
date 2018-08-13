@@ -178,13 +178,6 @@ public interface OrderInfoMapper {
      * @param id
      */
     int updateOrderPickupCode(@Param("pickUpCode") String pickUpCode, @Param("orderId") Long orderId);
-    /**
-     * 订单退款更新状态等信息
-     * @param orderNo
-     * @param reason
-     * @return 更新成功影响条数
-     */
-    int updateOrderStatusForRefund(@Param("orderNo") String orderNo, @Param("cancelReason") String cancelReason);
 
     /**
      * 根据条件查询 
@@ -198,10 +191,11 @@ public interface OrderInfoMapper {
 
     /**
      * C端申请退款更新状态
+     *
      * @param orderNo
      * @param customerId
      */
-    int updateOrderStatusForApplyRefund(String orderNo,Long customerId);
+    int updateOrderStatusForApplyRefund(@Param("orderNo") String orderNo, @Param("customerId") Long customerId, @Param("reason") String reason);
 
     /**
      * 订单提货

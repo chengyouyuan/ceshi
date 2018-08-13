@@ -213,8 +213,7 @@ public class OrderServiceController implements OrderServiceClient {
         logger.info("{} 后台订单列表查询开始", logTitle);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
-            orderService.updateOrderRefundCallback(orderRefundCallbackCondition);
-            result.setData(null);
+            result.setData(orderService.updateOrderRefundCallback(orderRefundCallbackCondition));
         } catch (Exception e) {
             logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

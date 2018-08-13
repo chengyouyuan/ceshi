@@ -617,14 +617,6 @@
         updated = now()
         where id=#{orderId,jdbcType=BIGINT}
     </update>
-    <update id="updateOrderStatusForRefund">
-       update order_info
-       set order_status=77,cancel_datetime = now(),pickup_code=null
-        <if test="cancelReason != null">
-          ,cancel_reason = #{cancelReason,jdbcType=VARCHAR}
-        </if>
-       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
-    </update>
     <update id="updateOrderMoney">
        update order_info
        set 
@@ -634,8 +626,14 @@
     </update>
     <update id="updateOrderStatusForApplyRefund">
         update order_info
-       set order_status=2,cancel_datetime = now(),pickup_code=null
-       where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
+       set order_status=33,apply_refund_datetime = now(),pickup_code=null
+        <if test="reason != null">
+            ,cancel_reason = #{reason,jdbcType=VARCHAR}
+        </if>
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+        <if test="customerId != null">
+            and customer_id = #{customerId,jdbcType=BIGINT}
+        </if>
     </update>
     <update id="orderPickup">
         update order_info

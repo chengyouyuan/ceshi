@@ -9,13 +9,16 @@ import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreRegionEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.StoreRegionMapper;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,6 +36,9 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Resource
     StoreRegionMapper storeRegionMapper;
+
+    @Autowired
+    private RegionServiceClient regionServiceClient;
 
     @Override
     public PagedList<StoreRegionVO> findStoreRegions(StoreRegionCondition condition) {
@@ -80,6 +86,12 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public StoreRegion selectByRegionCode(String regionCode) {
-        return storeRegionMapper.selectByRegionCode(regionCode);
+        //查询省市县五级信息
+        SysRegion sysRegion = regionServiceClient.getRegionByCode(regionCode).getData();
+        if(sysRegion == null) {
+            logger.error("开店测试区域查询，未查询到该门店的行政区域！区域编码为：{}", regionCode);
+            throw new BusinessException(BusinessCode.CODE_103901);
+        }
+        return storeRegionMapper.selectByRegionCode(regionCode,sysRegion.getLevel(),regionCode.substring(0,3));
     }
 }

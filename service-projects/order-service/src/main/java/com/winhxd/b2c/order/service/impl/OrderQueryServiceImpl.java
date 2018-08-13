@@ -191,9 +191,19 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         return code;
     }
+    
+    @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
+    public List<OrderInfoDetailVO> listOrder4ManagementWithNoPage(
+            OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
+        if (infoQuery4ManagementCondition == null) {
+            throw new NullPointerException("infoQuery4ManagementCondition can not be null");
+        }
+        return this.orderInfoMapper.listOrder4Management(infoQuery4ManagementCondition);
+    }
 
     @Override
-    @OrderInfoConvertAnnotation(queryCustomerInfo=true)
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());

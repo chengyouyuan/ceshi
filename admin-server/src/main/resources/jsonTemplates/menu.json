@@ -12,7 +12,22 @@
       "path": "",
       "configKey": "",
       "permission": "",
-      "children": []
+      "children": [
+      	{
+      	  "id": "1_1",
+          "menuName": "门店商品管理",
+          "path": "",
+          "configKey": "",
+          "permission": ""
+      	},
+      	{
+      	  "id": "1_2",
+          "menuName": "商品提报审核",
+          "path": "",
+          "configKey": "",
+          "permission": ""
+      	}
+      ]
     },
     {
       "id": "2",

@@ -161,11 +161,14 @@
     </if>-->
   </select>
 
-  <select id="selectByRegionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByRegionCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from store_region
-    where area_code = #{areaCode,jdbcType=BIGINT}
+    where area_code &lt;= #{regionCode,jdbcType=VARCHAR}
+    and level &lt;= #{level,jdbcType=SMALLINT}
+    <bind name="prefixCode" value="prefixCode + '%'" />
+    and area_code like #{prefixCode}
     limit 1
   </select>
 </mapper>

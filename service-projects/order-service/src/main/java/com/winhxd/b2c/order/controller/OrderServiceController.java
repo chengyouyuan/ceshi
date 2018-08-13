@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.controller;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -169,6 +170,23 @@ public class OrderServiceController implements OrderServiceClient {
             throw e;
         }
         logger.info("{} ", logTitle);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+            OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
+        String logTitle = "/order/456/v1/listOrder4ManagementWithNoPage/";
+        logger.info("{} 后台订单列表查询开始", logTitle);
+        ResponseResult<List<OrderInfoDetailVO>> result = new ResponseResult<>();
+        try {
+            result.setData(orderQueryService.listOrder4ManagementWithNoPage(infoQuery4ManagementCondition));
+        } catch (Exception e) {
+            logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+            throw e;
+        }
+        logger.info("{} 后台订单列表查询结束", logTitle);
         return result;
     }
 }

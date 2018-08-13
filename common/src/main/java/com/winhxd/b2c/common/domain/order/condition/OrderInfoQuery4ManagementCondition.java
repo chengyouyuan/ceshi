@@ -17,6 +17,9 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     
     @ApiModelProperty(value = "用户id")
     private Long customerId;
+    
+    @ApiModelProperty(value = "订单号数组")
+    private String[] orderNos;
 
     public Long getStoreId() {
         return storeId;
@@ -32,6 +35,14 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
+    }
+
+    public String[] getOrderNos() {
+        return orderNos;
+    }
+
+    public void setOrderNos(String[] orderNos) {
+        this.orderNos = orderNos;
     }
     
 }

@@ -34,9 +34,11 @@ public interface StoreRegionMapper {
     List<StoreRegion> selectRepeatStoreRegion(@Param("areaCode") String areaCode);
 
     /**
-     * 根据区域编码查询是否是有效的测试区域
-     * @param regionCode
+     * 根据区域编码和级别查询是否是有效的测试区域
+     * @param regionCode 区域编码
+     * @param level 级别
+     * @param prefixCode 身份前缀
      * @return
      */
-    StoreRegion selectByRegionCode(String regionCode);
+    StoreRegion selectByRegionCode(@Param("regionCode") String regionCode, @Param("level") int level, @Param("prefixCode") String prefixCode);
 }

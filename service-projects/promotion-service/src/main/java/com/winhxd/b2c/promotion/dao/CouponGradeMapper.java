@@ -25,7 +25,7 @@ public interface CouponGradeMapper {
 
     int updateCouponGradeValid(@Param("id")long id,@Param("userId") long userId,@Param("userName") String userName);
 
-    long insertCouponGrade(@Param("couponGrade") CouponGrade couponGrade);
+    long insertCouponGrade( CouponGrade couponGrade);
 
     List<CouponGradeVO> getCouponGradePage(@Param("condition")CouponGradeCondition condition);
 

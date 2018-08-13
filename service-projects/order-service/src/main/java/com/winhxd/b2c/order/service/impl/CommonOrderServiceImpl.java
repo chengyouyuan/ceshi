@@ -275,7 +275,7 @@ public class CommonOrderServiceImpl implements OrderService {
                             order.getOrderStatus(), null, "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
                     logger.info("退款回调-添加流转日志结束-订单号={}", orderNo);
                     logger.info("退款回调-发送消息开始-订单号={}", orderNo);
-                    // 发送消息 “您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收”
+                    // 给C端发送消息 “您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收”
                     NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                     neteaseMsgCondition.setCustomerId(order.getCustomerId());
                     String storeMsgContent = "您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收";
@@ -284,6 +284,8 @@ public class CommonOrderServiceImpl implements OrderService {
                     neteaseMsg.setAudioType(0);
                     neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
                     messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+                    //给门店发送消息
+                    orderRefundTimeOutSendMsg(4,order);
                     logger.info("退款回调-发送消息结束-订单号={}", orderNo);
                     callbackResult = true;
                 } else {
@@ -1350,7 +1352,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
-     * 申请退款超时给门店发送消息
+     * 退款给门店发送消息
      *
      * @param type      类型 1：1小时，2：一天
      * @param orderInfo
@@ -1371,6 +1373,10 @@ public class CommonOrderServiceImpl implements OrderService {
                 break;
             case 3:
                 msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
+                break;
+            case 4:
+                //【已退款】手机尾号8513黄小姐退款已到账
+                msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
                 break;
             default:
         }

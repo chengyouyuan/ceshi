@@ -29,7 +29,7 @@
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="putaway_time" jdbcType="TIMESTAMP" property="putawayTime"/>
     </resultMap>
-    <resultMap id="BackStageResultMap" type="com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO">
+    <resultMap id="BackStageResultMap" type="com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
@@ -61,7 +61,7 @@
   </sql>
 	
   <select id="selectBackStageVoByCondition" 
-  			parameterType="com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition" 
+  			parameterType="com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition" 
   			resultMap="BackStageResultMap">
   	select 
   	<include refid="BackStage_Column_List"/>

@@ -75,6 +75,9 @@ import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
 
+/**
+ * @author wangbin
+ */
 @Service
 public class CommonOrderServiceImpl implements OrderService {
 
@@ -83,7 +86,7 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int MAXIMUM_POOL_SIZE = 20;
     private static final int CORE_POOL_SIZE = 5;
     private static final int ORDER_MONEY_SCALE = 2;
-    private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 1000;
+    private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
     @Autowired
@@ -201,16 +204,15 @@ public class CommonOrderServiceImpl implements OrderService {
         //TODO 待定（使用计划任务）
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
-        if (lock.tryLock()) {
-            try {
-                OrderInfo order = getOrderInfo(orderNo);
-                if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
-                    orderApplyRefund(order, "申请退款超时3天系统自动退款", null, "sys");
-                    orderRefundTimeOutSendMsg(3, order);
-                }
-            } finally {
-                lock.unlock();
+        try {
+            lock.lock();
+            OrderInfo order = getOrderInfo(orderNo);
+            if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
+                orderApplyRefund(order, "申请退款超时3天系统自动退款", null, "sys");
+                orderRefundTimeOutSendMsg(3, order);
             }
+        } finally {
+            lock.unlock();
         }
     }
 

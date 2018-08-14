@@ -193,7 +193,7 @@ public class ApiCustomerLoginController {
 		 * 发送模板内容
 		 */
 		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-		messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+		//messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}
@@ -228,7 +228,7 @@ public class ApiCustomerLoginController {
 			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		customerUserInfo.setCustomerId(user.getCustomerId());
+		customerUserInfo.setOpenId(user.getOpenId());
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {
 			logger.info("{} - 账号无效");

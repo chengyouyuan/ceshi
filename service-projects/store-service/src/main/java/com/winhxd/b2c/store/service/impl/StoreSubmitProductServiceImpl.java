@@ -1,23 +1,26 @@
 package com.winhxd.b2c.store.service.impl;
 
-import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.AdminUser;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
-import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
-import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.store.dao.StoreSubmitProductMapper;
-import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
-import com.winhxd.b2c.store.service.StoreSubmitProductService;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.store.dao.StoreSubmitProductMapper;
+import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
+import com.winhxd.b2c.store.service.StoreSubmitProductService;
 /**
  * 提报商品service实现类
  * @ClassName: StoreSubmitProductServiceImpl 
@@ -91,6 +94,26 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 		}else{
 			logger.error("StoreSubmitProductService ->findSimpelVOByCondition参数异常,condition:"+condition);
 			throw new BusinessException(BusinessCode.CODE_1001);
+		}
+		
+	}
+
+	@Override
+	public PagedList<BackStageStoreSubmitProdVO> findBackStageVOByCondition(
+			BackStageStoreSubmitProdCondition condition) {
+		PagedList<BackStageStoreSubmitProdVO> list=null;
+		if(condition!=null){
+	
+			Page<BackStageStoreSubmitProdVO> page=storeSubmitProductMapper.selectBackStageVOByCondition(condition);
+			list=new PagedList<>();
+			list.setPageNo(condition.getPageNo());
+			list.setPageSize(condition.getPageSize());
+			list.setData(page.getResult());
+			list.setTotalRows(page.getTotal());
+			return list;
+		}else{
+			logger.error("StoreSubmitProductService ->findBackStageVOByCondition参数异常,condition:"+condition);
+			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		
 	}

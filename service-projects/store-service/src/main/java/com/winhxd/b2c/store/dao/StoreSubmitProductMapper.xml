@@ -31,6 +31,23 @@
     <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
   </resultMap>
+   <resultMap id="BackStageResultMap" type="com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="prod_name" jdbcType="VARCHAR" property="prodName" />
+    <result column="prod_code" jdbcType="VARCHAR" property="prodCode" />
+    <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
+    <result column="prod_image2" jdbcType="VARCHAR" property="prodImage2" />
+    <result column="prod_image3" jdbcType="VARCHAR" property="prodImage3" />
+    <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption" />
+    <result column="prod_status" jdbcType="SMALLINT" property="prodStatus" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
+    <result column="prod_info_text" jdbcType="VARCHAR" property="prodInfoText" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="store_mobile" jdbcType="VARCHAR" property="storeMobile" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, store_id, store_name, prod_name, prod_code, prod_image1, prod_image2, prod_image3,
     sku_attribute_option, prod_status, audit_remark, prod_info_voice, prod_info_text,
@@ -40,6 +57,46 @@
     id, store_id, prod_name, prod_code, prod_image1,
     prod_status, audit_remark,sku_code
   </sql>
+  <sql id="BackStage_Column_List">
+    sp.id, sp.store_id, store_name, sp.prod_name, sp.prod_code, sp.prod_image1, sp.prod_image2, sp.prod_image3,
+    sp.sku_attribute_option, sp.prod_status, sp.audit_remark, sp.prod_info_voice, sp.prod_info_text,
+    sp.sku_code,u.store_mobile
+  </sql>
+  
+  <select id="selectBackStageVOByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition" resultMap="BaseResultMap">
+  	select
+  	<include refid="BackStage_Column_List" />
+  	from store_submit_product prod
+  		LEFT JOIN store_user_info u on u.id=prod.store_id
+		where 1=1
+	<if test="condition.storeId != null">
+  		and prod.id=#{condition.id,jdbcType=BIGINT}
+  	</if>
+  	<if test="condition.prodStatus != null">
+  		and prod.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
+  	</if>
+  	<if test="condition.storeId != null">
+  		and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+  	</if>
+  	<if test="condition.prodCode != null">
+  		and prod.prod_code=#{condition.prodCode ,jdbcType=VARCHAR}
+  	</if>
+  	<if test="condition.skuCode != null">
+  		and prod.sku_code=#{condition.skuCode ,jdbcType=VARCHAR}
+  	</if>
+  	<if test="condition.prodName != null">
+  		and prod.prod_name like '%'+ #{condition.prodName} + '%'
+  	</if>
+  	<if test="condition.storeName != null">
+  		and u.store_name like '%' + #{condition.storeName} + '%' 
+  	</if>
+  	<if test="condition.storeMobile != null">
+  		and u.store_mobile = #{condition.storeMobile,jdbcType=VARCHAR} 
+  	</if>
+  	order by prod.created desc
+  	
+  </select>
+  
   <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="BaseResultMap">
   	select
   	<include refid="Simple_Column_List" />

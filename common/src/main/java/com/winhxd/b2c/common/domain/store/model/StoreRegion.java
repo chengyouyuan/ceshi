@@ -27,13 +27,13 @@ public class StoreRegion {
     @ApiModelProperty(value = "更新人")
     private Long updatedBy;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value = "创建时间")
     private Date created;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "更新时间")
     private Date updated;
 
 }

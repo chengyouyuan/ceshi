@@ -142,19 +142,20 @@
     select <include refid="Base_Column_List"/> from store_region
     where 1 = 1
     <if test="areaName != null and areaName != ''">
-      and area_name = #{areaName, jdbc=VARCHAR}
+      <bind name="nameBind" value="'%'+areaName+'%'"/>
+      and area_name like #{nameBind}
     </if>
     <if test="level != null and level != 0">
-      and level = #{level, jdbc=SMALLINT}
+      and level = #{level}
     </if>
-    and status = 0
+    and status = 1
     order by created desc
   </select>
 
   <select id="selectRepeatStoreRegion" resultMap="BaseResultMap">
-    <bind name="pattern" value="areaCode + '%'" />
     select <include refid="Base_Column_List"/> from store_region where 1 = 1
     <if test="areaCode != null and areaCode != ''">
+      <bind name="pattern" value="areaCode + '%'" />
       and area_code like #{pattern}
     </if>
     <!--<if test="level != null and level != 0">

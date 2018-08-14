@@ -41,7 +41,7 @@ public class StoreRegionController {
     })
     @PostMapping(value = "/store/1037/v1/findStoreRegions")
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
-        checkCurrentAdminUser();
+//        checkCurrentAdminUser();
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
     }
@@ -52,8 +52,8 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
-    @GetMapping(value = "/store/1038/v1/removeStoreRegion")
-    public ResponseResult<Void> removeStoreRegion(@RequestParam("id") Long id){
+    @GetMapping(value = "/store/1038/v1/removeStoreRegion/{id}")
+    public ResponseResult<Void> removeStoreRegion(@PathVariable("id") Long id){
         checkCurrentAdminUser();
         storeServiceClient.removeStoreRegion(id);
         return new ResponseResult<>();

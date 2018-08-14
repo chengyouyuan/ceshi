@@ -50,6 +50,8 @@ public class BackStageStoreVO {
     private String contactMobile;
 
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
-    private String paymentWay;
+    private String payType;
 
+    @ApiModelProperty(value = "取货方式列表（1、自提）")
+    private String pickupType;
 }

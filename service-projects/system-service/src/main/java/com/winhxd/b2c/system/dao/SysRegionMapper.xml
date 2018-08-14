@@ -64,7 +64,7 @@
       #{item}
     </foreach>
   </select>
-  <select id="selectRegionFilterList" parameterType="com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition" resultType="com.winhxd.b2c.common.domain.system.region.model.SysRegion">
+  <select id="selectRegionFilterList" parameterType="com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition"  resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" /> -- 测试环境 active=1 AND
     from sys_region WHERE 1=1

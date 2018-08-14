@@ -50,6 +50,7 @@ public class OrderQueryAspect {
     private static final String CUSTOMER_MOBILE = "customerMobile";
     private static final String STORE_ID = "storeId";
     public static final String STORE_MOBILE = "storeMobile";
+    public static final String STORE_NAME = "storeName";
     public static final String ORDER_ITEMVO_LIST = "orderItemVoList";
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryAspect.class);
 
@@ -224,6 +225,7 @@ public class OrderQueryAspect {
                             for (StoreUserInfoVO storeUserInfoVO : storeInfoList) {
                                 if (storeUserInfoVO.getId().equals(field.get(obj))) {
                                     assembleInfos(obj, STORE_MOBILE, storeUserInfoVO.getStoreMobile());
+                                    assembleInfos(obj, STORE_NAME, storeUserInfoVO.getStoreName());
                                 }
                             }
                         }

@@ -46,7 +46,7 @@ public class SysRegionController implements RegionServiceClient {
         List<SysRegion> regionList=null;
         ResponseResult<List<SysRegion>> result = new ResponseResult<>();
         //空参数或者行政级别为1时，返回所有省
-        if((StringUtils.isBlank(condition.getRegionCode()) && null == condition.getLevel())||condition.getLevel().equals(PROVINCELEVEL.getCode())){
+        if((StringUtils.isBlank(condition.getRegionCode()) && null == condition.getLevel())||PROVINCELEVEL.getCode().equals(condition.getLevel())){
             //查找省区域列表
              regionList=  sysRegionService.findRegionByLevel(PROVINCELEVEL);
         }else if(StringUtils.isNotBlank(condition.getRegionCode())){    //regioncode 不为空时

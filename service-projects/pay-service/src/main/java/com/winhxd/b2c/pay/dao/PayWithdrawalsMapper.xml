@@ -269,4 +269,38 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
+    <resultMap id="voResultMap" type="com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO">
+      <id column="id" jdbcType="BIGINT" property="id" />
+      <result column="store_id" jdbcType="BIGINT" property="storeId" />
+      <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
+      <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+      <result column="real_fee" jdbcType="DECIMAL" property="realFee" />
+      <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+      <result column="rate" jdbcType="DECIMAL" property="rate" />
+      <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
+      <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
+      <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
+      <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+      <result column="payment_account" jdbcType="CHAR" property="paymentAccount" />
+      <result column="created" jdbcType="TIMESTAMP" property="created" />
+      <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+      <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+      <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+      <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+      <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    </resultMap>
+
+  <!-- 根据门店id查询提现列表信息 -->
+  <select id="getPayWithdrawalsByStoreId" parameterType="java.lang.Long" resultMap="voResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_withdrawals
+    where store_id = #{storeId}
+  </select>
+
 </mapper>

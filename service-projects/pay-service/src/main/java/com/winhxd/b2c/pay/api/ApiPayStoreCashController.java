@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
 import io.swagger.annotations.Api;
@@ -38,8 +39,6 @@ public class ApiPayStoreCashController {
     }
 
 
-
-
     @ApiOperation(value = "门店交易记录收支明细", notes = "门店交易记录收支明细")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
@@ -48,6 +47,20 @@ public class ApiPayStoreCashController {
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = payStoreCashService.getPayStoreTransRecordByStoreId(condition);
         return result;
     }
+
+
+
+
+
+    @ApiOperation(value = "门店提现记录", notes = "门店提现记录")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
+    @RequestMapping(value = "/6014/v1/getPayWithdrawalsByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(@RequestBody PayStoreCashCondition condition){
+        ResponseResult<PagedList<PayWithdrawalsVO>> result = payStoreCashService.getPayWithdrawalsByStoreId(condition);
+        return result;
+    }
+
 
 
 }

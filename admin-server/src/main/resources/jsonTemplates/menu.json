@@ -17,7 +17,7 @@
       	  "id": "1_1",
           "menuName": "门店商品管理",
           "path": "",
-          "configKey": "",
+          "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
       	},
       	{
@@ -46,8 +46,8 @@
         {
           "id": "2_3",
           "menuName": "门店测试区域管理",
-          "path": "/setOrderTime/index",
-          "configKey": "",
+          "path": "",
+          "configKey": "/template/module/store/store_region_list.json",
           "permission": ""
         }
       ]
@@ -77,6 +77,13 @@
       "children": [
         {
           "id": "4_1",
+          "menuName": "订单管理",
+          "path": "",
+          "configKey": "/template/module/order/order_list_view.json",
+          "permission": ""
+        },
+        {
+          "id": "4_2",
           "menuName": "(临时)订单详情",
           "path": "/details/index",
           "configKey": "",

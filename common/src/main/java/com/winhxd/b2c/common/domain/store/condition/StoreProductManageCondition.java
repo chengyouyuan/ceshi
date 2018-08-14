@@ -1,7 +1,6 @@
 package com.winhxd.b2c.common.domain.store.condition;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -42,15 +41,6 @@ public class StoreProductManageCondition extends ApiCondition implements Seriali
 
 	@ApiModelProperty("商品sku")
 	private String skuCode;
-
-	@ApiModelProperty("更新人")
-	private Long updatedBy;
-
-	@ApiModelProperty("更新人名称")
-	private String updatedByName;
-
-	@ApiModelProperty("更新时间")
-	private Date updated;
 
 	@ApiModelProperty("排序条件,0创建时间，1价格， 2销量")
 	private Integer orderBy;

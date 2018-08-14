@@ -20,10 +20,10 @@ public class SysRegion implements Serializable{
     private String city;
 
     @ApiModelProperty(value = "区县")
-    private String town;
+    private String county;
 
     @ApiModelProperty(value = "乡镇")
-    private String county;
+    private String town;
 
     @ApiModelProperty(value = "居委会，村")
     private String village;

@@ -1,11 +1,11 @@
-package com.winhxd.b2c.pay.weixin.model;
+package com.winhxd.b2c.common.constant;
 
 /**
  * WithDrawChannelCodeType
  *
  * @Author yindanqing
  * @Date 2018/8/14 9:55
- * @Description: 提现通道编码枚举
+ * @Description: 转账通道编码枚举
  */
 public enum WithDrawChannelCodeType {
 

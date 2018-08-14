@@ -7,9 +7,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 @ApiModel("出入账明细")
 @Data
+@ToString
 public class PayFinanceAccountDetailVO {
 	@ApiModelProperty("订单编码")
     private String orderNo;
@@ -48,21 +50,29 @@ public class PayFinanceAccountDetailVO {
 	
 	//财务统计页面新增字段
 	@ApiModelProperty("总进账")
-	private BigDecimal allMoney;
-	@ApiModelProperty("今日预收款")
-	private BigDecimal todayAdvenceMoney;
-	@ApiModelProperty("今日实收款")
-	private BigDecimal todayRealMoney;
-	@ApiModelProperty("今日用户退款")
-	private BigDecimal todayBackMoney;
-	@ApiModelProperty("今日用户提现")
-	private BigDecimal todayWithDrawMoney;
+	private BigDecimal allInMoney;
 	@ApiModelProperty("总出账")
 	private BigDecimal allOutMoney;
+	@ApiModelProperty("今日进账")
+	private BigDecimal todayInMoney;
+	@ApiModelProperty("今日预收款")
+	private BigDecimal todayPreMoney;
+	@ApiModelProperty("今日实收款")
+	private BigDecimal todayRealMoney;
+	@ApiModelProperty("今日出账")
+	private BigDecimal todayOutMoney;
+	@ApiModelProperty("今日用户退款")
+	private BigDecimal todayCustomerRefund;
+	@ApiModelProperty("今日门店提现")
+	private BigDecimal todayStoreWithdraw;
 	@ApiModelProperty("优惠券抵用总金额")
 	private BigDecimal useCouponAllMoney;
 	@ApiModelProperty("优惠券今日抵用金额")
 	private BigDecimal useTodayCouponAllMoney;
 	@ApiModelProperty("当前余额")
 	private BigDecimal curLeftMoney;
+	@ApiModelProperty("全部手续费")
+	private BigDecimal allCharge;
+	@ApiModelProperty("今日手续费")
+	private BigDecimal todayCharge;
 }

@@ -770,11 +770,64 @@ public class CouponServiceImpl implements CouponService {
         Page page = PageHelper.startPage(pageNo, pageSize);
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
-        pagedList.setData(list);
+        List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
+        pagedList.setData(finalList);
         pagedList.setPageNo(pageNo);
         pagedList.setPageSize(pageSize);
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
+
+
+
+
+    public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
+        for(CouponInStoreGetedAndUsedVO couponVO : couponVOS){
+            if(couponVO.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+                List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
+                if(!couponApplyProducts.isEmpty()){
+                    List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
+                    //组装请求的参数
+                    List<String> productSkus = new ArrayList<>();
+                    for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
+                        productSkus.add(couponApplyProductList.getSkuCode());
+                    }
+                    ProductCondition productCondition = new ProductCondition();
+                    productCondition.setProductSkus(productSkus);
+                    //调用获取商品信息接口
+                    ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
+                    couponVO.setProducts(result.getData());
+                }
+            }
+
+            if(couponVO.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+                List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
+                if(!couponApplyBrands.isEmpty()){
+                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+                    //组装请求的参数
+                    List<String> brandCodes = new ArrayList<>();
+                    for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
+                        brandCodes.add(couponApplyBrandList.getBrandCode());
+                    }
+                    //调用获取商品信息接口
+                    ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
+                    couponVO.setBrands(result.getData());
+                }
+            }
+        }
+
+        }
+
+
+    }
+
 
 }

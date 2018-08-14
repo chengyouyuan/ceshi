@@ -6,14 +6,14 @@
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="sku_num" jdbcType="INTEGER" property="skuNum" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, customer_id, store_id, sku_code, sku_num, created, updated, created_by, updated_by
+    id, customer_id, store_id, sku_code, amount, created, updated, created_by, updated_by
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,11 +27,11 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">
     insert into shop_cart (id, customer_id, store_id, 
-      sku_code, sku_num, created, 
+      sku_code, amount, created, 
       updated, created_by, updated_by
       )
     values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, 
-      #{skuCode,jdbcType=VARCHAR}, #{skuNum,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
+      #{skuCode,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, 
       #{updated,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}
       )
   </insert>
@@ -50,8 +50,8 @@
       <if test="skuCode != null">
         sku_code,
       </if>
-      <if test="skuNum != null">
-        sku_num,
+      <if test="amount != null">
+        amount,
       </if>
       <if test="created != null">
         created,
@@ -79,8 +79,8 @@
       <if test="skuCode != null">
         #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="skuNum != null">
-        #{skuNum,jdbcType=INTEGER},
+      <if test="amount != null">
+        #{amount,jdbcType=INTEGER},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -108,8 +108,8 @@
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="skuNum != null">
-        sku_num = #{skuNum,jdbcType=INTEGER},
+      <if test="amount != null">
+        amount = #{amount,jdbcType=INTEGER},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -131,7 +131,7 @@
     set customer_id = #{customerId,jdbcType=BIGINT},
       store_id = #{storeId,jdbcType=BIGINT},
       sku_code = #{skuCode,jdbcType=VARCHAR},
-      sku_num = #{skuNum,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=INTEGER},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=BIGINT},

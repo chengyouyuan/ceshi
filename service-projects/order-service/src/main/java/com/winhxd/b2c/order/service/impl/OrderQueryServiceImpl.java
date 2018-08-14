@@ -1,24 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import com.winhxd.b2c.common.domain.order.condition.*;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
@@ -29,12 +10,9 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
-import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.order.vo.*;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -44,6 +22,22 @@ import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author pangjianhua

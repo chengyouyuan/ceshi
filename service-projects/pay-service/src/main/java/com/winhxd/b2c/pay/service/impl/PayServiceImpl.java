@@ -83,7 +83,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(logLabel+"退款回调callbackOrderRefund--订单支付流水插入失败");
 			throw new BusinessException(BusinessCode.CODE_600301);
 		}
-		//todo 插入流水号
+
 		
 		//todo 将此订单的预入账记录更新为退款记录
 		logger.info(logLabel+"退款回调callbackOrderRefund--结束");

@@ -40,12 +40,13 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
             Method method = entry.getValue().getMethod();
 
-            checkMethodOutput(errorList, method);
-
             Set<RequestMethod> requestMethods = entry.getKey().getMethodsCondition().getMethods();
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
             for (String path : patterns) {
-                checkPath(errorList, codes, path, method, requestMethods);
+                boolean checkMethod = checkPath(errorList, codes, path, method, requestMethods);
+                if (checkMethod) {
+                    checkMethodOutput(errorList, method);
+                }
             }
         }
         if (errorList.size() > 0) {
@@ -100,13 +101,18 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
         return true;
     }
 
-    private void checkPath(List<String> errorList, Set<String> codes, String path, Method method, Set<RequestMethod> requestMethods) {
+    private boolean checkPath(List<String> errorList, Set<String> codes, String path, Method method, Set<RequestMethod> requestMethods) {
+        boolean checkMethod = true;
         Matcher matcher;
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();
         if ((matcher = ContextHelper.PATTERN_API_PATH.matcher(path)).matches()) {
             if (!apiClass.matcher(className).matches()) {
                 errorList.add(className + "#" + methodName);
             } else {
+                String pathTag = matcher.group(2);
+                if (ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
+                    checkMethod = false;
+                }
                 String code = matcher.group(3);
                 if (codes.contains(code)) {
                     errorList.add(className + "#" + methodName + " 接口号重复:" + code);
@@ -116,12 +122,14 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                 if (CollectionUtils.isEmpty(requestMethods) || !requestMethods.contains(RequestMethod.POST)) {
                     errorList.add(className + "#" + methodName + " 外部接口必须是POST");
                 }
-                Class<?>[] classes = method.getParameterTypes();
-                if (classes == null || classes.length == 0 || !(
-                        ApiCondition.class.isAssignableFrom(classes[0])
-                                || MultipartRequest.class.isAssignableFrom(classes[0]))
-                        ) {
-                    errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
+                if (!ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
+                    Class<?>[] classes = method.getParameterTypes();
+                    if (classes == null || classes.length == 0 || !(
+                            ApiCondition.class.isAssignableFrom(classes[0])
+                                    || MultipartRequest.class.isAssignableFrom(classes[0]))
+                            ) {
+                        errorList.add(className + "#" + methodName + " 外部接口入参必须是ApiCondition或其子类");
+                    }
                 }
             }
         } else if ((matcher = ContextHelper.PATTERN_SERVICE_PATH.matcher(path)).matches()) {
@@ -140,5 +148,6 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
                 errorList.add(className + "#" + methodName);
             }
         }
+        return checkMethod;
     }
 }

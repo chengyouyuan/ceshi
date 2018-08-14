@@ -27,7 +27,7 @@ public class ShopCar {
     private String skuCode;
 
     @ApiModelProperty(value = "商品数量")
-    private Integer skuNum;
+    private Integer amount;
 
     @ApiModelProperty(value = "创建时间")
     private Date created;

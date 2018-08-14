@@ -63,7 +63,7 @@ public class ApiShopCarController {
     @RequestMapping(value = "/api-order/order/4030/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
         if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
-                || null == condition.getSkuNum()) {
+                || null == condition.getAmount()) {
             logger.error("商品加购异常{}  参数错误");
             throw new BusinessException(BusinessCode.CODE_402008);
         }

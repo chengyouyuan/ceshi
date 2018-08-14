@@ -108,7 +108,7 @@ public final class BusinessCode {
 
 
     /** 查询订单参数异常*/
-    public static final int CODE_411001 = 411001;
+    public static final int CODE_4011001 = 4011001;
 
     /** 不存在符合的优惠券活动*/
     public static final int CODE_500001 = 500001;
@@ -224,7 +224,7 @@ public final class BusinessCode {
     public static final int CODE_422004 = 422004;
 
     /** 订单状态不允许退款*/
-    public static final int CODE_421002 = 421002;
+    public static final int CODE_4021002 = 4021002;
     /** 参数错误*/
     public static final int CODE_421001 = 421001;
     /** 订单号不能为空*/
@@ -232,7 +232,7 @@ public final class BusinessCode {
     /** 订单已支付成功不能取消*/
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
-    public static final int CODE_410001 = 410001;
+    public static final int CODE_4010001 = 4010001;
     /** 订单号错误*/
     public static final int CODE_420003 = 420003;
     /** 取消订单状态更新失败*/

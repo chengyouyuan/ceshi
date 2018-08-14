@@ -142,7 +142,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_ALREADY_PAID, message = "已完成的订单不允许退款"),
             @ApiResponse(code = BusinessCode.ORDER_STATUS_CHANGE_FAILURE, message = "订单状态修改失败"),
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中"),
-            @ApiResponse(code = BusinessCode.CODE_421002, message = "订单状态不允许退款")
+            @ApiResponse(code = BusinessCode.CODE_4021002, message = "订单状态不允许退款")
     })
     @RequestMapping(value = "/4021/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {

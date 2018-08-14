@@ -40,6 +40,43 @@ public class ApiOrderController {
     @Resource
     private OrderService orderService;
 
+
+    @ApiOperation(value = "B端线下计价订单价格修改", notes = "B端线下计价订单价格修改")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_TOTAL_MONEY, message = "订单金额错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+            @ApiResponse(code = BusinessCode.ORDER_IS_BEING_PAID, message = "订单已经支付，无法修改价格")
+    })
+    @RequestMapping(value = "/4025/v1/orderPriceChange4Store", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Void> orderPriceChange4Store(@RequestBody OrderConfirmCondition condition) {
+        String logTitle = "/api-order/order/4025/v1/orderPriceChange4Store-B端线下计价订单价格修改";
+        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        ResponseResult<Void> result = new ResponseResult<>();
+        try {
+            //获取当前登录门店Id
+            StoreUser storeUser = UserContext.getCurrentStoreUser();
+            if (storeUser == null || storeUser.getBusinessId() == null) {
+                throw new BusinessException(BusinessCode.CODE_1002);
+            }
+            condition.setStoreId(storeUser.getBusinessId());
+            this.orderService.orderPriceChange4Store(condition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(e.getErrorCode());
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "=--异常" + e.getMessage(), e);
+            result.setCode(BusinessCode.CODE_1001);
+            throw e;
+        }
+        LOGGER.info("{}=--结束 result={}", logTitle, result);
+        return result;
+    }
+    
     @ApiOperation(value = "B端自提完成", notes = "B端自提完成")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -185,7 +222,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_STATUS_CHANGE_FAILURE, message = "订单状态修改失败"),
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中")
     })
-    @RequestMapping(value = "/4025/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/4026/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
         String logTitle = "=/api-order/order/4025/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);

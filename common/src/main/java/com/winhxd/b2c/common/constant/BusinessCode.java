@@ -226,6 +226,15 @@ public final class BusinessCode {
 
     @ApiModelProperty("订单正在修改中")
     public static final int ORDER_IS_BEING_MODIFIED = 400012;
+    
+    @ApiModelProperty("订单正在支付中")
+    public static final int ORDER_IS_BEING_PAID = 400013;
+    
+    @ApiModelProperty("订单为非线下计价订单")
+    public static final int ORDER_IS_NOT_OFFLINE_VALUATION = 400014;
+    
+    @ApiModelProperty("订单金额没有变化")
+    public static final int WRONG_ORDER_TOTAL_MONEY_NO_CHANGE = 400015;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;

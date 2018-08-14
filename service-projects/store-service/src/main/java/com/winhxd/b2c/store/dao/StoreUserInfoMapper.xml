@@ -400,9 +400,9 @@
     select
       id
     from store_user_info
-    where store_region_code in
-      <foreach collection="regionCodeList" item="reginCode" open="(" close=")" separator=",">
-        #{reginCode}
+    where 1=1 and
+      <foreach collection="reginCodeList" item="reginCode" open="(" close=")" separator="or">
+          store_region_code like '${reginCode}%'
       </foreach>
   </select>
 

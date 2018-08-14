@@ -73,7 +73,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition) {
+    public ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition) {
         ResponseResult<List<String>> responseResult = new ResponseResult<>();
         List<String> ids = storeService.findByReginCodes(condition.getRegionCodeList());
         responseResult.setData(ids);

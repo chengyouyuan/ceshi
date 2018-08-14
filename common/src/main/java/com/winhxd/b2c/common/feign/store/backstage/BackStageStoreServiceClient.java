@@ -105,7 +105,7 @@ public interface BackStageStoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/1051/v1/findStoreIdList",method = RequestMethod.POST)
-    ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition);
+    ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition);
 }
 /**
  * @Description: 熔断回调

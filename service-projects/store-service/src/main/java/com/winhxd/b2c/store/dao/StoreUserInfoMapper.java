@@ -70,8 +70,8 @@ public interface StoreUserInfoMapper {
 
     /**
      * 根据reginCode集合查询门店
-     * @param regionCodeList
+     * @param
      * @return
      */
-    List<String> selectByReginCodes(List<String> regionCodeList);
+    List<String> selectByReginCodes(@Param("reginCodeList") List<String> reginCodeList);
 }

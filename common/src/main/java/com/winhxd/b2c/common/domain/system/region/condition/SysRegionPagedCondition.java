@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.system.region.condition;
 
+import com.winhxd.b2c.common.domain.common.AdminPagedCondition;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.common.PagedCondition;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +12,7 @@ import lombok.Data;
  * @create: 2018-08-06 11:39
  **/
 @Data
-public class SysRegionPagedCondition extends PagedCondition {
+public class SysRegionPagedCondition extends AdminPagedCondition {
 
     @ApiModelProperty(value = "区域编号", required = true)
     private String regionCode;

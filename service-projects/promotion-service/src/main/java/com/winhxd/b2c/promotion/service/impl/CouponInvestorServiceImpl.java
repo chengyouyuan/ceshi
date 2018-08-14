@@ -19,6 +19,7 @@ import com.winhxd.b2c.promotion.service.CouponInvestorService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
@@ -37,6 +38,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
     @Override
+    @Transactional
     public int saveCouponInvestor( CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
         List deatils = condition.getDetails();
@@ -117,6 +119,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
+    @Transactional
     public int updateCouponInvestorToValid(long id,long userId,String userName) {
         int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;

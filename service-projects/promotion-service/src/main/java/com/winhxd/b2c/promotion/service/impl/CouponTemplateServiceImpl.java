@@ -14,6 +14,7 @@ import com.winhxd.b2c.promotion.dao.CouponTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -38,6 +39,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/6 10:45
      */
     @Override
+    @Transactional
     public int saveCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
         int flag = 0;
         CouponTemplate couponTemplate = new CouponTemplate();
@@ -151,6 +153,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/6 20:39
      */
     @Override
+    @Transactional
     public int updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName) {
        return couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
     }
@@ -164,6 +167,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/7 16:31
      */
     @Override
+    @Transactional
     public int confirmUpdateCouponTemplate(Long updateBy, Date updated, String updateByName, CouponTemplateCondition condition) {
         return couponTemplateMapper.confirmUpdateCouponTemplate(updateBy,  updated,  updateByName, condition);
     }

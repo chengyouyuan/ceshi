@@ -41,7 +41,6 @@ import java.util.regex.Matcher;
 @Component
 public class GatewayFilter implements GlobalFilter, Ordered {
     private static final Logger logger = LoggerFactory.getLogger(GatewayFilter.class);
-    private static final String CODE = "\"code\"";
 
     @Autowired
     private Cache cache;

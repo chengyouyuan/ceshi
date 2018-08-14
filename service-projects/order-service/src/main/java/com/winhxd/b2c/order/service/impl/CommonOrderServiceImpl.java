@@ -143,7 +143,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public String submitOrder(OrderCreateCondition orderCreateCondition) {
+    public OrderInfo submitOrder(OrderCreateCondition orderCreateCondition) {
         if (orderCreateCondition == null) {
             throw new NullPointerException("orderCreateCondition不能为空");
         }
@@ -168,7 +168,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事务提交后相关事件
         registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo), new SubmitFailureProcessRunnerble(orderInfo, orderCreateCondition.getCouponIds()));
-        return orderInfo.getOrderNo();
+        return orderInfo;
     }
 
 
@@ -673,6 +673,53 @@ public class CommonOrderServiceImpl implements OrderService {
         //注册确认订单成功相关操作
         registerProcessAfterTransSuccess(new OrderConfirmSuccessRunnerble(orderInfo), null);
         logger.info("门店确认订单结束：condition={}", condition);
+    }
+    
+    @Override
+    public void orderPriceChange4Store(OrderConfirmCondition condition) {
+        if (condition == null) {
+            throw new NullPointerException("订单价格修改参数 OrderConfirmCondition 为空");
+        }
+        if (condition.getStoreId() == null) {
+            throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
+        }
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(condition.getOrderNo());
+        if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (OrderStatusEnum.WAIT_PAY.getStatusCode() != orderInfo.getOrderStatus()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
+        }
+        if (orderInfo.getValuationType() != ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+            throw new BusinessException(BusinessCode.ORDER_IS_NOT_OFFLINE_VALUATION);
+        }
+        if (condition.getOrderTotal() == null || condition.getOrderTotal().compareTo(BigDecimal.ZERO) < 1) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY);
+        }
+        if (condition.getOrderTotal().compareTo(orderInfo.getOrderTotalMoney()) == 0) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY_NO_CHANGE);
+        }
+        //TODO 调用支付中心 判断当前订单是否有支付信息
+        if (1 != 1) {
+            //如果已有支付单存在，则不允许修改支付价格
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
+        }
+        String oldJson = JsonUtil.toJSONString(orderInfo);
+        orderInfo.setOrderTotalMoney(condition.getOrderTotal());
+        orderInfo.setRealPaymentMoney(condition.getOrderTotal());
+        String newJson = JsonUtil.toJSONString(orderInfo);
+        int num = orderInfoMapper.updateOrderMoney(condition.getOrderTotal(), condition.getOrderTotal(), orderInfo.getId());
+        if (num != 1) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        // 生产订单流转日志
+        orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldJson, newJson, null,
+                orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
+                "门店修改线下计价订单价格", MainPointEnum.NOT_MAIN);
+        logger.info("门店修改订单价格结束：condition={}", condition);
     }
 
     @Override
@@ -1417,4 +1464,5 @@ public class CommonOrderServiceImpl implements OrderService {
         neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
         messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
     }
+
 }

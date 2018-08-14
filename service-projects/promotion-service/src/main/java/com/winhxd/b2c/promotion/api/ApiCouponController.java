@@ -100,6 +100,12 @@ public class ApiCouponController{
         return result;
     }
 
+    /**
+     * 获取用户可领取门店优惠券种类数
+     * sjx
+     * @param condition
+     * @return
+     */
     @ApiOperation(value = "获取用户可领取门店优惠券种类数", notes = "获取用户可领取门店优惠券种类数")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -115,6 +121,13 @@ public class ApiCouponController{
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
     }
+
+    /**
+     * 用户查询门店优惠券列表
+     * sjx
+     * @param condition
+     * @return
+     */
     @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -168,6 +181,21 @@ public class ApiCouponController{
         PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(codition.getStoreId(),pageNo,pageSize);
         result.setData(pages);
         LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
+        return result;
+    }
+
+    @ApiOperation(value = "获取可用最优惠的优惠券", notes = "获取可用最优惠的优惠券")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/5048/v1/findDefaultCouponByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<CouponVO> findDefaultCouponByOrder(@RequestBody CouponPreAmountCondition couponCondition){
+        LOGGER.info("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder");
+
+        ResponseResult<CouponVO> result = new ResponseResult<>();
+        CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
+        result.setData(couponVO);
+        LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果:"+result);
         return result;
     }
 

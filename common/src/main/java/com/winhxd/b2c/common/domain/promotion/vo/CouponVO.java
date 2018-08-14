@@ -59,7 +59,7 @@ public class CouponVO {
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
     @ApiModelProperty(value = "优惠券是否可用 0 不可用  1 可用", required=true)
-    private String availableStatus = "0";
+    private Integer availableStatus = 0;
 
     private String couponNumType;
     @ApiModelProperty(value = "优惠券数量", required=true)
@@ -277,11 +277,11 @@ public class CouponVO {
         this.sendId = sendId;
     }
 
-    public String getAvailableStatus() {
+    public Integer getAvailableStatus() {
         return availableStatus;
     }
 
-    public void setAvailableStatus(String availableStatus) {
+    public void setAvailableStatus(Integer availableStatus) {
         this.availableStatus = availableStatus;
     }
 }

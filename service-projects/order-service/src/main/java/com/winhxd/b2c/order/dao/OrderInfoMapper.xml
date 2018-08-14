@@ -473,6 +473,8 @@
             <result column="skuCode" property="skuCode"/>
             <result column="amount" property="amount"/>
             <result column="price" property="price"/>
+            <result column="skuUrl" property="skuUrl"/>
+            <result column="skuDesc" property="skuDesc"/>
         </collection>
     </resultMap>
     <resultMap id="orderIdResult" type="java.lang.Long" >
@@ -491,6 +493,8 @@
         ,item.sku_code AS skuCode
         ,item.amount AS amount
         ,item.price AS price
+        ,item.sku_url AS skuUrl
+        ,item.sku_desc AS skuDesc
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
         order by info.created desc
@@ -508,9 +512,8 @@
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 
-        	<foreach item="item" index="index" collection="condition.orderNos" 
-                         open="(" separator="," close=")">
-                        #{item}
+        	<foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
+                #{item}
             </foreach>
         </if>
     </select>
@@ -520,12 +523,13 @@
         ,item.sku_code AS skuCode
         ,item.amount AS amount
         ,item.price AS price
+        ,item.sku_url AS skuUrl
+        ,item.sku_desc AS skuDesc
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
         and info.id in 
-    	<foreach item="item" index="index" collection="orderIds" 
-                     open="(" separator="," close=")">
-                    #{item}
+    	<foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
+                #{item}
         </foreach>
         order by info.created desc, info.order_no
     </select>
@@ -535,13 +539,10 @@
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime, refund_datetime, accept_order_datetime, apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
-    <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
+    <select id="listOrder4Store" resultMap="orderIdResult">
         select
-        <include refid="Order_Info_List_4_store"/>
-        ,item.sku_code AS skuCode
-        ,item.amount AS amount
-        ,item.price AS price
-        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        id
+        from order_info info
         where 1=1
         <if test="condition.orderStatus != null">
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
@@ -550,17 +551,35 @@
             and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
         </if>
         and store_id = #{storeId,jdbcType=BIGINT}
-        order by info.created desc
+    </select>
+    <select id="listOrder4StoreInOrderIds" resultMap="OrderInfoListResultMap">
+        select
+        <include refid="Order_Info_List_4_store"/>
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        ,item.sku_url AS skuUrl
+        ,item.sku_desc AS skuDesc
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where 1=1
+        and info.id in 
+    	<foreach item="item" index="index" collection="orderIds" 
+                     open="(" separator="," close=")">
+                    #{item}
+        </foreach>
+        order by info.created desc, info.order_no
     </select>
     <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
+        ,item.id AS itemId
         ,item.sku_code AS skuCode
         ,item.amount AS amount
         ,item.price AS price
+        ,item.sku_url AS skuUrl
+        ,item.sku_desc AS skuDesc
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.order_no = #{orderNo,jdbcType=VARCHAR}
-        limit 1
     </select>
     <update id="updateOrderStatusForCancel">
         update order_info
@@ -609,7 +628,6 @@
         <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
             #{pickUpCodes}
         </foreach>
-        limit 1
     </select>
 
     <update id="updateOrderPayStatus">

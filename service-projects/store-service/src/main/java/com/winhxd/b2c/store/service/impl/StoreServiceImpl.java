@@ -61,6 +61,7 @@ public class StoreServiceImpl implements StoreService {
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
+        record.setStatus(0);
         return customerStoreRelationMapper.insert(record);
     }
 

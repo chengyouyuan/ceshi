@@ -27,4 +27,10 @@ public class CustomerStoreRelation {
 
     @ApiModelProperty("绑定时间")
     private Date bindingTime;
+
+    @ApiModelProperty("绑定状态,0已经绑定，1未绑定")
+    private Integer status;
+
+    @ApiModelProperty("解绑时间")
+    private Date unbindingTime;
 }

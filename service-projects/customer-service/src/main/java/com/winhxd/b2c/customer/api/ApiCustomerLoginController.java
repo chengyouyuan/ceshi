@@ -1,5 +1,17 @@
 package com.winhxd.b2c.customer.api;
 
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -17,21 +29,11 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 /**
  * @author wufuyun
@@ -110,9 +112,9 @@ public class ApiCustomerLoginController {
 			customerUserInfo.setSessionKey(mini.getSessionKey());
 			customerUserInfo.setCreated(new Date());
 			customerUserInfo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
-			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 			customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
 			customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
+			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 			customerLoginService.saveLoginInfo(customerUserInfo);
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(customerUserInfoCondition.getCustomerMobile());
@@ -130,18 +132,17 @@ public class ApiCustomerLoginController {
 			}
 			customerUserInfo.setCustomerId(db.getCustomerId());
 			customerUserInfo.setSessionKey(mini.getSessionKey());
+			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
+			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN +db.getToken());
 			customerLoginService.updateCustomerInfo(customerUserInfo);
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(db.getCustomerMobile());
-			vo.setToken(db.getToken());
-			if (!cache.exists(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken())) {
-				CustomerUser user = new CustomerUser();
-				user.setOpenId(db.getOpenId());
-				user.setCustomerId(db.getCustomerId());
-				cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
-						JsonUtil.toJSONString(user));
-				cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
-			}
+			vo.setToken(customerUserInfo.getToken());
+			CustomerUser user = new CustomerUser();
+			user.setOpenId(db.getOpenId());
+			user.setCustomerId(db.getCustomerId());
+			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
+			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
 			result.setData(vo);
 		}
 		return result;
@@ -191,7 +192,8 @@ public class ApiCustomerLoginController {
 		 * 发送模板内容
 		 */
 		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-		//messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+		// messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),
+		// content);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}

@@ -1,25 +1,18 @@
-package com.winhxd.b2c.pay.weixin.base.condition;
+package com.winhxd.b2c.pay.weixin.condition;
 
 import java.math.BigDecimal;
 
 /**
- * PayTransfersToWxBalanceCondition
+ * PayTransfersToWxChangeCondition
  *
  * @Author yindanqing
  * @Date 2018/8/14 10:42
- * @Description: 提现至微信余额
+ * @Description: 提现至微信零钱
  */
-public class PayTransfersToWxBalanceCondition {
+public class PayTransfersToWxChangeCondition implements java.io.Serializable {
 
-    /**
-     * 商户账号appid
-     */
-    private String mchAppid;
 
-    /**
-     * 商户号
-     */
-    private String mchid;
+    private static final long serialVersionUID = 5046603829537736036L;
 
     /**
      * 设备号
@@ -55,22 +48,6 @@ public class PayTransfersToWxBalanceCondition {
      * Ip地址
      */
     private String spbillCreateIp;
-
-    public String getMchAppid() {
-        return mchAppid;
-    }
-
-    public void setMchAppid(String mchAppid) {
-        this.mchAppid = mchAppid;
-    }
-
-    public String getMchid() {
-        return mchid;
-    }
-
-    public void setMchid(String mchid) {
-        this.mchid = mchid;
-    }
 
     public String getDeviceInfo() {
         return deviceInfo;

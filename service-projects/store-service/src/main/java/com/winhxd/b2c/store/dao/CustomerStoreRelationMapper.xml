@@ -6,18 +6,19 @@
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="store_user_id" jdbcType="BIGINT" property="storeUserId" />
     <result column="binding_time" jdbcType="TIMESTAMP" property="bindingTime" />
+    <result column="status" jdbcType="INTEGER" property="status"/>
+    <result column="unbinding_time" jdbcType="TIMESTAMP" property="unbindingTime"/>
+
   </resultMap>
   <sql id="Base_Column_List">
-    id, customer_id, store_user_id, binding_time
+    id, customer_id, store_user_id, binding_time, status,unbinding_time
   </sql>
 
   <select id="selectByCondition" resultType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
-    select <include refid="Base_Column_List"/> from customer_store_relation
-    <where>
+    select <include refid="Base_Column_List"/> from customer_store_relation where status = 0
       <if test="customerId != null">
         and customer_id = #{customerId}
       </if>
-    </where>
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -32,9 +33,9 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
     insert into customer_store_relation (id, customer_id, store_user_id, 
-      binding_time)
+      binding_time,status,unbinding_time)
     values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeUserId,jdbcType=BIGINT}, 
-      #{bindingTime,jdbcType=TIMESTAMP})
+      #{bindingTime,jdbcType=TIMESTAMP},#{status,jdbcType=INTEGER},#{unbindingTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
     insert into customer_store_relation
@@ -51,6 +52,12 @@
       <if test="bindingTime != null">
         binding_time,
       </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="unbindingTime != null">
+        unbinding_time
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -64,6 +71,12 @@
       </if>
       <if test="bindingTime != null">
         #{bindingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unbindingTime != null">
+        #{unbindingTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -79,6 +92,12 @@
       <if test="bindingTime != null">
         binding_time = #{bindingTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unbindingTime != null">
+        unbinding_time = #{unbindingTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -86,7 +105,9 @@
     update customer_store_relation
     set customer_id = #{customerId,jdbcType=BIGINT},
       store_user_id = #{storeUserId,jdbcType=BIGINT},
-      binding_time = #{bindingTime,jdbcType=TIMESTAMP}
+      binding_time = #{bindingTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      unbinding_time = #{unbindingTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

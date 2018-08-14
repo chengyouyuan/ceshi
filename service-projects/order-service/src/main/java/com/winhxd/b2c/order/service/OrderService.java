@@ -1,6 +1,13 @@
 package com.winhxd.b2c.order.service;
 
-import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 
 /**
  * 订单操作接口，提供包括下单、修改等操作
@@ -14,11 +21,11 @@ public interface OrderService {
      * 订单提交接口
      *
      * @param orderCreateCondition
-     * @return 订单号
+     * @return OrderInfo
      * @author wangbin
      * @date 2018年8月2日 下午5:51:46
      */
-    String submitOrder(OrderCreateCondition orderCreateCondition);
+    OrderInfo submitOrder(OrderCreateCondition orderCreateCondition);
 
     /**
      * 订单支付成功通知接口
@@ -122,4 +129,12 @@ public interface OrderService {
      * @param orderRefundCallbackCondition 入参
      */
     boolean updateOrderRefundCallback(OrderRefundCallbackCondition orderRefundCallbackCondition);
+
+    /**
+     * 线下计价订单修改价格
+     * @author wangbin
+     * @date  2018年8月14日 下午3:52:32
+     * @param condition
+     */
+    void orderPriceChange4Store(OrderConfirmCondition condition);
 }

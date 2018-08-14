@@ -1,15 +1,11 @@
-package com.winhxd.b2c.pay.weixin.model;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.UUID;
+package com.winhxd.b2c.pay.weixin.constant;
 
 /**
  * WithDrawChannelType
  *
  * @Author yindanqing
  * @Date 2018/8/14 9:55
- * @Description: 提现通道枚举
+ * @Description: 转账通道枚举
  */
 public enum WithDrawChannelType {
 

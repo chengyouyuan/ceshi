@@ -126,4 +126,11 @@ public interface CouponService {
 
 
     PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize);
+
+    /**
+     * 获取可用最优惠的优惠券
+     * @param couponCondition
+     * @return
+     */
+    CouponVO findDefaultCouponByOrder(CouponPreAmountCondition couponCondition);
 }

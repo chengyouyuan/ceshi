@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="real_cmms_amt" jdbcType="DECIMAL" property="realCmmsAmt" />
+    <result column="real_rate" jdbcType="DECIMAL" property="realRate" />
+    <result column="transaction_date" jdbcType="TIMESTAMP" property="transactionDate" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_id, order_no, type, status, money, cmms_amt, rate, real_cmms_amt, real_rate, 
+    transaction_date, created, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_store_transaction_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_store_transaction_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord">
+    insert into pay_store_transaction_record (id, store_id, order_no, 
+      type, status, money, 
+      cmms_amt, rate, real_cmms_amt, 
+      real_rate, transaction_date, created, 
+      updated)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
+      #{type,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, #{money,jdbcType=DECIMAL}, 
+      #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, #{realCmmsAmt,jdbcType=DECIMAL}, 
+      #{realRate,jdbcType=DECIMAL}, #{transactionDate,jdbcType=TIMESTAMP}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord">
+    insert into pay_store_transaction_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="realCmmsAmt != null">
+        real_cmms_amt,
+      </if>
+      <if test="realRate != null">
+        real_rate,
+      </if>
+      <if test="transactionDate != null">
+        transaction_date,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="cmmsAmt != null">
+        #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="realCmmsAmt != null">
+        #{realCmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="realRate != null">
+        #{realRate,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionDate != null">
+        #{transactionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord">
+    update pay_store_transaction_record
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="money != null">
+        money = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="realCmmsAmt != null">
+        real_cmms_amt = #{realCmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="realRate != null">
+        real_rate = #{realRate,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionDate != null">
+        transaction_date = #{transactionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord">
+    update pay_store_transaction_record
+    set store_id = #{storeId,jdbcType=BIGINT},
+      order_no = #{orderNo,jdbcType=CHAR},
+      type = #{type,jdbcType=SMALLINT},
+      status = #{status,jdbcType=SMALLINT},
+      money = #{money,jdbcType=DECIMAL},
+      cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      rate = #{rate,jdbcType=DECIMAL},
+      real_cmms_amt = #{realCmmsAmt,jdbcType=DECIMAL},
+      real_rate = #{realRate,jdbcType=DECIMAL},
+      transaction_date = #{transactionDate,jdbcType=TIMESTAMP},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * @Author liangliang
+ * @Author wl
  * @Date 2018/8/14 17:04
  * @Description
  **/
@@ -32,6 +32,14 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
       @Autowired
       private PayWithdrawalsMapper payWithdrawalsMapper;
 
+    /**
+     *
+     *@Deccription 门店金额提现首页信息
+     *@Params condition
+     *@Return  ResponseResult<StoreBankrollVO>
+     *@User  wl
+     *@Date   2018/8/14 20:30
+     */
     @Override
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition) {
         ResponseResult<StoreBankrollVO> result = new ResponseResult<StoreBankrollVO>();
@@ -49,6 +57,15 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         return result;
     }
 
+    
+    /**
+     *
+     *@Deccription 获取门店收支明细
+     *@Params  condition
+     *@Return  ResponseResult<PagedList<PayStoreTransactionRecordVO>> 分页列表
+     *@User  wl
+     *@Date   2018/8/14 20:31
+     */
     @Override
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
@@ -64,6 +81,14 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         return result;
     }
 
+    /**
+     *
+     *@Deccription 提现明细
+     *@Params  condition
+     *@Return  ResponseResult<PagedList<PayWithdrawalsVO>>  分页列表
+     *@User  wl
+     *@Date   2018/8/14 20:31
+     */
     @Override
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();

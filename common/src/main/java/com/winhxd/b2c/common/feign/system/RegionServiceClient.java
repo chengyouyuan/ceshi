@@ -54,7 +54,7 @@ public interface RegionServiceClient {
     ResponseResult<SysRegion> getRegionByCode(@PathVariable("regisonCode") String regisonCode);
 
     /**
-     * 功能描述: 根据条件筛选所有地理区�     * @auther: zhanglingke
+     * 功能描述: 根据条件筛选所有地理区域     * @auther: zhanglingke
      * @date: 2018-08-06 11:46
      * @param: SysRegionPagedCondition
      * @return:

@@ -1,7 +1,9 @@
 package com.winhxd.b2c.admin.module.system.controller;
 
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
+import com.winhxd.b2c.common.domain.system.region.condition.SysRegionPagedCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import io.swagger.annotations.Api;
@@ -30,5 +32,11 @@ public class RegionController {
     @PostMapping(value = "/list")
     public ResponseResult<List<SysRegion>> findRegionList(@RequestBody SysRegionCondition condition) {
         return userServiceClient.findRegionList(condition);
+    }
+
+    @ApiOperation("根据条件筛选所有地理区域，支持分页，模糊查询")
+    @PostMapping(value = "/filterlist")
+    public ResponseResult<PagedList<SysRegion>>  findRegionByPage(@RequestBody SysRegionPagedCondition condition) {
+        return userServiceClient.findRegionByPage(condition);
     }
 }

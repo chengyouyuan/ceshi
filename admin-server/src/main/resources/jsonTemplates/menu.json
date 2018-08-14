@@ -77,9 +77,9 @@
       "children": [
         {
           "id": "4_1",
-          "menuName": "订单查询",
-          "path": "/template/module/order/order_list.json",
-          "configKey": "",
+          "menuName": "订单管理",
+          "path": "",
+          "configKey": "/template/module/order/order_list_view.json",
           "permission": ""
         },
         {

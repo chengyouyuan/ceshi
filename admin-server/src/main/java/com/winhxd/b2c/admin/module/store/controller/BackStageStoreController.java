@@ -1,4 +1,4 @@
-package com.winhxd.b2c.admin.module.backstage.controller;
+package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;

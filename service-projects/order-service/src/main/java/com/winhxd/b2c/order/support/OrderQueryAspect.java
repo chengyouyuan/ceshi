@@ -113,8 +113,8 @@ public class OrderQueryAspect {
             storeInfoConvert(joinPoint, ret);
         }
         if (orderInfoConvertAnnotation.queryProductInfo()) {
-            // 获取商品相关信息
-            productInfoConvert(joinPoint, ret);
+            // 获取商品相关信息，订单项中已经冗余
+//            productInfoConvert(joinPoint, ret);
         }
     }
 
@@ -127,7 +127,9 @@ public class OrderQueryAspect {
             assembleProductInfo(objList.toArray(new Object[objList.size()]));
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
-            assembleProductInfo(objList.toArray(new Object[objList.size()]));
+            if (objList != null) {
+                assembleProductInfo(objList.toArray(new Object[objList.size()]));
+            }
         } else {
             assembleProductInfo(ret);
         }
@@ -167,8 +169,8 @@ public class OrderQueryAspect {
                                 for (OrderItemVO orderItemVO : orderItemVOS) {
                                     ProductSkuVO product = productListMap.get(orderItemVO.getSkuCode());
                                     if (null != product) {
-                                        orderItemVO.setProductName(product.getSkuName());
-                                        orderItemVO.setProductPictureUrl(product.getSkuImage());
+                                        orderItemVO.setSkuDesc(product.getSkuName());
+                                        orderItemVO.setSkuUrl(product.getSkuImage());
                                     }
                                 }
                             }

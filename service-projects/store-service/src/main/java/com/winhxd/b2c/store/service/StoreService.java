@@ -2,9 +2,9 @@ package com.winhxd.b2c.store.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 

@@ -4,9 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -73,7 +73,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition) {
+    public ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition) {
         ResponseResult<List<String>> responseResult = new ResponseResult<>();
         List<String> ids = storeService.findByReginCodes(condition.getRegionCodeList());
         responseResult.setData(ids);

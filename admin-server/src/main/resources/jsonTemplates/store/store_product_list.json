@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/store/1042/v1/findStoreProdManageList",
+    "type": "report",
+    "id": "store_product_list",
+    "code": "store_product_list",
+    "title": "门店商品管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/store/1042/v1/findStoreProdManageList"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "prodStatus",
+        "title": "状态"
+      
+      },
+      {
+        "name": "skuCode",
+        "title": "商品skucode"
+      },
+      {
+        "name": "prodName",
+        "title": "商品名称"
+      },
+      {
+        "name": "skuImage",
+        "title": "商品图片"
+      },
+	  {
+        "name": "skuAttributeOption",
+        "title": "商品规格"
+      },
+	  {
+        "name": "storeMobile",
+        "title": "门店账户"
+      },
+	  {
+        "name": "storeName",
+        "title": "门店名称"
+      },
+	  {
+        "name": "sellMoney",
+        "title": "商品售价"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_prod_list_view.json"
+            }
+          },
+          {
+            "name": "上架/下架",
+            "icon": null,
+            "event": {
+              "ajaxType": "post",
+              "type": "ajax",
+              "params": [
+                "id","prodStatus"
+              ],
+              "path": "/store/1044/v1/operateStoreProdManage"
+            }
+          }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "prodStatus",
+        "inputModel": "select",
+        "options":[
+			{
+				"lable":"下架",
+				"value":"0"
+			},
+			{
+				"lable":"上架",
+				"value":"1"
+			}
+		]
+        "placeholder": "请选择",
+        "isHidden": false
+      },
+      {
+        "name": "prodCode",
+        "inputModel": "input",
+        "title": "spu编码",
+        "isHidden": false
+      },
+      {
+        "name": "prodName",
+        "inputModel": "input",
+        "title": "商品名称",
+        "isHidden": false
+      }
+      ,
+      {
+        "name": "skuCode",
+        "inputModel": "input",
+        "title": "sku编码",
+        "isHidden": false
+      },
+      {
+        "name": "storeMobile",
+        "inputModel": "input",
+        "title": "门店账户",
+        "isHidden": false
+      },
+      {
+        "name": "storeName",
+        "inputModel": "input",
+        "title": "门店名称",
+        "isHidden": false
+      }
+    ]
+  }
+}

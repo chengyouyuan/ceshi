@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
@@ -164,6 +164,8 @@ public class StoreServiceController implements StoreServiceClient {
 				spVO.setProdStatus(spManage.getProdStatus());
 				spVO.setSellMoney(spManage.getSellMoney());
 				spVO.setProdName(current.getSkuName()==null? "":current.getSkuName());
+				spVO.setBrandCode(current.getBrandCode());
+				spVO.setSkuAttributeOption(current.getSkuAttributeOption());
 				shopCarProdList.add(spVO);
 			}
 			

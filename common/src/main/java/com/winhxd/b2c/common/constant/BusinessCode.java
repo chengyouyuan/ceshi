@@ -267,4 +267,14 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    
+    
+    /**
+     * 退款回调  订单更新失败
+     */
+    public static final int CODE_600301 = 600301;
+    /**
+     *  退款回调  订单支付流水插入失败
+     */
+    public static final int CODE_600302 = 600302;
 }

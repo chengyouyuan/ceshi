@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/store/1052/v1/findStoreSubmitProdList",
+    "type": "report",
+    "id": "store_submitProduct_list",
+    "code": "store_submitProduct_list",
+    "title": "门店提报商品管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/store/1052/v1/findStoreSubmitProdList"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "prodStatus",
+        "title": "状态"
+      
+      },
+      {
+        "name": "auditRemark",
+        "title": "审核备注"
+      },
+      {
+        "name": "prodImage1",
+        "title": "商品图片"
+      },
+      {
+        "name": "prodInfoVoice",
+        "title": "商品信息（语音）"
+      },
+	  {
+        "name": "prodInfoText",
+        "title": "商品信息（文字）"
+      },
+	  {
+        "name": "storeMobile",
+        "title": "提报门店账户"
+      },
+	  {
+        "name": "storeName",
+        "title": "提报门店名称"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看/审核",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_prod_list_view.json"
+            }
+          },
+          {
+            "name": "去添加",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "path": "",
+              "configKey": "/template/module/store/store_prod_list_view.json"
+            }
+          }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "prodStatus",
+        "inputModel": "select",
+        "options":[
+			{
+				"lable":"待审核",
+				"value":"0"
+			},
+			{
+				"lable":"审核不通过",
+				"value":"1"
+			},
+			{
+				"lable":"审核通过",
+				"value":"2"
+			},
+			{
+				"lable":"已添加",
+				"value":"3"
+			}
+		]
+        "placeholder": "请选择",
+        "isHidden": false
+      },
+      {
+        "name": "prodCode",
+        "inputModel": "input",
+        "title": "spu编码",
+        "isHidden": false
+      },
+      {
+        "name": "prodName",
+        "inputModel": "input",
+        "title": "商品名称",
+        "isHidden": false
+      }
+      ,
+      {
+        "name": "skuCode",
+        "inputModel": "input",
+        "title": "sku编码",
+        "isHidden": false
+      },
+      {
+        "name": "storeMobile",
+        "inputModel": "input",
+        "title": "门店账户",
+        "isHidden": false
+      },
+      {
+        "name": "storeName",
+        "inputModel": "input",
+        "title": "门店名称",
+        "isHidden": false
+      }
+    ]
+  }
+}

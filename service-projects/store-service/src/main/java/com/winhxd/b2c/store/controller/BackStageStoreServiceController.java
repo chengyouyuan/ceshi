@@ -1,5 +1,14 @@
 package com.winhxd.b2c.store.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -10,22 +19,17 @@ import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.winhxd.b2c.store.service.StoreSubmitProductService;
 
 /**
  * Created by caiyulong on 2018/8/6.
@@ -39,6 +43,8 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     private StoreProductManageService storeProductManageService;
 	@Autowired
 	private ProductServiceClient productServiceClient;
+	@Autowired
+	private StoreSubmitProductService storeSubmitProductService;
     @Override
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
@@ -167,6 +173,36 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 		
 		storeProductManageService.modifyStoreProdManageByBackStage(condition);
 		
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
+			BackStageStoreSubmitProdCondition condition) {
+		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> responseResult=null;
+		if(condition!=null){
+			responseResult=new ResponseResult<>();
+			PagedList<BackStageStoreSubmitProdVO> list=this.storeSubmitProductService.findBackStageVOByCondition(condition);
+			responseResult.setData(list);
+		}else{
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
+		}
+		return responseResult;
+	}
+
+	@Override
+	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(BackStageStoreSubmitProdCondition condition) {
+		ResponseResult<BackStageStoreSubmitProdVO> responseResult=null;
+		if(condition!=null){
+			responseResult=new ResponseResult<>();
+			PagedList<BackStageStoreSubmitProdVO> list=this.storeSubmitProductService.findBackStageVOByCondition(condition);
+			if(list!=null&&list.getData()!=null&&list.getData().size()>0){
+				responseResult.setData(list.getData().get(0));
+			}
+			
+		}else{
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
+		}
 		return responseResult;
 	}
 

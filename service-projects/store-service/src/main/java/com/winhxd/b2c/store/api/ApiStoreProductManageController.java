@@ -460,6 +460,28 @@ public class ApiStoreProductManageController {
 		condition.setStoreId(storeId);
 		PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 		PagedList<StoreProdSimpleVO> list = storeProductManageService.findSimpelVOByCondition(condition);
+		if(list!=null&&list.getData()!=null){
+			List<StoreProdSimpleVO> simpleVOList=list.getData();
+			List<String> skuCodes=new ArrayList<>();
+			for(StoreProdSimpleVO vo:simpleVOList){
+				skuCodes.add(vo.getSkuCode());
+			}
+			ProductCondition pCondition=new ProductCondition();
+			pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+			pCondition.setProductSkus(skuCodes);
+			
+			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(pCondition);
+			if(prodResult.getCode()==0&&prodResult.getData()!=null){
+				List<ProductSkuVO> psList=prodResult.getData();
+				if(psList.size()==simpleVOList.size()){
+					for(int i=0;i<psList.size();i++){
+						simpleVOList.get(i).setSkuName(psList.get(i).getSkuName());;
+						simpleVOList.get(i).setSkuImage(psList.get(i).getSkuImage());
+					}
+				}
+			}
+		}
+
 		responseResult.setData(list);
 
 		return responseResult;
@@ -474,7 +496,7 @@ public class ApiStoreProductManageController {
      * @author wuyuanbao
      * @date 2018年8月6日下午1:40:49
      */
-	@ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
+	@ApiOperation(value = "B端获取门店未设置价格上架商品数量", notes = "B端获取门店未设置价格上架商品数量")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })

@@ -21,11 +21,6 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class ProdOperateCondition extends ApiCondition {
-
-	private static final long serialVersionUID = 1L;
-
-	@ApiModelProperty(value = "门店编码", required = true)
-	private Long storeId;
 	
 	@ApiModelProperty(value = "商品操作信息集合", required = true)
 	private List<ProdOperateInfoCondition> products;

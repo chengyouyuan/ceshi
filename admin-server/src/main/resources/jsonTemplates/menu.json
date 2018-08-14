@@ -17,7 +17,7 @@
       	  "id": "1_1",
           "menuName": "门店商品管理",
           "path": "",
-          "configKey": "",
+          "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
       	},
       	{
@@ -77,6 +77,13 @@
       "children": [
         {
           "id": "4_1",
+          "menuName": "订单查询",
+          "path": "/template/module/order/order_list.json",
+          "configKey": "",
+          "permission": ""
+        },
+        {
+          "id": "4_2",
           "menuName": "(临时)订单详情",
           "path": "/details/index",
           "configKey": "",

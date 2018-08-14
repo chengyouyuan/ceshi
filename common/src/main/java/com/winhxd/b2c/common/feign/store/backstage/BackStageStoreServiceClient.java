@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.feign.store.backstage;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,13 +17,13 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 
 import feign.hystrix.FallbackFactory;
-
-import java.util.List;
 
 /**
  *
@@ -106,6 +108,30 @@ public interface BackStageStoreServiceClient {
      */
     @RequestMapping(value = "/store/1051/v1/findStoreIdList",method = RequestMethod.POST)
     ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition);
+    
+    /**
+     * 后台分页获取门店提报商品
+    * @Title: findStoreSubmitProdList 
+    * @Description: TODO 
+    * @param condition
+    * @return ResponseResult<PagedList<BackStageStoreSubmitProdVO>>
+    * @author wuyuanbao
+    * @date 2018年8月14日下午4:06:29
+     */
+    @RequestMapping(value = "/store/1054/v1/findStoreSubmitProdList",method = RequestMethod.POST)
+    ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(@RequestBody BackStageStoreSubmitProdCondition condition);
+    
+    /**
+     * 后台获取门店提报商品（单个）
+    * @Title: findStoreSubmitProd 
+    * @Description: TODO 
+    * @param condition
+    * @return ResponseResult<BackStageStoreSubmitProdVO>
+    * @author wuyuanbao
+    * @date 2018年8月14日下午4:07:40
+     */
+    @RequestMapping(value = "/store/1055/v1/findStoreSubmitProd",method = RequestMethod.POST)
+    ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition);
 }
 /**
  * @Description: 熔断回调
@@ -173,4 +199,17 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
         logger.error("StoreServiceClientFallBack -> findStoreIdListByReginCodes 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+	@Override
+	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
+			BackStageStoreSubmitProdCondition condition) {
+		logger.error("StoreServiceClientFallBack -> findStoreSubmitProdList 报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(BackStageStoreSubmitProdCondition condition) {
+		logger.error("StoreServiceClientFallBack -> findStoreSubmitProd 报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 }

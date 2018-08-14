@@ -2,8 +2,10 @@ package com.winhxd.b2c.store.service;
 
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 
 /**
@@ -54,6 +56,14 @@ public interface StoreSubmitProductService {
 	* @date 2018年8月8日下午8:20:21
 	 */
 	PagedList<StoreSubmitProductVO> findSimpelVOByCondition(StoreSubmitProductCondition condition);
-	
-
+	/**
+	 * 获取后台vo
+	* @Title: findBackStageVOByCondition 
+	* @Description: TODO 
+	* @param condition
+	* @return PagedList<BackStageStoreSubmitProdVO>
+	* @author wuyuanbao
+	* @date 2018年8月14日下午4:12:06
+	 */
+	PagedList<BackStageStoreSubmitProdVO> findBackStageVOByCondition(BackStageStoreSubmitProdCondition condition);
 }

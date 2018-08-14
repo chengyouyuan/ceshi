@@ -18,7 +18,7 @@
         <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
     </resultMap>
-    <resultMap id="SimpleResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreProductManage">
+    <resultMap id="SimpleResultMap" type="com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>

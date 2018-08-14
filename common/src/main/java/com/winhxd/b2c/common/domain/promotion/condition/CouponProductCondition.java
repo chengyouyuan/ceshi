@@ -17,7 +17,7 @@ public class CouponProductCondition {
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
     @ApiModelProperty(value = "商品数量")
-    private Integer num;
+    private Integer skuNum;
 
     public String getBrandCode() {
         return brandCode;
@@ -43,11 +43,11 @@ public class CouponProductCondition {
         this.price = price;
     }
 
-    public Integer getNum() {
-        return num;
+    public Integer getSkuNum() {
+        return skuNum;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public void setSkuNum(Integer skuNum) {
+        this.skuNum = skuNum;
     }
 }

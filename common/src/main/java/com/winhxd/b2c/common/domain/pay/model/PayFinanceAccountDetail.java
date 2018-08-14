@@ -25,6 +25,14 @@ public class PayFinanceAccountDetail implements Serializable {
     private BigDecimal money;
 	@ApiModelProperty("门店Id")
     private Long storeId;
+	@ApiModelProperty("订单总额")
+    private Long orderTotalMoney;
+	@ApiModelProperty("应付金额")
+    private Long realPaymentMoney;
+	@ApiModelProperty("优惠券惠下单出资金额")
+    private Long couponHxdMoney;
+	@ApiModelProperty("优惠券品牌商出资金额")
+    private Long couponBrandMoney;
 	@ApiModelProperty("地理区域编码")
     private String regionCode;
 	@ApiModelProperty("地理区域名称")

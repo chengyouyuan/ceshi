@@ -241,7 +241,7 @@
   	select 
     <include refid="Base_Column_List" />
     from store_bank_card
-    where 1=1
+    where status = 1
     <if test="id != null">
     	and id = #{id,jdbcType=BIGINT}
     </if>
@@ -271,9 +271,6 @@
      </if>
      <if test="verificationCode != null">
        and verification_code = #{verificationCode,jdbcType=VARCHAR}
-     </if>
-     <if test="status != null">
-       and status = #{status,jdbcType=SMALLINT}
      </if>
      <if test="createdBy != null">
        and created_by = #{createdBy,jdbcType=BIGINT}

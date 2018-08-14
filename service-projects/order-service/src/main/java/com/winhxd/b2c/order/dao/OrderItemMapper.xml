@@ -4,8 +4,9 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.order.model.OrderItem">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
-    <result column="sku_desc" jdbcType="VARCHAR" property="skuDesc" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_desc" jdbcType="VARCHAR" property="skuDesc" />
+    <result column="sku_url" jdbcType="VARCHAR" property="skuUrl" />
     <result column="amount" jdbcType="INTEGER" property="amount" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -16,7 +17,7 @@
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, sku_code, sku_desc, amount, price, created, created_by, updated, updated_by, 
+    id, order_no, sku_code, sku_desc, sku_url, amount, price, created, created_by, updated, updated_by, 
     updated_by_name, created_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -26,12 +27,12 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
-    insert into order_item (id, order_no, sku_code, sku_desc, 
+    insert into order_item (id, order_no, sku_code, sku_desc, sku_url, 
       amount, price, created, 
       created_by, updated, updated_by, 
       updated_by_name, created_by_name)
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuDesc,jdbcType=VARCHAR}, 
-      #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
+      #{skuUrl,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
       #{updatedByName,jdbcType=VARCHAR}, #{createdByName,jdbcType=VARCHAR})
   </insert>
@@ -39,14 +40,14 @@
   <insert id="insertItems"
 	parameterType="java.util.List">
 	insert into order_item (order_no, sku_code, sku_desc, 
-	amount, price, created,
+	sku_url, amount, price, created,
 	created_by, updated, updated_by,
 	updated_by_name, created_by_name)
 	values
 	<foreach collection="list" item="item" index="index" separator=",">
 		(
 		#{item.orderNo,jdbcType=CHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{skuDesc,jdbcType=VARCHAR}, 
-		#{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
+		#{skuUrl,jdbcType=VARCHAR}, #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
 		#{item.created,jdbcType=TIMESTAMP},
 		#{item.createdBy,jdbcType=BIGINT}, #{item.updated,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
 		#{item.updatedByName,jdbcType=VARCHAR}, #{item.createdByName,jdbcType=VARCHAR}
@@ -67,6 +68,9 @@
       </if>
       <if test="skuDesc != null">
         sku_desc,
+      </if>
+      <if test="skuUrl != null">
+        sku_url,
       </if>
       <if test="amount != null">
         amount,
@@ -106,6 +110,9 @@
       <if test="skuDesc != null">
         #{skuDesc,jdbcType=VARCHAR},
       </if>
+      <if test="skuUrl != null">
+        #{skuUrl,jdbcType=VARCHAR},
+      </if>
       <if test="amount != null">
         #{amount,jdbcType=INTEGER},
       </if>
@@ -144,6 +151,9 @@
       <if test="skuDesc != null">
         sku_desc = #{skuDesc,jdbcType=VARCHAR},
       </if>
+      <if test="skuUrl != null">
+        sku_url = #{skuUrl,jdbcType=VARCHAR},
+      </if>
       <if test="amount != null">
         amount = #{amount,jdbcType=INTEGER},
       </if>
@@ -176,6 +186,7 @@
     set order_no = #{orderNo,jdbcType=CHAR},
       sku_code = #{skuCode,jdbcType=VARCHAR},
       sku_desc = #{skuDesc,jdbcType=VARCHAR},
+      sku_url = #{skuUrl,jdbcType=VARCHAR},
       amount = #{amount,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL},
       created = #{created,jdbcType=TIMESTAMP},

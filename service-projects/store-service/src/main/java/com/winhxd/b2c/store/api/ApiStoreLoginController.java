@@ -1,28 +1,15 @@
 package com.winhxd.b2c.store.api;
 
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreSendVerificationCodeCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserSimpleInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -30,11 +17,21 @@ import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreLoginService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * @author wufuyun
@@ -128,12 +125,7 @@ public class ApiStoreLoginController {
 				return result;
 			} else {
 				vo.setToken(db.getToken());
-				if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
-					user.setBusinessId(db.getId());
-					user.setStoreCustomerId(db.getStoreCustomerId());
-					cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
-					cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
-				}
+				getStoreUserInfoToken(db, user);
 				result.setData(vo);
 			}
 		}
@@ -164,12 +156,7 @@ public class ApiStoreLoginController {
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
 					vo.setToken(db.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
-						user.setBusinessId(db.getId());
-						user.setStoreCustomerId(db.getStoreCustomerId());
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
-					}
+					getStoreUserInfoToken(db, user);
 					result.setData(vo);
 				} else {
 
@@ -191,22 +178,24 @@ public class ApiStoreLoginController {
 					storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
 					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+					logger.info("头像:"+storeUserInfoCondition.getShopOwnerImg());
 					storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 					storeUserInfo.setCreated(new Date());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
-					storeUserInfo.setSource(storeUserInfoCondition.getPlatform());
+					storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 					storeUserInfo.setStoreStatus((short) 0);
 					storeLoginService.saveStoreInfo(storeUserInfo);
 
 					vo.setToken(storeUserInfo.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
+					getStoreUserInfoToken(storeUserInfo, user);
+					/*if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 						user.setBusinessId(storeUserInfo.getId());
 						user.setStoreCustomerId(map.getStoreCustomerId());
 						cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(),
 								JsonUtil.toJSONString(user));
 						cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
-					}
+					}*/
 					result.setData(vo);
 				}
 			}
@@ -232,15 +221,18 @@ public class ApiStoreLoginController {
 			}
 			storeUserInfo.setId(db.getId());
 			storeUserInfo.setStoreMobile(map.getStoreMobile());
+			logger.info("头像:"+storeUserInfoCondition.getShopOwnerImg());
+			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 
 			vo.setToken(db.getToken());
-			if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
+			getStoreUserInfoToken(storeUserInfo,  user) ;
+			/*if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 				user.setBusinessId(db.getId());
 				user.setStoreCustomerId(map.getStoreCustomerId());
 				cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), JsonUtil.toJSONString(user));
 				cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
-			}
+			}*/
 			result.setData(vo);
 
 		}
@@ -264,12 +256,7 @@ public class ApiStoreLoginController {
 				throw new BusinessException(BusinessCode.CODE_1004);
 			} else {
 				vo.setToken(db.getToken());
-				if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
-					user.setBusinessId(db.getId());
-					user.setStoreCustomerId(db.getStoreCustomerId());
-					cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
-					cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
-				}
+				getStoreUserInfoToken(db, user);
 				result.setData(vo);
 			}
 		}
@@ -295,14 +282,8 @@ public class ApiStoreLoginController {
 					storeUserInfo.setId(db.getId());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
-
 					vo.setToken(db.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
-						user.setBusinessId(db.getId());
-						user.setStoreCustomerId(db.getStoreCustomerId());
-						cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
-						cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
-					}
+					getStoreUserInfoToken(db, user);
 					result.setData(vo);
 				} else {
 					/*
@@ -313,20 +294,21 @@ public class ApiStoreLoginController {
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 					storeUserInfo.setCreated(new Date());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
-					storeUserInfo.setSource(storeUserInfoCondition.getPlatform());
+					storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 					storeUserInfo.setStoreStatus((short) 0);
 					storeLoginService.saveStoreInfo(storeUserInfo);
 
 					vo.setToken(storeUserInfo.getToken());
-					if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
+					getStoreUserInfoToken(storeUserInfo,  user) ;
+					/*if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken())) {
 						user.setBusinessId(storeUserInfo.getId());
 						user.setStoreCustomerId(map.getStoreCustomerId());
 						BeanUtils.copyProperties(vo, user);
 						cache.set(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(),
 								JsonUtil.toJSONString(user));
 						cache.expire(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken(), 30 * 24 * 60 * 60);
-					}
+					}*/
 					result.setData(vo);
 				}
 			}
@@ -335,11 +317,20 @@ public class ApiStoreLoginController {
 		return result;
 	}
 
+	private void getStoreUserInfoToken(StoreUserInfo db, StoreUser user) {
+		if (!cache.exists(CacheName.STORE_USER_INFO_TOKEN + db.getToken())) {
+			user.setBusinessId(db.getId());
+			user.setStoreCustomerId(db.getStoreCustomerId());
+			cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
+			cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
+		}
+	}
+
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:10:34
 	 * @Description 通过账号发送验证码
-	 * @param storeUserInfoCondition
+	 * @param storeSendVerificationCodeCondition
 	 * @return
 	 */
 	@ApiOperation(value = "通过账号发送验证码")
@@ -396,6 +387,10 @@ public class ApiStoreLoginController {
 					/**
 					 * 查询OpenId是否 已经绑定其他手机号
 					 */
+					if(StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenId())){
+						logger.info("{} - ,openId为空");
+						throw new BusinessException(BusinessCode.CODE_1007);
+					}
 					open.setOpenId(storeSendVerificationCodeCondition.getOpenId());
 					db = storeLoginService.getStoreUserInfo(open);
 					/**
@@ -414,7 +409,8 @@ public class ApiStoreLoginController {
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setCreated(new Date());
 					info.setStoreMobile(map.getStoreMobile());
-					info.setSource(storeSendVerificationCodeCondition.getPlatform());
+					logger.info("微信头像："+storeSendVerificationCodeCondition.getShopOwnerImg());
+					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setToken(GeneratePwd.getRandomUUID());
 					info.setStoreStatus((short) 0);
 					storeLoginService.saveStoreInfo(info);
@@ -435,7 +431,7 @@ public class ApiStoreLoginController {
 					info.setStoreMobile(map.getStoreMobile());
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
-					info.setSource(storeSendVerificationCodeCondition.getPlatform());
+					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setToken(GeneratePwd.getRandomUUID());
 					info.setStoreStatus((short) 0);
 					storeLoginService.saveStoreInfo(info);
@@ -486,7 +482,7 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-		// messageServiceClient.sendSMS(storeMobile, content);
+	//	messageServiceClient.sendSMS(storeMobile, content);
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}

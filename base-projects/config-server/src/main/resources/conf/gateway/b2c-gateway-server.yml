@@ -1,6 +1,12 @@
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 5000
 spring:
   cloud:
     gateway:
+      default-filters:
+      - name: Hystrix
+        args:
+          name: fallbackcmd
+          fallbackUri: forward:/fallback
       routes:
       - uri: lb://b2c-order-service
         predicates:

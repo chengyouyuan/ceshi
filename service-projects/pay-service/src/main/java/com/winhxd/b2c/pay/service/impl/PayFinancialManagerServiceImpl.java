@@ -1,10 +1,153 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.service.PayFinancialManagerService;
 
 @Service
 public class PayFinancialManagerServiceImpl implements PayFinancialManagerService{
+	private static final Logger LOGGER = LoggerFactory.getLogger(PayFinancialManagerServiceImpl.class);
+	@Autowired
+	private PayFinanceAccountDetailMapper payFinanceAccountDetailMapper;
 
+	@Override
+	public PayFinanceAccountDetailVO findFinanceAccountDetail(Long storeId) {
+		PayFinanceAccountDetailVO financeDetial = new PayFinanceAccountDetailVO();
+		//查询总出账和总入账金额以及总手续费
+		financeDetial = queryTotalMoney(financeDetial,storeId);
+		//查询总入账 中今日预入账今日实入账以及今日入账
+		financeDetial = queryTodayMoney(financeDetial,storeId);
+		// 查询总出账中今日提款 以及今日退款以及今日出账以及今日提现手续费
+		financeDetial = queryTodayOutMoney(financeDetial,storeId);
+		//计算优惠券抵用总金额 以及今日抵用金额
+		financeDetial = queryCouponUsedMoney(financeDetial,storeId);
+		financeDetial = queryCouponTodayUsedMoney(financeDetial,storeId);
+		// TODO 公司补充总入账待定
+		//TODO 计算余额   ---->当前余额=总进账金额+公司总入账金额 - 总出账金额
+		financeDetial.setCurLeftMoney(financeDetial.getAllInMoney().subtract(financeDetial.getAllOutMoney()));
+		return financeDetial;
+	}
+	
+	//查询总出账和总入账金额以及总手续费
+	public PayFinanceAccountDetailVO queryTotalMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
+		List<PayFinanceAccountDetailVO> toalInoutMoney = payFinanceAccountDetailMapper.selectTotalInOutMoney(storeId);
+		if(toalInoutMoney.size() != 0){
+			if(toalInoutMoney.size() > 2 || toalInoutMoney.size() < 0){
+				LOGGER.info("查询总出账和总入账金额返回的数据条数有误:queryTotalMoney---");
+				throw new BusinessException(BusinessCode.CODE_610021);
+			}else{
+				for(PayFinanceAccountDetailVO detail:toalInoutMoney){
+					short type = detail.getType();
+					short inCode = PayFinanceTypeEnum.INMONEY.getStatusCode();//进账
+					short outCode = PayFinanceTypeEnum.OUTMONEY.getStatusCode();//出账
+					if(inCode == type){
+						financeDetial.setAllInMoney(detail.getAllInMoney());
+					}else if(outCode == type){
+						financeDetial.setAllOutMoney(detail.getAllInMoney());
+						// 总出账手续费
+						financeDetial.setAllCharge(detail.getAllCharge());
+					}
+				}
+				LOGGER.info("查询总出账和总入账金额以及总手续费：----"+financeDetial);
+			}
+		}else{
+			LOGGER.info("当前无数据");
+		}
+		return financeDetial;
+	}
+	
+	//查询今日预入账今日实入账以及今日入账
+	public PayFinanceAccountDetailVO queryTodayMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
+		List<PayFinanceAccountDetailVO> todayInMoney = payFinanceAccountDetailMapper.selectTodayInMoney(storeId);
+		if(todayInMoney.size() != 0){
+			if(todayInMoney.size() > 2 || todayInMoney.size() < 0){
+				LOGGER.info("查询今日预入账今日实入账数据条数有误：queryTodayMoney---");
+				throw new BusinessException(BusinessCode.CODE_610021);
+			}else{
+				for(PayFinanceAccountDetailVO detail:todayInMoney){
+					short dataStatus = detail.getDataStatus();
+					short preStatus = PayDataStatusEnum.PRE_INCOUNT.getStatusCode();
+					short realStatus = PayDataStatusEnum.REAL_INCOUNT.getStatusCode();
+					if(preStatus == dataStatus){
+						financeDetial.setTodayPreMoney(detail.getTodayInMoney());
+					}else if(realStatus == dataStatus){
+						financeDetial.setTodayRealMoney(detail.getTodayInMoney());
+					}
+				}
+				// 计算今日进账
+				financeDetial.setTodayInMoney(financeDetial.getTodayPreMoney().add(financeDetial.getTodayRealMoney()));	
+				LOGGER.info("今日进账计算结果：----"+financeDetial);
+			}
+		}else{
+			LOGGER.info("当前无数据");
+		}
+		return financeDetial;
+	}
+	
+	//查询总出账中今日提款 以及今日退款以及今日出账
+	public PayFinanceAccountDetailVO queryTodayOutMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
+		List<PayFinanceAccountDetailVO> todayOutMoney = payFinanceAccountDetailMapper.selectTodayOutMoney(storeId);
+		if(todayOutMoney.size() != 0){
+			if(todayOutMoney.size() > 2 || todayOutMoney.size() < 0){
+				LOGGER.info("查询总出账中今日提款 以及今日退款以及今日出账数据条数有误：queryTodayOutMoney---");
+				throw new BusinessException(BusinessCode.CODE_610021);
+			}else{
+				for(PayFinanceAccountDetailVO detail:todayOutMoney){
+					 short outType = detail.getOutType();
+					 short cusRefundCode = PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode();
+					 short storeWithdrawCode = PayOutTypeEnum.STORE_WITHDRAW.getStatusCode();
+					if(outType == cusRefundCode){
+						financeDetial.setTodayCustomerRefund(detail.getTodayOutMoney());
+					}else if(outType == storeWithdrawCode){
+						financeDetial.setTodayStoreWithdraw(detail.getTodayOutMoney());
+						// 今日提现手续费
+						financeDetial.setTodayCharge(detail.getTodayCharge());
+					}
+				}
+				// 计算今日出账
+				financeDetial.setTodayOutMoney(financeDetial.getTodayCustomerRefund().add(financeDetial.getTodayStoreWithdraw()));	
+				LOGGER.info("今日出账计算结果：----"+financeDetial);
+			}
+		}else{
+			LOGGER.info("当前无数据");
+		}
+		return financeDetial;
+	}
+	
+	//计算优惠券抵用总金额 
+	public PayFinanceAccountDetailVO queryCouponUsedMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
+		PayFinanceAccountDetailVO couponUsedMoney = payFinanceAccountDetailMapper.selectCouponUsedMoney(storeId);
+		if(couponUsedMoney != null){
+			financeDetial.setUseCouponAllMoney(couponUsedMoney.getUseCouponAllMoney());
+			LOGGER.info("计算优惠券抵用总金额：----"+financeDetial);
+		}else{
+			LOGGER.info("计算优惠券抵用总金额数据有误：queryCouponUsedMoney---");
+			throw new BusinessException(BusinessCode.CODE_610021);
+		}
+		return financeDetial;
+	}
+	//今日优惠券抵用金额
+	public PayFinanceAccountDetailVO queryCouponTodayUsedMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
+		PayFinanceAccountDetailVO todayTodayCouponUsedMoney = payFinanceAccountDetailMapper.selectTodayCouponUsedMoney(storeId);
+		if(todayTodayCouponUsedMoney != null){
+			financeDetial.setUseTodayCouponAllMoney(todayTodayCouponUsedMoney.getUseTodayCouponAllMoney());
+			LOGGER.info("今日优惠券抵用金额：----"+financeDetial);
+		}else{
+			LOGGER.info("今日优惠券抵用金额数据有误：queryCouponTodayUsedMoney---");
+			throw new BusinessException(BusinessCode.CODE_610021);
+		}
+		return financeDetial;
+	}
 }

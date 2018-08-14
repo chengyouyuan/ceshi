@@ -268,6 +268,8 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    @ApiModelProperty("查询结果有误，请联系管理员")
+    public static final int CODE_610021 = 610021;
     
     
     /**
@@ -275,7 +277,16 @@ public final class BusinessCode {
      */
     public static final int CODE_600301 = 600301;
     /**
-     *  退款回调  订单支付流水插入失败
+     *  退款回调  订单退款流水插入失败
      */
     public static final int CODE_600302 = 600302;
+    
+	/**
+     *  退款回调  参数为空
+     */
+    public static final int CODE_600303 = 600303;
+    /**
+     *  支付回调  参数为空
+     */
+    public static final int CODE_600101 = 600101;
 }

@@ -150,7 +150,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     @ApiOperation(value = "编辑优惠券活动", notes = "编辑优惠券活动")
-    public ResponseResult<Integer> updateCouponActivity(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
         //活动有效期内不允许修改活动！！
         Date activityStart = condition.getActivityStart();

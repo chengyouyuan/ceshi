@@ -3,8 +3,8 @@
  */
 /**
  * @author mahongliang
- * @date  2018年8月10日 下午1:34:03
+ * @date  2018年8月14日 下午1:45:13
  * @Description 
  * @version 
  */
-package com.winhxd.b2c.pay.weixin.dao;
+package com.winhxd.b2c.pay.weixin.dto;

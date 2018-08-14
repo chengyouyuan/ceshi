@@ -187,8 +187,24 @@
   </update>
 
 
+  <resultMap id="voResultMap" type="com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="real_cmms_amt" jdbcType="DECIMAL" property="realCmmsAmt" />
+    <result column="real_rate" jdbcType="DECIMAL" property="realRate" />
+    <result column="transaction_date" jdbcType="TIMESTAMP" property="transactionDate" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+
   <!--  根据门店id 查询门店收支明细  -->
-  <select id="getPayStoreTransRecordByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="getPayStoreTransRecordByStoreId" parameterType="java.lang.Long" resultMap="voResultMap">
     select
     <include refid="Base_Column_List" />
     from pay_store_transaction_record

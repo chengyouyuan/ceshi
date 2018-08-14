@@ -125,6 +125,12 @@ public class CouponController implements CouponServiceClient{
 		return result;
 	}
 
+	/**
+	 * 检查用户优惠券是否可用
+	 * sjx
+	 * @param condition
+	 * @return
+	 */
 	@Override
 	@ApiOperation(value = "检查用户优惠券是否可用", notes = "检查用户优惠券是否可用")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),

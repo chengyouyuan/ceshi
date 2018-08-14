@@ -10,7 +10,7 @@ spring:
     time-zone: GMT+8
   sleuth:
     sampler:
-      probability: 1.0
+      probability: 0.0
 
 management:
   endpoints:

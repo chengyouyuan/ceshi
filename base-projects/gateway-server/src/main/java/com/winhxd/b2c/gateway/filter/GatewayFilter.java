@@ -41,7 +41,6 @@ import java.util.regex.Matcher;
 @Component
 public class GatewayFilter implements GlobalFilter, Ordered {
     private static final Logger logger = LoggerFactory.getLogger(GatewayFilter.class);
-    private static final String CODE = "\"code\"";
 
     @Autowired
     private Cache cache;
@@ -113,6 +112,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                         dataBuffer.read(bs);
                         String req = new String(bs, StandardCharsets.UTF_8);
                         currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
+                        logger.debug("Gateway请求数据: {}", req);
                         dataBuffer.readPosition(0);
                     }
                     return Flux.just(dataBuffer);
@@ -137,6 +137,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                                         currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
                                     }
                                 }
+                                logger.debug("Gateway响应数据: {}", repJson);
                                 dataBuffer.readPosition(0);
                             }
                             return Flux.just(dataBuffer);

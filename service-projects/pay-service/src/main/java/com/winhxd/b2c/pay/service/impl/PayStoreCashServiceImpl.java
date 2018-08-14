@@ -1,0 +1,64 @@
+package com.winhxd.b2c.pay.service.impl;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
+import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
+import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
+import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
+import com.winhxd.b2c.pay.service.PayStoreCashService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * @Author liangliang
+ * @Date 2018/8/14 17:04
+ * @Description
+ **/
+@Service
+public class PayStoreCashServiceImpl implements PayStoreCashService {
+      @Autowired
+      private StoreBankrollMapper storeBankrollMapper;
+      @Autowired
+      private PayStoreTransactionRecordMapper payStoreTransactionRecordMapper;
+
+    @Override
+    public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition) {
+        ResponseResult<StoreBankrollVO> result = new ResponseResult<StoreBankrollVO>();
+        StoreBankrollVO vo = new StoreBankrollVO();
+        Long storeId = condition.getStoreId();
+        StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
+        if(storeBankroll != null){
+            vo.setId(storeBankroll.getId());
+            vo.setStoreId(storeBankroll.getStoreId());
+            vo.setTotalMoeny(storeBankroll.getTotalMoeny());
+            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney());
+            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney());
+        }
+        result.setData(vo);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
+        ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
+        PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<PayStoreTransactionRecordVO> couponTemplateVOList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(condition.getStoreId());
+        PageInfo<PayStoreTransactionRecordVO> pageInfo = new PageInfo<>(couponTemplateVOList);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
+
+}

@@ -390,11 +390,20 @@
     update store_user_info set store_region_code = #{storeRegionCode} where store_customer_id = #{storeCustomerId}
   </update>
 
-    <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long">
-        select
-        <include refid="Base_Column_List"/>
-        from store_user_info
-        where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
-    </select>
+  <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from store_user_info
+    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByReginCodes" resultType="java.lang.String">
+    select
+      id
+    from store_user_info
+    where store_region_code in
+      <foreach collection="regionCodeList" item="reginCode" open="(" close=")" separator=",">
+        #{reginCode}
+      </foreach>
+  </select>
 
 </mapper>

@@ -97,7 +97,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
                     shopCarProdInfoVO.setAmount(shopCar2.getSkuNum());
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
-                    shopCarProdInfoVO.setProdImg(shopCarProdVO.getProdImage());
+                    shopCarProdInfoVO.setSkuImage(shopCarProdVO.getSkuImage());
                     shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
                     result.add(shopCarProdInfoVO);
                 }

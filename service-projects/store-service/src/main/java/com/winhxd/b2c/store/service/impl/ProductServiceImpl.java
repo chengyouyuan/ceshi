@@ -88,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void assignSellMoney(List<ProductSkuVO> data, List<StoreProductManage> storeProductManages) {
         for (ProductSkuVO datum : data) {
+            datum.setSkuNum(0);
             for (StoreProductManage storeProductManage : storeProductManages) {
                 if (datum.getSkuCode().equals(storeProductManage.getSkuCode())){
                     datum.setSellMoney(storeProductManage.getSellMoney());

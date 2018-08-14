@@ -2,21 +2,14 @@ package com.winhxd.b2c.message.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.WxTemplate;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
-import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.service.MiniProgramService;
-import com.winhxd.b2c.message.utils.HttpUtil;
 import com.winhxd.b2c.message.utils.MiniProgramUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author jujinbiao

@@ -22,7 +22,7 @@ public class ShopCartProdVO {
 	private String skuCode;
 	
 	@ApiModelProperty("商品图片")
-	private String prodImage;
+	private String skuImage;
 	
 	@ApiModelProperty("商品名称")
 	private String prodName;

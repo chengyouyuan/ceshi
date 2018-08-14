@@ -149,7 +149,8 @@ public final class BusinessCode {
     /** 出资方不能重复*/
     public static final int CODE_500013 = 500013;
 
-
+    /** 用户不存在*/
+    public static final int CODE_500014 = 500014;
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
@@ -267,4 +268,14 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    
+    
+    /**
+     * 退款回调  订单更新失败
+     */
+    public static final int CODE_600301 = 600301;
+    /**
+     *  退款回调  订单支付流水插入失败
+     */
+    public static final int CODE_600302 = 600302;
 }

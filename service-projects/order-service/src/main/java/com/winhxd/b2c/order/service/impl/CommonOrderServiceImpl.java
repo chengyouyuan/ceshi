@@ -88,6 +88,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int ORDER_MONEY_SCALE = 2;
     private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
+    
+    private static final ThreadLocal<Map<String, ProductSkuVO>> skuInfoMapThreadLocal = new ThreadLocal<>();
 
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
@@ -890,33 +892,22 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private CouponPreAmountCondition assembleCouponPreAmountCondition(OrderInfo orderInfo) {
         List<CouponProductCondition> couponProductConditions = new ArrayList<>();
-        List<String> skuCodes = new ArrayList<>();
+        
         for (Iterator<OrderItem> iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext(); ) {
             OrderItem orderItem = iterator.next();
             CouponProductCondition couponProductCondition = new CouponProductCondition();
             couponProductCondition.setNum(orderItem.getAmount());
             couponProductCondition.setPrice(orderItem.getPrice());
             couponProductCondition.setSkuCode(orderItem.getSkuCode());
-            skuCodes.add(orderItem.getSkuCode());
+            couponProductConditions.add(couponProductCondition);
+            
         }
-        ProductCondition productCondition = new ProductCondition();
-        productCondition.setProductSkus(skuCodes);
-        productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-        ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
-            // 优惠券使用失败
-            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
-                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
-            throw new BusinessException(BusinessCode.CODE_401005);
-        }
-        Map<String, String> skuBrandMap = new HashMap<>();
-        for (Iterator<ProductSkuVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
-            ProductSkuVO productSkuVO = iterator.next();
-            skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO.getBrandCode());
-        }
+        Map<String, ProductSkuVO> skuInfoMap = skuInfoMapThreadLocal.get();
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext(); ) {
             CouponProductCondition couponProductCondition = iterator.next();
-            couponProductCondition.setBrandCode(skuBrandMap.get(couponProductCondition.getSkuCode()));
+            if (skuInfoMap != null && skuInfoMap.size() > 0) {
+                couponProductCondition.setBrandCode(skuInfoMap.get(couponProductCondition.getSkuCode()).getBrandCode());
+            }
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);
@@ -993,6 +984,7 @@ public class CommonOrderServiceImpl implements OrderService {
         List<OrderItem> items = new ArrayList<>();
         int skuQuantity = 0;
         int skuCategoryQuantity = 0;
+        List<String> skuCodes = new ArrayList<>();
         for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = iterator.next();
             skuQuantity += condition.getAmount();
@@ -1003,14 +995,47 @@ public class CommonOrderServiceImpl implements OrderService {
             item.setCreated(orderInfo.getCreated());
             item.setCreatedBy(orderInfo.getCreatedBy());
             item.setCreatedByName(orderInfo.getCreatedByName());
+            skuCodes.add(item.getSkuCode());
             items.add(item);
         }
         if (items.isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
+        //查询商品相关信息
+        Map<String, ProductSkuVO> skuInfoMap = querySkuInfos(orderInfo, skuCodes);
+        if (skuInfoMap != null && skuInfoMap.size() > 0) {
+            skuInfoMapThreadLocal.set(skuInfoMap);
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext();) {
+                OrderItem orderItem = iterator.next();
+                ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
+                if (skuVO != null) {
+                    orderItem.setSkuDesc(skuVO.getSkuName());
+                }
+            }
+        }
         orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
         orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
+    }
+
+
+    public Map<String, ProductSkuVO> querySkuInfos(OrderInfo orderInfo, List<String> skuCodes) {
+        ProductCondition productCondition = new ProductCondition();
+        productCondition.setProductSkus(skuCodes);
+        productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            // 优惠券使用失败
+            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
+                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        Map<String, ProductSkuVO> skuBrandMap = new HashMap<>();
+        for (Iterator<ProductSkuVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
+            ProductSkuVO productSkuVO = iterator.next();
+            skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO);
+        }
+        return skuBrandMap;
     }
 
     /**

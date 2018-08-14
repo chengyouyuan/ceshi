@@ -1,8 +1,4 @@
-package com.winhxd.b2c.pay.weixin.model;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.util.UUID;
+package com.winhxd.b2c.pay.weixin.constant;
 
 /**
  * WithDrawChannelType

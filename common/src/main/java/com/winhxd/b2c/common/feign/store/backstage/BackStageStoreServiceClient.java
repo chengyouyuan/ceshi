@@ -13,9 +13,9 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 

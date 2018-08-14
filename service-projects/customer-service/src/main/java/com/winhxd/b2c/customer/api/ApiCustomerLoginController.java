@@ -202,7 +202,7 @@ public class ApiCustomerLoginController {
 	 * @author wufuyun
 	 * @date 2018年8月8日 下午8:56:52
 	 * @Description 用户换绑手机号
-	 * @param customerUserInfoCondition
+	 * @param
 	 * @return
 	 */
 	@ApiOperation(value = "C端—用户换绑手机号")

@@ -125,7 +125,9 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                             currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
                             if (repJson.indexOf(CODE) > 0) {
                                 ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
-                                currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
+                                if (result != null) {
+                                    currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
+                                }
                             }
                             dataBuffer.readPosition(0);
                             return Flux.just(dataBuffer);

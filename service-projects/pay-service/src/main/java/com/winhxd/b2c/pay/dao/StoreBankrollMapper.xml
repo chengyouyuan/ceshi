@@ -6,6 +6,7 @@
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="total_moeny" jdbcType="DECIMAL" property="totalMoeny" />
     <result column="presented_money" jdbcType="DECIMAL" property="presentedMoney" />
+    <result column="presented_frozen_money" jdbcType="DECIMAL" property="presentedFrozenMoney" />
     <result column="settlement_settled_money" jdbcType="DECIMAL" property="settlementSettledMoney" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
@@ -15,8 +16,8 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, total_moeny, presented_money, settlement_settled_money, created_by, 
-    created_by_name, created, updated_by, updated_by_name, updated
+    id, store_id, total_moeny, presented_money, presented_frozen_money, settlement_settled_money, 
+    created_by, created_by_name, created, updated_by, updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,12 +31,12 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
     insert into store_bankroll (id, store_id, total_moeny, 
-      presented_money, settlement_settled_money, 
+      presented_money, presented_frozen_money, settlement_settled_money, 
       created_by, created_by_name, created, 
       updated_by, updated_by_name, updated
       )
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{totalMoeny,jdbcType=DECIMAL}, 
-      #{presentedMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL}, 
+      #{presentedMoney,jdbcType=DECIMAL}, #{presentedFrozenMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
       )
@@ -54,6 +55,9 @@
       </if>
       <if test="presentedMoney != null">
         presented_money,
+      </if>
+      <if test="presentedFrozenMoney != null">
+        presented_frozen_money,
       </if>
       <if test="settlementSettledMoney != null">
         settlement_settled_money,
@@ -90,6 +94,9 @@
       <if test="presentedMoney != null">
         #{presentedMoney,jdbcType=DECIMAL},
       </if>
+      <if test="presentedFrozenMoney != null">
+        #{presentedFrozenMoney,jdbcType=DECIMAL},
+      </if>
       <if test="settlementSettledMoney != null">
         #{settlementSettledMoney,jdbcType=DECIMAL},
       </if>
@@ -125,6 +132,9 @@
       <if test="presentedMoney != null">
         presented_money = #{presentedMoney,jdbcType=DECIMAL},
       </if>
+      <if test="presentedFrozenMoney != null">
+        presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
+      </if>
       <if test="settlementSettledMoney != null">
         settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
       </if>
@@ -154,6 +164,7 @@
     set store_id = #{storeId,jdbcType=BIGINT},
       total_moeny = #{totalMoeny,jdbcType=DECIMAL},
       presented_money = #{presentedMoney,jdbcType=DECIMAL},
+      presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
       settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},

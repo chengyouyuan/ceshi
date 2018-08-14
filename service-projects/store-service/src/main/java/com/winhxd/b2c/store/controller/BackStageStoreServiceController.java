@@ -9,18 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
@@ -74,7 +75,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 
 	@Override
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
-			BackStageStoreProdCondition condition) {
+			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> responseResult=new ResponseResult<>();
 		if(condition!=null&&condition.getStoreId()!=null){
 			Long storeId=condition.getStoreId();
@@ -114,18 +115,33 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 					}
 				}
 			}
+			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 			//最终查询
 			PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
+			List<String> finalSkuCodes=new ArrayList<>(resultVO.getData().size());
+			for(BackStageStoreProdVO vo:resultVO.getData()){
+				finalSkuCodes.add(vo.getSkuCode());
+			}
+			ProductCondition prodCondition=new ProductCondition();
+			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+			prodCondition.setProductSkus(finalSkuCodes);
+			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
+			if(prodResult!=null&&prodResult.getCode()==0
+					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
+				for(int i=0;i<prodResult.getData().size();i++){
+					resultVO.getData().get(i).setProdName(prodResult.getData().get(i).getProdName());
+				}
+			}
 			responseResult.setData(resultVO);
 		}else{
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数无效");
 		}
-		return null;
+		return responseResult;
 	}
 
 	@Override
-	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(BackStageStoreProdCondition condition) {
+	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<BackStageStoreProdVO> responseResult=new ResponseResult<>();
 		PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
 		if(resultVO!=null&&resultVO.getData()!=null&&resultVO.getData().size()>0){
@@ -135,9 +151,16 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	}
 
 	@Override
-	public ResponseResult<Void> operateStoreProdManage(BackStageStoreProdCondition condition) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
+		ResponseResult<Void> responseResult=new ResponseResult<>();
+		if(condition==null||condition.getProdStatus()==null||condition.getId()==null){
+			responseResult.setCode(BusinessCode.CODE_1007);
+			responseResult.setMessage("参数无效！");
+		}
+		
+		storeProductManageService.modifyStoreProdManageByBackStage(condition);
+		
+		return responseResult;
 	}
 
 }

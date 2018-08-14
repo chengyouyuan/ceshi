@@ -6,10 +6,10 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 
 /**

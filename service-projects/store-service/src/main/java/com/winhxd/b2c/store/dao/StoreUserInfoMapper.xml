@@ -70,7 +70,17 @@
         </where>
     </select>
 
-    <resultMap id="storeUserInfoVO" type="com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO" extends="BaseResultMap"/>
+    <resultMap id="storeUserInfoVO" type="com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO">
+        <result column="id" property="id"/>
+        <result column="store_name" property="storeName"/>
+        <result column="shop_owner_img" property="shopOwnerImg"/>
+        <result column="shopkeeper" property="shopkeeper"/>
+        <result column="contact_mobile" property="contactMobile"/>
+        <result column="store_address" property="storeAddress"/>
+        <result column="pickup_type" property="pickupWay"/>
+        <result column="store_region_code" property="storeRegionCode"/>
+        <result column="store_mobile" property="storeMobile"/>
+    </resultMap>
     <select id="selectStoreByCondition" resultMap="storeUserInfoVO">
         SELECT
         <include refid="Base_Column_List"/>

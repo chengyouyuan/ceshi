@@ -191,7 +191,7 @@ public class ApiCustomerLoginController {
 		 * 发送模板内容
 		 */
 		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-		messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
+		//messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(), content);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}
@@ -209,12 +209,13 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
-	public ResponseResult<String> customerChangeMobile(
+	public ResponseResult<CustomerUserInfoSimpleVO> customerChangeMobile(
 			@RequestBody CustomerChangeMobileCondition customerChangeMobileCondition) {
 		logger.info("{} - 用户换绑手机号, 参数：customerUserInfoCondition={}", "",
 				JsonUtil.toJSONString(customerChangeMobileCondition));
-		ResponseResult<String> result = new ResponseResult<>();
+		ResponseResult<CustomerUserInfoSimpleVO> result = new ResponseResult<>();
 		CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+		CustomerUserInfoSimpleVO vo = new CustomerUserInfoSimpleVO();
 		if (null == customerChangeMobileCondition) {
 			logger.info("{} - 用户换绑手机号, 参数：customerChangeMobileCondition={}", "",
 					JsonUtil.toJSONString(customerChangeMobileCondition));
@@ -226,7 +227,7 @@ public class ApiCustomerLoginController {
 			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		customerUserInfo.setCustomerId(user.getCustomerId());
+		customerUserInfo.setOpenId(user.getOpenId());
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {
 			logger.info("{} - 账号无效");
@@ -240,6 +241,9 @@ public class ApiCustomerLoginController {
 		info.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
 		info.setCustomerId(user.getCustomerId());
 		customerLoginService.updateCustomerInfo(info);
+		vo.setCustomerMobile(customerChangeMobileCondition.getCustomerMobile());
+		vo.setToken(customerUserInfo.getToken());
+		result.setData(vo);
 		return result;
 	}
 }

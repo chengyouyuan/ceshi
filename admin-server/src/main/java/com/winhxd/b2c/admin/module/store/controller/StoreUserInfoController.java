@@ -11,7 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +30,7 @@ public class StoreUserInfoController {
 
     @ApiOperation(value = "根据条件查询门店的分页数据信息", notes = "根据条件查询门店的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @GetMapping(value = "/findStorePageInfo")
+    @PostMapping(value = "/findStorePageInfo")
     public ResponseResult<PagedList<StoreUserInfoVO>> findStorePageInfo(BackStageStoreInfoSimpleCondition condition) {
         ResponseResult<PagedList<StoreUserInfoVO>> responseResult = storeServiceClient.queryStorePageInfo(condition);
         return responseResult;

@@ -57,7 +57,7 @@ public class ApiCouponController{
     @ApiOperation(value = "待领取优惠券列表", notes = "待领取优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5002/v1/unclaimedCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponVO>> unclaimedCouponList(@RequestBody ApiCondition condition) {
@@ -72,7 +72,7 @@ public class ApiCouponController{
     @ApiOperation(value = "我的优惠券列表", notes = "我的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5003/v1/myCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponVO>> myCouponList(@RequestBody CouponCondition couponCondition) {
@@ -88,7 +88,7 @@ public class ApiCouponController{
     @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5004/v1/userReceiveCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {
@@ -103,7 +103,7 @@ public class ApiCouponController{
     @ApiOperation(value = "获取用户可领取门店优惠券种类数", notes = "获取用户可领取门店优惠券种类数")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5008/v1/getStoreCouponKinds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> getStoreCouponKinds(ApiCondition condition){
@@ -118,7 +118,7 @@ public class ApiCouponController{
     @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5009/v1/getStoreCouponList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> getStoreCouponList(ApiCondition condition){

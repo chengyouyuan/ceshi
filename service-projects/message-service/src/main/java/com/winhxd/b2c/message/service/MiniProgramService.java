@@ -16,4 +16,10 @@ public interface MiniProgramService {
      * @return
      */
     ResponseResult<MiniOpenId> getMiniOpenId(String code);
+
+    /**
+     * 给C端用户推送小程序模板消息
+     * @param formId
+     */
+    ResponseResult<Void> sendMiniMsg(String formId);
 }

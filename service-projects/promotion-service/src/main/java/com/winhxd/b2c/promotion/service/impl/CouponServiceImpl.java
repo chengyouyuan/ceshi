@@ -88,7 +88,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> getNewUserCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
@@ -244,7 +244,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> unclaimedCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -299,7 +299,7 @@ public class CouponServiceImpl implements CouponService {
     public PagedList<CouponVO> myCouponList(CouponCondition couponCondition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
@@ -318,7 +318,7 @@ public class CouponServiceImpl implements CouponService {
 
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
 
         CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
@@ -383,7 +383,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
 
         List<Long> sendIds = condition.getSendIds();
@@ -420,7 +420,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
         if(null ==condition.getOrderNo()){
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -590,7 +590,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> findStoreCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -646,7 +646,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户信息异常");
         }
 
         //查询当前用户下的所有优惠券

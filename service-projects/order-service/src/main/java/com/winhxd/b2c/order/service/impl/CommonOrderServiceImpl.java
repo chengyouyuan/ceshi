@@ -1,24 +1,61 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
-import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -33,47 +70,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.constant.OrderNotifyMsg;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
-import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
-import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.mq.MQHandler;
-import com.winhxd.b2c.common.mq.StringMessageListener;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wangbin
@@ -88,6 +101,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int ORDER_MONEY_SCALE = 2;
     private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
+    
+    private static final ThreadLocal<Map<String, ProductSkuVO>> skuInfoMapThreadLocal = new ThreadLocal<>();
 
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
@@ -249,7 +264,7 @@ public class CommonOrderServiceImpl implements OrderService {
     /**
      * 订单退款回调（状态置为已退款）
      *
-     * @param orderRefundCallbackCondition 入参
+     * @param condition 入参
      * @return true 更新成功 false 更新失败
      */
     @Override
@@ -759,7 +774,7 @@ public class CommonOrderServiceImpl implements OrderService {
     /**
      * 注册事务提交后相关操作
      *
-     * @param orderInfo
+     * @param rollBackRunnable
      * @author wangbin
      * @date 2018年8月3日 下午4:50:11
      */
@@ -890,33 +905,22 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private CouponPreAmountCondition assembleCouponPreAmountCondition(OrderInfo orderInfo) {
         List<CouponProductCondition> couponProductConditions = new ArrayList<>();
-        List<String> skuCodes = new ArrayList<>();
+        
         for (Iterator<OrderItem> iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext(); ) {
             OrderItem orderItem = iterator.next();
             CouponProductCondition couponProductCondition = new CouponProductCondition();
-            couponProductCondition.setNum(orderItem.getAmount());
+            couponProductCondition.setSkuNum(orderItem.getAmount());
             couponProductCondition.setPrice(orderItem.getPrice());
             couponProductCondition.setSkuCode(orderItem.getSkuCode());
-            skuCodes.add(orderItem.getSkuCode());
+            couponProductConditions.add(couponProductCondition);
+            
         }
-        ProductCondition productCondition = new ProductCondition();
-        productCondition.setProductSkus(skuCodes);
-        productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-        ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
-        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
-            // 优惠券使用失败
-            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
-                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
-            throw new BusinessException(BusinessCode.CODE_401005);
-        }
-        Map<String, String> skuBrandMap = new HashMap<>();
-        for (Iterator<ProductSkuVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
-            ProductSkuVO productSkuVO = iterator.next();
-            skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO.getBrandCode());
-        }
+        Map<String, ProductSkuVO> skuInfoMap = skuInfoMapThreadLocal.get();
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext(); ) {
             CouponProductCondition couponProductCondition = iterator.next();
-            couponProductCondition.setBrandCode(skuBrandMap.get(couponProductCondition.getSkuCode()));
+            if (skuInfoMap != null && skuInfoMap.size() > 0) {
+                couponProductCondition.setBrandCode(skuInfoMap.get(couponProductCondition.getSkuCode()).getBrandCode());
+            }
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);
@@ -993,6 +997,7 @@ public class CommonOrderServiceImpl implements OrderService {
         List<OrderItem> items = new ArrayList<>();
         int skuQuantity = 0;
         int skuCategoryQuantity = 0;
+        List<String> skuCodes = new ArrayList<>();
         for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
             OrderItemCondition condition = iterator.next();
             skuQuantity += condition.getAmount();
@@ -1003,14 +1008,48 @@ public class CommonOrderServiceImpl implements OrderService {
             item.setCreated(orderInfo.getCreated());
             item.setCreatedBy(orderInfo.getCreatedBy());
             item.setCreatedByName(orderInfo.getCreatedByName());
+            skuCodes.add(item.getSkuCode());
             items.add(item);
         }
         if (items.isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
+        //查询商品相关信息
+        Map<String, ProductSkuVO> skuInfoMap = querySkuInfos(orderInfo, skuCodes);
+        if (skuInfoMap != null && skuInfoMap.size() > 0) {
+            skuInfoMapThreadLocal.set(skuInfoMap);
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext();) {
+                OrderItem orderItem = iterator.next();
+                ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
+                if (skuVO != null) {
+                    orderItem.setSkuDesc(skuVO.getSkuName());
+                    orderItem.setSkuUrl(skuVO.getSkuImage());
+                }
+            }
+        }
         orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
         orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
+    }
+
+
+    public Map<String, ProductSkuVO> querySkuInfos(OrderInfo orderInfo, List<String> skuCodes) {
+        ProductCondition productCondition = new ProductCondition();
+        productCondition.setProductSkus(skuCodes);
+        productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+        ResponseResult<List<ProductSkuVO>> ret = productServiceClient.getProductSkus(productCondition);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            // 优惠券使用失败
+            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
+                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        Map<String, ProductSkuVO> skuBrandMap = new HashMap<>();
+        for (Iterator<ProductSkuVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
+            ProductSkuVO productSkuVO = iterator.next();
+            skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO);
+        }
+        return skuBrandMap;
     }
 
     /**

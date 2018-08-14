@@ -51,6 +51,9 @@ public class BackStageStoreProdVO implements Serializable{
     @ApiModelProperty("商品sku")
     private String skuCode;
     
+    @ApiModelProperty("商品图片")
+    private String skuImage;
+    
     @ApiModelProperty("上架时间")
     private Date putawayTime;
 

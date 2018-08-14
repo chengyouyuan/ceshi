@@ -1,9 +1,9 @@
 package com.winhxd.b2c.store.service.impl;
 
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreLoginService;
 /**

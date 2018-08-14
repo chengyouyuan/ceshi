@@ -1,8 +1,8 @@
 package com.winhxd.b2c.store.service;
 
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 
 @Service
 public interface StoreLoginService {

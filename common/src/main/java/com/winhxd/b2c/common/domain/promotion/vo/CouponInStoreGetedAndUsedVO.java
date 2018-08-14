@@ -15,8 +15,6 @@ import java.util.List;
 public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "门店id")
     private Long storeId;
-    @ApiModelProperty(value = "类型")
-    private Short type;
     @ApiModelProperty(value = "领取数量")
     private Integer totalCount ;
     @ApiModelProperty(value = "使用数量")
@@ -54,14 +52,6 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
-    }
-
-    public Short getType() {
-        return type;
-    }
-
-    public void setType(Short type) {
-        this.type = type;
     }
 
     public Integer getTotalCount() {

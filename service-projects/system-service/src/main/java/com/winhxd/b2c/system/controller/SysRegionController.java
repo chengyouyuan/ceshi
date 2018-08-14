@@ -52,7 +52,7 @@ public class SysRegionController implements RegionServiceClient {
         }else if(StringUtils.isNotBlank(condition.getRegionCode())){    //regioncode 不为空时
             SysRegion region=  sysRegionService.getRegionByCode(condition.getRegionCode());
             if(region==null){
-                throw  new BusinessException(BusinessCode.CODE_320001,"查询的地理区域不存在");
+                throw  new BusinessException(BusinessCode.CODE_3020001,"查询的地理区域不存在");
             }
             SysRegion queryRegion=new SysRegion();
             if(PROVINCELEVEL.getCode().equals(region.getLevel())){

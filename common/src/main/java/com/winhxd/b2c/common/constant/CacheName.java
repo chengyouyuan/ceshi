@@ -5,8 +5,12 @@ package com.winhxd.b2c.common.constant;
  * 缓存前缀常量
  */
 public class CacheName {
-
-    public static final String CACHE_KEY_USER_TOKEN = "USER:TOKEN:";
+    /** B端用户登录key */
+    public static final String CACHE_KEY_USER_TOKEN = "TOKEN:USER:";
+    /** B端用户登录key */
+    public static final String STORE_USER_INFO_TOKEN = "TOKEN:STORE:";
+    /** C端用户登录key */
+    public static final String CUSTOMER_USER_INFO_TOKEN = "TOKEN:CUSTOMER:";
     /**
      * 订单门店提货码锁KEY
      */
@@ -27,14 +31,6 @@ public class CacheName {
      * 订单号生成重复redis验证KEY
      */
     public static final String CACHE_KEY_ORDERNO_CHECK_EXISTS = "ORDERNO:CHECK:";
-    /**
-     * B端用户登录key
-     */
-    public static final String STORE_USER_INFO_TOKEN = "STORE_USER_INFO_TOKEN:";
-    /**
-     * C端用户登录key
-     */
-    public static final String CUSTOMER_USER_INFO_TOKEN = "CUSTOMER_USER_INFO_TOKEN:";
     /**
      * 用户确认订单防频繁操作
      */

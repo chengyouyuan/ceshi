@@ -1,8 +1,8 @@
 package com.winhxd.b2c.customer.service;
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -2,12 +2,12 @@ package com.winhxd.b2c.customer.service.impl;
 
 import java.util.Date;
 
+import com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
 import com.winhxd.b2c.customer.dao.CustomerUserInfoMapper;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
 /**

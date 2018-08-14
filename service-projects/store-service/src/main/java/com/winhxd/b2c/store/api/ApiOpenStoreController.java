@@ -352,7 +352,7 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
+       if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());

@@ -347,7 +347,7 @@ public class ApiOpenStoreController {
      * @Description 根据token查询用户绑定的门店信息
      */
     @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
-    @PostMapping(value = "/security/1029/v1/findBindingStoreInfo")
+    @PostMapping(value = "/1029/v1/findBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();

@@ -48,7 +48,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: void
      */
-    void readyOrder(ReadyShopCarCondition condition, Long customerId);
+    String readyOrder(ReadyShopCarCondition condition, Long customerId);
 
     /**
      * 根据门店 用户 sku集合 获取集合信息

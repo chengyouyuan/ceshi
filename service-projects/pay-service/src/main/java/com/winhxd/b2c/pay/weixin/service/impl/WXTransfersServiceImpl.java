@@ -23,7 +23,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
 
     @Override
-    public String withDrawToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+    public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
         if(checkNecessaryFieldForChange()){
             logger.warn("转账必填字段为空");
             throw new BusinessException(BusinessCode.CODE_600201);
@@ -33,7 +33,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     }
 
     @Override
-    public String withDrawToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+    public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
         if(checkNecessaryFieldForBank()){
             logger.warn("转账必填字段为空");
             throw new BusinessException(BusinessCode.CODE_600201);

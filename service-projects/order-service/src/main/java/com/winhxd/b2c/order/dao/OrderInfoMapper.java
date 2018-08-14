@@ -170,7 +170,7 @@ public interface OrderInfoMapper {
      */
     List<Long> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
     /**
-     * 查询管理平台订单列表
+     * 查询订单列表
      *
      * @param orderIds
      * @return
@@ -178,6 +178,16 @@ public interface OrderInfoMapper {
      * @date 2018年8月6日 下午3:29:26
      */
     List<OrderInfoDetailVO> listOrderInOrderIds(@Param("orderIds") List<Long> orderIds);
+    
+    /**
+     * 查询门店订单列表
+     * 
+     * @param orderIds
+     * @return
+     * @author wangbin
+     * @date 2018年8月6日 下午3:29:26
+     */
+    List<OrderInfoDetailVO> listOrder4StoreInOrderIds(@Param("orderIds") List<Long> orderIds);
 
     /**
      * 更新订单提货码
@@ -196,7 +206,7 @@ public interface OrderInfoMapper {
      * @param storeId
      * @return
      */
-    List<OrderInfoDetailVO> listOrder4Store(@Param("condition") OrderQuery4StoreCondition condition, @Param("storeId") Long storeId);
+    List<Long> listOrder4Store(@Param("condition") OrderQuery4StoreCondition condition, @Param("storeId") Long storeId);
 
     /**
      * C端申请退款更新状态

@@ -149,7 +149,8 @@ public final class BusinessCode {
     /** 出资方不能重复*/
     public static final int CODE_500013 = 500013;
 
-
+    /** 用户不存在*/
+    public static final int CODE_500014 = 500014;
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
@@ -215,7 +216,7 @@ public final class BusinessCode {
     public static final int ORDER_IS_BEING_MODIFIED = 400012;
 
     /** 参数异常*/
-    public static final int CODE_422001 = 422001;
+    public static final int CODE_4022001 = 4022001;
     /** 未支付的订单不允许退款*/
     public static final int CODE_422002 = 422002;
     /** 已完成的订单不允许退款*/
@@ -240,7 +241,7 @@ public final class BusinessCode {
     /** 订单取消处理用户退款失败*/
     public static final int CODE_422005 = 422005;
     /** 订单取消退优惠券失败*/
-    public static final int CODE_422006 = 422006;
+    public static final int CODE_4022006 = 4022006;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int CODE_320001 = 320001;
@@ -267,4 +268,14 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    
+    
+    /**
+     * 退款回调  订单更新失败
+     */
+    public static final int CODE_600301 = 600301;
+    /**
+     *  退款回调  订单支付流水插入失败
+     */
+    public static final int CODE_600302 = 600302;
 }

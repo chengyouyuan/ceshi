@@ -14,7 +14,7 @@ import java.util.List;
  * @date: 2018/8/3 09:29
  * @description:
  */
-@ApiModel("用户加购传参")
+@ApiModel("预订单传参")
 @Data
 public class ReadyShopCarCondition extends ApiCondition {
 

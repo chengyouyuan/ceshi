@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.backstage.store.condition;
+package com.winhxd.b2c.common.domain.store.condition;
 
 import java.math.BigDecimal;
 import java.util.Date;

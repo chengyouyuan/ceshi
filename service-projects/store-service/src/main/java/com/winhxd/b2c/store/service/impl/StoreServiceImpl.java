@@ -193,6 +193,12 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    public List<String> findByReginCodes(List<String> regionCodeList) {
+        regionCodeList = regionCodeList.stream().map(reginCode -> reginCode.replaceAll("0+$", "")).collect(Collectors.toList());
+        return storeUserInfoMapper.selectByReginCodes(regionCodeList);
+    }
+
+    @Override
     public int updateByPrimaryKeySelective(StoreUserInfo record) {
         return storeUserInfoMapper.updateByPrimaryKeySelective(record);
     }

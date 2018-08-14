@@ -15,5 +15,9 @@ import lombok.Data;
 public class StoreUserInfoSimpleVO {
 	@ApiModelProperty(value = "TOKEN")
     private String token;
+	@ApiModelProperty(value = "云信账号id")
+	private String neteaseAccid;
+	@ApiModelProperty(value = "云信token")
+	private String neteaseToken;
 
 }

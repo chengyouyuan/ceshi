@@ -174,4 +174,14 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <!--  根据门店id 获取门店资金信息 -->
+  <select id="selectStoreBankrollByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from store_bankroll
+    where store_id = #{storeId}
+  </select>
+
 </mapper>

@@ -57,6 +57,22 @@ public class JsonUtil {
     }
 
     /**
+     * 解析json字符串为对象,失败时,返回null
+     *
+     * @param content
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T tryParseJSONObject(String content, Class<T> clazz) {
+        try {
+            return mapper.readValue(content, clazz);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
      * @param content
      * @param typeReference 自定义map泛型
      * @return

@@ -32,7 +32,7 @@ public interface CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:25
      */
-    @RequestMapping(value = "/promotion/518/v1/addCouponGrade", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5018/v1/addCouponGrade", method = RequestMethod.POST)
     ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition);
 
     /**
@@ -43,7 +43,7 @@ public interface CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:26
      */
-    @RequestMapping(value = "/promotion/519/v1/viewCouponGradeDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5019/v1/viewCouponGradeDetail", method = RequestMethod.POST)
     ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id")String id);
 
     /**
@@ -54,7 +54,7 @@ public interface CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:27
      */
-    @RequestMapping(value = "/promotion/520/v1/updateCouponGradeValid", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5020/v1/updateCouponGradeValid", method = RequestMethod.POST)
     ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
 
     /**
@@ -65,7 +65,7 @@ public interface CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:28
      */
-    @RequestMapping(value = "/promotion/517/v1/getCouponGradePage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5017/v1/getCouponGradePage", method = RequestMethod.POST)
     ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition);
 
     /**
@@ -76,7 +76,7 @@ public interface CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:28
      */
-    @RequestMapping(value = "/promotion/526/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5026/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
     ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
 }
 

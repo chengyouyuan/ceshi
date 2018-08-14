@@ -28,7 +28,7 @@ public interface PermissionServiceClient {
      * @date 2018/8/13 14:32
      * @return
      */
-    @RequestMapping(value = "/permission/330/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/permission/3300/v1/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<SysPermission>> list();
 }
 

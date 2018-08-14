@@ -15,11 +15,13 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 
 import feign.hystrix.FallbackFactory;
+
+import java.util.List;
 
 /**
  *
@@ -65,37 +67,45 @@ public interface BackStageStoreServiceClient {
     ResponseResult<Integer> modifyStoreInfoReginCode(BackStageModifyStoreCondition condition);
     /**
      * 分页查询门店商品信息（带搜索）
-    * @Title: findStoreProdManageList 
-    * @Description: TODO 
+    * @Title: findStoreProdManageList
+    * @Description: TODO
     * @param condition
     * @return ResponseResult<PagedList<BackStageStoreProdVO>>
     * @author wuyuanbao
     * @date 2018年8月13日下午1:38:46
      */
     @RequestMapping(value = "/store/1045/v1/findStoreProdManageList",method = RequestMethod.POST)
-    ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(BackStageStoreProdCondition condition);
+    ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(@RequestBody BackStageStoreProdCondition condition);
     /**
      * 获取门店商品信息详情
-    * @Title: findStoreProdManage 
-    * @Description: TODO 
+    * @Title: findStoreProdManage
+    * @Description: TODO
     * @param condition
     * @return ResponseResult<BackStageStoreProdVO>
     * @author wuyuanbao
     * @date 2018年8月13日下午1:39:35
      */
     @RequestMapping(value = "/store/1046/v1/findStoreProdManage",method = RequestMethod.POST)
-    ResponseResult<BackStageStoreProdVO> findStoreProdManage(BackStageStoreProdCondition condition);
+    ResponseResult<BackStageStoreProdVO> findStoreProdManage(@RequestBody BackStageStoreProdCondition condition);
     /**
      * 门店商品操作（上下架删除）
-    * @Title: operateStoreProdManage 
-    * @Description: TODO 
+    * @Title: operateStoreProdManage
+    * @Description: TODO
     * @param condition
     * @return ResponseResult<Void>
     * @author wuyuanbao
     * @date 2018年8月13日下午1:40:28
      */
     @RequestMapping(value = "/store/1047/v1/operateStoreProdManage",method = RequestMethod.POST)
-    ResponseResult<Void> operateStoreProdManage(BackStageStoreProdCondition condition);
+    ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition);
+
+    /**
+     * 根据reginCode集合查询门店
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/store/1051/v1/findStoreIdList",method = RequestMethod.POST)
+    ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition);
 }
 /**
  * @Description: 熔断回调
@@ -157,4 +167,10 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
 		logger.error("StoreServiceClientFallBack -> operateStoreProdManage 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
+
+    @Override
+    public ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition) {
+        logger.error("StoreServiceClientFallBack -> findStoreIdListByReginCodes 报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
 }

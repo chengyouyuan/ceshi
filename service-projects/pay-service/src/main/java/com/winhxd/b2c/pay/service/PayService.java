@@ -19,10 +19,10 @@ public interface PayService {
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午12:46:25
-	 * @Description 退款审核
+	 * @Description 退款
 	 * @return
 	 */
-	ResponseResult<OrderRefundVO> auditRefund(OrderRefundCondition condition);
+	ResponseResult<OrderRefundVO> orderRefund(OrderRefundCondition condition);
 	
 	/**
 	 * @author liuhanning
@@ -44,11 +44,19 @@ public interface PayService {
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13
-	 * @Description  微信回调   更新订单状态
+	 * @Description  微信支付回调   更新订单状态
 	 * @param condition
 	 * @return
 	 */
-	Integer updateOrder(UpdateOrderCondition condition);
+	Integer callbackOrderPay(UpdateOrderCondition condition);
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月13日 下午1:07:13
+	 * @Description  微信退款回调   更新订单状态
+	 * @param condition
+	 * @return
+	 */
+	Integer callbackOrderRefund(UpdateOrderCondition condition);
 	
 	
 }

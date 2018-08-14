@@ -5,6 +5,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -52,7 +54,7 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("获取优惠券活动列表")
-	@PostMapping(value = "/529/v1/queryCouponActivity")
+	@PostMapping(value = "/5029/v1/queryCouponActivity")
 	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
@@ -65,7 +67,7 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("添加优惠券活动")
-	@PostMapping(value = "/530/v1/addCouponActivity")
+	@PostMapping(value = "/5030/v1/addCouponActivity")
 	public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
@@ -86,7 +88,7 @@ public class CouponController {
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("根据id 查询优惠券活动")
-	@PostMapping(value = "/531/v1/getCouponActivityById")
+	@PostMapping(value = "/5031/v1/getCouponActivityById")
 	public ResponseResult<CouponActivityVO> getCouponActivityById(@RequestParam("id") String id){
 		return couponActivityServiceClient.getCouponActivityById(id);
 	}
@@ -99,7 +101,7 @@ public class CouponController {
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("编辑优惠券活动")
-	@PostMapping(value = "/532/v1/updateCouponActivity")
+	@PostMapping(value = "/5032/v1/updateCouponActivity")
 	public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
@@ -119,7 +121,7 @@ public class CouponController {
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("删除优惠券活动")
-	@PostMapping(value = "/533/v1/deleteCouponActivity")
+	@PostMapping(value = "/5033/v1/deleteCouponActivity")
 	public ResponseResult<Integer> deleteCouponActivity(@RequestBody CouponActivityCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
@@ -137,7 +139,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("撤回活动优惠券")
-	@PostMapping(value = "/534/v1/revocationActivityCoupon")
+	@PostMapping(value = "/5034/v1/revocationActivityCoupon")
 	public ResponseResult<Integer> revocationActivityCoupon(@RequestBody CouponActivityCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
@@ -155,7 +157,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("停用/开启活动")
-	@PostMapping(value = "/535/v1/updateCouponActivityStatus")
+	@PostMapping(value = "/5035/v1/updateCouponActivityStatus")
 	public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
@@ -173,7 +175,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("根据活动获取优惠券列表")
-	@PostMapping(value = "/536/v1/queryCouponByActivity")
+	@PostMapping(value = "/5036/v1/queryCouponByActivity")
 	public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryCouponByActivity(condition);
 	}
@@ -186,7 +188,7 @@ public class CouponController {
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("根据活动获取小店信息")
-	@PostMapping(value = "/537/v1/queryStoreByActivity")
+	@PostMapping(value = "/5037/v1/queryStoreByActivity")
 	public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryStoreByActivity(condition);
 	}
@@ -204,7 +206,7 @@ public class CouponController {
 	 *@Date   2018/8/7 14:49
 	 */
 	@ApiOperation("优惠券模板分页列表")
-	@PostMapping(value = "/510/v1/getCouponTemplatePage")
+	@PostMapping(value = "/5010/v1/getCouponTemplatePage")
 	public ResponseResult<PagedList<CouponTemplateVO>> getCouponTemplatePage(@RequestBody CouponTemplateCondition condition){
 		return couponTemplateServiceClient.findCouponTemplatePageByCondition(condition);
 	}
@@ -218,7 +220,7 @@ public class CouponController {
 	 *@Date   2018/8/7 16:01
 	 */
 	@ApiOperation("优惠券模板新建")
-	@PostMapping(value = "/511/v1/addCouponTemplate")
+	@PostMapping(value = "/5011/v1/addCouponTemplate")
 	public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition condition){
 		/**
 		 * 参数校验还未完善
@@ -239,8 +241,6 @@ public class CouponController {
 		return responseResult;
 	}
 
-
-
 	/**
 	 *
 	 *@Deccription 查看优惠券模板详情
@@ -250,7 +250,7 @@ public class CouponController {
 	 *@Date   2018/8/6 20:45
 	 */
 	@ApiOperation("优惠券模板详情查看")
-	@GetMapping(value = "/512/v1/viewCouponTemplateDetail")
+	@GetMapping(value = "/5012/v1/viewCouponTemplateDetail")
 	public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id){
 		ResponseResult<CouponTemplateVO> responseResult = couponTemplateServiceClient.viewCouponTemplateDetail(id);
 		return responseResult;
@@ -267,7 +267,7 @@ public class CouponController {
 	 *@Date   2018/8/6 20:39
 	 */
 	@ApiOperation("优惠券模板设为无效")
-	@PostMapping(value = "/513/v1/updateCouponTemplateToValid")
+	@PostMapping(value = "/5013/v1/updateCouponTemplateToValid")
 	public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
@@ -290,7 +290,7 @@ public class CouponController {
     *@Date   2018/8/11 12:27
     */
 	@ApiOperation("出资方分页列表")
-	@PostMapping(value = "/528/v1/getCouponInvestorPage")
+	@PostMapping(value = "/5028/v1/getCouponInvestorPage")
 	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
 		ResponseResult<PagedList<CouponInvestorVO>> responseResult = couponInvestorServiceClient.getCouponInvestorPage(condition);
 		return responseResult;
@@ -305,28 +305,27 @@ public class CouponController {
 	 *@Date   2018/8/11 12:26
 	 */
 	@ApiOperation("出资方规则新建")
-	@PostMapping(value = "/514/v1/addCouponInvestor")
+	@PostMapping(value = "/5014/v1/addCouponInvestor")
 	public ResponseResult<Integer> addCouponInvestor(@RequestBody LinkedHashMap detailData){
 		/**
 		 *  校验参数
 		 */
+		 CouponInvestorCondition condition = new CouponInvestorCondition();
          if(detailData.get("name")==null || detailData.get("listDetail")==null){
 			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
 		 }
-
-
-		String name = detailData.get("name").toString();
-		String remark = detailData.get("remark").toString();
+		 String name = detailData.get("name").toString();
+         if(detailData.get("remark")!=null){
+			 condition.setRemarks(detailData.get("remark").toString());
+		 }
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
-
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
 		String code = getUUID();
-		CouponInvestorCondition condition = new CouponInvestorCondition();
+
 		condition.setCode(code);
 		condition.setName(name);
-		condition.setRemarks(remark);
 		condition.setUserId(userId);
 		condition.setUserName(userName);
 		condition.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
@@ -347,7 +346,7 @@ public class CouponController {
 	 *@Date   2018/8/11 12:25
 	 */
 	@ApiOperation("出资方规则详情查看")
-	@GetMapping(value = "/515/v1/viewCouponInvestorDetail")
+	@GetMapping(value = "/5015/v1/viewCouponInvestorDetail")
 	public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id){
 		ResponseResult<CouponInvestorVO> responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
@@ -355,7 +354,7 @@ public class CouponController {
 
 
 	@ApiOperation("出资方规则设置无效")
-	@GetMapping(value = "/516/v1/updateCouponInvestorToValid")
+	@GetMapping(value = "/5016/v1/updateCouponInvestorToValid")
 	public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
@@ -376,7 +375,7 @@ public class CouponController {
  *@Date   2018/8/11 12:24
  */
 @ApiOperation("坎级多条件分页查询")
-@PostMapping(value = "/517/v1/getCouponGradePage")
+@PostMapping(value = "/5017/v1/getCouponGradePage")
 public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition){
 	ResponseResult<PagedList<CouponGradeVO>> responseResult = couponGradeServiceClient.getCouponGradePage(condition);
 	return responseResult;
@@ -391,11 +390,31 @@ public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody 
  *@Date   2018/8/11 12:23
  */
 @ApiOperation("坎级规则新建")
-@PostMapping(value = "/518/v1/addCouponGrade")
+@PostMapping(value = "/5018/v1/addCouponGrade")
 public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition){
 	/**
 	 * 参数校验
 	 */
+	if(couponGradeCondition.getName()==null || couponGradeCondition.getType()==null ||
+			couponGradeCondition.getReducedAmt()==null || couponGradeCondition.getReducedType()==null){
+            throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+	}
+	if(couponGradeCondition.getReducedType()!=null){
+         if(couponGradeCondition.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode())){
+			 if(couponGradeCondition.getCost()==null || couponGradeCondition.getDiscountedAmt()==null){
+				 throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+			 }
+		 }
+	}
+
+	if(couponGradeCondition.getReducedType()!=null){
+		if(couponGradeCondition.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_DISC.getCode())){
+			if(couponGradeCondition.getDiscountedMaxAmt()==null || couponGradeCondition.getDiscounted()==null){
+				throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+			}
+		}
+	}
+
 	 UserInfo userInfo = UserManager.getCurrentUser();
 	 String userId = userInfo.getId()+"";
 	 String userName = userInfo.getUsername();
@@ -416,7 +435,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
  *@Date   2018/8/11 12:22
  */
 @ApiOperation("坎级详情查看")
-@GetMapping(value = "/519/v1/viewCouponGradeDetail")
+@GetMapping(value = "/5019/v1/viewCouponGradeDetail")
 public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id){
 	ResponseResult<CouponGradeVO> responseResult = couponGradeServiceClient.viewCouponGradeDetail(id);
 	return responseResult;
@@ -431,7 +450,7 @@ public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") S
  *@Date   2018/8/11 12:21
  */
 @ApiOperation("坎级设置为无效")
-@GetMapping (value = "/520/v1/updateCouponGradeValid")
+@GetMapping (value = "/5020/v1/updateCouponGradeValid")
 public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String id){
 	UserInfo userInfo = UserManager.getCurrentUser();
 	String userId = userInfo.getId()+"";
@@ -453,11 +472,27 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 *@Date   2018/8/11 12:20
 	 */
 	@ApiOperation("适用对象新建")
-	@PostMapping(value = "/521/v1/addCouponApply")
+	@PostMapping(value = "/5021/v1/addCouponApply")
 	public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition  condition){
 		/**
 		 * 参数校验
 		 */
+		if(condition!=null || condition.getName()==null || condition.getApplyRuleType()==null){
+			throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+		}
+		if(condition.getApplyRuleType()!=null){
+			if(condition.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+				if(condition.getCouponApplyBrandList()==null){
+					throw new BusinessException(BusinessCode.CODE_500010,"品牌券必填参数为空");
+				}
+			}
+			if(condition.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+				if(condition.getCouponApplyProductList()==null){
+					throw new BusinessException(BusinessCode.CODE_500010,"商品券必填参数为空");
+				}
+			}
+		}
+
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
@@ -479,7 +514,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 *@Date   2018/8/11 12:16
 	 */
 	@ApiOperation("适用对象类型查看")
-	@PostMapping(value = "/522/v1/viewCouponApplyDetail")
+	@PostMapping(value = "/5022/v1/viewCouponApplyDetail")
 	public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id){
 		ResponseResult<CouponApplyVO> responseResult = couponApplyServiceClient.viewCouponApplyDetail(id);
 		return responseResult;
@@ -494,7 +529,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 *@Date   2018/8/11 12:16
 	 */
 	@ApiOperation("适用对象设置无效")
-	@PostMapping(value = "/523/v1/updateCouponApplyToValid")
+	@PostMapping(value = "/5023/v1/updateCouponApplyToValid")
 	public ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id") String id){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
@@ -512,7 +547,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 *@Date   2018/8/11 12:16
 	 */
 	@ApiOperation("适用对象列表分页条件查询")
-	@PostMapping(value = "/524/v1/findCouponApplyPage")
+	@PostMapping(value = "/5024/v1/findCouponApplyPage")
 	public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition  condition){
 		ResponseResult<PagedList<CouponApplyVO>> responseResult = couponApplyServiceClient.findCouponApplyPage(condition);
 		return responseResult;
@@ -530,7 +565,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 *@Date   2018/8/11 12:11
 	 */
 @ApiOperation("点出资方列表上模板引用数量表分页")
-@GetMapping(value = "/525/v1/findInvertorTempleteCountPage")
+@GetMapping(value = "/5025/v1/findInvertorTempleteCountPage")
 public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
     if(pageNo!=null){
 		pageNo = 1;
@@ -551,7 +586,7 @@ public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCo
 	 *@Date   2018/8/11 12:11
 	 */
 @ApiOperation("点坎级列表上模板引用数量表分页")
-@GetMapping(value = "/526/v1/findGradeTempleteCountPage")
+@GetMapping(value = "/5026/v1/findGradeTempleteCountPage")
 public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
 	if(pageNo!=null){
 		pageNo = 1;
@@ -574,7 +609,7 @@ public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPag
  *@Date   2018/8/11 12:11
  */
 @ApiOperation("点适用对象列表上模板引用数量表分页")
-@GetMapping(value = "/527/v1/findApplyTempleteCountPage")
+@GetMapping(value = "/5027/v1/findApplyTempleteCountPage")
 public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
 	if(pageNo!=null){
 		pageNo = 1;

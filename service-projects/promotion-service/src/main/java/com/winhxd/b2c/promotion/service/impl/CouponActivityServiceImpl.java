@@ -18,12 +18,10 @@ import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -51,34 +49,31 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition) {
-        String createdStartStr = DateFormatUtils.format(condition.getDateInterval().getStartDate(),"yyyy-MM-dd 00:00:00");
-        String createdEndStr = DateFormatUtils.format(condition.getDateInterval().getEndDate(),"yyyy-MM-dd 23:59:59");
+        Calendar createdS = Calendar.getInstance();
+        createdS.setTime(condition.getDateInterval().getStartDate());
+        createdS.set(Calendar.HOUR_OF_DAY, 0);
+        createdS.set(Calendar.MINUTE, 0);
+        createdS.set(Calendar.SECOND, 0);
+        createdS.set(Calendar.MILLISECOND, 0);
+
+        Calendar createdE = Calendar.getInstance();
+        createdE.setTime(condition.getDateInterval().getEndDate());
+        createdE.set(Calendar.HOUR_OF_DAY, 23);
+        createdE.set(Calendar.MINUTE, 59);
+        createdE.set(Calendar.SECOND, 59);
+        createdE.set(Calendar.MILLISECOND, 59);
+        Date createdStart = createdS.getTime();
+        Date createdEnd  =createdE.getTime();
 
         if(condition.getCreatedStart() != null && condition.getCreatedEnd() != null){
-            try {
-                Date createdStart  = DateUtils.parseDate(createdStartStr);
-                Date createdEnd  = DateUtils.parseDate(createdEndStr);
-                condition.setCreatedStart(createdStart);
-                condition.setCreatedEnd(createdEnd);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            condition.setCreatedStart(createdStart);
+            condition.setCreatedEnd(createdEnd);
         }
         if(condition.getCreatedStart() != null && condition.getCreatedEnd() == null){
-            try {
-                Date createdStart  = DateUtils.parseDate(createdStartStr);
-                condition.setCreatedStart(createdStart);
-            }catch (Exception e ){
-                e.printStackTrace();
-            }
+            condition.setCreatedStart(createdStart);
         }
         if(condition.getCreatedStart() == null && condition.getCreatedEnd() != null){
-            try {
-                Date createdEnd  = DateUtils.parseDate(createdEndStr);
-                condition.setCreatedEnd(createdEnd);
-            }catch (Exception e ){
-                e.printStackTrace();
-            }
+            condition.setCreatedEnd(createdEnd);
         }
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         PagedList<CouponActivityVO> pagedList = new PagedList<>();
@@ -100,63 +95,85 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public void saveCouponActivity(CouponActivityAddCondition condition) {
-        try {
-            String createdStartStr = DateFormatUtils.format(condition.getDateInterval().getStartDate(),"yyyy-MM-dd 00:00:00");
-            String createdEndStr = DateFormatUtils.format(condition.getDateInterval().getEndDate(),"yyyy-MM-dd 23:59:59");
-            Date activityStart  = DateUtils.parseDate(createdStartStr);
-            Date activityEnd  = DateUtils.parseDate(createdEndStr);
-            //CouponActivity
-            CouponActivity couponActivity = new CouponActivity();
-            couponActivity.setName(condition.getName());
-            couponActivity.setCode(condition.getCode());
-            couponActivity.setExolian(condition.getExolian());
-            couponActivity.setRemarks(condition.getRemarks());
-            couponActivity.setActivityStart(activityStart);
-            couponActivity.setActivityEnd(activityEnd);
-            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-            couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-            couponActivity.setCreated(new Date());
-            couponActivity.setCreatedBy(condition.getCreatedBy());
-            couponActivity.setCreatedByName(condition.getCreatedByName());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(condition.getActivityStart());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(condition.getActivityEnd());
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 59);
+        Date activityStart = calendar.getTime();
+        Date activityEnd  =c.getTime();
+        //CouponActivity
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setName(condition.getName());
+        couponActivity.setCode(condition.getCode());
+        couponActivity.setExolian(condition.getExolian());
+        couponActivity.setRemarks(condition.getRemarks());
+        couponActivity.setActivityStart(activityStart);
+        couponActivity.setActivityEnd(activityEnd);
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setCreated(new Date());
+        couponActivity.setCreatedBy(condition.getCreatedBy());
+        couponActivity.setCreatedByName(condition.getCreatedByName());
+        //领券
+        if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+            couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
+        }
+        //推券
+        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
+            couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
+            couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+        }
+        couponActivityMapper.insertSelective(couponActivity);
+
+        //CouponActivityTemplate
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+            couponActivityTemplate.setCouponActivityId(couponActivity.getId());
+            couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
+                Calendar couponS = Calendar.getInstance();
+                couponS.setTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                couponS.set(Calendar.HOUR_OF_DAY, 0);
+                couponS.set(Calendar.MINUTE, 0);
+                couponS.set(Calendar.SECOND, 0);
+                couponS.set(Calendar.MILLISECOND, 0);
+
+                Calendar couponE = Calendar.getInstance();
+                couponE.setTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                couponE.set(Calendar.HOUR_OF_DAY, 23);
+                couponE.set(Calendar.MINUTE, 59);
+                couponE.set(Calendar.SECOND, 59);
+                couponE.set(Calendar.MILLISECOND, 59);
+                Date couponStart = couponS.getTime();
+                Date couponEnd  =couponE.getTime();
+                couponActivityTemplate.setStartTime(couponStart);
+                couponActivityTemplate.setEndTime(couponEnd);
+                couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
+                couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
+                couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
+                couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
+                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                }
             }
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
-                couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+                couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
+                couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
             }
-            couponActivityMapper.insertSelective(couponActivity);
+            couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
 
-            //CouponActivityTemplate
-            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
-            for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
-                couponActivityTemplate.setCouponActivityId(couponActivity.getId());
-                couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
-                //领券
-                if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    String couponStartStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getStartTime(),"yyyy-MM-dd 00:00:00");
-                    String couponEndStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getEndTime(),"yyyy-MM-dd 23:59:59");
-                    Date couponStart  = DateUtils.parseDate(couponStartStr);
-                    Date couponEnd  = DateUtils.parseDate(couponEndStr);
-                    couponActivityTemplate.setStartTime(couponStart);
-                    couponActivityTemplate.setEndTime(couponEnd);
-                    couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
-                    couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
-                    couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
-                    couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                    if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
-                        couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
-                    }
-                }
-                //推券
-                if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                    couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
-                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
-                }
-                couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
-
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 //coupon_activity_store_customer
                 CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
                 for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
@@ -167,8 +184,6 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
                 }
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 
@@ -214,86 +229,103 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public void updateCouponActivity(CouponActivityAddCondition condition) {
-        try {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(condition.getActivityStart());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
-            String activityStartStr = DateFormatUtils.format(condition.getActivityStart(),"yyyy-MM-dd 00:00:00");
-            String activityEndStr = DateFormatUtils.format(condition.getActivityEnd(),"yyyy-MM-dd 23:59:59");
-            Date activityStart  = DateUtils.parseDate(activityStartStr);
-            Date activityEnd  = DateUtils.parseDate(activityEndStr);
-            //更新CouponActivity
-            CouponActivity couponActivity = new CouponActivity();
-            couponActivity.setId(condition.getId());
-            couponActivity.setName(condition.getName());
-            couponActivity.setCode(condition.getCode());
-            couponActivity.setExolian(condition.getExolian());
-            couponActivity.setRemarks(condition.getRemarks());
-            couponActivity.setActivityStart(activityStart);
-            couponActivity.setActivityEnd(activityEnd);
-            couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-            couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-            couponActivity.setUpdated(new Date());
-            couponActivity.setUpdatedBy(condition.getCreatedBy());
-            couponActivity.setUpdatedByName(condition.getCreatedByName());
+        Calendar c = Calendar.getInstance();
+        c.setTime(condition.getActivityEnd());
+        c.set(Calendar.HOUR_OF_DAY, 23);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 59);
+        Date activityStart = calendar.getTime();
+        Date activityEnd  =c.getTime();
+        //更新CouponActivity
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setId(condition.getId());
+        couponActivity.setName(condition.getName());
+        couponActivity.setCode(condition.getCode());
+        couponActivity.setExolian(condition.getExolian());
+        couponActivity.setRemarks(condition.getRemarks());
+        couponActivity.setActivityStart(activityStart);
+        couponActivity.setActivityEnd(activityEnd);
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setUpdated(new Date());
+        couponActivity.setUpdatedBy(condition.getCreatedBy());
+        couponActivity.setUpdatedByName(condition.getCreatedByName());
+        //领券
+        if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+            couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
+        }
+        //推券
+        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
+            couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
+            couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+        }
+        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+
+        //删除CouponActivityTemplate
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        couponActivityTemplate.setCouponActivityId(condition.getId());
+        couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
+        //删除couponActivityStoreCustomer
+        CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
+        couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
+        couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
+
+        //新增couponActivityTemplate
+        for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+            couponActivityTemplate.setCouponActivityId(couponActivity.getId());
+            couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                couponActivity.setType(CouponActivityEnum.PULL_COUPON.getCode());
+                Calendar couponS = Calendar.getInstance();
+                couponS.setTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                couponS.set(Calendar.HOUR_OF_DAY, 0);
+                couponS.set(Calendar.MINUTE, 0);
+                couponS.set(Calendar.SECOND, 0);
+                couponS.set(Calendar.MILLISECOND, 0);
+
+                Calendar couponE = Calendar.getInstance();
+                couponE.setTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                couponE.set(Calendar.HOUR_OF_DAY, 23);
+                couponE.set(Calendar.MINUTE, 59);
+                couponE.set(Calendar.SECOND, 59);
+                couponE.set(Calendar.MILLISECOND, 59);
+                Date couponStart = couponS.getTime();
+                Date couponEnd  =couponE.getTime();
+                couponActivityTemplate.setStartTime(couponStart);
+                couponActivityTemplate.setEndTime(couponEnd);
+                couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
+                couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
+                couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
+                couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
+                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                }
             }
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
-                couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+                couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
+                couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
             }
-            couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+            couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
 
-            //删除CouponActivityTemplate
-            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
-            couponActivityTemplate.setCouponActivityId(condition.getId());
-            couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-            couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
-            //删除couponActivityStoreCustomer
-            CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
-            couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
-            couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-            couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
-
-            //新增couponActivityTemplate
-            for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
-                couponActivityTemplate.setCouponActivityId(couponActivity.getId());
-                couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
-                //领券
-                if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                    String couponStartStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getStartTime(),"yyyy-MM-dd 00:00:00");
-                    String couponEndStr = DateFormatUtils.format(condition.getCouponActivityTemplateList().get(i).getEndTime(),"yyyy-MM-dd 23:59:59");
-                    Date couponStart  = DateUtils.parseDate(couponStartStr);
-                    Date couponEnd  = DateUtils.parseDate(couponEndStr);
-                    couponActivityTemplate.setStartTime(couponStart);
-                    couponActivityTemplate.setEndTime(couponEnd);
-                    couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
-                    couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
-                    couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
-                    couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                    if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
-                        couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
-                    }
-                }
-                //推券
-                if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                    couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
-                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
-                }
-                couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
-
-                //新增couponActivityStoreCustomer
-                for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
-                    couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
-                    couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
-                    couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
-                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                    couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
-                }
+            //新增couponActivityStoreCustomer
+            for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
+                couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
+                couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
+                couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
+                couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 

@@ -14,13 +14,13 @@ public class ContextRequestInterceptor implements RequestInterceptor {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (adminUser != null) {
-            requestTemplate.header(UserContext.HEADER_USER_ADMIN, ContextHelper.getHeaderJsonString(adminUser));
+            requestTemplate.header(ContextHelper.HEADER_USER_ADMIN, ContextHelper.getHeaderJsonString(adminUser));
         }
         if (customerUser != null) {
-            requestTemplate.header(UserContext.HEADER_USER_CUSTOMER, ContextHelper.getHeaderJsonString(customerUser));
+            requestTemplate.header(ContextHelper.HEADER_USER_CUSTOMER, ContextHelper.getHeaderJsonString(customerUser));
         }
         if (storeUser != null) {
-            requestTemplate.header(UserContext.HEADER_USER_STORE, ContextHelper.getHeaderJsonString(storeUser));
+            requestTemplate.header(ContextHelper.HEADER_USER_STORE, ContextHelper.getHeaderJsonString(storeUser));
         }
     }
 }

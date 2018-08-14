@@ -4,10 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -39,6 +36,13 @@ public interface OrderQueryService {
     OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition);
 
     /**
+     * B端用户查订单详情
+     * @param orderQueryByCustomerCondition
+     * @return
+     */
+    OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition condition);
+
+    /**
      * 获取门店销售数据
      * @author wangbin
      * @date  2018年8月4日 上午10:51:59
@@ -50,7 +54,7 @@ public interface OrderQueryService {
     StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
 
     /**
-     * 计算并缓存门店销售数据 
+     * 计算并缓存门店销售数据
      * @author wangbin
      * @date  2018年8月4日 下午3:38:46
      * @param storeId
@@ -67,7 +71,7 @@ public interface OrderQueryService {
      * @return
      */
     String getPickUpCode(long storeId);
-    
+
     /**
      * 根据条件 查询订单列表，后台管理系统用
      *

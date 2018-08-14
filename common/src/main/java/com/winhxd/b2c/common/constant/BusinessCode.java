@@ -108,7 +108,7 @@ public final class BusinessCode {
 
 
     /** 查询订单参数异常*/
-    public static final int CODE_411001 = 411001;
+    public static final int CODE_4011001 = 4011001;
 
     /** 不存在符合的优惠券活动*/
     public static final int CODE_500001 = 500001;
@@ -149,7 +149,8 @@ public final class BusinessCode {
     /** 出资方不能重复*/
     public static final int CODE_500013 = 500013;
 
-
+    /** 用户不存在*/
+    public static final int CODE_500014 = 500014;
 
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
@@ -215,7 +216,7 @@ public final class BusinessCode {
     public static final int ORDER_IS_BEING_MODIFIED = 400012;
 
     /** 参数异常*/
-    public static final int CODE_422001 = 422001;
+    public static final int CODE_4022001 = 4022001;
     /** 未支付的订单不允许退款*/
     public static final int CODE_422002 = 422002;
     /** 已完成的订单不允许退款*/
@@ -224,7 +225,7 @@ public final class BusinessCode {
     public static final int CODE_422004 = 422004;
 
     /** 订单状态不允许退款*/
-    public static final int CODE_421002 = 421002;
+    public static final int CODE_4021002 = 4021002;
     /** 参数错误*/
     public static final int CODE_421001 = 421001;
     /** 订单号不能为空*/
@@ -232,7 +233,7 @@ public final class BusinessCode {
     /** 订单已支付成功不能取消*/
     public static final int CODE_420002 = 420002;
     /** 用户不存在*/
-    public static final int CODE_410001 = 410001;
+    public static final int CODE_4010001 = 4010001;
     /** 订单号错误*/
     public static final int CODE_420003 = 420003;
     /** 取消订单状态更新失败*/
@@ -240,10 +241,10 @@ public final class BusinessCode {
     /** 订单取消处理用户退款失败*/
     public static final int CODE_422005 = 422005;
     /** 订单取消退优惠券失败*/
-    public static final int CODE_422006 = 422006;
+    public static final int CODE_4022006 = 4022006;
 
     @ApiModelProperty("查询的地理区域不存在")
-    public static final int CODE_320001 = 320001;
+    public static final int CODE_3020001 = 3020001;
     
     @ApiModelProperty("当前用户没有银行卡信息")
     public static final int CODE_610001 = 610001;
@@ -267,4 +268,14 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    
+    
+    /**
+     * 退款回调  订单更新失败
+     */
+    public static final int CODE_600301 = 600301;
+    /**
+     *  退款回调  订单支付流水插入失败
+     */
+    public static final int CODE_600302 = 600302;
 }

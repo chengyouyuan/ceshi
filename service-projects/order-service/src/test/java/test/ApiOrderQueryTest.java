@@ -45,7 +45,7 @@ public class ApiOrderQueryTest {
         condition.setPageSize(10);
         String requestJson = JsonUtil.toJSONString(condition);
         MvcResult mvcResult = mockMvc.perform(
-                MockMvcRequestBuilders.post("/api-order/order/410/v1/orderListByCustomer").contentType(MediaType.APPLICATION_JSON).content(requestJson)
+                MockMvcRequestBuilders.post("/api-order/order/4010/v1/orderListByCustomer").contentType(MediaType.APPLICATION_JSON).content(requestJson)
         ).andReturn();
         int status = mvcResult.getResponse().getStatus();
 

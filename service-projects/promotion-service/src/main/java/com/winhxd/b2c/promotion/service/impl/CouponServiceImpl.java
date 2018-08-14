@@ -88,7 +88,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> getNewUserCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
@@ -198,7 +198,7 @@ public class CouponServiceImpl implements CouponService {
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
+                        logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
                     couponVO.setProducts(result.getData());
@@ -217,7 +217,7 @@ public class CouponServiceImpl implements CouponService {
                     //调用获取商品信息接口
                     ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-                        logger.error("优惠券：{}获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
+                        logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
                     couponVO.setBrands(result.getData());
@@ -244,7 +244,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> unclaimedCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -299,7 +299,7 @@ public class CouponServiceImpl implements CouponService {
     public PagedList<CouponVO> myCouponList(CouponCondition couponCondition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
@@ -318,7 +318,7 @@ public class CouponServiceImpl implements CouponService {
 
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
 
         CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
@@ -383,7 +383,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
 
         List<Long> sendIds = condition.getSendIds();
@@ -420,7 +420,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
         if(null ==condition.getOrderNo()){
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -590,7 +590,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> findStoreCouponList() {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
@@ -646,7 +646,7 @@ public class CouponServiceImpl implements CouponService {
     public List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
 
         //查询当前用户下的所有优惠券
@@ -770,11 +770,68 @@ public class CouponServiceImpl implements CouponService {
         Page page = PageHelper.startPage(pageNo, pageSize);
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
-        pagedList.setData(list);
+        List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
+        pagedList.setData(finalList);
         pagedList.setPageNo(pageNo);
         pagedList.setPageSize(pageSize);
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
+
+
+
+
+    /**
+     * 获取优惠券适用范围
+     * @param couponVOS
+     * @return
+     */
+    public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
+        for(CouponInStoreGetedAndUsedVO vo : couponVOS){
+            if(vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+                List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
+                if(!couponApplyProducts.isEmpty()){
+                    List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
+                    //组装请求的参数
+                    List<String> productSkus = new ArrayList<>();
+                    for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
+                        productSkus.add(couponApplyProductList.getSkuCode());
+                    }
+                    ProductCondition productCondition = new ProductCondition();
+                    productCondition.setProductSkus(productSkus);
+                    //调用获取商品信息接口
+                    ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
+                    vo.setProducts(result.getData());
+                }
+            }
+
+            if(vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+                List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(vo.getApplyId());
+                if(!couponApplyBrands.isEmpty()){
+                    List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
+                    //组装请求的参数
+                    List<String> brandCodes = new ArrayList<>();
+                    for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
+                        brandCodes.add(couponApplyBrandList.getBrandCode());
+                    }
+                    //调用获取商品信息接口
+                    ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                    if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                        logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
+                        throw new BusinessException(result.getCode());
+                    }
+                    vo.setBrands(result.getData());
+                }
+            }
+        }
+        return couponVOS;
+    }
+
+
+
 
 }

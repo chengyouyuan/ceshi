@@ -1,28 +1,11 @@
 package com.winhxd.b2c.store.controller;
 
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
-import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
-import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
-import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
-import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
-import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.store.service.StoreProductManageService;
-import com.winhxd.b2c.store.service.StoreProductStatisticsService;
-import com.winhxd.b2c.store.service.StoreRegionService;
-import com.winhxd.b2c.store.service.StoreService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,10 +17,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.store.service.StoreProductManageService;
+import com.winhxd.b2c.store.service.StoreProductStatisticsService;
+import com.winhxd.b2c.store.service.StoreRegionService;
+import com.winhxd.b2c.store.service.StoreService;
 
 /**
  * @Description: 门店服务控制器
@@ -158,10 +162,10 @@ public class StoreServiceController implements StoreServiceClient {
 				//门店与sku关系
 				StoreProductManage spManage=storeProds.get(i);
 				spVO.setSkuCode(current.getSkuCode());
-				spVO.setProdImage(current.getSkuImage());
+				spVO.setSkuImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());
 				spVO.setSellMoney(spManage.getSellMoney());
-				spVO.setProdName(current.getProdName()==null? "":current.getProdName());
+				spVO.setProdName(current.getSkuName()==null? "":current.getSkuName());
 				shopCarProdList.add(spVO);
 			}
 			
@@ -253,5 +257,19 @@ public class StoreServiceController implements StoreServiceClient {
 	 	storeRegionService.saveStoreRegion(conditions);
 		return new ResponseResult<>();
 	}
+
+	@Override
+	public ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
+		ResponseResult<PagedList<StoreUserInfoVO>> responseResult = new ResponseResult<PagedList<StoreUserInfoVO>>();
+		try {
+			PagedList<StoreUserInfoVO> page = storeService.findStorePageInfo(condition);
+			responseResult.setData(page);
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseResult.setCode(BusinessCode.CODE_1001);
+		}
+		return responseResult;
+	}
+
 
 }

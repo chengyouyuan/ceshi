@@ -151,8 +151,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/6 20:39
      */
     @Override
-    public void updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName) {
-        couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
+    public int updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName) {
+       return couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
     }
 
     /**

@@ -1,53 +1,26 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * @author sjx
+ */
+@Data
+@ApiModel(value = "活动优惠券门店用户",description = "活动优惠券门店用户")
 public class CouponActivityStoreCustomer {
     private Long id;
 
+    @ApiModelProperty(value = "优惠券活动模板关联id")
     private Long couponActivityTemplateId;
 
+    @ApiModelProperty(value = "门店id")
     private Long storeId;
 
+    @ApiModelProperty(value = "用户id")
     private Long customerId;
 
+    @ApiModelProperty(value = "是否有效0无效1有效")
     private Short status;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getCouponActivityTemplateId() {
-        return couponActivityTemplateId;
-    }
-
-    public void setCouponActivityTemplateId(Long couponActivityTemplateId) {
-        this.couponActivityTemplateId = couponActivityTemplateId;
-    }
-
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
 }

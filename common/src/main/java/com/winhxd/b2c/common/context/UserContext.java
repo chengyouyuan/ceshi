@@ -1,10 +1,14 @@
 package com.winhxd.b2c.common.context;
 
+import brave.Span;
+import brave.Tracer;
 import com.winhxd.b2c.common.context.support.ContextHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.regex.Matcher;
 
 /**
  * 用户数据上下文,用于获取当前后台管理员、门店用户、C端用户数据
@@ -12,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author lixiaodong
  */
 public class UserContext {
-    public static final String HEADER_USER_ADMIN = "b2c-user-admin";
-    public static final String HEADER_USER_STORE = "b2c-user-store";
-    public static final String HEADER_USER_CUSTOMER = "b2c-user-customer";
 
     private static ThreadLocal<AdminUser> currentAdminUser = new ThreadLocal<>();
     private static ThreadLocal<StoreUser> currentStoreUser = new ThreadLocal<>();
@@ -41,27 +42,45 @@ public class UserContext {
         return currentCustomerUser.get();
     }
 
-    public static void initContext() {
+    public static void initContext(Tracer tracer) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
 
-        AdminUser adminUser = ContextHelper.getHeaderObject(request, HEADER_USER_ADMIN, AdminUser.class);
-        StoreUser storeUser = ContextHelper.getHeaderObject(request, HEADER_USER_STORE, StoreUser.class);
-        CustomerUser customerUser = ContextHelper.getHeaderObject(request, HEADER_USER_CUSTOMER, CustomerUser.class);
+        Span span = tracer.currentSpan();
+
+        Matcher matcher = ContextHelper.PATTERN_SERVICE_PATH.matcher(request.getServletPath());
+        if (matcher.matches()) {
+            span.tag(ContextHelper.TRACER_API_CODE, matcher.group(2));
+        } else if ((matcher = ContextHelper.PATTERN_API_PATH.matcher(request.getServletPath())).matches()) {
+            span.tag(ContextHelper.TRACER_API_CODE, matcher.group(3));
+        }
+
+        AdminUser adminUser = ContextHelper.getHeaderObject(request, ContextHelper.HEADER_USER_ADMIN, AdminUser.class);
+        StoreUser storeUser = ContextHelper.getHeaderObject(request, ContextHelper.HEADER_USER_STORE, StoreUser.class);
+        CustomerUser customerUser = ContextHelper.getHeaderObject(request, ContextHelper.HEADER_USER_CUSTOMER, CustomerUser.class);
         if (adminUser == null) {
             currentAdminUser.remove();
         } else {
             currentAdminUser.set(adminUser);
+            if (StringUtils.isNotBlank(adminUser.getAccount())) {
+                span.tag(ContextHelper.TRACER_API_USER, adminUser.getAccount());
+            }
         }
         if (storeUser == null) {
             currentStoreUser.remove();
         } else {
             currentStoreUser.set(storeUser);
+            if (storeUser.getStoreCustomerId() != null) {
+                span.tag(ContextHelper.TRACER_API_STORE, storeUser.getStoreCustomerId().toString());
+            }
         }
         if (customerUser == null) {
             currentCustomerUser.remove();
         } else {
             currentCustomerUser.set(customerUser);
+            if (customerUser.getCustomerId() != null) {
+                span.tag(ContextHelper.TRACER_API_CUSTOMER, customerUser.getCustomerId().toString());
+            }
         }
     }
 

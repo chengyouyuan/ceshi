@@ -1,8 +1,10 @@
 package com.winhxd.b2c.store.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
@@ -173,6 +175,27 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo) {
         storeUserInfoMapper.updateReginCodeByCustomerId(storeUserInfo);
+    }
+
+    @Override
+    public PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition) {
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        StoreUserInfo record = new StoreUserInfo();
+        BeanUtils.copyProperties(condition,record);
+        List<StoreUserInfoVO> list =  storeUserInfoMapper.selectStoreByCondition(record);
+        PageInfo<StoreUserInfoVO> pageInfo = new PageInfo<>(list);
+        PagedList<StoreUserInfoVO> pagedList = new PagedList<>();
+        pagedList.setTotalRows(pageInfo.getTotal());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setData(pageInfo.getList());
+        return pagedList;
+    }
+
+    @Override
+    public List<String> findByReginCodes(List<String> regionCodeList) {
+        regionCodeList = regionCodeList.stream().map(reginCode -> reginCode.replaceAll("0+$", "")).collect(Collectors.toList());
+        return storeUserInfoMapper.selectByReginCodes(regionCodeList);
     }
 
     @Override

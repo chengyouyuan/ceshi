@@ -115,7 +115,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public void readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public String readyOrder(ReadyShopCarCondition condition, Long customerId) {
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
@@ -145,11 +145,12 @@ public class ShopCarServiceImpl implements ShopCarService {
                 orderCreateCondition.setCustomerId(customerId);
                 orderCreateCondition.setOrderItemConditions(items);
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行...");
-                orderService.submitOrder(orderCreateCondition);
+                String orderNo  = orderService.submitOrder(orderCreateCondition);
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行结束...");
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCar);
                 this.removeShopCar(customerId);
+                return orderNo;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }

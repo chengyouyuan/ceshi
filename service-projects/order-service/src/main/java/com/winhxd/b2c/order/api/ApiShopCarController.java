@@ -116,7 +116,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
     @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Long> readyOrder(@RequestBody ReadyShopCarCondition condition){
+    public ResponseResult<String> readyOrder(@RequestBody ReadyShopCarCondition condition){
         shopCarParam(condition);
         shopCarService.readyOrder(condition, getCurrentCustomerId());
         return new ResponseResult<>();
@@ -166,22 +166,10 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数pickupDateTime为空");
             throw new BusinessException(BusinessCode.CODE_402003);
         }
-        /*if (CollectionUtils.isEmpty(condition.getOrderItemConditions())){
-            logger.error("商品加购异常{}  商品信息为空");
-            throw new BusinessException(BusinessCode.CODE_402004);
-        }*/
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");
             throw new BusinessException(BusinessCode.CODE_402006);
         }
-        /*if (null == condition.getCouponIds() || condition.getCouponIds().length == 0){
-            logger.error("商品加购异常{}  参数couponIds为空");
-            throw new BusinessException(BusinessCode.CODE_402007);
-        }
-        if (null == condition.getOrderTotalMoney()){
-            logger.error("商品加购异常{}  参数orderTotalMoney为空");
-            throw new BusinessException(BusinessCode.CODE_402008);
-        }*/
     }
     /**
      *

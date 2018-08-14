@@ -7,8 +7,10 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
 import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
       private StoreBankrollMapper storeBankrollMapper;
       @Autowired
       private PayStoreTransactionRecordMapper payStoreTransactionRecordMapper;
+      @Autowired
+      private PayWithdrawalsMapper payWithdrawalsMapper;
 
     @Override
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition) {
@@ -50,8 +54,23 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<PayStoreTransactionRecordVO> couponTemplateVOList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(condition.getStoreId());
-        PageInfo<PayStoreTransactionRecordVO> pageInfo = new PageInfo<>(couponTemplateVOList);
+        List<PayStoreTransactionRecordVO> voList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(condition.getStoreId());
+        PageInfo<PayStoreTransactionRecordVO> pageInfo = new PageInfo<>(voList);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
+        ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
+        PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<PayWithdrawalsVO> voList = payWithdrawalsMapper.getPayWithdrawalsByStoreId(condition.getStoreId());
+        PageInfo<PayWithdrawalsVO> pageInfo = new PageInfo<>(voList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());

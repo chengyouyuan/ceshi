@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
 
 /**
@@ -14,4 +15,5 @@ import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
 public interface PayStoreCashService {
     ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition);
     ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition);
+    ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition);
 }

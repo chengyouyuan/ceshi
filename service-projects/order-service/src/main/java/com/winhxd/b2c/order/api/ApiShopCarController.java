@@ -15,7 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -114,8 +113,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
             @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
-            @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
-            @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
+            @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
     @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> readyOrder(@RequestBody ReadyShopCarCondition condition){
@@ -168,10 +166,10 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数pickupDateTime为空");
             throw new BusinessException(BusinessCode.CODE_402003);
         }
-        if (CollectionUtils.isEmpty(condition.getOrderItemConditions())){
+        /*if (CollectionUtils.isEmpty(condition.getOrderItemConditions())){
             logger.error("商品加购异常{}  商品信息为空");
             throw new BusinessException(BusinessCode.CODE_402004);
-        }
+        }*/
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");
             throw new BusinessException(BusinessCode.CODE_402006);

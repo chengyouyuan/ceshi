@@ -20,7 +20,7 @@ public class ShopCarProdInfoVO {
     @ApiModelProperty(value = "商品价格，未计价商品有可能为空", required = true)
     private BigDecimal price;
     @ApiModelProperty(value = "商品图片URL", required = true)
-    private String prodImg;
+    private String skuImage;
     @ApiModelProperty(value = "商品名称", required = true)
     private String prodName;
 }

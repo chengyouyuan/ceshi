@@ -208,7 +208,7 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         //step3 返回数据
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),1);
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),1,null);
 
         return this.getCouponDetail(couponVOS);
     }
@@ -340,7 +340,7 @@ public class CouponServiceImpl implements CouponService {
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
         PagedList<CouponVO> pagedList = new PagedList();
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null);
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,couponCondition.getStatus());
 
         pagedList.setData(this.getCouponDetail(couponVOS));
         pagedList.setPageNo(couponCondition.getPageNo());
@@ -686,7 +686,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         //查询当前用户下的所有优惠券
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null);
+        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,null);
         //获取优惠券适用范围
         List<CouponVO> couponDetailS = this.getCouponDetail(couponVOS);
         //遍历添加优惠券是否可用状态

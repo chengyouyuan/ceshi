@@ -50,7 +50,7 @@ public class CouponVO {
     private Date activityStart;
     @ApiModelProperty(value = "结束时间", required=true)
     private Date activityEnd;
-    @ApiModelProperty(value = "优惠券状态", required=true)
+    @ApiModelProperty(value = "优惠券状态状态(0-无效,1-已使用，2-未使用， 3-已过期,4-退回", required=true)
     private String useStatus;
     @ApiModelProperty(value = "优惠券是否可领取 0 已领取  1 可领取", required=true)
     private String receiveStatus;

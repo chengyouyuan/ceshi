@@ -42,7 +42,7 @@ public interface CouponActivityMapper {
      * @param couponType
      * @return
      */
-    List<CouponVO> selectCouponList(@Param("customerId")Long customerId,@Param("couponType")Integer couponType);
+    List<CouponVO> selectCouponList(@Param("customerId")Long customerId,@Param("couponType")Integer couponType,@Param("status")String status);
 
     /**
      * 查询该门店下可领取的优惠券

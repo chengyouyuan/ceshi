@@ -222,7 +222,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_STATUS_CHANGE_FAILURE, message = "订单状态修改失败"),
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中")
     })
-    @RequestMapping(value = "/4025/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/4026/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
         String logTitle = "=/api-order/order/4025/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);

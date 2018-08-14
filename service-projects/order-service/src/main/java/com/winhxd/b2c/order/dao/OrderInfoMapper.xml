@@ -564,12 +564,12 @@
     <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
+        ,item.id AS itemId
         ,item.sku_code AS skuCode
         ,item.amount AS amount
         ,item.price AS price
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.order_no = #{orderNo,jdbcType=VARCHAR}
-        limit 1
     </select>
     <update id="updateOrderStatusForCancel">
         update order_info
@@ -618,7 +618,6 @@
         <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
             #{pickUpCodes}
         </foreach>
-        limit 1
     </select>
 
     <update id="updateOrderPayStatus">

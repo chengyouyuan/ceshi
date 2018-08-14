@@ -152,6 +152,18 @@ public final class BusinessCode {
     /** 用户不存在*/
     public static final int CODE_500014 = 500014;
 
+    /** 优惠券活动添加失败*/
+    public static final int CODE_503001 = 503001;
+
+    /** 优惠券活动更新失败*/
+    public static final int CODE_503201 = 503201;
+
+    /** 删除活动信息（更新活动状态为无效）失败*/
+    public static final int CODE_503301 = 503301;
+
+    /** 停止活动失败*/
+    public static final int CODE_503501 = 503501;
+
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
     

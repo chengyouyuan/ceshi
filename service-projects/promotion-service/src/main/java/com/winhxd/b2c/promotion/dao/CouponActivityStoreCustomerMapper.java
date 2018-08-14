@@ -19,5 +19,5 @@ public interface CouponActivityStoreCustomerMapper {
 
     List<CouponActivityStoreCustomer> selectByTemplateId(Long couponActivityTemplateId);
 
-    void updateByCouponActivityTemplateId(CouponActivityStoreCustomer couponActivityStoreCustomer);
+    int updateByCouponActivityTemplateId(CouponActivityStoreCustomer couponActivityStoreCustomer);
 }

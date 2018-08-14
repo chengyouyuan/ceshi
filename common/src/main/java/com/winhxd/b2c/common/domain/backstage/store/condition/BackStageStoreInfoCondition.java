@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 后台门店账户管理请求参数
  *
@@ -31,5 +33,8 @@ public class BackStageStoreInfoCondition extends PagedCondition {
 
     @ApiModelProperty(value = "筛选的最小级别regionCode")
     private String regionCode;
+
+    @ApiModelProperty(value = "筛选的最小级别regionCode集合")
+    private List<String> regionCodeList;
 
 }

@@ -30,6 +30,8 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -163,7 +165,7 @@ public class StoreServiceController implements StoreServiceClient {
 				spVO.setSkuImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());
 				spVO.setSellMoney(spManage.getSellMoney());
-				spVO.setProdName(current.getProdName()==null? "":current.getProdName());
+				spVO.setProdName(current.getSkuName()==null? "":current.getSkuName());
 				shopCarProdList.add(spVO);
 			}
 			

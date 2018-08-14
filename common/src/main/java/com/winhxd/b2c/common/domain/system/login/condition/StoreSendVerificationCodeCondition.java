@@ -20,8 +20,6 @@ public class StoreSendVerificationCodeCondition extends ApiCondition{
 	private Integer loginFlag;
 	@ApiModelProperty(value = "微信openid")
     private String openId;
-	@ApiModelProperty(value = "来源")
-    private String platform;
 	@ApiModelProperty(value = "头像(微信登录方式传)")
     private String shopOwnerImg;
 }

@@ -21,7 +21,7 @@ public class ShopCarCondition extends ApiCondition {
     private String skuCode;
 
     @ApiModelProperty(value = "商品数量")
-    private Integer skuNum;
+    private Integer amount;
 
     @ApiModelProperty(value = "商品单价")
     private BigDecimal price;

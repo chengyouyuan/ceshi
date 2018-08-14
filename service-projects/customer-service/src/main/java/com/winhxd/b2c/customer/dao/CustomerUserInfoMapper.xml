@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.winhxd.b2c.customer.dao.CustomerUserInfoMapper" >
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     <id column="customer_id" property="customerId" jdbcType="BIGINT" />
     <result column="customer_mobile" property="customerMobile" jdbcType="CHAR" />
     <result column="open_id" property="openId" jdbcType="VARCHAR" />
@@ -33,7 +33,7 @@
     select  <include refid="Base_Column_List" />
     from customer_user_info where token = #{token,jdbcType=VARCHAR}
   </select>
-  <select id="selectByCustomerUserInfoByModel" resultMap="BaseResultMap" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <select id="selectByCustomerUserInfoByModel" resultMap="BaseResultMap" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     select 
     <include refid="Base_Column_List" />
     from customer_user_info
@@ -43,7 +43,7 @@
     delete from customer_user_info
     where customer_id = #{customerId,jdbcType=BIGINT}
   </delete>
-  <resultMap id="customerUserInfoVO1" type="com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO">
+  <resultMap id="customerUserInfoVO1" type="com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO">
       <result property="customerId" column="customer_id"/>
       <result property="customerMobile" column="customer_mobile"/>
       <result property="openId" column="open_id"/>
@@ -87,7 +87,7 @@
       </if>
   </select>
 
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     insert into customer_user_info (customer_id, customer_mobile, open_id, 
       lat, lon, nick_name, head_img, 
       created, created_by, created_by_name, 
@@ -99,7 +99,7 @@
       #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, 
       #{sessionKey,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},#{token,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" useGeneratedKeys="true" keyProperty="customerId">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" useGeneratedKeys="true" keyProperty="customerId">
     insert into customer_user_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="customerId != null" >
@@ -202,7 +202,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     update customer_user_info
     <set >
       <if test="customerMobile != null" >
@@ -253,7 +253,7 @@
     </set>
     where customer_id = #{customerId,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >
     update customer_user_info
     set customer_mobile = #{customerMobile,jdbcType=CHAR},
       open_id = #{openId,jdbcType=VARCHAR},

@@ -244,7 +244,7 @@ public final class BusinessCode {
     public static final int CODE_4022006 = 4022006;
 
     @ApiModelProperty("查询的地理区域不存在")
-    public static final int CODE_320001 = 320001;
+    public static final int CODE_3020001 = 3020001;
     
     @ApiModelProperty("当前用户没有银行卡信息")
     public static final int CODE_610001 = 610001;

@@ -51,6 +51,8 @@ public class UserContext {
         Matcher matcher = ContextHelper.PATTERN_SERVICE_PATH.matcher(request.getServletPath());
         if (matcher.matches()) {
             span.tag(ContextHelper.TRACER_API_CODE, matcher.group(2));
+        } else if ((matcher = ContextHelper.PATTERN_API_PATH.matcher(request.getServletPath())).matches()) {
+            span.tag(ContextHelper.TRACER_API_CODE, matcher.group(3));
         }
 
         AdminUser adminUser = ContextHelper.getHeaderObject(request, ContextHelper.HEADER_USER_ADMIN, AdminUser.class);

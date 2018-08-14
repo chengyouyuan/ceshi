@@ -1,24 +1,23 @@
 package com.winhxd.b2c.store.service.impl;
 
-import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.store.dao.StoreSubmitProductMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreSubmitProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
 /**
  * 提报商品service实现类
  * @ClassName: StoreSubmitProductServiceImpl 

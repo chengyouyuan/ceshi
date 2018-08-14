@@ -67,6 +67,10 @@
   	<include refid="BackStage_Column_List"/>
   		from store_product_manage prod
 		LEFT JOIN store_user_info u on u.id=prod.store_id
+		where 1=1
+	<if test="condition.storeId != null">
+  		and prod.id=#{condition.id,jdbcType=BIGINT}
+  	</if>
   	<if test="condition.prodStatus != null">
   		and prod.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
   	</if>

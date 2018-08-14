@@ -1,6 +1,5 @@
 package com.winhxd.b2c.message.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
@@ -108,6 +107,7 @@ public class MiniProgramUtils {
      */
     public String getAccessToken(){
         String token = null;
+        //先看缓存中有没有，如果没有，重新获取，再存到缓存中。
         if(StringUtils.isNotEmpty(cache.get(CacheName.MESSAGE_MINI_ACCESS_TOKEN))){
             token = cache.get(CacheName.MESSAGE_MINI_ACCESS_TOKEN);
             LOGGER.info("MiniProgramUtils ->getAccessToken,小程序获取AccessToken，小程序获取AccessToken={}",token);

@@ -1,8 +1,11 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.product.vo.BrandVO;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author wl
@@ -12,8 +15,6 @@ import java.util.Date;
 public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "门店id")
     private Long storeId;
-    @ApiModelProperty(value = "类型")
-    private Short type;
     @ApiModelProperty(value = "领取数量")
     private Integer totalCount ;
     @ApiModelProperty(value = "使用数量")
@@ -34,6 +35,15 @@ public class CouponInStoreGetedAndUsedVO {
     private Date startTime;
     @ApiModelProperty(value = "有效期结束时间")
     private Date endTime;
+    @ApiModelProperty(value = "适用对象类型")
+    private Short applyRuleType;
+    @ApiModelProperty(value = "适用对象类型")
+    private Long applyId;
+    @ApiModelProperty(value = "适用品牌信息")
+    private List<BrandVO> brands;
+    @ApiModelProperty(value = "适用商品信息")
+    private List<ProductSkuVO> products;
+
 
 
     public Long getStoreId() {
@@ -42,14 +52,6 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
-    }
-
-    public Short getType() {
-        return type;
-    }
-
-    public void setType(Short type) {
-        this.type = type;
     }
 
     public Integer getTotalCount() {
@@ -131,5 +133,37 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public Short getApplyRuleType() {
+        return applyRuleType;
+    }
+
+    public void setApplyRuleType(Short applyRuleType) {
+        this.applyRuleType = applyRuleType;
+    }
+
+    public Long getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Long applyId) {
+        this.applyId = applyId;
+    }
+
+    public List<BrandVO> getBrands() {
+        return brands;
+    }
+
+    public void setBrands(List<BrandVO> brands) {
+        this.brands = brands;
+    }
+
+    public List<ProductSkuVO> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<ProductSkuVO> products) {
+        this.products = products;
     }
 }

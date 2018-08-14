@@ -1,7 +1,7 @@
 package com.winhxd.b2c.store.dao;
 
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -70,8 +70,8 @@ public interface StoreUserInfoMapper {
 
     /**
      * 根据reginCode集合查询门店
-     * @param regionCodeList
+     * @param
      * @return
      */
-    List<String> selectByReginCodes(List<String> regionCodeList);
+    List<String> selectByReginCodes(@Param("reginCodeList") List<String> reginCodeList);
 }

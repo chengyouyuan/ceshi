@@ -244,7 +244,7 @@
   </resultMap>
 
   <select id="getCouponInvestorPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultDetailMap2">
-      select a.code,a.name,a.created_by_name,a.created,a.updated_by_name,a.updated,
+      select a.id,a.code,a.name,a.created_by_name,a.created,a.updated_by_name,a.updated,
               b.percent,b.names ,count(c.investor_id) as rel_templete_count
               from coupon_investor a
               left join coupon_investor_detail b on a.id = b.investor_id

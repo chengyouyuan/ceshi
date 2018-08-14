@@ -729,18 +729,32 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
-        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
-        if (orderInfo == null) {
-            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+            if (orderInfo == null) {
+                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+            }
+            if (orderInfo.getOrderStatus() != OrderStatusEnum.UNRECEIVED.getStatusCode()) {
+                // 如果非 带确认状态，直接返回
+                logger.info("订单：{} 状态：{} 非待接单状态，无需进行超时取消操作", orderNo,
+                        OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+                return;
+            }
+            if (orderInfo.getPayStatus() == PayStatusEnum.PAID.getStatusCode()) {
+                //退款
+                orderApplyRefund(orderInfo, "超时未接单退款", null, "sys");
+            } else {
+                //取消
+                orderCancel(orderInfo, "超时未接单取消", null, "sys", 5);
+            }
+
+            registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnerable(orderInfo), null);
+        } finally {
+            lock.unlock();
         }
-        if (orderInfo.getOrderStatus() != OrderStatusEnum.UNRECEIVED.getStatusCode()) {
-            // 如果非 带确认状态，直接返回
-            logger.info("订单：{} 状态：{} 非待接单状态，无需进行超时取消操作", orderNo,
-                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
-            return;
-        }
-        //TODO 退款或取消
-        registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnerable(orderInfo), null);
     }
 
 
@@ -751,18 +765,28 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
-        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
-        if (orderInfo == null) {
-            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+            if (orderInfo == null) {
+                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+            }
+            if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) {
+                // 如果非 带确认状态，直接返回
+                logger.info("订单：{} 状态：{} 非待自提状态，无需进行超时未自提操作", orderNo,
+                        OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+                return;
+            }
+            if (orderInfo.getPayStatus() == PayStatusEnum.PAID.getStatusCode()) {
+                //退款
+                orderApplyRefund(orderInfo, "超时未接单退款", null, "sys");
+            }
+            registerProcessAfterTransSuccess(new PickupTimeOutProcessSuccessRunnerable(orderInfo), null);
+        } finally {
+            lock.unlock();
         }
-        if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) {
-            // 如果非 带确认状态，直接返回
-            logger.info("订单：{} 状态：{} 非待自提状态，无需进行超时未自提操作", orderNo,
-                    OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
-            return;
-        }
-        // TODO 退款
-        registerProcessAfterTransSuccess(new PickupTimeOutProcessSuccessRunnerable(orderInfo), null);
     }
 
     @Override

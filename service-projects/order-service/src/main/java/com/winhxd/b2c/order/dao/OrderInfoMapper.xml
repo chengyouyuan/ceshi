@@ -508,9 +508,8 @@
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 
-        	<foreach item="item" index="index" collection="condition.orderNos" 
-                         open="(" separator="," close=")">
-                        #{item}
+        	<foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
+                #{item}
             </foreach>
         </if>
     </select>
@@ -523,9 +522,8 @@
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
         and info.id in 
-    	<foreach item="item" index="index" collection="orderIds" 
-                     open="(" separator="," close=")">
-                    #{item}
+    	<foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
+                #{item}
         </foreach>
         order by info.created desc, info.order_no
     </select>

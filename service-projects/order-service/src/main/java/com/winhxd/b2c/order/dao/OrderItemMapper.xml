@@ -26,6 +26,15 @@
     from order_item
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByOrderNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from order_item
+        where order_no in
+        <foreach collection="orderNoList" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+  </select>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderItem">
     insert into order_item (id, order_no, sku_code, sku_desc, sku_url, 
       amount, price, created, 

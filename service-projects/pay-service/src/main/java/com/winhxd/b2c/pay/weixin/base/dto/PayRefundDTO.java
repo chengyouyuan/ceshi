@@ -24,11 +24,6 @@ public class PayRefundDTO {
 	private String outTradeNo;
 
 	/**
-	 * 微信订单号
-	 */
-	private String transactionId;
-
-	/**
 	 * 订单金额
 	 */
 	private String totalFee;
@@ -37,6 +32,16 @@ public class PayRefundDTO {
 	 * 退款金额
 	 */
 	private String refundFee;
+
+    /**
+     * 退款原因
+     */
+	private String refundDesc;
+
+    /**
+     * 退款回调URL
+     */
+	private String notifyUrl;
 
 	public String getAppid() {
 		return appid;
@@ -62,14 +67,6 @@ public class PayRefundDTO {
 		this.outTradeNo = outTradeNo;
 	}
 
-	public String getTransactionId() {
-		return transactionId;
-	}
-
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
-	}
-
 	public String getTotalFee() {
 		return totalFee;
 	}
@@ -85,4 +82,20 @@ public class PayRefundDTO {
 	public void setRefundFee(String refundFee) {
 		this.refundFee = refundFee;
 	}
+
+    public String getRefundDesc() {
+        return refundDesc;
+    }
+
+    public void setRefundDesc(String refundDesc) {
+        this.refundDesc = refundDesc;
+    }
+
+    public String getNotifyUrl() {
+        return notifyUrl;
+    }
+
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
+    }
 }

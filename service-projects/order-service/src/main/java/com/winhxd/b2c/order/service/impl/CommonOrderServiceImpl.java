@@ -512,7 +512,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         || status.equals(OrderStatusEnum.FINISHED.getStatusCode())
                         || status.equals(OrderStatusEnum.CANCELED.getStatusCode())
                         || status.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
-                    throw new BusinessException(BusinessCode.CODE_421002, "订单状态不允许退款");
+                    throw new BusinessException(BusinessCode.CODE_4021002, "订单状态不允许退款");
                 }
                 //申请退款时商家没确认就直接退款、退优惠券
                 if (status.equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {

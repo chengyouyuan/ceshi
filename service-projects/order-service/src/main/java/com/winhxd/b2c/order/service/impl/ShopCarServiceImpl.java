@@ -147,6 +147,11 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行结束...");
+
+                // TODO 金额不为空  调用pay-service返回签名字段:appid，partnerid，prepayid，noncestr，timestamp，package。注意：package的值格式为Sign=WXPay
+                if (null != condition.getOrderTotalMoney()) {
+
+                }
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCar);
                 this.removeShopCar(customerId);

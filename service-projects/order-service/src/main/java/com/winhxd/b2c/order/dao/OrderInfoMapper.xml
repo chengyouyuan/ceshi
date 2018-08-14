@@ -514,7 +514,7 @@
             </foreach>
         </if>
     </select>
-    <select id="listOrder4ManagementInOrderIds" resultMap="OrderInfoListResultMap">
+    <select id="listOrderInOrderIds" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
         ,item.sku_code AS skuCode

@@ -177,7 +177,7 @@ public interface OrderInfoMapper {
      * @author wangbin
      * @date 2018年8月6日 下午3:29:26
      */
-    List<OrderInfoDetailVO> listOrder4ManagementInOrderIds(@Param("orderIds") List<Long> orderIds);
+    List<OrderInfoDetailVO> listOrderInOrderIds(@Param("orderIds") List<Long> orderIds);
 
     /**
      * 更新订单提货码

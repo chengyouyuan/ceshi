@@ -113,7 +113,7 @@ public class ApiOrderController {
     @ApiOperation(value = "B端退款订单处理接口", notes = "B端退款订单处理接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_422001, message = "参数异常"),
+            @ApiResponse(code = BusinessCode.CODE_4022001, message = "参数异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
             @ApiResponse(code = BusinessCode.WRONG_STORE_ID, message = "门店不存在"),

@@ -49,17 +49,17 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
             }
         }
         if (errorList.size() > 0) {
-//            System.out.print(
-//                    System.lineSeparator()
-//                            + StringUtils.repeat(System.lineSeparator(), 4)
-//                            + "================================Controller定义不规范================================"
-//                            + StringUtils.repeat(System.lineSeparator(), 2)
-//                            + String.join(System.lineSeparator(), errorList)
-//                            + StringUtils.repeat(System.lineSeparator(), 2)
-//                            + "================================Controller定义不规范================================"
-//                            + StringUtils.repeat(System.lineSeparator(), 2)
-//            );
-//            System.exit(1);
+            System.out.print(
+                    System.lineSeparator()
+                            + StringUtils.repeat(System.lineSeparator(), 4)
+                            + "================================Controller定义不规范================================"
+                            + StringUtils.repeat(System.lineSeparator(), 2)
+                            + String.join(System.lineSeparator(), errorList)
+                            + StringUtils.repeat(System.lineSeparator(), 2)
+                            + "================================Controller定义不规范================================"
+                            + StringUtils.repeat(System.lineSeparator(), 2)
+            );
+            System.exit(1);
         }
     }
 

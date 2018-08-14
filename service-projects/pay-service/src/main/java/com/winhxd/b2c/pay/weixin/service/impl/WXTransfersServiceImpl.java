@@ -1,8 +1,12 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
@@ -11,21 +15,29 @@ import org.w3c.dom.Document;
  *
  * @Author yindanqing
  * @Date 2018/8/13 12:47
- * @Description: 微信提现实现
+ * @Description: 微信转账实现
  */
 @Service(value = "wXTransfersService")
 public class WXTransfersServiceImpl implements WXTransfersService {
 
+    private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
+
     @Override
-    public String withDrawToBalance(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-        checkNecessaryFieldForBalance();
-        getReqParamForBalance();
+    public String withDrawToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+        if(checkNecessaryFieldForChange()){
+            logger.warn("转账必填字段为空");
+            throw new BusinessException(BusinessCode.CODE_600201);
+        }
+        getReqParamForChange();
         return null;
     }
 
     @Override
     public String withDrawToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-        checkNecessaryFieldForBank();
+        if(checkNecessaryFieldForBank()){
+            logger.warn("转账必填字段为空");
+            throw new BusinessException(BusinessCode.CODE_600201);
+        }
         getReqParamForBank();
         return null;
     }
@@ -34,7 +46,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * 检查必须字段
      * @return
      */
-    private boolean checkNecessaryFieldForBalance(){
+    private boolean checkNecessaryFieldForChange(){
         return false;
     }
 
@@ -50,7 +62,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * 获得请求参数
      * @return
      */
-    private Document getReqParamForBalance(){
+    private Document getReqParamForChange(){
         return null;
     }
 

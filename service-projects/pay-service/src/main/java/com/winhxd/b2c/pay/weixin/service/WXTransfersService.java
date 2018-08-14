@@ -8,7 +8,7 @@ import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
  *
  * @Author yindanqing
  * @Date 2018/8/13 12:51
- * @Description: 微信提现
+ * @Description: 微信转账
  */
 public interface WXTransfersService {
 
@@ -16,7 +16,7 @@ public interface WXTransfersService {
      * 微信提现至余额入口
      * @return
      */
-    String withDrawToBalance(PayTransfersToWxChangeCondition toWxBalanceCondition);
+    String withDrawToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
 
     /**
      * 微信提现至银行卡入口

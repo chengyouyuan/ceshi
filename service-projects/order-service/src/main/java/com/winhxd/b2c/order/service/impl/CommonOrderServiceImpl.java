@@ -443,7 +443,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
-            throw new BusinessException(BusinessCode.CODE_422001, "参数异常");
+            throw new BusinessException(BusinessCode.CODE_4022001, "参数异常");
         }
         StoreUser store = UserContext.getCurrentStoreUser();
         if (null == store) {

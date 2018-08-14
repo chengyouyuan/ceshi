@@ -41,38 +41,70 @@ public class ApiCustomerProductController {
     @Autowired
     private ProductService productService;
 
-    @ApiOperation(value = "小程序商品搜索接口", notes = "小程序商品搜索接口")
+    @ApiOperation(value = "[未登录]小程序商品搜索接口", notes = "[未登录]小程序商品搜索接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
     @PostMapping(value = "product/security/2001/v1/searchProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> searchProductList(@RequestBody CustomerSearchProductCondition condition) {
-        CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
-        logger.info("{} - 搜索接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        logger.info("{} - [未登录]搜索接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
             logger.error("{} - ApiProductController -> searchProductList获取的参数storeId为空", MODULE_NAME);
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        ResponseResult<PagedList<ProductSkuVO>> responseResult = productService.searchProductList(condition, null);
+        logger.info("{} - [未登录]搜索接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        return responseResult;
+    }
+
+    @ApiOperation(value = "[已登录]小程序商品搜索接口", notes = "[已登录]小程序商品搜索接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
+    @PostMapping(value = "product/2004/v1/searchStoreProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<PagedList<ProductSkuVO>> searchStoreProductList(@RequestBody CustomerSearchProductCondition condition) {
+        CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+        logger.info("{} - [已登录]搜索接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        if (condition.getStoreId() == null){
+            logger.error("{} - ApiProductController -> searchStoreProductList获取的参数storeId为空", MODULE_NAME);
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
         ResponseResult<PagedList<ProductSkuVO>> responseResult = productService.searchProductList(condition, currentCustomerUser);
-        logger.info("{} - 搜索接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        logger.info("{} - [已登录]搜索接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
 
-    @ApiOperation(value = "小程序商品筛选列表初始化接口", notes = "小程序商品筛选列表初始化接口")
+    @ApiOperation(value = "[未登录]小程序商品筛选列表初始化接口", notes = "[未登录]小程序商品筛选列表初始化接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
     @PostMapping(value = "product/security/2002/v1/filtrateProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ProductSkuMsgVO> filtrateProductList(@RequestBody CustomerSearchProductCondition condition) {
-        CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
-        logger.info("{} - 筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        logger.info("{} - [未登录]筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){
             logger.error("ApiProductController -> filtrateProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, null);
+        logger.info("{} - [未登录]筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        return responseResult;
+    }
+
+    @ApiOperation(value = "[已登录]小程序商品筛选列表初始化接口", notes = "[已登录]小程序商品筛选列表初始化接口")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
+    @PostMapping(value = "product/2005/v1/filtrateStoreProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<ProductSkuMsgVO> filtrateStoreProductList(@RequestBody CustomerSearchProductCondition condition) {
+        CustomerUser currentCustomerUser = UserContext.getCurrentCustomerUser();
+        logger.info("{} - [已登录]筛选列表初始化接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        if (condition.getStoreId() == null){
+            logger.error("ApiProductController -> filtrateStoreProductList获取的参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
         ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, currentCustomerUser);
-        logger.info("{} - 筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        logger.info("{} - [已登录]筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -80,7 +112,7 @@ public class ApiCustomerProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
-    @PostMapping(value = "product/security/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "product/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> hotProductList(@RequestBody CustomerSearchProductCondition condition) {
         logger.info("{} - 店铺热销商品接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){

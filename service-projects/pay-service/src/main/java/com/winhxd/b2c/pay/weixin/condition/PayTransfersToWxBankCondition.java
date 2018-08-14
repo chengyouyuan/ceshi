@@ -1,6 +1,6 @@
-package com.winhxd.b2c.pay.weixin.base.condition;
+package com.winhxd.b2c.pay.weixin.condition;
 
-import com.winhxd.b2c.pay.weixin.model.WithDrawChannelCodeType;
+import com.winhxd.b2c.common.constant.WithDrawChannelCodeType;
 
 import java.math.BigDecimal;
 
@@ -11,12 +11,9 @@ import java.math.BigDecimal;
  * @Date 2018/8/14 10:43
  * @Description: 提现至微信余额
  */
-public class PayTransfersToWxBankCondition {
+public class PayTransfersToWxBankCondition implements java.io.Serializable {
 
-    /**
-     * 商户号
-     */
-    private String mchid;
+    private static final long serialVersionUID = -7292089920160701229L;
 
     /**
      * 提现流水号
@@ -47,14 +44,6 @@ public class PayTransfersToWxBankCondition {
      * 付款描述信息
      */
     private String desc;
-
-    public String getMchid() {
-        return mchid;
-    }
-
-    public void setMchid(String mchid) {
-        this.mchid = mchid;
-    }
 
     public String getPartnerTradeNo() {
         return partnerTradeNo;

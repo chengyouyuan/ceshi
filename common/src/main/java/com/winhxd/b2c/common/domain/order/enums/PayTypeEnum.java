@@ -9,13 +9,13 @@ import java.util.TreeMap;
  */
 public enum PayTypeEnum {
     /**
-     * 微信扫码付款
-     */
-    WECHAT_SCAN_CODE_PAYMENT((short) 2, "微信扫码付款"),
-    /**
      * 微信在线付款
      */
-    WECHAT_ONLINE_PAYMENT((short) 1, "微信在线付款");
+    WECHAT_ONLINE_PAYMENT((short) 1, "微信在线付款"),
+    /**
+     * 微信扫码付款
+     */
+    WECHAT_SCAN_CODE_PAYMENT((short) 2, "微信扫码付款");
     private short typeCode;
     private String typeDesc;
 

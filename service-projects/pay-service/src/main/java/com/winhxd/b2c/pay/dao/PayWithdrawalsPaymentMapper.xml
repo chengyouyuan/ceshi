@@ -7,11 +7,9 @@
     <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
     <result column="withdrawals_transaction_no" jdbcType="VARCHAR" property="withdrawalsTransactionNo" />
     <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
-    <result column="refund_fee" jdbcType="DECIMAL" property="refundFee" />
-    <result column="callback_date" jdbcType="TIMESTAMP" property="callbackDate" />
     <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
-    <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
-    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
+    <result column="withdraw_status" jdbcType="SMALLINT" property="withdrawStatus" />
+    <result column="withdraw_status_desc" jdbcType="VARCHAR" property="withdrawStatusDesc" />
     <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
     <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
     <result column="callback_money" jdbcType="DECIMAL" property="callbackMoney" />
@@ -22,9 +20,9 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, withdrawals_no, withdrawals_transaction_no, total_fee, refund_fee, 
-    callback_date, time_end, callback_status, callback_reason, buyer_id, transaction_id, 
-    callback_money, real_fee, cmms_amt, rate, created, updated
+    id, store_id, withdrawals_no, withdrawals_transaction_no, total_fee, time_end, withdraw_status, 
+    withdraw_status_desc, buyer_id, transaction_id, callback_money, real_fee, cmms_amt, 
+    rate, created, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -38,19 +36,17 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsPayment">
     insert into pay_withdrawals_payment (id, store_id, withdrawals_no, 
-      withdrawals_transaction_no, total_fee, refund_fee, 
-      callback_date, time_end, callback_status, 
-      callback_reason, buyer_id, transaction_id, 
-      callback_money, real_fee, cmms_amt, 
-      rate, created, updated
-      )
+      withdrawals_transaction_no, total_fee, time_end, 
+      withdraw_status, withdraw_status_desc, buyer_id, 
+      transaction_id, callback_money, real_fee, 
+      cmms_amt, rate, created, 
+      updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{withdrawalsNo,jdbcType=CHAR}, 
-      #{withdrawalsTransactionNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=DECIMAL}, #{refundFee,jdbcType=DECIMAL}, 
-      #{callbackDate,jdbcType=TIMESTAMP}, #{timeEnd,jdbcType=TIMESTAMP}, #{callbackStatus,jdbcType=SMALLINT}, 
-      #{callbackReason,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
-      #{callbackMoney,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, #{cmmsAmt,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
-      )
+      #{withdrawalsTransactionNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=DECIMAL}, #{timeEnd,jdbcType=TIMESTAMP}, 
+      #{withdrawStatus,jdbcType=SMALLINT}, #{withdrawStatusDesc,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, 
+      #{transactionId,jdbcType=VARCHAR}, #{callbackMoney,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, 
+      #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsPayment">
     insert into pay_withdrawals_payment
@@ -70,20 +66,14 @@
       <if test="totalFee != null">
         total_fee,
       </if>
-      <if test="refundFee != null">
-        refund_fee,
-      </if>
-      <if test="callbackDate != null">
-        callback_date,
-      </if>
       <if test="timeEnd != null">
         time_end,
       </if>
-      <if test="callbackStatus != null">
-        callback_status,
+      <if test="withdrawStatus != null">
+        withdraw_status,
       </if>
-      <if test="callbackReason != null">
-        callback_reason,
+      <if test="withdrawStatusDesc != null">
+        withdraw_status_desc,
       </if>
       <if test="buyerId != null">
         buyer_id,
@@ -126,20 +116,14 @@
       <if test="totalFee != null">
         #{totalFee,jdbcType=DECIMAL},
       </if>
-      <if test="refundFee != null">
-        #{refundFee,jdbcType=DECIMAL},
-      </if>
-      <if test="callbackDate != null">
-        #{callbackDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="timeEnd != null">
         #{timeEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="callbackStatus != null">
-        #{callbackStatus,jdbcType=SMALLINT},
+      <if test="withdrawStatus != null">
+        #{withdrawStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        #{callbackReason,jdbcType=VARCHAR},
+      <if test="withdrawStatusDesc != null">
+        #{withdrawStatusDesc,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         #{buyerId,jdbcType=VARCHAR},
@@ -182,20 +166,14 @@
       <if test="totalFee != null">
         total_fee = #{totalFee,jdbcType=DECIMAL},
       </if>
-      <if test="refundFee != null">
-        refund_fee = #{refundFee,jdbcType=DECIMAL},
-      </if>
-      <if test="callbackDate != null">
-        callback_date = #{callbackDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="timeEnd != null">
         time_end = #{timeEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="callbackStatus != null">
-        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      <if test="withdrawStatus != null">
+        withdraw_status = #{withdrawStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      <if test="withdrawStatusDesc != null">
+        withdraw_status_desc = #{withdrawStatusDesc,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         buyer_id = #{buyerId,jdbcType=VARCHAR},
@@ -230,11 +208,9 @@
       withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
       withdrawals_transaction_no = #{withdrawalsTransactionNo,jdbcType=VARCHAR},
       total_fee = #{totalFee,jdbcType=DECIMAL},
-      refund_fee = #{refundFee,jdbcType=DECIMAL},
-      callback_date = #{callbackDate,jdbcType=TIMESTAMP},
       time_end = #{timeEnd,jdbcType=TIMESTAMP},
-      callback_status = #{callbackStatus,jdbcType=SMALLINT},
-      callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      withdraw_status = #{withdrawStatus,jdbcType=SMALLINT},
+      withdraw_status_desc = #{withdrawStatusDesc,jdbcType=VARCHAR},
       buyer_id = #{buyerId,jdbcType=VARCHAR},
       transaction_id = #{transactionId,jdbcType=VARCHAR},
       callback_money = #{callbackMoney,jdbcType=DECIMAL},

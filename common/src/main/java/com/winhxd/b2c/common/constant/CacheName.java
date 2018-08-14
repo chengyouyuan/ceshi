@@ -5,7 +5,7 @@ package com.winhxd.b2c.common.constant;
  * 缓存前缀常量
  */
 public class CacheName {
-    /** B端用户登录key */
+    /** 后台管理用户登录key */
     public static final String CACHE_KEY_USER_TOKEN = "TOKEN:USER:";
     /** B端用户登录key */
     public static final String STORE_USER_INFO_TOKEN = "TOKEN:STORE:";

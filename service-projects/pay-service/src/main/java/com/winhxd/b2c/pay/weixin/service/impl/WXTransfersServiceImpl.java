@@ -1,23 +1,23 @@
-package com.winhxd.b2c.pay.weixin.service.withdraw.impl;
+package com.winhxd.b2c.pay.weixin.service.impl;
 
-import com.winhxd.b2c.pay.weixin.base.condition.PayTransfersToWxBalanceCondition;
-import com.winhxd.b2c.pay.weixin.base.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.pay.weixin.service.withdraw.WXWithDrawService;
+import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
 /**
- * WXWithDrawServiceImpl
+ * WXTransfersServiceImpl
  *
  * @Author yindanqing
  * @Date 2018/8/13 12:47
  * @Description: 微信提现实现
  */
-@Service(value = "wxWithDrawService")
-public class WXWithDrawServiceImpl implements WXWithDrawService {
+@Service(value = "wXTransfersService")
+public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Override
-    public String withDrawToBalance(PayTransfersToWxBalanceCondition toWxBalanceCondition) {
+    public String withDrawToBalance(PayTransfersToWxChangeCondition toWxBalanceCondition) {
         checkNecessaryFieldForBalance();
         getReqParamForBalance();
         return null;

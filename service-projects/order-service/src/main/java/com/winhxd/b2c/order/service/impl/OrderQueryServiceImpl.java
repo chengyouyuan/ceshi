@@ -216,7 +216,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (infoQuery4ManagementCondition == null) {
             throw new NullPointerException("infoQuery4ManagementCondition can not be null");
         }
-        return this.orderInfoMapper.listOrderInOrderIds(null);
+        List<Long> orderIds = this.orderInfoMapper.listOrder4Management(infoQuery4ManagementCondition);
+        if (orderIds != null && !orderIds.isEmpty()) {
+            return this.orderInfoMapper.listOrderInOrderIds(orderIds);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -266,7 +271,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("查询门店订单列表开始：condition={}，storeId={}", condition, storeId);
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList<>();
-        pagedList.setData(orderInfoMapper.listOrder4Store(condition, storeId));
+        List<Long> orderIds = orderInfoMapper.listOrder4Store(condition, storeId);
+        if (orderIds != null && !orderIds.isEmpty()) {
+            pagedList.setData(orderInfoMapper.listOrder4StoreInOrderIds(orderIds));
+        }else {
+            pagedList.setData(new ArrayList<>());
+        }
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());

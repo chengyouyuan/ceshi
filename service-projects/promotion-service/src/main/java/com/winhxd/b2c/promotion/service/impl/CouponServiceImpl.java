@@ -781,10 +781,15 @@ public class CouponServiceImpl implements CouponService {
 
 
 
+    /**
+     * 获取优惠券适用范围
+     * @param couponVOS
+     * @return
+     */
     public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
-        for(CouponInStoreGetedAndUsedVO couponVO : couponVOS){
-            if(couponVO.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
-                List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
+        for(CouponInStoreGetedAndUsedVO vo : couponVOS){
+            if(vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+                List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyProducts.isEmpty()){
                     List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
                     //组装请求的参数
@@ -800,12 +805,12 @@ public class CouponServiceImpl implements CouponService {
                         logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
-                    couponVO.setProducts(result.getData());
+                    vo.setProducts(result.getData());
                 }
             }
 
-            if(couponVO.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
-                List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
+            if(vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+                List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyBrands.isEmpty()){
                     List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
                     //组装请求的参数
@@ -819,14 +824,14 @@ public class CouponServiceImpl implements CouponService {
                         logger.error("优惠券：{}根据brandCode获取商品信息接口调用失败:code={}，获取优惠券适用范围异常！~", brandCodes, result == null ? null : result.getCode());
                         throw new BusinessException(result.getCode());
                     }
-                    couponVO.setBrands(result.getData());
+                    vo.setBrands(result.getData());
                 }
             }
         }
-            return null;
-        }
+        return couponVOS;
+    }
 
 
-    
+
 
 }

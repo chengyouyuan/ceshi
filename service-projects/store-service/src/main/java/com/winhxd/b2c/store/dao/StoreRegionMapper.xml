@@ -166,7 +166,8 @@
     select
     <include refid="Base_Column_List" />
     from store_region
-    where area_code &lt;= #{regionCode,jdbcType=VARCHAR}
+    where status = 1
+    and area_code &lt;= #{regionCode,jdbcType=VARCHAR}
     and level &lt;= #{level,jdbcType=SMALLINT}
     <bind name="prefixCode" value="prefixCode + '%'" />
     and area_code like #{prefixCode}

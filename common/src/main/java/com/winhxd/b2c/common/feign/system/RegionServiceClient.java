@@ -31,36 +31,35 @@ public interface RegionServiceClient {
      * @param: SysRegionCondition
      * @return:
      */
-    @RequestMapping(value = "/region/3200/v1/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/region/3020/v1/list", method = RequestMethod.POST)
     ResponseResult<List<SysRegion>> findRegionList(@RequestBody SysRegionCondition condition);
     /**
      * 功能描述: 根据指定地理区域编码获取地理区域列表
      * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: regisonCodes
      * @return:
      */
-    @RequestMapping(value = "/region/3201/v1/rangeList", method = RequestMethod.POST)
+    @RequestMapping(value = "/region/3021/v1/rangeList", method = RequestMethod.POST)
     ResponseResult<List<SysRegion>> findRegionRangeList(@RequestBody List<String> regisonCodes);
 
     /**
      * 功能描述: 根据指定地理区域编码获取单个地理区域
      * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: regisonCode
      * @return:
      */
-    @RequestMapping(value = "/region/3202/v1/get/{regisonCode}", method = RequestMethod.GET)
+    @RequestMapping(value = "/region/3022/v1/get/{regisonCode}", method = RequestMethod.GET)
     ResponseResult<SysRegion> getRegionByCode(@PathVariable("regisonCode") String regisonCode);
 
     /**
-     * 功能描述: 根据条件筛选所有地理区域
-     * @auther: zhanglingke
+     * 功能描述: 根据条件筛选所有地理区�     * @auther: zhanglingke
      * @date: 2018-08-06 11:46
-     * @param: SysRegionCodeCondition
+     * @param: SysRegionPagedCondition
      * @return:
      */
-    @RequestMapping(value = "/region/3203/v1/filterlist", method = RequestMethod.POST)
+    @RequestMapping(value = "/region/3023/v1/filterlist", method = RequestMethod.POST)
     ResponseResult<PagedList<SysRegion>> findRegionByPage(@RequestBody SysRegionPagedCondition condition);
 }
 

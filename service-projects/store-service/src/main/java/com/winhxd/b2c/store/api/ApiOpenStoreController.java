@@ -114,6 +114,16 @@ public class ApiOpenStoreController {
             return responseResult;
         } else {
             openStoreVO.setStoreStatus((byte) 0);
+            //是否完善信息
+            ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
+            Byte flag = 1;
+            for (int i : noPerfectResult.getData()) {
+                if (i == 0) {
+                    flag = 0;
+                    break;
+                }
+            }
+            openStoreVO.setStorePerfectStatus(flag);
         }
 
         responseResult.setData(openStoreVO);
@@ -129,7 +139,7 @@ public class ApiOpenStoreController {
     public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody ApiCondition apiCondition) {
         if (UserContext.getCurrentStoreUser() == null) {
             logger.error("惠小店开店条件验证接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息查询接口 门店用户编码:{}", storeCustomerId);

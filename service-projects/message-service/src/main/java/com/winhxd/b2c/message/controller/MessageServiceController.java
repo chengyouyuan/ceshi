@@ -40,7 +40,7 @@ public class MessageServiceController implements MessageServiceClient {
             NeteaseAccountVO neteaseAccountInfo = neteaseService.getNeteaseAccountInfo(neteaseAccountCondition);
             result.setData(neteaseAccountInfo);
         }catch (Exception e){
-            LOGGER.error("/message/701/v1/getNeteaseAccountInfo,获取云信用户信息出错，异常信息为={}",e);
+            LOGGER.error("/message/7001/v1/getNeteaseAccountInfo,获取云信用户信息出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;
@@ -53,7 +53,7 @@ public class MessageServiceController implements MessageServiceClient {
             NeteaseAccountVO neteaseAccount = neteaseService.createNeteaseAccount(neteaseAccountCondition);
             result.setData(neteaseAccount);
         }catch (Exception e){
-            LOGGER.error("/message/702/v1/createNeteaseAccount,创建云信用户出错，异常信息为={}",e);
+            LOGGER.error("/message/7002/v1/createNeteaseAccount,创建云信用户出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;
@@ -65,7 +65,7 @@ public class MessageServiceController implements MessageServiceClient {
         try{
             neteaseService.sendNeteaseMsg(neteaseMsgCondition);
         }catch (Exception e){
-            LOGGER.error("/message/703/v1/sendNeteaseMsg,给B端用户发云信消息出错，异常信息为={}",e);
+            LOGGER.error("/message/7003/v1/sendNeteaseMsg,给B端用户发云信消息出错，异常信息为={}",e);
         }
         return result;
     }
@@ -76,7 +76,7 @@ public class MessageServiceController implements MessageServiceClient {
         try {
             smsService.sendSMS(mobile,content);
         }catch (Exception e){
-            LOGGER.error("/message/711/v1/sendSMS,给手机号发短信出错，异常信息为={}",e);
+            LOGGER.error("/message/7011/v1/sendSMS,给手机号发短信出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;
@@ -88,7 +88,7 @@ public class MessageServiceController implements MessageServiceClient {
         try{
             result = miniProgramService.getMiniOpenId(code);
         }catch (Exception e){
-            LOGGER.error("/message/721/v1/getMiniOpenId,根据code获取openid出错，异常信息为={}",e);
+            LOGGER.error("/message/7021/v1/getMiniOpenId,根据code获取openid出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;

@@ -35,7 +35,7 @@ public class MiniProgramImpl implements MiniProgramService {
                 result.setData(miniOpenId);
             }
         }else{
-            LOGGER.info("/message/721/v1/getMiniOpenId,code is null,then data is null...code={}",code);
+            LOGGER.info("/message/7021/v1/getMiniOpenId,code is null,then data is null...code={}",code);
             result.setData(null);
             result.setCode(BusinessCode.CODE_1001);
         }

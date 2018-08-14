@@ -131,14 +131,14 @@ public class CouponController implements CouponServiceClient{
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	public ResponseResult<Boolean> checkCouponStatus(@RequestBody CouponCheckStatusCondition condition){
-		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--开始--{}", condition);
+		LOGGER.info("=/promotion/5007/v1/checkCouponStatus-检查用户优惠券是否可用=--开始--{}", condition);
 		if(condition.getSendId() == null){
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		Boolean flag = couponService.checkCouponStatus(condition);
 		result.setData(flag);
-		LOGGER.info("=/promotion/507/v1/checkCouponStatus-检查用户优惠券是否可用=--结束 result={}", result);
+		LOGGER.info("=/promotion/5007/v1/checkCouponStatus-检查用户优惠券是否可用=--结束 result={}", result);
 		return result;
 	}
 
@@ -148,11 +148,11 @@ public class CouponController implements CouponServiceClient{
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	public ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
-		LOGGER.info("=/promotion/546/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--开始--{}", condition);
+		LOGGER.info("=/promotion/5046/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--开始--{}", condition);
 		ResponseResult<List<CouponInvestorAmountVO>> result = new ResponseResult<>();
 		List<CouponInvestorAmountVO>  couponInvestorAmountVOs = couponService.getCouponInvestorAmount(condition);
 		result.setData(couponInvestorAmountVOs);
-		LOGGER.info("=/promotion/546/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--结束 result={}", result);
+		LOGGER.info("=/promotion/5046/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--结束 result={}", result);
 		return result;
 	}
 

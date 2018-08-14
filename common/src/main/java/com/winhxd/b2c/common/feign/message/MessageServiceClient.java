@@ -29,7 +29,7 @@ public interface MessageServiceClient {
      * @param neteaseAccountCondition
      * @return
      */
-    @RequestMapping(value = "/message/701/v1/getNeteaseAccountInfo",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/7001/v1/getNeteaseAccountInfo",method = RequestMethod.POST)
     ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
@@ -37,7 +37,7 @@ public interface MessageServiceClient {
      * @param neteaseAccountCondition
      * @return
      */
-    @RequestMapping(value = "/message/702/v1/createNeteaseAccount",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/7002/v1/createNeteaseAccount",method = RequestMethod.POST)
     ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
@@ -45,7 +45,7 @@ public interface MessageServiceClient {
      * @param neteaseMsgCondition
      * @return
      */
-    @RequestMapping(value = "/message/703/v1/createNeteaseAccount",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/7003/v1/createNeteaseAccount",method = RequestMethod.POST)
     ResponseResult<Void> sendNeteaseMsg(@RequestBody NeteaseMsgCondition neteaseMsgCondition);
 
     /**
@@ -54,7 +54,7 @@ public interface MessageServiceClient {
      * @param content 短信内容
      * @return
      */
-    @RequestMapping(value = "/message/711/v1/sendSMS",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/7011/v1/sendSMS",method = RequestMethod.POST)
     ResponseResult<Void> sendSMS(@RequestParam("mobile")String mobile,@RequestParam("content")String content);
 
     /**
@@ -62,7 +62,7 @@ public interface MessageServiceClient {
      * @param code
      * @return
      */
-    @RequestMapping(value = "/message/721/v1/getMiniOpenId",method = RequestMethod.POST)
+    @RequestMapping(value = "/message/7021/v1/getMiniOpenId",method = RequestMethod.POST)
     ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code")String code);
 }
 

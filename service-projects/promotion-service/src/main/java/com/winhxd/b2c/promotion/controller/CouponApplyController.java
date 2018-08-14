@@ -77,7 +77,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @ApiOperation(value = "适用对象规则分页查询", notes = "适用对象规则分页查询")
     @Override
-    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
+    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition) {
         ResponseResult<PagedList<CouponApplyVO>> result = couponApplyService.findCouponApplyPage(condition);
         return result;
     }

@@ -222,15 +222,18 @@
     a.updated_by, a.updated_by_name, a.updated,count(b.apply_rule_id) as rel_templete_count
     from coupon_apply a left join coupon_template b on a.id = b.apply_rule_id
     where 1=1
-    <if test="condition.code!=null and  condition.code!=''">
-      and a.code = #{condition.code}
-    </if>
-    <if test="condition.name!=null and  condition.name!=''">
-      and a.name = #{condition.name}
-    </if>
-    <if test="condition.applyRuleType!=null and  condition.applyRuleType!=''">
-      and a.apply_rule_type = #{condition.applyRuleType}
-    </if>
+
+      <if test="condition.code!=null and  condition.code!=''">
+        and a.code = #{condition.code}
+      </if>
+      <if test="condition.name!=null and  condition.name!=''">
+        and a.name = #{condition.name}
+      </if>
+      <if test="condition.applyRuleType!=null and  condition.applyRuleType!=''">
+        and a.apply_rule_type = #{condition.applyRuleType}
+      </if>
+
+
   </select>
 
 

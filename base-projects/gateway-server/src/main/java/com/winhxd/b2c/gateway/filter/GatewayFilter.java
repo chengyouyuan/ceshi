@@ -58,7 +58,8 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         if (!matcher.matches()) {
             return error(response, BusinessCode.CODE_1009);
         }
-        String security = matcher.group(2);
+        MediaType contentType = request.getHeaders().getContentType();
+        String pathTag = matcher.group(2);
         String apiCode = matcher.group(3);
 
         final Span currentSpan = tracer.currentSpan();
@@ -66,7 +67,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
 
         ServerHttpRequest.Builder requestBuilder = null;
         //验证token
-        if (StringUtils.isBlank(security)) {
+        if (StringUtils.isBlank(pathTag)) {
             String token = request.getHeaders().getFirst("token");
             String grp = request.getHeaders().getFirst("grp");
             if (StringUtils.isBlank(token) || StringUtils.isBlank(grp)) {
@@ -106,11 +107,14 @@ public class GatewayFilter implements GlobalFilter, Ordered {
             @Override
             public Flux<DataBuffer> getBody() {
                 return super.getBody().flatMap(dataBuffer -> {
-                    byte[] bs = new byte[dataBuffer.readableByteCount()];
-                    dataBuffer.read(bs);
-                    String req = new String(bs, StandardCharsets.UTF_8);
-                    currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
-                    dataBuffer.readPosition(0);
+                    if (MediaType.APPLICATION_JSON.includes(contentType)
+                            || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+                        byte[] bs = new byte[dataBuffer.readableByteCount()];
+                        dataBuffer.read(bs);
+                        String req = new String(bs, StandardCharsets.UTF_8);
+                        currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
+                        dataBuffer.readPosition(0);
+                    }
                     return Flux.just(dataBuffer);
                 });
             }
@@ -121,17 +125,20 @@ public class GatewayFilter implements GlobalFilter, Ordered {
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                 Flux<DataBuffer> flux = Flux.from(body).flatMap(
                         dataBuffer -> {
-                            byte[] bs = new byte[dataBuffer.readableByteCount()];
-                            dataBuffer.read(bs);
-                            String repJson = new String(bs, StandardCharsets.UTF_8);
-                            currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
-                            if (repJson.indexOf(CODE) > 0) {
-                                ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
-                                if (result != null) {
-                                    currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
+                            if (MediaType.APPLICATION_JSON.includes(contentType)
+                                    || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+                                byte[] bs = new byte[dataBuffer.readableByteCount()];
+                                dataBuffer.read(bs);
+                                String repJson = new String(bs, StandardCharsets.UTF_8);
+                                currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
+                                if (!ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
+                                    ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
+                                    if (result != null) {
+                                        currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
+                                    }
                                 }
+                                dataBuffer.readPosition(0);
                             }
-                            dataBuffer.readPosition(0);
                             return Flux.just(dataBuffer);
                         }
                 );

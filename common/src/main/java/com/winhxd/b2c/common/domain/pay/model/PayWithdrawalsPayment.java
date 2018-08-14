@@ -14,15 +14,11 @@ public class PayWithdrawalsPayment {
 
     private BigDecimal totalFee;
 
-    private BigDecimal refundFee;
-
-    private Date callbackDate;
-
     private Date timeEnd;
 
-    private Short callbackStatus;
+    private Short withdrawStatus;
 
-    private String callbackReason;
+    private String withdrawStatusDesc;
 
     private String buyerId;
 
@@ -80,22 +76,6 @@ public class PayWithdrawalsPayment {
         this.totalFee = totalFee;
     }
 
-    public BigDecimal getRefundFee() {
-        return refundFee;
-    }
-
-    public void setRefundFee(BigDecimal refundFee) {
-        this.refundFee = refundFee;
-    }
-
-    public Date getCallbackDate() {
-        return callbackDate;
-    }
-
-    public void setCallbackDate(Date callbackDate) {
-        this.callbackDate = callbackDate;
-    }
-
     public Date getTimeEnd() {
         return timeEnd;
     }
@@ -104,20 +84,20 @@ public class PayWithdrawalsPayment {
         this.timeEnd = timeEnd;
     }
 
-    public Short getCallbackStatus() {
-        return callbackStatus;
+    public Short getWithdrawStatus() {
+        return withdrawStatus;
     }
 
-    public void setCallbackStatus(Short callbackStatus) {
-        this.callbackStatus = callbackStatus;
+    public void setWithdrawStatus(Short withdrawStatus) {
+        this.withdrawStatus = withdrawStatus;
     }
 
-    public String getCallbackReason() {
-        return callbackReason;
+    public String getWithdrawStatusDesc() {
+        return withdrawStatusDesc;
     }
 
-    public void setCallbackReason(String callbackReason) {
-        this.callbackReason = callbackReason;
+    public void setWithdrawStatusDesc(String withdrawStatusDesc) {
+        this.withdrawStatusDesc = withdrawStatusDesc;
     }
 
     public String getBuyerId() {

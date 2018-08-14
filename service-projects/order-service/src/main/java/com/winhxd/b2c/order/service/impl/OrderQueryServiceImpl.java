@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.winhxd.b2c.common.domain.order.condition.*;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
@@ -30,13 +29,11 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -46,7 +43,6 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
-import com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
@@ -213,7 +209,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (infoQuery4ManagementCondition == null) {
             throw new NullPointerException("infoQuery4ManagementCondition can not be null");
         }
-        return this.orderInfoMapper.listOrder4Management(infoQuery4ManagementCondition);
+        List<Long> orderIds = this.orderInfoMapper.listOrder4Management(infoQuery4ManagementCondition);
+        if (orderIds != null && !orderIds.isEmpty()) {
+            return this.orderInfoMapper.listOrderInOrderIds(orderIds);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -221,8 +222,13 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     public PagedList<OrderInfoDetailVO> listOrder4Management(
             OrderInfoQuery4ManagementCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        PagedList<OrderInfoDetailVO> pagedList = new PagedList();
-        pagedList.setData(this.orderInfoMapper.listOrder4Management(condition));
+        PagedList<OrderInfoDetailVO> pagedList = new PagedList<>();
+        List<Long> orderIds = this.orderInfoMapper.listOrder4Management(condition);
+        if (orderIds != null && !orderIds.isEmpty()) {
+            pagedList.setData(orderInfoMapper.listOrderInOrderIds(orderIds));
+        }else {
+            pagedList.setData(new ArrayList<>());
+        }
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -258,7 +264,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("查询门店订单列表开始：condition={}，storeId={}", condition, storeId);
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         PagedList<OrderInfoDetailVO> pagedList = new PagedList<>();
-        pagedList.setData(orderInfoMapper.listOrder4Store(condition, storeId));
+        List<Long> orderIds = orderInfoMapper.listOrder4Store(condition, storeId);
+        if (orderIds != null && !orderIds.isEmpty()) {
+            pagedList.setData(orderInfoMapper.listOrder4StoreInOrderIds(orderIds));
+        }else {
+            pagedList.setData(new ArrayList<>());
+        }
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());

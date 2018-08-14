@@ -17,6 +17,8 @@ public class ContextHelper {
     public static final String HEADER_USER_ADMIN = "b2c-user-admin";
 
     public static final String TRACER_API_CODE = "api.code";
+    public static final String TRACER_API_TOKEN = "api.token";
+    public static final String TRACER_API_GRP = "api.grp";
     public static final String TRACER_API_USER = "api.user";
     public static final String TRACER_API_STORE = "api.store";
     public static final String TRACER_API_CUSTOMER = "api.customer";

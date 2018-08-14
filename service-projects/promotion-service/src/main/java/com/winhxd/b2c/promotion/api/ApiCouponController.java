@@ -171,5 +171,20 @@ public class ApiCouponController{
         return result;
     }
 
+    @ApiOperation(value = "获取可用最优惠的优惠券", notes = "获取可用最优惠的优惠券")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/5048/v1/findDefaultCouponByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<CouponVO> findDefaultCouponByOrder(@RequestBody CouponPreAmountCondition couponCondition){
+        LOGGER.info("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder");
+
+        ResponseResult<CouponVO> result = new ResponseResult<>();
+        CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
+        result.setData(couponVO);
+        LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果:"+result);
+        return result;
+    }
+
 
 }

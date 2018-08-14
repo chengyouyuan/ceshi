@@ -909,7 +909,7 @@ public class CommonOrderServiceImpl implements OrderService {
         for (Iterator<OrderItem> iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext(); ) {
             OrderItem orderItem = iterator.next();
             CouponProductCondition couponProductCondition = new CouponProductCondition();
-            couponProductCondition.setNum(orderItem.getAmount());
+            couponProductCondition.setSkuNum(orderItem.getAmount());
             couponProductCondition.setPrice(orderItem.getPrice());
             couponProductCondition.setSkuCode(orderItem.getSkuCode());
             couponProductConditions.add(couponProductCondition);
@@ -1023,6 +1023,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
                 if (skuVO != null) {
                     orderItem.setSkuDesc(skuVO.getSkuName());
+                    orderItem.setSkuUrl(skuVO.getSkuImage());
                 }
             }
         }

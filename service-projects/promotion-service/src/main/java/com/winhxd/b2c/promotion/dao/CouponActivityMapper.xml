@@ -224,6 +224,7 @@
   </select>
   <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
+    cts.id sendId,
     count(*) couponNum,
     ct.STATUS,
     ct.reason,

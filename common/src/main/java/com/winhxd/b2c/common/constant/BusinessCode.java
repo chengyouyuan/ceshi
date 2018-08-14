@@ -152,6 +152,18 @@ public final class BusinessCode {
     /** 用户不存在*/
     public static final int CODE_500014 = 500014;
 
+    /** 优惠券活动添加失败*/
+    public static final int CODE_503001 = 503001;
+
+    /** 优惠券活动更新失败*/
+    public static final int CODE_503201 = 503201;
+
+    /** 删除活动信息（更新活动状态为无效）失败*/
+    public static final int CODE_503301 = 503301;
+
+    /** 停止活动失败*/
+    public static final int CODE_503501 = 503501;
+
     @ApiModelProperty("订单创建客户id为空")
     public static final int CODE_401001 = 401001;
     
@@ -268,6 +280,8 @@ public final class BusinessCode {
     public static final int CODE_610019 = 610019;
     @ApiModelProperty("请先获取验证码")
     public static final int CODE_610020 = 610020;
+    @ApiModelProperty("查询结果有误，请联系管理员")
+    public static final int CODE_610021 = 610021;
     
     
     /**
@@ -275,7 +289,16 @@ public final class BusinessCode {
      */
     public static final int CODE_600301 = 600301;
     /**
-     *  退款回调  订单支付流水插入失败
+     *  退款回调  订单退款流水插入失败
      */
     public static final int CODE_600302 = 600302;
+    
+	/**
+     *  退款回调  参数为空
+     */
+    public static final int CODE_600303 = 600303;
+    /**
+     *  支付回调  参数为空
+     */
+    public static final int CODE_600101 = 600101;
 }

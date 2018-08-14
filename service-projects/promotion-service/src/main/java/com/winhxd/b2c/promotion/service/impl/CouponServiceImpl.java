@@ -70,10 +70,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Auther wangxiaoshun
@@ -526,7 +523,7 @@ public class CouponServiceImpl implements CouponService {
             //计算订单总额
             BigDecimal amountPrice = new BigDecimal(0);
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
-                BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                 amountPrice.add(productPrice);
             }
             BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
@@ -548,7 +545,7 @@ public class CouponServiceImpl implements CouponService {
                 for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
 
                     if(couponProductCondition.getBrandCode().equals(couponApplyBrandList.getBrandCode())){
-                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                         amountPrice.add(brandProductPrice);
                     }
                 }
@@ -572,7 +569,7 @@ public class CouponServiceImpl implements CouponService {
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
                 for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
                     if(couponProductCondition.getSkuCode().equals(couponApplyProductList.getSkuCode())){
-                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                         amountPrice.add(brandProductPrice);
                     }
                 }
@@ -699,12 +696,12 @@ public class CouponServiceImpl implements CouponService {
                 //计算订单总额
                 BigDecimal amountPrice = new BigDecimal(0);
                 for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
-                    BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                    BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                     amountPrice.add(productPrice);
                 }
                 //订单金额大于等于满减金额优惠券可用
                 if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                    couponVO.setAvailableStatus("1");
+                    couponVO.setAvailableStatus(1);
                 }
             }else if(couponVO.getReducedType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 //商品券
@@ -714,11 +711,11 @@ public class CouponServiceImpl implements CouponService {
                     for(CouponProductCondition couponProductCondition :couponCondition.getProducts()){
                         BigDecimal amountPrice = new BigDecimal(0);
                         if(productSkuVO.getSkuCode().equals(couponProductCondition.getSkuCode())){
-                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                             amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                                couponVO.setAvailableStatus("1");
+                                couponVO.setAvailableStatus(1);
                             }
                         }
                     }
@@ -731,17 +728,18 @@ public class CouponServiceImpl implements CouponService {
                     for(CouponProductCondition couponProductCondition :couponCondition.getProducts()){
                         BigDecimal amountPrice = new BigDecimal(0);
                         if(brandVO.getBrandCode().equals(couponProductCondition.getBrandCode())){
-                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getNum()));
+                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
                             amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
-                                couponVO.setAvailableStatus("1");
+                                couponVO.setAvailableStatus(1);
                             }
                         }
                     }
                 }
             }
         }
+        couponDetailS.sort((a,b)->a.getAvailableStatus()-b.getAvailableStatus());
         return couponDetailS;
     }
 
@@ -817,7 +815,33 @@ public class CouponServiceImpl implements CouponService {
         return pagedList;
     }
 
+    /**
+     * 获取可用最优惠的优惠券
+     * @param couponCondition
+     * @return
+     */
+    @Override
+    public CouponVO findDefaultCouponByOrder(CouponPreAmountCondition couponCondition) {
+        BigDecimal maxDiscountAmount = new BigDecimal(0);
+        CouponVO result = new CouponVO();
 
+        List<CouponVO> couponVOs = this.availableCouponListByOrder(couponCondition);
+        for(CouponVO couponVO :couponVOs){
+            if(1 == couponVO.getAvailableStatus()){
+                List<Long> sendIds = new ArrayList<>();
+                sendIds.add(couponVO.getSendId());
+                couponCondition.setSendIds(sendIds);
+                CouponDiscountVO couponDiscountVO = this.couponDiscountAmount(couponCondition);
+
+                if(couponDiscountVO.getDiscountAmount().compareTo(maxDiscountAmount)>0){
+                    maxDiscountAmount = couponDiscountVO.getDiscountAmount();
+                    result = couponVO;
+                }
+
+            }
+        }
+        return result;
+    }
 
 
     /**

@@ -19,7 +19,7 @@
     msg_time, msg_id_server
   </sql>
     <sql id="Message_List">
-    msg_id_server msgId,msg_body message,page_type pageType,tree_code treeCode,msg_time alertTime
+    msg_id_server msgId,msg_type msgType,msg_body message,page_type pageType,tree_code treeCode,msg_time alertTime
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select

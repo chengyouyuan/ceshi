@@ -41,6 +41,9 @@ public class StoreBaseInfoVO {
     @ApiModelProperty(value = "区域编码", required = true)
     private String storeRegionCode;
 
+    @ApiModelProperty(value = "联系方式", required = true)
+    private String contactMobile;
+
     @ApiModelProperty(value = "门店地址", required = true)
     private String storeAddress;
 

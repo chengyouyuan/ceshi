@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayAccountingDetailMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="detail_type" jdbcType="TINYINT" property="detailType" />
+    <result column="detail_money" jdbcType="DECIMAL" property="detailMoney" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="recorded_time" jdbcType="TIMESTAMP" property="recordedTime" />
+    <result column="insert_time" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="third_party_verify_status" jdbcType="TINYINT" property="thirdPartyVerifyStatus" />
+    <result column="third_party_fee_money" jdbcType="DECIMAL" property="thirdPartyFeeMoney" />
+    <result column="third_party_verify_time" jdbcType="TIMESTAMP" property="thirdPartyVerifyTime" />
+    <result column="verify_status" jdbcType="TINYINT" property="verifyStatus" />
+    <result column="verify_code" jdbcType="CHAR" property="verifyCode" />
+    <result column="verify_time" jdbcType="TIMESTAMP" property="verifyTime" />
+    <result column="operated_time" jdbcType="TIMESTAMP" property="operatedTime" />
+    <result column="operated_by" jdbcType="BIGINT" property="operatedBy" />
+    <result column="operated_by_name" jdbcType="VARCHAR" property="operatedByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_no, detail_type, detail_money, store_id, recorded_time, insert_time, third_party_verify_status, 
+    third_party_fee_money, third_party_verify_time, verify_status, verify_code, verify_time, 
+    operated_time, operated_by, operated_by_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_accounting_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_accounting_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail">
+    insert into pay_accounting_detail (id, order_no, detail_type, 
+      detail_money, store_id, recorded_time, 
+      insert_time, third_party_verify_status, third_party_fee_money, 
+      third_party_verify_time, verify_status, verify_code, 
+      verify_time, operated_time, operated_by, 
+      operated_by_name)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{detailType,jdbcType=TINYINT}, 
+      #{detailMoney,jdbcType=DECIMAL}, #{storeId,jdbcType=BIGINT}, #{recordedTime,jdbcType=TIMESTAMP}, 
+      #{insertTime,jdbcType=TIMESTAMP}, #{thirdPartyVerifyStatus,jdbcType=TINYINT}, #{thirdPartyFeeMoney,jdbcType=DECIMAL}, 
+      #{thirdPartyVerifyTime,jdbcType=TIMESTAMP}, #{verifyStatus,jdbcType=TINYINT}, #{verifyCode,jdbcType=CHAR}, 
+      #{verifyTime,jdbcType=TIMESTAMP}, #{operatedTime,jdbcType=TIMESTAMP}, #{operatedBy,jdbcType=BIGINT}, 
+      #{operatedByName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail">
+    insert into pay_accounting_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="detailType != null">
+        detail_type,
+      </if>
+      <if test="detailMoney != null">
+        detail_money,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="recordedTime != null">
+        recorded_time,
+      </if>
+      <if test="insertTime != null">
+        insert_time,
+      </if>
+      <if test="thirdPartyVerifyStatus != null">
+        third_party_verify_status,
+      </if>
+      <if test="thirdPartyFeeMoney != null">
+        third_party_fee_money,
+      </if>
+      <if test="thirdPartyVerifyTime != null">
+        third_party_verify_time,
+      </if>
+      <if test="verifyStatus != null">
+        verify_status,
+      </if>
+      <if test="verifyCode != null">
+        verify_code,
+      </if>
+      <if test="verifyTime != null">
+        verify_time,
+      </if>
+      <if test="operatedTime != null">
+        operated_time,
+      </if>
+      <if test="operatedBy != null">
+        operated_by,
+      </if>
+      <if test="operatedByName != null">
+        operated_by_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="detailType != null">
+        #{detailType,jdbcType=TINYINT},
+      </if>
+      <if test="detailMoney != null">
+        #{detailMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="recordedTime != null">
+        #{recordedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertTime != null">
+        #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdPartyVerifyStatus != null">
+        #{thirdPartyVerifyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="thirdPartyFeeMoney != null">
+        #{thirdPartyFeeMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="thirdPartyVerifyTime != null">
+        #{thirdPartyVerifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verifyStatus != null">
+        #{verifyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="verifyCode != null">
+        #{verifyCode,jdbcType=CHAR},
+      </if>
+      <if test="verifyTime != null">
+        #{verifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatedTime != null">
+        #{operatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatedBy != null">
+        #{operatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="operatedByName != null">
+        #{operatedByName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail">
+    update pay_accounting_detail
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="detailType != null">
+        detail_type = #{detailType,jdbcType=TINYINT},
+      </if>
+      <if test="detailMoney != null">
+        detail_money = #{detailMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="recordedTime != null">
+        recorded_time = #{recordedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="insertTime != null">
+        insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="thirdPartyVerifyStatus != null">
+        third_party_verify_status = #{thirdPartyVerifyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="thirdPartyFeeMoney != null">
+        third_party_fee_money = #{thirdPartyFeeMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="thirdPartyVerifyTime != null">
+        third_party_verify_time = #{thirdPartyVerifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="verifyStatus != null">
+        verify_status = #{verifyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="verifyCode != null">
+        verify_code = #{verifyCode,jdbcType=CHAR},
+      </if>
+      <if test="verifyTime != null">
+        verify_time = #{verifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatedTime != null">
+        operated_time = #{operatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operatedBy != null">
+        operated_by = #{operatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="operatedByName != null">
+        operated_by_name = #{operatedByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail">
+    update pay_accounting_detail
+    set order_no = #{orderNo,jdbcType=CHAR},
+      detail_type = #{detailType,jdbcType=TINYINT},
+      detail_money = #{detailMoney,jdbcType=DECIMAL},
+      store_id = #{storeId,jdbcType=BIGINT},
+      recorded_time = #{recordedTime,jdbcType=TIMESTAMP},
+      insert_time = #{insertTime,jdbcType=TIMESTAMP},
+      third_party_verify_status = #{thirdPartyVerifyStatus,jdbcType=TINYINT},
+      third_party_fee_money = #{thirdPartyFeeMoney,jdbcType=DECIMAL},
+      third_party_verify_time = #{thirdPartyVerifyTime,jdbcType=TIMESTAMP},
+      verify_status = #{verifyStatus,jdbcType=TINYINT},
+      verify_code = #{verifyCode,jdbcType=CHAR},
+      verify_time = #{verifyTime,jdbcType=TIMESTAMP},
+      operated_time = #{operatedTime,jdbcType=TIMESTAMP},
+      operated_by = #{operatedBy,jdbcType=BIGINT},
+      operated_by_name = #{operatedByName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

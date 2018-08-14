@@ -7,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
 /**
  * 
- * @ClassName: ShopCarProdVO 
+ * @ClassName: ShopCarProdVO
  * @Description: 购物车商品VO
  * @author: wuyuanbao
  * @date: 2018年8月4日 下午6:04:18
@@ -20,17 +21,23 @@ import lombok.Data;
 public class ShopCartProdVO {
 	@ApiModelProperty("商品sku")
 	private String skuCode;
-	
+
 	@ApiModelProperty("商品图片")
 	private String skuImage;
-	
+
 	@ApiModelProperty("商品名称")
 	private String prodName;
-	
+
 	@ApiModelProperty("售卖价格")
 	private BigDecimal sellMoney;
 
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
 	private Short prodStatus;
+
+	@ApiModelProperty("商品规则")
+	private String skuAttributeOption;
+	
+	@ApiModelProperty("品牌code")
+	private String brandCode;
 
 }

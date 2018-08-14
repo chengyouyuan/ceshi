@@ -18,4 +18,7 @@ public class StoreEnumObject {
     @ApiModelProperty(value = "名称", required = true)
     private String name;
 
+    @ApiModelProperty(value = "选中状态（0否，1是）", required = true)
+    private Short status;
+
 }

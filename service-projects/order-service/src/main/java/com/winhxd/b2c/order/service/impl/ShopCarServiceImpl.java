@@ -64,7 +64,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         shopCar.setSkuCode(condition.getSkuCode());
         ShopCar result = shopCarMapper.selectShopCarsBySkuCode(shopCar);
         if (null != result) {
-            result.setSkuNum(condition.getSkuNum());
+            result.setAmount(condition.getAmount());
             return shopCarMapper.updateByPrimaryKey(result);
         }
         Date current = new Date();
@@ -72,7 +72,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         shopCar.setCreatedBy(customerId);
         shopCar.setUpdated(current);
         shopCar.setUpdatedBy(customerId);
-        shopCar.setSkuNum(condition.getSkuNum());
+        shopCar.setAmount(condition.getAmount());
         return shopCarMapper.insertSelective(shopCar);
     }
 
@@ -95,7 +95,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 if (shopCar2.getSkuCode().equals(shopCarProdVO.getSkuCode())) {
                     shopCarProdInfoVO = new ShopCarProdInfoVO();
                     shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
-                    shopCarProdInfoVO.setAmount(shopCar2.getSkuNum());
+                    shopCarProdInfoVO.setAmount(shopCar2.getAmount());
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
                     shopCarProdInfoVO.setSkuImage(shopCarProdVO.getSkuImage());
                     shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
@@ -125,7 +125,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 orderCreateCondition.setCustomerId(customerId);
                 logger.info("预订单接口readyOrder -> 调用订单接口执行{}");
                 orderService.submitOrder(orderCreateCondition);
-                logger.info("预订单接口readyOrder -> 调用订单接口执结束{}");
+                logger.info("预订单接口readyOrder -> 调用订单接口执行结束{}");
                 // 保存成功删除此用户门店的购物车
                 ShopCar shopCar = new ShopCar();
                 shopCar.setCustomerId(customerId);

@@ -44,12 +44,14 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     }
 
     @Override
+    @Transactional
     public int updateCouponGradeValid(long id,long userId,String userName) {
         int count = couponGradeMapper.updateCouponGradeValid(id,userId,userName);
         return count;
     }
 
     @Override
+    @Transactional
     public int addCouponGrade(CouponGradeCondition condition) {
         int flag = 0;
             CouponGrade couponGrade = new CouponGrade();

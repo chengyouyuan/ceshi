@@ -1,9 +1,14 @@
-package com.winhxd.b2c.common.domain.backstage.store.vo;
+package com.winhxd.b2c.common.domain.store.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * 门店商品管理后台返回的VO
@@ -12,7 +17,13 @@ import io.swagger.annotations.ApiModelProperty;
  * @author: wuyuanbao
  * @date: 2018年8月13日 上午11:29:08
  */
-public class BackStageStoreProdVO {
+@Data
+@ApiModel("后台-门店商品管理返参")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BackStageStoreProdVO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	@ApiModelProperty("id主键")
     private Long id;
     

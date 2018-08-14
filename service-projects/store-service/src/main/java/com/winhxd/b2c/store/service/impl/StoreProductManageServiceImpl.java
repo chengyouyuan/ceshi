@@ -15,13 +15,13 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreProdCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -273,6 +273,10 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		}
 		if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
 			short status=condition.getProdStatus();
+			if(StoreProductStatusEnum.DELETED.getStatusCode().equals(status)){
+				logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage删除门店商品信息操作无效！没有权限");
+				throw new BusinessException(BusinessCode.CODE_1003);
+			}
 			//主键
 			Long id=condition.getId();
 			//查询门店商品信息

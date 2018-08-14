@@ -58,7 +58,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @ApiParam()
-    @PostMapping(value = "1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
         try {
@@ -78,7 +78,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！")})
-    @PostMapping(value = "1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         if(condition.getId() == null || StringUtils.isBlank(condition.getStoreName()) ||
                 StringUtils.isBlank(condition.getStoreAddress()) || StringUtils.isBlank(condition.getShopkeeper()) ||
@@ -101,7 +101,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "获取地域列表", notes = "获取地域列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult  = new ResponseResult<>();
         try {

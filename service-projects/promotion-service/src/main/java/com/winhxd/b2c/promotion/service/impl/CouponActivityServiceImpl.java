@@ -143,8 +143,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
 
         //CouponActivityTemplate
-        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
             couponActivityTemplate.setCouponActivityId(couponActivity.getId());
             couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
@@ -186,8 +186,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 //coupon_activity_store_customer
-                CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
                 for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
+                    CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
                     couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
                     couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
                     couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
@@ -288,19 +288,19 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
 
         //删除CouponActivityTemplate
-        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
-        couponActivityTemplate.setCouponActivityId(condition.getId());
-        couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-        int n2 = couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
+        CouponActivityTemplate cat = new CouponActivityTemplate();
+        cat.setCouponActivityId(condition.getId());
+        cat.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        int n2 = couponActivityTemplateMapper.updateByCouponActivityId(cat);
         if(n2==0){
             throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
         }
-        CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
+        CouponActivityStoreCustomer casc = new CouponActivityStoreCustomer();
         if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
             //删除couponActivityStoreCustomer
-            couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
-            couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-            int n3 = couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
+            casc.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
+            casc.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            int n3 = couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(casc);
             if(n3==0){
                 throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
             }
@@ -308,6 +308,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
         //新增couponActivityTemplate
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
+            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
             couponActivityTemplate.setCouponActivityId(couponActivity.getId());
             couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
@@ -350,6 +351,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
                     //新增couponActivityStoreCustomer
+                    CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
                     couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
                     couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
                     couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());

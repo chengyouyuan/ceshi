@@ -1,0 +1,210 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/order/list",
+    "type": "report",
+    "id": "order_list",
+    "code": "order_list",
+    "title": "订单管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/order/list"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "orderNo",
+        "title": "订单编号"
+      },
+      {
+        "name": "nickName",
+        "title": "下单用户"
+      },
+      {
+        "name": "customerMobile",
+        "title": "用户电话"
+      },
+      {
+        "name": "permissions",
+        "title": "下单商铺"
+      },
+      {
+        "name": "storeMobile",
+        "title": "商铺电话"
+      },
+      {
+        "name": "valuationTypeDesc",
+        "title": "订单类型"
+      },
+      {
+        "name": "payTypeDesc",
+        "title": "支付方式"
+      },
+      {
+        "name": "created",
+        "title": "下单时间"
+      },
+      {
+        "name": "skuQuantity",
+        "title": "商品数量"
+      },
+      {
+        "name": "orderTotalMoney",
+        "title": "订单金额"
+      },
+      {
+        "name": "discountMoney",
+        "title": "优惠金额"
+      },
+      {
+        "name": "realPaymentMoney",
+        "title": "实付金额"
+      },
+      {
+        "name": "orderStatusDesc",
+        "title": "订单状态"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/system/system_user_list_view.json"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "orderNos",
+        "inputModel": "input",
+        "title": "订单号",
+        "value": "",
+        "placeholder": "请输入订单号",
+        "isHidden": false
+      },
+      {
+        "name": "customerId",
+        "inputModel": "inputDia",
+        "title": "下单用户",
+        "placeholder": "请输入下单用户",
+        "path": "",
+        "configKey": "/template/module/order/order_customer_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "storeId",
+        "inputModel": "inputDia",
+        "title": "下单店铺",
+        "placeholder": "请输入下单店铺",
+        "path": "",
+        "configKey": "/template/module/order/order_store_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "dateInterval",
+        "inputModel": "double-date-picker",
+        "title": "下单时间",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "moneyInterval",
+        "inputModel": "range",
+        "title": "下单金额",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "valuationType",
+        "inputModel": "select",
+        "title": "计价类型",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+        	"value": "1",
+        	"label": "线上计价"
+        },
+        {
+        	"value": "2",
+        	"label": "线下计价"
+        }]
+      },
+      {
+        "name": "payType",
+        "inputModel": "select",
+        "title": "支付方式",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+        	"value": "1",
+        	"label": "线上支付"
+        }]
+      },
+      {
+        "name": "orderStatus",
+        "inputModel": "select",
+        "title": "订单状态",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+        	"value": "2",
+        	"label": "待付款"
+        },{
+        	"value": "3",
+        	"label": "待接单"
+        },{
+        	"value": "9",
+        	"label": "待自提"
+        },{
+        	"value": "22",
+        	"label": "已完成"
+        },{
+        	"value": "99",
+        	"label": "已取消"
+        },{
+        	"value": "77",
+        	"label": "已退款"
+        },{
+        	"value": "33",
+        	"label": "待退款"
+        }]
+      }
+    ]
+  }
+}

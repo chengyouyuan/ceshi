@@ -1,6 +1,8 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
 import com.winhxd.b2c.common.domain.common.PagedCondition;
+import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
+import com.winhxd.b2c.common.domain.common.inputmodel.NumInterval;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -20,6 +22,22 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     
     @ApiModelProperty(value = "订单号数组")
     private String[] orderNos;
+    
+    @ApiModelProperty(value = "下单区间", required = true)
+    private DateInterval dateInterval;
+    
+    @ApiModelProperty(value = "订单价格区间", required = true)
+    private NumInterval moneyInterval;
+    
+    @ApiModelProperty(value = "计价类型:1:线上计价;2:线下计价;", required = true)
+    private Short valuationType;
+    
+    @ApiModelProperty(value = "支付类型:2为微信扫码付款;1为微信在线支付;", required = true)
+    private Short payType;
+    
+    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    private Short orderStatus;
+    
 
     public Long getStoreId() {
         return storeId;
@@ -43,6 +61,46 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     public void setOrderNos(String[] orderNos) {
         this.orderNos = orderNos;
+    }
+
+    public DateInterval getDateInterval() {
+        return dateInterval;
+    }
+
+    public void setDateInterval(DateInterval dateInterval) {
+        this.dateInterval = dateInterval;
+    }
+
+    public NumInterval getMoneyInterval() {
+        return moneyInterval;
+    }
+
+    public void setMoneyInterval(NumInterval moneyInterval) {
+        this.moneyInterval = moneyInterval;
+    }
+
+    public Short getValuationType() {
+        return valuationType;
+    }
+
+    public void setValuationType(Short valuationType) {
+        this.valuationType = valuationType;
+    }
+
+    public Short getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Short payType) {
+        this.payType = payType;
+    }
+
+    public Short getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(Short orderStatus) {
+        this.orderStatus = orderStatus;
     }
     
 }

@@ -82,7 +82,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (customer == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户不存在");
         }
         Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -105,7 +105,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @OrderInfoConvertAnnotation(queryStoreInfo = true, queryProductInfo = true)
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
-            throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
+            throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
         return detailVO;
@@ -122,7 +122,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @OrderInfoConvertAnnotation(queryCustomerInfo = true, queryProductInfo = true)
     public OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
-            throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
+            throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
         return detailVO;

@@ -50,14 +50,15 @@ public class ApiOrderQueryController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_410001, message = "用户不存在")
+            @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/4010/v1/orderListByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<OrderListForCustomerVO>> orderListByCustomer(@RequestBody AllOrderQueryByCustomerCondition condition) {
-        LOGGER.info("=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=--开始--{}");
+        String logTitle = "=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=";
+        LOGGER.info(logTitle + "--开始--{}", condition);
         ResponseResult<PagedList<OrderListForCustomerVO>> result = new ResponseResult<>();
         try {
-            PagedList<OrderListForCustomerVO> data  = new PagedList<>();
+            PagedList<OrderListForCustomerVO> data = new PagedList<>();
             PagedList<OrderInfoDetailVO> list = this.orderQueryService.findOrderListByCustomerId(condition);
             List<OrderInfoDetailVO> orderInfoDetailVOS = list.getData();
             List<OrderListForCustomerVO> orderListForCustomerVOList = new ArrayList<>();
@@ -67,10 +68,10 @@ public class ApiOrderQueryController {
                 List<OrderListItemForCustomerVO> orderListItemForCustomerVOList = new ArrayList<>();
                 for (OrderItemVO orderItemVO : orderItemVoList) {
                     OrderListItemForCustomerVO orderListItemForCustomerVO = new OrderListItemForCustomerVO();
-                    BeanUtils.copyProperties(orderItemVO,orderListItemForCustomerVO);
+                    BeanUtils.copyProperties(orderItemVO, orderListItemForCustomerVO);
                     orderListItemForCustomerVOList.add(orderListItemForCustomerVO);
                 }
-                BeanUtils.copyProperties(orderInfoDetailVO,orderListForCustomerVO);
+                BeanUtils.copyProperties(orderInfoDetailVO, orderListForCustomerVO);
                 orderListForCustomerVO.setOrderItemVoList(orderListItemForCustomerVOList);
                 orderListForCustomerVOList.add(orderListForCustomerVO);
             }
@@ -80,18 +81,18 @@ public class ApiOrderQueryController {
             data.setData(orderListForCustomerVOList);
             result.setData(data);
         } catch (Exception e) {
-            LOGGER.error("=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=--异常" + e.getMessage(), e);
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);
             throw e;
         }
-        LOGGER.info("=/api-order/order/4010/v1/orderListByCustomer-C端订单列表查询接口=--结束");
+        LOGGER.info(logTitle + "--结束");
         return result;
     }
 
     @ApiOperation(value = "C端订单详情查询接口", notes = "C端订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_411001, message = "参数异常")
+            @ApiResponse(code = BusinessCode.CODE_4011001, message = "参数异常")
     })
     @RequestMapping(value = "/4011/v1/getOrderDetailByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailByOrderNo(@RequestBody OrderQueryByCustomerCondition orderQueryByCustomerCondition) {
@@ -118,7 +119,7 @@ public class ApiOrderQueryController {
     @ApiOperation(value = "B端订单详情查询接口", notes = "B端订单详情查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_411001, message = "参数异常")
+            @ApiResponse(code = BusinessCode.CODE_4011001, message = "参数异常")
     })
     @RequestMapping(value = "/4014/v1/getOrderDetailForStoreByOrderNo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderInfoDetailVO> getOrderDetailForStoreByOrderNo(@RequestBody OrderQueryByStoreCondition condition) {
@@ -174,11 +175,11 @@ public class ApiOrderQueryController {
         LOGGER.info("{}=--结束", logTitle);
         return result;
     }
-    
+
     @ApiOperation(value = "B端订单各状态数量查询接口", notes = "B端订单各状态数量查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-        @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-        @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效")
     })
     @RequestMapping(value = "/4013/v1/getOrderCountByStatus", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderCountByStatus4StoreVO> getOrderCountByStatus(@RequestBody ApiCondition apiCondition) {

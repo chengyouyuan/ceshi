@@ -9,10 +9,13 @@ import org.springframework.stereotype.Component;
 public interface VerifyServiceClient {
 }
 
-//@Component
+@Component
 class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactory<VerifyServiceClient> {
 
     private Throwable throwable;
+
+    public VerifyServiceClientFallback() {
+    }
 
     private VerifyServiceClientFallback(Throwable throwable) {
         this.throwable = throwable;

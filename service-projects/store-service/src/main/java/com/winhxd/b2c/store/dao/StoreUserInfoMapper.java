@@ -67,4 +67,11 @@ public interface StoreUserInfoMapper {
      * @Description 根据条件查询门店信息
      */
     List<StoreUserInfoVO> selectStoreByCondition(StoreUserInfo record);
+
+    /**
+     * 根据reginCode集合查询门店
+     * @param regionCodeList
+     * @return
+     */
+    List<String> selectByReginCodes(List<String> regionCodeList);
 }

@@ -21,7 +21,7 @@ public class ProductSkuVO {
 	private String skuCode;
 	
 	@ApiModelProperty(value = "商品名称")
-	private String prodName;
+	private String skuName;
 	
 	@ApiModelProperty(value = "商品图片")
 	private String skuImage;

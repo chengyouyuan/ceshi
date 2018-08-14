@@ -100,7 +100,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiOperation(value = "订单可用的优惠券列表", notes = "订单可用的优惠券列表")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
+			@ApiResponse(code = BusinessCode.CODE_500014, message = "用户不存在")
 	})
 	public ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition) {
 		LOGGER.info("=/coupon/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}", couponCondition);

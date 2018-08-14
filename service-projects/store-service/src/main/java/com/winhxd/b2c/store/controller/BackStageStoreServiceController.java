@@ -1,14 +1,5 @@
 package com.winhxd.b2c.store.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -27,6 +18,14 @@ import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by caiyulong on 2018/8/6.
@@ -73,13 +72,21 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
         return  responseResult;
     }
 
+    @Override
+    public ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition) {
+        ResponseResult<List<String>> responseResult = new ResponseResult<>();
+        List<String> ids = storeService.findByReginCodes(condition.getRegionCodeList());
+        responseResult.setData(ids);
+        return responseResult;
+    }
+
 	@Override
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> responseResult=new ResponseResult<>();
 		if(condition!=null&&condition.getStoreId()!=null){
 			Long storeId=condition.getStoreId();
-			
+
 			//商品名称
 			if(StringUtils.isNotEmpty(condition.getProdName())){
 				StoreProductManageCondition spmCondition=new StoreProductManageCondition();
@@ -109,8 +116,8 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 							for(ProductSkuVO psVO:skuVOList){
 								resultSkus.add(psVO.getSkuCode());
 							}
-							
-							condition.setSkuCodeList(resultSkus);	
+
+							condition.setSkuCodeList(resultSkus);
 						}
 					}
 				}
@@ -129,7 +136,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 			if(prodResult!=null&&prodResult.getCode()==0
 					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
 				for(int i=0;i<prodResult.getData().size();i++){
-					resultVO.getData().get(i).setProdName(prodResult.getData().get(i).getProdName());
+					resultVO.getData().get(i).setProdName(prodResult.getData().get(i).getSkuName());
 				}
 			}
 			responseResult.setData(resultVO);

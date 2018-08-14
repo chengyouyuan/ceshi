@@ -100,4 +100,11 @@ public interface StoreService {
      * @Description 根据条件查询分页门店信息数据
      */
     PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition);
+
+    /**
+     * 根据reginCode集合查询门店
+     * @param regionCodeList
+     * @return
+     */
+    List<String> findByReginCodes(List<String> regionCodeList);
 }

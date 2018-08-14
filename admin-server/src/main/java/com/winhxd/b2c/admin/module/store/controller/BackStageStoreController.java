@@ -1,4 +1,4 @@
-package com.winhxd.b2c.admin.module.backstage.controller;
+package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -124,6 +124,21 @@ public class BackStageStoreController {
         logger.info("{} - 更改门店区域信息, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
         ResponseResult<Integer> responseResult = backStageStoreServiceClient.modifyStoreInfoReginCode(condition);
         logger.info("{} - 更改门店区域信息, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        return responseResult;
+    }
+
+    @ApiOperation(value = "根据区域集合查询门店", notes = "根据区域集合查询门店")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
+    @PostMapping(value = "/1051/v1/findStoreIdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<List<String>> findStoreIdList(@RequestBody BackStageStoreInfoCondition condition) {
+        logger.info("{} - 根据区域集合查询门店, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        ResponseResult<List<String>> responseResult = new ResponseResult<>();
+        if (condition.getRegionCodeList() == null || condition.getRegionCodeList().isEmpty()){
+            return responseResult;
+        }
+        responseResult = backStageStoreServiceClient.findStoreIdListByReginCodes(condition);
+        logger.info("{} - 根据区域集合查询门店, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 

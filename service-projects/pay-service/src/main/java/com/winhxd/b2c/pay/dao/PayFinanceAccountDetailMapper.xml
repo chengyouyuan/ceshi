@@ -7,6 +7,10 @@
     <result column="trade_no" jdbcType="VARCHAR" property="tradeNo" />
     <result column="money" jdbcType="DECIMAL" property="money" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney" />
+    <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney" />
+	<result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney" />
+	<result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney" />
     <result column="region_code" jdbcType="CHAR" property="regionCode" />
     <result column="region_name" jdbcType="VARCHAR" property="regionName" />
     <result column="type" jdbcType="SMALLINT" property="type" />
@@ -27,12 +31,29 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
+   
+   <resultMap id="payFinanceAccountDetailVO" type="com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO">
+      <result property="allInMoney" column="allInMoney"/>
+      <result property="allOutMoney" column="allOutMoney"/>
+      <result property="type" column="type"/>
+      <result property="outType" column="out_type"/>
+      <result property="dataStatus" column="data_status"/>
+      <result property="todayInMoney" column="todayInMoney"/>
+      <result property="todayOutMoney" column="todayOutMoney"/>
+      <result property="useCouponAllMoney" column="useCouponAllMoney"/>
+      <result property="useTodayCouponAllMoney" column="useTodayCouponAllMoney"/>
+      <result property="curLeftMoney" column="curLeftMoney"/>
+      <result property="todayCharge" column="todayCharge"/>
+       <result property="allCharge" column="allCharge"/>
+  </resultMap>
+  
   <sql id="Base_Column_List">
     id, order_no, trade_no, money, store_id, region_code, region_name, type, out_type, 
     wechat_account_status, status, data_status, flow_direction_type, flow_direction_name, 
     payment_account, cmms_amt, rate, out_in_date, created_by, created_by_name, created, 
     updated_by, updated_by_name, updated
   </sql>
+  
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -316,4 +337,63 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+   <select id="selectTotalInOutMoney" parameterType="java.lang.Long" resultMap="payFinanceAccountDetailVO">
+   		select 
+   			type,sum(money) as allInMoney,sum(cmms_amt) as allCharge
+   		from 
+   			pay_finance_account_detail
+   		where 
+   			status = 1 and wechat_account_status = 2 and store_id = #{storeId,jdbcType=BIGINT}
+   		group by 
+   			type
+   </select>
+   
+   <select id="selectTodayInMoney" parameterType="java.lang.Long" resultMap="payFinanceAccountDetailVO">
+   		SELECT
+			data_status,
+			sum(money) AS todayInMoney
+		FROM
+			pay_finance_account_detail
+		WHERE
+	  	    status = 1 and wechat_account_status = 2 
+	   		and out_in_date BETWEEN  DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')  AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59') 
+	   		and store_id = #{storeId,jdbcType=BIGINT}
+	   		group by data_status
+   </select>
+   <select id="selectTodayOutMoney" parameterType="java.lang.Long" resultMap="payFinanceAccountDetailVO">
+   		SELECT
+			out_type,
+			sum(money) AS todayOutMoney,sum(cmms_amt) as todayCharge
+		FROM
+			pay_finance_account_detail
+		WHERE
+			STATUS = 1
+		AND type = 1
+		and out_in_date BETWEEN  DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')  AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')
+		and store_id = #{storeId,jdbcType=BIGINT}
+		GROUP BY
+			out_type
+   </select>
+   
+   <select id="selectCouponUsedMoney"  parameterType="java.lang.Long" resultMap="payFinanceAccountDetailVO">
+   	SELECT
+		SUM(coupon_hxd_money) + sum(coupon_brand_money) AS useCouponAllMoney
+	FROM
+		pay_finance_account_detail
+	WHERE STATUS = 1 
+	and
+		store_id = #{storeId,jdbcType=BIGINT}
+   </select>
+   
+   <select id="selectTodayCouponUsedMoney"  parameterType="java.lang.Long" resultMap="payFinanceAccountDetailVO">
+   	SELECT
+		SUM(coupon_hxd_money) + sum(coupon_brand_money) AS useTodayCouponAllMoney
+	FROM
+		pay_finance_account_detail
+	WHERE STATUS = 1 
+	and out_in_date BETWEEN  DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')  AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')
+	and store_id = #{storeId,jdbcType=BIGINT}
+   </select>
+   
 </mapper>

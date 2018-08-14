@@ -26,6 +26,11 @@ public interface CouponActivityTemplateMapper {
 
     List<CouponActivityTemplate> selectByActivityId(Long id);
 
-    void updateByCouponActivityId(CouponActivityTemplate couponActivityTemplate);
+    /**
+     * 更新status状态
+     * @param couponActivityTemplate
+     * @return
+     */
+    int updateByCouponActivityId(CouponActivityTemplate couponActivityTemplate);
 
 }

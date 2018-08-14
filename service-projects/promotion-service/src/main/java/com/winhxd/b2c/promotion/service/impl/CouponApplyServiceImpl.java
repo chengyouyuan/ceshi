@@ -17,6 +17,7 @@ import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
+    @Transactional
     public int updateCouponApplyToValid(long id, long userId, String userName) {
         int count = couponApplyMapper.updateCouponGradeValid(id,userId,userName);
         return count;
@@ -70,6 +72,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
+    @Transactional
     public int addCouponApply(CouponApplyCondition condition) {
         int flag = 0;
             CouponApply couponApply = new CouponApply();

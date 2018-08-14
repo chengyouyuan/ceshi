@@ -168,7 +168,16 @@ public interface OrderInfoMapper {
      * @author wangbin
      * @date 2018年8月6日 下午3:29:26
      */
-    List<OrderInfoDetailVO> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
+    List<Long> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
+    /**
+     * 查询管理平台订单列表
+     *
+     * @param orderIds
+     * @return
+     * @author wangbin
+     * @date 2018年8月6日 下午3:29:26
+     */
+    List<OrderInfoDetailVO> listOrderInOrderIds(@Param("orderIds") List<Long> orderIds);
 
     /**
      * 更新订单提货码

@@ -101,6 +101,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     			res = BusinessCode.CODE_610020;
     			throw new BusinessException(BusinessCode.CODE_610020);
     		} 
+    		condition.setStatus((short)1); 
     		condition.setCreated(new Date());
     		condition.setUpdated(new Date());
     		condition.setCreatedBy(currentStoreUser.getBusinessId());

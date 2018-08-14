@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,8 +53,10 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	@PostMapping(value = "/store/1043/v1/findStoreProdManage",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(BackStageStoreProdCondition condition) {
+	@PostMapping(value = "/store/1043/v1/findStoreProdManage/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@PathVariable("id") Long id) {
+		BackStageStoreProdCondition condition=new BackStageStoreProdCondition();
+		condition.setId(id);
 		ResponseResult<BackStageStoreProdVO> result=new ResponseResult<>();
 		result=backStageStoreServiceClient.findStoreProdManage(condition);
 		return result;

@@ -23,4 +23,8 @@ public class ShopCarProdInfoVO {
     private String skuImage;
     @ApiModelProperty(value = "商品名称", required = true)
     private String prodName;
+    @ApiModelProperty(value = "规格", required = true)
+    private String skuAttributeOption;
+    @ApiModelProperty(value = "品牌Code", required = true)
+    private String brandCode;
 }

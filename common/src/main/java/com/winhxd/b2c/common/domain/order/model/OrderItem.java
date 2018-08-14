@@ -27,6 +27,10 @@ public class OrderItem {
      */
     private String skuDesc;
     /**
+     * 商品SKU 图片
+     */
+    private String skuUrl;
+    /**
      * 商品数量
      */
     private Integer amount;

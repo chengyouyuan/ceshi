@@ -11,6 +11,8 @@ import java.math.BigDecimal;
  */
 @Data
 public class OrderItemVO {
+    @ApiModelProperty(value = "itemId", required = true)
+    private Long itemId;
     @ApiModelProperty(value = "订单编号", required = true)
     private String orderNo;
     @ApiModelProperty(value = "商品SKU", required = true)

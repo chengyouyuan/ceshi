@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
@@ -13,6 +14,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -20,7 +22,9 @@ import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +98,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
+    @Transactional
     public void saveCouponActivity(CouponActivityAddCondition condition) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(condition.getActivityStart());
@@ -132,7 +137,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
             couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
         }
-        couponActivityMapper.insertSelective(couponActivity);
+        int n = couponActivityMapper.insertSelective(couponActivity);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+        }
 
         //CouponActivityTemplate
         CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
@@ -171,7 +179,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
                 couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
             }
-            couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+            int n2 = couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+            if(n2==0){
+                throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+            }
 
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 //coupon_activity_store_customer
@@ -181,7 +192,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
                     couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
                     couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                    couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+                    int n3 = couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+                    if(n3==0){
+                        throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+                    }
                 }
             }
         }
@@ -228,6 +242,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
+    @Transactional
     public void updateCouponActivity(CouponActivityAddCondition condition) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(condition.getActivityStart());
@@ -267,18 +282,29 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
             couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
         }
-        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        int n = couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
+        }
 
         //删除CouponActivityTemplate
         CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
         couponActivityTemplate.setCouponActivityId(condition.getId());
         couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-        couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
-        //删除couponActivityStoreCustomer
+        int n2 = couponActivityTemplateMapper.updateByCouponActivityId(couponActivityTemplate);
+        if(n2==0){
+            throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
+        }
         CouponActivityStoreCustomer couponActivityStoreCustomer = new CouponActivityStoreCustomer();
-        couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
-        couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
-        couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
+        if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+            //删除couponActivityStoreCustomer
+            couponActivityStoreCustomer.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
+            couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            int n3 = couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(couponActivityStoreCustomer);
+            if(n3==0){
+                throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
+            }
+        }
 
         //新增couponActivityTemplate
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
@@ -316,15 +342,23 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
                 couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
             }
-            couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+            int n4 =couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+            if(n4==0){
+                throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
+            }
 
-            //新增couponActivityStoreCustomer
-            for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
-                couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
-                couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
-                couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
-                couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+                for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
+                    //新增couponActivityStoreCustomer
+                    couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
+                    couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
+                    couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
+                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                    int n5 = couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
+                    if(n5==0){
+                        throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
+                    }
+                }
             }
         }
     }
@@ -335,6 +369,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
+    @Transactional
     public void deleteCouponActivity(CouponActivityCondition condition) {
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setId(condition.getId());
@@ -342,7 +377,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setUpdated(new Date());
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());
-        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        int n = couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_503301,"删除活动信息失败");
+        }
     }
 
     /**
@@ -350,6 +388,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
+    @Transactional
     public void revocationActivityCoupon(CouponActivityCondition condition) {
         //停止活动
         CouponActivity couponActivity = new CouponActivity();
@@ -359,7 +398,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());
 
-        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        int n = couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_503501,"停止活动失败");
+        }
         //撤销已发放的优惠券
         List<Long> longList = null;
         longList.add(condition.getId());
@@ -373,6 +415,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      * @param condition
      */
     @Override
+    @Transactional
     public void updateCouponActivityStatus(CouponActivityAddCondition condition) {
         //更新CouponActivity
         CouponActivity couponActivity = new CouponActivity();
@@ -382,7 +425,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());
 
-        couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        int n = couponActivityMapper.updateByPrimaryKeySelective(couponActivity);
+        if(n==0){
+            throw new BusinessException(BusinessCode.CODE_503501,"停止活动失败");
+        }
     }
     /**
      * 根据活动查询优惠券信息

@@ -72,6 +72,8 @@ public class GatewayFilter implements GlobalFilter, Ordered {
             if (StringUtils.isBlank(token) || StringUtils.isBlank(grp)) {
                 return error(response, BusinessCode.CODE_1002);
             }
+            currentSpan.tag(ContextHelper.TRACER_API_TOKEN, token);
+            currentSpan.tag(ContextHelper.TRACER_API_GRP, grp);
             String key, tokenJson, header;
             switch (grp) {
                 case AppConstant.GRP_CUSTOMER:

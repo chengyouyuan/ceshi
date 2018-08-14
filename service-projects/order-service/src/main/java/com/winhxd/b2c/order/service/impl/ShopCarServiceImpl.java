@@ -123,7 +123,9 @@ public class ShopCarServiceImpl implements ShopCarService {
                 OrderCreateCondition orderCreateCondition = new OrderCreateCondition();
                 BeanUtils.copyProperties(condition, orderCreateCondition);
                 orderCreateCondition.setCustomerId(customerId);
+                logger.info("预订单接口readyOrder -> 调用订单接口执行{}");
                 orderService.submitOrder(orderCreateCondition);
+                logger.info("预订单接口readyOrder -> 调用订单接口执结束{}");
                 // 保存成功删除此用户门店的购物车
                 ShopCar shopCar = new ShopCar();
                 shopCar.setCustomerId(customerId);

@@ -14,12 +14,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreBusinessInfoVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreEnumObject;
-import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -39,21 +34,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -84,7 +70,7 @@ public class ApiOpenStoreController {
     @Autowired
     private StoreRegionService storeRegionService;
 
-    @ApiOperation(value = "惠小店是否在测试区域接口", notes = "惠小店是否在测试区域接口")
+    @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
@@ -92,18 +78,18 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1000/v1/getStoreRegionStatus", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> getStoreRegionStatus(@RequestBody ApiCondition apiCondition) {
         if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店基础信息查询接口 未获取到当前用户信息");
+            logger.error("惠小店开店条件验证接口 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1002);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        logger.info("惠小店是否在测试区域接口 门店用户编码:{}", storeCustomerId);
+        logger.info("惠小店开店条件验证接口 门店用户编码:{}", storeCustomerId);
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         //是否有登录注册信息
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             responseResult.setCode(BusinessCode.CODE_200004);
             responseResult.setMessage("门店信息不存在");
-            logger.error("惠小店是否在测试区域接口 门店信息不存在 storeCustomerId：{}", storeCustomerId);
+            logger.error("惠小店开店条件验证接口 门店信息不存在 storeCustomerId：{}", storeCustomerId);
             return responseResult;
         }
         OpenStoreVO openStoreVO = new OpenStoreVO();
@@ -113,18 +99,13 @@ public class ApiOpenStoreController {
             openStoreVO.setRegionStatus((byte) 1);
         } else {
             openStoreVO.setRegionStatus((byte) 0);
-            openStoreVO.setStoreStatus((byte) 0);
             responseResult.setData(openStoreVO);
             return responseResult;
         }
         //是否开过小店，0未开店
-        if (storeUserInfo.getStoreStatus() != 0) {
-            openStoreVO.setStoreStatus((byte) 1);
-            responseResult.setData(openStoreVO);
-            return responseResult;
-        } else {
+        if (storeUserInfo.getStoreStatus() == 0) {
             openStoreVO.setStoreStatus((byte) 0);
-            //是否完善信息
+            //未开店是否完善信息
             ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
             Byte flag = 1;
             for (int i : noPerfectResult.getData()) {
@@ -134,13 +115,15 @@ public class ApiOpenStoreController {
                 }
             }
             openStoreVO.setStorePerfectStatus(flag);
+        } else {
+            openStoreVO.setStoreStatus((byte) 1);
         }
-
         responseResult.setData(openStoreVO);
+        logger.info("惠小店开店条件验证接口 返参为：{}", JsonUtil.toJSONString(openStoreVO));
         return responseResult;
     }
 
-    @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
+    @ApiOperation(value = "惠小店未完善信息接口", notes = "惠小店未完善信息接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
@@ -148,18 +131,18 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1001/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody ApiCondition apiCondition) {
         if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店条件验证接口 未获取到当前用户信息");
+            logger.error("惠小店未完善信息接口 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1002);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        logger.info("惠小店开店基础信息查询接口 门店用户编码:{}", storeCustomerId);
+        logger.info("惠小店未完善信息接口 门店用户编码:{}", storeCustomerId);
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
         //查询账号基础信息
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             responseResult.setCode(BusinessCode.CODE_200004);
             responseResult.setMessage("门店信息不存在");
-            logger.error("惠小店开店条件验证接口 门店信息不存在 storeCustomerId：{}", storeCustomerId);
+            logger.error("惠小店未完善信息接口 门店信息不存在 storeCustomerId：{}", storeCustomerId);
             return responseResult;
         }
         OpenStoreVO openStoreVO = new OpenStoreVO();
@@ -167,7 +150,7 @@ public class ApiOpenStoreController {
         ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
         openStoreVO.setNoPerfectMessage(noPerfectResult.getData());
         responseResult.setData(openStoreVO);
-        logger.info("惠小店开店条件验证接口返参为：{}", JsonUtil.toJSONString(responseResult));
+        logger.info("惠小店未完善信息接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -193,7 +176,7 @@ public class ApiOpenStoreController {
         }
         ResponseResult<Map<String, Object>> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
         StoreBaseInfoVO storeBaseInfoVO = new StoreBaseInfoVO();
-        BeanUtils.copyProperties(result, storeBaseInfoVO);
+        storeBaseInfoVO.setContactMobile(storeUserInfo.getStoreMobile());
         if (!result.getData().isEmpty()) {
             Map<String, Object> map = result.getData();
             storeBaseInfoVO.setStoreImg(Objects.toString(map.get("storeImg"), ""));
@@ -211,6 +194,7 @@ public class ApiOpenStoreController {
             return responseResult;
         }
         responseResult.setData(storeBaseInfoVO);
+        logger.info("惠小店开店基础信息查询接口 返参为：{}", JsonUtil.toJSONString(storeBaseInfoVO));
         return responseResult;
     }
 
@@ -225,7 +209,7 @@ public class ApiOpenStoreController {
         logger.info("惠小店开店基础信息保存接口入参为：{}", storeBaseInfoCondition.toString());
         if (StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getShopOwnerImg()) || StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
-                StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode())) {
+                StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode()) || StringUtils.isBlank(storeBaseInfoCondition.getContactMobile())) {
             logger.warn("惠小店开店基础信息保存接口 modifyStoreBaseInfo,参数错误:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200005);
         }
@@ -241,8 +225,6 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200004);
         }
         BeanUtils.copyProperties(storeBaseInfoCondition, storeUserInfo);
-        //开店状态 有效
-        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
         storeService.updateByPrimaryKeySelective(storeUserInfo);
         return new ResponseResult<>();
     }
@@ -267,27 +249,58 @@ public class ApiOpenStoreController {
         }
         StoreBusinessInfoVO storeBusinessInfoVO = new StoreBusinessInfoVO();
         BeanUtils.copyProperties(storeUserInfo, storeBusinessInfoVO);
+        //判断取货方式是否是该小店的配置
         List<StoreEnumObject> pickupTypeList = new ArrayList<>();
         for (PickUpTypeEnum pickupType : PickUpTypeEnum.values()) {
             StoreEnumObject storeEnumObject = new StoreEnumObject();
             storeEnumObject.setCode(pickupType.getTypeCode());
             storeEnumObject.setName(pickupType.getTypeDesc());
+            storeEnumObject = this.typeMatch(storeUserInfo.getPickupType(), pickupType.getTypeCode(), storeEnumObject);
             pickupTypeList.add(storeEnumObject);
             //一期先写死，只传第一个
             break;
         }
         storeBusinessInfoVO.setPickupType(pickupTypeList);
+        //判断付款方式是否是该小店的配置
         List<StoreEnumObject> payTypeList = new ArrayList<>();
         for (PayTypeEnum payType : PayTypeEnum.values()) {
             StoreEnumObject storeEnumObject = new StoreEnumObject();
             storeEnumObject.setCode(payType.getTypeCode());
             storeEnumObject.setName(payType.getTypeDesc());
+            storeEnumObject = this.typeMatch(storeUserInfo.getPayType(), payType.getTypeCode(), storeEnumObject);
             payTypeList.add(storeEnumObject);
             //一期先写死，只传第一个
             break;
         }
         storeBusinessInfoVO.setPayType(payTypeList);
+        logger.info("惠小店开店店铺信息查询接口 返参为：{}", JsonUtil.toJSONString(storeBusinessInfoVO));
         return new ResponseResult<>(storeBusinessInfoVO);
+    }
+
+    /**
+     * 匹配门店配置和全部配置的关系状态
+     *
+     * @param storeType 门店的多个配置类型
+     * @param type 待匹配类型
+     * @return 列表
+     */
+    private StoreEnumObject typeMatch(String storeType, short type, StoreEnumObject storeEnumObject) {
+        if (StringUtils.isNotBlank(storeType)) {
+            String[] typeArray = storeType.split(",");
+            if (typeArray.length > 0) {
+                for (String store : typeArray) {
+                    if (Short.parseShort(store) == type) {
+                        storeEnumObject.setStatus((short) 1);
+                        break;
+                    } else {
+                        storeEnumObject.setStatus((short) 0);
+                    }
+                }
+            } else {
+                storeEnumObject.setStatus((short) 0);
+            }
+        }
+        return storeEnumObject;
     }
 
     @ApiOperation(value = "惠小店开店店铺信息保存接口", notes = "惠小店开店店铺信息保存接口")
@@ -317,6 +330,8 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200004);
         }
         BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
+        //开店状态 有效
+        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
         storeService.updateByPrimaryKeySelective(storeUserInfo);
         return new ResponseResult<>();
     }
@@ -402,7 +417,7 @@ public class ApiOpenStoreController {
         return result;
     }
 
-    @ApiOperation(value = "惠小店获取营业查询数据接口", notes = "惠小店获取营业查询数据接口")
+    @ApiOperation(value = "惠小店获取营业数据查询接口", notes = "惠小店获取营业数据查询接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1026/v1/getStoreTurnoverInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -410,12 +425,12 @@ public class ApiOpenStoreController {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
         if (UserContext.getCurrentStoreUser() == null) {
             responseResult.setCode(BusinessCode.CODE_1001);
-            logger.error("惠小店获取营业查询数据接口 未获取到当前用户信息");
+            logger.error("惠小店获取营业数据查询接口 未获取到当前用户信息");
             throw new BusinessException(BusinessCode.CODE_1001);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         Long businessId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        logger.info("惠小店获取营业查询数据接口 门店用户编码:{}", storeCustomerId);
+        logger.info("惠小店获取营业数据查询接口 门店用户编码:{}", storeCustomerId);
         Date currentDate = new Date();
         Date beginTime = DateUtils.truncate(currentDate, Calendar.DATE);
         Date yesterdayEndTime = DateUtils.addDays(currentDate, -1);
@@ -430,6 +445,7 @@ public class ApiOpenStoreController {
         todayInfo.setCreateNumCompare(calculatePercent(new BigDecimal(todayInfo.getCreateNum()), new BigDecimal(yesterdayInfo.getCreateNum())));
         todayInfo.setCompleteNumCompare(calculatePercent(new BigDecimal(todayInfo.getCompleteNum()), new BigDecimal(yesterdayInfo.getCompleteNum())));
         responseResult.setData(todayInfo);
+        logger.info("惠小店开店店铺信息查询接口 返参为：{}", JsonUtil.toJSONString(todayInfo));
         return responseResult;
     }
 

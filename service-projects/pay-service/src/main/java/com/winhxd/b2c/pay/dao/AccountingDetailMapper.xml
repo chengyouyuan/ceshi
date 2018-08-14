@@ -10,7 +10,7 @@
     )
   </insert>
 
-  <resultMap id="AccountingDetailMap" type="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
+  <resultMap id="VerifyDetailVOMap" type="com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO">
     <id column="id" property="id"></id>
     <result column="order_no" property="orderNo"></result>
     <result column="detail_type" property="detailType"></result>
@@ -28,7 +28,7 @@
     <result column="operated_by_name" property="operatedByName"></result>
   </resultMap>
 
-  <select id="selectAccountingDetailList" resultMap="AccountingDetailMap">
+  <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap">
     select *
     from pay_accounting_detail d
     where 1 = 1
@@ -37,15 +37,43 @@
     </if>
   </select>
 
-  <select id="selectVerifyList" resultMap="AccountingDetailMap">
-    select d.verify_status, d.store_id
+  <resultMap id="VerifySummaryVOMap" type="com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO">
+    <result column="store_id" property="storeId"></result>
+    <result column="verify_status" property="verifyStatus"></result>
+    <result column="last_recorded_time" property="lastRecordedTime"></result>
+    <result column="operated_time" property="operatedTime"></result>
+    <result column="operated_by_name" property="operatedByName"></result>
+    <result column="real_pay" property="realPay"></result>
+    <result column="third_party_fee" property="thirdPartyFee"></result>
+    <result column="discount" property="discount"></result>
+    <result column="real_verify" property="realVerify"></result>
+  </resultMap>
+
+  <select id="selectVerifyList" resultMap="VerifySummaryVOMap">
+    select
+      d.store_id, d.verify_status,
+      max(d.recorded_time) as last_recorded_time,
+      h.operated_time, h.operated_by_name,
+      sum(case when d.detail_type = 1 then d.detail_money else 0 end) as real_pay,
+      sum(case when d.detail_type = 2 then d.detail_money else 0 end) as third_party_fee,
+      sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discount,
+      sum(d.detail_money) as real_verify
     from pay_accounting_detail d
-    where 1 = 1
+    left join pay_verify_history h on h.verify_code = d.verify_code
+    where d.order_complete_status = 1
+    and d.third_party_verify_status = 1
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>
-    group by d.verify_status, d.store_id
+    group by d.store_id, d.verify_status, h.verify_code, h.operated_time, h.operated_by_name
   </select>
+
+  <update id="updateAccountingDetailCompletedByComplete">
+    update pay_accounting_detail set
+      order_complete_status = 1,
+      recorded_time = #{recordedTime}
+    where order_no = #{orderNo}
+  </update>
 
   <update id="updateAccountingDetailVerifiedByThirdParty">
     update pay_accounting_detail set
@@ -71,9 +99,12 @@
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
     from pay_accounting_detail d, pay_verify_history h
-    where h.verify_code = #{verifyCode}
+    where d.verify_status &lt;&gt; 1
+    and d.third_party_verify_status = 1
+    and d.order_complete_status = 1
+    and h.verify_code = #{verifyCode}
     and d.store_id = #{storeId}
-    and d.recorded_time &lt; #{toVerifyDateBefore}
+    and d.recorded_time &lt; date_add(date_format(#{dateBefore}, '%Y-%m-%d'), interval 1 day)
   </update>
 
   <update id="updateAccountingDetailVerifyStatusByDetailId">
@@ -85,7 +116,10 @@
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
     from pay_accounting_detail d, pay_verify_history h
-    where h.verify_code = #{verifyCode}
+    where d.verify_status &lt;&gt; 1
+    and d.third_party_verify_status = 1
+    and d.order_complete_status = 1
+    and h.verify_code = #{verifyCode}
     and d.id in
     <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
   </update>

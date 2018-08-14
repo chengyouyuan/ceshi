@@ -2,20 +2,40 @@ package com.winhxd.b2c.pay.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
+import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.vo.StoreAndDateVO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class VerifyService {
 
+    private final Logger log = LogManager.getLogger(this.getClass());
+
     @Autowired
     private AccountingDetailMapper accountingDetailMapper;
+
+    @Autowired
+    private OrderServiceClient orderServiceClient;
 
     /**
      * 保存订单费用明细
@@ -23,59 +43,65 @@ public class VerifyService {
      * @param orderNo
      * @return
      */
+    @Transactional
     public int saveAccountingDetailsByOrderNo(String orderNo) {
-        // TODO 调用订单服务，获取订单实付款
-        // TODO 调用优惠券服务，获取促销费用
-        // TODO 保存费用
-        return 0;
+        int count = 0;
+        // 调用订单服务，获取订单实付款
+        ResponseResult<OrderInfoDetailVO4Management> responseResult = orderServiceClient.getOrderDetail4Management(orderNo);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            OrderInfoDetailVO4Management orderInfoDetailVO4Management = responseResult.getData();
+            OrderInfoDetailVO orderInfoDetailVO = orderInfoDetailVO4Management.getOrderInfoDetailVO();
+            if (orderInfoDetailVO != null) {
+                AccountingDetail realPay = new AccountingDetail();
+                realPay.setOrderNo(orderNo);
+                realPay.setDetailType(AccountingDetail.DetailTypeEnum.REAL_PAY.getCode());
+                realPay.setDetailMoney(orderInfoDetailVO.getRealPaymentMoney());
+                realPay.setStoreId(orderInfoDetailVO.getStoreId());
+                realPay.setRecordedTime(orderInfoDetailVO.getFinishDateTime());
+                accountingDetailMapper.insertAccountingDetail(realPay);
+                count++;
+                if (orderInfoDetailVO.getDiscountMoney() != null
+                        && orderInfoDetailVO.getDiscountMoney().compareTo(BigDecimal.ZERO) != 0) {
+                    AccountingDetail discount = new AccountingDetail();
+                    discount.setOrderNo(orderNo);
+                    discount.setDetailType(AccountingDetail.DetailTypeEnum.DISCOUNT.getCode());
+                    discount.setDetailMoney(orderInfoDetailVO.getDiscountMoney());
+                    discount.setStoreId(orderInfoDetailVO.getStoreId());
+                    discount.setRecordedTime(orderInfoDetailVO.getFinishDateTime());
+                    accountingDetailMapper.insertAccountingDetail(discount);
+                    count++;
+                }
+            } else {
+                throw new BusinessException(-1, "订单明细为NULL");
+            }
+        } else {
+            throw new BusinessException(-1, String.format("订单服务-查询订单详情-返回失败-[%d]-%s",
+                    responseResult.getCode(), responseResult.getMessage()));
+        }
+        log.info(String.format("保存[%d]笔订单费用明细-%s", count, orderNo));
+        return count;
     }
 
     /**
      * 查询结算汇总
      *
-     * @param verifyStatus       结算状态
-     * @param storeId            门店ID
-     * @param storeName          门店名称
-     * @param toVerifyDateBefore 待结算日期之前(包括待结算日期)的费用将被结算
-     * @param verifyDateStart    结算日期开始
-     * @param verifyDateEnd      结算日期结束
+     * @param condition
      * @return
      */
-    public Page<?> findVerifyList(Integer verifyStatus, Long storeId, String storeName,
-                                  Date toVerifyDateBefore,
-                                  Date verifyDateStart, Date verifyDateEnd,
-                                  int pageNo, int pageSize) {
-        PageHelper.startPage(pageNo, pageSize);
-        return accountingDetailMapper.selectVerifyList(verifyStatus, storeId, storeName,
-                toVerifyDateBefore, verifyDateStart, verifyDateEnd);
+    public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
+        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        return accountingDetailMapper.selectVerifyList(condition);
     }
 
     /**
      * 查询费用明细
      *
-     * @param verifyStatus              结算状态
-     * @param storeId                   门店ID
-     * @param storeName                 门店名称
-     * @param thirdPartyVerifyStatus    第三方平台与惠下单结算状态
-     * @param recordedDateStart         入账日期开始
-     * @param recordedDateEnd           入账日期结算
-     * @param thirdPartyVerifyDateStart 第三方平台结算日期开始
-     * @param thirdPartyVerifyDateEnd   第三方平台结算日期结束
-     * @param verifyDateStart           结算日期开始
-     * @param verifyDateEnd             结算日期结束
+     * @param condition
      * @return
      */
-    public Page<?> findAccountingDetailList(Integer verifyStatus, Long storeId, String storeName, Integer thirdPartyVerifyStatus,
-                                            Date recordedDateStart, Date recordedDateEnd,
-                                            Date thirdPartyVerifyDateStart, Date thirdPartyVerifyDateEnd,
-                                            Date verifyDateStart, Date verifyDateEnd,
-                                            int pageNo, int pageSize) {
-        PageHelper.startPage(pageNo, pageSize);
-        return accountingDetailMapper.selectAccountingDetailList(
-                verifyStatus, storeId, storeName, thirdPartyVerifyStatus,
-                recordedDateStart, recordedDateEnd,
-                thirdPartyVerifyDateStart, thirdPartyVerifyDateEnd,
-                verifyDateStart, verifyDateEnd);
+    public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
+        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        return accountingDetailMapper.selectAccountingDetailList(condition);
     }
 
     /**
@@ -95,12 +121,8 @@ public class VerifyService {
                 verifyCode, verifyRemark, operatedBy, operatedByName);
         int updatedCount = 0;
         for (StoreAndDateVO vo : list) {
-            Calendar c = Calendar.getInstance();
-            c.setTime(vo.getDate());
-            // 结算数据包括选择的日期，查询中使用小于下一日期实现，注：传入的日期时分秒需要为00:00:00,000
-            c.add(Calendar.DAY_OF_YEAR, 1);
-            int count = accountingDetailMapper
-                    .updateAccountingDetailVerifyStatusBySummary(verifyCode, vo.getStoreId(), c.getTime());
+            int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
+                    verifyCode, vo.getStoreId(), vo.getDate());
             updatedCount += count;
         }
         return updatedCount;

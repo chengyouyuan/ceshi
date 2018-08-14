@@ -185,4 +185,15 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+  <!--  根据门店id 查询门店收支明细  -->
+  <select id="getPayStoreTransRecordByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_store_transaction_record
+    where store_id = #{storeId}
+    ORDER BY transaction_date DESC ,created DESC
+  </select>
+
 </mapper>

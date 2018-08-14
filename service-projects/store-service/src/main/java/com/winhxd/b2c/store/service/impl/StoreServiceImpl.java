@@ -3,12 +3,12 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoCondition;
-import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
-import com.winhxd.b2c.common.domain.backstage.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
-import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
@@ -21,7 +21,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

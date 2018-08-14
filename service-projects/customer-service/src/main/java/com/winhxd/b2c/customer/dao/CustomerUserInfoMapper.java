@@ -1,8 +1,8 @@
 package com.winhxd.b2c.customer.dao;
 
+import com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
-import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

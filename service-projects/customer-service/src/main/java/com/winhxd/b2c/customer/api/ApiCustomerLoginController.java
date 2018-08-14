@@ -1,7 +1,26 @@
 package com.winhxd.b2c.customer.api;
 
-import java.util.Date;
-
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoSimpleVO;
+import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificationCodeCondition;
+import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.customer.service.CustomerLoginService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,28 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificationCodeCondition;
-import com.winhxd.b2c.common.domain.system.login.condition.CustomerUserInfoCondition;
-import com.winhxd.b2c.common.domain.system.login.model.CustomerUserInfo;
-import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoSimpleVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.message.MessageServiceClient;
-import com.winhxd.b2c.common.util.GeneratePwd;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.customer.service.CustomerLoginService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.util.Date;
 
 /**
  * @author wufuyun
@@ -202,7 +200,7 @@ public class ApiCustomerLoginController {
 	 * @author wufuyun
 	 * @date 2018年8月8日 下午8:56:52
 	 * @Description 用户换绑手机号
-	 * @param customerUserInfoCondition
+	 * @param customerChangeMobileCondition
 	 * @return
 	 */
 	@ApiOperation(value = "C端—用户换绑手机号")

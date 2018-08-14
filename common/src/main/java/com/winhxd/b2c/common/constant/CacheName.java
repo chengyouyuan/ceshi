@@ -63,4 +63,9 @@ public class CacheName {
     /**B端绑定银行卡存入验证码 key
      * */
     public static final String PAY_VERIFICATION_CODE = "PAY:MOBILE:VERIFICATION:";
+
+    /**
+     * 小程序accesstoken
+     */
+    public static final String MESSAGE_MINI_ACCESS_TOKEN = "MINIPROGRAM:ACCESSTOKEN:";
 }

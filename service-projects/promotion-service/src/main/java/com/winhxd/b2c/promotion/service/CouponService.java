@@ -122,7 +122,8 @@ public interface CouponService {
      * @param condition
      * @return
      */
-    List<CouponInvestorAmountVO> getCouponInvestorAmount(OrderCouponCondition condition);
+    List<CouponInvestorAmountVO> getCouponInvestorAmount(CouponInvestorAmountCondition condition);
+
 
     PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize);
 }

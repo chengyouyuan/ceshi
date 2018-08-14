@@ -38,7 +38,7 @@ public class StoreUserInfoVO {
     /**
      * 联系方式
      */
-    @ApiModelProperty("contactMobile")
+    @ApiModelProperty("联系方式")
     private String contactMobile;
 
     /**

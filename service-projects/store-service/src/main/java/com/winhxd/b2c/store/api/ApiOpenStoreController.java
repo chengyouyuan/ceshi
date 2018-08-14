@@ -7,14 +7,13 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
-import com.winhxd.b2c.common.domain.store.vo.OpenStoreVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreBaseInfoVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreBusinessInfoVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreManageInfoVO;
+import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
@@ -115,6 +114,16 @@ public class ApiOpenStoreController {
             return responseResult;
         } else {
             openStoreVO.setStoreStatus((byte) 0);
+            //是否完善信息
+            ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
+            Byte flag = 1;
+            for (int i : noPerfectResult.getData()) {
+                if (i == 0) {
+                    flag = 0;
+                    break;
+                }
+            }
+            openStoreVO.setStorePerfectStatus(flag);
         }
 
         responseResult.setData(openStoreVO);
@@ -130,7 +139,7 @@ public class ApiOpenStoreController {
     public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody ApiCondition apiCondition) {
         if (UserContext.getCurrentStoreUser() == null) {
             logger.error("惠小店开店条件验证接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息查询接口 门店用户编码:{}", storeCustomerId);
@@ -248,6 +257,26 @@ public class ApiOpenStoreController {
         }
         StoreBusinessInfoVO storeBusinessInfoVO = new StoreBusinessInfoVO();
         BeanUtils.copyProperties(storeUserInfo, storeBusinessInfoVO);
+        List<StoreEnumObject> pickupTypeList = new ArrayList<>();
+        for (PickUpTypeEnum pickupType : PickUpTypeEnum.values()) {
+            StoreEnumObject storeEnumObject = new StoreEnumObject();
+            storeEnumObject.setCode(pickupType.getTypeCode());
+            storeEnumObject.setName(pickupType.getTypeDesc());
+            pickupTypeList.add(storeEnumObject);
+            //一期先写死，只传第一个
+            break;
+        }
+        storeBusinessInfoVO.setPickupType(pickupTypeList);
+        List<StoreEnumObject> payTypeList = new ArrayList<>();
+        for (PayTypeEnum payType : PayTypeEnum.values()) {
+            StoreEnumObject storeEnumObject = new StoreEnumObject();
+            storeEnumObject.setCode(payType.getTypeCode());
+            storeEnumObject.setName(payType.getTypeDesc());
+            payTypeList.add(storeEnumObject);
+            //一期先写死，只传第一个
+            break;
+        }
+        storeBusinessInfoVO.setPayType(payTypeList);
         return new ResponseResult<>(storeBusinessInfoVO);
     }
 
@@ -260,8 +289,8 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
-        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupWay() == null ||
-                storeBusinessInfoCondition.getPaymentWay() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
+        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupType() == null ||
+                storeBusinessInfoCondition.getPayType() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile()) || StringUtils.isBlank(storeBusinessInfoCondition.getStoreAddress())) {
             logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
@@ -342,7 +371,7 @@ public class ApiOpenStoreController {
      */
     @ApiOperation(value = "通过门店id查询门店信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-    @ApiResponse(code = BusinessCode.CODE_1002,message = "登录凭证无效"),@ApiResponse(code = BusinessCode.CODE_200002,message = "门店id参数为空")})
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"), @ApiResponse(code = BusinessCode.CODE_200002, message = "门店id参数为空")})
     @RequestMapping(value = "/1005/v1/findStoreUserInfo", method = RequestMethod.POST)
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(ApiCondition apiCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();

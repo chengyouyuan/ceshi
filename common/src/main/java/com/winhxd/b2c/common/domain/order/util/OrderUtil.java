@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 import com.winhxd.b2c.common.constant.CacheName;
+import org.apache.commons.lang3.StringUtils;
 
 public class OrderUtil {
     
@@ -23,5 +24,19 @@ public class OrderUtil {
         String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}:{1}:{2}";
         String pattern = "yyyyMMddHHmmss";
         return MessageFormat.format(storeSalesSummary, storeId, DateFormatUtils.format(startDateTime, pattern), DateFormatUtils.format(endDateTime, pattern));
+    }
+
+    /**
+     * 获取手机号后四位，如果未空或者小于4位，返回空字符串
+     *
+     * @param mobile
+     * @return
+     */
+    public static String getLast4Mobile(String mobile) {
+        String mobileStr = "";
+        if (StringUtils.isNotBlank(mobile) && mobile.length() > 4) {
+            mobileStr = mobile.substring(mobile.length() - 4, mobile.length());
+        }
+        return mobileStr;
     }
 }

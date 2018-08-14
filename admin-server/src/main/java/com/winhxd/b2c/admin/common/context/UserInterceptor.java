@@ -1,7 +1,6 @@
 package com.winhxd.b2c.admin.common.context;
 
 import com.winhxd.b2c.common.context.AdminUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import feign.RequestInterceptor;
@@ -24,7 +23,7 @@ public class UserInterceptor implements RequestInterceptor {
             adminUser.setAccount(currentUser.getAccount());
             adminUser.setId(currentUser.getId());
             adminUser.setUsername(currentUser.getUsername());
-            requestTemplate.header(UserContext.HEADER_USER_ADMIN, ContextHelper.getHeaderJsonString(adminUser));
+            requestTemplate.header(ContextHelper.HEADER_USER_ADMIN, ContextHelper.getHeaderJsonString(adminUser));
         }
     }
 }

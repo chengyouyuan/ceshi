@@ -21,7 +21,7 @@ import java.util.List;
 @FeignClient(value = ServiceName.ORDER_SERVICE, fallbackFactory = ShopCartServiceClientFallback.class)
 public interface ShopCartServiceClient {
 
-    @RequestMapping(value = "/order/470/v1/queryShopCartBySelective", method = RequestMethod.POST)
+    @RequestMapping(value = "/order/4070/v1/queryShopCartBySelective", method = RequestMethod.POST)
     ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(ShopCartProductCondition condition);
 }
 @Component

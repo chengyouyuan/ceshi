@@ -5,6 +5,8 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface CouponInvestorDetailMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -21,4 +23,7 @@ public interface CouponInvestorDetailMapper {
     void updateCouponInvestorDetailByInvetorId(CouponInvestorDetail detail);
 
     void deleteCouponInvestorDetailByInvetorId(@Param("investorId") long investorId);
+
+
+    List<CouponInvestorDetail> selectByInvestorId(Long investorId);
 }

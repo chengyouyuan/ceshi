@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.backstage.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.system.login.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -253,5 +254,19 @@ public class StoreServiceController implements StoreServiceClient {
 	 	storeRegionService.saveStoreRegion(conditions);
 		return new ResponseResult<>();
 	}
+
+	@Override
+	public ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
+		ResponseResult<PagedList<StoreUserInfoVO>> responseResult = new ResponseResult<PagedList<StoreUserInfoVO>>();
+		try {
+			PagedList<StoreUserInfoVO> page = storeService.findStorePageInfo(condition);
+			responseResult.setData(page);
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseResult.setCode(BusinessCode.CODE_1001);
+		}
+		return responseResult;
+	}
+
 
 }

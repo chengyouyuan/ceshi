@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.system.login.vo.StoreUserInfoVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -30,10 +31,6 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
@@ -81,11 +78,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @return
      */
     @Override
-    @OrderInfoConvertAnnotation()
+    @OrderInfoConvertAnnotation(queryProductInfo = true)
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (customer == null) {
-            throw new BusinessException(BusinessCode.CODE_410001, "用户信息异常");
+            throw new BusinessException(BusinessCode.CODE_4010001, "用户不存在");
         }
         Long customerId = customer.getCustomerId();
         Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -98,17 +95,34 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     /**
-     * 查询订单
+     * C端查询订单
      *
      * @param condition 入参
      * @return
      * @author pangjianhua
      */
     @Override
-    @OrderInfoConvertAnnotation(queryStoreInfo = true,queryProductInfo = true)
+    @OrderInfoConvertAnnotation(queryStoreInfo = true, queryProductInfo = true)
     public OrderInfoDetailVO findOrderByCustomerId(OrderQueryByCustomerCondition condition) {
         if (StringUtils.isBlank(condition.getOrderNo())) {
-            throw new BusinessException(BusinessCode.CODE_411001, "查询订单参数异常");
+            throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
+        }
+        OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+        return detailVO;
+    }
+
+    /**
+     * B端查询订单
+     *
+     * @param condition 入参
+     * @return
+     * @author pangjianhua
+     */
+    @Override
+    @OrderInfoConvertAnnotation(queryCustomerInfo = true, queryProductInfo = true)
+    public OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition condition) {
+        if (StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
         OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
         return detailVO;

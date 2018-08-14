@@ -41,8 +41,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
         List deatils = condition.getDetails();
         int flag = 0 ;
-        flag = checkCondition(condition);
-        if(flag==0){
                 CouponInvestor couponInvestor = new CouponInvestor();
                 couponInvestor.setCode(condition.getCode());
                 couponInvestor.setName(condition.getName());
@@ -72,45 +70,10 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                         throw new BusinessException(BusinessCode.CODE_500006,"添加出资方规则失败");
                     }
                 }
-
-        }
         return flag;
     }
 
 
-    @Override
-    public int updateCouponInvestor(CouponInvestorCondition condition) {
-        List deatils = condition.getDetails();
-        int flag = 0 ;
-        flag = checkCondition(condition);
-        if(flag==0){
-            CouponInvestor couponInvestor = new CouponInvestor();
-            couponInvestor.setId(Long.parseLong(condition.getId()));
-            couponInvestor.setName(condition.getName());
-            couponInvestor.setRemarks(condition.getRemarks());
-            couponInvestor.setUpdated(new Date());
-            couponInvestor.setUpdatedBy(Long.parseLong(condition.getUserId()));
-            couponInvestor.setUpdatedByName(condition.getUserName());
-            couponInvestorMapper.updateCouponInvestor(couponInvestor);
-
-            //先删除再插入
-            couponInvestorDetailMapper.deleteCouponInvestorDetailByInvetorId(Long.parseLong(condition.getId()));
-            for(int i=0;i<deatils.size();i++){
-                CouponInvestorDetail detail = new CouponInvestorDetail();
-                LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                if(map.get("brandCode")!=null){
-                    detail.setIds(map.get("brandCode").toString());
-                }
-                detail.setInvestorId(Long.parseLong(condition.getId()));
-                detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
-                detail.setPercent(Float.parseFloat(map.get("percent").toString()));
-                detail.setNames(map.get("names").toString());
-                couponInvestorDetailMapper.insert(detail);
-            }
-
-        }
-        return flag;
-    }
 
 
 
@@ -157,49 +120,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     public int updateCouponInvestorToValid(long id,long userId,String userName) {
         int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;
-    }
-
-
-    /**
-     *
-     *@Deccription 新增或者修改出资方信息时校验是否符合提交规则
-     *@Params  condition
-     *@Return  flag
-     *@User  wl
-     *@Date   2018/8/8 15:18
-     */
-    public int checkCondition(CouponInvestorCondition condition){
-        int flag = 0;
-        List deatils = condition.getDetails();
-        if(deatils == null){
-            flag = CouponTemplateEnum.INVERSTOR_DETAIL_ISNULL.getCode();
-            return flag;
-        }
-        if(deatils!=null && deatils.size()>0){
-            Float tempPercent = 0.00f;
-            for(int i=0;i<deatils.size();i++){
-                LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                tempPercent += Float.parseFloat(map.get("percent").toString());
-            }
-            //占比之和必须等于100
-            if(tempPercent!=100.00f){
-                flag = CouponTemplateEnum.PERCENT_NOT_EQ100.getCode();
-                return flag;
-            }
-            //如果不止一个出资方，但是参数中的出资方的类型 或者品牌编码相等 , 返回出资方不能重复
-            if(deatils.size()>1){
-                Set set = new HashSet();
-                for(int i=0;i<deatils.size();i++){
-                    LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                    boolean isContains =  set.add(map.get("investor_type").toString());
-                    if(isContains == false){
-                        flag = CouponTemplateEnum.INVERSTOR_REPEAT.getCode();
-                        return flag;
-                    }
-                }
-            }
-        }
-     return flag;
     }
 
 

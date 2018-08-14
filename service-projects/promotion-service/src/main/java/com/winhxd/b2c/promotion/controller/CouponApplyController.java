@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponApplyServiceClient;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
 import io.swagger.annotations.Api;
@@ -59,6 +60,8 @@ public class CouponApplyController implements CouponApplyServiceClient {
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");
+            }else {
+                throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
             }
         return responseResult;
     }

@@ -3,9 +3,11 @@ package com.winhxd.b2c.common.exception.support;
 import brave.Span;
 import brave.Tracer;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.i18n.MessageHelper;
 import feign.codec.DecodeException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,21 +30,28 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         int code;
+        String message;
         BusinessException businessException = findBusinessException(ex);
         if (businessException != null) {
             code = businessException.getErrorCode();
+            if (StringUtils.isNotBlank(businessException.getMessage())) {
+                message = businessException.getMessage();
+            } else {
+                message = MessageHelper.getInstance().getMessage(String.valueOf(code));
+            }
             log.warn("Controller业务异常:{},{}", code, businessException.getMessage());
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             Span currentSpan = tracer.currentSpan();
             currentSpan.error(ex);
-            currentSpan.tag("error.stackTrace", stackTrace);
+            currentSpan.tag(ContextHelper.TRACER_API_ERROR, stackTrace);
             log.error("Controller未知异常,TraceId=" + currentSpan.context().traceIdString() + ",message=" + ex.getMessage(), ex);
             code = BusinessCode.CODE_1001;
+            message = MessageHelper.getInstance().getMessage(String.valueOf(BusinessCode.CODE_1001));
         }
         MappingJackson2JsonView view = new MappingJackson2JsonView();
         view.addStaticAttribute("code", code);
-        view.addStaticAttribute("message", MessageHelper.getInstance().getMessage(String.valueOf(code)));
+        view.addStaticAttribute("message", message);
         return new ModelAndView(view);
     }
 

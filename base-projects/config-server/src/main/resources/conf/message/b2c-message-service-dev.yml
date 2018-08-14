@@ -19,8 +19,10 @@ wechat:
   miniProgram:
       appid: wxdbbbd5e596ab6f4d
       secret: 26a5cdcdf75b393d0fef50e0a4aa43ae
-      grantType: authorization_code
+      grantTypeAuth: authorization_code
+      grantTypeCre: client_credential
       openidUrl: https://api.weixin.qq.com/sns/jscode2session
+      accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
 
 ##云信配置##
 netease:

@@ -49,6 +49,10 @@ public class OrderInfo {
      */
     private BigDecimal randomReductionMoney;
     /**
+     * 优惠券标题
+     */
+    private String couponTitles;
+    /**
      * 惠下单优惠金额
      */
     private BigDecimal couponHxdMoney;
@@ -75,7 +79,7 @@ public class OrderInfo {
      */
     private Integer skuCategoryQuantity;
     /**
-     * 支付类型:1为微信扫码付款;2为微信在线支付;
+     * 支付类型:2:微信扫码付款;1为微信在线支付;
      */
     private Short payType;
     /**
@@ -106,6 +110,14 @@ public class OrderInfo {
      * 退款时间
      */
     private Date refundDateTime;
+    /**
+     * 申请退款时间
+     */
+    private Date applyRefundDatetime;
+    /**
+     * 接单时间
+     */
+    private Date acceptOrderDatetime;
     /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */

@@ -61,7 +61,7 @@ public interface CouponTemplateService {
      *@User  wl
      *@Date   2018/8/6 20:39
      */
-    void updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName);
+    int updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName);
 
     /**
      *

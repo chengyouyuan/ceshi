@@ -10,6 +10,7 @@
         <result column="order_status" jdbcType="SMALLINT" property="orderStatus"/>
         <result column="pickup_code" jdbcType="VARCHAR" property="pickupCode"/>
         <result column="random_reduction_money" jdbcType="DECIMAL" property="randomReductionMoney"/>
+        <result column="coupon_titles" jdbcType="VARCHAR" property="couponTitles"/>
         <result column="coupon_hxd_money" jdbcType="DECIMAL" property="couponHxdMoney"/>
         <result column="coupon_brand_money" jdbcType="DECIMAL" property="couponBrandMoney"/>
         <result column="order_total_money" jdbcType="DECIMAL" property="orderTotalMoney"/>
@@ -24,6 +25,8 @@
         <result column="finish_datetime" jdbcType="TIMESTAMP" property="finishDateTime"/>
         <result column="cancel_datetime" jdbcType="TIMESTAMP" property="cancelDateTime"/>
         <result column="refund_datetime" jdbcType="TIMESTAMP" property="refundDateTime"/>
+        <result column="apply_refund_datetime" jdbcType="TIMESTAMP" property="applyRefundDatetime"/>
+        <result column="accept_order_datetime" jdbcType="TIMESTAMP" property="acceptOrderDatetime"/>
         <result column="pickup_type" jdbcType="SMALLINT" property="pickupType"/>
         <result column="inviter_code" jdbcType="VARCHAR" property="inviterCode"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
@@ -37,9 +40,9 @@
         <result column="created_by_name" jdbcType="VARCHAR" property="createdByName"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money,
+        id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money, coupon_titles,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,
+        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime, accept_order_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
     </sql>
@@ -65,24 +68,25 @@
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
         insert into order_info (id, order_no, customer_id,
         store_id, valuation_type, order_status,
-        pickup_code, random_reduction_money, coupon_hxd_money,
+        pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
         coupon_brand_money, order_total_money, real_payment_money,
         sku_quantity, sku_category_quantity,
         pay_type, pay_status, created,
         pay_finish_datetime, pickup_datetime,
-        finish_datetime, cancel_datetime, refund_datetime, pickup_type,
+        finish_datetime, cancel_datetime, refund_datetime, apply_refund_datetime,accept_order_datetime, pickup_type,
         inviter_code, updated, cancel_reason,
         remarks, region_code, imie,
         created_by, updated_by, updated_by_name,
         created_by_name)
         values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{customerId,jdbcType=BIGINT},
         #{storeId,jdbcType=BIGINT}, #{valuationType,jdbcType=SMALLINT}, #{orderStatus,jdbcType=SMALLINT},
-        #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponHxdMoney,jdbcType=DECIMAL},
+        #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponTitles,jdbcType=VARCHAR}, #{couponHxdMoney,jdbcType=DECIMAL},
         #{couponBrandMoney,jdbcType=DECIMAL}, #{orderTotalMoney,jdbcType=DECIMAL}, #{realPaymentMoney,jdbcType=DECIMAL},
         #{sku_quantity,jdbcType=INTEGER}, #{sku_category_quantity,jdbcType=INTEGER},
         #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP},
         #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
-        #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{refundDateTime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
+        #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{refundDateTime,jdbcType=TIMESTAMP},
+        #{applyRefundDatetime,jdbcType=TIMESTAMP}, #{acceptOrderDatetime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
         #{inviterCode,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{cancelReason,jdbcType=VARCHAR},
         #{remarks,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR},
         #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
@@ -114,6 +118,9 @@
             </if>
             <if test="randomReductionMoney != null">
                 random_reduction_money,
+            </if>
+            <if test="couponTitles != null">
+                coupon_titles,
             </if>
             <if test="couponHxdMoney != null">
                 coupon_hxd_money,
@@ -153,6 +160,12 @@
             </if>
             <if test="cancelDateTime != null">
                 cancel_datetime,
+            </if>
+            <if test="applyRefundDatetime != null">
+                apply_refund_datetime,
+            </if>
+            <if test="acceptOrderDatetime != null">
+                accept_order_datetime,
             </if>
             <if test="refundDateTime != null">
                 refund_datetime,
@@ -216,6 +229,9 @@
             <if test="randomReductionMoney != null">
                 #{randomReductionMoney,jdbcType=DECIMAL},
             </if>
+            <if test="couponTitles != null">
+                #{couponTitles,jdbcType=VARCHAR},
+            </if>
             <if test="couponHxdMoney != null">
                 #{couponHxdMoney,jdbcType=DECIMAL},
             </if>
@@ -254,6 +270,12 @@
             </if>
             <if test="refundDateTime != null">
                 #{refundDateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="acceptOrderDatetime != null">
+                #{acceptOrderDatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyRefundDatetime != null">
+                #{applyRefundDatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="cancelDateTime != null">
                 #{cancelDateTime,jdbcType=TIMESTAMP},
@@ -317,6 +339,9 @@
             <if test="randomReductionMoney != null">
                 random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
             </if>
+            <if test="couponTitles != null">
+                coupon_titles = #{couponTitles,jdbcType=VARCHAR},
+            </if>
             <if test="couponHxdMoney != null">
                 coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
             </if>
@@ -352,6 +377,12 @@
             </if>
             <if test="finishDateTime != null">
                 finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refundDateTime != null">
+                accept_order_datetime = #{acceptOrderDatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refundDateTime != null">
+                apply_refund_datetime = #{applyRefundDatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="refundDateTime != null">
                 refund_datetime = #{refundDateTime,jdbcType=TIMESTAMP},
@@ -404,6 +435,7 @@
       order_status = #{orderStatus,jdbcType=SMALLINT},
       pickup_code = #{pickupCode,jdbcType=VARCHAR},
       random_reduction_money = #{randomReductionMoney,jdbcType=DECIMAL},
+      coupon_titles = #{couponTitles,jdbcType=VARCHAR},
       coupon_hxd_money = #{couponHxdMoney,jdbcType=DECIMAL},
       coupon_brand_money = #{couponBrandMoney,jdbcType=DECIMAL},
       order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
@@ -418,6 +450,8 @@
       finish_datetime = #{finishDateTime,jdbcType=TIMESTAMP},
       cancel_datetime = #{cancelDateTime,jdbcType=TIMESTAMP},
       refund_datetime = #{refundDateTime,jdbcType=TIMESTAMP},
+      apply_refund_datetime = #{applyRefundDatetime,jdbcType=TIMESTAMP},
+      accept_order_datetime = #{acceptOrderDatetime,jdbcType=TIMESTAMP},
       pickup_type = #{pickupType,jdbcType=SMALLINT},
       inviter_code = #{inviterCode,jdbcType=VARCHAR},
       updated = #{updated,jdbcType=TIMESTAMP},
@@ -441,9 +475,9 @@
         </collection>
     </resultMap>
     <sql id="Order_Info_List">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, 
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
@@ -480,9 +514,9 @@
         order by info.created desc
     </select>
     <sql id="Order_Info_List_4_store">
-        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, 
+        info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,
+        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime, refund_datetime, accept_order_datetime, apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
     <select id="listOrder4Store" resultMap="OrderInfoListResultMap">
@@ -583,14 +617,6 @@
         updated = now()
         where id=#{orderId,jdbcType=BIGINT}
     </update>
-    <update id="updateOrderStatusForRefund">
-       update order_info
-       set order_status=77,cancel_datetime = now(),pickup_code=null
-        <if test="cancelReason != null">
-          ,cancel_reason = #{cancelReason,jdbcType=VARCHAR}
-        </if>
-       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
-    </update>
     <update id="updateOrderMoney">
        update order_info
        set 
@@ -600,8 +626,14 @@
     </update>
     <update id="updateOrderStatusForApplyRefund">
         update order_info
-       set order_status=2,cancel_datetime = now(),pickup_code=null
-       where order_no=#{orderNo,jdbcType=VARCHAR} AND customer_id=#{customerId,jdbcType=BIGINT} AND pay_status = 1
+       set order_status=33,apply_refund_datetime = now(),pickup_code=null
+        <if test="reason != null">
+            ,cancel_reason = #{reason,jdbcType=VARCHAR}
+        </if>
+       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+        <if test="customerId != null">
+            and customer_id = #{customerId,jdbcType=BIGINT}
+        </if>
     </update>
     <update id="orderPickup">
         update order_info
@@ -616,6 +648,11 @@
         update order_info
         set order_status=77,pickup_code=null,refund_datetime = now()
         where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+    </update>
+    <update id="updateOrderConfirmDate">
+        update order_info
+        set accept_order_datetime = #{date,jdbcType=TIMESTAMP}
+        where id=#{orderId,jdbcType=BIGINT}
     </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>

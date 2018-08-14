@@ -18,7 +18,4 @@ public class StoreUser {
 	public void setStoreCustomerId(Long storeCustomerId) {
 		this.storeCustomerId = storeCustomerId;
 	}
-
-
-    
 }

@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/store/user/findStorePageInfo",
+    "type": "report",
+    "id": "order_store_list_win",
+    "code": "order_store_list_win",
+    "title": "门店选择",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/store/user/findStorePageInfo"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "id",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "id",
+        "title": "商铺编码"
+      },
+      {
+        "name": "storeName",
+        "title": "商铺名称"
+      },
+      {
+        "name": "shopkeeper",
+        "title": "联系人"
+      },
+      {
+        "name": "contactMobile",
+        "title": "手机号"
+      }
+    ],
+    "params": [
+      {
+        "name": "id",
+        "inputModel": "input",
+        "title": "店铺编码",
+        "value": "",
+        "placeholder": "请输入店铺编码",
+        "isHidden": false
+      },
+      {
+        "name": "storeName",
+        "inputModel": "input",
+        "title": "店铺名称",
+        "value": "",
+        "placeholder": "请输入店铺名称",
+        "isHidden": false
+      },
+      {
+        "name": "contactMobile",
+        "inputModel": "input",
+        "title": "手机号",
+        "value": "",
+        "placeholder": "请输入手机号",
+        "isHidden": false
+      }
+    ],
+    "returnDisplay": "storeName",
+    "returnValue": "id"
+  }
+}

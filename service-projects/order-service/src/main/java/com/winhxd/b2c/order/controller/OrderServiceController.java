@@ -61,7 +61,7 @@ public class OrderServiceController implements OrderServiceClient {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummary() {
-        String logTitle = "/order/452/v1/queryStoreOrderSalesSummary/";
+        String logTitle = "/order/4052/v1/queryStoreOrderSalesSummary/";
         logger.info("{} 门店当天销售数据接口查询开始", logTitle);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
@@ -98,7 +98,7 @@ public class OrderServiceController implements OrderServiceClient {
     })
     public ResponseResult<PagedList<OrderInfoDetailVO>> listOrder4Management(
             @RequestBody OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
-        String logTitle = "/order/453/v1/listOrder4Management/";
+        String logTitle = "/order/4053/v1/listOrder4Management/";
         logger.info("{} 后台订单列表查询开始", logTitle);
         ResponseResult<PagedList<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
@@ -118,7 +118,7 @@ public class OrderServiceController implements OrderServiceClient {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<OrderInfoDetailVO4Management> getOrderDetail4Management(@PathVariable(value = "orderNo") String orderNo) {
-        String logTitle = "/order/454/v1/getOrderDetail4Management/ 后台订单详情接口 ";
+        String logTitle = "/order/4054/v1/getOrderDetail4Management/ 后台订单详情接口 ";
         logger.info("{}查询开始", logTitle);
         ResponseResult<OrderInfoDetailVO4Management> result = new ResponseResult<>();
         try {
@@ -145,7 +145,7 @@ public class OrderServiceController implements OrderServiceClient {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {
-        String logTitle = "/order/455/v1/queryStoreOrderSalesSummaryByDateTimePeriod/ 门店销售数据接口查询";
+        String logTitle = "/order/4055/v1/queryStoreOrderSalesSummaryByDateTimePeriod/ 门店销售数据接口查询";
         logger.info("{} 开始", logTitle);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
@@ -181,9 +181,13 @@ public class OrderServiceController implements OrderServiceClient {
     }
 
     @Override
-    public ResponseResult<List<OrderInfoDetailVO>> listOrder4ManagementWithNoPage(
+    @ApiOperation(value = "订单列表查询", notes = "订单列表查询")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    public ResponseResult<List<OrderInfoDetailVO>> listOrderWithNoPage(
             OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition) {
-        String logTitle = "/order/456/v1/listOrder4ManagementWithNoPage/";
+        String logTitle = "/order/4056/v1/listOrderWithNoPage/";
         logger.info("{} 后台订单列表查询开始", logTitle);
         ResponseResult<List<OrderInfoDetailVO>> result = new ResponseResult<>();
         try {
@@ -205,12 +209,11 @@ public class OrderServiceController implements OrderServiceClient {
      */
     @Override
     public ResponseResult<Boolean> updateOrderRefundCallback(@RequestBody OrderRefundCallbackCondition orderRefundCallbackCondition) {
-        String logTitle = "/order/457/v1/updateOrderRefundCallback/";
+        String logTitle = "/order/4057/v1/updateOrderRefundCallback/";
         logger.info("{} 后台订单列表查询开始", logTitle);
         ResponseResult<Boolean> result = new ResponseResult<>();
         try {
-            orderService.updateOrderRefundCallback(orderRefundCallbackCondition);
-            result.setData(null);
+            result.setData(orderService.updateOrderRefundCallback(orderRefundCallbackCondition));
         } catch (Exception e) {
             logger.error(logTitle + " 后台订单列表接口查询=--异常" + e.getMessage(), e);
             result.setCode(BusinessCode.CODE_1001);

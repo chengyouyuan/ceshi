@@ -10,9 +10,9 @@ import java.util.TreeMap;
 public enum PickUpTypeEnum {
 
     /**
-     * 自提
+     * 到店自提
      */
-    SELF_PICK_UP((short) 1, "自提"),
+    SELF_PICK_UP((short) 1, "到店自提"),
 
     /**
      * 配送

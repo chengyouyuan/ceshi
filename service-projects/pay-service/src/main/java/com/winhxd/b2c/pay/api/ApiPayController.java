@@ -31,7 +31,7 @@ public class ApiPayController {
             @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
             @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
-	@PostMapping(value = "/601/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<OrderPayVO> orderPay(@RequestBody OrderPayCondition condition){
 		ResponseResult<OrderPayVO> result=new ResponseResult<>();
 		return result;
@@ -44,7 +44,7 @@ public class ApiPayController {
 		@ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
 		@ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
 	})
-	@PostMapping(value = "/602/v1/auditRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/6002/v1/auditRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<OrderRefundVO> auditRefund(@RequestBody OrderPayCondition condition){
 		ResponseResult<OrderRefundVO> result=new ResponseResult<>();
 		return result;
@@ -54,7 +54,7 @@ public class ApiPayController {
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 	})
-	@PostMapping(value = "/603/v1/getprepayId", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/6003/v1/getprepayId", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<String> getprepayId(@RequestBody OrderPayCondition condition){
 		ResponseResult<String> result=new ResponseResult<>();
 		return result;

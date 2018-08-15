@@ -2,6 +2,7 @@ package com.winhxd.b2c.store.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -86,11 +87,11 @@ public interface StoreService {
     BackStageStoreVO findByIdForBackStage(Long id);
 
     /**
-     * 根据customerid 更改 regincode
+     * 根据customerid 更改 regioncode
      *
      * @param storeUserInfo
      */
-    void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
+    void updateRegionCodeByCustomerId(StoreUserInfo storeUserInfo);
 
     /**
      * @param condition 分页条件
@@ -102,9 +103,18 @@ public interface StoreService {
     PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition);
 
     /**
-     * 根据reginCode集合查询门店
+     * 根据regionCode集合查询门店
      * @param regionCodeList
      * @return
      */
+    List<String> findByRegionCodes(List<String> regionCodeList);
     List<String> findByReginCodes(List<String> regionCodeList);
+
+    /**
+     * 开店保存门店店铺信息非空的字段，并创建云信账号
+     *
+     * @param record
+     * @return
+     */
+    NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
 }

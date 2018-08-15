@@ -38,7 +38,7 @@ public class BackStageModifyStoreCondition {
     private Long storeCustomerId;
 
     @ApiModelProperty(value = "门店地理code")
-    private String storeReginCode;
+    private String storeRegionCode;
 
 
 

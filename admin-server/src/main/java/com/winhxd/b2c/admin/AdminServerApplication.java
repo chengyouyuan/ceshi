@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin;
 
 import com.winhxd.b2c.common.config.CommonConfig;
+import com.winhxd.b2c.common.mq.support.zipkin.ZipkinRabbitConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableFeignClients(basePackages = "com.winhxd.b2c.common.feign")
-@Import(CommonConfig.class)
+@Import({CommonConfig.class, ZipkinRabbitConfig.class})
 public class AdminServerApplication {
     private static final Logger log = LoggerFactory.getLogger(AdminServerApplication.class);
 

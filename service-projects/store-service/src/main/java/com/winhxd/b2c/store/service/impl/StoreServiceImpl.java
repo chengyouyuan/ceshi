@@ -3,13 +3,17 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +49,9 @@ public class StoreServiceImpl implements StoreService {
     private StoreUserInfoMapper storeUserInfoMapper;
     @Autowired
     private RegionServiceClient regionServiceClient;
+
+    @Autowired
+    private MessageServiceClient messageServiceClient;
 
     @Override
     public int bindCustomer(Long customerId, Long storeUserId) {
@@ -81,14 +89,14 @@ public class StoreServiceImpl implements StoreService {
     public PagedList<BackStageStoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         //去除code尾部0
-        String reginCode = null;
+        String regionCode = null;
         if (storeCondition.getRegionCode() != null) {
-            reginCode = storeCondition.getRegionCode().replaceAll("0+$", "");
+            regionCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
         StoreUserInfo storeUserInfo = new StoreUserInfo();
-        storeUserInfo.setStoreRegionCode(reginCode);
+        storeUserInfo.setStoreRegionCode(regionCode);
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
@@ -97,9 +105,9 @@ public class StoreServiceImpl implements StoreService {
             return pagedList;
         }
 
-        //获取regincode对应的区域名称
-        List<String> reginCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
-        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(reginCodeList).getData();
+        //获取regioncode对应的区域名称
+        List<String> regionCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
+        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(regionCodeList).getData();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();
         Set<String> codes = new HashSet<>();
@@ -178,8 +186,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo) {
-        storeUserInfoMapper.updateReginCodeByCustomerId(storeUserInfo);
+    public void updateRegionCodeByCustomerId(StoreUserInfo storeUserInfo) {
+        storeUserInfoMapper.updateRegionCodeByCustomerId(storeUserInfo);
     }
 
     @Override
@@ -198,13 +206,27 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<String> findByReginCodes(List<String> regionCodeList) {
-        regionCodeList = regionCodeList.stream().map(reginCode -> reginCode.replaceAll("0+$", "")).collect(Collectors.toList());
-        return storeUserInfoMapper.selectByReginCodes(regionCodeList);
+    public List<String> findByRegionCodes(List<String> regionCodeList) {
+        regionCodeList = regionCodeList.stream().map(regionCode -> regionCode.replaceAll("0+$", "")).collect(Collectors.toList());
+        return storeUserInfoMapper.selectByRegionCodes(regionCodeList);
     }
 
     @Override
     public int updateByPrimaryKeySelective(StoreUserInfo record) {
         return storeUserInfoMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo storeUserInfo) {
+        //开店状态 有效
+        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
+        storeUserInfoMapper.updateByPrimaryKeySelective(storeUserInfo);
+        NeteaseAccountCondition neteaseAccountCondition = new NeteaseAccountCondition();
+        neteaseAccountCondition.setCustomerId(storeUserInfo.getId());
+        neteaseAccountCondition.setName(storeUserInfo.getShopkeeper());
+        neteaseAccountCondition.setIcon(storeUserInfo.getShopOwnerImg());
+        neteaseAccountCondition.setMobile(storeUserInfo.getStoreMobile());
+        return messageServiceClient.createNeteaseAccount(neteaseAccountCondition).getData();
     }
 }

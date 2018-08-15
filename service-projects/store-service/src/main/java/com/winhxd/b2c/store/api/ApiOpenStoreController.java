@@ -6,6 +6,8 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
@@ -19,6 +21,7 @@ import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoConditio
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
@@ -51,7 +54,7 @@ import java.util.*;
  */
 @Api(tags = "惠小店开店相关接口")
 @RestController
-@RequestMapping(value = "/api-store/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-store/store", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiOpenStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiOpenStoreController.class);
@@ -311,7 +314,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！"),
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！")})
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Integer> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
+    public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
         if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupType() == null ||
                 storeBusinessInfoCondition.getPayType() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
@@ -331,10 +334,13 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200004);
         }
         BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
-        //开店状态 有效
-        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
-        storeService.updateByPrimaryKeySelective(storeUserInfo);
-        return new ResponseResult<>();
+        NeteaseAccountVO neteaseAccountVO = storeService.modifyStoreAndCreateAccount(storeUserInfo);
+        StoreMessageAccountVO storeMessageAccountVO = new StoreMessageAccountVO();
+        storeMessageAccountVO.setNeteaseAccid(neteaseAccountVO.getAccid());
+        storeMessageAccountVO.setNeteaseToken(neteaseAccountVO.getToken());
+        ResponseResult<StoreMessageAccountVO> responseResult = new ResponseResult<>();
+        responseResult.setData(storeMessageAccountVO);
+        return responseResult;
     }
 
     @ApiOperation(value = "惠小店管理首页获取数据接口", notes = "惠小店管理首页获取数据接口")

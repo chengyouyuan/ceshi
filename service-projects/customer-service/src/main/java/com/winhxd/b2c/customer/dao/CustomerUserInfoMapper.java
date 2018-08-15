@@ -22,8 +22,6 @@ public interface CustomerUserInfoMapper {
 
     int updateByPrimaryKey(CustomerUserInfo record);
 
-    CustomerUserInfo selectCustomerModel(CustomerUserInfo customerUserInfo);
-
     /**
      * @param condition 查询条件
      * @return 分页数据

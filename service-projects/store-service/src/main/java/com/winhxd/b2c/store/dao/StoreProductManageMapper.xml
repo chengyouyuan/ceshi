@@ -125,16 +125,16 @@
         	<choose>
         		<!-- 设置价格 -->
         		<when test="condition.priceStatus==1">
-        			and prod.sell_money  <![CDATA[ >= ]]> 0
+        			and prod.sell_money  <![CDATA[ > ]]> 0
         		</when>
         		<otherwise>
         		<!-- 未设置价格 -->
-        		and (prod.sell_money  <![CDATA[ < ]]> 0 or prod.sell_money is null)
+        		and (prod.sell_money  <![CDATA[ <= ]]> 0 or prod.sell_money is null)
         		</otherwise>
         	</choose>
             
         </if> 
-
+		order by prod.created desc
   </select>
   
  	<select id="selectBySkuCodeAndStoreId" resultMap="BaseResultMap">

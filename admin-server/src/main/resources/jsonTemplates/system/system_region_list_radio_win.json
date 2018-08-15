@@ -19,7 +19,7 @@
     ],
     "columns": [
       {
-        "type": "selection",
+        "type": "radio",
         "name": "id",
         "title": "选择",
         "aglign": "center",
@@ -79,6 +79,6 @@
       }
     ],
     "returnDisplay": "province",
-    "returnValue": "id"
+    "returnValue": "regionCode"
   }
 }

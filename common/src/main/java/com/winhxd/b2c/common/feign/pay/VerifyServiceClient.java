@@ -4,7 +4,9 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
@@ -30,6 +32,15 @@ public interface VerifyServiceClient {
     ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition);
 
     /**
+     * 结算-按汇总结算
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6092/v1/verifyBySummary", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition);
+
+    /**
      * 费用明细列表查询
      *
      * @param condition
@@ -37,6 +48,15 @@ public interface VerifyServiceClient {
      */
     @RequestMapping(value = "/pay/6093/v1/accountingDetailList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(VerifyDetailListCondition condition);
+
+    /**
+     * 结算-按明细结算
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6094/v1/verifyByDetail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition);
 }
 
 @Component
@@ -65,7 +85,19 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
     }
 
     @Override
+    public ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition) {
+        log.warn(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
     public ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(VerifyDetailListCondition condition) {
+        log.warn(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
         log.warn(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

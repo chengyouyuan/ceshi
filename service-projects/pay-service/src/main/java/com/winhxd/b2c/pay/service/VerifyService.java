@@ -5,8 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
@@ -14,7 +14,6 @@ import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
-import com.winhxd.b2c.pay.vo.StoreAndDateVO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,14 +112,14 @@ public class VerifyService {
      * @param operatedByName
      */
     @Transactional
-    public int verifyByStoreSummary(List<StoreAndDateVO> list, String verifyRemark, Long operatedBy, String operatedByName) {
+    public int verifyByStoreSummary(List<VerifySummaryCondition.StoreAndDateVO> list, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
         accountingDetailMapper.insertVerifyHistory(
                 AccountingDetail.VerifyStatusEnum.VERIFIED.getCode(),
                 verifyCode, verifyRemark, operatedBy, operatedByName);
         int updatedCount = 0;
-        for (StoreAndDateVO vo : list) {
+        for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
                     verifyCode, vo.getStoreId(), vo.getDate());
             updatedCount += count;

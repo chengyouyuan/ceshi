@@ -2,10 +2,9 @@ package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
@@ -59,19 +59,25 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public ResponseResult<OrderPayVO> orderPay(OrderPayCondition condition) {
+		String log=logLabel+"订单支付支付orderPay";
+		logger.info(log+"--开始");
+		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600102);
+		}
+		logger.info(log+"--参数"+condition.toString());
 		//todo 调取微信支付接口  
 		return null;
 	}
 
 	@Override
-	public Integer callbackOrderPay(UpdateOrderCondition condition) {
+	public Integer callbackOrderPay(OrderPayCallbackCondition condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
-		//todo 调用订单接口
 		
 		// 插入流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
@@ -82,8 +88,6 @@ public class PayServiceImpl implements PayService{
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 
-		//todo插入公司预入账数据（对账的时候更新为实入账）
-		//todo给用户插入待结算金额和总的收入金额
 		return null;
 	}
 
@@ -118,7 +122,6 @@ public class PayServiceImpl implements PayService{
 		
          List<OrderRefundCallbackCondition> aaList=new ArrayList<>();
 		
-		//todo 将此订单的预入账记录更新为退款记录
 		logger.info(log+"--结束");
 		return null;
 	}
@@ -156,7 +159,7 @@ public class PayServiceImpl implements PayService{
 			
 			storeBankroll.setTotalMoeny(totalMoney);
 			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-			storeBankroll.setPresentedMoney(presentedMoney);
+			storeBankroll.setPresentedMoney(presentedMoney);;
 			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 		}

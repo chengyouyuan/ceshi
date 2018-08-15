@@ -38,7 +38,7 @@ public class ApiCouponController{
     private CouponService couponService;
 
     private String logTitle=""; 
-    @ApiOperation(value = "新人专享优惠列表", notes = "新人专享优惠列表")
+    @ApiOperation(value = "C端新人专享优惠列表", notes = "C端新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_500002, message = "该手机号已经享受过新用户福利"),
@@ -54,7 +54,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "待领取优惠券列表", notes = "待领取优惠券列表")
+    @ApiOperation(value = "C端待领取优惠券列表", notes = "C端待领取优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -69,7 +69,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "我的优惠券列表", notes = "我的优惠券列表")
+    @ApiOperation(value = "C端我的优惠券列表", notes = "C端我的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -85,7 +85,7 @@ public class ApiCouponController{
     }
 
 
-    @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
+    @ApiOperation(value = "C端用户领取优惠券", notes = "C端用户领取优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -128,7 +128,7 @@ public class ApiCouponController{
      * @param condition
      * @return
      */
-    @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
+    @ApiOperation(value = "C端用户查询门店优惠券列表", notes = "C端用户查询门店优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -144,7 +144,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "订单可用的优惠券列表", notes = "订单可用的优惠券列表")
+    @ApiOperation(value = "C端订单可用的优惠券列表", notes = "C端订单可用的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
@@ -184,7 +184,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "获取可用最优惠的优惠券", notes = "获取可用最优惠的优惠券")
+    @ApiOperation(value = "C端获取可用最优惠的优惠券", notes = "C端获取可用最优惠的优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })

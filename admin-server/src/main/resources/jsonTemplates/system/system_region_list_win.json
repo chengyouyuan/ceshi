@@ -5,7 +5,7 @@
     "type": "report",
     "id": "system_region_list_win",
     "code": "system_region_list_win",
-    "title": "",
+    "title": "选择区域",
     "buttons": [
       {
         "name": "查询",
@@ -19,7 +19,7 @@
     ],
     "columns": [
       {
-        "type": "select",
+        "type": "selection",
         "name": "id",
         "title": "选择",
         "aglign": "center",
@@ -78,7 +78,7 @@
         "title": "居委会/村"
       }
     ],
-    "returnDisplay": "regionCode",
+    "returnDisplay": "province",
     "returnValue": "id"
   }
 }

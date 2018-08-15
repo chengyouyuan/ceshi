@@ -79,7 +79,7 @@
           "id": "4_1",
           "menuName": "订单管理",
           "path": "",
-          "configKey": "/template/module/order/order_list_view.json",
+          "configKey": "/template/module/order/order_list.json",
           "permission": ""
         },
         {

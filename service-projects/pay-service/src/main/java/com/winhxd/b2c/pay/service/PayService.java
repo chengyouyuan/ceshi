@@ -3,7 +3,9 @@ package com.winhxd.b2c.pay.service;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 
@@ -57,6 +59,13 @@ public interface PayService {
 	 * @return
 	 */
 	Integer callbackOrderRefund(UpdateOrderCondition condition);
+	
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月15日 上午9:24:42
+	 * @Description 门店资金变化(注意事项：里面的操作都是add，需要减少时传负数)
+	 */
+	void updateStoreBankroll(StoreBankrollChangeCondition condition);
 	
 	
 }

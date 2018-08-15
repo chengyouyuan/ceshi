@@ -13,10 +13,11 @@ public enum CouponActivityEnum {
     PUSH_COUPON((short) 2,"推券"),
 
     /**
-     * 优惠券活动是否有效  0有效 1无效
+     * 优惠券活动是否有效  0无效 1有效
      */
-    ACTIVITY_EFFICTIVE((short) 0, "有效"),
-    ACTIVITY_VALIDATE((short) 1, "无效"),
+    ACTIVITY_INVALID((short) 0, "无效"),
+    ACTIVITY_EFFICTIVE((short) 1, "有效"),
+
 
     /**
      * 活动状态 1开启 2停止

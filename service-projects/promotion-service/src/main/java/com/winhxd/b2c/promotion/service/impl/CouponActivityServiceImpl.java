@@ -124,7 +124,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setActivityStart(activityStart);
         couponActivity.setActivityEnd(activityEnd);
         couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
         couponActivity.setCreated(new Date());
         couponActivity.setCreatedBy(condition.getCreatedBy());
         couponActivity.setCreatedByName(condition.getCreatedByName());
@@ -269,7 +269,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivity.setActivityStart(activityStart);
         couponActivity.setActivityEnd(activityEnd);
         couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
         couponActivity.setUpdated(new Date());
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());
@@ -290,7 +290,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         //删除CouponActivityTemplate
         CouponActivityTemplate cat = new CouponActivityTemplate();
         cat.setCouponActivityId(condition.getId());
-        cat.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        cat.setStatus(CouponActivityEnum.ACTIVITY_INVALID.getCode());
         int n2 = couponActivityTemplateMapper.updateByCouponActivityId(cat);
         if(n2==0){
             throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
@@ -299,7 +299,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
             //删除couponActivityStoreCustomer
             casc.setCouponActivityTemplateId(condition.getCouponActivityTemplateList().get(0).getId());
-            casc.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+            casc.setStatus(CouponActivityEnum.ACTIVITY_INVALID.getCode());
             int n3 = couponActivityStoreCustomerMapper.updateByCouponActivityTemplateId(casc);
             if(n3==0){
                 throw new BusinessException(BusinessCode.CODE_503201,"优惠券活动更新失败");
@@ -310,6 +310,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
             CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
             couponActivityTemplate.setCouponActivityId(couponActivity.getId());
+            couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
@@ -333,7 +334,6 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
                 couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                 couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
-                couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                 if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
                     couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
                 }
@@ -375,7 +375,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     public void deleteCouponActivity(CouponActivityCondition condition) {
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setId(condition.getId());
-        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_VALIDATE.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_INVALID.getCode());
         couponActivity.setUpdated(new Date());
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());

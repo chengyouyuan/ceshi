@@ -1,12 +1,5 @@
 package com.winhxd.b2c.message.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
@@ -17,6 +10,12 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.message.service.MiniProgramService;
 import com.winhxd.b2c.message.service.NeteaseService;
 import com.winhxd.b2c.message.service.SMSService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author jujinbiao
@@ -41,7 +40,11 @@ public class MessageServiceController implements MessageServiceClient {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccountInfo = neteaseService.getNeteaseAccountInfo(neteaseAccountCondition);
-            result.setData(neteaseAccountInfo);
+            if (neteaseAccountInfo == null) {
+                result.setCode(BusinessCode.CODE_1001);
+            } else {
+                result.setData(neteaseAccountInfo);
+            }
         }catch (Exception e){
             LOGGER.error("/message/7012/v1/getNeteaseAccountInfo,获取云信用户信息出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
@@ -54,7 +57,11 @@ public class MessageServiceController implements MessageServiceClient {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccount = neteaseService.createNeteaseAccount(neteaseAccountCondition);
-            result.setData(neteaseAccount);
+            if (neteaseAccount == null) {
+                result.setCode(BusinessCode.CODE_1001);
+            } else {
+                result.setData(neteaseAccount);
+            }
         }catch (Exception e){
             LOGGER.error("/message/7013/v1/createNeteaseAccount,创建云信用户出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);

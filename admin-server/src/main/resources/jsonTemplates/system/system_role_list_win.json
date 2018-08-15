@@ -28,19 +28,13 @@
     "columns": [
       {
         "type": "radio",
-        "name": "id",
-        "title": "选择",
         "aglign": "center",
-        "width": "50",
+        "width": "20",
         "fixed": "left"
       },
       {
         "name": "roleName",
         "title": "权限组名"
-      },
-      {
-        "name": "permissions",
-        "title": "权限范围"
       },
       {
         "name": "userCount",

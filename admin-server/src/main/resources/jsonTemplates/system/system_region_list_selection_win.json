@@ -3,8 +3,8 @@
     "ajaxType": "post",
     "path": "/region/filterlist",
     "type": "report",
-    "id": "system_region_list_win",
-    "code": "system_region_list_win",
+    "id": "system_region_list_selection_win",
+    "code": "system_region_list_selection_win",
     "title": "选择区域",
     "buttons": [
       {

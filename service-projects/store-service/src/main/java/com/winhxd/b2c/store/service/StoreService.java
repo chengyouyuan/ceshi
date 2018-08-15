@@ -2,11 +2,11 @@ package com.winhxd.b2c.store.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 
 import java.util.List;
@@ -115,5 +115,5 @@ public interface StoreService {
      * @param record
      * @return
      */
-    NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
+    StoreMessageAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
 }

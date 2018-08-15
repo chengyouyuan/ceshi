@@ -70,6 +70,10 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
         ReflectionUtils.doWithMethods(targetClass, method -> {
             StringMessageListener annotation = AnnotationUtils.getAnnotation(method, StringMessageListener.class);
             if (annotation != null) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes == null || parameterTypes.length != 1 || !String.class.isAssignableFrom(parameterTypes[0])) {
+                    throw new IllegalArgumentException("StringMessageListener参数仅支持String: " + targetClass.getCanonicalName() + "#" + method.getName());
+                }
                 SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer(connectionFactory);
                 listenerContainer.setQueueNames(annotation.value().toString());
                 listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);

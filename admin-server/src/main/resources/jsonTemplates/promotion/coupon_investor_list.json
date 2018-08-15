@@ -1,1 +1,147 @@
-{}
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5028/v1/getCouponInvestorPage",
+    "type": "report",
+    "id": "coupon_invertor_list",
+    "code": "coupon_invertor_list",
+    "title": "出资方规则列表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/contributiveRule/index"
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/promotion/5028/v1/getCouponInvestorPage"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "/promotion/5015/v1/viewCouponInvestorDetail",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "设置为无效",
+            "icon": null,
+            "event": {
+              "type": "ajax",
+              "ajaxType":"post",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": ""
+              },
+              "path": "/promotion/5016/v1/updateCouponInvestorToValid"
+            }
+          }
+        ]
+      },
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "name",
+        "title": "出资方规则名称"
+      },
+      {
+        "name": "code",
+        "title": "出资方规则编码"
+      },
+      {
+        "name": "investorNames",
+        "title": "出资方名称"
+      },
+      {
+        "name": "code",
+        "title": "出资方占比"
+      },
+      {
+        "name": "relTempleteCount",
+        "title": "模板数量"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人"
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "updatedByName",
+        "title": "修改人"
+      },
+      {
+        "name": "updated",
+        "title": "修改时间"
+      }
+    ],
+    "params": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "出资方规则名称",
+        "value": "",
+        "placeholder": "请输入出资方规则名称",
+        "isHidden": false
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "出资方规则编码",
+        "value": "",
+        "placeholder": "请输入出资方规则",
+        "isHidden": false
+      },
+      {
+        "name": "names",
+        "inputModel": "input",
+        "title": "出资方名称",
+        "value": "",
+        "placeholder": "请输入出资方名称",
+        "isHidden": false
+      }
+
+    ]
+  }
+}

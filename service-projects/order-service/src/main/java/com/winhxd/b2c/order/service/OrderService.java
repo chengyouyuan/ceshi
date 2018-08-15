@@ -31,10 +31,11 @@ public interface OrderService {
      * 订单支付成功通知接口
      *
      * @param orderNo
+     * @param paymentSerialNum 支付流水号
      * @author wangbin
      * @date 2018年8月6日 上午10:44:23
      */
-    void orderPaySuccessNotify(String orderNo);
+    void orderPaySuccessNotify(String orderNo, String paymentSerialNum);
 
     /**
      * 门店处理用户退款订单

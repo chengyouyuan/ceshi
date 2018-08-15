@@ -85,7 +85,7 @@ public class OrderServiceTest {
     
     @Test
     public void testOrderPayNotify() {
-        orderService.orderPaySuccessNotify("C18080417612761795");
+        orderService.orderPaySuccessNotify("C18080417612761795","asdfasdfasd");
     }
     
     @Test

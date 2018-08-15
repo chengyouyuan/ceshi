@@ -86,6 +86,11 @@ public class OrderInfo {
      * 支付状态:0为未支付;1为已支付;
      */
     private Short payStatus;
+    
+    /**
+     * 支付成功流水号
+     */
+    private String paymentSerialNum;
     /**
      * 订单创建时间
      */

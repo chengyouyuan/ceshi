@@ -14,6 +14,8 @@ import lombok.Data;
 @ApiModel("惠小店用户请求参数")
 @Data
 public class StoreUserInfoCondition extends ApiCondition{
+	@ApiModelProperty(value = "门店id，主键")
+	private Long id;
 	@ApiModelProperty(value = "用户账号")
     private String storeMobile;
 	@ApiModelProperty(value = "密码")

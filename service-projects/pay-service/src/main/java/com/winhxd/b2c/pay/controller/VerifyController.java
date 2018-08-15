@@ -11,7 +11,6 @@ import com.winhxd.b2c.pay.service.VerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +22,28 @@ public class VerifyController {
     @Autowired
     private VerifyService verifyService;
 
-    @ApiOperation("结算列表查询")
+    @ApiOperation(value = "订单费用记账", notes = "订单支付成功后，记录费用明细")
+    @PostMapping("/pay/6081/v1/recordAccounting")
+    public ResponseResult<Integer> recordAccounting(@RequestParam("orderNo") String orderNo) {
+        int count = verifyService.saveAccountingDetailsByOrderNo(orderNo);
+        return new ResponseResult(count);
+    }
+
+    @ApiOperation(value = "订单费用标记入账", notes = "订单闭环后，更新费用入账状态为已完成")
+    @PostMapping("/pay/6082/v1/completeAccounting")
+    public ResponseResult<Integer> completeAccounting(@RequestParam("orderNo") String orderNo) {
+        int count = verifyService.completeAccounting(orderNo);
+        return new ResponseResult(count);
+    }
+
+    @ApiOperation(value = "订单费用与支付平台结算", notes = "支付平台结算后，更新费用明细与支付平台为结算完成")
+    @PostMapping("/pay/6083/v1/thirdPartyVerifyAccounting")
+    public ResponseResult<Integer> thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+        int count = verifyService.thirdPartyVerifyAccounting(condition);
+        return new ResponseResult(count);
+    }
+
+    @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
     @PostMapping("/pay/6091/v1/verifyList")
     public ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition) {
         Page<VerifySummaryVO> page = verifyService.findVerifyList(condition);
@@ -35,7 +55,7 @@ public class VerifyController {
         return new ResponseResult<>(pagedList);
     }
 
-    @ApiOperation("结算-按汇总结算")
+    @ApiOperation(value = "账单结算", notes = "按汇总结算")
     @PostMapping("/pay/6092/v1/verifyBySummary")
     public ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition) {
         int count = verifyService.verifyByStoreSummary(
@@ -43,7 +63,7 @@ public class VerifyController {
         return new ResponseResult<>(count);
     }
 
-    @ApiOperation("费用明细列表查询")
+    @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
     @PostMapping("/pay/6093/v1/accountingDetailList")
     public ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(VerifyDetailListCondition condition) {
         Page<VerifyDetailVO> page = verifyService.findAccountingDetailList(condition);
@@ -55,7 +75,7 @@ public class VerifyController {
         return new ResponseResult<>(pagedList);
     }
 
-    @ApiOperation("结算-按明细结算")
+    @ApiOperation(value = "费用结算", notes = "按明细结算")
     @PostMapping("/pay/6094/v1/verifyByDetail")
     public ResponseResult<VerifyResultVO> verifyByDetail(VerifyDetailCondition condition) {
         int count = verifyService.verifyByAccountingDetail(
@@ -63,22 +83,31 @@ public class VerifyController {
         return new ResponseResult<>(count);
     }
 
-    @ApiOperation("门店提现申请列表查询")
-    @PostMapping("/pay/6095/v1/storeWithdrawList")
+    @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
+    @PostMapping("/pay/6095/v1/accountingDetailPause")
+    public ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition) {
+        int count = verifyService.pauseByAccountingDetail(
+                condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
+        return new ResponseResult<>(count);
+    }
+
+    @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
+    @PostMapping("/pay/6096/v1/accountingDetailRestore")
+    public ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition) {
+        int count = verifyService.restoreByAccountingDetail(
+                condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
+        return new ResponseResult<>(count);
+    }
+
+    @ApiOperation(value = "门店提现申请列表查询")
+    @PostMapping("/pay/6097/v1/storeWithdrawList")
     public ResponseResult<VerifyResultVO> storeWithdrawList(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
     }
 
-    @ApiOperation("批准门店提现申请")
-    @PostMapping("/pay/6096/v1/approveStoreWithdraw")
+    @ApiOperation(value = "批准门店提现申请")
+    @PostMapping("/pay/6098/v1/approveStoreWithdraw")
     public ResponseResult<VerifyResultVO> approveStoreWithdraw(OrderRecordAccountingCondition condition) {
         return new ResponseResult<>();
-    }
-
-    @ApiOperation(value = "订单费用记账", notes = "返回记账多少笔费用")
-    @GetMapping("/pay/6097/v1/recordAccounting")
-    public ResponseResult<Integer> recordAccounting(@RequestParam("orderNo") String orderNo) {
-        int count = verifyService.saveAccountingDetailsByOrderNo(orderNo);
-        return new ResponseResult(count);
     }
 }

@@ -24,12 +24,12 @@ public class VerifySummaryCondition implements Serializable {
     @ApiModelProperty("门店列表")
     private List<StoreAndDateVO> list = new ArrayList<>();
 
-    @ApiModelProperty("核销备注")
+    @ApiModelProperty("操作备注")
     private String verifyRemark;
 
-    @ApiModelProperty("核销人ID")
+    @ApiModelProperty("操作人ID")
     private Long operatedBy;
 
-    @ApiModelProperty("核销人姓名")
+    @ApiModelProperty("操作人姓名")
     private String operatedByName;
 }

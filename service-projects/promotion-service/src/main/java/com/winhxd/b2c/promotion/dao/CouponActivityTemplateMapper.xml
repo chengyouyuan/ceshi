@@ -16,6 +16,7 @@
     <result column="send_num" jdbcType="INTEGER" property="sendNum" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="title" jdbcType="VARCHAR" property="templateName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, coupon_activity_id, template_id, count, start_time, end_time, effective_days, 
@@ -35,6 +36,27 @@
     where
     status = 1
     AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </select>
+  <select id="selectTemplateByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+	cat.id,
+	cat.coupon_activity_id,
+	cat.template_id,
+	cat.start_time,
+	cat.end_time,
+	cat.effective_days,
+	cat.coupon_num_type,
+	cat.coupon_num,
+	cat.customer_voucher_limit_type,
+	cat.customer_voucher_limit_num,
+	cat.send_num,
+	ct.title
+FROM
+	coupon_activity_template cat
+LEFT JOIN coupon_template ct ON cat.template_id = ct.id
+WHERE
+	cat. STATUS = 1
+AND cat.coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
   </select>
   <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate" resultMap="BaseResultMap">
     select

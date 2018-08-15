@@ -227,7 +227,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
             couponActivityVO.setCouponType(couponActivity.getCouponType());
         }
-        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectByActivityId(couponActivity.getId());
+        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectTemplateByActivityId(couponActivity.getId());
         couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
 
         for(int i = 0 ; i < couponActivityTemplateList.size() ; i++) {

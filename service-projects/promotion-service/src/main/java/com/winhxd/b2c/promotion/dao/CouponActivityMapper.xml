@@ -240,8 +240,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    ca.activity_start activityStart,
-    ca.activity_end activityEnd,
+    DATE(ca.activity_start) activityStart,
+    DATE(ca.activity_end) activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -292,8 +292,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    ca.activity_start activityStart,
-    ca.activity_end activityEnd,
+    DATE(ca.activity_start) activityStart,
+    DATE(ca.activity_end) activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,
@@ -311,7 +311,8 @@
     AND ca.activity_status = 1
     AND ca. STATUS = 1
     AND ca.activity_start &lt;=  NOW()
-    AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
+    AND ca.activity_end &gt;= NOW()
+    <!--AND cas.store_id = #{storeId} -->
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>
   <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">

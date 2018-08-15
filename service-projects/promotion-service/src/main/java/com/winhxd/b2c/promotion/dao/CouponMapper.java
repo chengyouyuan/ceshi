@@ -23,11 +23,10 @@ public interface CouponMapper {
      * 获取某个优惠券用户领取的数量
      * @param activityId
      * @param templateId
-     * @param storeId
      * @param customerId
      * @return
      */
-    int getCouponNumByCustomerId(@Param("activityId") Long activityId,@Param("templateId") Long templateId,@Param("storeId") Long storeId,@Param("customerId") Long customerId);
+    int getCouponNumByCustomerId(@Param("activityId") Long activityId,@Param("templateId") Long templateId,@Param("customerId") Long customerId);
 
     /**
      * 获取某个优惠券门店领取的数量

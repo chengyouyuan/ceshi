@@ -9,20 +9,11 @@ import io.swagger.annotations.ApiModelProperty;
  * @Description  查询门店下的优惠券使用情况 以及领取情况 统计
  **/
 public class CouponInStoreGetedAndUsedCodition extends ApiCondition {
-    @ApiModelProperty(value = "门店id")
-    private Long storeId;
     @ApiModelProperty(value = "页号")
     private Integer pageNo;
     @ApiModelProperty(value = "页大小")
     private Long pageSize;
 
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
 
     public Integer getPageNo() {
         return pageNo;

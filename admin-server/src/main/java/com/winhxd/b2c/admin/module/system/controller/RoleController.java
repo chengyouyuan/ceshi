@@ -136,7 +136,8 @@ public class RoleController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_301000, message = "权限组内有成员, 不可删除"),
     })
     @DeleteMapping(value = "/role/remove/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_ROLE_DELETE})

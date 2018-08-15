@@ -1,7 +1,10 @@
 package com.winhxd.b2c.pay.weixin.condition;
 
 import com.winhxd.b2c.common.constant.WithDrawChannelCodeType;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -9,11 +12,18 @@ import java.math.BigDecimal;
  *
  * @Author yindanqing
  * @Date 2018/8/14 10:43
- * @Description: 提现至微信余额
+ * @Description: 转账至微信余额
  */
-public class PayTransfersToWxBankCondition implements java.io.Serializable {
+@Setter
+@Getter
+public class PayTransfersToWxBankCondition implements Serializable {
 
     private static final long serialVersionUID = -7292089920160701229L;
+
+    /**
+     * 商户号
+     */
+/*    private String mchid;*/
 
     /**
      * 提现流水号
@@ -45,51 +55,4 @@ public class PayTransfersToWxBankCondition implements java.io.Serializable {
      */
     private String desc;
 
-    public String getPartnerTradeNo() {
-        return partnerTradeNo;
-    }
-
-    public void setPartnerTradeNo(String partnerTradeNo) {
-        this.partnerTradeNo = partnerTradeNo;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
-    }
-
-    public WithDrawChannelCodeType getChannelCode() {
-        return channelCode;
-    }
-
-    public void setChannelCode(WithDrawChannelCodeType channelCode) {
-        this.channelCode = channelCode;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 }

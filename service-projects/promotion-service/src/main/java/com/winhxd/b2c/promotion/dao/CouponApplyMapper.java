@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApply;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
+import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface CouponApplyMapper {
     long insertCouponApply(CouponApply couponApply);
 
     List<ApplyTempleteCountVO> findApplyTempleteCountPage(@Param("applyId") long applyId);
+
+    TempleteRelationCountVO getRelationCouponApplyCount(@Param("id") Long id);
 }

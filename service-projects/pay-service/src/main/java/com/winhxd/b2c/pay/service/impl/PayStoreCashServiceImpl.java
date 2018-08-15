@@ -2,6 +2,8 @@ package com.winhxd.b2c.pay.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
@@ -44,7 +46,8 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition) {
         ResponseResult<StoreBankrollVO> result = new ResponseResult<StoreBankrollVO>();
         StoreBankrollVO vo = new StoreBankrollVO();
-        Long storeId = condition.getStoreId();
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
             vo.setId(storeBankroll.getId());
@@ -68,10 +71,12 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
      */
     @Override
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<PayStoreTransactionRecordVO> voList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(condition.getStoreId());
+        List<PayStoreTransactionRecordVO> voList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(storeId);
         PageInfo<PayStoreTransactionRecordVO> pageInfo = new PageInfo<>(voList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
@@ -91,10 +96,12 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
      */
     @Override
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
-        List<PayWithdrawalsVO> voList = payWithdrawalsMapper.getPayWithdrawalsByStoreId(condition.getStoreId());
+        List<PayWithdrawalsVO> voList = payWithdrawalsMapper.getPayWithdrawalsByStoreId(storeId);
         PageInfo<PayWithdrawalsVO> pageInfo = new PageInfo<>(voList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

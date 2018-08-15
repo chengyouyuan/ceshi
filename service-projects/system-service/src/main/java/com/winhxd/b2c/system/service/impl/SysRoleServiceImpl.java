@@ -11,10 +11,8 @@ import com.winhxd.b2c.system.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author zhangzhengyang
@@ -71,13 +69,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public SysRole get(Long id) {
-        SysRoleCondition condition = new SysRoleCondition();
-        condition.setId(id);
-        List<SysRole> sysRoleList = sysRoleMapper.selectSysRole(condition);
-        if(CollectionUtils.isEmpty(sysRoleList)){
-            return null;
-        }
-        return sysRoleList.get(0);
+        return sysRoleMapper.getSysRoleById(id);
     }
 
     @Override

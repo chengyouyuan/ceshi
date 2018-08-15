@@ -12,9 +12,7 @@
     FROM
     coupon_activity ca
     WHERE
-    ca.activity_start &lt;= NOW()
-    AND ca.activity_end &gt;= NOW()
-    AND ca.activity_status = 1
+   ca.activity_status = 1
     AND ca.STATUS = 1 AND ca.type = 1
     ) AS temp_tab ON car.coupon_activity_id = temp_tab.id
     WHERE car.template_id = #{templateId} AND car.coupon_activity_id = #{activityId}
@@ -30,9 +28,7 @@
     FROM
     coupon_activity ca
     WHERE
-    ca.activity_start &lt;= NOW()
-    AND ca.activity_end &gt;= NOW()
-    AND ca.activity_status = 1
+     ca.activity_status = 1
     AND ca. STATUS = 1 AND ca.type = 1
     ) AS temp_tab ON car.coupon_activity_id = temp_tab.id
     WHERE car.template_id = #{templateId} AND car.coupon_activity_id = #{activityId} AND car.store_id = #{storeId}
@@ -49,12 +45,10 @@
     FROM
     coupon_activity ca
     WHERE
-    ca.activity_start &lt;= NOW()
-    AND ca.activity_end &gt;= NOW()
-    AND ca.activity_status = 1
+     ca.activity_status = 1
     AND ca. STATUS = 1 AND ca.type = 1
     ) AS temp_tab ON car.coupon_activity_id = temp_tab.id
-    WHERE car.template_id = #{templateId} AND car.coupon_activity_id = #{activityId} AND car.store_id = #{storeId} AND car.customer_id = #{customerId};
+    WHERE car.template_id = #{templateId} AND car.coupon_activity_id = #{activityId} AND car.customer_id = #{customerId};
   </select>
 
   <select id="couponListByOrder" parameterType="java.lang.String" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
@@ -72,8 +66,8 @@
 	cap.apply_rule_type applyRuleType,
 	cap.id applyId,
 	ca.coupon_type couponType,
-	ca.activity_start activityStart,
-	ca.activity_end activityEnd,
+	DATE(ca.activity_start) activityStart,
+    DATE(ca.activity_end) activityEnd,
 	CASE
 WHEN cts. STATUS = 2 THEN
 	'未使用'

@@ -4,8 +4,8 @@ import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
+import com.winhxd.b2c.common.domain.system.user.enums.UserIdentityEnum;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
-import com.winhxd.b2c.common.i18n.MessageHelper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -37,6 +36,13 @@ public class SecurityAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
+        if (null != userInfo.getIdentity()) {
+            if (userInfo.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
+                // 超级管理员不进行权限校验
+                return joinPoint.proceed();
+            }
+
+        }
         // 用户权限列表
         // userInfo.getPermissions()返回数据例：["ORDER_MANAGEMENT","SYSTEM_MANAGEMENT"]
         HashSet<PermissionEnum> hashSet = new HashSet<>(userInfo.getPermissions().size()+1);
@@ -53,4 +59,5 @@ public class SecurityAspect {
             return new ResponseResult(BusinessCode.CODE_1003);
         }
     }
+
 }

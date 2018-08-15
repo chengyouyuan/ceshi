@@ -44,6 +44,7 @@ public class StoreProdManageController {
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> result=new ResponseResult<>();
+		condition.setDeleted(1);
 		result=backStageStoreServiceClient.findStoreProdManageList(condition);
 		return result;
 	}
@@ -57,6 +58,7 @@ public class StoreProdManageController {
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@PathVariable("id") Long id) {
 		BackStageStoreProdCondition condition=new BackStageStoreProdCondition();
 		condition.setId(id);
+		condition.setDeleted(1);
 		ResponseResult<BackStageStoreProdVO> result=new ResponseResult<>();
 		result=backStageStoreServiceClient.findStoreProdManage(condition);
 		return result;

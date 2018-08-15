@@ -421,6 +421,52 @@
               "permission": ""
             }
           ]
+        },
+        {
+          "id": "9_5",
+          "menuName": "优惠券领券管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_5_1",
+              "menuName": "优惠券领券管理(new)",
+              "path": "/couponReceive/index",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_5_2",
+              "menuName": "领券管理列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_activity_pull_list.json",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_6",
+          "menuName": "优惠券推券管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_6_1",
+              "menuName": "优惠券推券管理(new)",
+              "path": "/promotion/pushvolume",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_6_2",
+              "menuName": "推券管理列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_activity_push_list.json",
+              "permission": ""
+            }
+          ]
         }
       ]
     }

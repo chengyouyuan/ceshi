@@ -16,3 +16,7 @@ spring:
 eureka:
   instance:
     prefer-ip-address: true
+
+logging:
+  level:
+     com.winhxd.b2c.customer.dao : debug

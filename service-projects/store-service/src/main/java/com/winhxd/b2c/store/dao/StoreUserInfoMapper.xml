@@ -26,12 +26,13 @@
         <result column="source" property="source" jdbcType="CHAR"/>
         <result column="store_status" property="storeStatus" jdbcType="SMALLINT"/>
         <result column="token" property="token" jdbcType="VARCHAR"/>
+        <result column="mini_program_code_url" property="miniProgramCodeUrl" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
     shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
-    store_status,token
+    store_status,token, mini_program_code_url
   </sql>
 
     <select id="selectStoreUserByIds" resultMap="BaseResultMap">
@@ -77,9 +78,10 @@
         <result column="shopkeeper" property="shopkeeper"/>
         <result column="contact_mobile" property="contactMobile"/>
         <result column="store_address" property="storeAddress"/>
-        <result column="pickup_type" property="pickupWay"/>
+        <result column="pickup_type" property="pickupType"/>
         <result column="store_region_code" property="storeRegionCode"/>
         <result column="store_mobile" property="storeMobile"/>
+        <result column="mini_program_code_url" property="miniProgramCodeUrl"/>
     </resultMap>
     <select id="selectStoreByCondition" resultMap="storeUserInfoVO">
         SELECT
@@ -131,7 +133,7 @@
       lat, lon, openid, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
-      store_status,token)
+      store_status,token,mini_program_code_url)
     values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeCustomerId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
@@ -139,7 +141,7 @@
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
-      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR})
+      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR},#{miniProgramCodeUrl,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreUserInfo"
             useGeneratedKeys="true" keyProperty="id">
@@ -217,6 +219,9 @@
             <if test="token != null">
                 token,
             </if>
+            <if test="miniProgramCodeUrl != null">
+                mini_program_code_url,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -290,6 +295,9 @@
             </if>
             <if test="token != null">
                 #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="miniProgramCodeUrl != null">
+                #{miniProgramCodeUrl,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -366,6 +374,9 @@
             <if test="token != null">
                 token = #{token,jdbcType=VARCHAR},
             </if>
+            <if test="miniProgramCodeUrl != null">
+                mini_program_code_url = #{miniProgramCodeUrl,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -393,7 +404,8 @@
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       source = #{source,jdbcType=CHAR},
       store_status = #{storeStatus,jdbcType=SMALLINT},
-      token = #{token,jdbcType=VARCHAR}
+      token = #{token,jdbcType=VARCHAR},
+      mini_program_code_url = #{miniProgramCodeUrl,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateRegionCodeByCustomerId">

@@ -71,4 +71,8 @@ public class StoreUserInfoVO {
     @ApiModelProperty("用户账号")
     private String storeMobile;
 
+    /**门店小程序码的地址*/
+    @ApiModelProperty("门店小程序码的地址")
+    private String miniProgramCodeUrl;
+
 }

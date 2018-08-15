@@ -148,6 +148,15 @@
         "path": "",
         "configKey": "/template/module/system/system_role_list_win.json",
         "isHidden": false
+      },
+      {
+        "name": "test",
+        "inputModel": "inputDia",
+        "title": "测试弹出框",
+        "placeholder": "测试弹出框",
+        "path": "",
+        "configKey": "/template/module/order/order_store_list_win.json",
+        "isHidden": false
       }
     ]
   }

@@ -86,6 +86,18 @@ public class StoreUserInfo implements Serializable {
      */
     private Short storeStatus;
     private String token;
+
+    public String getMiniProgramCodeUrl() {
+        return miniProgramCodeUrl;
+    }
+
+    public void setMiniProgramCodeUrl(String miniProgramCodeUrl) {
+        this.miniProgramCodeUrl = miniProgramCodeUrl;
+    }
+
+    /**门店小程序码的地址*/
+
+    private String miniProgramCodeUrl;
     private static final long serialVersionUID = 1L;
 
     public String getStoreName() {

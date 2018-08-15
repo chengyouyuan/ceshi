@@ -270,5 +270,19 @@ public class StoreServiceController implements StoreServiceClient {
 		return responseResult;
 	}
 
+	@Override
+	public ResponseResult<Boolean> saveStoreCodeUrl(@RequestBody StoreUserInfoCondition condition) {
+		ResponseResult<Boolean> responseResult = new ResponseResult<Boolean>();
+    	if(condition.getId() == null){
+    		throw new BusinessException(BusinessCode.CODE_200002);
+		}
+		if(StringUtils.isEmpty(condition.getMiniProgramCodeUrl())){
+    		throw new BusinessException(BusinessCode.CODE_200017);
+		}
+		boolean result = storeService.updateStoreCodeUrl(condition);
+		responseResult.setData(result);
+		return responseResult;
+	}
+
 
 }

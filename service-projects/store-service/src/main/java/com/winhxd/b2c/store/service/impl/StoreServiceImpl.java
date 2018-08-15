@@ -89,14 +89,14 @@ public class StoreServiceImpl implements StoreService {
     public PagedList<BackStageStoreVO> findStoreUserInfo(BackStageStoreInfoCondition storeCondition) {
         PagedList<BackStageStoreVO> pagedList = new PagedList<>();
         //去除code尾部0
-        String reginCode = null;
+        String regionCode = null;
         if (storeCondition.getRegionCode() != null) {
-            reginCode = storeCondition.getRegionCode().replaceAll("0+$", "");
+            regionCode = storeCondition.getRegionCode().replaceAll("0+$", "");
         }
 
         PageHelper.startPage(storeCondition.getPageNo(), storeCondition.getPageSize());
         StoreUserInfo storeUserInfo = new StoreUserInfo();
-        storeUserInfo.setStoreRegionCode(reginCode);
+        storeUserInfo.setStoreRegionCode(regionCode);
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
@@ -105,9 +105,9 @@ public class StoreServiceImpl implements StoreService {
             return pagedList;
         }
 
-        //获取regincode对应的区域名称
-        List<String> reginCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
-        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(reginCodeList).getData();
+        //获取regioncode对应的区域名称
+        List<String> regionCodeList = userInfoList.stream().map(storeUser -> storeUser.getStoreRegionCode()).collect(Collectors.toList());
+        List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(regionCodeList).getData();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();
         Set<String> codes = new HashSet<>();
@@ -186,8 +186,8 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo) {
-        storeUserInfoMapper.updateReginCodeByCustomerId(storeUserInfo);
+    public void updateRegionCodeByCustomerId(StoreUserInfo storeUserInfo) {
+        storeUserInfoMapper.updateRegionCodeByCustomerId(storeUserInfo);
     }
 
     @Override
@@ -206,9 +206,9 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<String> findByReginCodes(List<String> regionCodeList) {
-        regionCodeList = regionCodeList.stream().map(reginCode -> reginCode.replaceAll("0+$", "")).collect(Collectors.toList());
-        return storeUserInfoMapper.selectByReginCodes(regionCodeList);
+    public List<String> findByRegionCodes(List<String> regionCodeList) {
+        regionCodeList = regionCodeList.stream().map(regionCode -> regionCode.replaceAll("0+$", "")).collect(Collectors.toList());
+        return storeUserInfoMapper.selectByRegionCodes(regionCodeList);
     }
 
     @Override

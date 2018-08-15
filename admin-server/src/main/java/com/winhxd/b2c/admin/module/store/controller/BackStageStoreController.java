@@ -107,10 +107,10 @@ public class BackStageStoreController {
     @ApiOperation(value = "更改门店区域信息", notes = "更改门店区域信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
-    @PostMapping(value = "/1024/v1/updateReginCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Integer> updateReginCode(@RequestBody BackStageModifyStoreCondition condition) {
+    @PostMapping(value = "/1024/v1/updateRegionCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Integer> updateRegionCode(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("{} - 更改门店区域信息, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
-        ResponseResult<Integer> responseResult = backStageStoreServiceClient.modifyStoreInfoReginCode(condition);
+        ResponseResult<Integer> responseResult = backStageStoreServiceClient.modifyStoreInfoRegionCode(condition);
         logger.info("{} - 更改门店区域信息, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
@@ -125,7 +125,7 @@ public class BackStageStoreController {
         if (condition.getRegionCodeList() == null || condition.getRegionCodeList().isEmpty()) {
             return responseResult;
         }
-        responseResult = backStageStoreServiceClient.findStoreIdListByReginCodes(condition);
+        responseResult = backStageStoreServiceClient.findStoreIdListByRegionCodes(condition);
         logger.info("{} - 根据区域集合查询门店, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }

@@ -396,7 +396,7 @@
       token = #{token,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-    <update id="updateReginCodeByCustomerId">
+    <update id="updateRegionCodeByCustomerId">
     update store_user_info set store_region_code = #{storeRegionCode} where store_customer_id = #{storeCustomerId}
   </update>
 
@@ -406,13 +406,13 @@
     from store_user_info
     where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
   </select>
-  <select id="selectByReginCodes" resultType="java.lang.String">
+  <select id="selectByRegionCodes" resultType="java.lang.String">
     select
       id
     from store_user_info
     where
-      <foreach collection="reginCodeList" item="reginCode" open="(" close=")" separator="or">
-          store_region_code like '${reginCode}%'
+      <foreach collection="regionCodeList" item="regionCode" open="(" close=")" separator="or">
+          store_region_code like '${regionCode}%'
       </foreach>
   </select>
 

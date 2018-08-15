@@ -72,18 +72,18 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult<Integer> modifyStoreInfoReginCode(BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfoRegionCode(BackStageModifyStoreCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult<>();
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         BeanUtils.copyProperties(condition, storeUserInfo);
-        storeService.updateReginCodeByCustomerId(storeUserInfo);
+        storeService.updateRegionCodeByCustomerId(storeUserInfo);
         return  responseResult;
     }
 
     @Override
-    public ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition) {
+    public ResponseResult<List<String>> findStoreIdListByRegionCodes(@RequestBody BackStageStoreInfoCondition condition) {
         ResponseResult<List<String>> responseResult = new ResponseResult<>();
-        List<String> ids = storeService.findByReginCodes(condition.getRegionCodeList());
+        List<String> ids = storeService.findByRegionCodes(condition.getRegionCodeList());
         responseResult.setData(ids);
         return responseResult;
     }

@@ -87,11 +87,11 @@ public interface StoreService {
     BackStageStoreVO findByIdForBackStage(Long id);
 
     /**
-     * 根据customerid 更改 regincode
+     * 根据customerid 更改 regioncode
      *
      * @param storeUserInfo
      */
-    void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
+    void updateRegionCodeByCustomerId(StoreUserInfo storeUserInfo);
 
     /**
      * @param condition 分页条件
@@ -103,10 +103,11 @@ public interface StoreService {
     PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition);
 
     /**
-     * 根据reginCode集合查询门店
+     * 根据regionCode集合查询门店
      * @param regionCodeList
      * @return
      */
+    List<String> findByRegionCodes(List<String> regionCodeList);
     List<String> findByReginCodes(List<String> regionCodeList);
 
     /**

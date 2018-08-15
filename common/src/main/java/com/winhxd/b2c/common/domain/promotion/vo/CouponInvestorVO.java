@@ -38,6 +38,11 @@ public class CouponInvestorVO {
     private List<CouponInvestorDetail> detailList;
     @ApiModelProperty(value = "关联模板数量")
     private String relTempleteCount;
+    @ApiModelProperty(value = "出资方名称拼接后的字符串")
+    private String investorNames;
+    @ApiModelProperty(value = "出资方占比拼接后的字符串")
+    private String investorPercents;
+
 
 
     public Integer getId() {
@@ -142,5 +147,21 @@ public class CouponInvestorVO {
 
     public void setRelTempleteCount(String relTempleteCount) {
         this.relTempleteCount = relTempleteCount;
+    }
+
+    public String getInvestorNames() {
+        return investorNames;
+    }
+
+    public void setInvestorNames(String investorNames) {
+        this.investorNames = investorNames;
+    }
+
+    public String getInvestorPercents() {
+        return investorPercents;
+    }
+
+    public void setInvestorPercents(String investorPercents) {
+        this.investorPercents = investorPercents;
     }
 }

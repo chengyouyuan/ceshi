@@ -78,13 +78,13 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
-		
-		// 插入流水号
+        orderServiceClient.orderPaySuccessNotify("订单号", "交易号");
+		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
-		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
+		int insertResult=payOrderPaymentMapper.updateByPrimaryKeySelective(payOrderPayment);
 		if (insertResult<1) {
 			//订单更新失败
-			logger.info(log+"--订单支付流水插入失败");
+			logger.info(log+"--订单支付流更新失败");
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 
@@ -144,7 +144,10 @@ public class PayServiceImpl implements PayService{
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
 		if (storeBankroll==null) {
 			storeBankroll=new StoreBankroll();
-			BeanUtils.copyProperties(condition, storeBankroll);
+			storeBankroll.setTotalMoeny(totalMoney);
+			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+			storeBankroll.setPresentedMoney(presentedMoney);;
+			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 			storeBankrollMapper.insertSelective(storeBankroll);
 		}else {
 			totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
@@ -165,4 +168,5 @@ public class PayServiceImpl implements PayService{
 		}
 		
 	}
+	
 }

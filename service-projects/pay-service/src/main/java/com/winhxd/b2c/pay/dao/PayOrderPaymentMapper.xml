@@ -232,4 +232,10 @@
       operation_type = #{operationType,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByOrderPaymentNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_order_payment
+    where order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

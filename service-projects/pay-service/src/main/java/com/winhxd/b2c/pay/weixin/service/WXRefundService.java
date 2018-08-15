@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.service;
 
+import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
 import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
 
 public interface WXRefundService {
@@ -9,8 +10,8 @@ public interface WXRefundService {
      * @param payRefund
      * @return
      */
-    Object refundOrder(PayRefundDTO payRefund);
+    PayRefundDTO refundOrder(PayRefundCondition payRefund);
 
 
-    Object refundQuery(PayRefundDTO payRefund);
+    PayRefundDTO refundQuery(PayRefundCondition payRefund);
 }

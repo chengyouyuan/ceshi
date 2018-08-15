@@ -2,7 +2,7 @@ package com.winhxd.b2c.pay.weixin.dao;
 
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 
-public interface PayRefundDao {
+public interface PayRefundMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(PayRefund record);

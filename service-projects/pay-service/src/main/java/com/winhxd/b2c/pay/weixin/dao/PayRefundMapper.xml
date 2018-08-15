@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayRefundMapper" >
+    <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayRefund" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="appid" property="appid" jdbcType="VARCHAR" />
+        <result column="mch_id" property="mchId" jdbcType="VARCHAR" />
+        <result column="nonce_str" property="nonceStr" jdbcType="VARCHAR" />
+        <result column="sign" property="sign" jdbcType="VARCHAR" />
+        <result column="sign_type" property="signType" jdbcType="VARCHAR" />
+        <result column="transaction_id" property="transactionId" jdbcType="VARCHAR" />
+        <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+        <result column="out_refund_no" property="outRefundNo" jdbcType="VARCHAR" />
+        <result column="total_fee" property="totalFee" jdbcType="INTEGER" />
+        <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
+        <result column="refund_fee" property="refundFee" jdbcType="INTEGER" />
+        <result column="refund_amount" property="refundAmount" jdbcType="DECIMAL" />
+        <result column="refund_fee_type" property="refundFeeType" jdbcType="VARCHAR" />
+        <result column="refund_desc" property="refundDesc" jdbcType="VARCHAR" />
+        <result column="refund_account" property="refundAccount" jdbcType="VARCHAR" />
+        <result column="notify_url" property="notifyUrl" jdbcType="VARCHAR" />
+        <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+        <result column="pay_type" property="payType" jdbcType="SMALLINT" />
+        <result column="callback_refund_id" property="callbackRefundId" jdbcType="VARCHAR" />
+        <result column="callback_refund_fee" property="callbackRefundFee" jdbcType="INTEGER" />
+        <result column="callback_refund_amount" property="callbackRefundAmount" jdbcType="DECIMAL" />
+        <result column="callback_settlement_refund_fee" property="callbackSettlementRefundFee" jdbcType="INTEGER" />
+        <result column="callback_settlement_refund_amount" property="callbackSettlementRefundAmount" jdbcType="DECIMAL" />
+        <result column="callback_total_fee" property="callbackTotalFee" jdbcType="INTEGER" />
+        <result column="callback_settlement_total_fee" property="callbackSettlementTotalFee" jdbcType="INTEGER" />
+        <result column="callback_fee_type" property="callbackFeeType" jdbcType="VARCHAR" />
+        <result column="callback_cash_fee" property="callbackCashFee" jdbcType="INTEGER" />
+        <result column="callback_cash_fee_type" property="callbackCashFeeType" jdbcType="VARCHAR" />
+        <result column="callback_cash_refund_fee" property="callbackCashRefundFee" jdbcType="INTEGER" />
+        <result column="callback_refund_status" property="callbackRefundStatus" jdbcType="SMALLINT" />
+        <result column="callback_status_desc" property="callbackStatusDesc" jdbcType="VARCHAR" />
+        <result column="callback_success_time" property="callbackSuccessTime" jdbcType="TIMESTAMP" />
+        <result column="callback_refund_recv_accout" property="callbackRefundRecvAccout" jdbcType="VARCHAR" />
+        <result column="callback_refund_account" property="callbackRefundAccount" jdbcType="VARCHAR" />
+        <result column="callback_refund_request_source" property="callbackRefundRequestSource" jdbcType="VARCHAR" />
+        <result column="created" property="created" jdbcType="TIMESTAMP" />
+        <result column="created_by" property="createdBy" jdbcType="BIGINT" />
+        <result column="created_by_name" property="createdByName" jdbcType="VARCHAR" />
+        <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+        <result column="updated_by" property="updatedBy" jdbcType="BIGINT" />
+        <result column="updated_by_name" property="updatedByName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, appid, mch_id, nonce_str, sign, sign_type, transaction_id, out_trade_no, out_refund_no,
+        total_fee, total_amount, refund_fee, refund_amount, refund_fee_type, refund_desc,
+        refund_account, notify_url, order_no, pay_type, callback_refund_id, callback_refund_fee,
+        callback_refund_amount, callback_settlement_refund_fee, callback_settlement_refund_amount,
+        callback_total_fee, callback_settlement_total_fee, callback_fee_type, callback_cash_fee,
+        callback_cash_fee_type, callback_cash_refund_fee, callback_refund_status, callback_status_desc,
+        callback_success_time, callback_refund_recv_accout, callback_refund_account, callback_refund_request_source,
+        created, created_by, created_by_name, updated, updated_by, updated_by_name
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from pay_refund
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from pay_refund
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" >
+        insert into pay_refund (id, appid, mch_id,
+        nonce_str, sign, sign_type,
+        transaction_id, out_trade_no, out_refund_no,
+        total_fee, total_amount, refund_fee,
+        refund_amount, refund_fee_type, refund_desc,
+        refund_account, notify_url, order_no,
+        pay_type, callback_refund_id, callback_refund_fee,
+        callback_refund_amount, callback_settlement_refund_fee,
+        callback_settlement_refund_amount, callback_total_fee,
+        callback_settlement_total_fee, callback_fee_type,
+        callback_cash_fee, callback_cash_fee_type, callback_cash_refund_fee,
+        callback_refund_status, callback_status_desc,
+        callback_success_time, callback_refund_recv_accout,
+        callback_refund_account, callback_refund_request_source,
+        created, created_by, created_by_name,
+        updated, updated_by, updated_by_name
+        )
+        values (#{id,jdbcType=BIGINT}, #{appid,jdbcType=VARCHAR}, #{mchId,jdbcType=VARCHAR},
+        #{nonceStr,jdbcType=VARCHAR}, #{sign,jdbcType=VARCHAR}, #{signType,jdbcType=VARCHAR},
+        #{transactionId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, #{outRefundNo,jdbcType=VARCHAR},
+        #{totalFee,jdbcType=INTEGER}, #{totalAmount,jdbcType=DECIMAL}, #{refundFee,jdbcType=INTEGER},
+        #{refundAmount,jdbcType=DECIMAL}, #{refundFeeType,jdbcType=VARCHAR}, #{refundDesc,jdbcType=VARCHAR},
+        #{refundAccount,jdbcType=VARCHAR}, #{notifyUrl,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
+        #{payType,jdbcType=SMALLINT}, #{callbackRefundId,jdbcType=VARCHAR}, #{callbackRefundFee,jdbcType=INTEGER},
+        #{callbackRefundAmount,jdbcType=DECIMAL}, #{callbackSettlementRefundFee,jdbcType=INTEGER},
+        #{callbackSettlementRefundAmount,jdbcType=DECIMAL}, #{callbackTotalFee,jdbcType=INTEGER},
+        #{callbackSettlementTotalFee,jdbcType=INTEGER}, #{callbackFeeType,jdbcType=VARCHAR},
+        #{callbackCashFee,jdbcType=INTEGER}, #{callbackCashFeeType,jdbcType=VARCHAR}, #{callbackCashRefundFee,jdbcType=INTEGER},
+        #{callbackRefundStatus,jdbcType=SMALLINT}, #{callbackStatusDesc,jdbcType=VARCHAR},
+        #{callbackSuccessTime,jdbcType=TIMESTAMP}, #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+        #{callbackRefundAccount,jdbcType=VARCHAR}, #{callbackRefundRequestSource,jdbcType=VARCHAR},
+        #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
+        #{updated,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" >
+        insert into pay_refund
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="appid != null" >
+                appid,
+            </if>
+            <if test="mchId != null" >
+                mch_id,
+            </if>
+            <if test="nonceStr != null" >
+                nonce_str,
+            </if>
+            <if test="sign != null" >
+                sign,
+            </if>
+            <if test="signType != null" >
+                sign_type,
+            </if>
+            <if test="transactionId != null" >
+                transaction_id,
+            </if>
+            <if test="outTradeNo != null" >
+                out_trade_no,
+            </if>
+            <if test="outRefundNo != null" >
+                out_refund_no,
+            </if>
+            <if test="totalFee != null" >
+                total_fee,
+            </if>
+            <if test="totalAmount != null" >
+                total_amount,
+            </if>
+            <if test="refundFee != null" >
+                refund_fee,
+            </if>
+            <if test="refundAmount != null" >
+                refund_amount,
+            </if>
+            <if test="refundFeeType != null" >
+                refund_fee_type,
+            </if>
+            <if test="refundDesc != null" >
+                refund_desc,
+            </if>
+            <if test="refundAccount != null" >
+                refund_account,
+            </if>
+            <if test="notifyUrl != null" >
+                notify_url,
+            </if>
+            <if test="orderNo != null" >
+                order_no,
+            </if>
+            <if test="payType != null" >
+                pay_type,
+            </if>
+            <if test="callbackRefundId != null" >
+                callback_refund_id,
+            </if>
+            <if test="callbackRefundFee != null" >
+                callback_refund_fee,
+            </if>
+            <if test="callbackRefundAmount != null" >
+                callback_refund_amount,
+            </if>
+            <if test="callbackSettlementRefundFee != null" >
+                callback_settlement_refund_fee,
+            </if>
+            <if test="callbackSettlementRefundAmount != null" >
+                callback_settlement_refund_amount,
+            </if>
+            <if test="callbackTotalFee != null" >
+                callback_total_fee,
+            </if>
+            <if test="callbackSettlementTotalFee != null" >
+                callback_settlement_total_fee,
+            </if>
+            <if test="callbackFeeType != null" >
+                callback_fee_type,
+            </if>
+            <if test="callbackCashFee != null" >
+                callback_cash_fee,
+            </if>
+            <if test="callbackCashFeeType != null" >
+                callback_cash_fee_type,
+            </if>
+            <if test="callbackCashRefundFee != null" >
+                callback_cash_refund_fee,
+            </if>
+            <if test="callbackRefundStatus != null" >
+                callback_refund_status,
+            </if>
+            <if test="callbackStatusDesc != null" >
+                callback_status_desc,
+            </if>
+            <if test="callbackSuccessTime != null" >
+                callback_success_time,
+            </if>
+            <if test="callbackRefundRecvAccout != null" >
+                callback_refund_recv_accout,
+            </if>
+            <if test="callbackRefundAccount != null" >
+                callback_refund_account,
+            </if>
+            <if test="callbackRefundRequestSource != null" >
+                callback_refund_request_source,
+            </if>
+            <if test="created != null" >
+                created,
+            </if>
+            <if test="createdBy != null" >
+                created_by,
+            </if>
+            <if test="createdByName != null" >
+                created_by_name,
+            </if>
+            <if test="updated != null" >
+                updated,
+            </if>
+            <if test="updatedBy != null" >
+                updated_by,
+            </if>
+            <if test="updatedByName != null" >
+                updated_by_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="appid != null" >
+                #{appid,jdbcType=VARCHAR},
+            </if>
+            <if test="mchId != null" >
+                #{mchId,jdbcType=VARCHAR},
+            </if>
+            <if test="nonceStr != null" >
+                #{nonceStr,jdbcType=VARCHAR},
+            </if>
+            <if test="sign != null" >
+                #{sign,jdbcType=VARCHAR},
+            </if>
+            <if test="signType != null" >
+                #{signType,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionId != null" >
+                #{transactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="outTradeNo != null" >
+                #{outTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="outRefundNo != null" >
+                #{outRefundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="totalFee != null" >
+                #{totalFee,jdbcType=INTEGER},
+            </if>
+            <if test="totalAmount != null" >
+                #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="refundFee != null" >
+                #{refundFee,jdbcType=INTEGER},
+            </if>
+            <if test="refundAmount != null" >
+                #{refundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="refundFeeType != null" >
+                #{refundFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="refundDesc != null" >
+                #{refundDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="refundAccount != null" >
+                #{refundAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="notifyUrl != null" >
+                #{notifyUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null" >
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null" >
+                #{payType,jdbcType=SMALLINT},
+            </if>
+            <if test="callbackRefundId != null" >
+                #{callbackRefundId,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundFee != null" >
+                #{callbackRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackRefundAmount != null" >
+                #{callbackRefundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="callbackSettlementRefundFee != null" >
+                #{callbackSettlementRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackSettlementRefundAmount != null" >
+                #{callbackSettlementRefundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="callbackTotalFee != null" >
+                #{callbackTotalFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackSettlementTotalFee != null" >
+                #{callbackSettlementTotalFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackFeeType != null" >
+                #{callbackFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackCashFee != null" >
+                #{callbackCashFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackCashFeeType != null" >
+                #{callbackCashFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackCashRefundFee != null" >
+                #{callbackCashRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackRefundStatus != null" >
+                #{callbackRefundStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="callbackStatusDesc != null" >
+                #{callbackStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackSuccessTime != null" >
+                #{callbackSuccessTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="callbackRefundRecvAccout != null" >
+                #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundAccount != null" >
+                #{callbackRefundAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundRequestSource != null" >
+                #{callbackRefundRequestSource,jdbcType=VARCHAR},
+            </if>
+            <if test="created != null" >
+                #{created,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null" >
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdByName != null" >
+                #{createdByName,jdbcType=VARCHAR},
+            </if>
+            <if test="updated != null" >
+                #{updated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null" >
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedByName != null" >
+                #{updatedByName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" >
+        update pay_refund
+        <set >
+            <if test="appid != null" >
+                appid = #{appid,jdbcType=VARCHAR},
+            </if>
+            <if test="mchId != null" >
+                mch_id = #{mchId,jdbcType=VARCHAR},
+            </if>
+            <if test="nonceStr != null" >
+                nonce_str = #{nonceStr,jdbcType=VARCHAR},
+            </if>
+            <if test="sign != null" >
+                sign = #{sign,jdbcType=VARCHAR},
+            </if>
+            <if test="signType != null" >
+                sign_type = #{signType,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionId != null" >
+                transaction_id = #{transactionId,jdbcType=VARCHAR},
+            </if>
+            <if test="outTradeNo != null" >
+                out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+            </if>
+            <if test="outRefundNo != null" >
+                out_refund_no = #{outRefundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="totalFee != null" >
+                total_fee = #{totalFee,jdbcType=INTEGER},
+            </if>
+            <if test="totalAmount != null" >
+                total_amount = #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="refundFee != null" >
+                refund_fee = #{refundFee,jdbcType=INTEGER},
+            </if>
+            <if test="refundAmount != null" >
+                refund_amount = #{refundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="refundFeeType != null" >
+                refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="refundDesc != null" >
+                refund_desc = #{refundDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="refundAccount != null" >
+                refund_account = #{refundAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="notifyUrl != null" >
+                notify_url = #{notifyUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null" >
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null" >
+                pay_type = #{payType,jdbcType=SMALLINT},
+            </if>
+            <if test="callbackRefundId != null" >
+                callback_refund_id = #{callbackRefundId,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundFee != null" >
+                callback_refund_fee = #{callbackRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackRefundAmount != null" >
+                callback_refund_amount = #{callbackRefundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="callbackSettlementRefundFee != null" >
+                callback_settlement_refund_fee = #{callbackSettlementRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackSettlementRefundAmount != null" >
+                callback_settlement_refund_amount = #{callbackSettlementRefundAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="callbackTotalFee != null" >
+                callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackSettlementTotalFee != null" >
+                callback_settlement_total_fee = #{callbackSettlementTotalFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackFeeType != null" >
+                callback_fee_type = #{callbackFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackCashFee != null" >
+                callback_cash_fee = #{callbackCashFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackCashFeeType != null" >
+                callback_cash_fee_type = #{callbackCashFeeType,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackCashRefundFee != null" >
+                callback_cash_refund_fee = #{callbackCashRefundFee,jdbcType=INTEGER},
+            </if>
+            <if test="callbackRefundStatus != null" >
+                callback_refund_status = #{callbackRefundStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="callbackStatusDesc != null" >
+                callback_status_desc = #{callbackStatusDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackSuccessTime != null" >
+                callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="callbackRefundRecvAccout != null" >
+                callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundAccount != null" >
+                callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackRefundRequestSource != null" >
+                callback_refund_request_source = #{callbackRefundRequestSource,jdbcType=VARCHAR},
+            </if>
+            <if test="created != null" >
+                created = #{created,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null" >
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdByName != null" >
+                created_by_name = #{createdByName,jdbcType=VARCHAR},
+            </if>
+            <if test="updated != null" >
+                updated = #{updated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null" >
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedByName != null" >
+                updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" >
+    update pay_refund
+    set appid = #{appid,jdbcType=VARCHAR},
+      mch_id = #{mchId,jdbcType=VARCHAR},
+      nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      sign = #{sign,jdbcType=VARCHAR},
+      sign_type = #{signType,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
+      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      out_refund_no = #{outRefundNo,jdbcType=VARCHAR},
+      total_fee = #{totalFee,jdbcType=INTEGER},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      refund_fee = #{refundFee,jdbcType=INTEGER},
+      refund_amount = #{refundAmount,jdbcType=DECIMAL},
+      refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+      refund_desc = #{refundDesc,jdbcType=VARCHAR},
+      refund_account = #{refundAccount,jdbcType=VARCHAR},
+      notify_url = #{notifyUrl,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=VARCHAR},
+      pay_type = #{payType,jdbcType=SMALLINT},
+      callback_refund_id = #{callbackRefundId,jdbcType=VARCHAR},
+      callback_refund_fee = #{callbackRefundFee,jdbcType=INTEGER},
+      callback_refund_amount = #{callbackRefundAmount,jdbcType=DECIMAL},
+      callback_settlement_refund_fee = #{callbackSettlementRefundFee,jdbcType=INTEGER},
+      callback_settlement_refund_amount = #{callbackSettlementRefundAmount,jdbcType=DECIMAL},
+      callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
+      callback_settlement_total_fee = #{callbackSettlementTotalFee,jdbcType=INTEGER},
+      callback_fee_type = #{callbackFeeType,jdbcType=VARCHAR},
+      callback_cash_fee = #{callbackCashFee,jdbcType=INTEGER},
+      callback_cash_fee_type = #{callbackCashFeeType,jdbcType=VARCHAR},
+      callback_cash_refund_fee = #{callbackCashRefundFee,jdbcType=INTEGER},
+      callback_refund_status = #{callbackRefundStatus,jdbcType=SMALLINT},
+      callback_status_desc = #{callbackStatusDesc,jdbcType=VARCHAR},
+      callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+      callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+      callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
+      callback_refund_request_source = #{callbackRefundRequestSource,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

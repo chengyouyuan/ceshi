@@ -160,14 +160,39 @@ public class PayRefund {
     private Integer callbackCashRefundFee;
 
     /**
-     * 退款状态 0失败 1成功
+     * 退款状态 0退款异常 1退款成功 2退款关闭
      */
-    private Short callbackStatus;
+    private Short callbackRefundStatus;
 
     /**
      * 退款状态描述
      */
     private String callbackStatusDesc;
+
+    /**
+     * 资金退款至用户帐号的时间 YYYY-MM-DD hh:mm:ss
+     */
+    private Date callbackSuccessTime;
+
+    /**
+     * 退款入账账户   1)退回银行卡:{银行名称}{卡类型}{卡尾号}
+     *               2)退回支付用户零钱:支付用户零钱
+     *               3)退还商户:商户基本账户
+     *               4)退回支付用户零钱通:支付用户零钱通
+     */
+    private String callbackRefundRecvAccout;
+
+    /**
+     * 1:REFUND_SOURCE_RECHARGE_FUNDS 可用余额退款/基本账户
+     * 2:REFUND_SOURCE_UNSETTLED_FUNDS 未结算资金退款
+     */
+    private String callbackRefundAccount;
+
+    /**
+     * 1:API接口
+     * 2:VENDOR_PLATFORM商户平台
+     */
+    private String callbackRefundRequestSource;
 
     /**
      * 创建时间
@@ -279,12 +304,28 @@ public class PayRefund {
         this.totalFee = totalFee;
     }
 
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     public Integer getRefundFee() {
         return refundFee;
     }
 
     public void setRefundFee(Integer refundFee) {
         this.refundFee = refundFee;
+    }
+
+    public BigDecimal getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(BigDecimal refundAmount) {
+        this.refundAmount = refundAmount;
     }
 
     public String getRefundFeeType() {
@@ -351,12 +392,28 @@ public class PayRefund {
         this.callbackRefundFee = callbackRefundFee;
     }
 
+    public BigDecimal getCallbackRefundAmount() {
+        return callbackRefundAmount;
+    }
+
+    public void setCallbackRefundAmount(BigDecimal callbackRefundAmount) {
+        this.callbackRefundAmount = callbackRefundAmount;
+    }
+
     public Integer getCallbackSettlementRefundFee() {
         return callbackSettlementRefundFee;
     }
 
     public void setCallbackSettlementRefundFee(Integer callbackSettlementRefundFee) {
         this.callbackSettlementRefundFee = callbackSettlementRefundFee;
+    }
+
+    public BigDecimal getCallbackSettlementRefundAmount() {
+        return callbackSettlementRefundAmount;
+    }
+
+    public void setCallbackSettlementRefundAmount(BigDecimal callbackSettlementRefundAmount) {
+        this.callbackSettlementRefundAmount = callbackSettlementRefundAmount;
     }
 
     public Integer getCallbackTotalFee() {
@@ -407,12 +464,12 @@ public class PayRefund {
         this.callbackCashRefundFee = callbackCashRefundFee;
     }
 
-    public Short getCallbackStatus() {
-        return callbackStatus;
+    public Short getCallbackRefundStatus() {
+        return callbackRefundStatus;
     }
 
-    public void setCallbackStatus(Short callbackStatus) {
-        this.callbackStatus = callbackStatus;
+    public void setCallbackRefundStatus(Short callbackRefundStatus) {
+        this.callbackRefundStatus = callbackRefundStatus;
     }
 
     public String getCallbackStatusDesc() {
@@ -421,6 +478,38 @@ public class PayRefund {
 
     public void setCallbackStatusDesc(String callbackStatusDesc) {
         this.callbackStatusDesc = callbackStatusDesc == null ? null : callbackStatusDesc.trim();
+    }
+
+    public Date getCallbackSuccessTime() {
+        return callbackSuccessTime;
+    }
+
+    public void setCallbackSuccessTime(Date callbackSuccessTime) {
+        this.callbackSuccessTime = callbackSuccessTime;
+    }
+
+    public String getCallbackRefundRecvAccout() {
+        return callbackRefundRecvAccout;
+    }
+
+    public void setCallbackRefundRecvAccout(String callbackRefundRecvAccout) {
+        this.callbackRefundRecvAccout = callbackRefundRecvAccout == null ? null : callbackRefundRecvAccout.trim();
+    }
+
+    public String getCallbackRefundAccount() {
+        return callbackRefundAccount;
+    }
+
+    public void setCallbackRefundAccount(String callbackRefundAccount) {
+        this.callbackRefundAccount = callbackRefundAccount == null ? null : callbackRefundAccount.trim();
+    }
+
+    public String getCallbackRefundRequestSource() {
+        return callbackRefundRequestSource;
+    }
+
+    public void setCallbackRefundRequestSource(String callbackRefundRequestSource) {
+        this.callbackRefundRequestSource = callbackRefundRequestSource == null ? null : callbackRefundRequestSource.trim();
     }
 
     public Date getCreated() {
@@ -469,37 +558,5 @@ public class PayRefund {
 
     public void setUpdatedByName(String updatedByName) {
         this.updatedByName = updatedByName == null ? null : updatedByName.trim();
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public BigDecimal getRefundAmount() {
-        return refundAmount;
-    }
-
-    public void setRefundAmount(BigDecimal refundAmount) {
-        this.refundAmount = refundAmount;
-    }
-
-    public BigDecimal getCallbackRefundAmount() {
-        return callbackRefundAmount;
-    }
-
-    public void setCallbackRefundAmount(BigDecimal callbackRefundAmount) {
-        this.callbackRefundAmount = callbackRefundAmount;
-    }
-
-    public BigDecimal getCallbackSettlementRefundAmount() {
-        return callbackSettlementRefundAmount;
-    }
-
-    public void setCallbackSettlementRefundAmount(BigDecimal callbackSettlementRefundAmount) {
-        this.callbackSettlementRefundAmount = callbackSettlementRefundAmount;
     }
 }

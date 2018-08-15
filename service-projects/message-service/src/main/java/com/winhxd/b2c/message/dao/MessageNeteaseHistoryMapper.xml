@@ -27,22 +27,22 @@
         from message_netease_history
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <select id="selectVoByCondition" resultMap="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">
-        select
-        <include refid="Message_List"/>
-        from message_netease_history
-        where 1=1
-        <if test="accid != null">
-            and to_accid=#{accid,jdbcType=STRING}
-        </if>
-        <if test="startTime != null">
-            and msg_time>=#{startTime,jdbcType=TIMESTAMP}
-        </if>
-        <if test="endTime != null">
-            and #{endTime,jdbcType=TIMESTAMP}>=msg_time
-        </if>
-        order by msg_time desc
-    </select>
+    <!--<select id="selectVoByCondition" resultMap="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">-->
+        <!--select-->
+        <!--<include refid="Message_List"/>-->
+        <!--from message_netease_history-->
+        <!--where 1=1-->
+        <!--<if test="accid != null">-->
+            <!--and to_accid=#{accid,jdbcType=STRING}-->
+        <!--</if>-->
+        <!--<if test="startTime != null">-->
+            <!--and msg_time>=#{startTime,jdbcType=TIMESTAMP}-->
+        <!--</if>-->
+        <!--<if test="endTime != null">-->
+            <!--and #{endTime,jdbcType=TIMESTAMP}>=msg_time-->
+        <!--</if>-->
+        <!--order by msg_time desc-->
+    <!--</select>-->
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from message_netease_history
     where id = #{id,jdbcType=BIGINT}

@@ -218,11 +218,10 @@
 
   <select id="getCouponApplyPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition" resultMap="BaseResultMap2">
     select
-    a.id, name, a.code, a.remarks, a.apply_rule_type, a.status, a.created_by, a.created_by_name, a.created,
-    a.updated_by, a.updated_by_name, a.updated,count(b.apply_rule_id) as rel_templete_count
-    from coupon_apply a left join coupon_template b on a.id = b.apply_rule_id
+    a.id, a.name, a.code, a.remarks, a.apply_rule_type, a.status, a.created_by, a.created_by_name, a.created,
+    a.updated_by, a.updated_by_name, a.updated
+    from coupon_apply a
     where 1=1
-
       <if test="condition.code!=null and  condition.code!=''">
         and a.code = #{condition.code}
       </if>

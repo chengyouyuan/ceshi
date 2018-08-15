@@ -120,7 +120,7 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 验证码错误");
 				throw new BusinessException(BusinessCode.CODE_1008);
 			}
-			storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
+			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
@@ -162,8 +162,8 @@ public class ApiStoreLoginController {
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
 				if (db != null) {
 
-					if (StringUtils.isBlank(db.getOpenId())) {
-						storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
+					if (StringUtils.isBlank(db.getOpenid())) {
+						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 					}
 					/**
 					 * 调用云信服务获取用户信息
@@ -188,7 +188,7 @@ public class ApiStoreLoginController {
 					/**
 					 * 查询OpenId是否 已经绑定其他手机号
 					 */
-					open.setOpenId(storeUserInfoCondition.getOpenId());
+					open.setOpenid(storeUserInfoCondition.getOpenid());
 					db = storeLoginService.getStoreUserInfo(open);
 					/**
 					 * 如果可以查到。。证明该微信号绑定过其他账号
@@ -200,7 +200,7 @@ public class ApiStoreLoginController {
 					/*
 					 * 插入数据库
 					 */
-					storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
+					storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 					logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
@@ -224,7 +224,7 @@ public class ApiStoreLoginController {
 		 */
 		else if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-			storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
+			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
 				logger.info("{} - , 账号无效");
@@ -326,7 +326,7 @@ public class ApiStoreLoginController {
 					/*
 					 * 插入数据库
 					 */
-					storeUserInfo.setOpenId(storeUserInfoCondition.getOpenId());
+					storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 					storeUserInfo.setCreated(new Date());
@@ -417,8 +417,8 @@ public class ApiStoreLoginController {
 				info.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(info);
 				if (db != null) {
-					if (StringUtils.isBlank(db.getOpenId())) {
-						info.setOpenId(storeSendVerificationCodeCondition.getOpenId());
+					if (StringUtils.isBlank(db.getOpenid())) {
+						info.setOpenid(storeSendVerificationCodeCondition.getOpenid());
 					}
 					/**
 					 * 更新数据库
@@ -431,11 +431,11 @@ public class ApiStoreLoginController {
 					/**
 					 * 查询OpenId是否 已经绑定其他手机号
 					 */
-					if (StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenId())) {
+					if (StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenid())) {
 						logger.info("{} - ,openId为空");
 						throw new BusinessException(BusinessCode.CODE_1007);
 					}
-					open.setOpenId(storeSendVerificationCodeCondition.getOpenId());
+					open.setOpenid(storeSendVerificationCodeCondition.getOpenid());
 					db = storeLoginService.getStoreUserInfo(open);
 					/**
 					 * 如果可以查到。。证明该微信号绑定过其他账号
@@ -447,7 +447,7 @@ public class ApiStoreLoginController {
 					/*
 					 * 插入数据库
 					 */
-					info.setOpenId(storeSendVerificationCodeCondition.getOpenId());
+					info.setOpenid(storeSendVerificationCodeCondition.getOpenid());
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());

@@ -106,7 +106,7 @@ public class ApiCustomerLoginController {
 			throw new BusinessException(BusinessCode.CODE_1015);
 		}
 		mini = object.getData();
-		customerUserInfo.setOpenId(mini.getOpenId());
+		customerUserInfo.setOpenid(mini.getOpenId());
 		db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == db) {
 			customerUserInfo.setSessionKey(mini.getSessionKey());
@@ -121,7 +121,7 @@ public class ApiCustomerLoginController {
 			vo.setToken(customerUserInfo.getToken());
 			CustomerUser user = new CustomerUser();
 			user.setCustomerId(customerUserInfo.getCustomerId());
-			user.setOpenId(mini.getOpenId());
+			user.setOpenid(mini.getOpenId());
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
 			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
 			result.setData(vo);
@@ -139,7 +139,7 @@ public class ApiCustomerLoginController {
 			vo.setCustomerMobile(db.getCustomerMobile());
 			vo.setToken(customerUserInfo.getToken());
 			CustomerUser user = new CustomerUser();
-			user.setOpenId(db.getOpenId());
+			user.setOpenid(db.getOpenid());
 			user.setCustomerId(db.getCustomerId());
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
 			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
@@ -229,7 +229,7 @@ public class ApiCustomerLoginController {
 			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		customerUserInfo.setOpenId(user.getOpenId());
+		customerUserInfo.setOpenid(user.getOpenid());
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {
 			logger.info("{} - 账号无效");

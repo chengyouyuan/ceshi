@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
@@ -50,7 +51,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(UpdateOrderCondition condition);
+	Integer callbackOrderPay(OrderPayCallbackCondition condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13

@@ -310,6 +310,10 @@ public final class BusinessCode {
      *  支付回调  参数为空
      */
     public static final int CODE_600101 = 600101;
+    /**
+     *  订单支付  参数为空
+     */
+    public static final int CODE_600102 = 600102;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600201 = 600201;

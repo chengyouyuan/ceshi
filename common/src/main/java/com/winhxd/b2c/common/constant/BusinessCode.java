@@ -321,6 +321,30 @@ public final class BusinessCode {
      *  订单支付  参数为空
      */
     public static final int CODE_600102 = 600102;
+    /**
+     *  订单支付  为获取到订单数据
+     */
+    public static final int CODE_600103 = 600103;
+    /**
+     *  订单支付  订单状态有误
+     */
+    public static final int CODE_600104 = 600104;
+    /**
+     *  订单支付  未获取到用户信息
+     */
+    public static final int CODE_600105 = 600105;
+    /**
+     *  订单支付  未获取到用户openid
+     */
+    public static final int CODE_600106 = 600106;
+    /**
+     *  订单支付  订单号为空
+     */
+    public static final int CODE_600107 = 600107;
+    /**
+     *  订单支付  设备Ip为空
+     */
+    public static final int CODE_600108 = 600108;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600201 = 600201;

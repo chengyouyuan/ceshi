@@ -17,7 +17,6 @@ import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
 import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
-import com.winhxd.b2c.pay.config.WechatConfig;
 import com.winhxd.b2c.pay.service.PayService;
 
 import io.swagger.annotations.Api;
@@ -37,10 +36,6 @@ public class ApiPayController {
 	@ApiOperation(value = "订单支付", notes = "订单支付")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
-            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
     })
 	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<OrderPayVO> orderPay(@RequestBody OrderPayCondition condition){
@@ -50,10 +45,6 @@ public class ApiPayController {
 	@ApiOperation(value = "退款", notes = "退款")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-		@ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
-		@ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-		@ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
 	})
 	@PostMapping(value = "/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<OrderRefundVO> orderRefund(@RequestBody OrderRefundCondition condition){
@@ -63,7 +54,6 @@ public class ApiPayController {
 	@ApiOperation(value = "获取支付凭证", notes = "获取支付凭证")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
 	})
 	@PostMapping(value = "/6003/v1/getprepayId", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<String> getprepayId(@RequestBody OrderPayCondition condition){

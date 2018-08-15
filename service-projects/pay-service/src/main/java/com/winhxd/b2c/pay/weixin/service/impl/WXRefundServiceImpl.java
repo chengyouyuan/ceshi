@@ -4,10 +4,14 @@ import com.winhxd.b2c.common.constant.Currency;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
-import com.winhxd.b2c.pay.weixin.dao.PayRefundDao;
+import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
+import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +30,13 @@ public class WXRefundServiceImpl implements WXRefundService {
     WXPayRequest wxPayRequest;
     
     @Autowired
-    PayRefundDao payRefundDao;
+    PayRefundMapper payRefundMapper;
+
+    @Autowired
+
 
     @Override
-    public Object refundOrder(PayRefundDTO payRefund) {
+    public PayRefundDTO refundOrder(PayRefundCondition payRefund) {
         try{
             /*KeyStore keyStore = KeyStore.getInstance("PKCS12");
             FileInputStream instream = new FileInputStream(new File(certPath));
@@ -65,7 +72,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             parameters.put("fee_type", "CNY");
             parameters.put("total_fee", payRefund.getTotalFee().toString());
             parameters.put("refund_fee", payRefund.getTotalFee().toString());
-            //String xml = WXPayUtil.generateSignedXml(parameters,WXPayConstants.API_KEY);
+            String xml = WXPayUtil.generateSignedXml(parameters,"");
             //参数：商户订单号 out_trade_no，微信订单号 transaction_id ，订单金额 total_fee
             //String xml = WXPayUtil2.wxPayRefund(payRefund.getOutTradeNo(),payRefund.getTransactionId(),String.valueOf(payRefund.getTotalFee()));
 
@@ -120,7 +127,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             JSONObject result = new JSONObject();
             result.put("status","error");
             result.put("msg",e.getMessage());
-            return result;
+            return null;
         }
     }
 
@@ -128,6 +135,9 @@ public class WXRefundServiceImpl implements WXRefundService {
         try {
             //String domain = WXPayConstants.DOMAIN_API;
             String refundUrlSuffix = WXPayConstants.REFUND_URL_SUFFIX;
+            //根据订单流水号查询相关信息
+            String outTradeNo = payRefundDTO.getOutTradeNo();
+
             SortedMap<String,String> parameters = new TreeMap<String,String>();
             parameters.put("appid", payRefundDTO.getAppid());
             parameters.put("mch_id", payRefundDTO.getMchId());
@@ -168,7 +178,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             payRefund.setCreated(new Date());
             payRefund.setCreatedBy(null);
             payRefund.setCreatedByName("");
-            payRefundDao.insertSelective(payRefund);
+            payRefundMapper.insertSelective(payRefund);
             //============================
             PayRefund payRefundCallback = new PayRefund();
             //ID
@@ -196,9 +206,13 @@ public class WXRefundServiceImpl implements WXRefundService {
             //现金退款金额
             payRefundCallback.setCallbackCashRefundFee(0);
             //退款状态
-            payRefundCallback.setCallbackStatus((short) 0);
+            payRefundCallback.setCallbackRefundStatus((short) 0);
             //退款状态描述
             payRefundCallback.setCallbackStatusDesc("");
+            payRefundCallback.setCallbackSuccessTime(new Date());
+            payRefundCallback.setCallbackRefundRecvAccout("");
+            payRefundCallback.setCallbackRefundAccount("");
+            payRefundCallback.setCallbackRefundRequestSource("");
             //修改
             payRefundCallback.setUpdated(new Date());
             payRefundCallback.setUpdatedBy(0L);
@@ -206,13 +220,13 @@ public class WXRefundServiceImpl implements WXRefundService {
             
 
             String entityString = wxPayRequest.requestWithCert(refundUrlSuffix,"",xml,true);
-            /*SAXReader saxReader = new SAXReader();
+            SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(entityString);
             Element rootElt = document.getRootElement();
             System.out.println("根节点：" + rootElt.getName());
             System.out.println("==="+rootElt.elementText("result_code"));
             System.out.println("==="+rootElt.elementText("return_msg"));
-            String resultCode = rootElt.elementText("result_code");*/
+            String resultCode = rootElt.elementText("result_code");
 
         }catch(Exception e){
             e.printStackTrace();
@@ -224,7 +238,7 @@ public class WXRefundServiceImpl implements WXRefundService {
     }
 
     @Override
-    public Object refundQuery(PayRefundDTO payRefund) {
+    public PayRefundDTO refundQuery(PayRefundCondition payRefund) {
         try {
             String refundqueryUrlSuffix = WXPayConstants.REFUNDQUERY_URL_SUFFIX;
             SortedMap<String,String> parameters = new TreeMap<String,String>();

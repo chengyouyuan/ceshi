@@ -2,6 +2,7 @@ package com.winhxd.b2c.store.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -117,7 +118,7 @@ public interface StoreService {
      * @param record
      * @return
      */
-    NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
+    StoreMessageAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
 
     /**
      * @param condition 条件
@@ -127,11 +128,4 @@ public interface StoreService {
      * @Description 保存跟新门店小程序码url
      */
     boolean updateStoreCodeUrl(StoreUserInfoCondition condition);
-    /**
-     * 开店保存门店店铺信息非空的字段，并创建云信账号
-     *
-     * @param record
-     * @return
-     */
-    StoreMessageAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
 }

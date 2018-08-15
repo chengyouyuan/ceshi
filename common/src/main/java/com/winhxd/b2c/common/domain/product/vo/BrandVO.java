@@ -5,7 +5,13 @@ import lombok.Data;
 
 @Data
 public class BrandVO {
-
+	
+	@ApiModelProperty(value = "品牌商编码")
+	private String companyCode;
+	
+	@ApiModelProperty(value = "品牌商名称")
+	private String companyName;
+	
 	@ApiModelProperty(value = "品牌编码")
 	private String brandCode;
 	

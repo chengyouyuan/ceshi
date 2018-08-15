@@ -268,6 +268,9 @@ public class ApiStoreProductManageController {
 						// 商品上架
 						this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo,
 								prodSkuInfo);
+					}else{
+						responseResult=new ResponseResult<>(BusinessCode.CODE_200012);
+						return responseResult;
 					}
 				} else {
 					responseResult=new ResponseResult<>(BusinessCode.CODE_200012);

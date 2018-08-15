@@ -1,5 +1,12 @@
 package com.winhxd.b2c.message.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
@@ -10,10 +17,6 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.message.service.MiniProgramService;
 import com.winhxd.b2c.message.service.NeteaseService;
 import com.winhxd.b2c.message.service.SMSService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author jujinbiao
@@ -34,7 +37,7 @@ public class MessageServiceController implements MessageServiceClient {
     MiniProgramService miniProgramService;
 
     @Override
-    public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition) {
+    public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition) {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccountInfo = neteaseService.getNeteaseAccountInfo(neteaseAccountCondition);
@@ -47,7 +50,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition) {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccount = neteaseService.createNeteaseAccount(neteaseAccountCondition);
@@ -60,7 +63,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendNeteaseMsg(NeteaseMsgCondition neteaseMsgCondition) {
+    public ResponseResult<Void> sendNeteaseMsg(@RequestBody NeteaseMsgCondition neteaseMsgCondition) {
         ResponseResult<Void> result = new ResponseResult<>();
         try{
             neteaseService.sendNeteaseMsg(neteaseMsgCondition);
@@ -71,7 +74,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendSMS(String mobile, String content) {
+    public ResponseResult<Void> sendSMS(@RequestParam("mobile")String mobile,@RequestParam("content")String content) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             smsService.sendSMS(mobile,content);
@@ -83,7 +86,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<MiniOpenId> getMiniOpenId(String code) {
+    public ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code")String code) {
         ResponseResult<MiniOpenId> result = new ResponseResult<>();
         try{
             result = miniProgramService.getMiniOpenId(code);
@@ -95,7 +98,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendMiniMsg(String formId) {
+    public ResponseResult<Void> sendMiniMsg(@RequestParam("formId")String formId) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             result = miniProgramService.sendMiniMsg(formId);

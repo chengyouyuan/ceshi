@@ -3,21 +3,24 @@ package com.winhxd.b2c.order.service.impl;
 import java.text.MessageFormat;
 import java.util.Date;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
@@ -56,6 +59,9 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     
     @Autowired
     private StringMessageSender stringMessageSender;
+    
+    @Resource
+    private Cache cache;
     
     private static final Logger logger = LoggerFactory.getLogger(OnlinePayPickUpInStoreOrderHandlerImpl.class);
 
@@ -165,6 +171,8 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
+        //支付成功清空门店订单销量统计cache
+        cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
         // TODO 发送云信
         String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;     
         // 发送延时MQ信息，处理超时未确认取消操作

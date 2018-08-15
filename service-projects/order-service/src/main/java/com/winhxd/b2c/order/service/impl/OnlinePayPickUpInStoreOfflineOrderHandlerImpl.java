@@ -1,5 +1,6 @@
 package com.winhxd.b2c.order.service.impl;
 
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
@@ -7,6 +8,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -30,6 +32,8 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 /**
  * 在线支付线下计价自提订单处理接口
@@ -63,6 +67,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
 
     @Autowired
     private StringMessageSender stringMessageSender;
+
+    @Resource
+    private Cache cache;
     
     @Override
     public void orderInfoBeforeCreateProcess(OrderInfo orderInfo) {
@@ -169,6 +176,8 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
+        //支付成功清空门店订单销量统计cache
+        cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
         CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
         String last4MobileNums;
         if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {

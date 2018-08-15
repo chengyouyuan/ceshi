@@ -330,7 +330,7 @@ public final class BusinessCode {
      */
     public static final int CODE_600104 = 600104;
     /**
-     *  订单支付  未获取到用户信息
+     *  订单支付  商品描述为空
      */
     public static final int CODE_600105 = 600105;
     /**

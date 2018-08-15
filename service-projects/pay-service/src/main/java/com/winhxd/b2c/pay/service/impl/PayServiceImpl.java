@@ -66,15 +66,16 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public ResponseResult<OrderPayVO> orderPay(OrderPayCondition condition) {
+	public ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition) {
 		String log=logLabel+"订单支付支付orderPay";
 		logger.info(log+"--开始");
 		if (condition==null){
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600102);
 		}
-		String orderNo=condition.getOrderNo();
+		String orderNo=condition.getOutOrderNo();
 		String spbillCreateIp=condition.getSpbillCreateIp();
+		String body=condition.getBody();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600107);
@@ -83,61 +84,17 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--设备ip为空");
 			throw new BusinessException(BusinessCode.CODE_600108);
 		}
-		logger.info(log+"--参数"+condition.toString());
-		CustomerUser customerUser=UserContext.getCurrentCustomerUser();
-		if (customerUser==null) {
-			logger.info(log+"--未获取到用户信息");
-			throw new BusinessException(BusinessCode.CODE_600105);
+		if (StringUtils.isBlank(body)) {
+			logger.info(log+"--商品描述为空");
+			throw new BusinessException(BusinessCode.CODE_600108);
 		}
-		String openid=customerUser.getOpenid();
+		logger.info(log+"--参数"+condition.toString());
+		String openid=condition.getOpenid();
 		if (StringUtils.isBlank(openid)) {
 			logger.info(log+"--未获取到用户openid");
 			throw new BusinessException(BusinessCode.CODE_600106);
 		}
-		//根据订单号获取订单信息
-		ResponseResult<OrderInfoDetailVO4Management> orderResult=orderServiceClient.getOrderDetail4Management(orderNo);
-		OrderInfoDetailVO4Management info=orderResult.getData();
-		if (info==null) {
-			logger.info(log+"--未获取到订单数据");
-			throw new BusinessException(BusinessCode.CODE_600103);
-		}
-		OrderInfoDetailVO orderInfo=info.getOrderInfoDetailVO();
-		if (orderInfo==null) {
-			logger.info(log+"---未获取到订单数据");
-			throw new BusinessException(BusinessCode.CODE_600103);
-		}
-		if (orderInfo.getOrderStatus()!=OrderStatusEnum.WAIT_PAY.getStatusCode()) {
-			logger.info(log+"---订单状态有误");
-			throw new BusinessException(BusinessCode.CODE_600104);
-		}
-		List<OrderItemVO> itemVOs=orderInfo.getOrderItemVoList();
-		StringBuilder body=new StringBuilder();
-		if (CollectionUtils.isNotEmpty(itemVOs)) {
-			for (OrderItemVO orderItemVO : itemVOs) {
-				body.append(orderItemVO.getSkuDesc());
-				body.append("*");
-				body.append(orderItemVO.getAmount());
-				body.append(";");
-			}
-		}
-		String deviceInfo="";
-		MobileInfo mobileInfo=condition.getMobileInfo();
-		
-		if (mobileInfo!=null) {
-			deviceInfo=mobileInfo.getImei();
-		}
-		
-		//组装支付信息
-		
-		PayPreOrderCondition payPreOrderCondition=new PayPreOrderCondition();
-		payPreOrderCondition.setDeviceInfo(deviceInfo);
-		payPreOrderCondition.setBody(body.toString());
-		payPreOrderCondition.setOpenid(openid);
-		payPreOrderCondition.setOutOrderNo(orderNo);
-		payPreOrderCondition.setTotalAmount(orderInfo.getRealPaymentMoney());
-		payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
-		
-		
+	
 		//todo 调取微信支付接口  
 		return null;
 	}

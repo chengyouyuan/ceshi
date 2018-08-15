@@ -3,6 +3,8 @@ package com.winhxd.b2c.pay.weixin.condition;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 /**
  * 预支付参数
  * @author mahongliang
@@ -10,7 +12,7 @@ import java.math.BigDecimal;
  * @Description 
  * @version
  */
-public class PayPreOrderCondition implements Serializable {
+public class PayPreOrderCondition extends ApiCondition implements Serializable {
 	private static final long serialVersionUID = -6751906874587493059L;
 	
 	/**
@@ -101,6 +103,7 @@ public class PayPreOrderCondition implements Serializable {
 	}
 
 	public String getDeviceInfo() {
+		deviceInfo = this.getMobileInfo().getImei();
 		return deviceInfo;
 	}
 

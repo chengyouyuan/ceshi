@@ -1,10 +1,15 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.*;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
+import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
 
 /**
  * @author liuhanning
@@ -38,7 +43,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	ResponseResult<OrderPayVO> orderPay(OrderPayCondition condition);
+	ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition);
 	
 	/**
 	 * @author liuhanning

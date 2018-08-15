@@ -15,7 +15,6 @@ import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
 import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 import com.winhxd.b2c.pay.service.PayService;
 
@@ -33,15 +32,6 @@ public class ApiPayController {
 	private PayService payService;
 	
 	
-	@ApiOperation(value = "订单支付", notes = "订单支付")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-    })
-	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<OrderPayVO> orderPay(@RequestBody OrderPayCondition condition){
-		ResponseResult<OrderPayVO> result=payService.orderPay(condition);
-		return result;
-	}
 	@ApiOperation(value = "退款", notes = "退款")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),

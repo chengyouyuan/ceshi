@@ -55,7 +55,7 @@ public class ApiPayStoreCashController {
     @ApiOperation(value = "门店提现记录", notes = "门店提现记录")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-    @RequestMapping(value = "/6014/v1/getPayWithdrawalsByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/6015/v1/getPayWithdrawalsByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(@RequestBody PayStoreCashCondition condition){
         ResponseResult<PagedList<PayWithdrawalsVO>> result = payStoreCashService.getPayWithdrawalsByStoreId(condition);
         return result;

@@ -24,7 +24,13 @@ public class PayPreOrderCondition implements Serializable {
     private BigDecimal totalAmount;
     
     /**
-     * （非必填）商品描述
+     * 买家用户标识
+     * trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识（openid）
+     */
+    private String openid;
+    
+    /**
+     * 商品描述
      */
     private String body;
     
@@ -53,12 +59,6 @@ public class PayPreOrderCondition implements Serializable {
      * 限制支付类型（微信参数），上传此参数no_credit--可限制用户不能使用信用卡支付
      */
     private String limitPay;
-    
-    /**
-     * 买家用户标识
-     * trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识（openid）
-     */
-    private String openid;
 
 	public String getOutOrderNo() {
 		return outOrderNo;
@@ -74,6 +74,14 @@ public class PayPreOrderCondition implements Serializable {
 
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public String getOpenid() {
+		return openid;
+	}
+
+	public void setOpenid(String openid) {
+		this.openid = openid;
 	}
 
 	public String getBody() {
@@ -122,14 +130,6 @@ public class PayPreOrderCondition implements Serializable {
 
 	public void setLimitPay(String limitPay) {
 		this.limitPay = limitPay;
-	}
-
-	public String getOpenid() {
-		return openid;
-	}
-
-	public void setOpenid(String openid) {
-		this.openid = openid;
 	}
 
 }

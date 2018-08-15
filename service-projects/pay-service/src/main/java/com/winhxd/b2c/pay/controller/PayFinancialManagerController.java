@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
@@ -38,11 +39,11 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
         logger.info("/pay/61001/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
         ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
-//        StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+        StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
         /// 测试数据//////////////
-        StoreUser currentStoreUser = new StoreUser();
-        currentStoreUser.setBusinessId(1l);
-        ////////////////////////////////
+//        StoreUser currentStoreUser = new StoreUser();
+//        currentStoreUser.setBusinessId(1l);
+        //////////////////////////////
         PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerServiceImpl.findFinanceAccountDetail(currentStoreUser.getBusinessId());
         result.setData(findFinanceAccountDetail);
         logger.info("/pay/v1/queryStoreFinancialSummary/ 出入帐汇总查询");

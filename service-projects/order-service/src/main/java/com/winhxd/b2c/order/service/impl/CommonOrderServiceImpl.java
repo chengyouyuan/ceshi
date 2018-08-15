@@ -174,9 +174,12 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void orderPaySuccessNotify(String orderNo) {
+    public void orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单支付通知orderNo不能为空");
+        }
+        if (StringUtils.isBlank(paymentSerialNum)) {
+            throw new NullPointerException("订单支付流水号paymentSerialNum不能为空");
         }
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
         if (orderInfo == null) {
@@ -187,7 +190,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
         Date payFinishDateTime = new Date();
-        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), payFinishDateTime, orderInfo.getId());
+        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), paymentSerialNum, payFinishDateTime, orderInfo.getId());
         if (updNum != 1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }

@@ -139,13 +139,14 @@ public interface OrderInfoMapper {
      * 更新订单支付状态
      *
      * @param statusCode
+     * @param paymentSerialNum 
      * @param payFinishDateTime
      * @param orderId
      * @return 更新数量
      * @author wangbin
      * @date 2018年8月6日 上午11:12:13
      */
-    int updateOrderPayStatus(@Param("payStatus") short payStatus, @Param("payFinishDateTime") Date payFinishDateTime, @Param("orderId") long orderId);
+    int updateOrderPayStatus(@Param("payStatus") short payStatus, @Param("paymentSerialNum") String paymentSerialNum, @Param("payFinishDateTime") Date payFinishDateTime, @Param("orderId") long orderId);
 
     /**
      * 订单状态修改接口

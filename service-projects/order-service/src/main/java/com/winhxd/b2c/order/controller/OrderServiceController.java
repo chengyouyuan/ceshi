@@ -222,4 +222,18 @@ public class OrderServiceController implements OrderServiceClient {
         logger.info("{} 后台订单列表查询结束", logTitle);
         return result;
     }
+
+    @Override
+    @ApiOperation(value = "订单支付成功回调", notes = "订单支付成功回调")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    public ResponseResult<Void> orderPaySuccessNotify(@PathVariable(value = "orderNo") String orderNo, @PathVariable(value = "paymentSerialNum") String paymentSerialNum) {
+        String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
+        logger.info("{} 后台订单支付成功通知回调开始:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
+        ResponseResult<Void> result = new ResponseResult<>();
+        orderService.orderPaySuccessNotify(orderNo, paymentSerialNum);
+        logger.info("{} 后台订单支付成功通知回调结束:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
+        return result;
+    }
 }

@@ -61,6 +61,9 @@ public interface OrderServiceClient {
      */
     @RequestMapping(value = "/order/4057/v1/updateOrderRefundCallback/", method = RequestMethod.POST)
     ResponseResult<Boolean> updateOrderRefundCallback(@RequestBody OrderRefundCallbackCondition orderRefundCallbackCondition);
+    
+    @RequestMapping(value = "/order/4060/v1/orderPaySuccessNotify/{orderNo}/{paymentSerialNum}", method = RequestMethod.POST)
+    ResponseResult<Void> orderPaySuccessNotify(@PathVariable(value = "orderNo") String orderNo, @PathVariable(value = "paymentSerialNum") String paymentSerialNum);
 
 
 }
@@ -130,5 +133,11 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     public ResponseResult<Boolean> updateOrderRefundCallback(OrderRefundCallbackCondition orderRefundCallbackCondition) {
         logger.error("OrderServiceFallback -> updateOrderRefundCallback", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

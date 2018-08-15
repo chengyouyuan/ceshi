@@ -188,7 +188,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus()) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
-        logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
+        logger.info("订单orderNo={}，paymentSerialNum={} 支付通知处理开始.", orderNo, paymentSerialNum);
         Date payFinishDateTime = new Date();
         int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), paymentSerialNum, payFinishDateTime, orderInfo.getId());
         if (updNum != 1) {
@@ -209,6 +209,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //订单支付成功事务提交后相关事件
         registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
+        logger.info("订单orderNo={}，paymentSerialNum={} 支付通知处理结束.", orderNo, paymentSerialNum);
     }
 
     /**

@@ -114,7 +114,7 @@
             <if test="storeRegionCode != null and storeRegionCode != ''">
                 AND store_region_code LIKE '${storeRegionCode}%'
             </if>
-            <if test="storeStatus != null and storeStatus != ''">
+            <if test="storeStatus != null">
                 AND store_status = #{storeStatus}
             </if>
         </where>

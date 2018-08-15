@@ -27,18 +27,6 @@
     ],
     "columns": [
       {
-        "name": "storeStatus",
-        "title": "门店状态"
-      },
-      {
-        "name": "storeCustomerId",
-        "title": "门店编码"
-      },
-      {
-        "name": "storeMobile",
-        "title": "门店账号"
-      },
-      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -74,15 +62,101 @@
             }
           }
         ]
+      },
+      {
+        "name": "storeStatus",
+        "title": "门店状态"
+      },
+      {
+        "name": "storeCustomerId",
+        "title": "门店编码"
+      },
+      {
+        "name": "storeMobile",
+        "title": "门店账号"
+      },
+      {
+        "name": "storeName",
+        "title": "门店名称"
+      },
+      {
+        "name": "province",
+        "title": "省"
+      },
+      {
+        "name": "city",
+        "title": "市"
+      },
+      {
+        "name": "county",
+        "title": "县"
+      },
+      {
+        "name": "town",
+        "title": "乡/镇"
+      },
+      {
+        "name": "village",
+        "title": "村"
+      },
+      {
+        "name": "storeAddress",
+        "title": "地址"
+      },
+      {
+        "name": "shopkeeper",
+        "title": "联系人"
+      },
+      {
+        "name": "payType",
+        "title": "支付方式"
       }
+
     ],
     "params": [
+
       {
-        "name": "ruleName",
-        "inputModel": "input",
-        "title": "查询条件",
+        "name": "storeStatus",
+        "inputModel": "select",
+        "title": "状态",
         "value": "",
-        "placeholder": "请输入权限组名",
+        "placeholder": "请选择状态",
+        "options":[
+          {
+            "label":"未开店",
+            "value":0
+          },
+          {
+            "label":"有效",
+            "value":1
+          },
+          {
+            "label":"无效",
+            "value":2
+          }],
+        "isHidden": false
+      },
+      {
+        "name": "storeMobile",
+        "inputModel": "input",
+        "title": "门店账户",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },{
+        "name": "storeName",
+        "inputModel": "input",
+        "title": "门店名称",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },{
+        "name": "regionCode",
+        "inputModel": "inputDia",
+        "title": "区域",
+        "placeholder": "请选择门店所属区域",
+        "path": "",
+        "configKey": "/template/module/system/system_region_list_radio_win.json",
         "isHidden": false
       }
     ]

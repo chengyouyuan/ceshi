@@ -13,7 +13,7 @@ public class PayBill implements Serializable {
     private Long id;
 
     /**
-     * 公众账号ID
+     * 小程序ID
      */
     private String appid;
 

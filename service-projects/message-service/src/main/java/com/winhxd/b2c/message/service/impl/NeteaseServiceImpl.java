@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.service.NeteaseService;
@@ -78,8 +79,9 @@ public class NeteaseServiceImpl implements NeteaseService {
 		}
 		//创建云信用户
 		//从云信获取该用户的信息，判断该用户是否在云信已经存在
-		String accidUinfo = "[\"customerId + accidSuffix\"]";
+		String accidUinfo = "[\""+customerId + accidSuffix+"\"]";
 		Map<String, Object> userInfo = neteaseUtils.getUserInfo(accidUinfo);
+		LOGGER.info("NeteaseServiceImpl ->createNeteaseAccount,创建云信用户前获取用户信息userinfo={}",JsonUtil.toJSONString(userInfo));
 		String codeMes = String.valueOf(userInfo.get(PARAM_CODE));
 		String desc = String.valueOf(userInfo.get(PARAM_DESC));
 		if (SUCCESS_CODE.equals(codeMes)) {
@@ -92,9 +94,10 @@ public class NeteaseServiceImpl implements NeteaseService {
 				BeanUtils.copyProperties(account, result);
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，customerId={}", customerId);
+				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，失败原因={}", tokenMap.get(PARAM_DESC));
 				return null;
 			}
-		} else if (ERROR_CODE.equals(codeMes) && desc.indexOf(ERROR_MSG) > 0) {
+		} else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
 			// 如果云信账号不存在，则创建
 			String token = GeneratePwd.generatePwd();
 			String accid = customerId + accidSuffix;
@@ -104,6 +107,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 				BeanUtils.copyProperties(account, result);
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败 customerId={}", customerId);
+				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败，失败原因={}", createMap.get(PARAM_DESC));
 				return null;
 			}
 		}

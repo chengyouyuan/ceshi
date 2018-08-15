@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
+import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import org.apache.ibatis.annotations.Param;
@@ -19,7 +20,7 @@ public interface AccountingDetailMapper {
      * @param accountingDetail
      * @return
      */
-    int insertAccountingDetail(AccountingDetail accountingDetail);
+    AccountingDetail insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
      * 查询费用明细
@@ -64,11 +65,11 @@ public interface AccountingDetailMapper {
      * @param operatedByName
      * @return
      */
-    int insertVerifyHistory(@Param("verifyStatus") Integer verifyStatus,
-                            @Param("verifyCode") String verifyCode,
-                            @Param("verifyRemark") String verifyRemark,
-                            @Param("operatedBy") Long operatedBy,
-                            @Param("operatedByName") String operatedByName);
+    VerifyHistory insertVerifyHistory(@Param("verifyStatus") Integer verifyStatus,
+                                      @Param("verifyCode") String verifyCode,
+                                      @Param("verifyRemark") String verifyRemark,
+                                      @Param("operatedBy") Long operatedBy,
+                                      @Param("operatedByName") String operatedByName);
 
     /**
      * 按门店结算汇总更新费用明细状态

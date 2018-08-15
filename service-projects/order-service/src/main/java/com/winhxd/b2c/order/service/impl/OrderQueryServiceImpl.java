@@ -105,8 +105,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
-        OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
-        return detailVO;
+        return orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
     }
 
     /**
@@ -122,8 +121,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
-        OrderInfoDetailVO detailVO = this.orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
-        return detailVO;
+        return orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
     }
 
     @Override

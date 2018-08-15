@@ -334,10 +334,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200004);
         }
         BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
-        NeteaseAccountVO neteaseAccountVO = storeService.modifyStoreAndCreateAccount(storeUserInfo);
-        StoreMessageAccountVO storeMessageAccountVO = new StoreMessageAccountVO();
-        storeMessageAccountVO.setNeteaseAccid(neteaseAccountVO.getAccid());
-        storeMessageAccountVO.setNeteaseToken(neteaseAccountVO.getToken());
+        StoreMessageAccountVO storeMessageAccountVO = storeService.modifyStoreAndCreateAccount(storeUserInfo);
         ResponseResult<StoreMessageAccountVO> responseResult = new ResponseResult<>();
         responseResult.setData(storeMessageAccountVO);
         return responseResult;

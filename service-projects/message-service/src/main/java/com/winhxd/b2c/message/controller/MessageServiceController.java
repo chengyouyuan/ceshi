@@ -13,6 +13,8 @@ import com.winhxd.b2c.message.service.SMSService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,11 +36,15 @@ public class MessageServiceController implements MessageServiceClient {
     MiniProgramService miniProgramService;
 
     @Override
-    public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition) {
+    public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition) {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccountInfo = neteaseService.getNeteaseAccountInfo(neteaseAccountCondition);
-            result.setData(neteaseAccountInfo);
+            if (neteaseAccountInfo == null) {
+                result.setCode(BusinessCode.CODE_1001);
+            } else {
+                result.setData(neteaseAccountInfo);
+            }
         }catch (Exception e){
             LOGGER.error("/message/7012/v1/getNeteaseAccountInfo,获取云信用户信息出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
@@ -47,11 +53,15 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition) {
         ResponseResult<NeteaseAccountVO> result = new ResponseResult<>();
         try{
             NeteaseAccountVO neteaseAccount = neteaseService.createNeteaseAccount(neteaseAccountCondition);
-            result.setData(neteaseAccount);
+            if (neteaseAccount == null) {
+                result.setCode(BusinessCode.CODE_1001);
+            } else {
+                result.setData(neteaseAccount);
+            }
         }catch (Exception e){
             LOGGER.error("/message/7013/v1/createNeteaseAccount,创建云信用户出错，异常信息为={}",e);
             result.setCode(BusinessCode.CODE_1001);
@@ -60,7 +70,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendNeteaseMsg(NeteaseMsgCondition neteaseMsgCondition) {
+    public ResponseResult<Void> sendNeteaseMsg(@RequestBody NeteaseMsgCondition neteaseMsgCondition) {
         ResponseResult<Void> result = new ResponseResult<>();
         try{
             neteaseService.sendNeteaseMsg(neteaseMsgCondition);
@@ -71,7 +81,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendSMS(String mobile, String content) {
+    public ResponseResult<Void> sendSMS(@RequestParam("mobile")String mobile,@RequestParam("content")String content) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             smsService.sendSMS(mobile,content);
@@ -83,7 +93,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<MiniOpenId> getMiniOpenId(String code) {
+    public ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code")String code) {
         ResponseResult<MiniOpenId> result = new ResponseResult<>();
         try{
             result = miniProgramService.getMiniOpenId(code);
@@ -95,7 +105,7 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendMiniMsg(String formId) {
+    public ResponseResult<Void> sendMiniMsg(@RequestParam("formId")String formId) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
             result = miniProgramService.sendMiniMsg(formId);

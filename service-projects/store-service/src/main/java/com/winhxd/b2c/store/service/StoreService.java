@@ -108,7 +108,6 @@ public interface StoreService {
      * @return
      */
     List<String> findByRegionCodes(List<String> regionCodeList);
-    List<String> findByReginCodes(List<String> regionCodeList);
 
     /**
      * 开店保存门店店铺信息非空的字段，并创建云信账号

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -7,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
@@ -36,6 +41,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		financeDetial = queryCouponTodayUsedMoney(financeDetial,storeId);
 		// TODO 公司补充总入账待定
 		//TODO 计算余额   ---->当前余额=总进账金额+公司总入账金额 - 总出账金额
+		if(financeDetial.getAllInMoney() == null){
+			financeDetial.setAllInMoney((BigDecimal.valueOf(0)));
+		} 
+		if(financeDetial.getAllOutMoney() == null){
+			financeDetial.setAllOutMoney((BigDecimal.valueOf(0)));
+		} 
 		financeDetial.setCurLeftMoney(financeDetial.getAllInMoney().subtract(financeDetial.getAllOutMoney()));
 		return financeDetial;
 	}
@@ -149,5 +160,29 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 			throw new BusinessException(BusinessCode.CODE_610021);
 		}
 		return financeDetial;
+	}
+
+	public PagedList<PayFinanceAccountDetailVO> findFinancialInDetail(PayFinanceAccountDetailCondition condition) {
+		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
+		List<PayFinanceAccountDetailVO> financialInDetail = payFinanceAccountDetailMapper.selectFinancialInDetail(condition);
+		LOGGER.info("findFinancialOutDetail:===="+financialInDetail);
+		pagedList.setData(financialInDetail);
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+		return pagedList;
+	}
+
+	public PagedList<PayFinanceAccountDetailVO> findFinancialOutDetail(PayFinanceAccountDetailCondition condition) {
+		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
+		List<PayFinanceAccountDetailVO> financialOutDetail = payFinanceAccountDetailMapper.selectFinancialOutDetail(condition);
+		LOGGER.info("findFinancialOutDetail:===="+financialOutDetail);
+        pagedList.setData(financialOutDetail);
+        pagedList.setPageNo(condition.getPageNo());
+        pagedList.setPageSize(condition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+		return pagedList;
 	}
 }

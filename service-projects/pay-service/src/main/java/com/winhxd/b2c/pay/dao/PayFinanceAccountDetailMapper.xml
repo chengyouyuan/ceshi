@@ -32,6 +32,28 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
    
+   <resultMap id="payFinanceRetutnVO" type="com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO">
+    <result column="orderNo"  property="orderNo" />
+    <result column="tradeNo" property="tradeNo" />
+    <result column="money"  property="money" />
+    <result column="store_id"   property="storeId" />
+    <result column="storeName" property="storeName" />
+    <result column="region_code"  property="regionCode" />
+    <result column="region_name" property="regionName" />
+    <result column="type"   property="type" />
+    <result column="out_type"  property="outType" />
+    <result column="wechat_account_status"   property="wechatAccountStatus" />
+    <result column="status"   property="status" />
+    <result column="data_status"  property="dataStatus" />
+    <result column="flow_direction_type"  property="flowDirectionType" />
+    <result column="flow_direction_name" property="flowDirectionName" />
+    <result column="payment_account" property="paymentAccount" />
+    <result column="cmms_amt"   property="cmmsAmt" />
+    <result column="rate"  property="rate" />
+    <result column="out_in_date"  property="outInDate" />
+    <result column="created"   property="created" />
+  </resultMap>
+   
    <resultMap id="payFinanceAccountDetailVO" type="com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO">
       <result property="allInMoney" column="allInMoney"/>
       <result property="allOutMoney" column="allOutMoney"/>
@@ -46,12 +68,19 @@
       <result property="todayCharge" column="todayCharge"/>
        <result property="allCharge" column="allCharge"/>
   </resultMap>
-  
+    
   <sql id="Base_Column_List">
     id, order_no, trade_no, money, store_id, region_code, region_name, type, out_type, 
     wechat_account_status, status, data_status, flow_direction_type, flow_direction_name, 
     payment_account, cmms_amt, rate, out_in_date, created_by, created_by_name, created, 
     updated_by, updated_by_name, updated
+  </sql>
+  
+  <sql id="Base_Column_List_pre">
+    pfad.id, pfad.order_no, pfad.trade_no, pfad.money, pfad.store_id, pfad.region_code, pfad.region_name, pfad.type, pfad.out_type, 
+    pfad.wechat_account_status, pfad.status, pfad.data_status, pfad.flow_direction_type, pfad.flow_direction_name, 
+    pfad.payment_account, pfad.cmms_amt, pfad.rate, pfad.out_in_date, pfad.created_by, pfad.created_by_name, pfad.created, 
+    pfad.updated_by, pfad.updated_by_name, pfad.updated
   </sql>
   
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -394,6 +423,53 @@
 	WHERE STATUS = 1 
 	and out_in_date BETWEEN  DATE_FORMAT(NOW(),'%Y-%m-%d 00:00:00')  AND DATE_FORMAT(NOW(),'%Y-%m-%d 23:59:59')
 	and store_id = #{storeId,jdbcType=BIGINT}
+   </select>
+   
+   <select id="selectFinancialInDetail"  parameterType="com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition" resultMap="payFinanceRetutnVO">
+   	 select 
+    <include refid="Base_Column_List_pre" />,sui.store_name 
+     from pay_finance_account_detail pfad left join store_user_info sui on sui.id = pfad.store_id
+     where status = 1 and type = 2
+      <if test="orderNo != null">
+        and order_no = #{orderNo,jdbcType=CHAR}
+      </if>
+      <if test="storeId != null">
+       and store_id = #{storeId,jdbcType=BIGINT}
+      </if>
+      <if test="regionCode != null">
+       and region_code = #{regionCode,jdbcType=CHAR}
+      </if>
+      <if test="outType != null">
+       and out_type = #{outType,jdbcType=SMALLINT}
+      </if>
+      <if test="wechatAccountStatus != null">
+       and wechat_account_status = #{wechatAccountStatus,jdbcType=SMALLINT}
+      </if>
+      <if test="dataStatus != null">
+       and data_status = #{dataStatus,jdbcType=SMALLINT}
+      </if>
+      <if test="outInDate != null">
+       and out_in_date = #{outInDate,jdbcType=TIMESTAMP}
+      </if>
+   </select>
+   
+   <select id="selectFinancialOutDetail"  parameterType="com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition" resultMap="payFinanceRetutnVO">
+   	 select 
+    <include refid="Base_Column_List" /> 
+     from pay_finance_account_detail 
+     where status = 1 and type = 1
+      <if test="storeId != null">
+       and store_id = #{storeId,jdbcType=BIGINT}
+      </if>
+      <if test="regionCode != null">
+       and region_code = #{regionCode,jdbcType=CHAR}
+      </if>
+      <if test="outType != null">
+       and out_type = #{outType,jdbcType=SMALLINT}
+      </if>
+      <if test="created != null">
+       and created = #{created,jdbcType=TIMESTAMP}
+      </if>
    </select>
    
 </mapper>

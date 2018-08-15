@@ -3,7 +3,6 @@ package com.winhxd.b2c.common.domain.pay.vo;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -47,8 +46,12 @@ public class PayFinanceAccountDetailVO {
     private BigDecimal rate;
 	@ApiModelProperty("出入账时间")
 	private Date outInDate;
+	@ApiModelProperty("创建时间")
+	private Date created;
 	
 	//财务统计页面新增字段
+	@ApiModelProperty("门店名称")
+	private String storeName;
 	@ApiModelProperty("总进账")
 	private BigDecimal allInMoney;
 	@ApiModelProperty("总出账")

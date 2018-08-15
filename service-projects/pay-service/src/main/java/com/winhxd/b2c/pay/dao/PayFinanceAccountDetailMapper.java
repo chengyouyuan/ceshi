@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.dao;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 
@@ -29,4 +30,8 @@ public interface PayFinanceAccountDetailMapper {
 	PayFinanceAccountDetailVO selectCouponUsedMoney(Long storeId);
 
 	PayFinanceAccountDetailVO selectTodayCouponUsedMoney(Long storeId);
+
+	List<PayFinanceAccountDetailVO> selectFinancialInDetail(PayFinanceAccountDetailCondition condition);
+
+	List<PayFinanceAccountDetailVO> selectFinancialOutDetail(PayFinanceAccountDetailCondition condition);
 }

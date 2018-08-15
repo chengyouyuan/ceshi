@@ -4,17 +4,24 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition.MobileInfo;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
@@ -29,6 +36,7 @@ import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
 
 @Service
 public class PayServiceImpl implements PayService{
@@ -61,16 +69,81 @@ public class PayServiceImpl implements PayService{
 	public ResponseResult<OrderPayVO> orderPay(OrderPayCondition condition) {
 		String log=logLabel+"订单支付支付orderPay";
 		logger.info(log+"--开始");
-		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+		if (condition==null){
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600102);
 		}
+		String orderNo=condition.getOrderNo();
+		String spbillCreateIp=condition.getSpbillCreateIp();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600107);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log+"--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600108);
+		}
 		logger.info(log+"--参数"+condition.toString());
+		CustomerUser customerUser=UserContext.getCurrentCustomerUser();
+		if (customerUser==null) {
+			logger.info(log+"--未获取到用户信息");
+			throw new BusinessException(BusinessCode.CODE_600105);
+		}
+		String openid=customerUser.getOpenid();
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log+"--未获取到用户openid");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
+		//根据订单号获取订单信息
+		ResponseResult<OrderInfoDetailVO4Management> orderResult=orderServiceClient.getOrderDetail4Management(orderNo);
+		OrderInfoDetailVO4Management info=orderResult.getData();
+		if (info==null) {
+			logger.info(log+"--未获取到订单数据");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+		OrderInfoDetailVO orderInfo=info.getOrderInfoDetailVO();
+		if (orderInfo==null) {
+			logger.info(log+"---未获取到订单数据");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+		if (orderInfo.getOrderStatus()!=OrderStatusEnum.WAIT_PAY.getStatusCode()) {
+			logger.info(log+"---订单状态有误");
+			throw new BusinessException(BusinessCode.CODE_600104);
+		}
+		List<OrderItemVO> itemVOs=orderInfo.getOrderItemVoList();
+		StringBuilder body=new StringBuilder();
+		if (CollectionUtils.isNotEmpty(itemVOs)) {
+			for (OrderItemVO orderItemVO : itemVOs) {
+				body.append(orderItemVO.getSkuDesc());
+				body.append("*");
+				body.append(orderItemVO.getAmount());
+				body.append(";");
+			}
+		}
+		String deviceInfo="";
+		MobileInfo mobileInfo=condition.getMobileInfo();
+		
+		if (mobileInfo!=null) {
+			deviceInfo=mobileInfo.getImei();
+		}
+		
+		//组装支付信息
+		
+		PayPreOrderCondition payPreOrderCondition=new PayPreOrderCondition();
+		payPreOrderCondition.setDeviceInfo(deviceInfo);
+		payPreOrderCondition.setBody(body.toString());
+		payPreOrderCondition.setOpenid(openid);
+		payPreOrderCondition.setOutOrderNo(orderNo);
+		payPreOrderCondition.setTotalAmount(orderInfo.getRealPaymentMoney());
+		payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
+		
+		
 		//todo 调取微信支付接口  
 		return null;
 	}
 
 	@Override
+	@Transactional
 	public Integer callbackOrderPay(OrderPayCallbackCondition condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
 		logger.info(log+"--开始");
@@ -78,6 +151,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
+		//todo判断支付成功之后更新订单信息
         orderServiceClient.orderPaySuccessNotify("订单号", "交易号");
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
@@ -142,6 +216,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
 		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
+		
 		if (storeBankroll==null) {
 			storeBankroll=new StoreBankroll();
 			storeBankroll.setTotalMoeny(totalMoney);
@@ -167,6 +242,6 @@ public class PayServiceImpl implements PayService{
 			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 		}
 		
+		
 	}
-	
 }

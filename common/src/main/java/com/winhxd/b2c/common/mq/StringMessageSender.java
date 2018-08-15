@@ -13,23 +13,16 @@ public class StringMessageSender {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
-    public void send(MQDestination destination, Object message) {
+    public void send(MQDestination destination, String message) {
         send(destination, message, null);
     }
 
-    public void send(MQDestination destination, Object message, Integer delayMilliseconds) {
-        String msgBody;
-        if (message instanceof String) {
-            msgBody = (String) message;
-        } else {
-            msgBody = JsonUtil.toJSONString(message);
-        }
-
+    public void send(MQDestination destination, String message, Integer delayMilliseconds) {
         MessagePostProcessor processor = message1 -> {
             message1.getMessageProperties().setDelay(delayMilliseconds);
             return message1;
         };
-        amqpTemplate.convertAndSend(destination.toString(), null, msgBody, processor);
+        amqpTemplate.convertAndSend(destination.toString(), null, message, processor);
     }
 }
 

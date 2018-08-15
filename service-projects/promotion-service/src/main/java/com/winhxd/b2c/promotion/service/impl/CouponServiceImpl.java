@@ -315,6 +315,13 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
 
+        //我的优惠券列表不分页，一页显示全部
+        if(null == couponCondition.getStatus()){
+            List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,couponCondition.getStatus());
+            couponCondition.setPageSize(couponVOS.size());
+            couponCondition.setPageNo(1);
+        }
+
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());
         PagedList<CouponVO> pagedList = new PagedList();
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,couponCondition.getStatus());

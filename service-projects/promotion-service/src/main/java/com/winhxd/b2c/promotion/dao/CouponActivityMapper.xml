@@ -267,10 +267,14 @@
     <if test="couponType != null">
       AND ca.coupon_type = #{couponType}
     </if>
-    <if test="status != null">
+    <if test="status == 1">
       AND cts.status = #{status}
     </if>
+    <if test="status == 3">
+      AND cts.end_time &lt; now()
+    </if>
     <if test="status == null">
+      AND cts.start_time &gt;= NOW()
       AND (cts.STATUS = 2 OR cts.STATUS = 4)
     </if>
     GROUP BY ca.id,cts.template_id
@@ -312,8 +316,7 @@
     AND ca. STATUS = 1
     AND ca.activity_start &lt;=  NOW()
     AND ca.activity_end &gt;= NOW()
-    <!--AND cas.store_id = #{storeId} -->
-    <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
+    AND cas.store_id = #{storeId}
   </select>
   <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
@@ -332,8 +335,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    ca.activity_start activityStart,
-    ca.activity_end activityEnd,
+    DATE(ca.activity_start) activityStart,
+    DATE(ca.activity_end) activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,

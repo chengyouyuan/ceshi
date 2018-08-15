@@ -1,11 +1,7 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
@@ -75,6 +71,13 @@ public interface PayService {
 	 * @Description 记录用户资金流转日志
 	 */
 //	void updatePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord);
+
+	/**
+	 * @author wangxiaoshun
+	 * @date  2018年8月15日 20:31
+	 * @Description 记录用户资金流转日志
+	 */
+	void saveStoreBankRollLog(StoreBankRollLogCondition condition);
 	
 	
 	

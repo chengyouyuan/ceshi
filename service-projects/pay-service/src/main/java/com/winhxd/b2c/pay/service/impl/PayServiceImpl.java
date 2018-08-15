@@ -4,22 +4,27 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition.MobileInfo;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
@@ -29,6 +34,7 @@ import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
 
 @Service
 public class PayServiceImpl implements PayService{
@@ -42,6 +48,8 @@ public class PayServiceImpl implements PayService{
 	
 	@Autowired
 	StoreBankrollMapper storeBankrollMapper;
+	@Autowired
+	PayStoreBankrollLogMapper payStoreBankrollLogMapper;
 	
 	private static final String logLabel="PayServiceImpl--";
 	@Override
@@ -61,16 +69,81 @@ public class PayServiceImpl implements PayService{
 	public ResponseResult<OrderPayVO> orderPay(OrderPayCondition condition) {
 		String log=logLabel+"订单支付支付orderPay";
 		logger.info(log+"--开始");
-		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+		if (condition==null){
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600102);
 		}
+		String orderNo=condition.getOrderNo();
+		String spbillCreateIp=condition.getSpbillCreateIp();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600107);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log+"--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600108);
+		}
 		logger.info(log+"--参数"+condition.toString());
+		CustomerUser customerUser=UserContext.getCurrentCustomerUser();
+		if (customerUser==null) {
+			logger.info(log+"--未获取到用户信息");
+			throw new BusinessException(BusinessCode.CODE_600105);
+		}
+		String openid=customerUser.getOpenid();
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log+"--未获取到用户openid");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
+		//根据订单号获取订单信息
+		ResponseResult<OrderInfoDetailVO4Management> orderResult=orderServiceClient.getOrderDetail4Management(orderNo);
+		OrderInfoDetailVO4Management info=orderResult.getData();
+		if (info==null) {
+			logger.info(log+"--未获取到订单数据");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+		OrderInfoDetailVO orderInfo=info.getOrderInfoDetailVO();
+		if (orderInfo==null) {
+			logger.info(log+"---未获取到订单数据");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+		if (orderInfo.getOrderStatus()!=OrderStatusEnum.WAIT_PAY.getStatusCode()) {
+			logger.info(log+"---订单状态有误");
+			throw new BusinessException(BusinessCode.CODE_600104);
+		}
+		List<OrderItemVO> itemVOs=orderInfo.getOrderItemVoList();
+		StringBuilder body=new StringBuilder();
+		if (CollectionUtils.isNotEmpty(itemVOs)) {
+			for (OrderItemVO orderItemVO : itemVOs) {
+				body.append(orderItemVO.getSkuDesc());
+				body.append("*");
+				body.append(orderItemVO.getAmount());
+				body.append(";");
+			}
+		}
+		String deviceInfo="";
+		MobileInfo mobileInfo=condition.getMobileInfo();
+		
+		if (mobileInfo!=null) {
+			deviceInfo=mobileInfo.getImei();
+		}
+		
+		//组装支付信息
+		
+		PayPreOrderCondition payPreOrderCondition=new PayPreOrderCondition();
+		payPreOrderCondition.setDeviceInfo(deviceInfo);
+		payPreOrderCondition.setBody(body.toString());
+		payPreOrderCondition.setOpenid(openid);
+		payPreOrderCondition.setOutOrderNo(orderNo);
+		payPreOrderCondition.setTotalAmount(orderInfo.getRealPaymentMoney());
+		payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
+		
+		
 		//todo 调取微信支付接口  
 		return null;
 	}
 
 	@Override
+	@Transactional
 	public Integer callbackOrderPay(OrderPayCallbackCondition condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
 		logger.info(log+"--开始");
@@ -78,6 +151,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
+		//todo判断支付成功之后更新订单信息
         orderServiceClient.orderPaySuccessNotify("订单号", "交易号");
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
@@ -142,6 +216,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
 		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
+		
 		if (storeBankroll==null) {
 			storeBankroll=new StoreBankroll();
 			storeBankroll.setTotalMoeny(totalMoney);
@@ -167,6 +242,83 @@ public class PayServiceImpl implements PayService{
 			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 		}
 		
+		
 	}
-	
+
+	@Override
+	public void saveStoreBankRollLog(StoreBankRollLogCondition condition) {
+		String log=logLabel+"记录用户资金流转日志saveStoreBankRollLog";
+		if (condition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException();
+		}
+		if (condition.getStoreId()==null) {
+			logger.info(log+"--参数门店id为空");
+			throw new BusinessException();
+		}
+		PayStoreBankrollLog payStoreBankrollLog = new PayStoreBankrollLog();
+		BigDecimal orderMoeny=condition.getOrderMoeny()==null?BigDecimal.valueOf(0):condition.getOrderMoeny();
+		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
+		BigDecimal settlementMoney=condition.getSettlementMoney()==null?BigDecimal.valueOf(0):condition.getSettlementMoney();
+
+		if(1 == condition.getType()){
+			if (condition.getStoreId()==null) {
+				logger.info(log+"--订单完成:参数订单号为空");
+				throw new BusinessException();
+			}
+			String remarks = "订单完成:总收入增加"+orderMoeny +"元,待结算金额增加"+orderMoeny+"元";
+
+			payStoreBankrollLog.setOrderNo(condition.getOrderNo());
+			payStoreBankrollLog.setStoreId(condition.getStoreId());
+			payStoreBankrollLog.setTotalMoeny(orderMoeny);
+			payStoreBankrollLog.setSettlementSettledMoney(orderMoeny);
+			payStoreBankrollLog.setRemarks(remarks);
+			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+		}
+
+		if(2 == condition.getType()){
+			if (condition.getStoreId()==null) {
+				logger.info(log+"--结算审核:参数订单号为空");
+				throw new BusinessException();
+			}
+			String remarks = "结算审核：待结算减少"+settlementMoney +"元,可提现金额增加"+settlementMoney+"元";
+
+			payStoreBankrollLog.setOrderNo(condition.getOrderNo());
+			payStoreBankrollLog.setStoreId(condition.getStoreId());
+			payStoreBankrollLog.setPresentedMoney(settlementMoney);
+			payStoreBankrollLog.setSettlementSettledMoney(settlementMoney);
+			payStoreBankrollLog.setRemarks(remarks);
+			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+		}
+
+		if(3 == condition.getType()){
+			if (condition.getStoreId()==null) {
+				logger.info(log+"--提现申请:参数提现单号为空");
+				throw new BusinessException();
+			}
+			String remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedMoney+"元";
+
+			payStoreBankrollLog.setStoreId(condition.getStoreId());
+			payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
+			payStoreBankrollLog.setPresentedMoney(presentedMoney);
+			payStoreBankrollLog.setPresentedFrozenMoney(presentedMoney);
+			payStoreBankrollLog.setRemarks(remarks);
+			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+		}
+
+		if(4 == condition.getType()){
+			if (condition.getWithdrawalsNo()==null) {
+				logger.info(log+"--提现审核:参数提现单号为空");
+				throw new BusinessException();
+			}
+			String remarks = "提现审核:提现冻结金额减少"+presentedMoney +"元";
+
+			payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
+			payStoreBankrollLog.setStoreId(condition.getStoreId());
+			payStoreBankrollLog.setPresentedMoney(presentedMoney);
+			payStoreBankrollLog.setPresentedFrozenMoney(presentedMoney);
+			payStoreBankrollLog.setRemarks(remarks);
+			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+		}
+	}
 }

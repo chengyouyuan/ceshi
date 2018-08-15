@@ -68,8 +68,11 @@
   		from store_product_manage prod
 		LEFT JOIN store_user_info u on u.id=prod.store_id
 		where 1=1
-	<if test="condition.storeId != null">
+	<if test="condition.id != null">
   		and prod.id=#{condition.id,jdbcType=BIGINT}
+  	</if>
+  	<if test="condition.deleted != null and condition.deleted==0">
+  		and prod.prod_status!=2
   	</if>
   	<if test="condition.prodStatus != null">
   		and prod.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
@@ -80,10 +83,10 @@
   	<if test="condition.storeId != null">
   		and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
   	</if>
-  	<if test="condition.prodCode != null">
+  	<if test="condition.prodCode != null and condition.prodCode != ''">
   		and prod.prod_code=#{condition.prodCode ,jdbcType=VARCHAR}
   	</if>
-  	<if test="condition.skuCode != null">
+  	<if test="condition.skuCode != null and condition.skuCode != ''">
   		and prod.sku_code=#{condition.skuCode ,jdbcType=VARCHAR}
   	</if>
   	<if test="condition.skuCodeList != null">
@@ -92,10 +95,10 @@
 				#{skuItem,jdbcType=VARCHAR}
 			</foreach> 
   	</if>
-  	<if test="condition.storeName != null">
-  		and u.store_name like '%' + #{condition.storeName} + '%' 
+  	<if test="condition.storeName != null and condition.storeName!=''">
+  		and u.store_name like '%${condition.storeName}%' 
   	</if>
-  	<if test="condition.storeMobile != null">
+  	<if test="condition.storeMobile != null and condition.storeMobile!=''">
   		and u.store_mobile = #{condition.storeMobile,jdbcType=VARCHAR} 
   	</if>
   	order by prod.created desc
@@ -122,16 +125,16 @@
         	<choose>
         		<!-- 设置价格 -->
         		<when test="condition.priceStatus==1">
-        			and prod.sell_money  <![CDATA[ >= ]]> 0
+        			and prod.sell_money  <![CDATA[ > ]]> 0
         		</when>
         		<otherwise>
         		<!-- 未设置价格 -->
-        		and (prod.sell_money  <![CDATA[ < ]]> 0 or prod.sell_money is null)
+        		and (prod.sell_money  <![CDATA[ <= ]]> 0 or prod.sell_money is null)
         		</otherwise>
         	</choose>
             
         </if> 
-
+		order by prod.created desc
   </select>
   
  	<select id="selectBySkuCodeAndStoreId" resultMap="BaseResultMap">

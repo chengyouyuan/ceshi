@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -33,4 +34,6 @@ public interface CouponInvestorMapper {
     List<CouponInvestorVO> getCouponInvestorPage(@Param("condition") CouponInvestorCondition condition);
 
     List<InvertorTempleteCountVO> getInvertorTempleteCountPage(@Param("investorId") long investorId);
+
+    TempleteRelationCountVO getRelationCouponInvCount(@Param("id") Long id);
 }

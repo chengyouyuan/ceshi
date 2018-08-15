@@ -80,6 +80,8 @@ public final class BusinessCode {
 
     /** 原密码输入错误 */
     public static final int CODE_300021 = 302001;
+    /** 不可删除有成员的权限组 */
+    public static final int CODE_301000 = 301000;
     /** 新密码与原密码相同 */
     public static final int CODE_302002 = 302002;
 
@@ -310,6 +312,10 @@ public final class BusinessCode {
      *  支付回调  参数为空
      */
     public static final int CODE_600101 = 600101;
+    /**
+     *  订单支付  参数为空
+     */
+    public static final int CODE_600102 = 600102;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600201 = 600201;

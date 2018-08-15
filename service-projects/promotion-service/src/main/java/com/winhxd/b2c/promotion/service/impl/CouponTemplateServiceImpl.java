@@ -138,6 +138,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
             vo.setInvestorId(couponTemplate.getInvestorId());
             vo.setInvestorName(couponTemplate.getInvestorName());
             vo.setStatus(couponTemplate.getStatus());
+            vo.setCode(couponTemplate.getCode());
+            vo.setRemarks(couponTemplate.getRemarks());
         }
         responseResult.setData(vo);
         return responseResult;

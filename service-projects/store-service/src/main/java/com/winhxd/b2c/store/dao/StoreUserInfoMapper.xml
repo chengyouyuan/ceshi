@@ -16,7 +16,7 @@
         <result column="contact_mobile" property="contactMobile" jdbcType="CHAR"/>
         <result column="lat" property="lat" jdbcType="DOUBLE"/>
         <result column="lon" property="lon" jdbcType="DOUBLE"/>
-        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="openid" property="openid" jdbcType="VARCHAR"/>
         <result column="created" property="created" jdbcType="TIMESTAMP"/>
         <result column="created_by" property="createdBy" jdbcType="BIGINT"/>
         <result column="created_by_name" property="createdByName" jdbcType="VARCHAR"/>
@@ -29,7 +29,7 @@
     </resultMap>
     <sql id="Base_Column_List">
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
-    shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, open_id,
+    shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status,token
   </sql>
@@ -61,8 +61,8 @@
             <if test="storeMobile != null and storeMobile != ''">
                 AND store_mobile =#{storeMobile}
             </if>
-            <if test="openId != null and openId != ''">
-                AND open_id = #{openId}
+            <if test="openid != null and openid != ''">
+                AND openid = #{openid}
             </if>
             <if test="storeCustomerId != null">
                 AND store_customer_id = #{storeCustomerId}
@@ -114,7 +114,7 @@
             <if test="storeRegionCode != null and storeRegionCode != ''">
                 AND store_region_code LIKE '${storeRegionCode}%'
             </if>
-            <if test="storeStatus != null and storeStatus != ''">
+            <if test="storeStatus != null">
                 AND store_status = #{storeStatus}
             </if>
         </where>
@@ -128,7 +128,7 @@
       store_mobile, store_address, store_region_code, 
       store_password, shopkeeper, shop_owner_img, 
       pickup_type, pay_type, contact_mobile,
-      lat, lon, open_id, created, 
+      lat, lon, openid, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
       store_status,token)
@@ -136,7 +136,7 @@
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
       #{pickupType,jdbcType=VARCHAR}, #{payType,jdbcType=VARCHAR}, #{contactMobile,jdbcType=CHAR},
-      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openId,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
       #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR})
@@ -187,8 +187,8 @@
             <if test="lon != null">
                 lon,
             </if>
-            <if test="openId != null">
-                open_id,
+            <if test="openid != null">
+                openid,
             </if>
             <if test="created != null">
                 created,
@@ -261,8 +261,8 @@
             <if test="lon != null">
                 #{lon,jdbcType=DOUBLE},
             </if>
-            <if test="openId != null">
-                #{openId,jdbcType=VARCHAR},
+            <if test="openid != null">
+                #{openid,jdbcType=VARCHAR},
             </if>
             <if test="created != null">
                 #{created,jdbcType=TIMESTAMP},
@@ -336,8 +336,8 @@
             <if test="lon != null">
                 lon = #{lon,jdbcType=DOUBLE},
             </if>
-            <if test="openId != null">
-                open_id = #{openId,jdbcType=VARCHAR},
+            <if test="openid != null">
+                openid = #{openid,jdbcType=VARCHAR},
             </if>
             <if test="created != null">
                 created = #{created,jdbcType=TIMESTAMP},
@@ -384,7 +384,7 @@
       contact_mobile = #{contactMobile,jdbcType=CHAR},
       lat = #{lat,jdbcType=DOUBLE},
       lon = #{lon,jdbcType=DOUBLE},
-      open_id = #{openId,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
@@ -396,7 +396,7 @@
       token = #{token,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-    <update id="updateReginCodeByCustomerId">
+    <update id="updateRegionCodeByCustomerId">
     update store_user_info set store_region_code = #{storeRegionCode} where store_customer_id = #{storeCustomerId}
   </update>
 
@@ -406,13 +406,13 @@
     from store_user_info
     where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
   </select>
-  <select id="selectByReginCodes" resultType="java.lang.String">
+  <select id="selectByRegionCodes" resultType="java.lang.String">
     select
       id
     from store_user_info
     where
-      <foreach collection="reginCodeList" item="reginCode" open="(" close=")" separator="or">
-          store_region_code like '${reginCode}%'
+      <foreach collection="regionCodeList" item="regionCode" open="(" close=")" separator="or">
+          store_region_code like '${regionCode}%'
       </foreach>
   </select>
 

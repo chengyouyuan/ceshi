@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/region/filterlist",
+    "type": "report",
+    "id": "system_region_list_radio_win",
+    "code": "system_region_list_radio_win",
+    "title": "选择区域",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/region/filterlist"
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "id",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "regionCode",
+        "title": "区域编码"
+      },
+      {
+        "name": "province",
+        "title": "省"
+      },
+      {
+        "name": "city",
+        "title": "市"
+      },
+      {
+        "name": "county",
+        "title": "区县"
+      },
+      {
+        "name": "town",
+        "title": "乡镇/街道"
+      },
+      {
+        "name": "village",
+        "title": "居委会/村"
+      }
+    ],
+    "params": [
+      {
+        "name": "province",
+        "inputModel": "input",
+        "title": "省"
+      },
+      {
+        "name": "city",
+        "inputModel": "input",
+        "title": "市"
+      },
+      {
+        "name": "county",
+        "inputModel": "input",
+        "title": "区县"
+      },
+      {
+        "name": "town",
+        "inputModel": "input",
+        "title": "乡镇/街道"
+      },
+      {
+        "name": "village",
+        "inputModel": "input",
+        "title": "居委会/村"
+      }
+    ],
+    "returnDisplay": "province",
+    "returnValue": "regionCode"
+  }
+}

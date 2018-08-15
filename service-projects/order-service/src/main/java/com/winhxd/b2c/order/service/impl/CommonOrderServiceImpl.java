@@ -174,9 +174,12 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void orderPaySuccessNotify(String orderNo) {
+    public void orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单支付通知orderNo不能为空");
+        }
+        if (StringUtils.isBlank(paymentSerialNum)) {
+            throw new NullPointerException("订单支付流水号paymentSerialNum不能为空");
         }
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
         if (orderInfo == null) {
@@ -187,7 +190,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
         Date payFinishDateTime = new Date();
-        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), payFinishDateTime, orderInfo.getId());
+        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), paymentSerialNum, payFinishDateTime, orderInfo.getId());
         if (updNum != 1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
@@ -827,17 +830,6 @@ public class CommonOrderServiceImpl implements OrderService {
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJsonString, newOrderJsonString, orderInfo.getOrderStatus(),
                 orderInfo.getOrderStatus(), orderInfo.getStoreId(), null,
                 OrderStatusEnum.FINISHED.getStatusDes(), MainPointEnum.MAIN);
-        //TODO 发送云信
-        String last4MobileNums;
-        CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
-        if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
-            logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
-            last4MobileNums = "";
-        } else {
-            last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
-        }
-        String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
-        String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
         registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo), null);
         logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
@@ -1278,6 +1270,19 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
+            //支付成功清空门店订单销量统计cache
+            cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
+            //TODO 发送云信
+            String last4MobileNums;
+            CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
+            if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
+                logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
+                last4MobileNums = "";
+            } else {
+                last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+            }
+            String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+            String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
             //TODO 发送mq完成消息
         }
     }

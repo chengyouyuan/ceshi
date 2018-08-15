@@ -19,6 +19,7 @@
         <result column="sku_category_quantity" jdbcType="INTEGER" property="skuCategoryQuantity"/>
         <result column="pay_type" jdbcType="SMALLINT" property="payType"/>
         <result column="pay_status" jdbcType="SMALLINT" property="payStatus"/>
+        <result column="payment_serial_num" jdbcType="VARCHAR" property="paymentSerialNum"/>
         <result column="created" jdbcType="TIMESTAMP" property="created"/>
         <result column="pay_finish_datetime" jdbcType="TIMESTAMP" property="payFinishDateTime"/>
         <result column="pickup_datetime" jdbcType="TIMESTAMP" property="pickupDateTime"/>
@@ -42,7 +43,7 @@
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money, coupon_titles,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime, accept_order_datetime,
+        pay_status, payment_serial_num, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime, accept_order_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
         updated_by, updated_by_name, created_by_name
     </sql>
@@ -71,7 +72,7 @@
         pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
         coupon_brand_money, order_total_money, real_payment_money,
         sku_quantity, sku_category_quantity,
-        pay_type, pay_status, created,
+        pay_type, pay_status, payment_serial_num, created,
         pay_finish_datetime, pickup_datetime,
         finish_datetime, cancel_datetime, refund_datetime, apply_refund_datetime,accept_order_datetime, pickup_type,
         inviter_code, updated, cancel_reason,
@@ -83,7 +84,7 @@
         #{pickupCode,jdbcType=VARCHAR}, #{randomReductionMoney,jdbcType=DECIMAL}, #{couponTitles,jdbcType=VARCHAR}, #{couponHxdMoney,jdbcType=DECIMAL},
         #{couponBrandMoney,jdbcType=DECIMAL}, #{orderTotalMoney,jdbcType=DECIMAL}, #{realPaymentMoney,jdbcType=DECIMAL},
         #{sku_quantity,jdbcType=INTEGER}, #{sku_category_quantity,jdbcType=INTEGER},
-        #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{created,jdbcType=TIMESTAMP},
+        #{payType,jdbcType=SMALLINT}, #{payStatus,jdbcType=SMALLINT}, #{paymentSerialNum,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP},
         #{payFinishDateTime,jdbcType=TIMESTAMP}, #{pickupDateTime,jdbcType=TIMESTAMP},
         #{finishDateTime,jdbcType=TIMESTAMP}, #{cancelDateTime,jdbcType=TIMESTAMP}, #{refundDateTime,jdbcType=TIMESTAMP},
         #{applyRefundDatetime,jdbcType=TIMESTAMP}, #{acceptOrderDatetime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
@@ -112,6 +113,9 @@
             </if>
             <if test="orderStatus != null">
                 order_status,
+            </if>
+            <if test="paymentSerialNum != null">
+                payment_serial_num,
             </if>
             <if test="pickupCode != null">
                 pickup_code,
@@ -256,6 +260,9 @@
             <if test="payStatus != null">
                 #{payStatus,jdbcType=SMALLINT},
             </if>
+			<if test="paymentSerialNum != null">
+                #{paymentSerialNum,jdbcType=VARCHAR},
+            </if>
             <if test="created != null">
                 #{created,jdbcType=TIMESTAMP},
             </if>
@@ -366,6 +373,9 @@
             <if test="payStatus != null">
                 pay_status = #{payStatus,jdbcType=SMALLINT},
             </if>
+            <if test="paymentSerialNum != null">
+                payment_serial_num = #{paymentSerialNum,jdbcType=VARCHAR},
+            </if>
             <if test="created != null">
                 created = #{created,jdbcType=TIMESTAMP},
             </if>
@@ -444,6 +454,7 @@
       sku_category_quantity = #{skuCategoryQuantity,jdbcType=INTEGER},
       pay_type = #{payType,jdbcType=SMALLINT},
       pay_status = #{payStatus,jdbcType=SMALLINT},
+      payment_serial_num = #{paymentSerialNum,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
       pickup_datetime = #{pickupDateTime,jdbcType=TIMESTAMP},
@@ -467,6 +478,7 @@
   </update>
 
     <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
+    	<result column="discount_money" jdbcType="DECIMAL" property="discountMoney"/>
         <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
             <id column="itemId" property="itemId"/>
             <result column="order_no" property="orderNo"/>
@@ -509,6 +521,30 @@
         </if>
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.dateInterval != null and condition.dateInterval.startDate != null">
+            and created &gt;= #{condition.dateInterval.startDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="condition.dateInterval != null and condition.dateInterval.endDate != null">
+            and created &lt;= #{condition.dateInterval.endDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="condition.moneyInterval != null and condition.moneyInterval.startNum != null">
+            and created &gt;= #{condition.moneyInterval.startNum,jdbcType=DECIMAL}
+        </if>
+        <if test="condition.moneyInterval != null and condition.moneyInterval.endNum != null">
+            and created &lt;= #{condition.moneyInterval.endNum,jdbcType=DECIMAL}
+        </if>
+        <if test="condition.valuationType != null">
+            and valuation_type = #{condition.valuationType,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.payType != null">
+            and pay_type = #{condition.payType,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.orderStatus != null">
+            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.regionCode != null">
+            and region_code = #{condition.regionCode,jdbcType=VARCHAR}
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 
@@ -633,6 +669,7 @@
     <update id="updateOrderPayStatus">
         update order_info
         set pay_status=#{payStatus,jdbcType=SMALLINT}, 
+        payment_serial_num = #{paymentSerialNum,jdbcType=VARCHAR},
         pay_finish_datetime = #{payFinishDateTime,jdbcType=TIMESTAMP},
         updated = now()
         where id=#{orderId,jdbcType=BIGINT}

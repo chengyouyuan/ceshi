@@ -6,6 +6,8 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
@@ -15,9 +17,11 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.*;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
@@ -50,7 +54,7 @@ import java.util.*;
  */
 @Api(tags = "惠小店开店相关接口")
 @RestController
-@RequestMapping(value = "/api-store/store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api-store/store", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiOpenStoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiOpenStoreController.class);
@@ -310,7 +314,7 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！"),
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！")})
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<Integer> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
+    public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
         if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupType() == null ||
                 storeBusinessInfoCondition.getPayType() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
@@ -330,10 +334,13 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200004);
         }
         BeanUtils.copyProperties(storeBusinessInfoCondition, storeUserInfo);
-        //开店状态 有效
-        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
-        storeService.updateByPrimaryKeySelective(storeUserInfo);
-        return new ResponseResult<>();
+        NeteaseAccountVO neteaseAccountVO = storeService.modifyStoreAndCreateAccount(storeUserInfo);
+        StoreMessageAccountVO storeMessageAccountVO = new StoreMessageAccountVO();
+        storeMessageAccountVO.setNeteaseAccid(neteaseAccountVO.getAccid());
+        storeMessageAccountVO.setNeteaseToken(neteaseAccountVO.getToken());
+        ResponseResult<StoreMessageAccountVO> responseResult = new ResponseResult<>();
+        responseResult.setData(storeMessageAccountVO);
+        return responseResult;
     }
 
     @ApiOperation(value = "惠小店管理首页获取数据接口", notes = "惠小店管理首页获取数据接口")
@@ -355,13 +362,27 @@ public class ApiOpenStoreController {
         return responseResult;
     }
 
+    @ApiOperation(value = "根据门店的id查询门店的信息[C端在没有登录时通过storeId查询信息，不会校验token]")
+    @PostMapping(value = "/security/1056/v1/findStoreInfoByStoreId")
+    public ResponseResult<StoreUserInfoVO> findStoreInfoByStoreId(@RequestBody StoreUserInfoCondition condition){
+        ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
+        if(condition.getId() == null){
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
+        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(condition.getId());
+        if(storeUserInfoVO != null){
+            storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
+        }
+        responseResult.setData(storeUserInfoVO);
+        return responseResult;
+    }
     /**
      * @return 门店信息
      * @author chengyy
      * @date 2018/8/10 15:17
      * @Description 根据token查询用户绑定的门店信息
      */
-    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
+    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回[C端在登录的情况下有token时调用]")
     @PostMapping(value = "/1029/v1/findBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {
@@ -372,20 +393,35 @@ public class ApiOpenStoreController {
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
-            StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
-            Date now = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.DATE, -30);
-            condition.setEndDateTime(now);
-            condition.setStartDateTime(calendar.getTime());
-            condition.setStoreId(storeUserInfoVO.getId());
-            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
             //设置月销售量
-            storeUserInfoVO.setMonthlySales(storeOrderSalesSummaryVO.getSkuQuantity());
+            storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             result.setData(storeUserInfoVO);
         }
         return result;
+
+    }
+    /**
+     * @author chengyy
+     * @date 2018/8/15 13:34
+     * @Description 根据门店id查询月销售量
+     * @param
+     * @return
+     * @exception
+     */
+    public Integer  queryMonthlySkuQuantity(Long storeId){
+        if(storeId == null){
+            return null;
+        }
+        StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
+        Date now = new Date();
+        condition.setEndDateTime(now);
+        condition.setStartDateTime(DateUtils.addMonths(now,-1));
+        condition.setStoreId(storeId);
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
+        if(storeOrderSalesSummaryVO != null){
+            return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
+        }
+        return null;
     }
 
     /**

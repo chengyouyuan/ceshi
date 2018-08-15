@@ -109,15 +109,13 @@ public class ApiStoreProductManageController {
 		logger.info("B端获取可上架商品数据接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);		
 			return responseResult;
 		}
 		// 账号信息校验
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
 			return responseResult;
 		}
 
@@ -192,7 +190,10 @@ public class ApiStoreProductManageController {
 			if (prodResult != null && prodResult.getCode() == 0) {
 				ProductMsgVO pmVO = new ProductMsgVO();
 				pmVO.setProducts(prodResult.getData());
+				responseResult=new ResponseResult<>();
 				responseResult.setData(pmVO);
+			}else{
+				responseResult=new ResponseResult<>(BusinessCode.CODE_1001);	
 			}
 		}
 
@@ -212,15 +213,13 @@ public class ApiStoreProductManageController {
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null || null == storeUser.getBusinessId()) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
 			return responseResult;
 		}
 		logger.info("B端商品操作接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 		// 操作类型
@@ -269,16 +268,17 @@ public class ApiStoreProductManageController {
 						// 商品上架
 						this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo,
 								prodSkuInfo);
+					}else{
+						responseResult=new ResponseResult<>(BusinessCode.CODE_200012);
+						return responseResult;
 					}
 				} else {
-					responseResult.setCode(BusinessCode.CODE_200012);
-					responseResult.setMessage("部分skuCode无效！");
+					responseResult=new ResponseResult<>(BusinessCode.CODE_200012);
 					return responseResult;
 				}
 			} else {
 				// 表示商品中有部分已经上架过了
-				responseResult.setCode(BusinessCode.CODE_200013);
-				responseResult.setMessage("部分商品已上架");
+				responseResult=new ResponseResult<>(BusinessCode.CODE_200013);
 				return responseResult;
 			}
 
@@ -308,15 +308,13 @@ public class ApiStoreProductManageController {
 
 		logger.info("B端添加门店提报商品接口入参为：{}", condition);
 		if (condition == null||StringUtils.isEmpty(condition.getProdImage1())) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数错误");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
 			return responseResult;
 		}
 		Long storeId = storeUser.getBusinessId();
@@ -342,15 +340,13 @@ public class ApiStoreProductManageController {
 		logger.info("B端门店提报商品列表接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数错误");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
 			return responseResult;
 		}
 		Long storeId = storeUser.getBusinessId();
@@ -385,7 +381,6 @@ public class ApiStoreProductManageController {
             responseResult.setCode(BusinessCode.CODE_1007);
 			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
-		//1607456L;
 		Long storeCustomerId = storeUser.getStoreCustomerId();
 		Long businessId = storeUser.getBusinessId();
 		// 门店已经上架的商品
@@ -445,15 +440,13 @@ public class ApiStoreProductManageController {
 		logger.info("B端我的商品管理接口入参为：{}", condition);
 		// 参数校验
 		if (!checkParam(condition)) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数错误");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
-			responseResult.setCode(BusinessCode.CODE_1002);
-			responseResult.setMessage("登录凭证无效！");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1002);
 			return responseResult;
 		}
 		Long storeId = storeUser.getBusinessId();
@@ -501,39 +494,38 @@ public class ApiStoreProductManageController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
 	@PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition){
+	ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition) {
 		ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
-		LoginCheckSellMoneyVO vo=new LoginCheckSellMoneyVO();
-		
+		LoginCheckSellMoneyVO vo = new LoginCheckSellMoneyVO();
+
 		// 获取当前门店用户
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null) {
-				responseResult.setCode(BusinessCode.CODE_1002);
-				responseResult.setMessage("登录凭证无效！");
-				return responseResult;
+			responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
+			return responseResult;
 		}
 		Long storeId = storeUser.getBusinessId();
-		
+
 		vo.setStoreId(storeId);
-		//查询上架未设置价格商品
-		StoreProductManageCondition spmcondition=new StoreProductManageCondition();
+		// 查询上架未设置价格商品
+		StoreProductManageCondition spmcondition = new StoreProductManageCondition();
 		spmcondition.setStoreId(storeId);
-		//未设置价格
-		spmcondition.setPriceStatus((byte)0);
-		//上架商品
+		// 未设置价格
+		spmcondition.setPriceStatus((byte) 0);
+		// 上架商品
 		spmcondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-		int count=storeProductManageService.countSkusByConditon(spmcondition);
-		//设置是否有未设置价格的商品
-		if(count>0){
-			vo.setCheckResult(true);	
-		}else{
+		int count = storeProductManageService.countSkusByConditon(spmcondition);
+		// 设置是否有未设置价格的商品
+		if (count > 0) {
+			vo.setCheckResult(true);
+		} else {
 			vo.setCheckResult(false);
 		}
-		//设置为设置价格商品的数量
+		// 设置为设置价格商品的数量
 		vo.setNoSetPriceCount(count);
-		
+
 		responseResult.setData(vo);
-		
+
 		return responseResult;
 	}
 	
@@ -559,15 +551,13 @@ public class ApiStoreProductManageController {
 
 		logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
 		if (imageFiles == null) {
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("参数错误");
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 
 		List<MultipartFile> multipartFiles = imageFiles.getFiles("file");
-		if(multipartFiles==null||multipartFiles.size()<=0){
-			responseResult.setCode(BusinessCode.CODE_1007);
-			responseResult.setMessage("请至少上传一张图片");
+		if(multipartFiles==null||multipartFiles.size()<=0||multipartFiles.size()>3){
+			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
 			return responseResult;
 		}
 		List<ProductImageVO> imageVOList=new ArrayList<>();
@@ -613,6 +603,7 @@ public class ApiStoreProductManageController {
 		}
 		cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
 		cache.expire(hxdSkuKey, 60 * 60 * 2);
+
 		return skuData;
 	}
 

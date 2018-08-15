@@ -137,6 +137,15 @@
         "isHidden": false
       },
       {
+        "name": "regionCode",
+        "inputModel": "inputDia",
+        "title": "所在区域",
+        "placeholder": "请选择下单区域",
+        "path": "",
+        "configKey": "/template/module/system/system_region_list_radio_win.json",
+        "isHidden": false
+      },
+      {
         "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "下单时间",

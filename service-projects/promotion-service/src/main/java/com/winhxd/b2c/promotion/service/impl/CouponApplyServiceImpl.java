@@ -9,9 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
-import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
+import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
@@ -62,6 +60,19 @@ public class CouponApplyServiceImpl implements CouponApplyService {
         PagedList<CouponApplyVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponApplyVO> couponApplyList = couponApplyMapper.getCouponApplyPage(condition);
+        //拼接关联模板数量
+        if(couponApplyList!=null && couponApplyList.size()>0){
+            for(int i=0;i<couponApplyList.size();i++){
+                CouponApplyVO vo = couponApplyList.get(i);
+                TempleteRelationCountVO templeteRelationCountVO = couponApplyMapper.getRelationCouponApplyCount(vo.getId());
+                if(templeteRelationCountVO!=null){
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                }else{
+                    vo.setRelTempleteCount(String.valueOf(0));
+                }
+
+            }
+        }
         PageInfo<CouponApplyVO> pageInfo = new PageInfo<>(couponApplyList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

@@ -21,7 +21,7 @@ public class CustomerUserInfo implements Serializable {
     /**
      * 微信openId
      */
-    private String openId;
+    private String openid;
     /**
      * 纬度
      */
@@ -80,12 +80,12 @@ public class CustomerUserInfo implements Serializable {
         this.customerMobile = customerMobile == null ? null : customerMobile.trim();
     }
 
-    public String getOpenId() {
-        return openId;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId == null ? null : openId.trim();
+    public void setOpenid(String openid) {
+        this.openid = openid == null ? null : openid.trim();
     }
 
     public Double getLat() {

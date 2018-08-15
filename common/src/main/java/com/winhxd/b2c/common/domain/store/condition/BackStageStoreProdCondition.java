@@ -56,6 +56,9 @@ public class BackStageStoreProdCondition {
     @ApiModelProperty("商品sku集合")
     private List<String> skuCodeList;
     
+    @ApiModelProperty("查询数据是否包含删除状态 默认0， 0不包含 1包含")
+    private Integer deleted=0;
+    
     @ApiModelProperty("页大小")
     private Integer pageSize=10;
     

@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponGradeDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponGradeMapper;
@@ -98,6 +99,19 @@ public class CouponGradeServiceImpl implements CouponGradeService {
         PagedList<CouponGradeVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponGradeVO> couponGradeList = couponGradeMapper.getCouponGradePage(condition);
+        //拼接模板关联数量
+        if(couponGradeList!=null && couponGradeList.size()>0){
+            for(int i=0;i<couponGradeList.size();i++){
+                CouponGradeVO vo = couponGradeList.get(i);
+                TempleteRelationCountVO templeteRelationCountVO = couponGradeMapper.getRelationCouponGradeCount(vo.getId());
+                if(templeteRelationCountVO!=null){
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                }else{
+                    vo.setRelTempleteCount(String.valueOf(0));
+                }
+
+            }
+        }
         PageInfo<CouponGradeVO> pageInfo = new PageInfo<>(couponGradeList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

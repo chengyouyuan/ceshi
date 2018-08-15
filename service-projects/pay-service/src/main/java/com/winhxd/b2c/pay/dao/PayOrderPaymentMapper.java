@@ -14,4 +14,11 @@ public interface PayOrderPaymentMapper {
     int updateByPrimaryKeySelective(PayOrderPayment record);
 
     int updateByPrimaryKey(PayOrderPayment record);
+
+    /**
+     * 根据支付流水号查询-lizhonghua-2018年8月15日11:29:27
+     * @param orderPaymentNo
+     * @return
+     */
+    PayOrderPayment selectByOrderPaymentNo(String orderPaymentNo);
 }

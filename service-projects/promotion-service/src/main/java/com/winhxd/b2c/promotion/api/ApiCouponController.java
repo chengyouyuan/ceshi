@@ -1,6 +1,8 @@
 package com.winhxd.b2c.promotion.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
@@ -38,7 +40,7 @@ public class ApiCouponController{
     private CouponService couponService;
 
     private String logTitle=""; 
-    @ApiOperation(value = "新人专享优惠列表", notes = "新人专享优惠列表")
+    @ApiOperation(value = "C端新人专享优惠列表", notes = "C端新人专享优惠列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_500002, message = "该手机号已经享受过新用户福利"),
@@ -54,7 +56,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "待领取优惠券列表", notes = "待领取优惠券列表")
+    @ApiOperation(value = "C端待领取优惠券列表", notes = "C端待领取优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -69,7 +71,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "我的优惠券列表", notes = "我的优惠券列表")
+    @ApiOperation(value = "C端我的优惠券列表", notes = "C端我的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -85,7 +87,7 @@ public class ApiCouponController{
     }
 
 
-    @ApiOperation(value = "用户领取优惠券", notes = "用户领取优惠券")
+    @ApiOperation(value = "C端用户领取优惠券", notes = "C端用户领取优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -128,7 +130,7 @@ public class ApiCouponController{
      * @param condition
      * @return
      */
-    @ApiOperation(value = "用户查询门店优惠券列表", notes = "用户查询门店优惠券列表")
+    @ApiOperation(value = "C端用户查询门店优惠券列表", notes = "C端用户查询门店优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
@@ -144,7 +146,7 @@ public class ApiCouponController{
         return result;
     }
 
-    @ApiOperation(value = "订单可用的优惠券列表", notes = "订单可用的优惠券列表")
+    @ApiOperation(value = "C端订单可用的优惠券列表", notes = "C端订单可用的优惠券列表")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
@@ -167,7 +169,9 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5047/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestBody CouponInStoreGetedAndUsedCodition codition){
-        LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ codition.getStoreId());
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ storeId);
         Integer pageNo = 1 ;
         Integer pageSize = 10;
         if(codition.getPageNo()!=null){
@@ -176,15 +180,14 @@ public class ApiCouponController{
         if(codition.getPageNo()!=null){
             pageSize = codition.getPageNo();
         }
-
         ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
-        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(codition.getStoreId(),pageNo,pageSize);
+        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,pageNo,pageSize);
         result.setData(pages);
         LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
         return result;
     }
 
-    @ApiOperation(value = "获取可用最优惠的优惠券", notes = "获取可用最优惠的优惠券")
+    @ApiOperation(value = "C端获取可用最优惠的优惠券", notes = "C端获取可用最优惠的优惠券")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })

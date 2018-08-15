@@ -41,7 +41,7 @@
       },
       {
         "name": "skuCode",
-        "title": "商品skucode"
+        "title": "sku编码"
       },
       {
         "name": "prodName",
@@ -84,7 +84,7 @@
                 "method": "detail"
               },
               "path": "",
-              "configKey": "/template/module/store/store_prod_list_view.json"
+              "configKey": ""
             }
           },
           {
@@ -99,13 +99,13 @@
               "path": "/store/1044/v1/operateStoreProdManage"
             }
           }
-          }
         ]
       }
     ],
     "params": [
       {
         "name": "prodStatus",
+        "title": "商品状态",
         "inputModel": "select",
         "options":[
 			{
@@ -115,8 +115,12 @@
 			{
 				"lable":"上架",
 				"value":"1"
+			},
+			{
+				"lable":"已删除",
+				"value":"2"
 			}
-		]
+		],
         "placeholder": "请选择",
         "isHidden": false
       },

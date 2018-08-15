@@ -33,4 +33,10 @@ public interface CouponActivityTemplateMapper {
      */
     int updateByCouponActivityId(CouponActivityTemplate couponActivityTemplate);
 
+    /**
+     * 查询优惠券信息
+     * @param id
+     * @return
+     */
+    List<CouponActivityTemplate> selectTemplateByActivityId(Long id);
 }

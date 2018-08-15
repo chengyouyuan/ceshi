@@ -7,16 +7,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -37,9 +41,13 @@ public class OrderServiceTest {
 
     @Autowired
     private StringMessageSender stringMessageSender;
+    @Resource
+    private Cache cache;
     
     @Test
     public void testGetStoreOrderSalesSummary() {
+        //支付成功清空门店订单销量统计cache
+//        System.out.println(cache.del(OrderUtil.getStoreOrderSalesSummaryKey(0L)));
         long storeId = 0L;
         //查询当天数据
         //获取当天最后一秒
@@ -77,7 +85,7 @@ public class OrderServiceTest {
     
     @Test
     public void testOrderPayNotify() {
-        orderService.orderPaySuccessNotify("C18080417612761795");
+        orderService.orderPaySuccessNotify("C18080417612761795","asdfasdfasd");
     }
     
     @Test

@@ -47,9 +47,9 @@ public class CouponVO {
     @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动", required=true)
     private String couponType;
     @ApiModelProperty(value = "开始时间", required=true)
-    private Date activityStart;
+    private String activityStart;
     @ApiModelProperty(value = "结束时间", required=true)
-    private Date activityEnd;
+    private String activityEnd;
     @ApiModelProperty(value = "优惠券状态状态(0-无效,1-已使用，2-未使用， 3-已过期,4-退回", required=true)
     private String useStatus;
     @ApiModelProperty(value = "优惠券是否可领取 0 已领取  1 可领取", required=true)
@@ -165,19 +165,19 @@ public class CouponVO {
         this.couponType = couponType;
     }
 
-    public Date getActivityStart() {
+    public String getActivityStart() {
         return activityStart;
     }
 
-    public void setActivityStart(Date activityStart) {
+    public void setActivityStart(String activityStart) {
         this.activityStart = activityStart;
     }
 
-    public Date getActivityEnd() {
+    public String getActivityEnd() {
         return activityEnd;
     }
 
-    public void setActivityEnd(Date activityEnd) {
+    public void setActivityEnd(String activityEnd) {
         this.activityEnd = activityEnd;
     }
 

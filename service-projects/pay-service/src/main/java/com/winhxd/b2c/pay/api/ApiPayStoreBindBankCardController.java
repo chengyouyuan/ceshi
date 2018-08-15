@@ -54,7 +54,7 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/61004/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankCardVO> queryStoreBindBankCard(@RequestBody StoreBankCardCondition condition) {
-        String logTitle = "/api-pay/bankCard/6010/v1/storeBindBankCard-B端获取银行卡信息";
+        String logTitle = "/api-pay/bankCard/61004/v1/storeBindBankCard-B端获取银行卡信息";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<StoreBankCardVO> result = new ResponseResult<>();
         StoreBankCardVO storeBankCardInfo = new StoreBankCardVO();
@@ -86,7 +86,7 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/61005/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
-        String logTitle = "/api-pay/bankCard/6011/v1/bindStoreBankCard-B端绑定银行卡";
+        String logTitle = "/api-pay/bankCard/61005/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
     	StoreBankCard storeBankCard = new StoreBankCard();
@@ -112,7 +112,7 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/61006/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
-		String logTitle = "/api-pay/bankCard/6012/v1/verificationCode-获取短信验证码";
+		String logTitle = "/api-pay/bankCard/61006/v1/verificationCode-获取短信验证码";
 		LOGGER.info("{}=--开始--{}", logTitle,condition);
 		ResponseResult<String> result = new ResponseResult<String>();
 		

@@ -52,7 +52,7 @@ public class ApiPayStoreBindBankCardController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
     })
-    @RequestMapping(value = "/6010/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/61004/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankCardVO> queryStoreBindBankCard(@RequestBody StoreBankCardCondition condition) {
         String logTitle = "/api-pay/bankCard/6010/v1/storeBindBankCard-B端获取银行卡信息";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
@@ -84,7 +84,7 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
             @ApiResponse(code = BusinessCode.CODE_610020, message = "请先获取验证码")
     })
-    @RequestMapping(value = "/6011/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/61005/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
         String logTitle = "/api-pay/bankCard/6011/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
@@ -110,7 +110,7 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
             @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成")
     })
-    @RequestMapping(value = "/6012/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/61006/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
 		String logTitle = "/api-pay/bankCard/6012/v1/verificationCode-获取短信验证码";
 		LOGGER.info("{}=--开始--{}", logTitle,condition);

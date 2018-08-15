@@ -37,8 +37,10 @@ public class VerifyController {
 
     @ApiOperation("结算-按汇总结算")
     @PostMapping("/pay/6092/v1/verifyBySummary")
-    public ResponseResult<?> verifyBySummary(VerifySummaryCondition condition) {
-        return new ResponseResult<>();
+    public ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition) {
+        int count = verifyService.verifyByStoreSummary(
+                condition.getList(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
+        return new ResponseResult<>(count);
     }
 
     @ApiOperation("费用明细列表查询")
@@ -56,7 +58,9 @@ public class VerifyController {
     @ApiOperation("结算-按明细结算")
     @PostMapping("/pay/6094/v1/verifyByDetail")
     public ResponseResult<VerifyResultVO> verifyByDetail(VerifyDetailCondition condition) {
-        return new ResponseResult<>();
+        int count = verifyService.verifyByAccountingDetail(
+                condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
+        return new ResponseResult<>(count);
     }
 
     @ApiOperation("门店提现申请列表查询")

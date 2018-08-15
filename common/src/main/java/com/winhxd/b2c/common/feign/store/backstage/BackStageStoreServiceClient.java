@@ -1,16 +1,5 @@
 package com.winhxd.b2c.common.feign.store.backstage;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -22,8 +11,17 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCond
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
-
 import feign.hystrix.FallbackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  *
@@ -61,12 +59,12 @@ public interface BackStageStoreServiceClient {
     ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition);
 
     /**
-     * 更改门店regincode
+     * 更改门店regioncode
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/store/1041/v1/updateReginCode",method = RequestMethod.POST)
-    ResponseResult<Integer> modifyStoreInfoReginCode(BackStageModifyStoreCondition condition);
+    @RequestMapping(value = "/store/1041/v1/updateRegionCode",method = RequestMethod.POST)
+    ResponseResult<Integer> modifyStoreInfoRegionCode(BackStageModifyStoreCondition condition);
     /**
      * 分页查询门店商品信息（带搜索）
     * @Title: findStoreProdManageList
@@ -102,12 +100,12 @@ public interface BackStageStoreServiceClient {
     ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition);
 
     /**
-     * 根据reginCode集合查询门店
+     * 根据regionCode集合查询门店
      * @param condition
      * @return
      */
     @RequestMapping(value = "/store/1051/v1/findStoreIdList",method = RequestMethod.POST)
-    ResponseResult<List<String>> findStoreIdListByReginCodes(@RequestBody BackStageStoreInfoCondition condition);
+    ResponseResult<List<String>> findStoreIdListByRegionCodes(@RequestBody BackStageStoreInfoCondition condition);
     
     /**
      * 后台分页获取门店提报商品
@@ -170,8 +168,8 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
     }
 
     @Override
-    public ResponseResult<Integer> modifyStoreInfoReginCode(BackStageModifyStoreCondition condition) {
-        logger.error("StoreServiceClientFallBack -> modifyStoreInfoReginCode 报错，错误信息为{}",throwable);
+    public ResponseResult<Integer> modifyStoreInfoRegionCode(BackStageModifyStoreCondition condition) {
+        logger.error("StoreServiceClientFallBack -> modifyStoreInfoRegionCode 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
@@ -195,8 +193,8 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
 	}
 
     @Override
-    public ResponseResult<List<String>> findStoreIdListByReginCodes(BackStageStoreInfoCondition condition) {
-        logger.error("StoreServiceClientFallBack -> findStoreIdListByReginCodes 报错，错误信息为{}",throwable);
+    public ResponseResult<List<String>> findStoreIdListByRegionCodes(BackStageStoreInfoCondition condition) {
+        logger.error("StoreServiceClientFallBack -> findStoreIdListByRegionCodes 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

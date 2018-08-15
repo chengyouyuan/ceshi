@@ -174,9 +174,12 @@ public class CommonOrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void orderPaySuccessNotify(String orderNo) {
+    public void orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单支付通知orderNo不能为空");
+        }
+        if (StringUtils.isBlank(paymentSerialNum)) {
+            throw new NullPointerException("订单支付流水号paymentSerialNum不能为空");
         }
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
         if (orderInfo == null) {
@@ -185,9 +188,9 @@ public class CommonOrderServiceImpl implements OrderService {
         if (PayStatusEnum.UNPAID.getStatusCode() != orderInfo.getPayStatus()) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
-        logger.info("订单orderNo={}，支付通知处理开始.", orderNo);
+        logger.info("订单orderNo={}，paymentSerialNum={} 支付通知处理开始.", orderNo, paymentSerialNum);
         Date payFinishDateTime = new Date();
-        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), payFinishDateTime, orderInfo.getId());
+        int updNum = orderInfoMapper.updateOrderPayStatus(PayStatusEnum.PAID.getStatusCode(), paymentSerialNum, payFinishDateTime, orderInfo.getId());
         if (updNum != 1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID);
         }
@@ -206,6 +209,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //订单支付成功事务提交后相关事件
         registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
+        logger.info("订单orderNo={}，paymentSerialNum={} 支付通知处理结束.", orderNo, paymentSerialNum);
     }
 
     /**

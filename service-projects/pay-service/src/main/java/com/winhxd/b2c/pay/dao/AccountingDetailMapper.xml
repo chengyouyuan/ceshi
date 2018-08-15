@@ -4,9 +4,9 @@
 
   <insert id="insertAccountingDetail" parameterType="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
     insert into pay_accounting_detail (
-      order_no, detail_type, detail_money, store_id, recorded_time, insert_time
+      order_no, detail_type, detail_money, store_id, insert_time
     ) values (
-      #{orderNo}, #{detailType}, #{detailMoney}, #{storeId}, #{recordedTime}, now()
+      #{orderNo}, #{detailType}, #{detailMoney}, #{storeId}, now()
     )
   </insert>
 
@@ -28,13 +28,35 @@
     <result column="operated_by_name" property="operatedByName"></result>
   </resultMap>
 
-  <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap">
+  <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition">
     select *
     from pay_accounting_detail d
-    where 1 = 1
+    where d.order_complete_status = 1
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>
+    <if test="thirdPartyVerifyStatus != null">
+      and d.third_party_verify_status = #{thirdPartyVerifyStatus}
+    </if>
+    <if test="detailType != null">
+      and d.detail_type = #{detailType}
+    </if>
+    <if test="storeId != null">
+      and d.store_id = #{storeId}
+    </if>
+    <if test="recordedDateStart != null">
+      and d.recorded_time &gt;= date_format(#{recordedDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="recordedDateEnd != null">
+      and d.recorded_time &lt; date_add(date_format(#{recordedDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
+    <if test="verifyDateStart != null">
+      and d.verify_time &gt;= date_format(#{verifyDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="verifyDateEnd != null">
+      and d.verify_time &lt; date_add(date_format(#{verifyDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
+    order by d.recorded_time desc, d.order_no desc, d.detail_type asc
   </select>
 
   <resultMap id="VerifySummaryVOMap" type="com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO">
@@ -49,7 +71,7 @@
     <result column="real_verify" property="realVerify"></result>
   </resultMap>
 
-  <select id="selectVerifyList" resultMap="VerifySummaryVOMap">
+  <select id="selectVerifyList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
     select
       d.store_id, d.verify_status,
       max(d.recorded_time) as last_recorded_time,
@@ -65,7 +87,35 @@
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>
+    <if test="storeId != null">
+      and d.store_id = #{storeId}
+    </if>
+    <if test="recordedDateStart != null">
+      and d.recorded_time &gt;= date_format(#{recordedDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="recordedDateEnd != null">
+      and d.recorded_time &lt; date_add(date_format(#{recordedDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
+    <if test="verifyDateStart != null">
+      and d.verify_time &gt;= date_format(#{verifyDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="verifyDateEnd != null">
+      and d.verify_time &lt; date_add(date_format(#{verifyDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
     group by d.store_id, d.verify_status, h.verify_code, h.operated_time, h.operated_by_name
+    <if test="realPayMoneyStart != null">
+      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
+    </if>
+    <if test="realPayMoneyEnd != null">
+      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
+    </if>
+    <if test="realVerifyMoneyStart != null">
+      having sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
+    </if>
+    <if test="realVerifyMoneyEnd != null">
+      having sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
+    </if>
+    order by h.operated_time desc
   </select>
 
   <update id="updateAccountingDetailCompletedByComplete">

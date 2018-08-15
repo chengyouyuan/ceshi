@@ -70,7 +70,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1044/v1/operateStoreProdManage",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<Void> operateStoreProdManage(BackStageStoreProdCondition condition) {
+	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<Void> result=new ResponseResult<>();
 		result=backStageStoreServiceClient.operateStoreProdManage(condition);
 		return result;

@@ -28,7 +28,9 @@ public class ProductVO {
 	@ApiModelProperty(value = "品牌名称")
 	private String brandName;
 	
+	@ApiModelProperty(value = "商品图片")
+	private String productImage;
+	
 	@ApiModelProperty(value = "商品sku")
 	private List<ProductSkuVO> productSkus;
-
 }

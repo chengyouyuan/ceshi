@@ -1,11 +1,12 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 
@@ -50,7 +51,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(UpdateOrderCondition condition);
+	Integer callbackOrderPay(OrderPayCallbackCondition condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13
@@ -63,9 +64,18 @@ public interface PayService {
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月15日 上午9:24:42
-	 * @Description 门店资金变化(注意事项：里面的操作都是add，需要减少时传负数)
+	 * @Description 门店资金变化(注意：里面的操作都是add，需要减少时传负数)
 	 */
 	void updateStoreBankroll(StoreBankrollChangeCondition condition);
+	
+	/**
+	 * 
+	 * @author liuhanning
+	 * @date  2018年8月15日 下午5:05:05
+	 * @Description 记录用户资金流转日志
+	 */
+//	void updatePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord);
+	
 	
 	
 }

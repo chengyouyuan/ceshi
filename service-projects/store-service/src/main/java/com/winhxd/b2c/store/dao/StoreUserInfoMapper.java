@@ -53,11 +53,11 @@ public interface StoreUserInfoMapper {
     List<StoreUserInfo> selectStoreUserByIds(@Param("ids") Set<Long> ids);
 
     /**
-     * 根据customerid 更改 regincode
+     * 根据customerid 更改 regioncode
      *
      * @param storeUserInfo
      */
-    void updateReginCodeByCustomerId(StoreUserInfo storeUserInfo);
+    void updateRegionCodeByCustomerId(StoreUserInfo storeUserInfo);
 
     /**
      * @param record 查询条件
@@ -69,9 +69,9 @@ public interface StoreUserInfoMapper {
     List<StoreUserInfoVO> selectStoreByCondition(StoreUserInfo record);
 
     /**
-     * 根据reginCode集合查询门店
+     * 根据regionCode集合查询门店
      * @param
      * @return
      */
-    List<String> selectByReginCodes(@Param("reginCodeList") List<String> reginCodeList);
+    List<String> selectByRegionCodes(@Param("regionCodeList") List<String> regionCodeList);
 }

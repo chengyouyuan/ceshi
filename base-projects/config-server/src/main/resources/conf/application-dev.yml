@@ -27,6 +27,7 @@ redis:
     maxWaitMillis: 10000
     testOnBorrow: true
 
+# 消息队列配置
 mq:
   normal:
     address: 192.168.60.250:5672

@@ -282,13 +282,15 @@ public class CouponServiceImpl implements CouponService {
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
-        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
-        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-            logger.error("优惠券：{}获取门店信息接口调用失败:code={}，待领取优惠券异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
-            throw new BusinessException(result.getCode());
-        }
-        StoreUserInfoVO storeUserInfo = result.getData();
-
+        //TODO 放开注释，修改xml注释
+//        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+//        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+//            logger.error("优惠券：{}获取门店信息接口调用失败:code={}，待领取优惠券异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+//            throw new BusinessException(result.getCode());
+//        }
+//        StoreUserInfoVO storeUserInfo = result.getData();
+        StoreUserInfoVO storeUserInfo = new StoreUserInfoVO();
+        storeUserInfo.setId((long) 2);
         List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getId());
         List<CouponVO> results = new ArrayList<>();
         for(CouponVO couponVO : couponVOS){

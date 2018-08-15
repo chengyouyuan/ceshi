@@ -82,6 +82,24 @@ public interface VerifyServiceClient {
      */
     @RequestMapping(value = "/pay/6094/v1/verifyByDetail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition);
+
+    /**
+     * 费用明细暂缓
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6095/v1/accountingDetailPause", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition);
+
+    /**
+     * 费用明细暂缓恢复
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6096/v1/accountingDetailRestore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition);
 }
 
 @Component
@@ -141,6 +159,18 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
 
     @Override
     public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

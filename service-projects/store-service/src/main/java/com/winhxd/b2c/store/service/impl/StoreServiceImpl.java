@@ -3,13 +3,17 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
@@ -20,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +49,9 @@ public class StoreServiceImpl implements StoreService {
     private StoreUserInfoMapper storeUserInfoMapper;
     @Autowired
     private RegionServiceClient regionServiceClient;
+
+    @Autowired
+    private MessageServiceClient messageServiceClient;
 
     @Override
     public int bindCustomer(Long customerId, Long storeUserId) {
@@ -206,5 +214,19 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public int updateByPrimaryKeySelective(StoreUserInfo record) {
         return storeUserInfoMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo storeUserInfo) {
+        //开店状态 有效
+        storeUserInfo.setStoreStatus(StoreStatusEnum.VALID.getStatusCode());
+        storeUserInfoMapper.updateByPrimaryKeySelective(storeUserInfo);
+        NeteaseAccountCondition neteaseAccountCondition = new NeteaseAccountCondition();
+        neteaseAccountCondition.setCustomerId(storeUserInfo.getId());
+        neteaseAccountCondition.setName(storeUserInfo.getShopkeeper());
+        neteaseAccountCondition.setIcon(storeUserInfo.getShopOwnerImg());
+        neteaseAccountCondition.setMobile(storeUserInfo.getStoreMobile());
+        return messageServiceClient.createNeteaseAccount(neteaseAccountCondition).getData();
     }
 }

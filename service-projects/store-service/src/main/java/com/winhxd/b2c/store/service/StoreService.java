@@ -2,6 +2,7 @@ package com.winhxd.b2c.store.service;
 
 
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -107,4 +108,12 @@ public interface StoreService {
      * @return
      */
     List<String> findByReginCodes(List<String> regionCodeList);
+
+    /**
+     * 开店保存门店店铺信息非空的字段，并创建云信账号
+     *
+     * @param record
+     * @return
+     */
+    NeteaseAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
 }

@@ -14,16 +14,21 @@ public class OrderUtil {
         
     }
 
-    public static final String getStoreOrderSalesSummaryKey(long storeId, Date startDateTime, Date endDateTime) {
+    public static final String getStoreOrderSalesSummaryKey(long storeId) {
+        String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}";
+        return MessageFormat.format(storeSalesSummary, storeId);
+    }
+    
+    public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null) {
             startDateTime = new Date();
         }
         if (endDateTime == null) {
             endDateTime = new Date();
         }
-        String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}:{1}:{2}";
+        String storeSalesSummaryField = "{0}:{1}:{2}";
         String pattern = "yyyyMMddHHmmss";
-        return MessageFormat.format(storeSalesSummary, storeId, DateFormatUtils.format(startDateTime, pattern), DateFormatUtils.format(endDateTime, pattern));
+        return MessageFormat.format(storeSalesSummaryField, storeId, DateFormatUtils.format(startDateTime, pattern), DateFormatUtils.format(endDateTime, pattern));
     }
 
     /**

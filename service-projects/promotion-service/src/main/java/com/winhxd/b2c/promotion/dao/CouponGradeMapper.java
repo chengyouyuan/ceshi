@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -30,5 +31,7 @@ public interface CouponGradeMapper {
     List<CouponGradeVO> getCouponGradePage(@Param("condition")CouponGradeCondition condition);
 
     List<GradeTempleteCountVO> getGradeTempleteCountPage(@Param("gradeId") long gradeId);
+
+    TempleteRelationCountVO getRelationCouponGradeCount(@Param("id") Long id);
 
 }

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ProductServiceImpl implements ProductService {
-
+ 
     @Autowired
     private StoreProductManageService storeProductManageService;
 
@@ -49,8 +49,6 @@ public class ProductServiceImpl implements ProductService {
         productConditionByPage.setCategoryCode(condition.getCategoryCode());
         productConditionByPage.setProductSkus(storeProductManages.stream()
                 .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
-        productConditionByPage.setRecommend(storeProductManages.stream()
-                .anyMatch(storeProductManage -> storeProductManage.getRecommend() == 1) ? 1 : null);
         productConditionByPage.setRecommendSkus(storeProductManages.stream()
                 .filter(storeProductManage -> storeProductManage.getRecommend() == 1)
                 .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));

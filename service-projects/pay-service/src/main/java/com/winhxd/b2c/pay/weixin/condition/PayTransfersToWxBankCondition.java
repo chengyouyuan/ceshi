@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.WithDrawChannelCodeType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -15,14 +16,14 @@ import java.math.BigDecimal;
  */
 @Setter
 @Getter
-public class PayTransfersToWxBankCondition implements java.io.Serializable {
+public class PayTransfersToWxBankCondition implements Serializable {
 
     private static final long serialVersionUID = -7292089920160701229L;
 
     /**
      * 商户号
      */
-    private String mchid;
+/*    private String mchid;*/
 
     /**
      * 提现流水号

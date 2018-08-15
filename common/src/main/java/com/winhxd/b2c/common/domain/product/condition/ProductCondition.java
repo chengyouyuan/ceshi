@@ -31,9 +31,6 @@ public class ProductCondition {
     @ApiModelProperty(value = "店主推荐sku集合")
     private List<String> recommendSkus;
     
-    @ApiModelProperty(value = "是否是推荐商品 1 推荐  ")
-    private Integer recommend;
-    
     @ApiModelProperty(value = "品牌编码")
     private List<String> brandCodes;
     

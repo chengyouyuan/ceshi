@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.message.service.WechatShareService;
@@ -17,9 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,9 +60,10 @@ public class ApiWechatShareController {
     private StoreServiceClient storeServiceClient;
 
     @ApiOperation(value = "生成分享小程序二维码")
-    @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
     @PostMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
-    public ResponseResult<Void> generateQRCodePic(@RequestBody ApiCondition codition, HttpServletResponse response) {
+    public ResponseResult<Void> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
+        ResponseResult<Void> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
@@ -82,7 +82,7 @@ public class ApiWechatShareController {
                 e.printStackTrace();
             }
         }
-        return null;
+        return responseResult;
     }
 
     /**
@@ -91,13 +91,13 @@ public class ApiWechatShareController {
      * @date 2018/8/10 16:45
      * @Description 返回小程序相关配置信息
      */
-    @ApiOperation(value = "生成分享小程序二维码")
-    @ApiResponses({@ApiResponse(code = 200002, message = "参数错误,门店id为空")})
+    @ApiOperation(value = "返回小程序码的配置信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
     @PostMapping(value = "/api-message/message/7002/v1/fetchMiniProgramConfig")
-    public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig(@RequestBody ApiCondition condition) {
+    public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig(ApiCondition condition) {
         ResponseResult<MiniProgramConfigVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
+      if (storeUser == null) {
             logger.error("ApiWechatShareController ->fetchMiniProgramConfig当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
         }
@@ -106,8 +106,11 @@ public class ApiWechatShareController {
         configVO.setPageUrl(pageUrl);
         configVO.setSecret(secret);
         //查询门店id
-        String storeName = storeServiceClient.findStoreUserInfo(storeUser.getBusinessId()).getData().getStoreName();
-        configVO.setStoreName(storeName);
+        ResponseResult<StoreUserInfoVO> responseResult1 =  storeServiceClient.findStoreUserInfo(1L);
+        StoreUserInfoVO  storeUserInfoVO =  responseResult1.getData();
+        if(storeUserInfoVO != null){
+            configVO.setStoreName(storeUserInfoVO.getStoreName());
+        }
         responseResult.setData(configVO);
         return responseResult;
 

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
@@ -90,13 +92,12 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> responseResult=new ResponseResult<>();
-		if(condition!=null&&condition.getStoreId()!=null){
-			Long storeId=condition.getStoreId();
-
+		 AdminUser adminUser=UserContext.getCurrentAdminUser();
+		 
+		if(condition!=null){
 			//商品名称
 			if(StringUtils.isNotEmpty(condition.getProdName())){
 				StoreProductManageCondition spmCondition=new StoreProductManageCondition();
-				spmCondition.setStoreId(storeId);
 				//获取该门店用户下所有的sku
 				List<String> skuCodeList=storeProductManageService.findSkusByConditon(spmCondition);
 				if(skuCodeList!=null){
@@ -143,6 +144,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
 				for(int i=0;i<prodResult.getData().size();i++){
 					resultVO.getData().get(i).setProdName(prodResult.getData().get(i).getSkuName());
+					resultVO.getData().get(i).setSkuImage(prodResult.getData().get(i).getSkuImage());
 				}
 			}
 			responseResult.setData(resultVO);
@@ -158,7 +160,19 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 		ResponseResult<BackStageStoreProdVO> responseResult=new ResponseResult<>();
 		PagedList<BackStageStoreProdVO> resultVO=storeProductManageService.findStoreProdManageList(condition);
 		if(resultVO!=null&&resultVO.getData()!=null&&resultVO.getData().size()>0){
-			responseResult.setData(resultVO.getData().get(0));
+			BackStageStoreProdVO vo=resultVO.getData().get(0);
+			ProductCondition prodCondition=new ProductCondition();
+			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+			List<String> finalSkuCodes=new ArrayList<>(1);
+			finalSkuCodes.add(vo.getSkuCode());
+			prodCondition.setProductSkus(finalSkuCodes);
+			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
+			if(prodResult!=null&&prodResult.getCode()==0
+					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
+				vo.setProdName(prodResult.getData().get(0).getSkuName());
+				vo.setSkuImage(prodResult.getData().get(0).getSkuImage());
+			}
+			responseResult.setData(vo);
 		}
 		return responseResult;
 	}

@@ -69,7 +69,7 @@ public class StoreUserInfo implements Serializable {
     /**
      * 微信openid
      */
-    private String openId;
+    private String openid;
     private Date created;
     private Long createdBy;
     private String createdByName;
@@ -192,12 +192,12 @@ public class StoreUserInfo implements Serializable {
         this.lon = lon;
     }
 
-    public String getOpenId() {
-        return openId;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId == null ? null : openId.trim();
+    public void setOpenid(String openid) {
+        this.openid = openid == null ? null : openid.trim();
     }
     public Date getCreated() {
         return created;

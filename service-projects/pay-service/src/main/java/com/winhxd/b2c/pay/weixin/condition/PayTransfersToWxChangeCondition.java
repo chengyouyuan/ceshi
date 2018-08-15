@@ -3,6 +3,7 @@ package com.winhxd.b2c.pay.weixin.condition;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -14,19 +15,19 @@ import java.math.BigDecimal;
  */
 @Setter
 @Getter
-public class PayTransfersToWxChangeCondition implements java.io.Serializable {
+public class PayTransfersToWxChangeCondition implements Serializable {
 
     private static final long serialVersionUID = 5046603829537736036L;
 
     /**
      * 商户账号appid
      */
-    private String mchAppid;
+    /*private String mchAppid;*/
 
     /**
      * 商户号
      */
-    private String mchid;
+/*    private String mchid;*/
 
     /**
      * 设备号

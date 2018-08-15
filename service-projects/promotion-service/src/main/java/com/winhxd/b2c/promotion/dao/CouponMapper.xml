@@ -72,8 +72,8 @@
 	cap.apply_rule_type applyRuleType,
 	cap.id applyId,
 	ca.coupon_type couponType,
-	ca.activity_start activityStart,
-	ca.activity_end activityEnd,
+	DATE(ca.activity_start) activityStart,
+    DATE(ca.activity_end) activityEnd,
 	CASE
 WHEN cts. STATUS = 2 THEN
 	'未使用'

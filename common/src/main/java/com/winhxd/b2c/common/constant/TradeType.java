@@ -8,10 +8,10 @@ package com.winhxd.b2c.common.constant;
  * @Description: 交易类型枚举
  */
 public enum TradeType {
-
-    JSAPI("JSAPI","公众号支付"),
-    NATIVE("NATIVE","扫码支付"),
-    APP("APP","APP支付");
+    //wechat
+    WECHAT_H5("JSAPI","微信公众号支付"),
+    WECHAT_CSB("NATIVE","微信扫码支付"),
+    WECHAT_APP("APP","微信支付");
 
     private TradeType(String code, String name){
         this.code = code;

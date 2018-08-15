@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>logback</contextName>
-    <property name="app.log" value="pay-service"/>
+
+    <property name="app.log" value="b2c-pay-service"/>
     <property name="LOG_HOME" value="/opt/logs/${app.log}"/>
     <property name="PATTERN" value="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%c{12}:%L] %msg%n"/>
-    <!--输出到控制台-->
+
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${PATTERN}</pattern>
@@ -23,13 +24,24 @@
         <appender-ref ref="file"/>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="console"/>
-        <appender-ref ref="async_log"/>
-    </root>
-
-    <logger name="con.winhxd.b2c" level="DEBUG" additivity="false">
-        <appender-ref ref="console"/>
-        <appender-ref ref="async_log"/>
-    </logger>
+    <springProfile name="test,dev">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_log"/>
+        </root>
+        <logger name="con.winhxd.b2c" level="debug" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_log"/>
+        </logger>
+    </springProfile>
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_log"/>
+        </root>
+        <logger name="con.winhxd.b2c" level="info" additivity="false">
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_log"/>
+        </logger>
+    </springProfile>
 </configuration>

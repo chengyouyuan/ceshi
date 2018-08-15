@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +28,7 @@ import java.util.Set;
  * @Description: 门店服务接口
  * @date 2018/8/3 10:18
  */
-@FeignClient(value = ServiceName.STORE_SERVICE, fallbackFactory = StoreServiceClientFallBack.class)
+@FeignClient(value = ServiceName.STORE_SERVICE,fallbackFactory = StoreServiceClientFallBack.class)
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
@@ -66,14 +65,14 @@ public interface StoreServiceClient {
     ResponseResult<StoreUserInfoVO> findStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 
     /**
-     * @param id 门店id
+     * @param
      * @return 门店信息
      * @author chengyy
      * @date 2018/8/7 17:58
      * @Description 根据门店id(主键)查询门店信息
      */
-    @RequestMapping(value = "/store/1032/v1/findStoreUserInfo/{id}", method = RequestMethod.POST)
-    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id") Long id);
+    @RequestMapping(value = "/store/1032/v1/findStoreUserInfo", method = RequestMethod.GET)
+    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@RequestParam("id")Long id);
 
     /**
      * @param ids 门店id

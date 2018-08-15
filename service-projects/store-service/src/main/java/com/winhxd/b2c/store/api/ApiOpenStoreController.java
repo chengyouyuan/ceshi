@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.*;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -355,13 +356,24 @@ public class ApiOpenStoreController {
         return responseResult;
     }
 
+    @ApiOperation(value = "根据门店的id查询门店的信息[C端在没有登录时通过storeId查询信息，不会校验token]")
+    @PostMapping(value = "/security/1056/v1/findStoreInfoByStoreId")
+    public ResponseResult<StoreUserInfoVO> findStoreInfoByStoreId(@RequestBody StoreUserInfoCondition condition){
+        ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
+        if(condition.getId() == null){
+            throw new BusinessException(BusinessCode.CODE_200002);
+        }
+        StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(condition.getId());
+        responseResult.setData(storeUserInfoVO);
+        return responseResult;
+    }
     /**
      * @return 门店信息
      * @author chengyy
      * @date 2018/8/10 15:17
      * @Description 根据token查询用户绑定的门店信息
      */
-    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回")
+    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回[C端在登录的情况下有token时调用]")
     @PostMapping(value = "/1029/v1/findBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {

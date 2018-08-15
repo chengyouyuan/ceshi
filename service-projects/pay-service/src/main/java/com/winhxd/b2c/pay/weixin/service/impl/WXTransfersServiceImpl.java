@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Override
     public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-        if(checkNecessaryFieldForChange()){
+        if(checkNecessaryFieldForChange(toWxBalanceCondition)){
             logger.warn("转账必填字段为空");
             throw new BusinessException(BusinessCode.CODE_600201);
         }
@@ -34,7 +35,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Override
     public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-        if(checkNecessaryFieldForBank()){
+        if(checkNecessaryFieldForBank(toWxBankCondition)){
             logger.warn("转账必填字段为空");
             throw new BusinessException(BusinessCode.CODE_600201);
         }
@@ -44,18 +45,34 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     /**
      * 检查必须字段
-     * @return
+     * @Author yindanqing
+     * @Date 2018-8-15 10:24:48
      */
-    private boolean checkNecessaryFieldForChange(){
-        return false;
+    private boolean checkNecessaryFieldForChange(PayTransfersToWxChangeCondition toWxBalanceCondition){
+        boolean res = StringUtils.isBlank(toWxBalanceCondition.getPartnerTradeNo())
+                || StringUtils.isBlank(toWxBalanceCondition.getAccountId())
+                || StringUtils.isBlank(toWxBalanceCondition.getAccountName())
+                || null == toWxBalanceCondition.getTotalAmount()
+                && toWxBalanceCondition.getTotalAmount().doubleValue() <= 0d
+                || StringUtils.isBlank(toWxBalanceCondition.getDesc())
+                || StringUtils.isBlank(toWxBalanceCondition.getSpbillCreateIp());
+        return res;
     }
 
     /**
      * 检查必须字段
-     * @return
+     * @Author yindanqing
+     * @Date 2018-8-15 10:24:48
      */
-    private boolean checkNecessaryFieldForBank(){
-        return false;
+    private boolean checkNecessaryFieldForBank(PayTransfersToWxBankCondition toWxBankCondition){
+        boolean res = StringUtils.isBlank(toWxBankCondition.getPartnerTradeNo())
+                || StringUtils.isBlank(toWxBankCondition.getAccount())
+                || StringUtils.isBlank(toWxBankCondition.getAccountName())
+                || null == toWxBankCondition.getChannelCode()
+                || null == toWxBankCondition.getTotalAmount()
+                || toWxBankCondition.getTotalAmount().doubleValue() <= 0d
+                || StringUtils.isBlank(toWxBankCondition.getDesc());
+        return res;
     }
 
     /**

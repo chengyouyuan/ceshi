@@ -137,7 +137,7 @@
         "isHidden": false
       },
       {
-        "name": "region",
+        "name": "regionCode",
         "inputModel": "inputDia",
         "title": "所在区域",
         "placeholder": "请选择下单区域",

@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import com.winhxd.b2c.common.domain.store.condition.ProdOperateInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -285,15 +285,18 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 				logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为："+id+"的门店商品信息");
 				throw new BusinessException(BusinessCode.CODE_1001);
 			}
-			if(StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(status)){
+			//传过来如果状态是下架状态表示：下架--》上架（是个上架操作）与之相反
+			if(StoreProductStatusEnum.UNPUTAWAY.getStatusCode().equals(status)){
 				//上架
 				spm.setPutawayTime(new Date());
-				
+				spm.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
+			}else{
+				spm.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
 			}
 			spm.setUpdated(new Date());
 			spm.setUpdatedBy(adminUser.getId());
 			spm.setUpdatedByName(adminUser.getUsername());
-			spm.setProdStatus(status);
+			
 			this.storeProductManageMapper.updateByPrimaryKeySelective(spm);
 		}else{
 			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage参数异常,condition:"+condition);

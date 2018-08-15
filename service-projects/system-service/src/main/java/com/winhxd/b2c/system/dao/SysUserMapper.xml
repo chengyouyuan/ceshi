@@ -7,6 +7,7 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="mobile" jdbcType="CHAR" property="mobile" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="identity" jdbcType="INTEGER" property="identity" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -20,7 +21,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, account, username, mobile, status, password, created_by, created_by_name, created,
+    id, account, username, mobile, status, password, identity, created_by, created_by_name, created,
     updated_by, updated, updated_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -198,8 +199,21 @@
 
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
     select
-    u.id, account, username, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,u.created_by_name,u.updated_by_name,ur.id role_id,r.role_name
+      u.id,
+      u.account,
+      u.username,
+      u.mobile,
+      u.status,
+      u.created_by,
+      u.created,
+      u.updated_by,
+      u.updated,
+      u.created_by_name,
+      u.updated_by_name,
+      ur.id,
+      ur.role_id,
+      r.role_name,
+      u.identity
     from sys_user u
       left join sys_user_role ur on u.id=ur.user_id
       left join sys_role r on r.id=ur.role_id
@@ -228,8 +242,22 @@
 
   <select id="getByAccount" resultMap="voMap" parameterType="string">
     select
-    u.id, account, username, password, mobile, u.status, u.created_by, u.created, u.updated_by,
-    u.updated,u.created_by_name,u.updated_by_name,ur.id role_id,r.role_name
+      u.id,
+      u.account,
+      u.username,
+      u.password,
+      u.mobile,
+      u.status,
+      u.created_by,
+      u.created,
+      u.updated_by,
+      u.updated,
+      u.created_by_name,
+      u.updated_by_name,
+      ur.id,
+      ur.role_id,
+      r.role_name,
+      u.identity
     from sys_user u
     left join sys_user_role ur on u.id=ur.user_id
     left join sys_role r on r.id=ur.role_id

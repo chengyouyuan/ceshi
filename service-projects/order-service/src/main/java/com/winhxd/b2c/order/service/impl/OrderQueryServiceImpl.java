@@ -35,6 +35,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -128,18 +129,21 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Override
     public StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null || endDateTime == null) {
-            throw new NullPointerException(MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
+            throw new NullPointerException(
+                    MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
         }
         logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
         StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
         // 从缓存中获取
-        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime),
-                String.valueOf(storeId));
+        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId),
+                OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime));
         if (StringUtils.isNotBlank(summaryInfoStr)) {
-            logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
+            logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime,
+                    endDateTime);
             orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
         } else {
-            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算", storeId, startDateTime, endDateTime);
+            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算", storeId, startDateTime,
+                    endDateTime);
             orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
         }
         return orderSalesSummaryVO;
@@ -153,14 +157,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         }
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
         if (storeOrderSalesSummaryVO1 != null) {
-            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO);
+            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
         }
         storeOrderSalesSummaryVO.setStoreId(storeId);
-        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), String.valueOf(storeId), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId), OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         //获取当天最后一秒
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
         //当天有效
-        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId, startDateTime, endDateTime), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
 
@@ -297,9 +301,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      *
      * @return 提货码列表
      */
-    private List<String> generatePickUpCodeList(int size) {
+    private static List<String> generatePickUpCodeList(int size) {
         List<String> pickUpList = new ArrayList<>();
         do {
+            System.out.println("有重复过");
             for (int i = 0; i < size; i++) {
                 String pickUpCode = (int) ((Math.random() * 9 + 1) * 1000) + "";
                 pickUpList.add(pickUpCode);
@@ -314,11 +319,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @param list
      * @return true为不重复，false为重复
      */
-    private boolean hasSame(List<String> list) {
+    private static boolean hasSame(List<String> list) {
         if (null == list) {
             return false;
         }
         return list.size() == new HashSet<Object>(list).size();
     }
 
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(generatePickUpCodeList(50).toArray(new String[50])));
+    }
 }

@@ -1,23 +1,31 @@
 package com.winhxd.b2c.common.mq.support;
 
-import com.winhxd.b2c.common.mq.StringMessageListener;
-import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.mq.support.zipkin.ZipkinRabbitConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -29,13 +37,48 @@ import java.util.List;
 /**
  * @author lixiaodong
  */
+@Import(ZipkinRabbitConfig.class)
 public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(MessageQueueConfig.class);
 
     private DefaultListableBeanFactory beanFactory;
 
     @Autowired
+    @Qualifier("normalCachingConnectionFactory")
     private ConnectionFactory connectionFactory;
+
+    @Bean
+    @ConfigurationProperties(prefix = "mq.normal")
+    public MessageQueueProperties normalMessageQueueProperties() {
+        return new MessageQueueProperties();
+    }
+
+    @Bean
+    @Primary
+    public CachingConnectionFactory normalCachingConnectionFactory(MessageQueueProperties normalMessageQueueProperties) {
+        CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setAddresses(normalMessageQueueProperties.getAddress());
+        factory.setUsername(normalMessageQueueProperties.getUsername());
+        factory.setPassword(normalMessageQueueProperties.getPassword());
+        if (StringUtils.isNotBlank(normalMessageQueueProperties.getVirtualHost())) {
+            factory.setVirtualHost(normalMessageQueueProperties.getVirtualHost());
+        }
+        return factory;
+    }
+
+    @Bean
+    @Primary
+    public RabbitTemplate normalRabbitTemplate(CachingConnectionFactory normalCachingConnectionFactory) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(normalCachingConnectionFactory);
+        return rabbitTemplate;
+    }
+
+    @Bean
+    @Primary
+    public RabbitAdmin normalRabbitAdmin(CachingConnectionFactory normalCachingConnectionFactory) {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(normalCachingConnectionFactory);
+        return rabbitAdmin;
+    }
 
     @Bean
     public StringMessageSender stringMessageSender() {

@@ -51,7 +51,7 @@ public class StoreUserInfoVO {
      * 取货方式（1、自提，多个用逗号分隔）
      */
     @ApiModelProperty("1、自提，多个用逗号分隔")
-    private String pickupWay;
+    private String pickupType;
 
     /**
      * 商品的月销量

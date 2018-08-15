@@ -364,6 +364,9 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(condition.getId());
+        if(storeUserInfoVO != null){
+            storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
+        }
         responseResult.setData(storeUserInfoVO);
         return responseResult;
     }
@@ -384,20 +387,35 @@ public class ApiOpenStoreController {
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
-            StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
-            Date now = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.DATE, -30);
-            condition.setEndDateTime(now);
-            condition.setStartDateTime(calendar.getTime());
-            condition.setStoreId(storeUserInfoVO.getId());
-            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
             //设置月销售量
-            storeUserInfoVO.setMonthlySales(storeOrderSalesSummaryVO.getSkuQuantity());
+            storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             result.setData(storeUserInfoVO);
         }
         return result;
+
+    }
+    /**
+     * @author chengyy
+     * @date 2018/8/15 13:34
+     * @Description 根据门店id查询月销售量
+     * @param
+     * @return
+     * @exception
+     */
+    public Integer  queryMonthlySkuQuantity(Long storeId){
+        if(storeId == null){
+            return null;
+        }
+        StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
+        Date now = new Date();
+        condition.setEndDateTime(now);
+        condition.setStartDateTime(DateUtils.addMonths(now,-1));
+        condition.setStoreId(storeId);
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
+        if(storeOrderSalesSummaryVO != null){
+            return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
+        }
+        return null;
     }
 
     /**

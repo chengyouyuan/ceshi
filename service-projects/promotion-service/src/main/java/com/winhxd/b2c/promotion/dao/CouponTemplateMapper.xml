@@ -74,7 +74,7 @@
 
   <!-- 跳转到修改时获取模板以及关联信息返回字段 -->
   <sql id="Select_CouponTemplate_Column_List">
-      a.id,a.title,a.exolian,
+      a.id,a.code,a.title,a.exolian,
       a.remarks,a.investor_id,a.grade_id,a.apply_rule_id,
       a.corner,a.coupon_label,
       a.coupon_label_color,

@@ -177,7 +177,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
                 couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
-                couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                couponActivityTemplate.setSendNum(condition.getCouponActivityTemplateList().get(i).getSendNum());
             }
             int n2 = couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
             if(n2==0){
@@ -227,7 +227,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
             couponActivityVO.setCouponType(couponActivity.getCouponType());
         }
-        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectByActivityId(couponActivity.getId());
+        List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectTemplateByActivityId(couponActivity.getId());
         couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
 
         for(int i = 0 ; i < couponActivityTemplateList.size() ; i++) {
@@ -341,7 +341,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
                 couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
-                couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                couponActivityTemplate.setSendNum(condition.getCouponActivityTemplateList().get(i).getSendNum());
             }
             int n4 =couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
             if(n4==0){

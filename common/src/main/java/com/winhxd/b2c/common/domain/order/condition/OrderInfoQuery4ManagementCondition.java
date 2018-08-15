@@ -23,20 +23,23 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     @ApiModelProperty(value = "订单号数组")
     private String[] orderNos;
     
-    @ApiModelProperty(value = "下单区间", required = true)
+    @ApiModelProperty(value = "下单时间区间")
     private DateInterval dateInterval;
     
-    @ApiModelProperty(value = "订单价格区间", required = true)
+    @ApiModelProperty(value = "订单价格区间")
     private NumInterval moneyInterval;
     
-    @ApiModelProperty(value = "计价类型:1:线上计价;2:线下计价;", required = true)
+    @ApiModelProperty(value = "计价类型:1:线上计价;2:线下计价;")
     private Short valuationType;
     
-    @ApiModelProperty(value = "支付类型:2为微信扫码付款;1为微信在线支付;", required = true)
+    @ApiModelProperty(value = "支付类型:2为微信扫码付款;1为微信在线支付;")
     private Short payType;
     
-    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;")
     private Short orderStatus;
+    
+    @ApiModelProperty(value = "地理区域编码")
+    private String regionCode;
     
 
     public Long getStoreId() {
@@ -101,6 +104,14 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     public void setOrderStatus(Short orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getRegionCode() {
+        return regionCode;
+    }
+
+    public void setRegionCode(String regionCode) {
+        this.regionCode = regionCode;
     }
     
 }

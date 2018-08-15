@@ -378,7 +378,6 @@ public class ApiStoreProductManageController {
             responseResult.setCode(BusinessCode.CODE_1007);
 			return new ResponseResult<>(BusinessCode.CODE_1007);
 		}
-		//1607456L;
 		Long storeCustomerId = storeUser.getStoreCustomerId();
 		Long businessId = storeUser.getBusinessId();
 		// 门店已经上架的商品
@@ -601,6 +600,7 @@ public class ApiStoreProductManageController {
 		}
 		cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
 		cache.expire(hxdSkuKey, 60 * 60 * 2);
+
 		return skuData;
 	}
 

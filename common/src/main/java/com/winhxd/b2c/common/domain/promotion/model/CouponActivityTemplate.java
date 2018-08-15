@@ -23,6 +23,9 @@ public class CouponActivityTemplate {
     @ApiModelProperty(value = "优惠券模板id")
     private Long templateId;
 
+    @ApiModelProperty(value = "优惠券模板名称")
+    private String templateName;
+
     @ApiModelProperty(value = "数量")
     private Integer count;
 

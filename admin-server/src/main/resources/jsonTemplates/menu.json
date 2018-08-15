@@ -22,11 +22,18 @@
       	},
       	{
       	  "id": "1_2",
+          "menuName": "(临时)商品详情",
+          "path": "/goodsInfo/index",
+          "configKey": "",
+          "permission": ""
+      	},
+        {
+          "id": "1_3",
           "menuName": "商品提报审核",
           "path": "",
           "configKey": "",
           "permission": ""
-      	}
+        }
       ]
     },
     {

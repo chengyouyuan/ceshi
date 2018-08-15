@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public class CouponInvestorVO {
     @ApiModelProperty(value = "主键")
-    private Integer id;
+    private Long id;
     @ApiModelProperty(value = "规则编码")
     private String code;
     @ApiModelProperty(value = "规则名称")
@@ -38,13 +38,17 @@ public class CouponInvestorVO {
     private List<CouponInvestorDetail> detailList;
     @ApiModelProperty(value = "关联模板数量")
     private String relTempleteCount;
+    @ApiModelProperty(value = "出资方名称拼接后的字符串")
+    private String investorNames;
+    @ApiModelProperty(value = "出资方占比拼接后的字符串")
+    private String investorPercents;
 
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -142,5 +146,21 @@ public class CouponInvestorVO {
 
     public void setRelTempleteCount(String relTempleteCount) {
         this.relTempleteCount = relTempleteCount;
+    }
+
+    public String getInvestorNames() {
+        return investorNames;
+    }
+
+    public void setInvestorNames(String investorNames) {
+        this.investorNames = investorNames;
+    }
+
+    public String getInvestorPercents() {
+        return investorPercents;
+    }
+
+    public void setInvestorPercents(String investorPercents) {
+        this.investorPercents = investorPercents;
     }
 }

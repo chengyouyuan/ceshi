@@ -42,10 +42,6 @@
         "title": "权限组名"
       },
       {
-        "name": "permissions",
-        "title": "权限范围"
-      },
-      {
         "name": "userCount",
         "title": "组内人数"
       },

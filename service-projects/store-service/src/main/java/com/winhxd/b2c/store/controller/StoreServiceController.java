@@ -6,16 +6,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -191,7 +189,7 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@PathVariable("id")Long id) {
+	public ResponseResult<StoreUserInfoVO> findStoreUserInfo(@RequestParam("id")Long id) {
 		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
 		if(id == null){
 			throw new BusinessException(BusinessCode.CODE_200002);

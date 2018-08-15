@@ -467,6 +467,7 @@
   </update>
 
     <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
+    	<result column="discount_money" jdbcType="DECIMAL" property="discountMoney"/>
         <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
             <id column="itemId" property="itemId"/>
             <result column="order_no" property="orderNo"/>
@@ -509,6 +510,30 @@
         </if>
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
+        </if>
+        <if test="condition.dateInterval != null and condition.dateInterval.startDate != null">
+            and created &gt;= #{condition.dateInterval.startDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="condition.dateInterval != null and condition.dateInterval.endDate != null">
+            and created &lt;= #{condition.dateInterval.endDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="condition.moneyInterval != null and condition.moneyInterval.startNum != null">
+            and created &gt;= #{condition.moneyInterval.startNum,jdbcType=DECIMAL}
+        </if>
+        <if test="condition.moneyInterval != null and condition.moneyInterval.endNum != null">
+            and created &lt;= #{condition.moneyInterval.endNum,jdbcType=DECIMAL}
+        </if>
+        <if test="condition.valuationType != null">
+            and valuation_type = #{condition.valuationType,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.payType != null">
+            and pay_type = #{condition.payType,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.orderStatus != null">
+            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.regionCode != null">
+            and region_code = #{condition.regionCode,jdbcType=VARCHAR}
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 

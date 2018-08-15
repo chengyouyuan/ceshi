@@ -1,5 +1,9 @@
 package com.winhxd.b2c.pay.weixin.condition;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -7,12 +11,23 @@ import java.math.BigDecimal;
  *
  * @Author yindanqing
  * @Date 2018/8/14 10:42
- * @Description: 提现至微信零钱
+ * @Description: 转账至微信零钱
  */
-public class PayTransfersToWxChangeCondition implements java.io.Serializable {
-
+@Setter
+@Getter
+public class PayTransfersToWxChangeCondition implements Serializable {
 
     private static final long serialVersionUID = 5046603829537736036L;
+
+    /**
+     * 商户账号appid
+     */
+    /*private String mchAppid;*/
+
+    /**
+     * 商户号
+     */
+/*    private String mchid;*/
 
     /**
      * 设备号
@@ -49,59 +64,4 @@ public class PayTransfersToWxChangeCondition implements java.io.Serializable {
      */
     private String spbillCreateIp;
 
-    public String getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
-
-    public String getPartnerTradeNo() {
-        return partnerTradeNo;
-    }
-
-    public void setPartnerTradeNo(String partnerTradeNo) {
-        this.partnerTradeNo = partnerTradeNo;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public String getSpbillCreateIp() {
-        return spbillCreateIp;
-    }
-
-    public void setSpbillCreateIp(String spbillCreateIp) {
-        this.spbillCreateIp = spbillCreateIp;
-    }
 }

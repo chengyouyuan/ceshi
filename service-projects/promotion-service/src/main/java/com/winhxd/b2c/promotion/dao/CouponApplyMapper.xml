@@ -272,9 +272,25 @@
     b.id AS apply_id
     FROM
     coupon_template a
-    LEFT JOIN coupon_apply b ON a.grade_id = b.id
+    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id
     WHERE
     a.apply_rule_id = #{applyId}
+  </select>
+
+
+  <resultMap id="RelCountPageMap" type="com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO">
+    <result column="rel_templete_count" jdbcType="INTEGER" property="relTempleteCount" />
+  </resultMap>
+
+  <!-- 关联模板数量 -->
+  <select id="getRelationCouponApplyCount" parameterType="java.lang.Long" resultMap="RelCountPageMap">
+    SELECT
+    count(a.id) rel_templete_count
+    FROM
+    coupon_apply a
+    LEFT JOIN coupon_template c ON a.id = c.apply_rule_id
+    WHERE
+    a.id = #{id}
   </select>
 
 

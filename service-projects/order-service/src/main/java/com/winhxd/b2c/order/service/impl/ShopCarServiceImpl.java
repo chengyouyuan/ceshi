@@ -25,11 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author: wangbaokuo
@@ -124,9 +126,13 @@ public class ShopCarServiceImpl implements ShopCarService {
                 ShopCar shopCar = new ShopCar();
                 shopCar.setCustomerId(customerId);
                 shopCar.setStoreId(condition.getStoreId());
-                logger.info("预订单接口readyOrder -> 调用查询购物车接口{findShopCar}执行...");
+                logger.info("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars}执行...");
                 List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
-                logger.info("预订单接口readyOrder -> 调用查询购物车接口{findShopCar}执行结束..." + JsonUtil.toJSONString(shopCars));
+                if (CollectionUtils.isEmpty(shopCars)) {
+                    logger.error("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars} 未获取到购物车信息");
+                    throw new BusinessException(BusinessCode.CODE_402011);
+                }
+                logger.info("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars}执行结束..." + JsonUtil.toJSONString(shopCars));
 
                 logger.info("预订单接口readyOrder -> 校验购物车商品状态执行...");
                 checkShopCarProdInfo(shopCars);
@@ -174,9 +180,8 @@ public class ShopCarServiceImpl implements ShopCarService {
     private List<String> getSkuCodeListByShopCar(List<ShopCar> shopCars){
         List<String> skuCodes = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(shopCars)) {
-            shopCars.stream().forEach(shopCar -> {
-                skuCodes.add(shopCar.getSkuCode());
-            });
+            skuCodes = shopCars.stream()
+                    .map(shopCar -> shopCar.getSkuCode()).collect(Collectors.toList());
         }
         return skuCodes;
     }
@@ -198,20 +203,19 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402010);
             }
-            if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())
-                    && !shopCarProdVO.getSellMoney().equals(condition.getPrice())) {
-                logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402012);
+            if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())) {
+                BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
+                BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
+                if(!sellMoney.equals(price)) {
+                    logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
+                    throw new BusinessException(BusinessCode.CODE_402012);
+                }
             }
         }
     }
 
     private List<ShopCartProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId){
         ResponseResult<List<ShopCartProdVO>> shopCarProds = storeServiceClient.findShopCarProd(skuCodes, storeId);
-        if (null == shopCarProds) {
-            logger.error("store-service服务调用异常{} -> StoreServiceClient");
-            throw new BusinessException(BusinessCode.CODE_1001);
-        }
         if (CollectionUtils.isEmpty(shopCarProds.getData()) || skuCodes.size() != shopCarProds.getData().size()) {
             logger.error("获取ShopCarProdVO异常{} -> 商品信息不存在或获取商品数量不正确");
             throw new BusinessException(BusinessCode.CODE_402011);

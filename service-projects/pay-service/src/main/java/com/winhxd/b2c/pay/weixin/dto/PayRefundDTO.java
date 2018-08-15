@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.base.dto;
+package com.winhxd.b2c.pay.weixin.dto;
 
 /**
  * @author lizhonghua
@@ -26,12 +26,12 @@ public class PayRefundDTO {
 	/**
 	 * 订单金额
 	 */
-	private String totalFee;
+	private Integer totalFee;
 
 	/**
 	 * 退款金额
 	 */
-	private String refundFee;
+	private Integer refundFee;
 
     /**
      * 退款原因
@@ -67,23 +67,23 @@ public class PayRefundDTO {
 		this.outTradeNo = outTradeNo;
 	}
 
-	public String getTotalFee() {
+	public Integer getTotalFee() {
 		return totalFee;
 	}
 
-	public void setTotalFee(String totalFee) {
+	public void setTotalFee(Integer totalFee) {
 		this.totalFee = totalFee;
 	}
 
-	public String getRefundFee() {
+	public Integer getRefundFee() {
 		return refundFee;
 	}
 
-	public void setRefundFee(String refundFee) {
+	public void setRefundFee(Integer refundFee) {
 		this.refundFee = refundFee;
 	}
 
-    public String getRefundDesc() {
+	public String getRefundDesc() {
         return refundDesc;
     }
 

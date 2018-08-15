@@ -1,7 +1,14 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +18,16 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
 
 @Service
@@ -29,6 +39,9 @@ public class PayServiceImpl implements PayService{
 	
 	@Autowired
 	PayOrderPaymentMapper payOrderPaymentMapper;
+	
+	@Autowired
+	StoreBankrollMapper storeBankrollMapper;
 	
 	private static final String logLabel="PayServiceImpl--";
 	@Override
@@ -52,11 +65,23 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public Integer callbackOrderPay(UpdateOrderCondition condition) {
-		
+		String log=logLabel+"支付回调callbackOrderPay";
+		logger.info(log+"--开始");
+		if (condition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
 		//todo 调用订单接口
 		
-		//todo 插入流水号
-		
+		// 插入流水号
+		PayOrderPayment payOrderPayment=new PayOrderPayment();
+		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
+		if (insertResult<1) {
+			//订单更新失败
+			logger.info(log+"--订单支付流水插入失败");
+//			throw new BusinessException(BusinessCode.CODE_600301);
+		}
+
 		//todo插入公司预入账数据（对账的时候更新为实入账）
 		//todo给用户插入待结算金额和总的收入金额
 		return null;
@@ -66,27 +91,75 @@ public class PayServiceImpl implements PayService{
 	@Override
 	@Transactional
 	public Integer callbackOrderRefund(UpdateOrderCondition condition) {
-		logger.info(logLabel+"退款回调callbackOrderRefund--开始");
-		logger.info(logLabel+"退款回调callbackOrderRefund--参数"+condition.toString());
-		//更新订单状态
-		OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
-		ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
-		if (callbackResult.getCode()!=0&&!callbackResult.getData()) {
-			//订单更新失败
-			logger.info(logLabel+"退款回调callbackOrderRefund--订单更新失败");
-			throw new BusinessException(BusinessCode.CODE_600301);
+		String log=logLabel+"退款回调callbackOrderRefund";
+		logger.info(log+"--开始");
+		if (condition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600303);
 		}
+		logger.info(log+"--参数"+condition.toString());
+		//插入流水数据
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
 		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
 		if (insertResult<1) {
+			logger.info(log+"--订单退款流水插入失败");
+//			throw new BusinessException(BusinessCode.CODE_600301);
+		}
+		//根据退款状态  判断是否更新订单状态
+		//更新订单状态
+		OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
+		orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
+		ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
+		if (callbackResult.getCode()!=0&&!callbackResult.getData()) {
 			//订单更新失败
-			logger.info(logLabel+"退款回调callbackOrderRefund--订单支付流水插入失败");
+			logger.info(log+"--订单更新失败");
 			throw new BusinessException(BusinessCode.CODE_600301);
 		}
-
+		
+         List<OrderRefundCallbackCondition> aaList=new ArrayList<>();
 		
 		//todo 将此订单的预入账记录更新为退款记录
-		logger.info(logLabel+"退款回调callbackOrderRefund--结束");
+		logger.info(log+"--结束");
 		return null;
+	}
+
+	@Override
+	public void updateStoreBankroll(StoreBankrollChangeCondition condition) {
+		String log=logLabel+"门店资金变化updateStoreBankroll";
+		if (condition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException();
+		}
+		if (condition.getStoreId()==null) {
+			logger.info(log+"--参数门店id为空");
+			throw new BusinessException();
+		}
+		StoreBankroll storeBankroll=storeBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
+		BigDecimal totalMoney=condition.getTotalMoeny()==null?BigDecimal.valueOf(0):condition.getTotalMoeny();
+		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
+		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
+		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
+		if (storeBankroll==null) {
+			storeBankroll=new StoreBankroll();
+			BeanUtils.copyProperties(condition, storeBankroll);
+			storeBankrollMapper.insertSelective(storeBankroll);
+		}else {
+			totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+			presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
+			presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
+			settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
+			
+			totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
+			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
+			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
+			
+			storeBankroll.setTotalMoeny(totalMoney);
+			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+			storeBankroll.setPresentedMoney(presentedMoney);
+			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
+		}
+		
 	}
 }

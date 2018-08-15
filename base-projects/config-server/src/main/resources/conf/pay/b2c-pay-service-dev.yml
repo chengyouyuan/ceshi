@@ -1,3 +1,6 @@
 pay:
   cert:
     path: D:\微信商户平台支付证书\apiclient_cert.p12
+  wechat:
+    appid: wxdbbbd5e596ab6f4d
+    mch_id: 1467361502

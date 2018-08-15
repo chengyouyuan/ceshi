@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
@@ -85,7 +86,22 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         PagedList<CouponInvestorVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponInvestorVO> couponInvestorList = couponInvestorMapper.getCouponInvestorPage(condition);
-        PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(couponInvestorList);
+        //将数据中的出资方详情和占比 拼接为一个字段返回给前端
+        List<CouponInvestorVO> tempList = this.buildFinalList(couponInvestorList);
+
+        if(tempList!=null && tempList.size()>0){
+            for(int i=0;i<tempList.size();i++){
+                CouponInvestorVO vo = tempList.get(i);
+                TempleteRelationCountVO templeteRelationCountVO = couponInvestorMapper.getRelationCouponInvCount(vo.getId());
+                if(templeteRelationCountVO!=null){
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                }else{
+                    vo.setRelTempleteCount(String.valueOf(0));
+                }
+            }
+        }
+
+        PageInfo<CouponInvestorVO> pageInfo = new PageInfo<>(tempList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
@@ -126,5 +142,25 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
 
+
+    public List<CouponInvestorVO>  buildFinalList(List<CouponInvestorVO> list){
+     if(list!=null && list.size()>0){
+         for(int i=0;i<list.size();i++){
+             CouponInvestorVO vo = list.get(i);
+             List<CouponInvestorDetail> detailList  = vo.getDetailList();
+             if(detailList!=null && detailList.size()>0){
+               String investorNames="";
+               String investorPercents="";
+                 for(int j=0;j<detailList.size();j++){
+                     investorNames += detailList.get(j).getNames()+"/";
+                     investorPercents += detailList.get(j).getPercent()+"/";
+                 }
+                 vo.setInvestorNames(investorNames.substring(0,investorNames.length()-1));
+                 vo.setInvestorPercents(investorPercents.substring(0,investorPercents.length()-1));
+             }
+         }
+     }
+     return list;
+    }
 
 }

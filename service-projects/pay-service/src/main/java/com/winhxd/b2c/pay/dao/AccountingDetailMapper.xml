@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.dao.AccountingDetailMapper">
 
-  <insert id="insertAccountingDetail" parameterType="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
+  <insert id="insertAccountingDetail" useGeneratedKeys="true" keyProperty="id" parameterType="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
     insert into pay_accounting_detail (
       order_no, detail_type, detail_money, store_id, insert_time
     ) values (
@@ -132,7 +132,7 @@
     where order_no = #{orderNo}
   </update>
 
-  <insert id="insertVerifyHistory">
+  <insert id="insertVerifyHistory" useGeneratedKeys="true" keyProperty="id">
     insert into pay_verify_history (
       verify_status, verify_code, verify_remark, operated_time, operated_by, operated_by_name
     ) values (
@@ -144,7 +144,7 @@
     update d set
       d.verify_status = h.verify_status,
       d.verify_code = h.verify_code,
-      d.verify_time = h.operated_time,
+      d.verify_time = (case when h.verify_status = 1 then h.operated_time else null end),
       d.operated_time = h.operated_time,
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name

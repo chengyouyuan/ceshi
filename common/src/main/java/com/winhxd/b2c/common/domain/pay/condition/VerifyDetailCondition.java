@@ -8,19 +8,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel("按费用明细结算条件")
+@ApiModel("费用明细操作条件")
 @Data
 public class VerifyDetailCondition implements Serializable {
 
     @ApiModelProperty("费用明细列表")
     private List<Long> ids = new ArrayList<>();
 
-    @ApiModelProperty("核销备注")
+    @ApiModelProperty("操作备注")
     private String verifyRemark;
 
-    @ApiModelProperty("核销人ID")
+    @ApiModelProperty("操作人ID")
     private Long operatedBy;
 
-    @ApiModelProperty("核销人姓名")
+    @ApiModelProperty("操作人姓名")
     private String operatedByName;
 }

@@ -1,6 +1,8 @@
 package com.winhxd.b2c.promotion.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
@@ -167,7 +169,9 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5047/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestBody CouponInStoreGetedAndUsedCodition codition){
-        LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ codition.getStoreId());
+        StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ storeId);
         Integer pageNo = 1 ;
         Integer pageSize = 10;
         if(codition.getPageNo()!=null){
@@ -176,9 +180,8 @@ public class ApiCouponController{
         if(codition.getPageNo()!=null){
             pageSize = codition.getPageNo();
         }
-
         ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
-        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(codition.getStoreId(),pageNo,pageSize);
+        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,pageNo,pageSize);
         result.setData(pages);
         LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
         return result;

@@ -9,7 +9,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -79,16 +78,12 @@ public class NeteaseUtils {
             httpPost.addHeader("CurTime", curTime);
             httpPost.addHeader("CheckSum", checkSum);
             httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-            //设置云信链接超时时间
-            httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, TIME_OUT);
-            httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, TIME_OUT);
             // 设置请求的参数
             httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
             // 执行请求
             HttpResponse response = httpClient.execute(httpPost);
             result = JsonUtil.parseJSONObject(EntityUtils.toString(response.getEntity(), "utf-8"));
-            httpClient.close();
         }  catch (IOException e) {
             LOGGER.error("NeteaseUtils ->sendHttpClientPost,发送云信http请求出错，异常信息为={}", e);
         }   catch (Exception e){

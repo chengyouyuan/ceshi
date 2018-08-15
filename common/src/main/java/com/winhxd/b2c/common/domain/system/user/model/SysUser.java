@@ -56,4 +56,7 @@ public class SysUser {
     @ApiModelProperty(value = "权限列表")
     private List<String> permissions;
 
+    @ApiModelProperty(value = "用户身份(1:超级管理员)")
+    private Integer identity;
+
 }

@@ -83,7 +83,9 @@
   </select>
 
   <delete id="deleteByRoleId" parameterType="java.lang.Long">
-    delete from sys_role_permission p
-    where p.role_id = #{roleId,jdbcType=BIGINT}
+    DELETE FROM
+      sys_role_permission
+    WHERE
+      role_id = #{roleId, jdbcType=BIGINT}
   </delete>
 </mapper>

@@ -1,0 +1,218 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/5029/v1/queryCouponActivity",
+    "type": "report",
+    "id": "coupon_activity_push_list",
+    "code": "coupon_activity_push_list",
+    "title": "优惠券推券管理表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/promotion/pushvolume",
+          "configKey": "",
+          "callBack": {
+          }
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/5029/v1/queryCouponActivity"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id","details"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "/promotion/pushvolume",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id","edit"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "/promotion/pushvolume",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "开启/停止",
+            "icon": null,
+            "event": {
+              "ajaxType": "delete",
+              "type": "ajax",
+              "params": [
+                "id",
+                "activityStatus"
+              ],
+              "path": "/promotion/5035/v1/updateCouponActivityStatus"
+            }
+          },
+          {
+            "name": "撤销已发放优惠券",
+            "icon": null,
+            "event": {
+              "ajaxType": "delete",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/promotion/5034/v1/revocationActivityCoupon"
+            }
+          }
+        ]
+      },
+      {
+        "name": "code",
+        "title": "推券活动编码"
+      },
+      {
+        "name": "name",
+        "title": "推券活动名称"
+      },
+      {
+        "name": "citeNum",
+        "title": "引用数量"
+      },
+      {
+        "name": "getNum",
+        "title": "己领取数量"
+      },
+      {
+        "name": "useNum",
+        "title": "己使用数量"
+      },
+      {
+        "name": "revocationNum",
+        "title": "己撤销优惠券数量"
+      },
+      {
+        "name": "activityStart",
+        "title": "活动开始时间"
+      },
+      {
+        "name": "activityEnd",
+        "title": "活动结束时间"
+      },
+      {
+        "name": "couponStartTime",
+        "title": "优惠券有效期开始时间"
+      },
+      {
+        "name": "couponEndTime",
+        "title": "优惠券有效期结束时间"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人"
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "updatedByName",
+        "title": "修改人"
+      },
+      {
+        "name": "updated",
+        "title": "修改时间"
+      }
+    ],
+    "params": [
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "推券活动编码",
+        "value": "",
+        "placeholder": "请输入活动编码",
+        "isHidden": false
+      },
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "推券活动名称",
+        "value": "",
+        "placeholder": "请输入活动名称",
+        "isHidden": false
+      },
+      {
+        "name": "templateCode",
+        "inputModel": "input",
+        "title": "优惠券编码",
+        "value": "",
+        "placeholder": "请输入优惠券编码",
+        "isHidden": false
+      },
+      {
+        "name": "customerMobile",
+        "inputModel": "input",
+        "title": "C端用户手机号",
+        "value": "",
+        "placeholder": "请输入手机号",
+        "isHidden": false
+      },
+      {
+        "name": "createdByName",
+        "inputModel": "input",
+        "title": "创建人",
+        "value": "",
+        "placeholder": "请输入创建人",
+        "isHidden": false
+      },
+      {
+        "name": "created",
+        "inputModel": "fe-double-date-picker",
+        "title": "创建时间",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      }
+    ]
+  }
+}

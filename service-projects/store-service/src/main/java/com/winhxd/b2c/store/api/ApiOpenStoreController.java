@@ -433,7 +433,7 @@ public class ApiOpenStoreController {
      * @date 2018/8/3 16:04
      * @Description 获取门店信息
      */
-    @ApiOperation(value = "通过门店id查询门店信息")
+    @ApiOperation(value = "查询门店信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"), @ApiResponse(code = BusinessCode.CODE_200002, message = "门店id参数为空")})
     @RequestMapping(value = "/1005/v1/findStoreUserInfo", method = RequestMethod.POST)

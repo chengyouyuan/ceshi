@@ -1,14 +1,13 @@
 {
   "meta": {
     "ajaxType": "get",
-    "path": "/pay/verify/storeWithdrawList",
     "type": "report",
     "title": "提款申请列表",
     "buttons": [
       {
         "name": "查询",
         "event": {
-          "type": "submit",
+          "type": "ajax",
           "ajaxType": "get",
           "path": "/pay/verify/storeWithdrawList"
         }

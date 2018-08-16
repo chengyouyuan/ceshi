@@ -1,17 +1,13 @@
-package com.winhxd.b2c.common.mq.support;
+package com.winhxd.b2c.common.mq.event.support;
 
-import com.winhxd.b2c.common.mq.MQDestination;
-import com.winhxd.b2c.common.mq.MQHandler;
-import com.winhxd.b2c.common.mq.StringMessageListener;
-import com.winhxd.b2c.common.mq.StringMessageSender;
-import com.winhxd.b2c.common.mq.support.zipkin.ZipkinRabbitConfig;
+import com.winhxd.b2c.common.mq.event.*;
+import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.aop.support.AopUtils;
@@ -22,13 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,8 +32,8 @@ import java.util.List;
 /**
  * @author lixiaodong
  */
-@Import(ZipkinRabbitConfig.class)
-public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
+@Import(MessageQueueConfig.class)
+public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(MessageQueueConfig.class);
 
     private DefaultListableBeanFactory beanFactory;
@@ -47,60 +42,48 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Qualifier("normalCachingConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Bean
-    @ConfigurationProperties(prefix = "mq.normal")
-    public MessageQueueProperties normalMessageQueueProperties() {
-        return new MessageQueueProperties();
-    }
+    @Autowired
+    private EventMessageSenderServiceFactory eventMessageSenderServiceFactory;
 
     @Bean
-    @Primary
-    public CachingConnectionFactory normalCachingConnectionFactory(MessageQueueProperties normalMessageQueueProperties) {
-        CachingConnectionFactory factory = new CachingConnectionFactory();
-        factory.setPublisherConfirms(true);
-        factory.setAddresses(normalMessageQueueProperties.getAddress());
-        factory.setUsername(normalMessageQueueProperties.getUsername());
-        factory.setPassword(normalMessageQueueProperties.getPassword());
-        if (StringUtils.isNotBlank(normalMessageQueueProperties.getVirtualHost())) {
-            factory.setVirtualHost(normalMessageQueueProperties.getVirtualHost());
-        }
-        return factory;
-    }
-
-    @Bean
-    @Primary
-    public RabbitTemplate normalRabbitTemplate(CachingConnectionFactory normalCachingConnectionFactory) {
+    public RabbitTemplate eventRabbitTemplate(CachingConnectionFactory normalCachingConnectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(normalCachingConnectionFactory);
+        rabbitTemplate.setMandatory(true);
+        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+            EventCorrelationData data = (EventCorrelationData) correlationData;
+            if (ack) {
+                EventTypeService<Object> service = eventMessageSenderServiceFactory.getService(data.getEventType());
+                service.onEventSentSuccess(data.getId());
+            } else {
+                logger.warn("事件消息发送失败:{}-{}, {}", data.getEventType(), data.getId(), cause);
+            }
+        });
         return rabbitTemplate;
     }
 
     @Bean
-    @Primary
-    public RabbitAdmin normalRabbitAdmin(CachingConnectionFactory normalCachingConnectionFactory) {
-        RabbitAdmin rabbitAdmin = new RabbitAdmin(normalCachingConnectionFactory);
-        return rabbitAdmin;
+    public EventMessageSender eventMessageSender() {
+        return new EventMessageSender();
     }
 
     @Bean
-    public StringMessageSender stringMessageSender() {
-        return new StringMessageSender();
-    }
-
-    @Bean
-    public List<Declarable> declarableList() {
+    public List<Declarable> declarableEventList() {
         List<Declarable> list = new ArrayList<>();
-        for (MQHandler listener : MQHandler.values()) {
-            MQDestination dest = listener.getDestination();
+        for (EventTypeHandler handler : EventTypeHandler.values()) {
+            EventType dest = handler.getEventType();
             FanoutExchange exchange = new FanoutExchange(dest.toString(), true, false);
-            exchange.setDelayed(dest.isDelayed());
             list.add(exchange);
-            Queue queue = new Queue(listener.toString(), true, false, false);
+            Queue queue = new Queue(handler.toString(), true, false, false);
             Binding binding = BindingBuilder.bind(queue).to(exchange);
             list.add(queue);
             list.add(binding);
         }
-
         return list;
+    }
+
+    @Bean
+    public EventMessageSenderServiceFactory eventMessageSenderServiceFactory() {
+        return new EventMessageSenderServiceFactory();
     }
 
     @Override
@@ -112,11 +95,14 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class<?> targetClass = AopUtils.getTargetClass(bean);
         ReflectionUtils.doWithMethods(targetClass, method -> {
-            StringMessageListener annotation = AnnotationUtils.getAnnotation(method, StringMessageListener.class);
+            EventMessageListener annotation = AnnotationUtils.getAnnotation(method, EventMessageListener.class);
             if (annotation != null) {
+                Class<?> eventObjectClass = annotation.value().getEventType().getEventObjectClass();
                 Class<?>[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes == null || parameterTypes.length != 1 || !String.class.isAssignableFrom(parameterTypes[0])) {
-                    throw new IllegalArgumentException("StringMessageListener参数仅支持String: " + targetClass.getCanonicalName() + "#" + method.getName());
+                if (parameterTypes == null || parameterTypes.length != 2
+                        || !String.class.isAssignableFrom(parameterTypes[0])
+                        || !eventObjectClass.isAssignableFrom(parameterTypes[1])) {
+                    throw new IllegalArgumentException("事件消息监听方法参数错误: " + targetClass.getCanonicalName() + "#" + method.getName());
                 }
                 SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer(connectionFactory);
                 listenerContainer.setQueueNames(annotation.value().toString());
@@ -125,14 +111,19 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
                     listenerContainer.setConcurrency(annotation.concurrency());
                 }
                 listenerContainer.setMessageListener(message -> {
-                    String body = new String(message.getBody(), StandardCharsets.UTF_8);
                     try {
-                        method.invoke(bean, body);
+                        String body = new String(message.getBody(), StandardCharsets.UTF_8);
+                        EventMessageHelper.EventTransferObject<?> transferObject
+                                = EventMessageHelper.toTransferObject(body, eventObjectClass);
+                        method.invoke(bean, transferObject.getEventId(), transferObject.getEventObject());
                     } catch (IllegalAccessException e) {
                         logger.error("MQ消费异常", e);
                     } catch (InvocationTargetException e) {
                         logger.error("MQ消费异常", e.getCause());
                         throw new RuntimeException("MQ消费异常", e);
+                    } catch (IOException e) {
+                        logger.error("MQ消费异常:" + e.toString(), e);
+                        throw new RuntimeException("MQ消费异常:" + e.toString(), e);
                     }
                 });
                 beanFactory.registerSingleton(beanName + "#" + method.getName(), listenerContainer);

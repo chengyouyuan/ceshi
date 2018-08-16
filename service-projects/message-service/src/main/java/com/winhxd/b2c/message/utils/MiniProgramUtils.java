@@ -6,7 +6,12 @@ import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +63,11 @@ public class MiniProgramUtils {
      */
     @Value("${wechat.miniProgram.accessTokenUrl}")
     private String accessTokenUrl;
+    /**
+     * 发送小程序模板消息sendMsgUrl
+     */
+    @Value("${wechat.miniProgram.sendMsgUrl}")
+    private String sendMsgUrl;
 
     @Autowired
     HttpClientUtil httpClientUtil;
@@ -137,6 +147,37 @@ public class MiniProgramUtils {
             LOGGER.error("MiniProgramUtils ->getAccessToken,小程序获取AccessToken出错，异常信息为={}",e);
         } finally {
             return token;
+        }
+    }
+
+    public String sendMiniMsg(String msgJson) throws IOException{
+        String accessToken = getAccessToken();
+        if (StringUtils.isEmpty(accessToken)){
+            LOGGER.error("MiniProgramUtils ->sendMiniMsg,小程序获取AccessToken为空");
+            return null;
+        }
+        String url = sendMsgUrl+"?access_token="+accessToken;
+        // 创建http POST请求
+        CloseableHttpClient client = httpClientUtil.getHttpClient();
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader("Content-Type", "application/json");
+        CloseableHttpResponse response = null;
+        String content = null;
+        try {
+            // 构造一个form表单式的实体
+            StringEntity entity = new StringEntity(msgJson,"UTF-8");
+            httpPost.setEntity(entity);
+            // 执行请求
+            response = client.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                // 判断返回状态是否为200
+                content = EntityUtils.toString(response.getEntity(), "UTF-8");
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+            return content;
         }
     }
 

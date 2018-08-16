@@ -20,7 +20,7 @@ public class NeteaseAccountVO {
     @ApiModelProperty("B端用户主键")
     private Long customerId;
 
-    @ApiModelProperty("B端用户主键")
+    @ApiModelProperty("云信账号")
     private String accid;
 
     @ApiModelProperty("网易云通信昵称")

@@ -3,6 +3,8 @@ package com.winhxd.b2c.common.feign.message;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
@@ -66,12 +68,20 @@ public interface MessageServiceClient {
     ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code")String code);
 
     /**
-     * @Description: 发消息
-     * @param formId
+     * @Description: 给C端用户发小程序模板消息
+     * @param miniMsgCondition
      * @return
      */
     @RequestMapping(value = "/message/7022/v1/sendMiniMsg",method = RequestMethod.POST)
-    ResponseResult<Void> sendMiniMsg(@RequestParam("code")String formId);
+    ResponseResult<Void> sendMiniMsg(@RequestBody MiniMsgCondition miniMsgCondition);
+
+    /**
+     * 保存用户formid
+     * @param miniFormIdCondition
+     * @return
+     */
+    @RequestMapping(value = "/message/7023/v1/saveFormIds",method = RequestMethod.POST)
+    ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition miniFormIdCondition);
 }
 
 /**
@@ -122,8 +132,14 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     }
 
     @Override
-    public ResponseResult<Void> sendMiniMsg(String formId) {
-        logger.error("MessageServiceClientFallBack -> sendMsg，错误信息为{}",throwable);
+    public ResponseResult<Void> sendMiniMsg(MiniMsgCondition miniMsgCondition) {
+        logger.error("MessageServiceClientFallBack -> sendMiniMsg，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> saveFormIds(MiniFormIdCondition miniFormIdCondition) {
+        logger.error("MessageServiceClientFallBack -> saveFormIds，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

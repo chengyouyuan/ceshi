@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
@@ -205,6 +206,7 @@ public class CouponServiceImpl implements CouponService {
                         productSkus.add(couponApplyProductList.getSkuCode());
                     }
                     ProductCondition productCondition = new ProductCondition();
+                    productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);

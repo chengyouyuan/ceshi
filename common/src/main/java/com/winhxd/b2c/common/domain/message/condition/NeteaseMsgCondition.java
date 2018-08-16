@@ -23,5 +23,5 @@ public class NeteaseMsgCondition {
     /**
      * 云信消息
      */
-    private NeteaseMsg neteaseMsg ;
+    private NeteaseMsg neteaseMsg;
 }

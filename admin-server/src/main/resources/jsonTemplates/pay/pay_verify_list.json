@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/pay/verify/verifyList",
+    "type": "report",
+    "title": "门店核销列表",
+    "buttons": [
+      {
+        "name": "查询",
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/pay/verify/verifyList"
+        }
+      },
+      {
+        "name": "重置",
+        "event": {
+          "type": "reset"
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "align": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "operatedByName",
+        "title": "操作人员"
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "align": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "operatedByName",
+        "title": "操作人员"
+      },
+      {
+        "name": "operated",
+        "title": "操作时间"
+      }
+    ],
+    "params": [
+    ]
+  }
+}

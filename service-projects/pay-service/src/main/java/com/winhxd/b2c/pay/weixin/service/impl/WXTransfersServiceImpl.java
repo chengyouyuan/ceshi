@@ -1,9 +1,9 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

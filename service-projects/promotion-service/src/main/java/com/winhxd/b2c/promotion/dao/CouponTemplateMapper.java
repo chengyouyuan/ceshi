@@ -32,4 +32,7 @@ public interface CouponTemplateMapper {
     int confirmUpdateCouponTemplate(@Param("updateBy")Long updateBy, @Param("updated")Date updated,@Param("updateByName")String updateByName, @Param("condition")CouponTemplateCondition condition);
 
     List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId);
+
+    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(@RequestParam("storeId") Long storeId);
+
 }

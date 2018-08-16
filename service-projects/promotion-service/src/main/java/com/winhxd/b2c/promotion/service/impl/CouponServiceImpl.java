@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
@@ -797,7 +798,28 @@ public class CouponServiceImpl implements CouponService {
     public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize) {
         Page page = PageHelper.startPage(pageNo, pageSize);
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
+        //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+        //查询使用每张优惠券的使用数量和领取数量
+        List<CouponInStoreGetedAndUsedVO> countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId);
+        //将数量拼接到列表
+        if(list!=null){
+            for(int i=0;i<list.size();i++){
+                CouponInStoreGetedAndUsedVO vo = list.get(i);
+                if(countList!=null){
+                    for(int j=0;j<countList.size();j++){
+                        if(vo.getTempleteId().equals(countList.get(j).getTempleteId())){
+                            vo.setTotalCount(countList.get(j).getTotalCount());
+                            vo.setUsedCount(countList.get(j).getUsedCount());
+                        }
+                    }
+                }else{
+                    vo.setTotalCount(0);
+                    vo.setUsedCount(0);
+                }
+            }
+        }
+
         List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
         pagedList.setData(finalList);
         pagedList.setPageNo(pageNo);
@@ -805,6 +827,8 @@ public class CouponServiceImpl implements CouponService {
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
+
+
 
     /**
      * 获取可用最优惠的优惠券
@@ -854,6 +878,7 @@ public class CouponServiceImpl implements CouponService {
                     ProductCondition productCondition = new ProductCondition();
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
+                    productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
                         logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
@@ -884,6 +909,9 @@ public class CouponServiceImpl implements CouponService {
         }
         return couponVOS;
     }
+
+
+
 
 
 

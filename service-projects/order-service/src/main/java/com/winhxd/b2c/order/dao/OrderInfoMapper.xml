@@ -521,6 +521,7 @@
         <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
+    	<bind name="orderNo" value="condition.orderNo + '%'" />
         select
         id
         from order_info info
@@ -530,7 +531,7 @@
         </if>
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
-        </if>
+        </if> 
         <if test="condition.dateInterval != null and condition.dateInterval.startDate != null">
             and created &gt;= #{condition.dateInterval.startDate,jdbcType=TIMESTAMP}
         </if>
@@ -554,6 +555,9 @@
         </if>
         <if test="condition.regionCode != null">
             and region_code = #{condition.regionCode,jdbcType=VARCHAR}
+        </if>
+        <if test="condition.orderNo != null">
+            and order_no like #{orderNo}
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 

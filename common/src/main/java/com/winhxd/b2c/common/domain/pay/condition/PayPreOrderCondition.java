@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.condition;
+package com.winhxd.b2c.common.domain.pay.condition;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

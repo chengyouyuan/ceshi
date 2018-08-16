@@ -49,7 +49,7 @@ public class ApiStoreLoginController {
 	/**
 	 * 惠小店状态 1有效
 	 */
-	static final Integer HXD_STATUS1 = 1;
+	static final Short HXD_STATUS1 = 1;
 	/**
 	 * 微信登录
 	 */

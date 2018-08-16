@@ -68,9 +68,9 @@
       "children": [
         {
           "id": "3_1",
-          "menuName": ";(临时)顾客详情",
-          "path": "/customerDetails/index",
-          "configKey": "",
+          "menuName": "顾客管理",
+          "path": "",
+          "configKey": "/template/module/customer/customer_list.json",
           "permission": ""
         }
       ]

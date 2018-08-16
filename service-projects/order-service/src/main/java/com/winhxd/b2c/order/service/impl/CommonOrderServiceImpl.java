@@ -1,5 +1,38 @@
 package com.winhxd.b2c.order.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
@@ -12,8 +45,11 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
@@ -56,37 +92,6 @@ import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author wangbin
@@ -94,6 +99,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class CommonOrderServiceImpl implements OrderService {
 
+    private static final String ORDER_BEING_MODIFIED = "订单正在修改中";
+    private static final String ORDER_NO_CANNOT_NULL = "订单号不能为空";
     private static final int QUEUE_CAPACITY = 1000;
     private static final int KEEP_ALIVE_TIME = 50;
     private static final int MAXIMUM_POOL_SIZE = 20;
@@ -276,7 +283,7 @@ public class CommonOrderServiceImpl implements OrderService {
         boolean callbackResult;
         String orderNo = condition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
@@ -390,7 +397,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void cancelOrderByStore(OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         StoreUser store = UserContext.getCurrentStoreUser();
         if (null == store) {
@@ -421,7 +428,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -439,7 +446,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         CustomerUserInfoVO customer = getCustomerUserInfoVO(user.getCustomerId());
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
@@ -496,7 +503,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -577,7 +584,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -1274,7 +1281,6 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             //支付成功清空门店订单销量统计cache
             cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
-            //TODO 发送云信
             String last4MobileNums;
             CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
             if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
@@ -1284,12 +1290,30 @@ public class CommonOrderServiceImpl implements OrderService {
                 last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
             }
             String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+            String createdBy= "";
+            int expiration = 0;
+            int msgType = 0;
+            short pageType = 1;
+            int audioType = 0;
+            String treeCode = "treeCode";
+            NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(orderInfo.getStoreId(), storeMsg, createdBy, expiration, msgType,
+                    pageType, audioType, treeCode);
+            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+            //给用户发信息
             String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
+            String openid = null;
+            String page = null;
+            MiniTemplateData data = new MiniTemplateData();
+            data.setKeyName("keyword1");
+            data.setValue(customerMsg);
+            short msgType2C = MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType();
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+            messageServiceClient.sendMiniMsg(miniMsgCondition);
             //TODO 发送mq完成消息
         }
     }
 
-    /**
+    /**s
      * 订单门店确认完成 处理
      *
      * @author wangbin

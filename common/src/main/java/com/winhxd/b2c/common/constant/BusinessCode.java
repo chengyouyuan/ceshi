@@ -360,6 +360,14 @@ public final class BusinessCode {
     @ApiModelProperty("退款  创建人姓名为空")
     public static final int CODE_600207 = 600207;
     
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600001 = 600001;
+    
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600002 = 600002;
+    
+    @ApiModelProperty("门店资金变化  操作类型为空")
+    public static final int CODE_600003 = 600003;
     
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")

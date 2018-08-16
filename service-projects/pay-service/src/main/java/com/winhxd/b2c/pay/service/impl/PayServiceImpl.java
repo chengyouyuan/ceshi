@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +19,9 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
@@ -121,22 +119,33 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public void updateStoreBankroll(StoreBankrollChangeCondition condition) {
+	public void updateStoreBankroll(UpdateStoreBankRollCondition condition){
 		String log=logLabel+"门店资金变化updateStoreBankroll";
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-			throw new BusinessException();
+			throw new BusinessException(BusinessCode.CODE_600001);
 		}
 		if (condition.getStoreId()==null) {
-			logger.info(log+"--参数门店id为空");
-			throw new BusinessException();
+			logger.info(log+"--门店id为空");
+			throw new BusinessException(BusinessCode.CODE_600002);
 		}
+		if (condition.getType()==null) {
+			logger.info(log+"--操作类型为空");
+			throw new BusinessException(BusinessCode.CODE_600003);
+		}
+		if (condition.getType().equals(1)) {
+			
+		}
+		
+	}
+	
+	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
 		StoreBankroll storeBankroll=storeBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
-		BigDecimal totalMoney=condition.getTotalMoeny()==null?BigDecimal.valueOf(0):condition.getTotalMoeny();
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
 		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
 		
+		BigDecimal totalMoney=settlementSettledMoney;
 		if (storeBankroll==null) {
 			storeBankroll=new StoreBankroll();
 			storeBankroll.setTotalMoeny(totalMoney);
@@ -157,89 +166,46 @@ public class PayServiceImpl implements PayService{
 			
 			storeBankroll.setTotalMoeny(totalMoney);
 			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-			storeBankroll.setPresentedMoney(presentedMoney);;
+			storeBankroll.setPresentedMoney(presentedMoney);
 			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 		}
-		
+		//加入资金流转日志
+		saveStoreBankRollLog(condition);
 		
 	}
 
-	@Override
-	public void saveStoreBankRollLog(StoreBankRollLogCondition condition) {
-		String log=logLabel+"记录用户资金流转日志saveStoreBankRollLog";
-		if (condition==null) {
-			logger.info(log+"--参数为空");
-			throw new BusinessException();
-		}
-		if (condition.getStoreId()==null) {
-			logger.info(log+"--参数门店id为空");
-			throw new BusinessException();
-		}
+	public void saveStoreBankRollLog(StoreBankrollChangeCondition condition) {
+		
 		PayStoreBankrollLog payStoreBankrollLog = new PayStoreBankrollLog();
-		BigDecimal orderMoeny=condition.getOrderMoeny()==null?BigDecimal.valueOf(0):condition.getOrderMoeny();
-		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
-		BigDecimal settlementMoney=condition.getSettlementMoney()==null?BigDecimal.valueOf(0):condition.getSettlementMoney();
-
+		BigDecimal presentedMoney=condition.getPresentedMoney();
+		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney();
+		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney();
+		String remarks="";
 		if(1 == condition.getType()){
-			if (condition.getStoreId()==null) {
-				logger.info(log+"--订单完成:参数订单号为空");
-				throw new BusinessException();
-			}
-			String remarks = "订单完成:总收入增加"+orderMoeny +"元,待结算金额增加"+orderMoeny+"元";
-
-			payStoreBankrollLog.setOrderNo(condition.getOrderNo());
-			payStoreBankrollLog.setStoreId(condition.getStoreId());
-			payStoreBankrollLog.setTotalMoeny(orderMoeny);
-			payStoreBankrollLog.setSettlementSettledMoney(orderMoeny);
-			payStoreBankrollLog.setRemarks(remarks);
-			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
 		}
 
 		if(2 == condition.getType()){
-			if (condition.getStoreId()==null) {
-				logger.info(log+"--结算审核:参数订单号为空");
-				throw new BusinessException();
-			}
-			String remarks = "结算审核：待结算减少"+settlementMoney +"元,可提现金额增加"+settlementMoney+"元";
-
-			payStoreBankrollLog.setOrderNo(condition.getOrderNo());
-			payStoreBankrollLog.setStoreId(condition.getStoreId());
-			payStoreBankrollLog.setPresentedMoney(settlementMoney);
-			payStoreBankrollLog.setSettlementSettledMoney(settlementMoney);
-			payStoreBankrollLog.setRemarks(remarks);
-			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+			 remarks = "结算审核：待结算减少"+settlementSettledMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 
 		if(3 == condition.getType()){
-			if (condition.getStoreId()==null) {
-				logger.info(log+"--提现申请:参数提现单号为空");
-				throw new BusinessException();
-			}
-			String remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedMoney+"元";
-
-			payStoreBankrollLog.setStoreId(condition.getStoreId());
-			payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
-			payStoreBankrollLog.setPresentedMoney(presentedMoney);
-			payStoreBankrollLog.setPresentedFrozenMoney(presentedMoney);
-			payStoreBankrollLog.setRemarks(remarks);
-			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+			 remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedFrozenMoney+"元";
 		}
 
 		if(4 == condition.getType()){
-			if (condition.getWithdrawalsNo()==null) {
-				logger.info(log+"--提现审核:参数提现单号为空");
-				throw new BusinessException();
-			}
-			String remarks = "提现审核:提现冻结金额减少"+presentedMoney +"元";
-
-			payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
-			payStoreBankrollLog.setStoreId(condition.getStoreId());
-			payStoreBankrollLog.setPresentedMoney(presentedMoney);
-			payStoreBankrollLog.setPresentedFrozenMoney(presentedMoney);
-			payStoreBankrollLog.setRemarks(remarks);
-			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
+			 remarks = "提现审核:提现冻结金额减少"+presentedFrozenMoney +"元";
 		}
+		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
+		payStoreBankrollLog.setStoreId(condition.getStoreId());
+		payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
+		payStoreBankrollLog.setPresentedMoney(presentedMoney);
+		payStoreBankrollLog.setSettlementSettledMoney(settlementSettledMoney);
+		payStoreBankrollLog.setPresentedFrozenMoney(presentedFrozenMoney);
+		payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
+		payStoreBankrollLog.setRemarks(remarks);
+		payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 	}
 
 	@Override

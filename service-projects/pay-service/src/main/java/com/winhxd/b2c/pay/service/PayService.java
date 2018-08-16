@@ -5,9 +5,9 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
@@ -43,22 +43,9 @@ public interface PayService {
 	 * @date  2018年8月15日 上午9:24:42
 	 * @Description 门店资金变化(注意：里面的操作都是add，需要减少时传负数)
 	 */
-	void updateStoreBankroll(StoreBankrollChangeCondition condition);
+	void updateStoreBankroll(UpdateStoreBankRollCondition condition);
 	
-	/**
-	 * 
-	 * @author liuhanning
-	 * @date  2018年8月15日 下午5:05:05
-	 * @Description 记录用户资金流转日志
-	 */
-//	void updatePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord);
 
-	/**
-	 * @author wangxiaoshun
-	 * @date  2018年8月15日 20:31
-	 * @Description 记录用户资金流转日志
-	 */
-	void saveStoreBankRollLog(StoreBankRollLogCondition condition);
 	
 	/**
 	 * 小程序预支付

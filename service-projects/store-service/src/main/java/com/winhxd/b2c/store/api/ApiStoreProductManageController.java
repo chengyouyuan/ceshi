@@ -53,10 +53,10 @@ import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.util.ImageUploadUtil;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreSubmitProductService;
-import com.winhxd.b2c.store.util.ImageUploadUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -298,10 +298,7 @@ public class ApiStoreProductManageController {
 	@ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-			@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！"),
-			@ApiResponse(code = BusinessCode.CODE_200015, message = "图片上传失败！"),
-			@ApiResponse(code = BusinessCode.CODE_200016, message = "图片大小超过300KB！")})
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！")})
 	@PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition) throws IOException {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -542,13 +539,21 @@ public class ApiStoreProductManageController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-			@ApiResponse(code = BusinessCode.CODE_200014, message = "图片格式不正确！"),
-			@ApiResponse(code = BusinessCode.CODE_200015, message = "图片上传失败！"),
-			@ApiResponse(code = BusinessCode.CODE_200016, message = "图片大小超过300KB！")})
+			@ApiResponse(code = BusinessCode.CODE_1016, message = "图片格式不正确！"),
+			@ApiResponse(code = BusinessCode.CODE_1017, message = "图片上传失败！"),
+			@ApiResponse(code = BusinessCode.CODE_1018, message = "图片大小超过300KB！"),
+			@ApiResponse(code = BusinessCode.CODE_1019, message = "图片名称不能为空！"),
+			@ApiResponse(code = BusinessCode.CODE_1020, message = "图片不能为空！")})
 	@PostMapping(value = "1049/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles) throws IOException {
 		ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
 
+		// 获取当前门店用户
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+//		if (storeUser == null) {
+//			responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
+//			return responseResult;
+//		}
 		logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
 		if (imageFiles == null) {
 			responseResult=new ResponseResult<>(BusinessCode.CODE_1007);
@@ -562,15 +567,14 @@ public class ApiStoreProductManageController {
 		}
 		List<ProductImageVO> imageVOList=new ArrayList<>();
 		for(MultipartFile mFile:multipartFiles){
-			ResponseResult<ProductImageVO> imageVOResult=imageUploadUtil.uploadImage(mFile);
-			if(imageVOResult!=null&&imageVOResult.getCode()==0){
+			ResponseResult<ProductImageVO> imageVOResult=imageUploadUtil.uploadImage(mFile.getOriginalFilename(),mFile.getInputStream(),null);
+			if(imageVOResult.getCode()==0){
 				imageVOList.add(imageVOResult.getData());
+			}else{
+				responseResult.setCode(imageVOResult.getCode());
+				responseResult.setMessage(imageVOResult.getMessage());
+				responseResult.setData(imageVOList);
 			}
-//			else{
-//				responseResult.setCode(imageVOResult.getCode());
-//				responseResult.setMessage(imageVOResult.getMessage());
-//				return responseResult;
-//			}
 		}
 				
 		responseResult.setData(imageVOList);

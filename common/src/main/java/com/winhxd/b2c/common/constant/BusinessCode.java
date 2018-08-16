@@ -40,6 +40,18 @@ public final class BusinessCode {
     public static final int CODE_1014 = 1014;
     /**请求超时*/
     public static final int CODE_1015 = 1015;
+    
+    /**上传图片格式不正确**/
+    public static final int CODE_1016 = 1016;
+    /**上传图片是失败**/
+    public static final int CODE_1017 = 1017;
+    /**图片大小超过限制**/
+    public static final int CODE_1018= 1018;
+    /**图片名称不能为空**/
+    public static final int CODE_1019= 1019;
+    /**图片不能为空**/
+    public static final int CODE_1020= 1020;
+    
 
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;
@@ -70,12 +82,6 @@ public final class BusinessCode {
     public static final int CODE_200012 = 200012;
     /**sku已上架**/
     public static final int CODE_200013 = 200013;
-    /**上传图片格式不正确**/
-    public static final int CODE_200014 = 200014;
-    /**上传图片是失败**/
-    public static final int CODE_200015 = 200015;
-    /**图片大小超过300KB**/
-    public static final int CODE_200016 = 200016;
     /**门店小程序码url参数为空*/
     public static final int CODE_200017 = 200017;
 
@@ -242,6 +248,12 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单金额没有变化")
     public static final int WRONG_ORDER_TOTAL_MONEY_NO_CHANGE = 400015;
+    
+    @ApiModelProperty("顾客id为空")
+    public static final int CUSTOMER_ID_EMPTY = 400016;
+
+    @ApiModelProperty("订单商品信息为空")
+    public static final int ORDER_SKU_EMPTY = 400017;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;

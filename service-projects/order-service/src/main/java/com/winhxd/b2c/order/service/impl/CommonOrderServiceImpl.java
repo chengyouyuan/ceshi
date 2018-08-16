@@ -1292,34 +1292,46 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             //支付成功清空门店订单销量统计cache
             cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
-            String last4MobileNums;
-            CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
-            if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
-                logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
-                last4MobileNums = "";
-            } else {
-                last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+            try {
+                String last4MobileNums;
+                CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
+                if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
+                    logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
+                    last4MobileNums = "";
+                } else {
+                    last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+                }
+                String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+                String createdBy= "";
+                int expiration = 0;
+                int msgType = 0;
+                short pageType = 1;
+                int audioType = 0;
+                String treeCode = "treeCode";
+                NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(orderInfo.getStoreId(), storeMsg, createdBy, expiration, msgType,
+                        pageType, audioType, treeCode);
+                if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单提货完成给门店发送消息失败：", e);
             }
-            String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
-            String createdBy= "";
-            int expiration = 0;
-            int msgType = 0;
-            short pageType = 1;
-            int audioType = 0;
-            String treeCode = "treeCode";
-            NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(orderInfo.getStoreId(), storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
-            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
             //给用户发信息
-            String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
-            String openid = null;
-            String page = null;
-            MiniTemplateData data = new MiniTemplateData();
-            data.setKeyName("keyword1");
-            data.setValue(customerMsg);
-            short msgType2C = MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType();
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
-            messageServiceClient.sendMiniMsg(miniMsgCondition);
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单提货完成给用户发送消息失败：", e);
+            }
             //TODO 发送mq完成消息
         }
     }
@@ -1363,8 +1375,22 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            //客户信息发送
-            String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
+            //给用户发信息
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.STORE_NOT_CONFIRM_TIMEOUT.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单未接单超时给用户发送消息失败：", e);
+            }
         }
     }
 
@@ -1387,10 +1413,26 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             //客户信息发送
             String customerMsg;
+            short msgType2C;
             if (orderInfo.getPayStatus().shortValue() == PayStatusEnum.PAID.getStatusCode()) {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
+                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_PAID.getMsgType();
             } else {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER;
+                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_NO_PAYMENT.getMsgType();
+            }
+            try {
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单未提货超时给用户发送消息失败：", e);
             }
         }
     }

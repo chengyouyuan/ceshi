@@ -47,7 +47,7 @@ public interface StoreServiceClient {
      *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List                                                                                                                               <                                                                                                                               ShopCarProdVO>>
+     * @return ResponseResult<List<ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao

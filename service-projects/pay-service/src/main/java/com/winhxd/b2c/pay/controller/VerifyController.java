@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.VerifyResultVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.pay.service.VerifyService;
 import io.swagger.annotations.Api;
@@ -78,7 +77,7 @@ public class VerifyController {
 
     @ApiOperation(value = "费用结算", notes = "按明细结算")
     @PostMapping("/pay/6094/v1/verifyByDetail")
-    public ResponseResult<VerifyResultVO> verifyByDetail(VerifyDetailCondition condition) {
+    public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
         int count = verifyService.verifyByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);

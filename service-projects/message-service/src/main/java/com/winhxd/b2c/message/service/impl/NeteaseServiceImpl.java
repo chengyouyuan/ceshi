@@ -245,13 +245,4 @@ public class NeteaseServiceImpl implements NeteaseService {
 		return BusinessCode.CODE_OK;
 	}
 
-	public static void main(String[] args) {
-		NeteaseAccountCondition condition = new NeteaseAccountCondition();
-		condition.setCustomerId(15L);
-		condition.setIcon("http://uatserver.winhxd.com:8202/img/picinfo/54c665c06e214f20a74f6ec56f091ace/24f96e8bbba94bac8289452f02850453.jpg");
-		condition.setMobile("18589096959");
-		condition.setName("陈家伟");
-		condition.setProps("");
-		System.out.println(JsonUtil.toJSONString(condition));
-	}
 }

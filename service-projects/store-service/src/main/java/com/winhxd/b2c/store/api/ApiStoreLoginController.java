@@ -343,6 +343,7 @@ public class ApiStoreLoginController {
 			}
 
 		}
+		logger.info("{} - B端登录返参, 参数：StoreUserInfoSimpleVO={}", "", JsonUtil.toJSONString(vo));
 		return result;
 	}
 

@@ -64,4 +64,7 @@ public class CacheName {
      * 小程序accesstoken
      */
     public static final String MESSAGE_MINI_ACCESS_TOKEN = "MINIPROGRAM:ACCESSTOKEN:";
+    
+    /**门店提现模块的门店信息*/
+    public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
 }

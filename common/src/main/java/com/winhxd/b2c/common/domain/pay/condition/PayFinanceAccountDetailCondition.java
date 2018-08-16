@@ -31,8 +31,12 @@ public class PayFinanceAccountDetailCondition extends PagedCondition{
     private Short wechatAccountStatus;
 	@ApiModelProperty("入账状态")//1预入账 2实入账
     private Short dataStatus;
-	@ApiModelProperty("出入账时间")
-	private Date outInDate;
-	@ApiModelProperty("创建时间")
-	private Date created;
+	@ApiModelProperty("出入账开始时间")
+	private Date outInStartDate;
+	@ApiModelProperty("出入账结束时间")
+	private Date outInEndDate;
+	@ApiModelProperty("创建开始时间")
+	private Date createdStart;
+	@ApiModelProperty("创建结束时间")
+	private Date createdEnd;
 }

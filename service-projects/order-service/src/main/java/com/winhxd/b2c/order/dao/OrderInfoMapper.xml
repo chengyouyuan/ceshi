@@ -521,7 +521,9 @@
         <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
-    	<bind name="orderNo" value="condition.orderNo + '%'" />
+        <if test="condition.orderNo != null">
+            <bind name="orderNo" value="condition.orderNo + '%'" />
+        </if>
         select
         id
         from order_info info

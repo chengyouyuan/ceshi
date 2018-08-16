@@ -1,17 +1,21 @@
 package com.winhxd.b2c.pay;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.winhxd.b2c.BaseTest;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.service.PayStoreBankCardService;
 
 import junit.framework.TestCase;
@@ -26,6 +30,23 @@ public class PayStoreBankCardServiceTest extends BaseTest {
 	
 	@Autowired
 	private PayFinanceAccountDetailMapper payFinanceAccountDetailMapper;
+	
+	@Autowired
+	private PayWithdrawalsMapper payWithdrawalsMapper;
+	
+	@Value("${pay.withdrawal.cmms_amt}")
+	private BigDecimal cmms_amt;// 银行手续费
+	@Value("${pay.withdrawal.rate}")
+	private BigDecimal rate;// 微信费率
+	@Value("${pay.withdrawal.maxmoney}")//最高限额
+	private BigDecimal maxMoney;
+	
+	@Test
+	public void testWithdrawal(){
+		System.out.println("cmms_amt-----"+cmms_amt+"rate-----"+rate+"maxMoney----"+maxMoney);
+		PayStoreUserInfoVO payStoreUserInfo = payWithdrawalsMapper.getPayStoreUserInfo(1l);
+		System.out.println("payStoreUserInfo---"+payStoreUserInfo);
+	}
 	
 	@Test
 	public void testquery(){

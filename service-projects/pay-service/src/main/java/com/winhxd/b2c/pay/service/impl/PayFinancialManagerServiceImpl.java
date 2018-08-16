@@ -4,11 +4,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
@@ -207,10 +210,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		return financeDetial;
 	}
 
-	public PagedList<PayFinanceAccountDetailVO> findFinancialInDetail(PayFinanceAccountDetailCondition condition) {
-		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
-		List<PayFinanceAccountDetailVO> financialInDetail = payFinanceAccountDetailMapper.selectFinancialInDetail(condition);
+	@Override
+	public PagedList<OrderInfoFinancialInDetailVO> queryFinancialInDetail(
+			OrderInfoFinancialInDetailCondition condition) {
+		Page<OrderInfoFinancialInDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<OrderInfoFinancialInDetailVO> pagedList = new PagedList<OrderInfoFinancialInDetailVO>();
+		List<OrderInfoFinancialInDetailVO> financialInDetail = payFinanceAccountDetailMapper.selectFinancialInDetail(condition);
 		LOGGER.info("findFinancialOutDetail:===="+financialInDetail);
 		pagedList.setData(financialInDetail);
         pagedList.setPageNo(condition.getPageNo());
@@ -219,10 +224,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		return pagedList;
 	}
 
-	public PagedList<PayFinanceAccountDetailVO> findFinancialOutDetail(PayFinanceAccountDetailCondition condition) {
-		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
-		List<PayFinanceAccountDetailVO> financialOutDetail = payFinanceAccountDetailMapper.selectFinancialOutDetail(condition);
+	@Override
+	public PagedList<OrderInfoFinancialOutDetailVO> queryFinancialOutDetail(
+			OrderInfoFinancialOutDetailCondition condition) {
+		Page<OrderInfoFinancialOutDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<OrderInfoFinancialOutDetailVO> pagedList = new PagedList<OrderInfoFinancialOutDetailVO>();
+		List<OrderInfoFinancialOutDetailVO> financialOutDetail = payFinanceAccountDetailMapper.selectFinancialOutDetail(condition);
 		LOGGER.info("findFinancialOutDetail:===="+financialOutDetail);
         pagedList.setData(financialOutDetail);
         pagedList.setPageNo(condition.getPageNo());

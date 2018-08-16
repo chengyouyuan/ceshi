@@ -1,6 +1,5 @@
 package com.winhxd.b2c.admin.module.pay.controller;
 
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
@@ -27,7 +26,7 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "账单结算", notes = "按汇总结算")
-    @GetMapping("/verifyBySummary")
+    @PostMapping("/verifyBySummary")
     public ResponseResult<?> verifyBySummary(VerifySummaryCondition condition) {
         return verifyServiceClient.verifyBySummary(condition);
     }
@@ -39,33 +38,32 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用结算", notes = "按明细结算")
-    @GetMapping("/verifyByDetail")
+    @PostMapping("/verifyByDetail")
     public ResponseResult<?> verifyByDetail(VerifyDetailCondition condition) {
         return verifyServiceClient.verifyByDetail(condition);
     }
 
     @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
     @PostMapping("/accountingDetailPause")
-    public ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition) {
+    public ResponseResult<?> accountingDetailPause(VerifyDetailCondition condition) {
         return verifyServiceClient.accountingDetailPause(condition);
     }
 
     @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
     @PostMapping("/accountingDetailRestore")
-    public ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition) {
+    public ResponseResult<?> accountingDetailRestore(VerifyDetailCondition condition) {
         return verifyServiceClient.accountingDetailRestore(condition);
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
-    @PostMapping("/storeWithdrawList")
-    public ResponseResult<PagedList<?>> storeWithdrawList(OrderRecordAccountingCondition condition) {
-        PagedList<?> pagedList = new PagedList<>();
-        return new ResponseResult<>(pagedList);
+    @GetMapping("/storeWithdrawList")
+    public ResponseResult<?> storeWithdrawList(PayWithdrawalsListCondition condition) {
+        return verifyServiceClient.storeWithdrawalsList(condition);
     }
 
     @ApiOperation(value = "批准门店提现申请")
     @PostMapping("/approveStoreWithdraw")
-    public ResponseResult<Integer> approveStoreWithdraw(OrderRecordAccountingCondition condition) {
-        return new ResponseResult<>();
+    public ResponseResult<?> approveStoreWithdraw(ApproveStoreWithdrawalsCondition condition) {
+        return verifyServiceClient.approveStoreWithdrawals(condition);
     }
 }

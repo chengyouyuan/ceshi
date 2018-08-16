@@ -1,6 +1,5 @@
 package com.winhxd.b2c.message.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -12,13 +11,12 @@ import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.ImageUploadUtil;
 import com.winhxd.b2c.message.service.WechatShareService;
 import com.winhxd.b2c.message.utils.HttpClientUtil;
+import com.winhxd.b2c.message.utils.MiniProgramUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author chengyy
@@ -104,6 +103,9 @@ public class WechatShareServiceImpl implements WechatShareService {
     @Autowired
     private ImageUploadUtil imageUploadUtil;
 
+    @Autowired
+    private MiniProgramUtils miniProgramUtils;
+
     /**
      * @param storeUserId 门店id
      * @return 二进制数据
@@ -125,7 +127,7 @@ public class WechatShareServiceImpl implements WechatShareService {
             return codeInfoVO;
         }
         //获取token
-        String token = getToken();
+        String token = miniProgramUtils.getAccessToken();
         if (StringUtils.isEmpty(token)) {
             return null;
         }
@@ -169,35 +171,4 @@ public class WechatShareServiceImpl implements WechatShareService {
         return null;
     }
 
-
-    /**
-     * @return token数据
-     * @author chengyy
-     * @date 2018/8/4 13:52
-     * @Description 微信小程序认证获取token
-     */
-    public String getToken() {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("grant_type", grantType));
-        params.add(new BasicNameValuePair("appid", appid));
-        params.add(new BasicNameValuePair("secret", secret));
-        String token = null;
-        try {
-            String content = httpClientUtil.doGet(tokenUrl, params);
-            if (StringUtils.isEmpty(content)) {
-                return null;
-            }
-            JsonNode node = objectMapper.readTree(content);
-            token = node.get("access_token").asText();
-            return token;
-        } catch (URISyntaxException e) {
-            logger.error("WechatShareServiceImpl ->getToken获取token是请求的url地址错误tokenUrl={}", tokenUrl);
-            e.printStackTrace();
-        } catch (IOException e) {
-            logger.error("WechatShareServiceImpl ->getToken获取token是请求网络错误msg={}", e);
-            e.printStackTrace();
-        } finally {
-            return token;
-        }
-    }
 }

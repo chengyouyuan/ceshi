@@ -23,6 +23,9 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     @ApiModelProperty(value = "订单号数组")
     private String[] orderNos;
     
+    @ApiModelProperty(value = "订单号")
+    private String orderNo;
+    
     @ApiModelProperty(value = "下单时间区间")
     private DateInterval dateInterval;
     
@@ -112,6 +115,14 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     public void setRegionCode(String regionCode) {
         this.regionCode = regionCode;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
     
 }

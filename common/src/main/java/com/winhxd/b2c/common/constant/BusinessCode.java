@@ -313,56 +313,41 @@ public final class BusinessCode {
     @ApiModelProperty("查询结果有误，请联系管理员")
     public static final int CODE_610021 = 610021;
     
-    
-//    /**
-//     * 退款回调  订单更新失败
-//     */
-//    public static final int CODE_600301 = 600301;
-//    /**
-//     *  退款回调  订单退款流水插入失败
-//     */
-//    public static final int CODE_600302 = 600302;
-//    
-//	/**
-//     *  退款回调  参数为空
-//     */
-//    public static final int CODE_600303 = 600303;
-    /**
-     *  订单支付  参数为空
-     */
+    @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;
-    /**
-     *  订单支付  参数为空
-     */
+     
+    @ApiModelProperty("订单支付  订单号为空")
     public static final int CODE_600102 = 600102;
-    /**
-     *  订单支付  为获取到订单数据
-     */
+     
+    @ApiModelProperty("订单支付  商品描述为空")
     public static final int CODE_600103 = 600103;
-    /**
-     *  订单支付  订单状态有误
-     */
+     
+    @ApiModelProperty("订单支付  用户openid为空")
     public static final int CODE_600104 = 600104;
-    /**
-     *  订单支付  商品描述为空
-     */
+     
+    @ApiModelProperty("订单支付  设备Ip为空")
     public static final int CODE_600105 = 600105;
-    /**
-     *  订单支付  未获取到用户openid
-     */
-    public static final int CODE_600106 = 600106;
-    /**
-     *  订单支付  订单号为空
-     */
-    public static final int CODE_600107 = 600107;
-    /**
-     *  订单支付  设备Ip为空
-     */
-    public static final int CODE_600108 = 600108;
-    /**
-     *  订单退款 参数为空
-     */
+    
+    @ApiModelProperty("退款  参数为空")
     public static final int CODE_600201 = 600201;
+   
+    @ApiModelProperty("退款  订单号为空")
+    public static final int CODE_600202 = 600202;
+    
+    @ApiModelProperty("退款  appid为空")
+    public static final int CODE_600203 = 600203;
+    
+    @ApiModelProperty("退款  订单金额为空")
+    public static final int CODE_600204 = 600204;
+    
+    @ApiModelProperty("退款  退款金额为空")
+    public static final int CODE_600205 = 600205;
+    
+    @ApiModelProperty("退款  创建人为空")
+    public static final int CODE_600206 = 600206;
+    
+    @ApiModelProperty("退款  创建人姓名为空")
+    public static final int CODE_600207 = 600207;
     
     
 

@@ -53,11 +53,11 @@ public class PayServiceImpl implements PayService{
 	private StoreBankrollMapper storeBankrollMapper;
 	@Autowired
 	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
-	@Resource
+	@Autowired
 	private WXUnifiedOrderService unifiedOrderService;
-	@Resource
+	@Autowired
 	private WXRefundService refundService;
-	@Resource
+	@Autowired
 	private WXTransfersService transfersService;
 	
 	private static final String logLabel="PayServiceImpl--";
@@ -249,29 +249,31 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		if (condition==null){
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600102);
+			throw new BusinessException(BusinessCode.CODE_600101);
 		}
 		String orderNo=condition.getOutOrderNo();
 		String spbillCreateIp=condition.getSpbillCreateIp();
 		String body=condition.getBody();
+		String openid=condition.getOpenid();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600107);
-		}
-		if (StringUtils.isBlank(spbillCreateIp)) {
-			logger.info(log+"--设备ip为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
+			throw new BusinessException(BusinessCode.CODE_600102);
 		}
 		if (StringUtils.isBlank(body)) {
 			logger.info(log+"--商品描述为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+	
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log+"--用户openid为空");
+			throw new BusinessException(BusinessCode.CODE_600104);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log+"--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600105);
 		}
 		logger.info(log+"--参数"+condition.toString());
-		String openid=condition.getOpenid();
-		if (StringUtils.isBlank(openid)) {
-			logger.info(log+"--未获取到用户openid");
-			throw new BusinessException(BusinessCode.CODE_600106);
-		}
+		
 		return unifiedOrderService.unifiedOrder(condition);
 	}
 
@@ -283,29 +285,40 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		if (payRefund==null){
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600102);
+			throw new BusinessException(BusinessCode.CODE_600201);
 		}
 		String orderNo=payRefund.getOutTradeNo();
-		String refundDesc=payRefund.getRefundDesc();
-//		String body=payRefund.get();
+		String appid=payRefund.getAppid();
+		BigDecimal totalAmount=payRefund.getTotalAmount();
+		BigDecimal refundAmount=payRefund.getRefundAmount();
+		Long createdBy=payRefund.getCreatedBy();
+		String createdByName=payRefund.getCreatedByName();
+//		String refundDesc=payRefund.getRefundDesc();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600107);
+			throw new BusinessException(BusinessCode.CODE_600202);
 		}
-//		if (StringUtils.isBlank(spbillCreateIp)) {
-//			logger.info(log+"--设备ip为空");
-//			throw new BusinessException(BusinessCode.CODE_600108);
-//		}
-//		if (StringUtils.isBlank(body)) {
-//			logger.info(log+"--商品描述为空");
-//			throw new BusinessException(BusinessCode.CODE_600108);
-//		}
-//		logger.info(log+"--参数"+condition.toString());
-//		String openid=condition.getOpenid();
-//		if (StringUtils.isBlank(openid)) {
-//			logger.info(log+"--未获取到用户openid");
-//			throw new BusinessException(BusinessCode.CODE_600106);
-//		}
+		if (StringUtils.isBlank(appid)) {
+			logger.info(log+"--appid为空");
+			throw new BusinessException(BusinessCode.CODE_600203);
+		}
+		if (totalAmount==null) {
+			logger.info(log+"--订单金额为空");
+			throw new BusinessException(BusinessCode.CODE_600204);
+		}
+		if (refundAmount==null) {
+			logger.info(log+"--退款金额为空");
+			throw new BusinessException(BusinessCode.CODE_600205);
+		}
+		if (createdBy==null) {
+			logger.info(log+"--创建人为空");
+			throw new BusinessException(BusinessCode.CODE_600206);
+		}
+		if (StringUtils.isBlank(createdByName)) {
+			logger.info(log+"--创建人姓名为空");
+			throw new BusinessException(BusinessCode.CODE_600207);
+		}
+		logger.info(log+"--参数"+payRefund.toString());
 		
 		return refundService.refundOrder(payRefund);
 	}

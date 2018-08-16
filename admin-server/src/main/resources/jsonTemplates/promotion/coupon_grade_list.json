@@ -45,12 +45,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5019/v1/viewCouponGradeDetail",
+              "path": "/promotion/candyruleAdd",
               "configKey": ""
             }
           },

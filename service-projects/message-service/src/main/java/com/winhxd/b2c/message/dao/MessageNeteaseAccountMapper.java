@@ -20,5 +20,5 @@ public interface MessageNeteaseAccountMapper {
 
     MessageNeteaseAccount getNeteaseAccountByCustomerId(Long customerId);
 
-    MessageNeteaseAccount updateByCustomerId(@Param("customerId") Long customerId, @Param("accid") String accid, @Param("token") String token);
+    int updateByCustomerId(@Param("customerId") Long customerId, @Param("accid") String accid, @Param("token") String token);
 }

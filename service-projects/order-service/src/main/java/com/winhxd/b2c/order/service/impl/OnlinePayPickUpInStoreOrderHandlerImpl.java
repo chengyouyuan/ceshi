@@ -1,7 +1,9 @@
 package com.winhxd.b2c.order.service.impl;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -18,10 +20,17 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
+import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -60,8 +69,14 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     @Autowired
     private StringMessageSender stringMessageSender;
     
+    @Autowired
+    private CustomerServiceClient customerServiceclient;
+    
     @Resource
     private Cache cache;
+    
+    @Resource
+    private MessageServiceClient messageServiceClient;
     
     private static final Logger logger = LoggerFactory.getLogger(OnlinePayPickUpInStoreOrderHandlerImpl.class);
 
@@ -157,12 +172,11 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        //TODO 发送门店消息
-        Date pickupDateTime = orderInfo.getPickupDateTime() == null ? new Date() : orderInfo.getPickupDateTime();
-        String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
         // 发送延时MQ信息，处理超时未自提 取消操作
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_PICKUP_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
+        // 发送消息给用户
+        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid());
     }
     
 
@@ -173,8 +187,8 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         }
         //支付成功清空门店订单销量统计cache
         cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
-        // TODO 发送云信
-        String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;     
+        //给门店发送云信
+        OrderUtil.newOrderSendMsg2Store(messageServiceClient, orderInfo.getStoreId());    
         // 发送延时MQ信息，处理超时未确认取消操作
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
@@ -205,5 +219,14 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE,
                     MessageFormat.format("订单orderNo={0}, 订单状态修改失败", orderInfo.getOrderNo()));
         }
+    }
+    
+    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+        ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceclient.findCustomerUserByIds(Arrays.asList(customerId));
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null || ret.getData().isEmpty()) {
+            throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
+        }
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        return ret.getData().get(0);
     }
 }

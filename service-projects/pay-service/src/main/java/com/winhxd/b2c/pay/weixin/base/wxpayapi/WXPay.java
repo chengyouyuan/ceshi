@@ -104,6 +104,23 @@ public class WXPay {
     }
 
     /**
+     * 向 Map 中添加 appid、mch_id、nonce_str、sign_type、sign <br>
+     * 该函数适用于商户适用于统一下单等接口，不适用于红包、代金券接口
+     *
+     * @param reqData
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> fillRefundRequestData(Map<String, String> reqData) throws Exception {
+        reqData.put("appid", config.getAppID());
+        reqData.put("mch_id", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", WXPayConstants.MD5);
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), SignType.MD5));
+        return reqData;
+    }
+
+    /**
      * 判断xml数据的sign是否有效，必须包含sign字段，否则返回false。
      *
      * @param reqData 向wxpay post的请求数据
@@ -505,7 +522,7 @@ public class WXPay {
         else {
             url = WXPayConstants.REFUND_URL_SUFFIX;
         }
-        String respXml = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
+        String respXml = this.requestWithCert(url, this.fillRefundRequestData(reqData), connectTimeoutMs, readTimeoutMs);
         return this.processResponseXml(respXml);
     }
 
@@ -689,6 +706,60 @@ public class WXPay {
         }
         String respXml = this.requestWithoutCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
         return this.processResponseXml(respXml);
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToChange(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.TRANSFER_TO_CHANGE_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信银行卡<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToBank(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_TRANSFER_TO_BANK_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.TRANSFER_TO_BANK_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String publicKey(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.PUBLICKEY_URL_SUFFIX ;
+        }
+        return this.requestWithCert(url, reqData, 6*1000, 8*1000);
     }
 
 

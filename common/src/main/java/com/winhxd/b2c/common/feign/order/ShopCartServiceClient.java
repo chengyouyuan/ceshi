@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,7 +23,7 @@ import java.util.List;
 public interface ShopCartServiceClient {
 
     @RequestMapping(value = "/order/4070/v1/queryShopCartBySelective", method = RequestMethod.POST)
-    ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(ShopCartProductCondition condition);
+    ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(@RequestBody ShopCartProductCondition condition);
 }
 @Component
 class ShopCartServiceClientFallback implements ShopCartServiceClient, FallbackFactory<ShopCartServiceClient> {

@@ -35,6 +35,14 @@
     ],
     "columns": [
       {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -45,12 +53,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5019/v1/viewCouponGradeDetail",
+              "path": "/promotion/candyruleAdd",
               "configKey": ""
             }
           },
@@ -72,16 +77,16 @@
         ]
       },
       {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
-      },
-      {
         "name": "type",
-        "title": "坎级类型"
+        "title": "坎级类型",
+        "options":[
+          {"1":"满减"},
+          {"2":"满赠"},
+          {"3":"按件减阶梯"},
+          {"4":"按件减翻倍"},
+          {"5":"按件增阶梯"},
+          {"6":"按件增翻倍"}
+        ]
       },
       {
         "name": "name",

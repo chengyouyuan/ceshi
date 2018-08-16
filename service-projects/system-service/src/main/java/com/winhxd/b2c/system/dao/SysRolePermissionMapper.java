@@ -1,9 +1,11 @@
 package com.winhxd.b2c.system.dao;
 
 import com.winhxd.b2c.common.domain.system.user.model.SysRolePermission;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public interface SysRolePermissionMapper {
     int deleteByPrimaryKey(Long id);
 

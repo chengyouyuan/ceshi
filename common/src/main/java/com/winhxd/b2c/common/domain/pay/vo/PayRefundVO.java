@@ -2,9 +2,10 @@ package com.winhxd.b2c.common.domain.pay.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.math.BigDecimal;
-
+@Data
 public class PayRefundVO {
 
     @ApiModelProperty("退款接收状态")

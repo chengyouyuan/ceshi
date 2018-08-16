@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class ShopCartController implements ShopCartServiceClient {
     @Autowired
     private ShopCarService shopCarService;
     @Override
-    public ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(ShopCartProductCondition condition) {
+    public ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(@RequestBody ShopCartProductCondition condition) {
         List<ShopCartProductVO> shopCartProductVOS = new ArrayList<>();
         List<ShopCar> shopCars = shopCarService.queryShopCartBySelective(condition);
         ShopCartProductVO shopCartProductVO;

@@ -80,4 +80,7 @@ public class CacheName {
      * 事件消息内容,Hash
      */
     public static final String EVENT_MESSAGE_BODY = "EVENT:MESSAGE:BODY:";
+
+    /**门店提现模块的门店信息*/
+    public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
 }

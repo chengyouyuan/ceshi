@@ -312,6 +312,8 @@ public final class BusinessCode {
     public static final int CODE_610020 = 610020;
     @ApiModelProperty("查询结果有误，请联系管理员")
     public static final int CODE_610021 = 610021;
+    @ApiModelProperty("请传入提现类型")
+    public static final int CODE_610022 = 610022;
     
     @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;

@@ -236,7 +236,7 @@ public class ApiCustomerLoginController {
 			throw new BusinessException(BusinessCode.CODE_1004);
 		}
 		if (!customerChangeMobileCondition.getVerificationCode().equals(
-				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfo.getCustomerMobile()))) {
+				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerChangeMobileCondition.getCustomerMobile()))) {
 			logger.info("{} - 用户验证码错误");
 			throw new BusinessException(BusinessCode.CODE_1008);
 		}

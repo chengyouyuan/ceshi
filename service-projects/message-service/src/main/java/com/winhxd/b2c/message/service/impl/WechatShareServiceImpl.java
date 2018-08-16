@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
 import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
@@ -12,6 +13,7 @@ import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.ImageUploadUtil;
 import com.winhxd.b2c.message.service.WechatShareService;
 import com.winhxd.b2c.message.utils.HttpClientUtil;
+import com.winhxd.b2c.message.utils.MiniProgramUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -104,6 +106,24 @@ public class WechatShareServiceImpl implements WechatShareService {
     @Autowired
     private ImageUploadUtil imageUploadUtil;
 
+    @Autowired
+    private MiniProgramUtils miniProgramUtils;
+
+    @Value("${wechat.config.path}")
+    private String path;
+
+    @Value("${wechat.config.title}")
+    private String title;
+
+    @Value("${wechat.config.userName}")
+    private String userName;
+
+    @Value("${wechat.config.description}")
+    private String description;
+
+    @Value("${wechat.config.transaction}")
+    private String transaction;
+
     /**
      * @param storeUserId 门店id
      * @return 二进制数据
@@ -125,7 +145,7 @@ public class WechatShareServiceImpl implements WechatShareService {
             return codeInfoVO;
         }
         //获取token
-        String token = getToken();
+        String token = miniProgramUtils.getAccessToken();
         if (StringUtils.isEmpty(token)) {
             return null;
         }
@@ -167,6 +187,21 @@ public class WechatShareServiceImpl implements WechatShareService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public MiniProgramConfigVO getMiniProgramConfigVO(Long storeUserId) {
+        MiniProgramConfigVO miniProgramConfigVO = new MiniProgramConfigVO();
+        miniProgramConfigVO.setPath(path+"/storeId="+storeUserId);
+        miniProgramConfigVO.setTitle(title);
+        miniProgramConfigVO.setUserName(userName);
+        StoreUserInfoVO storeUserInfoVO = storeServiceClient.findStoreUserInfo(storeUserId).getData();
+        if(storeUserInfoVO != null){
+            description = description+storeUserInfoVO.getStoreName();
+        }
+        miniProgramConfigVO.setDescription(description);
+        miniProgramConfigVO.setTransaction(transaction);
+        return miniProgramConfigVO;
     }
 
 

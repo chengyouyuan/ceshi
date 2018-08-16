@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyResultVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
@@ -100,14 +101,21 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
-    @PostMapping("/pay/6097/v1/storeWithdrawList")
-    public ResponseResult<VerifyResultVO> storeWithdrawList(OrderRecordAccountingCondition condition) {
-        return new ResponseResult<>();
+    @PostMapping("/pay/6097/v1/storeWithdrawalsList")
+    public ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(PayWithdrawalsListCondition condition) {
+        Page<PayWithdrawalsVO> page = verifyService.findPayWithdrawalsList(condition);
+        PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
+        pagedList.setData(page.getResult());
+        pagedList.setPageNo(page.getPageNum());
+        pagedList.setPageSize(page.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return new ResponseResult<>(pagedList);
     }
 
     @ApiOperation(value = "批准门店提现申请")
-    @PostMapping("/pay/6098/v1/approveStoreWithdraw")
-    public ResponseResult<VerifyResultVO> approveStoreWithdraw(OrderRecordAccountingCondition condition) {
-        return new ResponseResult<>();
+    @PostMapping("/pay/6098/v1/approveStoreWithdrawals")
+    public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+        int count = verifyService.approveWithdrawals(condition);
+        return new ResponseResult<>(count);
     }
 }

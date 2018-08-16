@@ -17,7 +17,10 @@ import java.math.BigDecimal;
 @Data
 public class StoreManageInfoVO {
 
-    @ApiModelProperty(value = "门店名称", required = true)
+    @ApiModelProperty(value = "小店id（首页分享时用）")
+    private Long businessId;
+
+    @ApiModelProperty(value = "门店名称（首页展示用）")
     private String storeName;
 
     @ApiModelProperty(value = "今日营业额", required = true)

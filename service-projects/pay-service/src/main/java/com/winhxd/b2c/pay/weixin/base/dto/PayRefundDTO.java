@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.dto;
+package com.winhxd.b2c.pay.weixin.base.dto;
 
 /**
  * @author lizhonghua

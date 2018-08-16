@@ -12,7 +12,7 @@ public class MiniOpenId {
     /**
      * 用户唯一标识openid
      */
-    private String openId;
+    private String openid;
     /**
      * 会话密钥session_key
      */
@@ -20,5 +20,5 @@ public class MiniOpenId {
     /**
      * 用户在开放平台的唯一标识符
      */
-    private String unionId;
+    private String unionid;
 }

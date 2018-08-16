@@ -747,4 +747,26 @@
 		where store_id = #{storeId,jdbcType=BIGINT}
 		group by store_id
     </select>
+    <select id="selectOrderInfoByOrderNoAndCustomer" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        select
+        <include refid="Order_Info_List"/>
+        <include refid="order_item_column"></include>
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="customerId != null">
+        and customer_id=#{customerId,jdbcType=BIGINT}
+        </if>
+        <include refid="order_info_list_orderBy"></include>
+    </select>
+    <select id="selectOrderInfoByOrderNoAndStore" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        select
+        <include refid="Order_Info_List"/>
+        <include refid="order_item_column"></include>
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="storeId != null">
+        and store_id=#{storeId,jdbcType=BIGINT}
+        </if>
+        <include refid="order_info_list_orderBy"></include>
+    </select>
 </mapper>

@@ -13,13 +13,24 @@
         <result column="tree_code" jdbcType="VARCHAR" property="treeCode"/>
         <result column="msg_time" jdbcType="TIMESTAMP" property="msgTimeStamp"/>
         <result column="msg_id_server" jdbcType="VARCHAR" property="msgIdServer"/>
+        <result column="read_status" jdbcType="SMALLINT" property="readStatus"/>
+    </resultMap>
+    <resultMap id="NeteaseMsgVOResultMap" type="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">
+        <result column="to_accid" jdbcType="VARCHAR" property="accid"/>
+        <result column="msg_type" jdbcType="SMALLINT" property="msgType"/>
+        <result column="msg_body" jdbcType="VARCHAR" property="message"/>
+        <result column="page_type" jdbcType="SMALLINT" property="pageType"/>
+        <result column="tree_code" jdbcType="VARCHAR" property="treeCode"/>
+        <result column="msg_time" jdbcType="TIMESTAMP" property="alertTime"/>
+        <result column="msg_id_server" jdbcType="VARCHAR" property="msgId"/>
+        <result column="read_status" jdbcType="SMALLINT" property="readStatus"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, from_accid, to_accid, msg_type, msg_body, msg_attach, ext_json, page_type, tree_code, 
     msg_time, msg_id_server
   </sql>
     <sql id="Message_List">
-    msg_id_server msgId,msg_type msgType,msg_body message,page_type pageType,tree_code treeCode,msg_time alertTime
+    msg_id_server,msg_type,msg_body,page_type,tree_code,msg_time,read_status
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -27,22 +38,25 @@
         from message_netease_history
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <!--<select id="selectVoByCondition" resultMap="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">-->
-        <!--select-->
-        <!--<include refid="Message_List"/>-->
-        <!--from message_netease_history-->
-        <!--where 1=1-->
-        <!--<if test="accid != null">-->
-            <!--and to_accid=#{accid,jdbcType=STRING}-->
-        <!--</if>-->
-        <!--<if test="startTime != null">-->
-            <!--and msg_time>=#{startTime,jdbcType=TIMESTAMP}-->
-        <!--</if>-->
-        <!--<if test="endTime != null">-->
-            <!--and #{endTime,jdbcType=TIMESTAMP}>=msg_time-->
-        <!--</if>-->
-        <!--order by msg_time desc-->
-    <!--</select>-->
+    <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition"  resultMap="NeteaseMsgVOResultMap">
+        select
+        <include refid="Message_List"/>
+        <if test="timeType != null and timeType != ''">
+            ,#{timeType,jdbcType=VARCHAR} timeType
+        </if>
+        from message_netease_history
+        where 1=1
+        <if test="accid != null">
+            and to_accid=#{accid,jdbcType=VARCHAR}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and msg_time > #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and #{endTime,jdbcType=TIMESTAMP} > msg_time
+        </if>
+        order by msg_time desc
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from message_netease_history
     where id = #{id,jdbcType=BIGINT}
@@ -181,4 +195,16 @@
       msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+    <update id="updateReadStatusByCondition" parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition">
+        update message_netease_history
+        set read_status = 1
+        where 1=1
+        and to_accid=#{accid,jdbcType=VARCHAR}
+        <if test="allRead != 1 ">
+            and msg_id_server in
+            <foreach collection="msgIds" open="(" separator="," close=")" item="msgId">
+                #{msgId}
+            </foreach>
+        </if>
+    </update>
 </mapper>

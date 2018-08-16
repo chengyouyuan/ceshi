@@ -4,10 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.pay.condition.*;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
-import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,40 +12,54 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.common.ApiCondition.MobileInfo;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.service.WXRefundService;
+import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
+import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 
 @Service
 public class PayServiceImpl implements PayService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 	@Autowired
-	OrderServiceClient orderServiceClient;
+	private OrderServiceClient orderServiceClient;
 	
 	@Autowired
-	PayOrderPaymentMapper payOrderPaymentMapper;
+	private PayOrderPaymentMapper payOrderPaymentMapper;
 	
 	@Autowired
-	StoreBankrollMapper storeBankrollMapper;
+	private StoreBankrollMapper storeBankrollMapper;
 	@Autowired
-	PayStoreBankrollLogMapper payStoreBankrollLogMapper;
+	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
+	@Autowired
+	private WXUnifiedOrderService unifiedOrderService;
+	@Autowired
+	private WXRefundService refundService;
+	@Autowired
+	private WXTransfersService transfersService;
 	
 	private static final String logLabel="PayServiceImpl--";
 	@Override
@@ -277,5 +287,25 @@ public class PayServiceImpl implements PayService{
 			payStoreBankrollLog.setRemarks(remarks);
 			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 		}
+	}
+
+	@Override
+	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+		return unifiedOrderService.unifiedOrder(condition);
+	}
+
+	@Override
+	public PayRefundDTO refundOrder(PayRefundCondition payRefund) {
+		return refundService.refundOrder(payRefund);
+	}
+
+	@Override
+	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+		return transfersService.transfersToChange(toWxBalanceCondition);
+	}
+
+	@Override
+	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+		return transfersService.transfersToBank(toWxBankCondition);
 	}
 }

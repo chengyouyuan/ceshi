@@ -4,16 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WXPay {
 
+    @Autowired
     private WXPayConfig config;
-    private SignType signType;
-    private boolean autoReport;
-    private boolean useSandbox;
-    private String notifyUrl;
+    private SignType signType = SignType.HMACSHA256;
+    private boolean autoReport = false;
+    private boolean useSandbox = false;
+    private String notifyUrl = null;
+    @Autowired
     private WXPayRequest wxPayRequest;
 
+/*  //删除原构造,采用注入方式
     public WXPay(final WXPayConfig config) throws Exception {
         this(config, null, true, false);
     }
@@ -47,7 +53,7 @@ public class WXPay {
             this.signType = SignType.HMACSHA256;
         }
         this.wxPayRequest = new WXPayRequest(config);
-    }
+    }*/
 
     private void checkWXPayConfig() throws Exception {
         if (this.config == null) {

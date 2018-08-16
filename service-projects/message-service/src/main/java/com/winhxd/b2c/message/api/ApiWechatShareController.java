@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
+import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,26 +64,18 @@ public class ApiWechatShareController {
     @ApiOperation(value = "生成分享小程序二维码")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
     @PostMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
-    public ResponseResult<Void> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
-        ResponseResult<Void> responseResult = new ResponseResult<>();
+    public ResponseResult<QRCodeInfoVO> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
+        ResponseResult<QRCodeInfoVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
+        /*if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
+        }*/
+        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(1L);
+        if(StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())){
+            throw new BusinessException(BusinessCode.CODE_200018);
         }
-        byte[] data = wechatShareService.generateQRCodePic(storeUser.getBusinessId());
-        if (data != null && data.length > 0) {
-            response.setContentType("image/png");
-            response.addHeader("Content-Disposition", "attachment;filename=code.png");
-            try {
-                OutputStream out = response.getOutputStream();
-                out.write(data);
-                out.flush();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        responseResult.setData(qrCodeInfoVO);
         return responseResult;
     }
 

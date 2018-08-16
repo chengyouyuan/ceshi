@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5027/v1/findApplyTempleteCountPage",
+    "type": "report",
+    "id": "coupon_apply_reltemp_list",
+    "code": "coupon_apply_reltemp_list",
+    "title": "适用对象关联模板列表",
+    "buttons": [],
+    "columns": [
+      {
+        "type": "index",
+        "name": "applyId",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "applyName",
+        "title": "适用对象名称"
+      },
+      {
+        "name": "applyCode",
+        "title": "适用对象编码"
+      },
+      {
+        "name": "templeteName",
+        "title": "优惠券模板名称"
+      },
+      {
+        "name": "templeteCode",
+        "title": "优惠券模板编码"
+      },
+      {
+        "name": "templeteStatus",
+        "title": "优惠券状态",
+        "options":[
+          {"0":"无效"},
+          {"1":"有效"}
+        ]
+      }
+    ],
+    "params": []
+  }
+}

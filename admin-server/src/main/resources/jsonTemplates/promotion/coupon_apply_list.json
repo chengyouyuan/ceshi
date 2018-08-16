@@ -1,1 +1,151 @@
-{}
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5024/v1/findCouponApplyPage",
+    "type": "report",
+    "id": "coupon_apply_list",
+    "code": "coupon_apply_list",
+    "title": "优惠券适用对象列表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/appliyObjectRule/index"
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/promotion/5024/v1/findCouponApplyPage"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "/promotion/5022/v1/viewCouponApplyDetail",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "设置为无效",
+            "icon": null,
+            "event": {
+              "type": "ajax",
+              "ajaxType":"post",
+              "params": [
+                "id"
+              ],
+              "path": "/promotion/5023/v1/updateCouponApplyToValid"
+            }
+          }
+        ]
+      },
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "name",
+        "title": "适用对象名称"
+      },
+      {
+        "name": "code",
+        "title": "适用对象编码"
+      },
+      {
+        "name": "applyRuleType",
+        "title": "优惠券类型"
+      },
+      {
+        "name": "relTempleteCount",
+        "title": "模板数量"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人"
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "updatedByName",
+        "title": "修改人"
+      },
+      {
+        "name": "updated",
+        "title": "修改时间"
+      }
+    ],
+    "params": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "适用对象名称",
+        "value": "",
+        "placeholder": "请输入适用对象名称",
+        "isHidden": false
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "适用对象编码",
+        "value": "",
+        "placeholder": "请输入适用对象编码",
+        "isHidden": false
+      },
+      {
+        "name": "applyRuleType",
+        "inputModel": "select",
+        "title": "适用对象类型",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "通用券"
+        },
+          {
+            "value": "2",
+            "label": "品牌券"
+          },
+          {
+            "value": "4",
+            "label": "商品券"
+          }
+        ]
+      }
+    ]
+  }
+}

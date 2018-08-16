@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class OrderPayVO {
 
-	@ApiModelProperty("小程序Id")
-	private String appId;
 	@ApiModelProperty("时间戳")
 	private String timeStamp;
 	@ApiModelProperty("随机串")
@@ -18,4 +16,6 @@ public class OrderPayVO {
 	private String packageData;
 	@ApiModelProperty("签名方式")
 	private String signType;
+	@ApiModelProperty("签名")
+	private String paySign;
 }

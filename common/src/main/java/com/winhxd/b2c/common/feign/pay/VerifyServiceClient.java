@@ -4,10 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
+import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import feign.hystrix.FallbackFactory;
@@ -18,9 +15,37 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = VerifyServiceClientFallback.class)
 public interface VerifyServiceClient {
+
+    /**
+     * 订单费用记账
+     *
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "/pay/6081/v1/recordAccounting", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> recordAccounting(@RequestParam("orderNo") String orderNo);
+
+    /**
+     * 订单费用标记入账
+     *
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "/pay/6082/v1/completeAccounting", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> completeAccounting(@RequestParam("orderNo") String orderNo);
+
+    /**
+     * 订单费用与支付平台结算
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6083/v1/thirdPartyVerifyAccounting", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition);
 
     /**
      * 结算列表查询
@@ -57,6 +82,24 @@ public interface VerifyServiceClient {
      */
     @RequestMapping(value = "/pay/6094/v1/verifyByDetail", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition);
+
+    /**
+     * 费用明细暂缓
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6095/v1/accountingDetailPause", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition);
+
+    /**
+     * 费用明细暂缓恢复
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6096/v1/accountingDetailRestore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition);
 }
 
 @Component
@@ -79,26 +122,56 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
     }
 
     @Override
+    public ResponseResult<Integer> recordAccounting(String orderNo) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> completeAccounting(String orderNo) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
     public ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition) {
-        log.warn(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition) {
-        log.warn(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(VerifyDetailListCondition condition) {
-        log.warn(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
     public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
-        log.warn(e.getMessage());
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition) {
+        log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

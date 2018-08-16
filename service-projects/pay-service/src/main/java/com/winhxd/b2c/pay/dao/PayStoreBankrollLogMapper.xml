@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="order_no" jdbcType="CHAR" property="orderNo" />
+    <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
+    <result column="total_moeny" jdbcType="DECIMAL" property="totalMoeny" />
+    <result column="presented_money" jdbcType="DECIMAL" property="presentedMoney" />
+    <result column="presented_frozen_money" jdbcType="DECIMAL" property="presentedFrozenMoney" />
+    <result column="settlement_settled_money" jdbcType="DECIMAL" property="settlementSettledMoney" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_id, order_no, withdrawals_no, total_moeny, presented_money, presented_frozen_money, 
+    settlement_settled_money, status, remarks, created_by, created_by_name, created, 
+    updated_by, updated_by_name, updated
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_store_bankroll_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_store_bankroll_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
+    insert into pay_store_bankroll_log (id, store_id, order_no, 
+      withdrawals_no, total_moeny, presented_money, 
+      presented_frozen_money, settlement_settled_money, 
+      status, remarks, created_by, 
+      created_by_name, created, updated_by, 
+      updated_by_name, updated)
+    values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
+      #{withdrawalsNo,jdbcType=CHAR}, #{totalMoeny,jdbcType=DECIMAL}, #{presentedMoney,jdbcType=DECIMAL}, 
+      #{presentedFrozenMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL}, 
+      #{status,jdbcType=SMALLINT}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
+    insert into pay_store_bankroll_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="withdrawalsNo != null">
+        withdrawals_no,
+      </if>
+      <if test="totalMoeny != null">
+        total_moeny,
+      </if>
+      <if test="presentedMoney != null">
+        presented_money,
+      </if>
+      <if test="presentedFrozenMoney != null">
+        presented_frozen_money,
+      </if>
+      <if test="settlementSettledMoney != null">
+        settlement_settled_money,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="withdrawalsNo != null">
+        #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="totalMoeny != null">
+        #{totalMoeny,jdbcType=DECIMAL},
+      </if>
+      <if test="presentedMoney != null">
+        #{presentedMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="presentedFrozenMoney != null">
+        #{presentedFrozenMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="settlementSettledMoney != null">
+        #{settlementSettledMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
+    update pay_store_bankroll_log
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="withdrawalsNo != null">
+        withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="totalMoeny != null">
+        total_moeny = #{totalMoeny,jdbcType=DECIMAL},
+      </if>
+      <if test="presentedMoney != null">
+        presented_money = #{presentedMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="presentedFrozenMoney != null">
+        presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="settlementSettledMoney != null">
+        settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
+    update pay_store_bankroll_log
+    set store_id = #{storeId,jdbcType=BIGINT},
+      order_no = #{orderNo,jdbcType=CHAR},
+      withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      total_moeny = #{totalMoeny,jdbcType=DECIMAL},
+      presented_money = #{presentedMoney,jdbcType=DECIMAL},
+      presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
+      settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

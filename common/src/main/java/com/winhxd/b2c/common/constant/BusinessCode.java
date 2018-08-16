@@ -76,6 +76,11 @@ public final class BusinessCode {
     public static final int CODE_200015 = 200015;
     /**图片大小超过300KB**/
     public static final int CODE_200016 = 200016;
+    /**门店小程序码url参数为空*/
+    public static final int CODE_200017 = 200017;
+
+    /**门店小程序码图片生成失败*/
+    public static final int CODE_200018 = 200018;
 
 
     /** 原密码输入错误 */
@@ -316,7 +321,34 @@ public final class BusinessCode {
      *  订单支付  参数为空
      */
     public static final int CODE_600102 = 600102;
+    /**
+     *  订单支付  为获取到订单数据
+     */
+    public static final int CODE_600103 = 600103;
+    /**
+     *  订单支付  订单状态有误
+     */
+    public static final int CODE_600104 = 600104;
+    /**
+     *  订单支付  商品描述为空
+     */
+    public static final int CODE_600105 = 600105;
+    /**
+     *  订单支付  未获取到用户openid
+     */
+    public static final int CODE_600106 = 600106;
+    /**
+     *  订单支付  订单号为空
+     */
+    public static final int CODE_600107 = 600107;
+    /**
+     *  订单支付  设备Ip为空
+     */
+    public static final int CODE_600108 = 600108;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600201 = 600201;
+
+    @ApiModelProperty("云信账户异常")
+    public static final int CODE_701101 = 701101;
 }

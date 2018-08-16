@@ -325,6 +325,150 @@
           "permission": ""
         }
       ]
+    },
+    {
+      "id": "9",
+      "menuName": "促销管理(new)",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "9_1",
+          "menuName": "优惠券坎级管理(new)",
+          "path": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_1_1",
+              "menuName": "坎级规则添加(new)",
+              "path": "/promotion/candyruleAdd",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_1_2",
+              "menuName": "坎级规则列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_grade_list.json",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_2",
+          "menuName": "优惠券模板管理(new)",
+          "path": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_2_1",
+              "menuName": "模版列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_templete_list.json",
+              "permission": ""
+            },
+            {
+              "id": "9_2_2",
+              "menuName": "模版新增(new)",
+              "path": "/promotion/addtemplate",
+              "configKey":"",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_3",
+          "menuName": "适用对象规则管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_3_1",
+              "menuName": "适用对象规则新增(new)",
+              "path": "appliyObjectRule/index",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_3_2",
+              "menuName": "适用对象规则列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_apply_list.json",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_4",
+          "menuName": "出资方规则管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_4_1",
+              "menuName": "出资方规则添加(new)",
+              "path": "/contributiveRule/index",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_4_2",
+              "menuName": "出资方规则列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_investor_list.json",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_5",
+          "menuName": "优惠券领券管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_5_1",
+              "menuName": "优惠券领券管理(new)",
+              "path": "/couponReceive/index",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_5_2",
+              "menuName": "领券管理列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_activity_pull_list.json",
+              "permission": ""
+            }
+          ]
+        },
+        {
+          "id": "9_6",
+          "menuName": "优惠券推券管理(new)",
+          "path": "",
+          "configKey": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_6_1",
+              "menuName": "优惠券推券管理(new)",
+              "path": "/promotion/pushvolume",
+              "configKey":"",
+              "permission": ""
+            },
+            {
+              "id": "9_6_2",
+              "menuName": "推券管理列表(new)",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_activity_push_list.json",
+              "permission": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

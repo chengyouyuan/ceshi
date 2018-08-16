@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 
 import java.util.List;
 import java.util.Set;
@@ -104,6 +105,7 @@ public interface StoreService {
 
     /**
      * 根据regionCode集合查询门店
+     *
      * @param regionCodeList
      * @return
      */
@@ -116,4 +118,13 @@ public interface StoreService {
      * @return
      */
     StoreMessageAccountVO modifyStoreAndCreateAccount(StoreUserInfo record);
+
+    /**
+     * @param condition 条件
+     * @return true添加成功 false 失败
+     * @author chengyy
+     * @date 2018/8/15 19:25
+     * @Description 保存跟新门店小程序码url
+     */
+    boolean updateStoreCodeUrl(StoreUserInfoCondition condition);
 }

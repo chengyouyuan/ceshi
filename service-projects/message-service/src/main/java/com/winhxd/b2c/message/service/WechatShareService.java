@@ -1,5 +1,7 @@
 package com.winhxd.b2c.message.service;
 
+import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -16,5 +18,5 @@ public interface WechatShareService {
      * @param  storeUserId 当前的门店id
      * @return 图片二进制数据
      */
-    byte[] generateQRCodePic(Long storeUserId);
+    QRCodeInfoVO generateQRCodePic(Long storeUserId);
 }

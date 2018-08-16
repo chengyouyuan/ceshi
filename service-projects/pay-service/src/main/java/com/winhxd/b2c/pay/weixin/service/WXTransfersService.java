@@ -1,7 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service;
 
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 
 /**
  * WXTransfersService

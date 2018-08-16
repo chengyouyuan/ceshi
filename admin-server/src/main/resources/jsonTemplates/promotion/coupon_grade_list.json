@@ -1,1 +1,166 @@
-{}
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5017/v1/getCouponGradePage",
+    "type": "report",
+    "id": "coupon_grade_list",
+    "code": "coupon_grade_list",
+    "title": "坎级规则列表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/promotion/candyruleAdd"
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/promotion/5017/v1/getCouponGradePage"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "/promotion/5019/v1/viewCouponGradeDetail",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "设置为无效",
+            "icon": null,
+            "event": {
+              "type": "ajax",
+              "ajaxType":"post",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": ""
+              },
+              "path": "/promotion/5020/v1/updateCouponGradeValid"
+            }
+          }
+        ]
+      },
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "type",
+        "title": "坎级类型"
+      },
+      {
+        "name": "name",
+        "title": "坎级规则名称"
+      },
+      {
+        "name": "code",
+        "title": "坎级规则编码"
+      },
+      {
+        "name": "relTempleteCount",
+        "title": "模板数量"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人"
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "updatedByName",
+        "title": "修改人"
+      },
+      {
+        "name": "updated",
+        "title": "修改时间"
+      }
+    ],
+    "params": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "坎级规则名称",
+        "value": "",
+        "placeholder": "请输入坎级规则名称",
+        "isHidden": false
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "坎级规则编码",
+        "value": "",
+        "placeholder": "请输入坎级规则编码",
+        "isHidden": false
+      },
+      {
+        "name": "type",
+        "inputModel": "select",
+        "title": "坎级类型",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "满减"
+        },
+          {
+            "value": "2",
+            "label": "满赠"
+          },
+          {
+            "value": "3",
+            "label": "按件减阶梯"
+          },
+          {
+            "value": "4",
+            "label": "按件减翻倍"
+          },
+          {
+            "value": "5",
+            "label": "按件增阶梯"
+          },
+          {
+            "value": "6",
+            "label": "按件增翻倍"
+          }
+        ]
+      }
+    ]
+  }
+}

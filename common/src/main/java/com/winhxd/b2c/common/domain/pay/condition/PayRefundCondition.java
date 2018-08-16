@@ -1,4 +1,8 @@
-package com.winhxd.b2c.pay.weixin.condition;
+package com.winhxd.b2c.common.domain.pay.condition;
+
+import java.io.Serializable;
+
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 
 /**
  * @author lizhonghua
@@ -6,7 +10,12 @@ package com.winhxd.b2c.pay.weixin.condition;
  * @Description 微信退款
  * @version 
  */
-public class PayRefundCondition {
+public class PayRefundCondition extends ApiCondition implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5825339934872843457L;
 
 	/**
 	 * 公众账号ID

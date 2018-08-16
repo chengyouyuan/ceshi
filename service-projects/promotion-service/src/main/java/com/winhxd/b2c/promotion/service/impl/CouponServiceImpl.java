@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
@@ -205,6 +206,7 @@ public class CouponServiceImpl implements CouponService {
                         productSkus.add(couponApplyProductList.getSkuCode());
                     }
                     ProductCondition productCondition = new ProductCondition();
+                    productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
@@ -313,6 +315,13 @@ public class CouponServiceImpl implements CouponService {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+        }
+
+        //我的优惠券列表不分页，一页显示全部
+        if(null == couponCondition.getStatus()){
+            List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,couponCondition.getStatus());
+            couponCondition.setPageSize(couponVOS.size());
+            couponCondition.setPageNo(1);
         }
 
         Page page = PageHelper.startPage(couponCondition.getPageNo(), couponCondition.getPageSize());

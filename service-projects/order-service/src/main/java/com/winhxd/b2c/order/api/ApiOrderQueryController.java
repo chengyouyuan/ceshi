@@ -138,7 +138,7 @@ public class ApiOrderQueryController {
             result.setCode(BusinessCode.CODE_1001);
             throw e;
         }
-        LOGGER.info("{}--结束 result={}", result);
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 

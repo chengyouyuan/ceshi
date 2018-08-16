@@ -12,25 +12,13 @@ import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -44,7 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Auther wangxiaoshun
@@ -743,7 +734,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Integer getStoreCouponKinds() {
+    public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList =  findStoreCouponList();
         int count = 0 ;
         for (int i = 0; i < couponVOList.size(); i++){
@@ -751,7 +742,9 @@ public class CouponServiceImpl implements CouponService {
                 count++;
             }
         }
-        return count;
+        CouponKindsVo couponKindsVo = new CouponKindsVo();
+        couponKindsVo.setStoreCouponKinds(count);
+        return couponKindsVo;
     }
 
     @Override

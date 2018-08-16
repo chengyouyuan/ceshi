@@ -492,6 +492,17 @@
     <resultMap id="orderIdResult" type="java.lang.Long" >
 	    <result column="id" property="orderId" jdbcType="BIGINT" />
 	</resultMap>
+	<sql id="order_info_list_orderBy">
+		order by info.created desc,info.order_no,item.sku_code
+	</sql>
+	<sql id="order_item_column">
+		,item.id AS itemId
+        ,item.sku_code AS skuCode
+        ,item.amount AS amount
+        ,item.price AS price
+        ,item.sku_url AS skuUrl
+        ,item.sku_desc AS skuDesc
+	</sql>
     <sql id="Order_Info_List">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
@@ -501,15 +512,10 @@
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
-        ,item.id AS itemId
-        ,item.sku_code AS skuCode
-        ,item.amount AS amount
-        ,item.price AS price
-        ,item.sku_url AS skuUrl
-        ,item.sku_desc AS skuDesc
+        <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.customer_id = #{customerId,jdbcType=BIGINT}
-        order by info.created desc
+        <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
         select
@@ -556,18 +562,14 @@
     <select id="listOrderInOrderIds" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
-        ,item.sku_code AS skuCode
-        ,item.amount AS amount
-        ,item.price AS price
-        ,item.sku_url AS skuUrl
-        ,item.sku_desc AS skuDesc
+        <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
         and info.id in 
     	<foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
                 #{item}
         </foreach>
-        order by info.created desc, info.order_no
+        <include refid="order_info_list_orderBy"></include>
     </select>
     <sql id="Order_Info_List_4_store">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, coupon_titles, 
@@ -591,11 +593,7 @@
     <select id="listOrder4StoreInOrderIds" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List_4_store"/>
-        ,item.sku_code AS skuCode
-        ,item.amount AS amount
-        ,item.price AS price
-        ,item.sku_url AS skuUrl
-        ,item.sku_desc AS skuDesc
+        <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
         and info.id in 
@@ -603,19 +601,15 @@
                      open="(" separator="," close=")">
                     #{item}
         </foreach>
-        order by info.created desc, info.order_no
+        <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="selectOrderInfoByOrderNo" resultMap="OrderInfoListResultMap">
         select
         <include refid="Order_Info_List"/>
-        ,item.id AS itemId
-        ,item.sku_code AS skuCode
-        ,item.amount AS amount
-        ,item.price AS price
-        ,item.sku_url AS skuUrl
-        ,item.sku_desc AS skuDesc
+        <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        <include refid="order_info_list_orderBy"></include>
     </select>
     <update id="updateOrderStatusForCancel">
         update order_info

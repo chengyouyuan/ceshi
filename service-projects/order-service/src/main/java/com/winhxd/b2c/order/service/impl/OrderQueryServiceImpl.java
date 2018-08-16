@@ -209,7 +209,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                     //批量生成50个提货码
                     pickUpCodeList = generatePickUpCodeList(50);
                     if (!this.orderInfoMapper.getPickUpCodeByStoreId(pickUpCodeList, storeId)) {
-                        logger.info("提货码生成 storeId={},pickUpList={}", storeId, pickUpCodeList);
+                        logger.info("提货码批量生成成功 storeId={},pickUpList={}", storeId, pickUpCodeList);
                         break;
                     }
                 } while (true);
@@ -222,6 +222,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         } finally {
             lock.unlock();
         }
+        logger.info("提货码获取 storeId={},code={}", storeId, code);
         return code;
     }
     

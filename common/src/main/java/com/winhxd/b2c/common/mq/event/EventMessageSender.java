@@ -1,9 +1,9 @@
 package com.winhxd.b2c.common.mq.event;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.mq.event.support.EventCorrelationData;
 import com.winhxd.b2c.common.mq.event.support.EventMessageHelper;
-import com.winhxd.b2c.common.mq.event.support.EventMessageSenderServiceFactory;
-import com.winhxd.b2c.common.mq.event.support.EventSenderServiceNotFoundException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,29 +19,23 @@ public class EventMessageSender {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private EventMessageSenderServiceFactory eventMessageSenderServiceFactory;
+    private Cache cache;
 
 
     /**
-     * 发送事件消息,使用该方法,项目中必须实现
-     * {@link EventTypeService}
+     * 发送事件消息
      *
      * @param eventType
      * @param eventId
      * @param eventObject
      * @param <T>
-     * @throws EventSenderServiceNotFoundException
      */
-    public <T> void send(EventType eventType, String eventId, T eventObject) throws EventSenderServiceNotFoundException {
-        EventTypeService<T> service = eventMessageSenderServiceFactory.getService(eventType);
-        if (service == null) {
-            throw new EventSenderServiceNotFoundException(eventType.toString());
-        }
-        if (!eventType.getEventObjectClass().isInstance(eventObject)) {
-            throw new IllegalArgumentException("eventObject必须为" + eventType.getEventObjectClass().getCanonicalName());
-        }
-        service.saveEvent(eventId, eventObject);
+    public <T> void send(EventType eventType, String eventId, T eventObject) {
         String json = EventMessageHelper.toJson(eventId, eventObject);
+        String idKey = CacheName.EVENT_MESSAGE_ID + eventType.toString();
+        String bodyKey = CacheName.EVENT_MESSAGE_BODY + eventType.toString();
+        cache.zadd(idKey, System.currentTimeMillis(), eventId);
+        cache.hset(bodyKey, eventId, json);
         rabbitTemplate.convertAndSend(eventType.toString(), null,
                 json, new EventCorrelationData(eventId, eventType));
     }

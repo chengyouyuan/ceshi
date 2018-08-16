@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 
 import io.swagger.annotations.Api;
@@ -41,6 +43,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1042/v1/findStoreProdManageList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE})
 	public ResponseResult<PagedList<BackStageStoreProdVO>> findStoreProdManageList(
 			@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreProdVO>> result=new ResponseResult<>();
@@ -55,6 +58,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1043/v1/findStoreProdManage/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE})
 	public ResponseResult<BackStageStoreProdVO> findStoreProdManage(@PathVariable("id") Long id) {
 		BackStageStoreProdCondition condition=new BackStageStoreProdCondition();
 		condition.setId(id);
@@ -70,6 +74,7 @@ public class StoreProdManageController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1044/v1/operateStoreProdManage",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_STORE_PUTAWAY})
 	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<Void> result=new ResponseResult<>();
 		result=backStageStoreServiceClient.operateStoreProdManage(condition);

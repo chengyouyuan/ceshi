@@ -85,9 +85,9 @@ public class MiniProgramUtils {
                 String openid =String.valueOf(map.get("openid"));
                 String sessionKey =String.valueOf(map.get("session_key"));
                 String unionId =String.valueOf(map.get("unionid"));
-                miniOpenId.setOpenId(openid);
+                miniOpenId.setOpenid(openid);
                 miniOpenId.setSessionKey(sessionKey);
-                miniOpenId.setUnionId(unionId);
+                miniOpenId.setUnionid(unionId);
                 LOGGER.info("MiniProgramUtils ->oauth2GetOpenid,小程序根据code获取openid，openid为={}",openid);
             }else{
                 LOGGER.error("MiniProgramUtils ->oauth2GetOpenid,小程序根据code获取openid出错，需查询错误码，错误码为={}",errcode);

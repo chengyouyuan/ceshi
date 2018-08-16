@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -53,32 +52,28 @@ public class CouponActivityServiceImpl implements CouponActivityService {
      */
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition) {
-        Calendar createdS = Calendar.getInstance();
-        createdS.setTime(condition.getDateInterval().getStartDate());
-        createdS.set(Calendar.HOUR_OF_DAY, 0);
-        createdS.set(Calendar.MINUTE, 0);
-        createdS.set(Calendar.SECOND, 0);
-        createdS.set(Calendar.MILLISECOND, 0);
-
-        Calendar createdE = Calendar.getInstance();
-        createdE.setTime(condition.getDateInterval().getEndDate());
-        createdE.set(Calendar.HOUR_OF_DAY, 23);
-        createdE.set(Calendar.MINUTE, 59);
-        createdE.set(Calendar.SECOND, 59);
-        createdE.set(Calendar.MILLISECOND, 59);
-        Date createdStart = createdS.getTime();
-        Date createdEnd  =createdE.getTime();
-
-        if(condition.getCreatedStart() != null && condition.getCreatedEnd() != null){
-            condition.setCreatedStart(createdStart);
-            condition.setCreatedEnd(createdEnd);
-        }
-        if(condition.getCreatedStart() != null && condition.getCreatedEnd() == null){
+        if(condition.getDateInterval().getStartDate() != null){
+            Calendar createdS = Calendar.getInstance();
+            createdS.setTime(condition.getDateInterval().getStartDate());
+            createdS.set(Calendar.HOUR_OF_DAY, 0);
+            createdS.set(Calendar.MINUTE, 0);
+            createdS.set(Calendar.SECOND, 0);
+            createdS.set(Calendar.MILLISECOND, 0);
+            Date createdStart = createdS.getTime();
             condition.setCreatedStart(createdStart);
         }
-        if(condition.getCreatedStart() == null && condition.getCreatedEnd() != null){
+        if(condition.getDateInterval().getEndDate() != null){
+            Calendar createdE = Calendar.getInstance();
+            createdE.setTime(condition.getDateInterval().getEndDate());
+            createdE.set(Calendar.HOUR_OF_DAY, 23);
+            createdE.set(Calendar.MINUTE, 59);
+            createdE.set(Calendar.SECOND, 59);
+            createdE.set(Calendar.MILLISECOND, 59);
+            Date createdEnd  =createdE.getTime();
             condition.setCreatedEnd(createdEnd);
+
         }
+
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         PagedList<CouponActivityVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());

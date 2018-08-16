@@ -8,6 +8,17 @@
     "title": "门店测试区域管理",
     "buttons": [
       {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/store/store_region_save.json",
+          "callBack": {
+          }
+        }
+      },
+      {
         "name": "查询",
         "icon": null,
         "event": {
@@ -51,7 +62,7 @@
             "name": "删除",
             "icon": null,
             "event": {
-              "ajaxType": "post",
+              "ajaxType": "get",
               "type": "ajax",
               "params": [
                 "id"

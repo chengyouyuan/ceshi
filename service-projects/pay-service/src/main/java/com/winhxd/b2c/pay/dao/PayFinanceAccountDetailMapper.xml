@@ -68,7 +68,13 @@
       <result property="todayCharge" column="todayCharge"/>
        <result property="allCharge" column="allCharge"/>
   </resultMap>
-    
+
+   <resultMap id="PayFinancialSummary" type="com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary">
+      <result property="realFee" column="realFee"/>
+      <result property="cmmsAmt" column="cmmsAmt"/>
+      <result property="refundAmout" column="refundAmout"/>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, order_no, trade_no, money, store_id, region_code, region_name, type, out_type, 
     wechat_account_status, status, data_status, flow_direction_type, flow_direction_name, 
@@ -471,5 +477,65 @@
        and created = #{created,jdbcType=TIMESTAMP}
       </if>
    </select>
-   
+   <select id="getWithdrawals" parameterType="java.lang.String" resultMap="PayFinancialSummary">
+       SELECT
+       SUM(pw.real_fee) AS realFee,
+       SUM(pw.cmms_amt) AS cmmsAmt
+       FROM
+       pay_finance_account_detail pfad
+       LEFT JOIN pay_withdrawals pw ON pw.withdrawals_no = pfad.order_no
+       WHERE
+       1 = 1
+       AND pfad.`status` = 1
+       AND pfad.out_type = 1
+       <if test="isToday == 'today'" >
+        AND to_days(pw.created) = to_days(now())
+       </if>
+   </select>
+   <select id="getRefund" parameterType="java.lang.String" resultMap="PayFinancialSummary">
+       SELECT
+       SUM(pr.refund_amount) AS refundAmout
+       FROM
+       pay_finance_account_detail pfad
+       LEFT JOIN pay_refund pr ON pr.order_no = pfad.order_no
+       WHERE
+       1 = 1
+       AND pfad.`status` = 1
+       AND pfad.out_type = 2
+       <if test="isToday == 'today'" >
+        AND to_days(pr.created) = to_days(now())
+       </if>
+   </select>
+    <select id="getIncome" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+        SELECT
+            SUM(pad.detail_money) todayAdvancesReceived
+        FROM
+            pay_accounting_detail pad
+        WHERE
+            1 = 1
+        <if test="type == 'todayPreMoney'" >
+          AND pad.detail_type = '1'
+          AND pad.order_complete_status = '0'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'todayRealMoney'" >
+          AND pad.detail_type = '1'
+          AND pad.order_complete_status = '1'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'todayInMoney'" >
+          AND pad.detail_type = '1'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'allInMoney'" >
+            AND pad.detail_type = '1'
+        </if>
+        <if test="type == 'useTodayCouponAllMoney'" >
+            AND pad.detail_type = '3'
+            AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'useCouponAllMoney'" >
+            AND pad.detail_type = '3'
+        </if>
+    </select>
 </mapper>

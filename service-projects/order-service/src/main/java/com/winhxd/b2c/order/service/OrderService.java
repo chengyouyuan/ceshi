@@ -3,11 +3,13 @@ package com.winhxd.b2c.order.service;
 import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPayInfoCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
 /**
  * 订单操作接口，提供包括下单、修改等操作
@@ -138,4 +140,5 @@ public interface OrderService {
      * @param condition
      */
     void orderPriceChange4Store(OrderConfirmCondition condition);
+
 }

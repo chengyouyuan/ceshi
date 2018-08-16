@@ -65,7 +65,7 @@ public class ApiOpenStoreController {
     @Autowired
     private StoreHxdServiceClient storeHxdServiceClient;
 
-    @Resource(name = "storeBrowseLogService")
+    @Autowired
     private StoreBrowseLogService storeBrowseLogService;
 
     @Autowired
@@ -316,8 +316,8 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
-        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || storeBusinessInfoCondition.getPickupType() == null ||
-                storeBusinessInfoCondition.getPayType() == null || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
+        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || StringUtils.isBlank(storeBusinessInfoCondition.getPickupType())||
+                StringUtils.isBlank(storeBusinessInfoCondition.getPayType()) || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile()) || StringUtils.isBlank(storeBusinessInfoCondition.getStoreAddress())) {
             logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
@@ -337,6 +337,7 @@ public class ApiOpenStoreController {
         StoreMessageAccountVO storeMessageAccountVO = storeService.modifyStoreAndCreateAccount(storeUserInfo);
         ResponseResult<StoreMessageAccountVO> responseResult = new ResponseResult<>();
         responseResult.setData(storeMessageAccountVO);
+        logger.info("惠小店开店店铺信息保存接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -354,8 +355,13 @@ public class ApiOpenStoreController {
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         Long businessId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
+        StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         Date currentDate = new Date();
-        responseResult.setData(this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate));
+        StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate);
+        storeManageInfoVO.setBusinessId(businessId);
+        storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
+        responseResult.setData(storeManageInfoVO);
+        logger.info("惠小店管理首页获取数据接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -478,7 +484,7 @@ public class ApiOpenStoreController {
         todayInfo.setCreateNumCompare(calculatePercent(new BigDecimal(todayInfo.getCreateNum()), new BigDecimal(yesterdayInfo.getCreateNum())));
         todayInfo.setCompleteNumCompare(calculatePercent(new BigDecimal(todayInfo.getCompleteNum()), new BigDecimal(yesterdayInfo.getCompleteNum())));
         responseResult.setData(todayInfo);
-        logger.info("惠小店开店店铺信息查询接口 返参为：{}", JsonUtil.toJSONString(todayInfo));
+        logger.info("惠小店获取营业数据查询接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 
@@ -525,7 +531,7 @@ public class ApiOpenStoreController {
     private static String calculatePercent(BigDecimal a, BigDecimal b) {
         String result = "暂无对比数据";
         if (a.compareTo(BigDecimal.ZERO) != 0 && b.compareTo(BigDecimal.ZERO) != 0) {
-            result = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP).toBigInteger().toString();
+            result = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP).toBigInteger().toString() + "%";
         }
         return result;
     }

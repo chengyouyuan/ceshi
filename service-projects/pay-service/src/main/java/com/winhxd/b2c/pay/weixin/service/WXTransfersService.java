@@ -1,7 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service;
 
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 
 /**
  * WXTransfersService
@@ -16,12 +16,12 @@ public interface WXTransfersService {
      * 微信提现至余额入口
      * @return
      */
-    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
+    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception;
 
     /**
      * 微信提现至银行卡入口
      * @return
      */
-    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) throws Exception;
 
 }

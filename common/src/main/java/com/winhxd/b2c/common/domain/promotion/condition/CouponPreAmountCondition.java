@@ -15,7 +15,7 @@ public class CouponPreAmountCondition extends ApiCondition{
     private List<Long> sendIds;
     @ApiModelProperty(value = "商品信息", required=true)
     private List<CouponProductCondition> products;
-    @ApiModelProperty(value = "支付方式", required=true)
+    @ApiModelProperty(value = "支付方式 1扫码支付2线上支付", required=true)
     private String payType;
 
     public List<Long> getSendIds() {

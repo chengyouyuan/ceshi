@@ -35,4 +35,7 @@ public class ProductSkuVO {
 	@ApiModelProperty(value = "购物车数量")
 	private Integer skuNum;
 	
+	@ApiModelProperty(value = "一级分类")
+	private String categoryId;
+	
 }

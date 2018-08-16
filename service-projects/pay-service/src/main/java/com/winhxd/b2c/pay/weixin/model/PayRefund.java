@@ -160,14 +160,19 @@ public class PayRefund {
     private Integer callbackCashRefundFee;
 
     /**
-     * 退款状态 0退款异常 1退款成功 2退款关闭
+     * 退款状态 0退款中 1退款成功 2退款关闭 3退款异常
      */
     private Short callbackRefundStatus;
 
     /**
-     * 退款状态描述
+     * 退款错误状态码
      */
-    private String callbackStatusDesc;
+    private String errorCode;
+
+    /**
+     * 退款错误描述
+     */
+    private String errorMessage;
 
     /**
      * 资金退款至用户帐号的时间 YYYY-MM-DD hh:mm:ss
@@ -213,16 +218,6 @@ public class PayRefund {
      * 修改时间
      */
     private Date updated;
-
-    /**
-     * 修改人ID
-     */
-    private Long updatedBy;
-
-    /**
-     * 修改人姓名
-     */
-    private String updatedByName;
 
     public Long getId() {
         return id;
@@ -472,12 +467,20 @@ public class PayRefund {
         this.callbackRefundStatus = callbackRefundStatus;
     }
 
-    public String getCallbackStatusDesc() {
-        return callbackStatusDesc;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setCallbackStatusDesc(String callbackStatusDesc) {
-        this.callbackStatusDesc = callbackStatusDesc == null ? null : callbackStatusDesc.trim();
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode == null ? null : errorCode.trim();
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage == null ? null : errorMessage.trim();
     }
 
     public Date getCallbackSuccessTime() {
@@ -542,21 +545,5 @@ public class PayRefund {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
-    }
-
-    public Long getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public String getUpdatedByName() {
-        return updatedByName;
-    }
-
-    public void setUpdatedByName(String updatedByName) {
-        this.updatedByName = updatedByName == null ? null : updatedByName.trim();
     }
 }

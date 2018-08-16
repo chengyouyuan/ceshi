@@ -1,15 +1,15 @@
 package com.winhxd.b2c.pay.service;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
-import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
 /**
  * @author liuhanning
@@ -20,30 +20,6 @@ import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
 public interface PayService {
 
 	
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:46:25
-	 * @Description 退款
-	 * @return
-	 */
-	ResponseResult<OrderRefundVO> orderRefund(OrderRefundCondition condition);
-	
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:48:41
-	 * @Description 获取支付凭证
-	 * @param condition
-	 * @return
-	 */
-	ResponseResult<String> getprepayId(OrderPayCondition condition);
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:50:13
-	 * @Description 订单支付
-	 * @param condition
-	 * @return
-	 */
-	ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition);
 	
 	/**
 	 * @author liuhanning
@@ -84,6 +60,36 @@ public interface PayService {
 	 */
 	void saveStoreBankRollLog(StoreBankRollLogCondition condition);
 	
+	/**
+	 * 小程序预支付
+	 * @author mahongliang
+	 * @date  2018年8月16日 上午10:04:17
+	 * @Description 
+	 * @param condition
+	 * @return
+	 */
+	OrderPayVO unifiedOrder(PayPreOrderCondition condition);
 	
+	/**
+	 * 退款
+	 * @author mahongliang
+	 * @date  2018年8月16日 上午10:04:54
+	 * @Description 
+	 * @param payRefund
+	 * @return
+	 */
+	PayRefundVO refundOrder(PayRefundCondition payRefund);
+	
+	/**
+     * 微信提现至余额入口
+     * @return
+     */
+    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
+
+    /**
+     * 微信提现至银行卡入口
+     * @return
+     */
+    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
 	
 }

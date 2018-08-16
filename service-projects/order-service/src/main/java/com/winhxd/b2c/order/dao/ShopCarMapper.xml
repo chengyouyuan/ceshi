@@ -156,7 +156,7 @@
     delete from shop_cart
     where 1 = 1
     <if test="customerId != null">
-      and customer_id = #{customerId,jdbcType=BIGINT}
+      and customer_id = #{customerId}
     </if>
   </delete>
   <delete id="deleteShopCarsByStoreId" parameterType="com.winhxd.b2c.common.domain.order.model.ShopCar">

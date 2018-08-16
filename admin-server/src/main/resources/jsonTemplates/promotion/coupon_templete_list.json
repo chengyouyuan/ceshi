@@ -35,6 +35,14 @@
     ],
     "columns": [
       {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -45,12 +53,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5012/v1/viewCouponTemplateDetail",
+              "path": "/promotion/addtemplate",
               "configKey": ""
             }
           },
@@ -67,14 +72,6 @@
             }
           }
         ]
-      },
-      {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
       },
       {
         "name": "code",
@@ -94,6 +91,7 @@
         "options":[
           {"1":"通用券"},
           {"2":"品牌券"},
+          {"3":"品类券"},
           {"4":"商品券"}
         ]
       },

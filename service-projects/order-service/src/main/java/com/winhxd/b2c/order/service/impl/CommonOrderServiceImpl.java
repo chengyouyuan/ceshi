@@ -30,6 +30,8 @@ import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -42,6 +44,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -112,29 +115,31 @@ public class CommonOrderServiceImpl implements OrderService {
     @Qualifier("OnlinePayPickUpInStoreOfflineOrderHandler")
     private OrderHandler onlinePayPickUpInStoreOfflineOrderHandler;
 
-    @Resource
+    @Autowired
     private OrderInfoMapper orderInfoMapper;
 
-    @Resource
+    @Autowired
     private OrderItemMapper orderItemMapper;
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
-    @Resource
+    @Autowired
     private CouponServiceClient couponServiceClient;
-    @Resource
+    @Autowired
     private Cache cache;
 
     @Autowired
     private CustomerServiceClient customerServiceclient;
-    @Resource
+    @Autowired
     private ProductServiceClient productServiceClient;
-    @Resource
+    @Autowired
     private MessageServiceClient messageServiceClient;
-    @Resource
+    @Autowired
     private StringMessageSender stringMessageSender;
+    @Autowired
+    private PayServiceClient payServiceClient;
 
 
     private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("order-thread-pool-%d").build();
@@ -322,6 +327,12 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.unlock();
         }
         return callbackResult;
+    }
+
+    private void applyRefund(OrderInfo order){
+        PayRefundCondition payRefundCondition = new PayRefundCondition();
+        payRefundCondition.setOutTradeNo(order.getOrderNo());
+        PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
     }
 
 
@@ -875,7 +886,11 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setPayType(orderCreateCondition.getPayType());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemarks(orderCreateCondition.getRemark());
-        orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
+        if (orderInfo.getPickupDateTime() == null) {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_NOW.getTypeCode());
+        } else {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_LATER.getTypeCode());
+        }
         orderInfo.setOrderNo(generateOrderNo());
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
@@ -1031,9 +1046,6 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
             throw new BusinessException(BusinessCode.CODE_401003);
-        }
-        if (orderCreateCondition.getPickupDateTime() == null) {
-            throw new BusinessException(BusinessCode.CODE_401004);
         }
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);

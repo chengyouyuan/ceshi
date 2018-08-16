@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.pay.condition.*;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
-import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
-import org.apache.commons.collections4.CollectionUtils;
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,88 +14,53 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.common.ApiCondition.MobileInfo;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
+import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.weixin.condition.PayPreOrderCondition;
+import com.winhxd.b2c.pay.weixin.service.WXRefundService;
+import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
+import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 
 @Service
 public class PayServiceImpl implements PayService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 	@Autowired
-	OrderServiceClient orderServiceClient;
+	private OrderServiceClient orderServiceClient;
 	
 	@Autowired
-	PayOrderPaymentMapper payOrderPaymentMapper;
+	private PayOrderPaymentMapper payOrderPaymentMapper;
 	
 	@Autowired
-	StoreBankrollMapper storeBankrollMapper;
+	private StoreBankrollMapper storeBankrollMapper;
 	@Autowired
-	PayStoreBankrollLogMapper payStoreBankrollLogMapper;
+	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
+	@Autowired
+	private WXUnifiedOrderService unifiedOrderService;
+	@Autowired
+	private WXRefundService refundService;
+	@Autowired
+	private WXTransfersService transfersService;
 	
 	private static final String logLabel="PayServiceImpl--";
-	@Override
-	public ResponseResult<OrderRefundVO> orderRefund(OrderRefundCondition condition) {
-		//todo 调取微信退款接口  
-		
-		return null;
-	}
-
-	@Override
-	public ResponseResult<String> getprepayId(OrderPayCondition condition) {
-		//todo 调取微信的接口
-		return null;
-	}
-
-	@Override
-	public ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition) {
-		String log=logLabel+"订单支付支付orderPay";
-		logger.info(log+"--开始");
-		if (condition==null){
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600102);
-		}
-		String orderNo=condition.getOutOrderNo();
-		String spbillCreateIp=condition.getSpbillCreateIp();
-		String body=condition.getBody();
-		if (StringUtils.isBlank(orderNo)) {
-			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600107);
-		}
-		if (StringUtils.isBlank(spbillCreateIp)) {
-			logger.info(log+"--设备ip为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
-		}
-		if (StringUtils.isBlank(body)) {
-			logger.info(log+"--商品描述为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
-		}
-		logger.info(log+"--参数"+condition.toString());
-		String openid=condition.getOpenid();
-		if (StringUtils.isBlank(openid)) {
-			logger.info(log+"--未获取到用户openid");
-			throw new BusinessException(BusinessCode.CODE_600106);
-		}
-	
-		//todo 调取微信支付接口  
-		return null;
-	}
 
 	@Override
 	@Transactional
@@ -130,7 +93,7 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600303);
+//			throw new BusinessException(BusinessCode.CODE_600303);
 		}
 		logger.info(log+"--参数"+condition.toString());
 		//插入流水数据
@@ -277,5 +240,99 @@ public class PayServiceImpl implements PayService{
 			payStoreBankrollLog.setRemarks(remarks);
 			payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 		}
+	}
+
+	@Override
+	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+		//验证订单支付参数
+		String log=logLabel+"订单支付unifiedOrder";
+		logger.info(log+"--开始");
+		if (condition==null){
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
+		String orderNo=condition.getOutOrderNo();
+		String spbillCreateIp=condition.getSpbillCreateIp();
+		String body=condition.getBody();
+		String openid=condition.getOpenid();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600102);
+		}
+		if (StringUtils.isBlank(body)) {
+			logger.info(log+"--商品描述为空");
+			throw new BusinessException(BusinessCode.CODE_600103);
+		}
+	
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log+"--用户openid为空");
+			throw new BusinessException(BusinessCode.CODE_600104);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log+"--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600105);
+		}
+		logger.info(log+"--参数"+condition.toString());
+		
+		return unifiedOrderService.unifiedOrder(condition);
+	}
+
+	@Override
+	public PayRefundVO refundOrder(PayRefundCondition payRefund) {
+		
+		//验证订单支付参数
+		String log=logLabel+"订单退款refundOrder";
+		logger.info(log+"--开始");
+		if (payRefund==null){
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600201);
+		}
+		String orderNo=payRefund.getOutTradeNo();
+		String appid=payRefund.getAppid();
+		BigDecimal totalAmount=payRefund.getTotalAmount();
+		BigDecimal refundAmount=payRefund.getRefundAmount();
+		Long createdBy=payRefund.getCreatedBy();
+		String createdByName=payRefund.getCreatedByName();
+//		String refundDesc=payRefund.getRefundDesc();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600202);
+		}
+		if (StringUtils.isBlank(appid)) {
+			logger.info(log+"--appid为空");
+			throw new BusinessException(BusinessCode.CODE_600203);
+		}
+		if (totalAmount==null) {
+			logger.info(log+"--订单金额为空");
+			throw new BusinessException(BusinessCode.CODE_600204);
+		}
+		if (refundAmount==null) {
+			logger.info(log+"--退款金额为空");
+			throw new BusinessException(BusinessCode.CODE_600205);
+		}
+		if (createdBy==null) {
+			logger.info(log+"--创建人为空");
+			throw new BusinessException(BusinessCode.CODE_600206);
+		}
+		if (StringUtils.isBlank(createdByName)) {
+			logger.info(log+"--创建人姓名为空");
+			throw new BusinessException(BusinessCode.CODE_600207);
+		}
+		logger.info(log+"--参数"+payRefund.toString());
+		
+		return refundService.refundOrder(payRefund);
+	}
+
+	@Override
+	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+		
+		return"";
+//		return transfersService.transfersToChange(toWxBalanceCondition);
+	}
+
+	@Override
+	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+//		return transfersService.transfersToBank(toWxBankCondition);
+		return "";
 	}
 }

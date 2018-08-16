@@ -54,4 +54,8 @@ public class MessageNeteaseHistory {
      * 云信端消息ID
      */
     private String msgIdServer;
+    /**
+     * 消息是否已读
+     */
+    private String readStatus;
 }

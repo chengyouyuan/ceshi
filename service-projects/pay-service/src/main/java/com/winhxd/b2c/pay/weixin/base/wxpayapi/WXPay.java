@@ -4,16 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class WXPay {
 
+    @Autowired
     private WXPayConfig config;
-    private SignType signType;
-    private boolean autoReport;
-    private boolean useSandbox;
-    private String notifyUrl;
+    private SignType signType = SignType.HMACSHA256;
+    private boolean autoReport = false;
+    private boolean useSandbox = false;
+    private String notifyUrl = null;
+    @Autowired
     private WXPayRequest wxPayRequest;
 
+/*  //删除原构造,采用注入方式
     public WXPay(final WXPayConfig config) throws Exception {
         this(config, null, true, false);
     }
@@ -47,7 +53,7 @@ public class WXPay {
             this.signType = SignType.HMACSHA256;
         }
         this.wxPayRequest = new WXPayRequest(config);
-    }
+    }*/
 
     private void checkWXPayConfig() throws Exception {
         if (this.config == null) {
@@ -94,6 +100,23 @@ public class WXPay {
             reqData.put("sign_type", WXPayConstants.HMACSHA256);
         }
         reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
+        return reqData;
+    }
+
+    /**
+     * 向 Map 中添加 appid、mch_id、nonce_str、sign_type、sign <br>
+     * 该函数适用于商户适用于统一下单等接口，不适用于红包、代金券接口
+     *
+     * @param reqData
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> fillRefundRequestData(Map<String, String> reqData) throws Exception {
+        reqData.put("appid", config.getAppID());
+        reqData.put("mch_id", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", WXPayConstants.MD5);
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), SignType.MD5));
         return reqData;
     }
 
@@ -499,7 +522,7 @@ public class WXPay {
         else {
             url = WXPayConstants.REFUND_URL_SUFFIX;
         }
-        String respXml = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
+        String respXml = this.requestWithCert(url, this.fillRefundRequestData(reqData), connectTimeoutMs, readTimeoutMs);
         return this.processResponseXml(respXml);
     }
 
@@ -683,6 +706,60 @@ public class WXPay {
         }
         String respXml = this.requestWithoutCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs);
         return this.processResponseXml(respXml);
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToChange(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.TRANSFER_TO_CHANGE_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信银行卡<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToBank(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_TRANSFER_TO_BANK_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.TRANSFER_TO_BANK_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String publicKey(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.PUBLICKEY_URL_SUFFIX ;
+        }
+        return this.requestWithCert(url, reqData, 6*1000, 8*1000);
     }
 
 

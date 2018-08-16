@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponInStoreGetedAndUse
 import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponKindsVo;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
@@ -20,7 +21,10 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -114,12 +118,12 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在")
     })
     @RequestMapping(value = "/5008/v1/getStoreCouponKinds", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<Integer> getStoreCouponKinds(ApiCondition condition){
+    ResponseResult<CouponKindsVo> getStoreCouponKinds(ApiCondition condition){
         logTitle="=/api-promotion/coupon/5008/v1/getStoreCouponKinds-获取用户可领取门店优惠券种类数=--";
         LOGGER.info(logTitle+"开始--{}--");
-        ResponseResult<Integer> result = new ResponseResult<>();
-        Integer StoreCouponKinds = couponService.getStoreCouponKinds();
-        result.setData(StoreCouponKinds);
+        ResponseResult<CouponKindsVo> result = new ResponseResult<>();
+        CouponKindsVo couponKindsVo = couponService.getStoreCouponKinds();
+        result.setData(couponKindsVo);
         LOGGER.info(logTitle+"结束 result={}", result);
         return result;
     }
@@ -170,7 +174,8 @@ public class ApiCouponController{
     @RequestMapping(value = "/5047/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestBody CouponInStoreGetedAndUsedCodition codition){
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
+        //Long storeId = storeUser.getBusinessId();
+        Long storeId = 3L;
         LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ storeId);
         Integer pageNo = 1 ;
         Integer pageSize = 10;

@@ -106,7 +106,7 @@ public class ApiCustomerLoginController {
 			throw new BusinessException(BusinessCode.CODE_1015);
 		}
 		mini = object.getData();
-		customerUserInfo.setOpenid(mini.getOpenId());
+		customerUserInfo.setOpenid(mini.getOpenid());
 		db = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == db) {
 			customerUserInfo.setSessionKey(mini.getSessionKey());
@@ -121,7 +121,7 @@ public class ApiCustomerLoginController {
 			vo.setToken(customerUserInfo.getToken());
 			CustomerUser user = new CustomerUser();
 			user.setCustomerId(customerUserInfo.getCustomerId());
-			user.setOpenid(mini.getOpenId());
+			user.setOpenid(mini.getOpenid());
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
 			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
 			result.setData(vo);
@@ -236,7 +236,7 @@ public class ApiCustomerLoginController {
 			throw new BusinessException(BusinessCode.CODE_1004);
 		}
 		if (!customerChangeMobileCondition.getVerificationCode().equals(
-				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfo.getCustomerMobile()))) {
+				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerChangeMobileCondition.getCustomerMobile()))) {
 			logger.info("{} - 用户验证码错误");
 			throw new BusinessException(BusinessCode.CODE_1008);
 		}

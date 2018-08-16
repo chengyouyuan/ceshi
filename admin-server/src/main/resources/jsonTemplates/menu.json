@@ -31,7 +31,7 @@
           "id": "1_3",
           "menuName": "商品提报审核",
           "path": "",
-          "configKey": "",
+          "configKey": "/template/module/store/store_submitProduct_list.json",
           "permission": ""
         }
       ]
@@ -101,10 +101,23 @@
     {
       "id": "5",
       "menuName": "财务管理",
-      "path": "/financeManage/index",
-      "configKey": "",
-      "permission": "",
-      "children": []
+      "children": [
+        {
+          "id": "5_1",
+          "menuName": "待结算金额审核",
+          "configKey": "/template/module/pay/pay_verify_list.json"
+        },
+        {
+          "id": "5_2",
+          "menuName": "费用明细",
+          "configKey": "/template/module/pay/accounting_detail_list.json"
+        },
+        {
+          "id": "5_3",
+          "menuName": "提款申请",
+          "configKey": "/template/module/pay/withdrawals_list.json"
+        }
+      ]
     },
     {
       "id": "6",

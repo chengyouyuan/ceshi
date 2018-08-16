@@ -1,40 +1,32 @@
 package com.winhxd.b2c.message.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.ImageUploadUtil;
 import com.winhxd.b2c.message.service.WechatShareService;
 import com.winhxd.b2c.message.utils.HttpClientUtil;
+import com.winhxd.b2c.message.utils.MiniProgramUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author chengyy
@@ -108,8 +100,11 @@ public class WechatShareServiceImpl implements WechatShareService {
     @Autowired
     private StoreServiceClient storeServiceClient;
 
+    @Autowired
+    private ImageUploadUtil imageUploadUtil;
 
-    private String baseHost = "http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson";
+    @Autowired
+    private MiniProgramUtils miniProgramUtils;
 
     /**
      * @param storeUserId 门店id
@@ -132,7 +127,7 @@ public class WechatShareServiceImpl implements WechatShareService {
             return codeInfoVO;
         }
         //获取token
-        String token = getToken();
+        String token = miniProgramUtils.getAccessToken();
         if (StringUtils.isEmpty(token)) {
             return null;
         }
@@ -145,96 +140,35 @@ public class WechatShareServiceImpl implements WechatShareService {
         params.put("scene", "storeUserId=" + storeUserId);
         params.put("path", pageUrl);
         params.put("width", width);
-        params.put("auto_color", false);
-        Map<String, Object> line_color = new HashMap<>();
-        line_color.put("r", 0);
-        line_color.put("g", 0);
-        line_color.put("b", 0);
-        params.put("line_color", line_color);
+        params.put("auto_color", autoColor);
+        params.put("is_hyaline",isHyaline);
         CloseableHttpResponse response = null;
         try {
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(params), "UTF-8"));
             response = client.execute(httpPost);
             if (response.getStatusLine().getStatusCode() == 200) {
                 //将返回的图片数据上传保存到CDN
-                String fileName = UUID.randomUUID().toString().replace("-", "")+".png";
-                //把获取到的二进制图片直接作为请求数据实体进行提交
-                HttpPost uploadPost = new HttpPost(baseHost);
-                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-                // 文件流
-                builder.addBinaryBody("file", response.getEntity().getContent(), ContentType.MULTIPART_FORM_DATA, fileName);
-                // 类似浏览器表单提交，对应input的name和value
-                builder.addTextBody("filename", fileName);
-                HttpEntity entity = builder.build();
-                uploadPost.setEntity(entity);
-                // 执行提交
-                response = client.execute(uploadPost);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    // 将响应内容转换为字符串
-                    String result = EntityUtils.toString(response.getEntity(), Charset.forName("UTF-8"));
-                    if (result != null) {
-                        Map<String, Object> json = JsonUtil.parseJSONObject(result);
-                        String path = (String) json.get("path");
-                        if (!StringUtils.isEmpty(path)) {
-                            StoreUserInfoCondition condition = new StoreUserInfoCondition();
-                            condition.setId(storeUserInfoVO.getId());
-                            condition.setMiniProgramCodeUrl(path);
-                            storeServiceClient.saveStoreCodeUrl(condition);
-                            QRCodeInfoVO codeInfoVO = new QRCodeInfoVO();
-                            codeInfoVO.setMiniProgramCodeUrl(path);
-                            codeInfoVO.setStoreName(storeUserInfoVO.getStoreName());
-                            return codeInfoVO;
-                        }
+                String fileName = UUID.randomUUID().toString().replace("-", "") + ".png";
+                //上传图片
+                ResponseResult<ProductImageVO> responseResult = imageUploadUtil.uploadImage(fileName, response.getEntity().getContent(), null);
+                if (responseResult.getCode() == BusinessCode.CODE_OK) {
+                    String path = responseResult.getData().getImageUrl();
+                    if (!StringUtils.isEmpty(path)) {
+                        StoreUserInfoCondition condition = new StoreUserInfoCondition();
+                        condition.setId(storeUserInfoVO.getId());
+                        condition.setMiniProgramCodeUrl(path);
+                        storeServiceClient.saveStoreCodeUrl(condition);
+                        QRCodeInfoVO codeInfoVO = new QRCodeInfoVO();
+                        codeInfoVO.setMiniProgramCodeUrl(path);
+                        codeInfoVO.setStoreName(storeUserInfoVO.getStoreName());
+                        return codeInfoVO;
                     }
                 }
-
-
             }
         } catch (IOException e) {
-            logger.error("WechatShareServiceImpl ->fetchQRCodePic生成二维码时网络错误,错误信息为={}", e);
             e.printStackTrace();
-
-
-        } finally {
-            try {
-                response.close();
-            } catch (IOException e) {
-                logger.error("WechatShareServiceImpl ->fetchQRCodePic关闭流报错,错误信息为={}", e);
-                e.printStackTrace();
-            }
         }
         return null;
     }
 
-
-    /**
-     * @return token数据
-     * @author chengyy
-     * @date 2018/8/4 13:52
-     * @Description 微信小程序认证获取token
-     */
-    public String getToken() {
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("grant_type", grantType));
-        params.add(new BasicNameValuePair("appid", appid));
-        params.add(new BasicNameValuePair("secret", secret));
-        String token = null;
-        try {
-            String content = httpClientUtil.doGet(tokenUrl, params);
-            if (StringUtils.isEmpty(content)) {
-                return null;
-            }
-            JsonNode node = objectMapper.readTree(content);
-            token = node.get("access_token").asText();
-            return token;
-        } catch (URISyntaxException e) {
-            logger.error("WechatShareServiceImpl ->getToken获取token是请求的url地址错误tokenUrl={}", tokenUrl);
-            e.printStackTrace();
-        } catch (IOException e) {
-            logger.error("WechatShareServiceImpl ->getToken获取token是请求网络错误msg={}", e);
-            e.printStackTrace();
-        } finally {
-            return token;
-        }
-    }
 }

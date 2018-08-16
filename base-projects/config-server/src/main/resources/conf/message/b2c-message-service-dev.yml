@@ -23,6 +23,7 @@ wechat:
       grantTypeCre: client_credential
       openidUrl: https://api.weixin.qq.com/sns/jscode2session
       accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+      sendMsgUrl: https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send
 
 ##云信配置##
 netease:

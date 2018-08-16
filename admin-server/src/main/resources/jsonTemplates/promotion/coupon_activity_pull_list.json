@@ -1,7 +1,7 @@
 {
   "meta": {
-    "ajaxType": "get",
-    "path": "/5029/v1/queryCouponActivity",
+    "ajaxType": "post",
+    "path": "/promotion/5029/v1/queryCouponActivity",
     "type": "report",
     "id": "coupon_activity_pull_list",
     "code": "coupon_activity_pull_list",
@@ -24,7 +24,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "get",
-          "path": "/5029/v1/queryCouponActivity"
+          "path": "/promotion/5029/v1/queryCouponActivity"
         }
       },
       {

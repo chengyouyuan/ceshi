@@ -1,10 +1,18 @@
 package com.winhxd.b2c.pay.dao;
 
+<<<<<<< HEAD
 import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
+=======
+import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
+>>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
+<<<<<<< HEAD
 import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
+=======
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
+>>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 
 import java.math.BigDecimal;
@@ -37,7 +45,11 @@ public interface PayFinanceAccountDetailMapper {
 
 	List<OrderInfoFinancialInDetailVO> selectFinancialInDetail(OrderInfoFinancialInDetailCondition condition);
 
+<<<<<<< HEAD
 	List<OrderInfoFinancialOutDetailVO> selectFinancialOutDetail(OrderInfoFinancialOutDetailCondition condition);
+=======
+	List<PayFinanceAccountDetailVO> selectFinancialOutDetail(PayFinanceAccountDetailCondition condition);
+>>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 
 	/**
 	 * 提现数据

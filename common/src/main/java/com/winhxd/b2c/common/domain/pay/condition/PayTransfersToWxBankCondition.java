@@ -1,6 +1,8 @@
-package com.winhxd.b2c.pay.weixin.condition;
+package com.winhxd.b2c.common.domain.pay.condition;
 
 import com.winhxd.b2c.common.constant.WithDrawChannelCodeType;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +18,7 @@ import java.math.BigDecimal;
  */
 @Setter
 @Getter
-public class PayTransfersToWxBankCondition implements Serializable {
+public class PayTransfersToWxBankCondition extends ApiCondition implements Serializable {
 
     private static final long serialVersionUID = -7292089920160701229L;
 

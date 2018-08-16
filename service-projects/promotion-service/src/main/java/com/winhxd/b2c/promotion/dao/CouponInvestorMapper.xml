@@ -198,7 +198,7 @@
               left join
               coupon_investor_detail b
               on a.id = b.investor_id
-              and a.id =#{id}
+              where a.id =#{id}
 
   </select>
 

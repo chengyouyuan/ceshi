@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         for (ProductSkuVO datum : productSkuVOS) {
             for (ShopCartProductVO shopCartProductVO : shopCartProductVOS) {
                 if (datum.getSkuCode().equals(shopCartProductVO.getSkuCode())){
-                    datum.setSkuNum(shopCartProductVO.getSkuNum());
+                    datum.setSkuNum(shopCartProductVO.getAmount());
                     break;
                 }
             }

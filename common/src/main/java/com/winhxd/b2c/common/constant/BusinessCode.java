@@ -242,6 +242,12 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单金额没有变化")
     public static final int WRONG_ORDER_TOTAL_MONEY_NO_CHANGE = 400015;
+    
+    @ApiModelProperty("顾客id为空")
+    public static final int CUSTOMER_ID_EMPTY = 400016;
+
+    @ApiModelProperty("订单商品信息为空")
+    public static final int ORDER_SKU_EMPTY = 400017;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;

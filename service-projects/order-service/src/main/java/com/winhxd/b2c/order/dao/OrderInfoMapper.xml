@@ -495,6 +495,9 @@
 	<sql id="order_info_list_orderBy">
 		order by info.created desc,info.order_no,item.sku_code
 	</sql>
+	<sql id="order_info_orderBy">
+		order by info.created desc,info.order_no
+	</sql>
 	<sql id="order_item_column">
 		,item.id AS itemId
         ,item.sku_code AS skuCode
@@ -558,6 +561,7 @@
                 #{item}
             </foreach>
         </if>
+        <include refid="order_info_orderBy"></include>
     </select>
     <select id="listOrderInOrderIds" resultMap="OrderInfoListResultMap">
         select
@@ -589,6 +593,7 @@
             and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
         </if>
         and store_id = #{storeId,jdbcType=BIGINT}
+        <include refid="order_info_orderBy"></include>
     </select>
     <select id="listOrder4StoreInOrderIds" resultMap="OrderInfoListResultMap">
         select

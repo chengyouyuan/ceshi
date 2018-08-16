@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayFinancialBillMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="accounting_time" jdbcType="TIMESTAMP" property="accountingTime" />
+    <result column="wx_pay_no" jdbcType="VARCHAR" property="wxPayNo" />
+    <result column="swift_no" jdbcType="VARCHAR" property="swiftNo" />
+    <result column="busi_name" jdbcType="VARCHAR" property="busiName" />
+    <result column="busi_type" jdbcType="VARCHAR" property="busiType" />
+    <result column="budget" jdbcType="VARCHAR" property="budget" />
+    <result column="budget_amount" jdbcType="DECIMAL" property="budgetAmount" />
+    <result column="account_balance" jdbcType="DECIMAL" property="accountBalance" />
+    <result column="submit_by" jdbcType="VARCHAR" property="submitBy" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="busi_credential_no" jdbcType="VARCHAR" property="busiCredentialNo" />
+    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="financial_bill_count_id" jdbcType="BIGINT" property="financialBillCountId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, accounting_time, wx_pay_no, swift_no, busi_name, busi_type, budget, budget_amount, 
+    account_balance, submit_by, remark, busi_credential_no, bill_date, financial_bill_count_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_financial_bill
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_financial_bill
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    insert into pay_financial_bill (id, accounting_time, wx_pay_no, 
+      swift_no, busi_name, busi_type, 
+      budget, budget_amount, account_balance, 
+      submit_by, remark, busi_credential_no, 
+      bill_date, financial_bill_count_id)
+    values (#{id,jdbcType=BIGINT}, #{accountingTime,jdbcType=TIMESTAMP}, #{wxPayNo,jdbcType=VARCHAR}, 
+      #{swiftNo,jdbcType=VARCHAR}, #{busiName,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, 
+      #{budget,jdbcType=VARCHAR}, #{budgetAmount,jdbcType=DECIMAL}, #{accountBalance,jdbcType=DECIMAL}, 
+      #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
+      #{billDate,jdbcType=TIMESTAMP}, #{financialBillCountId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    insert into pay_financial_bill
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="accountingTime != null">
+        accounting_time,
+      </if>
+      <if test="wxPayNo != null">
+        wx_pay_no,
+      </if>
+      <if test="swiftNo != null">
+        swift_no,
+      </if>
+      <if test="busiName != null">
+        busi_name,
+      </if>
+      <if test="busiType != null">
+        busi_type,
+      </if>
+      <if test="budget != null">
+        budget,
+      </if>
+      <if test="budgetAmount != null">
+        budget_amount,
+      </if>
+      <if test="accountBalance != null">
+        account_balance,
+      </if>
+      <if test="submitBy != null">
+        submit_by,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="busiCredentialNo != null">
+        busi_credential_no,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="financialBillCountId != null">
+        financial_bill_count_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="accountingTime != null">
+        #{accountingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wxPayNo != null">
+        #{wxPayNo,jdbcType=VARCHAR},
+      </if>
+      <if test="swiftNo != null">
+        #{swiftNo,jdbcType=VARCHAR},
+      </if>
+      <if test="busiName != null">
+        #{busiName,jdbcType=VARCHAR},
+      </if>
+      <if test="busiType != null">
+        #{busiType,jdbcType=VARCHAR},
+      </if>
+      <if test="budget != null">
+        #{budget,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetAmount != null">
+        #{budgetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="accountBalance != null">
+        #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="submitBy != null">
+        #{submitBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="busiCredentialNo != null">
+        #{busiCredentialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financialBillCountId != null">
+        #{financialBillCountId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    update pay_financial_bill
+    <set>
+      <if test="accountingTime != null">
+        accounting_time = #{accountingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wxPayNo != null">
+        wx_pay_no = #{wxPayNo,jdbcType=VARCHAR},
+      </if>
+      <if test="swiftNo != null">
+        swift_no = #{swiftNo,jdbcType=VARCHAR},
+      </if>
+      <if test="busiName != null">
+        busi_name = #{busiName,jdbcType=VARCHAR},
+      </if>
+      <if test="busiType != null">
+        busi_type = #{busiType,jdbcType=VARCHAR},
+      </if>
+      <if test="budget != null">
+        budget = #{budget,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetAmount != null">
+        budget_amount = #{budgetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="accountBalance != null">
+        account_balance = #{accountBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="submitBy != null">
+        submit_by = #{submitBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="busiCredentialNo != null">
+        busi_credential_no = #{busiCredentialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financialBillCountId != null">
+        financial_bill_count_id = #{financialBillCountId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    update pay_financial_bill
+    set accounting_time = #{accountingTime,jdbcType=TIMESTAMP},
+      wx_pay_no = #{wxPayNo,jdbcType=VARCHAR},
+      swift_no = #{swiftNo,jdbcType=VARCHAR},
+      busi_name = #{busiName,jdbcType=VARCHAR},
+      busi_type = #{busiType,jdbcType=VARCHAR},
+      budget = #{budget,jdbcType=VARCHAR},
+      budget_amount = #{budgetAmount,jdbcType=DECIMAL},
+      account_balance = #{accountBalance,jdbcType=DECIMAL},
+      submit_by = #{submitBy,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      busi_credential_no = #{busiCredentialNo,jdbcType=VARCHAR},
+      bill_date = #{billDate,jdbcType=TIMESTAMP},
+      financial_bill_count_id = #{financialBillCountId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -23,6 +23,6 @@ public interface WXDownloadBillService {
      * @Description 下载资金账单
      * @return
      */
-    String downloadFinancialBill();
+    String downloadFundFlow();
 
 }

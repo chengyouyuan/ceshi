@@ -163,7 +163,7 @@ public class ApiCouponController{
 
 
 
-    @ApiOperation(value = "门店优惠券列表领取使/用情况统计", notes = "门店优惠券列表领取使/用情况统计")
+    @ApiOperation(value = "门店优惠券列表领取使用情况统计", notes = "门店优惠券列表领取使用情况统计")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })

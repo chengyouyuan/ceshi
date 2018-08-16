@@ -1,17 +1,10 @@
 package com.winhxd.b2c.pay.dao;
 
-<<<<<<< HEAD
 import java.util.List;
-
-=======
-import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition;
-import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
-import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 import org.apache.ibatis.annotations.Param;
 
 import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
@@ -32,11 +25,8 @@ public interface PayWithdrawalsMapper {
     List<PayWithdrawalsVO> getPayWithdrawalsByStoreId(@Param("storeId") Long storeId);
 
     Page<PayWithdrawalsVO> selectPayWithdrawalsListByCondition(PayWithdrawalsListCondition condition);
-<<<<<<< HEAD
     
     PayStoreUserInfoVO getPayStoreUserInfo(@Param("storeId") Long storeId);
 
 	PayStoreUserInfoVO getStorBankCardInfo(@Param("storeId") Long storeId);
-=======
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 }

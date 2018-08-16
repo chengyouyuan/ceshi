@@ -1,28 +1,13 @@
 package com.winhxd.b2c.pay.controller;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
-import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
-import com.winhxd.b2c.common.feign.pay.FinancialManagerServiceClient;
-import com.winhxd.b2c.pay.service.PayFinancialManagerService;
-import com.winhxd.b2c.pay.service.impl.PayFinancialManagerServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< HEAD
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
@@ -31,14 +16,13 @@ import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 import com.winhxd.b2c.common.feign.pay.FinancialManagerServiceClient;
+import com.winhxd.b2c.pay.service.PayFinancialManagerService;
 import com.winhxd.b2c.pay.service.impl.PayFinancialManagerServiceImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-=======
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 
 @RestController
 @Api(tags = "PayFinancialManager")

@@ -4,21 +4,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
-<<<<<<< HEAD
 import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
 import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
-=======
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
-import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
-import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;

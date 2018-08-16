@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
 /**
  * @author liuhanning
@@ -77,7 +78,7 @@ public interface PayService {
 	 * @param payRefund
 	 * @return
 	 */
-	OrderPayVO refundOrder(PayRefundCondition payRefund);
+	PayRefundVO refundOrder(PayRefundCondition payRefund);
 	
 	/**
      * 微信提现至余额入口

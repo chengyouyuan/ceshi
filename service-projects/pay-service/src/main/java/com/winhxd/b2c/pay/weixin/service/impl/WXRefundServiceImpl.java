@@ -16,15 +16,17 @@ import org.dom4j.io.SAXReader;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+@Service
 public class WXRefundServiceImpl implements WXRefundService {
 
-    @Value("${pay.cert.path}")
+//    @Value("${pay.cert.path}")
     private String certPath;
 
     @Autowired
@@ -33,7 +35,6 @@ public class WXRefundServiceImpl implements WXRefundService {
     @Autowired
     PayRefundMapper payRefundMapper;
 
-    @Autowired
 
 
     @Override

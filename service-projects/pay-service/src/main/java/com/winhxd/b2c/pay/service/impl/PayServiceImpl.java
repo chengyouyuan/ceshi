@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +17,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
@@ -28,14 +28,13 @@ import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
@@ -54,11 +53,11 @@ public class PayServiceImpl implements PayService{
 	private StoreBankrollMapper storeBankrollMapper;
 	@Autowired
 	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
-	@Autowired
+	@Resource
 	private WXUnifiedOrderService unifiedOrderService;
-	@Autowired
+	@Resource
 	private WXRefundService refundService;
-	@Autowired
+	@Resource
 	private WXTransfersService transfersService;
 	
 	private static final String logLabel="PayServiceImpl--";
@@ -277,7 +276,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public OrderPayVO refundOrder(PayRefundCondition payRefund) {
+	public PayRefundVO refundOrder(PayRefundCondition payRefund) {
 		
 		//验证订单支付参数
 		String log=logLabel+"订单退款refundOrder";
@@ -308,8 +307,7 @@ public class PayServiceImpl implements PayService{
 //			throw new BusinessException(BusinessCode.CODE_600106);
 //		}
 		
-//		return refundService.refundOrder(payRefund);
-		return null;
+		return refundService.refundOrder(payRefund);
 	}
 
 	@Override

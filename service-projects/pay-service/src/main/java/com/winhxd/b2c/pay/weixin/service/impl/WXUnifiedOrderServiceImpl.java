@@ -18,8 +18,8 @@ import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 @Service
 public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	
-	@Autowired
-	private PayBillMapper payBillMapper;
+//	@Autowired
+//	private PayBillMapper payBillMapper;
 
 	@Override
 	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {

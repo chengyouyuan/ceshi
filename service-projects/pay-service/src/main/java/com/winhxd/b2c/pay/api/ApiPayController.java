@@ -26,8 +26,6 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api-pay/pay")
 public class ApiPayController {
 
-	@Autowired
-	private PayService payService;
 	
 	
 	
@@ -35,7 +33,7 @@ public class ApiPayController {
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
-	@PostMapping(value = "/6004/v1/getBanks", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/6005/v1/getBanks", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<List<BanksVO>> getBanks(@RequestBody OrderPayCondition condition){
 		ResponseResult<List<BanksVO>> result=new ResponseResult<>();
 		result.setData(BanksEnums.getValus());

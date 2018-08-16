@@ -104,8 +104,6 @@ public class WechatShareServiceImpl implements WechatShareService {
     @Autowired
     private ImageUploadUtil imageUploadUtil;
 
-    private String baseHost = "http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson";
-
     /**
      * @param storeUserId 门店id
      * @return 二进制数据

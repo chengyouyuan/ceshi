@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.mq.event.support;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.mq.event.*;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +45,7 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
     private ConnectionFactory connectionFactory;
 
     @Autowired
-    private EventMessageSenderServiceFactory eventMessageSenderServiceFactory;
+    private Cache cache;
 
     @Bean
     public RabbitTemplate eventRabbitTemplate(CachingConnectionFactory normalCachingConnectionFactory) {
@@ -52,8 +54,11 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             EventCorrelationData data = (EventCorrelationData) correlationData;
             if (ack) {
-                EventTypeService<Object> service = eventMessageSenderServiceFactory.getService(data.getEventType());
-                service.onEventSentSuccess(data.getId());
+                String idKey = CacheName.EVENT_MESSAGE_ID + data.getEventType().toString();
+                String bodyKey = CacheName.EVENT_MESSAGE_BODY + data.getEventType().toString();
+                cache.zrem(idKey, data.getId());
+                cache.hdel(bodyKey, data.getId());
+                logger.info("事件消息发送成功:{}-{}", data.getEventType(), data.getId());
             } else {
                 logger.warn("事件消息发送失败:{}-{}, {}", data.getEventType(), data.getId(), cause);
             }
@@ -79,11 +84,6 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
             list.add(binding);
         }
         return list;
-    }
-
-    @Bean
-    public EventMessageSenderServiceFactory eventMessageSenderServiceFactory() {
-        return new EventMessageSenderServiceFactory();
     }
 
     @Override

@@ -256,6 +256,10 @@ public final class BusinessCode {
 
     @ApiModelProperty("订单商品信息为空")
     public static final int ORDER_SKU_EMPTY = 400017;
+    @ApiModelProperty("订单状态异常不能退款")
+    public static final int ORDER_REFUND_STATUS_ERROR = 400018;
+    @ApiModelProperty("订单退款失败")
+    public static final int ORDER_REFUND_FAIL = 400019;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;

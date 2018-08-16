@@ -506,6 +506,7 @@
     LEFT JOIN coupon_activity_record d on d.template_id = c.template_id
     and d.store_id = #{storeId} and d.send_id= c.id
     WHERE 1=1
+    GROUP BY c.template_id
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
@@ -518,7 +519,7 @@
   <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
     SELECT
     count(1) as totalCount,
-    sum(case WHEN c.`status` = 2 then 1 else 0 end ) as usedCount,
+    sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
     c.template_id as templeteId
     FROM
     coupon_template_send c

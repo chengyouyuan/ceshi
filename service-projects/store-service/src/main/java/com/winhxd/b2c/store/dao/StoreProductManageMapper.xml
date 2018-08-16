@@ -22,7 +22,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="store_id" jdbcType="BIGINT" property="storeId"/>
         <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption"/>
-        <result column="sell_money" jdbcType="DECIMAL" property="sellMoney"/>
+        <result column="sell_money" jdbcType="VARCHAR" property="sellMoney"/>
         <result column="recommend" jdbcType="SMALLINT" property="recommend"/>
         <result column="prod_status" jdbcType="SMALLINT" property="prodStatus"/>
         <result column="prod_code" jdbcType="VARCHAR" property="prodCode"/>

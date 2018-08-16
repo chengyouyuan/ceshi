@@ -60,18 +60,18 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
 
-    @Resource
+    @Autowired
     private OrderInfoMapper orderInfoMapper;
-    @Resource
+    @Autowired
     private Cache cache;
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
-    @Resource
+    @Autowired
     private CustomerServiceClient customerServiceClient;
-    @Resource
+    @Autowired
     private ProductServiceClient productServiceClient;
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
 
     /**
@@ -84,7 +84,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @OrderInfoConvertAnnotation(queryProductInfo = true)
     public PagedList<OrderInfoDetailVO> findOrderListByCustomerId(AllOrderQueryByCustomerCondition condition) {
         CustomerUser customer = UserContext.getCurrentCustomerUser();
-        if (customer == null) {
+        if (customer == null||null==customer.getCustomerId()) {
             throw new BusinessException(BusinessCode.CODE_4010001, "用户不存在");
         }
         Long customerId = customer.getCustomerId();

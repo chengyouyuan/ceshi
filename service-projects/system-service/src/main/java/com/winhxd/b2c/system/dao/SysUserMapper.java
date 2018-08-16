@@ -4,7 +4,9 @@ import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface SysUserMapper {
     int deleteByPrimaryKey(Long id);
 

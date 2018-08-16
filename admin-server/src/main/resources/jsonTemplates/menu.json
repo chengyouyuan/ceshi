@@ -31,7 +31,7 @@
           "id": "1_3",
           "menuName": "商品提报审核",
           "path": "",
-          "configKey": "",
+          "configKey": "/template/module/store/store_submitProduct_list.json",
           "permission": ""
         }
       ]

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import org.apache.ibatis.annotations.Param;
@@ -20,4 +22,6 @@ public interface PayWithdrawalsMapper {
     int updateByPrimaryKey(PayWithdrawals record);
 
     List<PayWithdrawalsVO> getPayWithdrawalsByStoreId(@Param("storeId") Long storeId);
+
+    Page<PayWithdrawalsVO> selectPayWithdrawalsListByCondition(PayWithdrawalsListCondition condition);
 }

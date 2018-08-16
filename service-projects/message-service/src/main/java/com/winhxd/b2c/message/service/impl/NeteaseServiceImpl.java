@@ -92,7 +92,8 @@ public class NeteaseServiceImpl implements NeteaseService {
 			String accid = customerId + accidSuffix;
 			Map<String, Object> tokenMap = neteaseUtils.updateUserInfo(accid, token);
 			if (SUCCESS_CODE.equals(String.valueOf(tokenMap.get(PARAM_CODE)))) {
-				MessageNeteaseAccount account = neteaseAccountMapper.updateByCustomerId(customerId,accid,token);
+				neteaseAccountMapper.updateByCustomerId(customerId,accid,token);
+				MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
 				BeanUtils.copyProperties(account, result);
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，customerId={}", customerId);
@@ -243,4 +244,5 @@ public class NeteaseServiceImpl implements NeteaseService {
 		}
 		return BusinessCode.CODE_OK;
 	}
+
 }

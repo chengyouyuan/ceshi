@@ -211,7 +211,7 @@ public class ShopCarServiceImpl implements ShopCarService {
             if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())) {
                 BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
                 BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
-                if(!sellMoney.equals(price)) {
+                if(sellMoney.compareTo(price) != 0) {
                     logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                     throw new BusinessException(BusinessCode.CODE_402012);
                 }

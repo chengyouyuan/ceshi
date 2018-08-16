@@ -22,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * @author chengyy
@@ -67,11 +64,11 @@ public class ApiWechatShareController {
     public ResponseResult<QRCodeInfoVO> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
         ResponseResult<QRCodeInfoVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
+       if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
         }
-        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(storeUser.getBusinessId());
+        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(1L);
         if(qrCodeInfoVO == null || StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())){
             throw new BusinessException(BusinessCode.CODE_200018);
         }

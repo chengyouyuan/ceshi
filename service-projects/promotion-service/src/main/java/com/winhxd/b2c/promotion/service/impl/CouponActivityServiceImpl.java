@@ -142,6 +142,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
             couponActivityTemplate.setCouponActivityId(couponActivity.getId());
             couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
+            couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
                 Calendar couponS = Calendar.getInstance();
@@ -164,7 +165,6 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
                 couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                 couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
-                couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                 if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
                     couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
                 }

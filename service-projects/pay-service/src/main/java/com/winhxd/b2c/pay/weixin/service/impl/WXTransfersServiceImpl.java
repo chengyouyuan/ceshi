@@ -4,8 +4,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPay;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConfig;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersForWxBankDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersForWxChangeDTO;
@@ -17,10 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -47,25 +45,39 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     private static final BigDecimal UNITS = new BigDecimal("100");
 
     @Autowired
+    private WXPay wxPay;
+
+    @Autowired
     private WXPayConfig wxPayConfig;
 
     @Override
-    public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception {
-        if(checkNecessaryFieldForChange(toWxBalanceCondition)){
-            logger.warn("转账必填字段为空");
-            throw new BusinessException(BusinessCode.CODE_600201);
+    public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+        try {
+            if (checkNecessaryFieldForChange(toWxBalanceCondition)) {
+                logger.warn("转账必填字段为空");
+                throw new BusinessException(BusinessCode.CODE_600201);
+            }
+            PayTransfersForWxChangeDTO wxChangeDTO = getReqParamForChange(toWxBalanceCondition);
+            String respxml = wxPay.transferToChange(BeanAndXmlUtil.beanToSortedMap(wxChangeDTO));
+        } catch (Exception ex) {
+            logger.error("TransfersToChange error.");
         }
-        PayTransfersForWxChangeDTO wxChangeDTO = getReqParamForChange(toWxBalanceCondition);
         return null;
     }
 
     @Override
-    public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) throws Exception {
-        if(checkNecessaryFieldForBank(toWxBankCondition)){
-            logger.warn("转账必填字段为空");
-            throw new BusinessException(BusinessCode.CODE_600201);
+    public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+        try {
+            if (checkNecessaryFieldForBank(toWxBankCondition)) {
+                logger.warn("转账必填字段为空");
+                throw new BusinessException(BusinessCode.CODE_600201);
+            }
+            PayTransfersForWxBankDTO wxBankDTO = getReqParamForBank(toWxBankCondition);
+            //接收返参
+            String respxml = wxPay.transferToBank(BeanAndXmlUtil.beanToSortedMap(wxBankDTO));
+        } catch (Exception ex) {
+            logger.error("TransfersToBank error.");
         }
-        PayTransfersForWxBankDTO wxBankDTO = getReqParamForBank(toWxBankCondition);
         return null;
     }
 
@@ -133,7 +145,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxBankDTO.setMchid(wxPayConfig.getMchID());
         forWxBankDTO.setPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
         forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
-        //处理卡号姓名加密
+        //处理卡号姓名加密rsa
         forWxBankDTO.setEncBankNo(toWxBankCondition.getAccount());
         forWxBankDTO.setEncTrueName(toWxBankCondition.getAccountName());
         forWxBankDTO.setBankCode(String.valueOf(toWxBankCondition.getChannelCode().getCode()));
@@ -142,6 +154,16 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         //处理签名
         forWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(toWxBankCondition), wxPayConfig.getKey()));
         return forWxBankDTO;
+    }
+
+    public static void main(String[] args) throws Exception {
+        WXPay wxPay = new WXPay();
+        SortedMap<String,String> sortedMap = new TreeMap<String,String>();
+        sortedMap.put("mch_id", "1467361502");
+        sortedMap.put("nonce_str", WXPayUtil.generateNonceStr());
+        sortedMap.put("sign_type", "MD5");
+        sortedMap.put("sign", WXPayUtil.generateSignature(sortedMap, "u29K8cDc48zhF0hKlQ3pd1tiamkZpRoS"));
+        System.out.println(wxPay.publicKey(sortedMap));
     }
 
 }

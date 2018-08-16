@@ -28,8 +28,8 @@ public class StoreProdSimpleVO {
 	@ApiModelProperty("商品规格")
 	private String skuAttributeOption;
 	
-	@ApiModelProperty("售卖价格")
-	private BigDecimal sellMoney;
+	@ApiModelProperty("售卖价格，BigDecimal类型值为空，ios会解析为0，改为String")
+	private String sellMoney;
 	
 	@ApiModelProperty("是否推荐 0不推荐 1推荐")
 	private Byte recommend;

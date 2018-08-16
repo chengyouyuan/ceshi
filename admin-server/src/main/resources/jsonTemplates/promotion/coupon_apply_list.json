@@ -19,7 +19,7 @@
         "name": "查询",
         "icon": null,
         "event": {
-          "type": "submit",
+          "type": "router",
           "ajaxType": "post",
           "path": "/promotion/5024/v1/findCouponApplyPage"
         }
@@ -35,6 +35,14 @@
     ],
     "columns": [
       {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -45,12 +53,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5022/v1/viewCouponApplyDetail",
+              "path": "/appliyObjectRule/index",
               "configKey": ""
             }
           },
@@ -67,14 +72,6 @@
             }
           }
         ]
-      },
-      {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
       },
       {
         "name": "name",

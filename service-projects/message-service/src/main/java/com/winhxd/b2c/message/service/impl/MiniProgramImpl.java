@@ -28,7 +28,7 @@ public class MiniProgramImpl implements MiniProgramService {
         ResponseResult<MiniOpenId> result = new ResponseResult<>();
         if(StringUtils.isNotEmpty(code)){
             MiniOpenId miniOpenId = miniProgramUtils.oauth2GetOpenid(code);
-            if (miniOpenId == null || StringUtils.isEmpty(miniOpenId.getOpenId()) || RETURN_NULL.equals(miniOpenId.getOpenId())){
+            if (miniOpenId == null || StringUtils.isEmpty(miniOpenId.getOpenid()) || RETURN_NULL.equals(miniOpenId.getOpenid())){
                 result.setData(null);
                 result.setCode(BusinessCode.CODE_1001);
             }else{

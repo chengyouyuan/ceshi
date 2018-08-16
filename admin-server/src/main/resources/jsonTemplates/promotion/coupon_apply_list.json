@@ -35,6 +35,14 @@
     ],
     "columns": [
       {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -64,14 +72,6 @@
             }
           }
         ]
-      },
-      {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
       },
       {
         "name": "name",

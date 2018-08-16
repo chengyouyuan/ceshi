@@ -19,7 +19,7 @@
         "name": "查询",
         "icon": null,
         "event": {
-          "type": "submit",
+          "type": "router",
           "ajaxType": "post",
           "path": "/promotion/5024/v1/findCouponApplyPage"
         }
@@ -45,12 +45,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5022/v1/viewCouponApplyDetail",
+              "path": "/appliyObjectRule/index",
               "configKey": ""
             }
           },

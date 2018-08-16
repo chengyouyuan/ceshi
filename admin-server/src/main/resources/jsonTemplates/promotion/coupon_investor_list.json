@@ -45,12 +45,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","detail"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5015/v1/viewCouponInvestorDetail",
+              "path": "/contributiveRule/index",
               "configKey": ""
             }
           },

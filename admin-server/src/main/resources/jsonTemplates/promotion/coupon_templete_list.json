@@ -45,12 +45,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5012/v1/viewCouponTemplateDetail",
+              "path": "/promotion/addtemplate",
               "configKey": ""
             }
           },

@@ -251,7 +251,7 @@
       },
       {
         "name": "created",
-        "inputModel": "fe-double-date-picker",
+        "inputModel": "double-date-picker",
         "title": "创建时间",
         "value": "",
         "placeholder": "",

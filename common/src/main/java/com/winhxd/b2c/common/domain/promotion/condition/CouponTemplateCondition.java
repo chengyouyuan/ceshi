@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
 import com.winhxd.b2c.common.domain.common.PagedCondition;
+import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -48,15 +49,18 @@ public class CouponTemplateCondition extends PagedCondition implements Serializa
     private String createdByName;
     @ApiModelProperty(value = "创建人")
     private String createdBy;
-
-    @ApiModelProperty(value = "创建时间 开始")
-    private String createdBegin;
-    @ApiModelProperty(value = "创建时间 结束")
-    private String createdEnd;
-
     @ApiModelProperty(value = "角标")
     private String corner;
+    @ApiModelProperty(value = "日期")
+    private DateInterval dateInterval;
 
+    public DateInterval getDateInterval() {
+        return dateInterval;
+    }
+
+    public void setDateInterval(DateInterval dateInterval) {
+        this.dateInterval = dateInterval;
+    }
 
     public String getId() {
         return id;
@@ -192,22 +196,6 @@ public class CouponTemplateCondition extends PagedCondition implements Serializa
 
     public void setCreatedByName(String createdByName) {
         this.createdByName = createdByName;
-    }
-
-    public String getCreatedBegin() {
-        return createdBegin;
-    }
-
-    public void setCreatedBegin(String createdBegin) {
-        this.createdBegin = createdBegin;
-    }
-
-    public String getCreatedEnd() {
-        return createdEnd;
-    }
-
-    public void setCreatedEnd(String createdEnd) {
-        this.createdEnd = createdEnd;
     }
 
     public String getCreatedBy() {

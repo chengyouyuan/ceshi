@@ -257,6 +257,15 @@ public final class BusinessCode {
     @ApiModelProperty("订单商品信息为空")
     public static final int ORDER_SKU_EMPTY = 400017;
 
+    @ApiModelProperty("订单状态异常不能退款")
+    public static final int ORDER_REFUND_STATUS_ERROR = 400018;
+
+    @ApiModelProperty("订单退款失败")
+    public static final int ORDER_REFUND_FAIL = 400019;
+
+    @ApiModelProperty("订单获取支付信息失败")
+    public static final int ORDER_GET_PAY_INFO_ERROR = 400018;
+
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;
     /** 未支付的订单不允许退款*/
@@ -351,6 +360,14 @@ public final class BusinessCode {
     @ApiModelProperty("退款  创建人姓名为空")
     public static final int CODE_600207 = 600207;
     
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600001 = 600001;
+    
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600002 = 600002;
+    
+    @ApiModelProperty("门店资金变化  操作类型为空")
+    public static final int CODE_600003 = 600003;
     
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")

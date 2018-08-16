@@ -5,8 +5,8 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.VerifyResultVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import feign.hystrix.FallbackFactory;
 import org.apache.logging.log4j.LogManager;
@@ -109,7 +109,7 @@ public interface VerifyServiceClient {
      * @return
      */
     @RequestMapping(value = "/pay/6097/v1/storeWithdrawalsList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<VerifyResultVO> storeWithdrawalsList(PayWithdrawalsListCondition condition);
+    ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(PayWithdrawalsListCondition condition);
 
     /**
      * 批准门店提现申请
@@ -118,7 +118,7 @@ public interface VerifyServiceClient {
      * @return
      */
     @RequestMapping(value = "/pay/6098/v1/approveStoreWithdrawals", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<VerifyResultVO> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition);
+    ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition);
 }
 
 @Component
@@ -195,13 +195,13 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
     }
 
     @Override
-    public ResponseResult<VerifyResultVO> storeWithdrawalsList(PayWithdrawalsListCondition condition) {
+    public ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(PayWithdrawalsListCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
     @Override
-    public ResponseResult<VerifyResultVO> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+    public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

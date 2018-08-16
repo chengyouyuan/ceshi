@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.dao;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -133,7 +134,7 @@ public interface OrderInfoMapper {
      * @param storeId     门店ID
      * @return true 有重复记录，false 不重复
      */
-    boolean getPickUpCodeByStoreId(@Param("pickUpCodes") List<String> pickUpCodes, @Param("storeId") long storeId);
+    boolean getPickUpCodeByStoreId(@Param("pickUpCodes") Set<String> pickUpCodes, @Param("storeId") long storeId);
 
     /**
      * 更新订单支付状态

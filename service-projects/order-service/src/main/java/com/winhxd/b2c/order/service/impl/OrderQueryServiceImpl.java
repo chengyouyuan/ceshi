@@ -3,10 +3,7 @@ package com.winhxd.b2c.order.service.impl;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -207,7 +204,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             lock.lock();
             code = this.cache.lpop(getCodeKey);
             if (StringUtils.isBlank(code)) {
-                List<String> pickUpCodeList;
+                Set<String> pickUpCodeList;
                 do {
                     //批量生成50个提货码
                     pickUpCodeList = generatePickUpCodeList(50);
@@ -362,27 +359,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      *
      * @return 提货码列表
      */
-    private static List<String> generatePickUpCodeList(int size) {
-        List<String> pickUpList = new ArrayList<>();
-        do {
+    private static Set<String> generatePickUpCodeList(int size) {
+        Set<String> pickUpList = new HashSet<>();
             for (int i = 0; i < size; i++) {
                 String pickUpCode = (int) ((Math.random() * 9 + 1) * 1000) + "";
                 pickUpList.add(pickUpCode);
             }
-        } while (!hasSame(pickUpList));
         return pickUpList;
-    }
-
-    /**
-     * 判断list中是否有重复字符串
-     *
-     * @param list
-     * @return true为不重复，false为重复
-     */
-    private static boolean hasSame(List<String> list) {
-        if (null == list) {
-            return false;
-        }
-        return list.size() == new HashSet<Object>(list).size();
     }
 }

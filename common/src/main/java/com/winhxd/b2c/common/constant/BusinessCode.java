@@ -348,4 +348,7 @@ public final class BusinessCode {
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600201 = 600201;
+
+    @ApiModelProperty("云信账户异常")
+    public static final int CODE_701101 = 701101;
 }

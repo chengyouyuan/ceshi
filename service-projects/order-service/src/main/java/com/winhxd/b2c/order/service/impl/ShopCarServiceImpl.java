@@ -23,10 +23,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,17 +45,17 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShopCarServiceImpl.class);
 
-    @Resource
+    @Autowired
     private ShopCarMapper shopCarMapper;
 
-    @Resource
+    @Autowired
     private OrderService orderService;
-    @Resource
+    @Autowired
     private OrderQueryService orderQueryService;
 
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
-    @Resource
+    @Autowired
     private Cache cache;
 
     @Transactional(rollbackFor= {Exception.class})

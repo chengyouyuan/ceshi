@@ -1,15 +1,11 @@
 package com.winhxd.b2c.pay.service;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
 import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
@@ -24,30 +20,6 @@ import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
 public interface PayService {
 
 	
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:46:25
-	 * @Description 退款
-	 * @return
-	 */
-	ResponseResult<OrderRefundVO> orderRefund(OrderRefundCondition condition);
-	
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:48:41
-	 * @Description 获取支付凭证
-	 * @param condition
-	 * @return
-	 */
-	ResponseResult<String> getprepayId(OrderPayCondition condition);
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月13日 下午12:50:13
-	 * @Description 订单支付
-	 * @param condition
-	 * @return
-	 */
-	ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition);
 	
 	/**
 	 * @author liuhanning

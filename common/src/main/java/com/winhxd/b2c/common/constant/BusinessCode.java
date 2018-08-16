@@ -300,21 +300,21 @@ public final class BusinessCode {
     public static final int CODE_610021 = 610021;
     
     
+//    /**
+//     * 退款回调  订单更新失败
+//     */
+//    public static final int CODE_600301 = 600301;
+//    /**
+//     *  退款回调  订单退款流水插入失败
+//     */
+//    public static final int CODE_600302 = 600302;
+//    
+//	/**
+//     *  退款回调  参数为空
+//     */
+//    public static final int CODE_600303 = 600303;
     /**
-     * 退款回调  订单更新失败
-     */
-    public static final int CODE_600301 = 600301;
-    /**
-     *  退款回调  订单退款流水插入失败
-     */
-    public static final int CODE_600302 = 600302;
-    
-	/**
-     *  退款回调  参数为空
-     */
-    public static final int CODE_600303 = 600303;
-    /**
-     *  支付回调  参数为空
+     *  订单支付  参数为空
      */
     public static final int CODE_600101 = 600101;
     /**
@@ -345,7 +345,13 @@ public final class BusinessCode {
      *  订单支付  设备Ip为空
      */
     public static final int CODE_600108 = 600108;
+    /**
+     *  订单支退款 参数为空
+     */
+    public static final int CODE_600201 = 600201;
+    
+    
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
-    public static final int CODE_600201 = 600201;
+    public static final int CODE_600301 = 600301;
 }

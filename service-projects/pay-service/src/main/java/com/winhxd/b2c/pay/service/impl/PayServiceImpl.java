@@ -62,52 +62,6 @@ public class PayServiceImpl implements PayService{
 	private WXTransfersService transfersService;
 	
 	private static final String logLabel="PayServiceImpl--";
-	@Override
-	public ResponseResult<OrderRefundVO> orderRefund(OrderRefundCondition condition) {
-		//todo 调取微信退款接口  
-		
-		return null;
-	}
-
-	@Override
-	public ResponseResult<String> getprepayId(OrderPayCondition condition) {
-		//todo 调取微信的接口
-		return null;
-	}
-
-	@Override
-	public ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition) {
-		String log=logLabel+"订单支付支付orderPay";
-		logger.info(log+"--开始");
-		if (condition==null){
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600102);
-		}
-		String orderNo=condition.getOutOrderNo();
-		String spbillCreateIp=condition.getSpbillCreateIp();
-		String body=condition.getBody();
-		if (StringUtils.isBlank(orderNo)) {
-			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600107);
-		}
-		if (StringUtils.isBlank(spbillCreateIp)) {
-			logger.info(log+"--设备ip为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
-		}
-		if (StringUtils.isBlank(body)) {
-			logger.info(log+"--商品描述为空");
-			throw new BusinessException(BusinessCode.CODE_600108);
-		}
-		logger.info(log+"--参数"+condition.toString());
-		String openid=condition.getOpenid();
-		if (StringUtils.isBlank(openid)) {
-			logger.info(log+"--未获取到用户openid");
-			throw new BusinessException(BusinessCode.CODE_600106);
-		}
-	
-		//todo 调取微信支付接口  
-		return null;
-	}
 
 	@Override
 	@Transactional
@@ -140,7 +94,7 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600303);
+//			throw new BusinessException(BusinessCode.CODE_600303);
 		}
 		logger.info(log+"--参数"+condition.toString());
 		//插入流水数据
@@ -291,11 +245,69 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+		//验证订单支付参数
+		String log=logLabel+"订单支付unifiedOrder";
+		logger.info(log+"--开始");
+		if (condition==null){
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600102);
+		}
+		String orderNo=condition.getOutOrderNo();
+		String spbillCreateIp=condition.getSpbillCreateIp();
+		String body=condition.getBody();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600107);
+		}
+		if (StringUtils.isBlank(spbillCreateIp)) {
+			logger.info(log+"--设备ip为空");
+			throw new BusinessException(BusinessCode.CODE_600108);
+		}
+		if (StringUtils.isBlank(body)) {
+			logger.info(log+"--商品描述为空");
+			throw new BusinessException(BusinessCode.CODE_600108);
+		}
+		logger.info(log+"--参数"+condition.toString());
+		String openid=condition.getOpenid();
+		if (StringUtils.isBlank(openid)) {
+			logger.info(log+"--未获取到用户openid");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
 		return unifiedOrderService.unifiedOrder(condition);
 	}
 
 	@Override
 	public PayRefundDTO refundOrder(PayRefundCondition payRefund) {
+		
+		//验证订单支付参数
+		String log=logLabel+"订单退款refundOrder";
+		logger.info(log+"--开始");
+		if (payRefund==null){
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600102);
+		}
+		String orderNo=payRefund.getOutTradeNo();
+		String refundDesc=payRefund.getRefundDesc();
+//		String body=payRefund.get();
+		if (StringUtils.isBlank(orderNo)) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600107);
+		}
+//		if (StringUtils.isBlank(spbillCreateIp)) {
+//			logger.info(log+"--设备ip为空");
+//			throw new BusinessException(BusinessCode.CODE_600108);
+//		}
+//		if (StringUtils.isBlank(body)) {
+//			logger.info(log+"--商品描述为空");
+//			throw new BusinessException(BusinessCode.CODE_600108);
+//		}
+//		logger.info(log+"--参数"+condition.toString());
+//		String openid=condition.getOpenid();
+//		if (StringUtils.isBlank(openid)) {
+//			logger.info(log+"--未获取到用户openid");
+//			throw new BusinessException(BusinessCode.CODE_600106);
+//		}
+		
 		return refundService.refundOrder(payRefund);
 	}
 

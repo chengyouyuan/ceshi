@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,11 +23,26 @@ import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BeanAndXmlUtil {
+
+    /**
+     * 大写字母'A'ASCII值
+     */
+    private static final int A = 65;
+    /**
+     * 大写字母'Z'ASCII值
+     */
+    private static final int Z = 90;
+    /**
+     * 下划线ASCII值
+     */
+    private static final int UNDERLINE = 95;
+    /**
+     * 大小写字母ASCII偏移量
+     */
+    private static final int OFFSET = 32;
 
     public static String bean2Xml(Object obj) throws Exception{
         Document document = newDocument();
@@ -135,6 +151,80 @@ public class BeanAndXmlUtil {
         return result.toString();
     }
 
+    /**
+     * 实体对象转成sortedMap
+     * @param obj 实体对象
+     * @return
+     */
+    public static Map<String, String> beanToSortedMap(Object obj) {
+        SortedMap<String,String> sortedMap = new TreeMap<String,String>();
+        if (obj == null) {
+            return sortedMap;
+        }
+        Class clazz = obj.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if(null == field.get(obj)){
+                    continue;
+                }
+                sortedMap.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sortedMap;
+    }
+
+    /**
+     * 驼峰命名方式转换为下划线方式
+     * @param field 属性名
+     * @return 转换完成属性名
+     */
+    public static String humpToUnderline(String field){
+        StringBuilder destString = new StringBuilder();
+        if(StringUtils.isBlank(field)){
+            return destString.toString();
+        }
+        char[] fieldChars = field.toCharArray();
+        for (char fieldChar : fieldChars) {
+            if (fieldChar >= A && fieldChar <= Z) {
+                destString.append("_").append((char) (fieldChar + OFFSET));
+            } else {
+                destString.append(fieldChar);
+            }
+        }
+        return destString.toString();
+    }
+
+    /**
+     * 下划线方式转换为驼峰命名方式
+     * @param field 属性名
+     * @return 转换完成属性名
+     */
+    public static String underlineToHump(String field){
+        StringBuilder destString = new StringBuilder();
+        if(StringUtils.isBlank(field)){
+            return destString.toString();
+        }
+        char[] fieldChars = field.toCharArray();
+        boolean upCase = false;
+        for (char fieldChar : fieldChars) {
+            if (upCase) {
+                destString.append((char) (fieldChar - OFFSET));
+                upCase = false;
+                continue;
+            }
+            if (fieldChar == UNDERLINE) {
+                upCase = true;
+            } else {
+                destString.append(fieldChar);
+            }
+        }
+        return destString.toString();
+    }
+
     public static <T> T xml2Bean(String strXML,Class<T> c) throws Exception{
         T bean = null;
         InputStream stream = null;
@@ -154,7 +244,6 @@ public class BeanAndXmlUtil {
                     //data.put(element.getNodeName(), element.getTextContent());
                 }
             }
-
         } catch (Exception ex) {
             throw ex;
         } finally {

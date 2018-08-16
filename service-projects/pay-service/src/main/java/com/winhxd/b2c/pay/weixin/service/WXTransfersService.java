@@ -16,12 +16,12 @@ public interface WXTransfersService {
      * 微信提现至余额入口
      * @return
      */
-    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
+    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception;
 
     /**
      * 微信提现至银行卡入口
      * @return
      */
-    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) throws Exception;
 
 }

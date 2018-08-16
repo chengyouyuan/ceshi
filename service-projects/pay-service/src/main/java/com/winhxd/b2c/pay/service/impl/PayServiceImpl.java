@@ -325,11 +325,14 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-		return transfersService.transfersToChange(toWxBalanceCondition);
+		
+		return"";
+//		return transfersService.transfersToChange(toWxBalanceCondition);
 	}
 
 	@Override
 	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-		return transfersService.transfersToBank(toWxBankCondition);
+//		return transfersService.transfersToBank(toWxBankCondition);
+		return "";
 	}
 }

@@ -67,7 +67,7 @@ public class StoreRegionController {
     })
     @PostMapping(value = "/store/1039/v1/saveStoreRegion")
     public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition condition){
-        checkCurrentAdminUser();
+//        checkCurrentAdminUser();
         storeServiceClient.saveStoreRegion(condition);
         return new ResponseResult<>();
     }

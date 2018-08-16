@@ -55,6 +55,8 @@ public final class BusinessCode {
 
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;
+    /** 测试门店区域:查询区域失败*/
+    public static final int CODE_103902 = 103902;
 
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreRegionEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: wangbaokuo
@@ -72,10 +74,31 @@ public class StoreRegionServiceImpl implements StoreRegionService{
             logger.error("保存测试门店区域异常{} -> 销售区域重复");
             throw new BusinessException(BusinessCode.CODE_103901);
         }
+        ResponseResult<SysRegion> result = regionServiceClient.getRegionByCode(condition.getAreaCode());
+        if (null == result || null == result.getData()) {
+            logger.error("保存测试门店区域异常{} -> 查询SysRegion失败 regionCode:"+condition.getAreaCode());
+            throw new BusinessException(BusinessCode.CODE_103902);
+        }
+        SysRegion sysRegion = result.getData();
+        StringBuffer sb = new StringBuffer();
+        if (!sysRegion.getProvince().equals(sysRegion.getCity())) {
+            sb.append(sysRegion.getProvince()).append(Objects.toString(sysRegion.getCity(), ""))
+                    .append(Objects.toString(sysRegion.getTown(), ""))
+                    .append(Objects.toString(sysRegion.getCounty(), ""))
+                    .append(Objects.toString(sysRegion.getVillage(), ""));
+        } else {
+            sb.append(Objects.toString(sysRegion.getProvince(), ""))
+                    .append(Objects.toString(sysRegion.getTown(), ""))
+                    .append(Objects.toString(sysRegion.getCounty(), ""))
+                    .append(Objects.toString(sysRegion.getVillage(), ""));
+        }
         StoreRegion storeRegion = new StoreRegion();
-        BeanUtils.copyProperties(condition, storeRegion);
+        storeRegion.setLevel(sysRegion.getLevel().shortValue());
+        storeRegion.setAreaName(sb.toString());
+        storeRegion.setAreaCode(condition.getAreaCode());
         Date current = new Date();
-        Long account = Long.parseLong(UserContext.getCurrentAdminUser().getAccount());
+//        Long account = Long.parseLong(UserContext.getCurrentAdminUser().getAccount());
+        Long account = 123L;
         storeRegion.setCreated(current);
         storeRegion.setUpdated(current);
         storeRegion.setCreatedBy(account);

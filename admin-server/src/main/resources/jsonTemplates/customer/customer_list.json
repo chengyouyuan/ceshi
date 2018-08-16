@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/customer/user/findCustomerPageInfo",
+    "type": "report",
+    "id": "customer_list",
+    "code": "customer_list",
+    "title": "订单管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/customer/user/findCustomerPageInfo"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "customerId",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "nickName",
+        "title": "用户名"
+      },
+      {
+        "name": "customerMobile",
+        "title": "手机号"
+      },
+      {
+        "name": "openid",
+        "title": "openid"
+      },
+      {
+        "name": "storeName",
+        "title": "绑定门店"
+      },
+      {
+        "name": "status",
+        "title": "状态",
+        "formatter": "function(row, column, cellValue, index) { if(row.status == 1)return '白名单';return '黑名单';}"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "/customerDetails/index",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "加入黑名单",
+            "icon": null,
+            "event":{
+              "type":"ajax",
+              "ajaxType": "post",
+              "path":"customer/user/addBlackList",
+              "confirm":{
+                "title": "确认提示",
+                "message":"确定要添加黑名单吗?"
+              },
+              "params": [
+                "customerId"
+              ]
+            }
+          },
+          {
+            "name": "移出黑名单",
+            "icon": null,
+            "event":{
+              "type":"ajax",
+              "ajaxType": "post",
+              "path":"customer/user/removeBlackList",
+              "confirm":{
+                "title": "确认提示",
+                "message":"确定要添加黑名单吗?"
+              },
+              "params": [
+                "customerId"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "nickName",
+        "inputModel": "input",
+        "title": "用户名",
+        "value": "",
+        "placeholder": "请输入用户名",
+        "isHidden": false
+      },
+      {
+        "name": "customerMobile",
+        "inputModel": "input",
+        "title": "手机号",
+        "value": "",
+        "placeholder": "请输入手机号",
+        "isHidden": false
+      },
+      {
+        "name": "openid",
+        "inputModel": "input",
+        "title": "openid",
+        "value": "",
+        "placeholder": "请输入openid",
+        "isHidden": false
+      },
+      {
+        "name": "status",
+        "inputModel": "select",
+        "title": "黑名单",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "0",
+          "label": "黑名单"
+        },
+          {
+            "value": "1",
+            "label": "白名单"
+          }]
+      }
+    ]
+  }
+}

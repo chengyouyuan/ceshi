@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.mq.event.support;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.mq.event.*;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
@@ -30,6 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author lixiaodong
@@ -37,6 +39,14 @@ import java.util.List;
 @Import(MessageQueueConfig.class)
 public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
     private static final Logger logger = LoggerFactory.getLogger(MessageQueueConfig.class);
+    /**
+     * 事件消息锁最长有效时间
+     */
+    private static final int LOCK_EXPIRES = 30000;
+    /**
+     * 尝试获取事件消息锁超时时间
+     */
+    private static final int LOCK_TRY_MS = 6000;
 
     private DefaultListableBeanFactory beanFactory;
 
@@ -58,9 +68,9 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
                 String bodyKey = CacheName.EVENT_MESSAGE_BODY + data.getEventType().toString();
                 cache.zrem(idKey, data.getId());
                 cache.hdel(bodyKey, data.getId());
-                logger.info("事件消息发送成功:{}-{}", data.getEventType(), data.getId());
+                logger.info("事件消息发送成功: {} - {}", data.getEventType(), data.getId());
             } else {
-                logger.warn("事件消息发送失败:{}-{}, {}", data.getEventType(), data.getId(), cause);
+                logger.warn("事件消息发送失败: {} - {}, {}", data.getEventType(), data.getId(), cause);
             }
         });
         return rabbitTemplate;
@@ -97,7 +107,8 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
         ReflectionUtils.doWithMethods(targetClass, method -> {
             EventMessageListener annotation = AnnotationUtils.getAnnotation(method, EventMessageListener.class);
             if (annotation != null) {
-                Class<?> eventObjectClass = annotation.value().getEventType().getEventObjectClass();
+                EventType eventType = annotation.value().getEventType();
+                Class<?> eventObjectClass = eventType.getEventObjectClass();
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes == null || parameterTypes.length != 2
                         || !String.class.isAssignableFrom(parameterTypes[0])
@@ -111,19 +122,30 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
                     listenerContainer.setConcurrency(annotation.concurrency());
                 }
                 listenerContainer.setMessageListener(message -> {
+                    String body = new String(message.getBody(), StandardCharsets.UTF_8);
+                    EventMessageHelper.EventTransferObject<?> transferObject = null;
                     try {
-                        String body = new String(message.getBody(), StandardCharsets.UTF_8);
-                        EventMessageHelper.EventTransferObject<?> transferObject
-                                = EventMessageHelper.toTransferObject(body, eventObjectClass);
-                        method.invoke(bean, transferObject.getEventId(), transferObject.getEventObject());
-                    } catch (IllegalAccessException e) {
-                        logger.error("MQ消费异常", e);
-                    } catch (InvocationTargetException e) {
-                        logger.error("MQ消费异常", e.getCause());
-                        throw new RuntimeException("MQ消费异常", e);
+                        transferObject = EventMessageHelper.toTransferObject(body, eventObjectClass);
                     } catch (IOException e) {
-                        logger.error("MQ消费异常:" + e.toString(), e);
-                        throw new RuntimeException("MQ消费异常:" + e.toString(), e);
+                        logger.error("事件消息异常:" + e.toString(), e);
+                        throw new RuntimeException("事件消息异常:" + e.toString(), e);
+                    }
+                    String key = CacheName.EVENT_MESSAGE_HANDLER + eventType.toString() + ":" + transferObject.getEventId();
+                    logger.info("事件消息开始1: " + key);
+                    RedisLock redisLock = new RedisLock(cache, key, LOCK_EXPIRES);
+                    if (!redisLock.tryLock(LOCK_TRY_MS, TimeUnit.MILLISECONDS)) {
+                        logger.warn("事件消息超时: " + key);
+                        throw new RuntimeException("事件消息超时: " + key);
+                    }
+                    logger.info("事件消息开始2: " + key);
+                    try {
+                        method.invoke(bean, transferObject.getEventId(), transferObject.getEventObject());
+                        logger.info("事件消息完成: " + key);
+                    } catch (Exception e) {
+                        logger.error("事件消息异常:" + key, e);
+                        throw new RuntimeException("事件消息异常:" + key, e);
+                    } finally {
+                        redisLock.unlock();
                     }
                 });
                 beanFactory.registerSingleton(beanName + "#" + method.getName(), listenerContainer);

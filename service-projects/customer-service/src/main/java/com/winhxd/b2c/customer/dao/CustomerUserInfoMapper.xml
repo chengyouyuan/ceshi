@@ -66,7 +66,7 @@
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created
     from customer_user_info cui  left join customer_store_relation csr
     on cui.customer_id = csr.customer_id left join store_user_info sui  on csr.store_user_id = sui.id
-    where cui.status = 1
+      <where>
       <if test="customerId != null">
          and cui.customer_id =  #{customerId,jdbcType=BIGINT}
       </if>
@@ -85,6 +85,7 @@
       <if test="storeName != null and storeName != ''">
         and sui.store_name like CONCAT('%',  #{storeName,jdbcType=VARCHAR}, '%')
       </if>
+      </where>
   </select>
 
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo" >

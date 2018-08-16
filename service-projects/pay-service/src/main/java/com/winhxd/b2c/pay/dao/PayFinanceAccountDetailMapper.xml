@@ -32,26 +32,18 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
    
-   <resultMap id="payFinanceRetutnVO" type="com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO">
+   <resultMap id="orderInfoFinancialInDetailVO" type="com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO">
     <result column="orderNo"  property="orderNo" />
-    <result column="tradeNo" property="tradeNo" />
-    <result column="money"  property="money" />
-    <result column="store_id"   property="storeId" />
+    <result column="storeId"   property="storeId" />
     <result column="storeName" property="storeName" />
-    <result column="region_code"  property="regionCode" />
-    <result column="region_name" property="regionName" />
-    <result column="type"   property="type" />
-    <result column="out_type"  property="outType" />
-    <result column="wechat_account_status"   property="wechatAccountStatus" />
+    <result column="orderTotalMoney"  property="orderTotalMoney" />
+    <result column="realPaymentMoney" property="realPaymentMoney" />
+    <result column="payType"   property="payType" />
+    <result column="payStatus"  property="payStatus" />
+    <result column="inCountTime"   property="inCountTime" />
     <result column="status"   property="status" />
-    <result column="data_status"  property="dataStatus" />
-    <result column="flow_direction_type"  property="flowDirectionType" />
-    <result column="flow_direction_name" property="flowDirectionName" />
-    <result column="payment_account" property="paymentAccount" />
-    <result column="cmms_amt"   property="cmmsAmt" />
-    <result column="rate"  property="rate" />
-    <result column="out_in_date"  property="outInDate" />
-    <result column="created"   property="created" />
+    <result column="regionCode"  property=regionCode />
+    <result column="regionName"  property="regionName" />
   </resultMap>
    
    <resultMap id="payFinanceAccountDetailVO" type="com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO">
@@ -68,7 +60,13 @@
       <result property="todayCharge" column="todayCharge"/>
        <result property="allCharge" column="allCharge"/>
   </resultMap>
-    
+
+   <resultMap id="PayFinancialSummary" type="com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary">
+      <result property="realFee" column="realFee"/>
+      <result property="cmmsAmt" column="cmmsAmt"/>
+      <result property="refundAmout" column="refundAmout"/>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, order_no, trade_no, money, store_id, region_code, region_name, type, out_type, 
     wechat_account_status, status, data_status, flow_direction_type, flow_direction_name, 
@@ -425,31 +423,30 @@
 	and store_id = #{storeId,jdbcType=BIGINT}
    </select>
    
-   <select id="selectFinancialInDetail"  parameterType="com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition" resultMap="payFinanceRetutnVO">
-   	 select 
-    <include refid="Base_Column_List_pre" />,sui.store_name 
-     from pay_finance_account_detail pfad left join store_user_info sui on sui.id = pfad.store_id
-     where status = 1 and type = 2
+   <select id="selectFinancialInDetail"  parameterType="com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition" resultMap="orderInfoFinancialInDetailVO">
+   	 select oi.order_no, oi.store_id,sui.store_name,oi.region_code,
+   	 concat(sr.province,sr.city,sr.town,sr.county) as region_name,
+   	  oi.orderTotalMoney, oi.realPaymentMoney,oi.payType, oi.payStatus, oi.payFinishDateTime, 
+    from order_info oi left join store_user_info sui on sui.id = oi.store_id
+    left join sys_region sr on oi.region_code = sr.region_code
+     where oi.payStatus = 1 and oi.orderStatus = 9
       <if test="orderNo != null">
-        and order_no = #{orderNo,jdbcType=CHAR}
+        and oi.order_no = #{orderNo,jdbcType=CHAR}
       </if>
       <if test="storeId != null">
-       and store_id = #{storeId,jdbcType=BIGINT}
+       and oi.store_id = #{storeId,jdbcType=BIGINT}
       </if>
       <if test="regionCode != null">
-       and region_code = #{regionCode,jdbcType=CHAR}
+       and oi.region_code = #{regionCode,jdbcType=CHAR}
       </if>
-      <if test="outType != null">
-       and out_type = #{outType,jdbcType=SMALLINT}
-      </if>
-      <if test="wechatAccountStatus != null">
+      <!-- 微信对账状态 在于对账表<if test="InAcountStatus != null">
        and wechat_account_status = #{wechatAccountStatus,jdbcType=SMALLINT}
+      </if> -->
+      <if test="inCountStartTime != null">
+       AND oi.payFinishDateTime <![CDATA[ >= ]]> #{inCountStartTime}
       </if>
-      <if test="dataStatus != null">
-       and data_status = #{dataStatus,jdbcType=SMALLINT}
-      </if>
-      <if test="outInDate != null">
-       and out_in_date = #{outInDate,jdbcType=TIMESTAMP}
+      <if test="inCountEndTime != null">
+       AND oi.payFinishDateTime <![CDATA[ <= ]]> #{inCountEndTime}
       </if>
    </select>
    
@@ -467,9 +464,72 @@
       <if test="outType != null">
        and out_type = #{outType,jdbcType=SMALLINT}
       </if>
-      <if test="created != null">
-       and created = #{created,jdbcType=TIMESTAMP}
+      <if test="createdStart != null">
+       AND created <![CDATA[ >= ]]> #{createdStart}
+      </if>
+      <if test="createdEnd != null">
+       AND created <![CDATA[ <= ]]> #{createdEnd}
       </if>
    </select>
-   
+   <select id="getWithdrawals" parameterType="java.lang.String" resultMap="PayFinancialSummary">
+       SELECT
+       SUM(pw.real_fee) AS realFee,
+       SUM(pw.cmms_amt) AS cmmsAmt
+       FROM
+       pay_finance_account_detail pfad
+       LEFT JOIN pay_withdrawals pw ON pw.withdrawals_no = pfad.order_no
+       WHERE
+       1 = 1
+       AND pfad.`status` = 1
+       AND pfad.out_type = 1
+       <if test="isToday == 'today'" >
+        AND to_days(pw.created) = to_days(now())
+       </if>
+   </select>
+   <select id="getRefund" parameterType="java.lang.String" resultMap="PayFinancialSummary">
+       SELECT
+       SUM(pr.refund_amount) AS refundAmout
+       FROM
+       pay_finance_account_detail pfad
+       LEFT JOIN pay_refund pr ON pr.order_no = pfad.order_no
+       WHERE
+       1 = 1
+       AND pfad.`status` = 1
+       AND pfad.out_type = 2
+       <if test="isToday == 'today'" >
+        AND to_days(pr.created) = to_days(now())
+       </if>
+   </select>
+    <select id="getIncome" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+        SELECT
+            SUM(pad.detail_money) todayAdvancesReceived
+        FROM
+            pay_accounting_detail pad
+        WHERE
+            1 = 1
+        <if test="type == 'todayPreMoney'" >
+          AND pad.detail_type = '1'
+          AND pad.order_complete_status = '0'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'todayRealMoney'" >
+          AND pad.detail_type = '1'
+          AND pad.order_complete_status = '1'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'todayInMoney'" >
+          AND pad.detail_type = '1'
+          AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'allInMoney'" >
+            AND pad.detail_type = '1'
+        </if>
+        <if test="type == 'useTodayCouponAllMoney'" >
+            AND pad.detail_type = '3'
+            AND to_days(pad.insert_time) = to_days(now())
+        </if>
+        <if test="type == 'useCouponAllMoney'" >
+            AND pad.detail_type = '3'
+        </if>
+    </select>
 </mapper>

@@ -21,7 +21,7 @@ public class BackStageCustomerInfoCondition extends PagedCondition {
 
     /**微信openId*/
     @ApiModelProperty("微信openId")
-    private String openId;
+    private String openid;
 
     /**昵称*/
     @ApiModelProperty("昵称")

@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
 import feign.hystrix.FallbackFactory;
 
@@ -19,7 +20,7 @@ import feign.hystrix.FallbackFactory;
 public interface PayServiceClient {
 	
 	@PostMapping(value = "/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<OrderPayVO> orderRefund(@RequestBody PayRefundCondition condition);
+	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
 	
 	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition);
@@ -42,7 +43,7 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 	}
 
 	@Override
-	public ResponseResult<OrderPayVO> orderRefund(PayRefundCondition condition) {
+	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
 		// TODO Auto-generated method stub
 		return null;
 	}

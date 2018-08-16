@@ -13,6 +13,8 @@ import java.util.List;
  * @Description  显示门店下优惠券的领取数量和使用数量
  **/
 public class CouponInStoreGetedAndUsedVO {
+    @ApiModelProperty(value = "模板id")
+    private Long templeteId;
     @ApiModelProperty(value = "门店id")
     private Long storeId;
     @ApiModelProperty(value = "领取数量")
@@ -44,7 +46,13 @@ public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
 
+    public Long getTempleteId() {
+        return templeteId;
+    }
 
+    public void setTempleteId(Long templeteId) {
+        this.templeteId = templeteId;
+    }
 
     public Long getStoreId() {
         return storeId;

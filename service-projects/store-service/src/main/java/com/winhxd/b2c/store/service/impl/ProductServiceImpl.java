@@ -77,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
         for (ProductSkuVO datum : productSkuVOS) {
             for (ShopCartProductVO shopCartProductVO : shopCartProductVOS) {
                 if (datum.getSkuCode().equals(shopCartProductVO.getSkuCode())){
-                    datum.setSkuNum(shopCartProductVO.getAmount());
+                    datum.setAmount(shopCartProductVO.getAmount());
                     break;
                 }
             }
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void assignSellMoney(List<ProductSkuVO> data, List<StoreProductManage> storeProductManages) {
         for (ProductSkuVO datum : data) {
-            datum.setSkuNum(0);
+            datum.setAmount(0);
             for (StoreProductManage storeProductManage : storeProductManages) {
                 if (datum.getSkuCode().equals(storeProductManage.getSkuCode())){
                     datum.setSellMoney(storeProductManage.getSellMoney());

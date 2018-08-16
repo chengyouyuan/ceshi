@@ -33,7 +33,7 @@ public class ProductSkuVO {
 	private BigDecimal sellMoney;
 
 	@ApiModelProperty(value = "购物车数量")
-	private Integer skuNum;
+	private Integer amount;
 	
 	@ApiModelProperty(value = "一级分类")
 	private String categoryId;

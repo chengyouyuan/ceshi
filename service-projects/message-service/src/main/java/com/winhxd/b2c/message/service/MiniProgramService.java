@@ -1,8 +1,11 @@
 package com.winhxd.b2c.message.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author jujinbiao
@@ -19,7 +22,14 @@ public interface MiniProgramService {
 
     /**
      * 给C端用户推送小程序模板消息
-     * @param formId
+     * @param miniMsgCondition
      */
-    ResponseResult<Void> sendMiniMsg(String formId);
+    ResponseResult<Void> sendMiniMsg(MiniMsgCondition miniMsgCondition);
+
+    /**
+     * 保存formid
+     * @param formIds
+     * @return
+     */
+    void saveFormIds(MiniFormIdCondition miniFormIdCondition);
 }

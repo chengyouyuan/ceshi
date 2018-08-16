@@ -1,6 +1,12 @@
-pay:
-  cert:
-    path: D:\微信商户平台支付证书\apiclient_cert.p12
-  wechat:
-    appid: wxdbbbd5e596ab6f4d
-    mch_id: 1467361502
+#微信相关属性
+WX:
+  # 商户号的appid或商户号绑定的appid
+  mchAppID: 123456789
+  # 公众账号ID
+  appID: 123456789
+  # 商户号
+  mchID: 1467361502
+  # API 密钥
+  key: 123456789
+  # 证书路径
+  certPath: /opt/logs/cert/apiclient_cert.p12

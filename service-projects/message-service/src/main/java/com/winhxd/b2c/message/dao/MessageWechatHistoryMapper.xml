@@ -5,14 +5,13 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="to_user" jdbcType="VARCHAR" property="toUser" />
     <result column="template_id" jdbcType="VARCHAR" property="templateId" />
-    <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="page" jdbcType="VARCHAR" property="page" />
     <result column="form_id" jdbcType="VARCHAR" property="formId" />
     <result column="data" jdbcType="VARCHAR" property="data" />
     <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, to_user, template_id, title, page, form_id, data, send_time
+    id, to_user, template_id, page, form_id, data, send_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -26,10 +25,9 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageWechatHistory">
     insert into message_wechat_history (id, to_user, template_id, 
-      title, page, form_id, 
-      data, send_time)
+      page, form_id, data, send_time)
     values (#{id,jdbcType=BIGINT}, #{toUser,jdbcType=VARCHAR}, #{templateId,jdbcType=VARCHAR}, 
-      #{title,jdbcType=VARCHAR}, #{page,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, 
+      #{page,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR},
       #{data,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageWechatHistory">
@@ -43,9 +41,6 @@
       </if>
       <if test="templateId != null">
         template_id,
-      </if>
-      <if test="title != null">
-        title,
       </if>
       <if test="page != null">
         page,
@@ -70,9 +65,6 @@
       <if test="templateId != null">
         #{templateId,jdbcType=VARCHAR},
       </if>
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
       <if test="page != null">
         #{page,jdbcType=VARCHAR},
       </if>
@@ -96,9 +88,6 @@
       <if test="templateId != null">
         template_id = #{templateId,jdbcType=VARCHAR},
       </if>
-      <if test="title != null">
-        title = #{title,jdbcType=VARCHAR},
-      </if>
       <if test="page != null">
         page = #{page,jdbcType=VARCHAR},
       </if>
@@ -118,7 +107,6 @@
     update message_wechat_history
     set to_user = #{toUser,jdbcType=VARCHAR},
       template_id = #{templateId,jdbcType=VARCHAR},
-      title = #{title,jdbcType=VARCHAR},
       page = #{page,jdbcType=VARCHAR},
       form_id = #{formId,jdbcType=VARCHAR},
       data = #{data,jdbcType=VARCHAR},

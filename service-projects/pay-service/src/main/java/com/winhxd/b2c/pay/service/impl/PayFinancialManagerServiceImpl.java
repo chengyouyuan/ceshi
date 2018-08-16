@@ -1,25 +1,28 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
+import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
+import com.winhxd.b2c.pay.service.PayFinancialManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
-import com.winhxd.b2c.common.domain.pay.enums.PayDataStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayFinanceTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
-import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
-import com.winhxd.b2c.pay.service.PayFinancialManagerService;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class PayFinancialManagerServiceImpl implements PayFinancialManagerService{
@@ -50,7 +53,52 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		financeDetial.setCurLeftMoney(financeDetial.getAllInMoney().subtract(financeDetial.getAllOutMoney()));
 		return financeDetial;
 	}
-	
+
+	@Override
+	public PayFinanceAccountDetailVO findStoreFinancialSummary() {
+
+		PayFinancialSummary todayWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("today");
+		BigDecimal todayRealFee = todayWithdrawals.getRealFee();
+		BigDecimal todayCmmsAmt = todayWithdrawals.getCmmsAmt();
+		PayFinancialSummary sumWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("total");
+		BigDecimal sumRealfee = sumWithdrawals.getRealFee();
+		BigDecimal sumCmmsAmt = sumWithdrawals.getCmmsAmt();
+		PayFinancialSummary todayRefund = payFinanceAccountDetailMapper.getRefund("today");
+		BigDecimal todayRefundAmout = todayRefund.getRefundAmout();
+		PayFinancialSummary sumRefund = payFinanceAccountDetailMapper.getRefund("total");
+		BigDecimal sumRefundAmout = sumRefund.getRefundAmout();
+
+		BigDecimal todayOutMoney = todayRealFee.add(todayRefundAmout);
+		BigDecimal allOutMoney = sumRealfee.add(sumRefundAmout);
+
+		PayFinanceAccountDetailVO payFinanceAccountDetailVO = new PayFinanceAccountDetailVO();
+		//总出账
+		payFinanceAccountDetailVO.setTodayStoreWithdraw(todayRealFee);
+		payFinanceAccountDetailVO.setTodayCharge(todayCmmsAmt);
+		payFinanceAccountDetailVO.setTodayCustomerRefund(todayRefundAmout);
+		payFinanceAccountDetailVO.setTodayOutMoney(todayOutMoney);
+		payFinanceAccountDetailVO.setAllOutMoney(allOutMoney);
+		payFinanceAccountDetailVO.setAllCharge(sumCmmsAmt);
+		//总进账
+		BigDecimal todayPreMoney = payFinanceAccountDetailMapper.getIncome("todayPreMoney");
+		BigDecimal todayRealMoney = payFinanceAccountDetailMapper.getIncome("todayRealMoney");
+		BigDecimal allInMoney = payFinanceAccountDetailMapper.getIncome("allInMoney");
+		payFinanceAccountDetailVO.setTodayPreMoney(todayPreMoney);
+		payFinanceAccountDetailVO.setTodayRealMoney(todayRealMoney);
+		payFinanceAccountDetailVO.setTodayInMoney(todayPreMoney.add(todayRealMoney));
+		payFinanceAccountDetailVO.setAllInMoney(allInMoney);
+		//优惠券抵用金额
+		BigDecimal useTodayCouponAllMoney = payFinanceAccountDetailMapper.getIncome("useTodayCouponAllMoney");
+		BigDecimal useCouponAllMoney = payFinanceAccountDetailMapper.getIncome("useCouponAllMoney");
+		payFinanceAccountDetailVO.setUseTodayCouponAllMoney(useTodayCouponAllMoney);
+		payFinanceAccountDetailVO.setUseCouponAllMoney(useCouponAllMoney);
+		//公司补充总入账,待定
+
+		//当前余额=总进账金额+公司总入账金额 - 总出账金额
+
+		return payFinanceAccountDetailVO;
+	}
+
 	//查询总出账和总入账金额以及总手续费
 	public PayFinanceAccountDetailVO queryTotalMoney(PayFinanceAccountDetailVO financeDetial,Long storeId){
 		List<PayFinanceAccountDetailVO> toalInoutMoney = payFinanceAccountDetailMapper.selectTotalInOutMoney(storeId);
@@ -162,10 +210,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		return financeDetial;
 	}
 
-	public PagedList<PayFinanceAccountDetailVO> findFinancialInDetail(PayFinanceAccountDetailCondition condition) {
-		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
-		List<PayFinanceAccountDetailVO> financialInDetail = payFinanceAccountDetailMapper.selectFinancialInDetail(condition);
+	@Override
+	public PagedList<OrderInfoFinancialInDetailVO> queryFinancialInDetail(
+			OrderInfoFinancialInDetailCondition condition) {
+		Page<OrderInfoFinancialInDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<OrderInfoFinancialInDetailVO> pagedList = new PagedList<OrderInfoFinancialInDetailVO>();
+		List<OrderInfoFinancialInDetailVO> financialInDetail = payFinanceAccountDetailMapper.selectFinancialInDetail(condition);
 		LOGGER.info("findFinancialOutDetail:===="+financialInDetail);
 		pagedList.setData(financialInDetail);
         pagedList.setPageNo(condition.getPageNo());
@@ -174,10 +224,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		return pagedList;
 	}
 
-	public PagedList<PayFinanceAccountDetailVO> findFinancialOutDetail(PayFinanceAccountDetailCondition condition) {
-		Page<PayFinanceAccountDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-		PagedList<PayFinanceAccountDetailVO> pagedList = new PagedList<PayFinanceAccountDetailVO>();
-		List<PayFinanceAccountDetailVO> financialOutDetail = payFinanceAccountDetailMapper.selectFinancialOutDetail(condition);
+	@Override
+	public PagedList<OrderInfoFinancialOutDetailVO> queryFinancialOutDetail(
+			OrderInfoFinancialOutDetailCondition condition) {
+		Page<OrderInfoFinancialOutDetailVO> page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		PagedList<OrderInfoFinancialOutDetailVO> pagedList = new PagedList<OrderInfoFinancialOutDetailVO>();
+		List<OrderInfoFinancialOutDetailVO> financialOutDetail = payFinanceAccountDetailMapper.selectFinancialOutDetail(condition);
 		LOGGER.info("findFinancialOutDetail:===="+financialOutDetail);
         pagedList.setData(financialOutDetail);
         pagedList.setPageNo(condition.getPageNo());

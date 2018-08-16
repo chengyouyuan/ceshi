@@ -9,27 +9,16 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCheckStatusCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -43,7 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Auther wangxiaoshun
@@ -205,6 +197,7 @@ public class CouponServiceImpl implements CouponService {
                         productSkus.add(couponApplyProductList.getSkuCode());
                     }
                     ProductCondition productCondition = new ProductCondition();
+                    productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
@@ -283,7 +276,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 优惠券已领完
-                    continue;
+                    couponVO.setReceiveStatus("0");
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
@@ -300,7 +293,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 当前门店优惠券已领完
-                    continue;
+                    couponVO.setReceiveStatus("0");
                 }
             }
             results.add(couponVO);
@@ -515,7 +508,7 @@ public class CouponServiceImpl implements CouponService {
             BigDecimal amountPrice = new BigDecimal(0);
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
                 BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                amountPrice.add(productPrice);
+                amountPrice = amountPrice.add(productPrice);
             }
             BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
             couponDiscountVO.setDiscountAmount(discountAmount);
@@ -537,7 +530,7 @@ public class CouponServiceImpl implements CouponService {
 
                     if(couponProductCondition.getBrandCode().equals(couponApplyBrandList.getBrandCode())){
                         BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                        amountPrice.add(brandProductPrice);
+                        amountPrice = amountPrice.add(brandProductPrice);
                     }
                 }
             }
@@ -561,7 +554,7 @@ public class CouponServiceImpl implements CouponService {
                 for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
                     if(couponProductCondition.getSkuCode().equals(couponApplyProductList.getSkuCode())){
                         BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                        amountPrice.add(brandProductPrice);
+                        amountPrice = amountPrice.add(brandProductPrice);
                     }
                 }
             }
@@ -680,21 +673,25 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,null);
         //获取优惠券适用范围
         List<CouponVO> couponDetailS = this.getCouponDetail(couponVOS);
+        //
+        List<CouponVO> results = new ArrayList<>();
         //遍历添加优惠券是否可用状态
         for(CouponVO couponVO : couponDetailS){
+            couponVO.setAvailableStatus(0);
             //通用券
-            if(couponVO.getReducedType().equals(String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()))){
+            if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()))){
                 //计算订单总额
                 BigDecimal amountPrice = new BigDecimal(0);
                 for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
                     BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                    amountPrice.add(productPrice);
+                    amountPrice = amountPrice.add(productPrice);
                 }
                 //订单金额大于等于满减金额优惠券可用
                 if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
                     couponVO.setAvailableStatus(1);
+                    results.add(couponVO);
                 }
-            }else if(couponVO.getReducedType().equals(String.valueOf(CouponApplyEnum.PRODUCT_COUPON.getCode()))){
+            }else if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.PRODUCT_COUPON.getCode()))){
                 //商品券
                 //循环优惠券适用的商品规则
                 for(ProductSkuVO productSkuVO : couponVO.getProducts()){
@@ -703,15 +700,16 @@ public class CouponServiceImpl implements CouponService {
                         BigDecimal amountPrice = new BigDecimal(0);
                         if(productSkuVO.getSkuCode().equals(couponProductCondition.getSkuCode())){
                             BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                            amountPrice.add(brandProductPrice);
+                            amountPrice = amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
                                 couponVO.setAvailableStatus(1);
+                                results.add(couponVO);
                             }
                         }
                     }
                 }
-            }else if(couponVO.getReducedType().equals(String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()))){
+            }else if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()))){
                 //品牌券
                 //循环优惠券适用的品牌规则
                 for(BrandVO brandVO : couponVO.getBrands()){
@@ -720,22 +718,23 @@ public class CouponServiceImpl implements CouponService {
                         BigDecimal amountPrice = new BigDecimal(0);
                         if(brandVO.getBrandCode().equals(couponProductCondition.getBrandCode())){
                             BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                            amountPrice.add(brandProductPrice);
+                            amountPrice = amountPrice.add(brandProductPrice);
                             //商品金额大于等于满减金额优惠券可用
                             if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
                                 couponVO.setAvailableStatus(1);
+                                results.add(couponVO);
                             }
                         }
                     }
                 }
             }
         }
-        couponDetailS.sort((a,b)->a.getAvailableStatus()-b.getAvailableStatus());
-        return couponDetailS;
+//        couponDetailS.sort((a,b)->a.getAvailableStatus()-b.getAvailableStatus());
+        return results;
     }
 
     @Override
-    public Integer getStoreCouponKinds() {
+    public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList =  findStoreCouponList();
         int count = 0 ;
         for (int i = 0; i < couponVOList.size(); i++){
@@ -743,7 +742,9 @@ public class CouponServiceImpl implements CouponService {
                 count++;
             }
         }
-        return count;
+        CouponKindsVo couponKindsVo = new CouponKindsVo();
+        couponKindsVo.setStoreCouponKinds(count);
+        return couponKindsVo;
     }
 
     @Override
@@ -797,7 +798,28 @@ public class CouponServiceImpl implements CouponService {
     public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize) {
         Page page = PageHelper.startPage(pageNo, pageSize);
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
+        //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+        //查询使用每张优惠券的使用数量和领取数量
+        List<CouponInStoreGetedAndUsedVO> countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId);
+        //将数量拼接到列表
+        if(list!=null){
+            for(int i=0;i<list.size();i++){
+                CouponInStoreGetedAndUsedVO vo = list.get(i);
+                if(countList!=null){
+                    for(int j=0;j<countList.size();j++){
+                        if(vo.getTempleteId().equals(countList.get(j).getTempleteId())){
+                            vo.setTotalCount(countList.get(j).getTotalCount());
+                            vo.setUsedCount(countList.get(j).getUsedCount());
+                        }
+                    }
+                }else{
+                    vo.setTotalCount(0);
+                    vo.setUsedCount(0);
+                }
+            }
+        }
+
         List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
         pagedList.setData(finalList);
         pagedList.setPageNo(pageNo);
@@ -805,6 +827,8 @@ public class CouponServiceImpl implements CouponService {
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
+
+
 
     /**
      * 获取可用最优惠的优惠券
@@ -842,7 +866,7 @@ public class CouponServiceImpl implements CouponService {
      */
     public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
         for(CouponInStoreGetedAndUsedVO vo : couponVOS){
-            if(vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+            if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyProducts.isEmpty()){
                     List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
@@ -854,6 +878,7 @@ public class CouponServiceImpl implements CouponService {
                     ProductCondition productCondition = new ProductCondition();
                     productCondition.setProductSkus(productSkus);
                     //调用获取商品信息接口
+                    productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                     ResponseResult<List<ProductSkuVO>> result = productServiceClient.getProductSkus(productCondition);
                     if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
                         logger.error("优惠券：{}获取商品sku信息接口调用失败:code={}，获取优惠券适用范围异常！~", productCondition, result == null ? null : result.getCode());
@@ -863,7 +888,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
 
-            if(vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+            if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
                 List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyBrands.isEmpty()){
                     List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
@@ -884,6 +909,9 @@ public class CouponServiceImpl implements CouponService {
         }
         return couponVOS;
     }
+
+
+
 
 
 

@@ -94,7 +94,7 @@ public class ApiPayStoreBindBankCardController {
     	LOGGER.info("B端绑定银行卡参数storeBankCard----"+storeBankCard);
     	Integer res = storeBankCardService.saveStoreBankCard(storeBankCard);
     	result.setCode(res);
-    	System.out.print("绑定银行卡返回值：-------"+res);
+    	LOGGER.info("绑定银行卡返回值：-------"+res);
     	if(res > 0){
     		result.setData(BusinessCode.CODE_610017);
     		LOGGER.info("B端绑定银行卡失败；");

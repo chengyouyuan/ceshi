@@ -15,9 +15,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * @author: wangbaokuo
@@ -29,7 +28,7 @@ public class StoreRegionController {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreRegionController.class);
 
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
 
     @ApiOperation("查询测试区域配置")
@@ -41,7 +40,7 @@ public class StoreRegionController {
     })
     @PostMapping(value = "/store/1037/v1/findStoreRegions")
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
-//        checkCurrentAdminUser();
+        checkCurrentAdminUser();
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
     }

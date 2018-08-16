@@ -71,13 +71,18 @@ public class OrderServiceTest {
         List<OrderItemCondition> orderItemConditions = new ArrayList<>();
         OrderItemCondition itemCondition = new OrderItemCondition();
         itemCondition.setAmount(2);
-        itemCondition.setSkuCode("ssskkkuuuccc");
+        itemCondition.setSkuCode("12346496056002");
+        itemCondition.setPrice(new BigDecimal("234"));
+        OrderItemCondition itemCondition1 = new OrderItemCondition();
+        itemCondition1.setAmount(2);
+        itemCondition1.setSkuCode("12346496056001");
+        itemCondition1.setPrice(new BigDecimal("20"));
         orderItemConditions.add(itemCondition);
+        orderItemConditions.add(itemCondition1);
         OrderCreateCondition createCondition = new OrderCreateCondition();
-        createCondition.setCustomerId(0L);
-        createCondition.setStoreId(0L);
-        createCondition.setPayType(PayTypeEnum.WECHAT_SCAN_CODE_PAYMENT.getTypeCode());
-        createCondition.setPickupDateTime(new Date());
+        createCondition.setCustomerId(1L);
+        createCondition.setStoreId(12L);
+        createCondition.setPayType(PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode());
         createCondition.setOrderItemConditions(orderItemConditions);
         
         System.out.println(orderService.submitOrder(createCondition));

@@ -5,6 +5,9 @@ import javax.annotation.Resource;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
 import com.winhxd.b2c.common.domain.order.vo.*;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPayInfoCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -209,4 +214,31 @@ public class ApiOrderQueryController {
         LOGGER.info("{}=--结束", logTitle);
         return result;
     }
+    
+
+    @ApiOperation(value = "C端获取支付信息", notes = "C端获取支付信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
+            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+            @ApiResponse(code = BusinessCode.ORDER_GET_PAY_INFO_ERROR, message = "订单获取支付信息失败"),
+            @ApiResponse(code = BusinessCode.ORDER_IS_BEING_PAID, message = "订单已经支付")
+    })
+    @RequestMapping(value = "/4015/v1/getOrderPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<OrderPayVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
+        String logTitle = "/api-order/order/4015/v1/getOrderPayInfo-C端获取支付信息";
+        LOGGER.info("{}=--开始--{}", logTitle, condition);
+        ResponseResult<OrderPayVO> result = new ResponseResult<>();
+        //获取当前登录门店Id
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null || customerUser.getCustomerId() == null || StringUtils.isBlank(customerUser.getOpenid())) {
+            throw new BusinessException(BusinessCode.CODE_1002);
+        }
+        result.setData(orderQueryService.getOrderPayInfo(condition.getOrderNo(), condition.getSpbillCreateIp(), condition.getDeviceInfo(), customerUser.getCustomerId(), customerUser.getOpenid()));
+        LOGGER.info("{}=--结束 result={}", logTitle, result);
+        return result;
+    }
+    
 }

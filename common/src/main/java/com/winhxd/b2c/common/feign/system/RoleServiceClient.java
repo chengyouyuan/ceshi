@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface RoleServiceClient {
 
     /**
-     * 新增权限�     * @author zhangzhengyang
+     * 新增权限组     * @author zhangzhengyang
      * @date 2018/8/7
      * @param sysRole
      * @return
@@ -30,7 +30,7 @@ public interface RoleServiceClient {
     ResponseResult<Long> save(@RequestBody SysRole sysRole);
 
     /**
-     * 修改权限�     * @author zhangzhengyang
+     * 修改权限组     * @author zhangzhengyang
      * @date 2018/8/7
      * @param sysRole
      * @return
@@ -39,7 +39,7 @@ public interface RoleServiceClient {
     ResponseResult<Integer> modify(@RequestBody SysRole sysRole);
 
     /**
-     * 查询权限组列�     * @author zhangzhengyang
+     * 查询权限组列表    * @author zhangzhengyang
      * @date 2018/8/7
      * @param condition
      * @return
@@ -49,7 +49,7 @@ public interface RoleServiceClient {
 
 
     /**
-     * 根据主键获取权限组信�     * @author zhangzhengyang
+     * 根据主键获取权限组信息   * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
      * @return
@@ -58,7 +58,7 @@ public interface RoleServiceClient {
     ResponseResult<SysRole> get(@PathVariable("id") Long id);
 
     /**
-     * 根据主键获取权限组信�     * @author zhangzhengyang
+     * 根据主键获取权限组信息    * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
      * @return

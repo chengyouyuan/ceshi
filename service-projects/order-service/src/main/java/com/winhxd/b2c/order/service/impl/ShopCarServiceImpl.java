@@ -9,22 +9,24 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
+import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,15 +45,17 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShopCarServiceImpl.class);
 
-    @Resource
+    @Autowired
     private ShopCarMapper shopCarMapper;
 
-    @Resource
+    @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderQueryService orderQueryService;
 
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
-    @Resource
+    @Autowired
     private Cache cache;
 
     @Transactional(rollbackFor= {Exception.class})
@@ -117,7 +121,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public String readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public OrderPayVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
@@ -153,15 +157,16 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行结束...");
-
-                // TODO 金额不为空  调用pay-service返回签名字段:appid，partnerid，prepayid，noncestr，timestamp，package。注意：package的值格式为Sign=WXPay
+                OrderPayVO orderPayVO = new OrderPayVO();
                 if (null != condition.getOrderTotalMoney()) {
-
+                    logger.info("预订单接口readyOrder -> 统一下单接口执行...");
+                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, condition.getOpenid());
+                    logger.info("预订单接口readyOrder -> 统一下单接口执行结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
                 }
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCar);
                 this.removeShopCar(customerId);
-                return orderNo;
+                return orderPayVO;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }
@@ -199,14 +204,14 @@ public class ShopCarServiceImpl implements ShopCarService {
     private void checkShopCarProdInfo(ShopCarCondition condition){
         List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId());
         for (ShopCartProdVO shopCarProdVO : list) {
-            if (StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
+            if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
                 logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402010);
             }
             if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())) {
                 BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
                 BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
-                if(!sellMoney.equals(price)) {
+                if(sellMoney.compareTo(price) != 0) {
                     logger.error("商品加购异常{}  购物车商品价格有变动！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                     throw new BusinessException(BusinessCode.CODE_402012);
                 }

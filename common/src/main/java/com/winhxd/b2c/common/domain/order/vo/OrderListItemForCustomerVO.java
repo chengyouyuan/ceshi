@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class OrderListItemForCustomerVO {
     @ApiModelProperty(value = "商品图片URL", required = true)
-    private String productPictureUrl;
+    private String skuUrl;
     @ApiModelProperty(value = "商品名称", required = true)
-    private String productName;
+    private String skuDesc;
 }

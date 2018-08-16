@@ -66,7 +66,8 @@
         where customer_id = #{customerId,jdbcType=BIGINT}
         order by created desc
     </select>
-    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
+     keyColumn="id" useGeneratedKeys="true">
         insert into order_info (id, order_no, customer_id,
         store_id, valuation_type, order_status,
         pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
@@ -93,7 +94,8 @@
         #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
         #{createdByName,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
+     keyColumn="id" useGeneratedKeys="true">
         insert into order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -495,6 +497,9 @@
 	<sql id="order_info_list_orderBy">
 		order by info.created desc,info.order_no,item.sku_code
 	</sql>
+	<sql id="order_info_orderBy">
+		order by info.created desc,info.order_no
+	</sql>
 	<sql id="order_item_column">
 		,item.id AS itemId
         ,item.sku_code AS skuCode
@@ -518,6 +523,9 @@
         <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
+        <if test="condition.orderNo != null">
+            <bind name="orderNo" value="condition.orderNo + '%'" />
+        </if>
         select
         id
         from order_info info
@@ -527,7 +535,7 @@
         </if>
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
-        </if>
+        </if> 
         <if test="condition.dateInterval != null and condition.dateInterval.startDate != null">
             and created &gt;= #{condition.dateInterval.startDate,jdbcType=TIMESTAMP}
         </if>
@@ -552,12 +560,16 @@
         <if test="condition.regionCode != null">
             and region_code = #{condition.regionCode,jdbcType=VARCHAR}
         </if>
+        <if test="condition.orderNo != null">
+            and order_no like #{orderNo}
+        </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 
         	<foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
+        <include refid="order_info_orderBy"></include>
     </select>
     <select id="listOrderInOrderIds" resultMap="OrderInfoListResultMap">
         select
@@ -589,6 +601,7 @@
             and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
         </if>
         and store_id = #{storeId,jdbcType=BIGINT}
+        <include refid="order_info_orderBy"></include>
     </select>
     <select id="listOrder4StoreInOrderIds" resultMap="OrderInfoListResultMap">
         select
@@ -654,6 +667,7 @@
     <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
         select count(*) from order_info info
         where info.store_id=#{storeId,jdbcType=BIGINT}
+        and info.order_status=9
         and info.pickup_code in
         <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
             #{pickUpCodes}
@@ -746,5 +760,27 @@
 			order_info
 		where store_id = #{storeId,jdbcType=BIGINT}
 		group by store_id
+    </select>
+    <select id="selectOrderInfoByOrderNoAndCustomer" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        select
+        <include refid="Order_Info_List"/>
+        <include refid="order_item_column"></include>
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="customerId != null">
+        and customer_id=#{customerId,jdbcType=BIGINT}
+        </if>
+        <include refid="order_info_list_orderBy"></include>
+    </select>
+    <select id="selectOrderInfoByOrderNoAndStore" resultType="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO">
+        select
+        <include refid="Order_Info_List"/>
+        <include refid="order_item_column"></include>
+        from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
+        where info.order_no = #{orderNo,jdbcType=VARCHAR}
+        <if test="storeId != null">
+        and store_id=#{storeId,jdbcType=BIGINT}
+        </if>
+        <include refid="order_info_list_orderBy"></include>
     </select>
 </mapper>

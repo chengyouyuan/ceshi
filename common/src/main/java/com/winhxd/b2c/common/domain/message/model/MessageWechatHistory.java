@@ -19,10 +19,6 @@ public class MessageWechatHistory {
      */
     private String templateId;
     /**
-     * 消息模板标题
-     */
-    private String title;
-    /**
      * 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
      */
     private String page;

@@ -4,7 +4,10 @@ import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface SysRoleMapper {
     int deleteByPrimaryKey(Long id);
 

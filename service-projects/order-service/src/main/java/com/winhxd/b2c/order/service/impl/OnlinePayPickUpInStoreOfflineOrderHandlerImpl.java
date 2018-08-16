@@ -6,11 +6,17 @@ import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -70,6 +76,8 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
 
     @Resource
     private Cache cache;
+    @Resource
+    private MessageServiceClient messageServiceClient;
     
     @Override
     public void orderInfoBeforeCreateProcess(OrderInfo orderInfo) {
@@ -101,13 +109,13 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (result == null || result.getCode() != BusinessCode.CODE_OK) {
             logger.error("门店storeId={}，客户customerId={} 绑定关系失败", orderInfo.getStoreId(), orderInfo.getCustomerId());
         }
-        // TODO 发送云信
-        String msg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
         // 发送延时MQ信息，处理超时未确认取消操作
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        //给门店发送云信
+        OrderUtil.newOrderSendMsg2Store(messageServiceClient, orderInfo.getStoreId());
     }
     
     @Override
@@ -186,14 +194,14 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         }else {
             last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
         }
-        //TODO 发送云信
-        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
-        //TODO 发送消息给用户
-        Date pickupDateTime = orderInfo.getPickupDateTime() == null ? new Date() : orderInfo.getPickupDateTime();
-        String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
         // 发送延时MQ信息，处理超时未自提 取消操作
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_PICKUP_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
+        
+        //发送信息给门店
+        OrderUtil.orderNeedPickupSendMsg2Store(messageServiceClient, last4MobileNums, orderInfo.getStoreId());
+        // 发送消息给用户
+        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid());
     }
 
     private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {

@@ -1,8 +1,10 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * @author lizhonghua
@@ -12,45 +14,28 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
  */
 public class PayRefundCondition extends ApiCondition implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5825339934872843457L;
 
-	/**
-	 * 公众账号ID
-	 */
+	@ApiModelProperty("公众账号ID/小程序ID")
 	private String appid;
 
-	/**
-	 * 商户号
-	 */
-	private String mchId;
-
-	/**
-	 * 商户订单号
-	 */
+	@ApiModelProperty("商户订单号")
 	private String outTradeNo;
 
-	/**
-	 * 订单金额
-	 */
-	private Integer totalFee;
+	@ApiModelProperty("订单金额：元")
+	private BigDecimal totalAmount;
 
-	/**
-	 * 退款金额
-	 */
-	private Integer refundFee;
+	@ApiModelProperty("退款金额：元")
+	private BigDecimal refundAmount;
 
-    /**
-     * 退款原因
-     */
+	@ApiModelProperty("退款原因")
 	private String refundDesc;
 
-    /**
-     * 退款回调URL
-     */
-	private String notifyUrl;
+	@ApiModelProperty("创建人ID")
+	private Long createdBy;
+
+	@ApiModelProperty("创建人姓名")
+	private String createdByName;
 
 	public String getAppid() {
 		return appid;
@@ -58,14 +43,6 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 
 	public void setAppid(String appid) {
 		this.appid = appid;
-	}
-
-	public String getMchId() {
-		return mchId;
-	}
-
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
 	}
 
 	public String getOutTradeNo() {
@@ -76,35 +53,43 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 		this.outTradeNo = outTradeNo;
 	}
 
-	public Integer getTotalFee() {
-		return totalFee;
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
 	}
 
-	public void setTotalFee(Integer totalFee) {
-		this.totalFee = totalFee;
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
-	public Integer getRefundFee() {
-		return refundFee;
+	public BigDecimal getRefundAmount() {
+		return refundAmount;
 	}
 
-	public void setRefundFee(Integer refundFee) {
-		this.refundFee = refundFee;
+	public void setRefundAmount(BigDecimal refundAmount) {
+		this.refundAmount = refundAmount;
 	}
 
 	public String getRefundDesc() {
-        return refundDesc;
-    }
+		return refundDesc;
+	}
 
-    public void setRefundDesc(String refundDesc) {
-        this.refundDesc = refundDesc;
-    }
+	public void setRefundDesc(String refundDesc) {
+		this.refundDesc = refundDesc;
+	}
 
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
+	public Long getCreatedBy() {
+		return createdBy;
+	}
 
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
-    }
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
 }

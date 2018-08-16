@@ -19,7 +19,7 @@
         "name": "查询",
         "icon": null,
         "event": {
-          "type": "submit",
+          "type": "router",
           "ajaxType": "post",
           "path": "/promotion/5024/v1/findCouponApplyPage"
         }
@@ -35,6 +35,14 @@
     ],
     "columns": [
       {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
         "name": "",
         "title": "操作",
         "type": "button",
@@ -45,12 +53,9 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "id","details"
               ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "/promotion/5022/v1/viewCouponApplyDetail",
+              "path": "/appliyObjectRule/index",
               "configKey": ""
             }
           },
@@ -69,14 +74,6 @@
         ]
       },
       {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
-      },
-      {
         "name": "name",
         "title": "适用对象名称"
       },
@@ -86,7 +83,13 @@
       },
       {
         "name": "applyRuleType",
-        "title": "优惠券类型"
+        "title": "优惠券类型",
+        "options":[
+          {"1":"通用券"},
+          {"2":"品牌券"},
+          {"3":"品类券"},
+          {"4":"商品券"}
+        ]
       },
       {
         "name": "relTempleteCount",

@@ -396,6 +396,7 @@ public class ApiStoreProductManageController {
         productCondition.setProductSkus(putwaySkusByConditon);
         productCondition.setPageNo(condition.getPageNo());
         productCondition.setPageSize(condition.getPageSize());
+        productCondition.setSearchSkuCode(SearchSkuCodeEnum.NOT_IN_SKU_CODE);
         // hxd购买过的商品
         if (HXD_PROD_TYPE.equals(condition.getProdType())) {
             productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));

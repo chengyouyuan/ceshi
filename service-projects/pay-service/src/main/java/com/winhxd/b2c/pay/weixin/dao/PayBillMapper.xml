@@ -54,48 +54,6 @@
     limit_pay, buyer_id, status, error_code, error_message, prepay_id, code_url, is_subscribe, 
     bank_type, cash_fee, cash_fee_type, coupon_fee, coupon_count, created, updated
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from pay_bill
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from pay_bill
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayBill" >
-    insert into pay_bill (id, appid, mch_id, 
-      device_info, nonce_str, sign, 
-      sign_type, body, detail, 
-      attach, out_order_no, out_trade_no, 
-      transaction_id, fee_type, total_fee, 
-      total_amount, callback_total_fee, callback_total_amount, 
-      settlement_total_fee, settlement_total_amount, 
-      spbill_create_ip, time_start, time_expire, 
-      time_end, goods_tag, notify_url, 
-      trade_type, product_id, limit_pay, 
-      buyer_id, status, error_code, 
-      error_message, prepay_id, code_url, 
-      is_subscribe, bank_type, cash_fee, 
-      cash_fee_type, coupon_fee, coupon_count, 
-      created, updated)
-    values (#{id,jdbcType=BIGINT}, #{appid,jdbcType=VARCHAR}, #{mchId,jdbcType=VARCHAR}, 
-      #{deviceInfo,jdbcType=VARCHAR}, #{nonceStr,jdbcType=VARCHAR}, #{sign,jdbcType=VARCHAR}, 
-      #{signType,jdbcType=VARCHAR}, #{body,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, 
-      #{attach,jdbcType=VARCHAR}, #{outOrderNo,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, 
-      #{transactionId,jdbcType=VARCHAR}, #{feeType,jdbcType=VARCHAR}, #{totalFee,jdbcType=INTEGER}, 
-      #{totalAmount,jdbcType=DECIMAL}, #{callbackTotalFee,jdbcType=INTEGER}, #{callbackTotalAmount,jdbcType=DECIMAL}, 
-      #{settlementTotalFee,jdbcType=INTEGER}, #{settlementTotalAmount,jdbcType=DECIMAL}, 
-      #{spbillCreateIp,jdbcType=VARCHAR}, #{timeStart,jdbcType=TIMESTAMP}, #{timeExpire,jdbcType=TIMESTAMP}, 
-      #{timeEnd,jdbcType=TIMESTAMP}, #{goodsTag,jdbcType=VARCHAR}, #{notifyUrl,jdbcType=VARCHAR}, 
-      #{tradeType,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, #{limitPay,jdbcType=VARCHAR}, 
-      #{buyerId,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{errorCode,jdbcType=VARCHAR}, 
-      #{errorMessage,jdbcType=VARCHAR}, #{prepayId,jdbcType=VARCHAR}, #{codeUrl,jdbcType=VARCHAR}, 
-      #{isSubscribe,jdbcType=CHAR}, #{bankType,jdbcType=VARCHAR}, #{cashFee,jdbcType=INTEGER}, 
-      #{cashFeeType,jdbcType=VARCHAR}, #{couponFee,jdbcType=INTEGER}, #{couponCount,jdbcType=INTEGER}, 
-      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP})
-  </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayBill" >
     insert into pay_bill
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -493,50 +451,12 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayBill" >
-    update pay_bill
-    set appid = #{appid,jdbcType=VARCHAR},
-      mch_id = #{mchId,jdbcType=VARCHAR},
-      device_info = #{deviceInfo,jdbcType=VARCHAR},
-      nonce_str = #{nonceStr,jdbcType=VARCHAR},
-      sign = #{sign,jdbcType=VARCHAR},
-      sign_type = #{signType,jdbcType=VARCHAR},
-      body = #{body,jdbcType=VARCHAR},
-      detail = #{detail,jdbcType=VARCHAR},
-      attach = #{attach,jdbcType=VARCHAR},
-      out_order_no = #{outOrderNo,jdbcType=VARCHAR},
-      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
-      transaction_id = #{transactionId,jdbcType=VARCHAR},
-      fee_type = #{feeType,jdbcType=VARCHAR},
-      total_fee = #{totalFee,jdbcType=INTEGER},
-      total_amount = #{totalAmount,jdbcType=DECIMAL},
-      callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
-      callback_total_amount = #{callbackTotalAmount,jdbcType=DECIMAL},
-      settlement_total_fee = #{settlementTotalFee,jdbcType=INTEGER},
-      settlement_total_amount = #{settlementTotalAmount,jdbcType=DECIMAL},
-      spbill_create_ip = #{spbillCreateIp,jdbcType=VARCHAR},
-      time_start = #{timeStart,jdbcType=TIMESTAMP},
-      time_expire = #{timeExpire,jdbcType=TIMESTAMP},
-      time_end = #{timeEnd,jdbcType=TIMESTAMP},
-      goods_tag = #{goodsTag,jdbcType=VARCHAR},
-      notify_url = #{notifyUrl,jdbcType=VARCHAR},
-      trade_type = #{tradeType,jdbcType=VARCHAR},
-      product_id = #{productId,jdbcType=VARCHAR},
-      limit_pay = #{limitPay,jdbcType=VARCHAR},
-      buyer_id = #{buyerId,jdbcType=VARCHAR},
-      status = #{status,jdbcType=SMALLINT},
-      error_code = #{errorCode,jdbcType=VARCHAR},
-      error_message = #{errorMessage,jdbcType=VARCHAR},
-      prepay_id = #{prepayId,jdbcType=VARCHAR},
-      code_url = #{codeUrl,jdbcType=VARCHAR},
-      is_subscribe = #{isSubscribe,jdbcType=CHAR},
-      bank_type = #{bankType,jdbcType=VARCHAR},
-      cash_fee = #{cashFee,jdbcType=INTEGER},
-      cash_fee_type = #{cashFeeType,jdbcType=VARCHAR},
-      coupon_fee = #{couponFee,jdbcType=INTEGER},
-      coupon_count = #{couponCount,jdbcType=INTEGER},
-      created = #{created,jdbcType=TIMESTAMP},
-      updated = #{updated,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+  <!-- 是否支付完成 -->
+  <select id="selectPaidByOutOrderNo" resultMap="long" parameterType="java.lang.String" >
+    select 
+    count(out_order_no)
+    from pay_bill
+    where out_order_no = #{outOrderNo}
+    and status=1
+  </select>
 </mapper>

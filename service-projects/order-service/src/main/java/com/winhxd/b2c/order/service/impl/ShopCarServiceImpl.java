@@ -9,12 +9,14 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
+import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,6 +50,8 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Resource
     private OrderService orderService;
+    @Resource
+    private OrderQueryService orderQueryService;
 
     @Resource
     private StoreServiceClient storeServiceClient;
@@ -117,7 +121,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public String readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public OrderPayVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
@@ -153,15 +157,16 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
                 logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行结束...");
-
-                // TODO 金额不为空  调用pay-service返回签名字段:appid，partnerid，prepayid，noncestr，timestamp，package。注意：package的值格式为Sign=WXPay
+                OrderPayVO orderPayVO = new OrderPayVO();
                 if (null != condition.getOrderTotalMoney()) {
-
+                    logger.info("预订单接口readyOrder -> 统一下单接口执行...");
+                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, condition.getOpenid());
+                    logger.info("预订单接口readyOrder -> 统一下单接口执行结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
                 }
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCar);
                 this.removeShopCar(customerId);
-                return orderNo;
+                return orderPayVO;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }

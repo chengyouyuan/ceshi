@@ -866,7 +866,7 @@ public class CouponServiceImpl implements CouponService {
      */
     public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
         for(CouponInStoreGetedAndUsedVO vo : couponVOS){
-            if(vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+            if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyProducts.isEmpty()){
                     List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
@@ -888,7 +888,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
 
-            if(vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+            if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.BRAND_COUPON.getCode())){
                 List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(vo.getApplyId());
                 if(!couponApplyBrands.isEmpty()){
                     List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());

@@ -120,7 +120,7 @@ public class MiniProgramUtils {
         //先看缓存中有没有，如果没有，重新获取，再存到缓存中。
         if(StringUtils.isNotEmpty(cache.get(CacheName.MESSAGE_MINI_ACCESS_TOKEN))){
             token = cache.get(CacheName.MESSAGE_MINI_ACCESS_TOKEN);
-            LOGGER.info("MiniProgramUtils ->getAccessToken,小程序获取AccessToken，小程序获取AccessToken={}",token);
+            LOGGER.info("MiniProgramUtils ->getAccessToken,小程序获取AccessToken，cache.AccessToken={}",token);
             return token;
         }
         List<NameValuePair> params = new ArrayList<>();

@@ -2,3 +2,5 @@ spring:
   messages:
     encoding: utf-8
     basename: i18n/codes
+picture:
+  basehost: http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson

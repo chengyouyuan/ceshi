@@ -17,5 +17,5 @@ public interface PayStoreBankrollLogMapper {
 
     int updateByPrimaryKey(PayStoreBankrollLog record);
     
-    List<PayStoreBankrollLog> selectListByOrderNoAndType();
+    List<PayStoreBankrollLog> selectListByNoAndType();
 }

@@ -18,6 +18,9 @@ import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
@@ -32,10 +35,7 @@ import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
@@ -277,7 +277,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public PayRefundDTO refundOrder(PayRefundCondition payRefund) {
+	public OrderPayVO refundOrder(PayRefundCondition payRefund) {
 		
 		//验证订单支付参数
 		String log=logLabel+"订单退款refundOrder";
@@ -308,7 +308,8 @@ public class PayServiceImpl implements PayService{
 //			throw new BusinessException(BusinessCode.CODE_600106);
 //		}
 		
-		return refundService.refundOrder(payRefund);
+//		return refundService.refundOrder(payRefund);
+		return null;
 	}
 
 	@Override

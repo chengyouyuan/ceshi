@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
-import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

@@ -2,14 +2,13 @@ package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankRollLogCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.pay.weixin.condition.PayRefundCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.pay.weixin.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.pay.weixin.dto.PayRefundDTO;
 
 /**
  * @author liuhanning
@@ -78,7 +77,7 @@ public interface PayService {
 	 * @param payRefund
 	 * @return
 	 */
-	PayRefundDTO refundOrder(PayRefundCondition payRefund);
+	OrderPayVO refundOrder(PayRefundCondition payRefund);
 	
 	/**
      * 微信提现至余额入口

@@ -346,7 +346,7 @@ public final class BusinessCode {
      */
     public static final int CODE_600108 = 600108;
     /**
-     *  订单支退款 参数为空
+     *  订单退款 参数为空
      */
     public static final int CODE_600201 = 600201;
     
@@ -354,4 +354,7 @@ public final class BusinessCode {
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;
+
+    @ApiModelProperty("云信账户异常")
+    public static final int CODE_701101 = 701101;
 }

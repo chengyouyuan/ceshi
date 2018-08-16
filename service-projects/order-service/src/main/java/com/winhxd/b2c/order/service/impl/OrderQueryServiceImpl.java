@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.*;
@@ -105,7 +106,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
-        return orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+        CustomerUser user = UserContext.getCurrentCustomerUser();
+        if (null == user) {
+            throw new BusinessException(BusinessCode.CODE_1002, "登录用户不存在");
+        }
+        return orderInfoMapper.selectOrderInfoByOrderNoAndCustomer(condition.getOrderNo(),user.getCustomerId());
     }
 
     /**
@@ -121,7 +126,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (StringUtils.isBlank(condition.getOrderNo())) {
             throw new BusinessException(BusinessCode.CODE_4011001, "查询订单参数异常");
         }
-        return orderInfoMapper.selectOrderInfoByOrderNo(condition.getOrderNo());
+        StoreUser store = UserContext.getCurrentStoreUser();
+        if (null == store) {
+            throw new BusinessException(BusinessCode.WRONG_STORE_ID, "门店不存在");
+        }
+        return orderInfoMapper.selectOrderInfoByOrderNoAndStore(condition.getOrderNo(), store.getBusinessId());
     }
 
     @Override

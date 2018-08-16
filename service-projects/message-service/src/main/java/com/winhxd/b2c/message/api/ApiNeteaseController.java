@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -25,10 +26,11 @@ import org.springframework.web.bind.annotation.*;
  * @className ApiNeteaseController
  * @description 网易云信接口
  */
-@Api(value = "消息盒子", tags = "云信消息列表接口")
+@Api(value = "云信消息列表接口", tags = "消息盒子")
 @RestController
 @RequestMapping(value = "api-message/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiNeteaseController {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiNeteaseController.class);
 
 	@Autowired
@@ -37,28 +39,51 @@ public class ApiNeteaseController {
 	@ApiOperation(value = "获取云信用户消息接口", notes = "获取云信用户消息接口")
 	@ApiResponses({
 			@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+			@ApiResponse(code = BusinessCode.CODE_701101, message = "云信账户异常")
 	})
 	@RequestMapping(value = "netease/7011/v1/findNeteaseMsgBox", method = RequestMethod.POST)
-	public ResponseResult<PagedList<NeteaseMsgVO>> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition neteaseMsgBoxCondition) {
+	public ResponseResult<PagedList<NeteaseMsgVO>> findNeteaseMsgBox(@RequestBody NeteaseMsgBoxCondition condition) {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
 			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox当前用户登录的凭证无效 ");
-			throw new BusinessException(BusinessCode.CODE_1002);
+			//throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		Long customerId = storeUser.getStoreCustomerId();
+		if (condition == null || condition.getTimeType() == null) {
+			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox请求参数无效 ");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		//Long customerId = storeUser.getStoreCustomerId();
 		ResponseResult<PagedList<NeteaseMsgVO>> result = new ResponseResult<>();
-		try {
-			PagedList<NeteaseMsgVO> list = neteaseService.getNeteaseMsgBox(neteaseMsgBoxCondition, customerId);
-			result.setData(list);
-		} catch (BusinessException e) {
-			LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e.getErrorCode());
-			result.setCode(e.getErrorCode());
-		} catch (Exception e) {
-			LOGGER.error("/api-message/netease/7011/v1/findNeteaseMsgBox,获取云信用户消息接口，异常信息{}" + e.getMessage(), e);
-			result.setCode(BusinessCode.CODE_1001);
-		}
+		PagedList<NeteaseMsgVO> list = neteaseService.findNeteaseMsgBox(condition, 13L);
+		result.setData(list);
 		return result;
 	}
 
+	@ApiOperation(value = "设置云信消息已读状态", notes = "设置云信消息已读状态")
+	@ApiResponses({
+			@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
+			@ApiResponse(code = BusinessCode.CODE_701101, message = "云信账户异常")
+	})
+	@RequestMapping(value = "netease/7010/v1/modifyNeteaseMsgReadStatus", method = RequestMethod.POST)
+	public ResponseResult<Void> modifyNeteaseMsgReadStatus(@RequestBody NeteaseMsgReadStatusCondition condition) {
+		StoreUser storeUser = UserContext.getCurrentStoreUser();
+		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
+			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus当前用户登录的凭证无效 ");
+			//throw new BusinessException(BusinessCode.CODE_1002);
+		}
+		if (condition == null || condition.getAllRead() == null) {
+			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus请求参数无效 ");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		//Long customerId = storeUser.getStoreCustomerId();
+		ResponseResult<Void> result = new ResponseResult<>();
+		neteaseService.modifyNeteaseMsgReadStatus(condition, 13L);
+		return result;
+	}
 }

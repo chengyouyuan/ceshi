@@ -139,14 +139,15 @@ public interface OrderInfoMapper {
      * 更新订单支付状态
      *
      * @param statusCode
-     * @param paymentSerialNum 
+     * @param paymentSerialNum
      * @param payFinishDateTime
      * @param orderId
      * @return 更新数量
      * @author wangbin
      * @date 2018年8月6日 上午11:12:13
      */
-    int updateOrderPayStatus(@Param("payStatus") short payStatus, @Param("paymentSerialNum") String paymentSerialNum, @Param("payFinishDateTime") Date payFinishDateTime, @Param("orderId") long orderId);
+    int updateOrderPayStatus(@Param("payStatus") short payStatus, @Param("paymentSerialNum") String paymentSerialNum, @Param("payFinishDateTime") Date payFinishDateTime, @Param("orderId") long
+            orderId);
 
     /**
      * 订单状态修改接口
@@ -170,6 +171,7 @@ public interface OrderInfoMapper {
      * @date 2018年8月6日 下午3:29:26
      */
     List<Long> listOrder4Management(@Param("condition") OrderInfoQuery4ManagementCondition condition);
+
     /**
      * 查询订单列表
      *
@@ -179,10 +181,10 @@ public interface OrderInfoMapper {
      * @date 2018年8月6日 下午3:29:26
      */
     List<OrderInfoDetailVO> listOrderInOrderIds(@Param("orderIds") List<Long> orderIds);
-    
+
     /**
      * 查询门店订单列表
-     * 
+     *
      * @param orderIds
      * @return
      * @author wangbin
@@ -192,20 +194,22 @@ public interface OrderInfoMapper {
 
     /**
      * 更新订单提货码
-     * @author wangbin
-     * @date  2018年8月7日 下午1:21:55
+     *
      * @param pickUpCode
      * @param id
+     * @author wangbin
+     * @date 2018年8月7日 下午1:21:55
      */
     int updateOrderPickupCode(@Param("pickUpCode") String pickUpCode, @Param("orderId") Long orderId);
 
     /**
-     * 根据条件查询 
-     * @author wangbin
-     * @date  2018年8月7日 下午2:08:07
+     * 根据条件查询
+     *
      * @param condition
      * @param storeId
      * @return
+     * @author wangbin
+     * @date 2018年8月7日 下午2:08:07
      */
     List<Long> listOrder4Store(@Param("condition") OrderQuery4StoreCondition condition, @Param("storeId") Long storeId);
 
@@ -219,39 +223,43 @@ public interface OrderInfoMapper {
 
     /**
      * 订单提货
-     * @author wangbin
-     * @date  2018年8月8日 下午6:25:55
-     * @Description 
+     *
      * @param pickupCode
      * @param orderId
      * @param expectOrderStatus
      * @param newOrderStatus
      * @return
+     * @author wangbin
+     * @date 2018年8月8日 下午6:25:55
+     * @Description
      */
     int orderPickup(@Param("pickupCode") String pickupCode, @Param("orderId") Long orderId, @Param("expectOrderStatus") Short expectOrderStatus, @Param("newOrderStatus") short newOrderStatus);
 
     /**
      * 订单各状态数量统计
-     * @author wangbin
-     * @date  2018年8月9日 下午2:02:13
+     *
      * @param storeCustomerId
-     * @return 
+     * @return
+     * @author wangbin
+     * @date 2018年8月9日 下午2:02:13
      */
     OrderCountByStatus4StoreVO getOrderCountByStatus(Long storeCustomerId);
 
     /**
      * 更新订单总金额
-     * @author wangbin
-     * @date  2018年8月9日 下午4:00:33
+     *
      * @param orderTotalMoney
      * @param realPayMoney
      * @param orderId
      * @return
+     * @author wangbin
+     * @date 2018年8月9日 下午4:00:33
      */
     int updateOrderMoney(@Param("orderTotalMoney") BigDecimal orderTotalMoney, @Param("realPayMoney") BigDecimal realPayMoney, @Param("orderId") Long orderId);
 
     /**
      * 更新订单状态为已退款状态
+     *
      * @param orderNo
      * @return
      */
@@ -259,9 +267,28 @@ public interface OrderInfoMapper {
 
     /**
      * 更新订单 接单时间
-     * @author wangbin
-     * @date  2018年8月13日 下午7:59:27
+     *
      * @param date
+     * @author wangbin
+     * @date 2018年8月13日 下午7:59:27
      */
     void updateOrderConfirmDate(@Param("date") Date date, @Param("orderId") Long orderId);
+
+    /**
+     * 获取C端用户的订单和订单商品内容
+     *
+     * @param orderNo    订单编号
+     * @param customerId 用户id
+     * @return {@link OrderInfoDetailVO}
+     */
+    OrderInfoDetailVO selectOrderInfoByOrderNoAndCustomer(@Param("orderNo") String orderNo, @Param("customerId") Long customerId);
+
+    /**
+     * 获取B端门店的订单和订单商品内容
+     *
+     * @param orderNo 订单编号
+     * @param storeId 门店id
+     * @return {@link OrderInfoDetailVO}
+     */
+    OrderInfoDetailVO selectOrderInfoByOrderNoAndStore(@Param("orderNo") String orderNo, @Param("storeId") Long storeId);
 }

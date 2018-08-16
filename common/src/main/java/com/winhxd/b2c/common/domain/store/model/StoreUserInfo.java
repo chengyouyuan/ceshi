@@ -168,7 +168,7 @@ public class StoreUserInfo implements Serializable {
         return pickupType;
     }
 
-    public void setPickuppickupType(String pickupType) {
+    public void setPickupType(String pickupType) {
         this.pickupType = pickupType;
     }
 

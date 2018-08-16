@@ -1,22 +1,24 @@
 package com.winhxd.b2c.message.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.*;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.service.NeteaseService;
+import com.winhxd.b2c.message.support.annotation.MessageEnumConvertAnnotation;
 import com.winhxd.b2c.message.utils.GeneratePwd;
 import com.winhxd.b2c.message.utils.NeteaseUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -43,7 +45,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 	private static final String PARAM_CODE = "code";
 	private static final String PARAM_DESC = "desc";
 	private static final String PARAM_MSGID = "msgid";
-	private static final Integer TIME_TYPE_TODAY = 0;
+	private static final Short TIME_TYPE_TODAY = 0;
 
 	@Value("${netease.accidSuffix}")
 	private String accidSuffix;
@@ -140,23 +142,47 @@ public class NeteaseServiceImpl implements NeteaseService {
 	}
 
 	@Override
-	public PagedList<NeteaseMsgVO> getNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long customerId) {
-		String startTime = null;
-		String endTime = null;
+	@MessageEnumConvertAnnotation
+	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long customerId) {
 		String accid;
 		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
-		accid = neteaseAccount.getAccid();
+		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
+			throw new BusinessException(BusinessCode.CODE_701101);
+		}
+		accid = "13_102_uat";//neteaseAccount.getAccid();
 		PagedList<NeteaseMsgVO> pagedList = new PagedList<>();
+		condition.setAccid(accid);
 		Date currentDate = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		if (TIME_TYPE_TODAY.equals(neteaseMsgBoxCondition.getTimeType())) {
-			startTime = formatter.format(currentDate);
+		if (TIME_TYPE_TODAY.equals(condition.getTimeType())) {
+			condition.setStartTime(formatter.format(currentDate));
 		} else {
-			endTime = formatter.format(currentDate);
+			condition.setEndTime(formatter.format(currentDate));
 		}
-		List<NeteaseMsgVO> neteaseMsgVOPage = neteaseHistoryMapper.selectVoByCondition(accid, startTime, endTime);
+		Page page = PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+		List<NeteaseMsgVO> neteaseMsgVOPage = neteaseHistoryMapper.selectVoByCondition(condition);
+		pagedList.setPageNo(condition.getPageNo());
+		pagedList.setPageSize(condition.getPageSize());
+		pagedList.setTotalRows(page.getTotal());
 		pagedList.setData(neteaseMsgVOPage);
 		return pagedList;
+	}
+
+	@Override
+	public Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition condition, Long customerId) {
+		Boolean result = false;
+		String accid;
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
+			throw new BusinessException(BusinessCode.CODE_701101);
+		}
+		accid = "13_102_uat";//neteaseAccount.getAccid();
+		condition.setAccid(accid);
+		int updateCount = neteaseHistoryMapper.updateReadStatusByCondition(condition);
+		if (updateCount > 0) {
+			result = true;
+		}
+		return result;
 	}
 
 	/**

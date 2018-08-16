@@ -76,7 +76,7 @@ public class ApiOrderController {
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
-    
+
     @ApiOperation(value = "B端自提完成", notes = "B端自提完成")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -162,10 +162,19 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4022/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
-        LOGGER.info("=/api-order/order/4022/v1/orderRefundByCustomer-B端退款订单处理接口=--开始--{}", condition);
+        String logTitle = "=/api-order/order/4022/v1/orderRefundByCustomer-B端退款订单处理接口=";
+        LOGGER.info("{}--开始--{}", logTitle, condition);
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.handleOrderRefundByStore(condition);
-        LOGGER.info("=/api-order/order/4022/v1/orderRefundByCustomer-B端退款订单处理接口=--结束 result={}", result);
+        try {
+            this.orderService.handleOrderRefundByStore(condition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
+            throw e;
+        }
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 
@@ -183,10 +192,19 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4021/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
-        LOGGER.info("=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=--开始--{}", orderRefundCondition);
+        String logTitle = "=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=";
+        LOGGER.info("{}--开始--{}", logTitle, orderRefundCondition);
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.orderRefundByCustomer(orderRefundCondition);
-        LOGGER.info("=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=--结束 result={}", result);
+        try {
+            this.orderService.orderRefundByCustomer(orderRefundCondition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
+            throw e;
+        }
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 
@@ -203,10 +221,19 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4020/v1/cancelOrderByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByCustomer(@RequestBody OrderCancelCondition orderCancelCondition) {
-        LOGGER.info("=/api-order/order/4020/v1/cancelOrderByCustomer-订单取消接口=--开始--{}", orderCancelCondition);
+        String logTitle = "=/api-order/order/4020/v1/cancelOrderByCustomer-订单取消接口=";
+        LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.cancelOrderByCustomer(orderCancelCondition);
-        LOGGER.info("=/api-order/order/4020/v1/cancelOrderByCustomer-订单取消接口=--结束 result={}", result);
+        try {
+            this.orderService.cancelOrderByCustomer(orderCancelCondition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
+            throw e;
+        }
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 
@@ -227,8 +254,16 @@ public class ApiOrderController {
         String logTitle = "=/api-order/order/4025/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
         ResponseResult<Void> result = new ResponseResult<>();
-        this.orderService.cancelOrderByStore(orderCancelCondition);
-        LOGGER.info("{}--结束 result={}", logTitle, result);
+        try {
+            this.orderService.cancelOrderByStore(orderCancelCondition);
+        } catch (BusinessException e) {
+            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
+            throw e;
+        } catch (Exception e) {
+            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
+            throw e;
+        }
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 }

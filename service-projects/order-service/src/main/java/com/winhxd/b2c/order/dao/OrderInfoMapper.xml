@@ -66,7 +66,8 @@
         where customer_id = #{customerId,jdbcType=BIGINT}
         order by created desc
     </select>
-    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
+     keyColumn="id" useGeneratedKeys="true">
         insert into order_info (id, order_no, customer_id,
         store_id, valuation_type, order_status,
         pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
@@ -93,7 +94,8 @@
         #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
         #{createdByName,jdbcType=VARCHAR})
     </insert>
-    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo">
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
+     keyColumn="id" useGeneratedKeys="true">
         insert into order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

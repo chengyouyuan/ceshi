@@ -425,45 +425,13 @@
   </select>
 
 
-  <!-- 批量（单个）设置无效或批量（单个）非物理删除 -->
+  <!-- 设为无效 -->
   <update id="updateCouponTemplateToValid" parameterType="java.util.List">
-      update coupon_template set status= 0 ,updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
-      where id in
-    <foreach collection="idsList" index="index" item="item" open="(" separator="," close=")">
-       #{item}
-    </foreach>
-  </update>
-
-
-<!-- 更新优惠券模板 -->
-  <update id="confirmUpdateCouponTemplate">
-    update coupon_template set
-      updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
-      <if test="condition.title!=null and condition.title!=''">
-        ,title = #{condition.title}
-      </if>
-    <if test="condition.exolian!=null and condition.exolian!=''">
-      ,exolian = #{condition.exolian}
-    </if>
-    <if test="condition.remarks!=null and condition.remarks!=''">
-      ,remarks = #{condition.remarks}
-    </if>
-    <if test="condition.investorId!=null and condition.investorId!=''">
-      ,investor_id = #{condition.investorId}
-    </if>
-    <if test="condition.gradeId !=null and condition.gradeId  !=''">
-      ,grade_id = #{condition.gradeId}
-    </if>
-    <if test="condition.applyRuleId!=null and condition.applyRuleId!=''">
-      ,apply_rule_id = #{condition.applyRuleId}
-    </if>
-    <if test="condition.couponLabel!=null and condition.couponLabel!=''">
-      ,coupon_label = #{condition.couponLabel}
-    </if>
-    <if test="condition.status!=null and condition.status!=''">
-      ,status = #{condition.status }
-    </if>
-    where id = #{condition.id}
+      update coupon_template set status= 0 ,
+      updated_by=#{updatedBy},
+      updated_by_name=#{updateByName},
+      updated=#{updated}
+      where id = #{id}
   </update>
 
 

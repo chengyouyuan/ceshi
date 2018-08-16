@@ -385,11 +385,11 @@
     left join coupon_grade c on a.grade_id = c.id
     left join coupon_apply d on a.apply_rule_id = d.id
     where 1=1
-    <if test="condition.createdBegin!=null and  condition.createdBegin!=''">
-      and a.created <![CDATA[ >= ]]> #{condition.createdBegin}
+    <if test="condition.dateInterval.startDate!=null and  condition.dateInterval.startDate!=''">
+      and a.created <![CDATA[ >= ]]> #{condition.dateInterval.startDate}
     </if>
-    <if test="condition.createdEnd!=null and  condition.createdEnd!=''">
-      and a.created <![CDATA[ <= ]]> #{condition.createdEnd}
+    <if test="condition.dateInterval.endDate!=null and  condition.dateInterval.endDate!=''">
+      and a.created <![CDATA[ <= ]]> #{condition.dateInterval.endDate}
     </if>
     <if test="condition.createdByName!=null and  condition.createdByName!=''">
       and a.created_by_name = #{condition.createdByName}

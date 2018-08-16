@@ -302,7 +302,6 @@
     from pay_withdrawals
     where store_id = #{storeId}
   </select>
-<<<<<<< HEAD
   
   <resultMap id="storeUserinfoVo" type="com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO">
   	<result column="storeName" property="storeName" />
@@ -376,36 +375,6 @@
     </if>
     order by 1 desc
   </select>
-=======
 
-  <select id="selectPayWithdrawalsListByCondition" resultMap="voResultMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition">
-    select
-    <include refid="Base_Column_List"/>
-    from pay_withdrawals
-    where 1 = 1
-    <if test="storeId != null">
-      and store_id = #{storeId}
-    </if>
-    <if test="auditStatus != null">
-      and audit_status = #{auditStatus}
-    </if>
-    <if test="callbackStatus != null">
-      and callback_status = #{callbackStatus}
-    </if>
-    <if test="withdrawalsDateStart != null">
-      and time_end &gt;= date_format(#{withdrawalsDateStart}, '%Y-%m-%d')
-    </if>
-    <if test="withdrawalsDateEnd != null">
-      and time_end &lt; date_add(date_format(#{withdrawalsDateEnd}, '%Y-%m-%d'), interval 1 day)
-    </if>
-    <if test="totalFeeStart != null">
-      and total_fee &gt;= totalFeeStart
-    </if>
-    <if test="totalFeeEnd != null">
-      and total_fee &lt; totalFeeEnd
-    </if>
-    order by 1 desc
-  </select>
 
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
 </mapper>

@@ -336,10 +336,29 @@ public class CommonOrderServiceImpl implements OrderService {
         return callbackResult;
     }
 
-    private void applyRefund(OrderInfo order){
+    /**
+     * 申请退款发送请求
+     *
+     * @param order      订单
+     * @param operatorId 操作人ID
+     * @param operator   操作人
+     * @param reason     退款原因
+     */
+    private void applyRefund(OrderInfo order, Long operatorId, String operator, String reason) {
+        if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款状态异常");
+        }
         PayRefundCondition payRefundCondition = new PayRefundCondition();
-        payRefundCondition.setOutTradeNo(order.getOrderNo());
+        payRefundCondition.setOutTradeNo(order.getPaymentSerialNum());
+        payRefundCondition.setTotalAmount(order.getRealPaymentMoney());
+        payRefundCondition.setRefundAmount(order.getRealPaymentMoney());
+        payRefundCondition.setCreatedBy(operatorId);
+        payRefundCondition.setCreatedByName(operator);
+        payRefundCondition.setRefundDesc(reason);
         PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
+        if (!payRefundVO.isStatus()) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款申请异常");
+        }
     }
 
 
@@ -633,7 +652,9 @@ public class CommonOrderServiceImpl implements OrderService {
         int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
         //添加订单流转日志
         if (updateResult > 0) {
-            //TODO 调用订单退款接口 请求返回成功状态改为退款中
+            logger.info("订单退款-申请退款开始-订单号={}", orderNo);
+            applyRefund(order, operatorId, operatorName, cancelReason);
+            logger.info("订单退款-申请退款结束-订单号={}", orderNo);
             //退优惠券
             logger.info("订单退款-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();

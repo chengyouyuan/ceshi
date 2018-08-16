@@ -44,11 +44,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	@Resource
 	Cache cache;
 	
-	@Value("${pay.withdrawal.cmms_amt}")
+//	@Value("${pay.withdrawal.cmms_amt}")
 	private BigDecimal cmms_amt;// 银行手续费
-	@Value("${pay.withdrawal.rate}")
+//	@Value("${pay.withdrawal.rate}")
 	private BigDecimal rate;// 微信费率
-	@Value("${pay.withdrawal.maxmoney}")//最高限额
+//	@Value("${pay.withdrawal.maxmoney}")//最高限额
 	private BigDecimal maxMoney;
 
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/

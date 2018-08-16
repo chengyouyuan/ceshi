@@ -296,7 +296,7 @@
                                 order by prod.sell_money desc
                             </when>
                             <otherwise>
-                                order by when sell_money is null then 1 else 0 end, prod.sell_money asc
+                                order by case when sell_money is null then 1 else 0 end, prod.sell_money asc
                             </otherwise>
                         </choose>
                     </when>

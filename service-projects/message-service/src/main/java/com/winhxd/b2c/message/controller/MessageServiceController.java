@@ -2,6 +2,8 @@ package com.winhxd.b2c.message.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
@@ -105,12 +107,24 @@ public class MessageServiceController implements MessageServiceClient {
     }
 
     @Override
-    public ResponseResult<Void> sendMiniMsg(@RequestParam("formId")String formId) {
+    public ResponseResult<Void> sendMiniMsg(@RequestBody MiniMsgCondition miniMsgCondition) {
         ResponseResult<Void> result = new ResponseResult<>();
         try {
-            result = miniProgramService.sendMiniMsg(formId);
-        }catch (Exception e){
-            LOGGER.error("/message/7022/v1/sendMsg,给C端用户推送小程序模板消息出错，异常信息为={}",e);
+            result = miniProgramService.sendMiniMsg(miniMsgCondition);
+        } catch (Exception e) {
+            LOGGER.error("/message/7022/v1/sendMiniMsg,给C端用户推送小程序模板消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition miniFormIdCondition) {
+        ResponseResult<Void> result = new ResponseResult<>();
+        try {
+            miniProgramService.saveFormIds(miniFormIdCondition);
+        } catch (Exception e) {
+            LOGGER.error("/message/7023/v1/saveFormIds,保存用户formid出错，异常信息为={}", e);
             result.setCode(BusinessCode.CODE_1001);
         }
         return result;

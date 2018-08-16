@@ -142,7 +142,13 @@
     select
     <include refid="Base_Column_List" />
     from message_netease_account
-    where customer_id = #{customerId,jdbcType=BIGINT}
+    where customer_id = #{customerId,jdbcType=BIGINT} order by created desc limit 1
   </select>
+  <update id="updateByCustomerId" >
+    update message_netease_account
+    set accid = #{accid,jdbcType=VARCHAR},
+      token = #{token,jdbcType=VARCHAR}
+    where customer_id = #{customerId,jdbcType=BIGINT}
+  </update>
 
 </mapper>

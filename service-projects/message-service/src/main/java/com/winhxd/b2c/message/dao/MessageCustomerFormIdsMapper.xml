@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.message.dao.MessageCustomerFormIdsMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="formid" jdbcType="VARCHAR" property="formid" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, openid, formid, created
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message_customer_form_ids
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from message_customer_form_ids
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds">
+    insert into message_customer_form_ids (id, openid, formid,
+      created)
+    values (#{id,jdbcType=BIGINT}, #{openid,jdbcType=VARCHAR}, #{formid,jdbcType=VARCHAR},
+      #{created,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds">
+    insert into message_customer_form_ids
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="formid != null">
+        formid,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="formid != null">
+        #{formid,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds">
+    update message_customer_form_ids
+    <set>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="formid != null">
+        formid = #{formid,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.message.model.MessageCustomerFormIds">
+    update message_customer_form_ids
+    set openid = #{openid,jdbcType=VARCHAR},
+      formid = #{formid,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insertFormIds"
+          parameterType="java.util.List">
+    insert into message_customer_form_ids (openid, formid,created)
+    values
+    <foreach collection="formIds" item="item" index="index" separator=",">
+      (
+      #{item.openid,jdbcType=VARCHAR}, #{item.formid,jdbcType=VARCHAR}, #{item.created,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+  <select id="getProd" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message_customer_form_ids
+    where openid = #{openid,jdbcType=VARCHAR} and created > date_add(sysdate(), interval -6 day) order by  created asc limit 1;
+  </select>
+</mapper>

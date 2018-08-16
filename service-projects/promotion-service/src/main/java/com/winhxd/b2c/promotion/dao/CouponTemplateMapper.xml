@@ -519,7 +519,7 @@
   <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
     SELECT
     count(1) as totalCount,
-    sum(case WHEN c.`status` = 2 then 1 else 0 end ) as usedCount,
+    sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
     c.template_id as templeteId
     FROM
     coupon_template_send c

@@ -659,6 +659,7 @@
     <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
         select count(*) from order_info info
         where info.store_id=#{storeId,jdbcType=BIGINT}
+        and info.order_status=9
         and info.pickup_code in
         <foreach collection="pickUpCodes" item="pickUpCodes" open="(" close=")" separator=",">
             #{pickUpCodes}

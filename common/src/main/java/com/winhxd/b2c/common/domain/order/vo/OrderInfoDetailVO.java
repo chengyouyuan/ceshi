@@ -130,7 +130,7 @@ public class OrderInfoDetailVO implements Serializable {
     /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */
-    @ApiModelProperty(value = "提货方式:1自提;2配送;", required = true)
+    @ApiModelProperty(value = "提货方式:1立即自提;2普通自提;", required = true)
     private Short pickupType;
     @ApiModelProperty(value = "提货方式描述", required = true)
     private String pickupTypeDesc;

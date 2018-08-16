@@ -875,7 +875,11 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setPayType(orderCreateCondition.getPayType());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemarks(orderCreateCondition.getRemark());
-        orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
+        if (orderInfo.getPickupDateTime() == null) {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_NOW.getTypeCode());
+        } else {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_LATER.getTypeCode());
+        }
         orderInfo.setOrderNo(generateOrderNo());
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
@@ -1031,9 +1035,6 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
             throw new BusinessException(BusinessCode.CODE_401003);
-        }
-        if (orderCreateCondition.getPickupDateTime() == null) {
-            throw new BusinessException(BusinessCode.CODE_401004);
         }
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);

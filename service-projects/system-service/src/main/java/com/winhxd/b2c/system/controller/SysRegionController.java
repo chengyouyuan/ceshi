@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -36,7 +37,7 @@ public class SysRegionController implements RegionServiceClient {
 
     private static final String MODULE_NAME = "地理区域管理";
 
-    @Resource
+   @Autowired
     private SysRegionService sysRegionService;
 
     @Override

@@ -14,6 +14,7 @@ import com.winhxd.b2c.system.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.dao.SysUserMapper;
 import com.winhxd.b2c.system.dao.SysUserRoleMapper;
 import com.winhxd.b2c.system.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -29,11 +30,11 @@ import java.util.List;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
-    @Resource
+    @Autowired
     private SysUserMapper sysUserMapper;
-    @Resource
+    @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
-    @Resource
+    @Autowired
     private SysRolePermissionMapper sysRolePermissionMapper;
 
     @Override

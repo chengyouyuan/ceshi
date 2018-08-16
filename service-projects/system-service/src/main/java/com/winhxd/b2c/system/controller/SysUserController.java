@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,7 @@ public class SysUserController implements UserServiceClient {
 
     private static final String MODULE_NAME = "系统用户管理";
 
-    @Resource
+    @Autowired
     private SysUserService sysUserService;
 
     /**
@@ -113,7 +114,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "根据登录账号获取用户信息")
     public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
-        ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        ResponseResult<SysUser> result = new ResponseResult<>();
         SysUser sysUser = sysUserService.getByAccount(account);
         result.setData(sysUser);
         return result;

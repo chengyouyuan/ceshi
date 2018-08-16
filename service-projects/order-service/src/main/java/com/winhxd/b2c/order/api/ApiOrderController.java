@@ -250,7 +250,7 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4026/v1/cancelOrderByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> cancelOrderByStore(@RequestBody OrderCancelCondition orderCancelCondition) {
-        String logTitle = "=/api-order/order/4025/v1/cancelOrderByStore-B端订单拒单接口=";
+        String logTitle = "=/api-order/order/4026/v1/cancelOrderByStore-B端订单拒单接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderCancelCondition);
         ResponseResult<Void> result = new ResponseResult<>();
         try {

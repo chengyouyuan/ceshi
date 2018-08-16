@@ -1,5 +1,23 @@
 package com.winhxd.b2c.order.service.impl;
 
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
@@ -7,13 +25,24 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
-import com.winhxd.b2c.common.domain.order.vo.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderChangeVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -23,23 +52,6 @@ import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author pangjianhua
@@ -47,6 +59,8 @@ import java.util.List;
  */
 @Service
 public class OrderQueryServiceImpl implements OrderQueryService {
+    private static final String DEFAULT_IP = "127.0.0.1";
+
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
 
     @Resource
@@ -302,6 +316,46 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         logger.info("查询门店各状态订单数量结束：storeId={}", storeCustomerId);
         return orderCountByStatus4StoreVO;
     }
+    
+    @Override
+    public OrderPayVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId, String openid) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        if (StringUtils.isBlank(spbillCreateIp)) {
+            spbillCreateIp = DEFAULT_IP;
+        }
+        if (customerId == null || StringUtils.isBlank(openid)) {
+            throw new BusinessException(BusinessCode.CUSTOMER_ID_EMPTY);
+        }
+        OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
+        if (orderInfoDetailVO == null || orderInfoDetailVO.getCustomerId().longValue() != customerId.longValue()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+        }
+        if (OrderStatusEnum.WAIT_PAY.getStatusCode() != orderInfoDetailVO.getOrderStatus()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
+        }
+        if (orderInfoDetailVO.getOrderItemVoList() == null || orderInfoDetailVO.getOrderItemVoList().isEmpty()) {
+            throw new BusinessException(BusinessCode.ORDER_SKU_EMPTY);
+        }
+        OrderPayVO ret;
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, 5000);
+        if (lock.tryLock()) {
+            logger.info("订单：{},customerId={},openid={};发起支付，获取支付信息开始", orderNo, customerId.toString(), openid);
+            try {
+                //支付 显示title
+                String body = MessageFormat.format(OrderNotifyMsg.ORDER_ITEM_TITLE_4_PAYMENT, orderInfoDetailVO.getOrderItemVoList().get(0).getSkuDesc(), orderInfoDetailVO.getSkuQuantity());
+                ret = null;
+            }finally {
+                lock.unlock();
+            }
+        }else {
+            logger.info("订单：{},customerId={},openid={};发起支付，出现并发，本次忽略");
+            ret = null;
+        }
+        return ret;
+    }
 
     /**
      * 一次生成多个个提货码
@@ -311,7 +365,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     private static List<String> generatePickUpCodeList(int size) {
         List<String> pickUpList = new ArrayList<>();
         do {
-            System.out.println("有重复过");
             for (int i = 0; i < size; i++) {
                 String pickUpCode = (int) ((Math.random() * 9 + 1) * 1000) + "";
                 pickUpList.add(pickUpCode);
@@ -331,9 +384,5 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             return false;
         }
         return list.size() == new HashSet<Object>(list).size();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Arrays.toString(generatePickUpCodeList(50).toArray(new String[50])));
     }
 }

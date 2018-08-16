@@ -25,4 +25,6 @@ public class OrderNotifyMsg {
     public static final String ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消，订单金额已退回至您的付款账户，请注意查收";
     
     public static final String ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消";
+    
+    public static final String ORDER_ITEM_TITLE_4_PAYMENT = "{0}等{1}件商品";
 }

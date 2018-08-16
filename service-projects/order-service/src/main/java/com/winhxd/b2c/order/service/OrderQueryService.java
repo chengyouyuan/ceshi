@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
 /**
  * 订单查询接口,提供订单查询方法
@@ -118,4 +119,19 @@ public interface OrderQueryService {
      */
     List<OrderInfoDetailVO> listOrder4ManagementWithNoPage(
             OrderInfoQuery4ManagementCondition infoQuery4ManagementCondition);
+
+
+    /**
+     * 获取用户订单支付信息
+     * @author wangbin
+     * @date  2018年8月16日 上午11:07:37
+     * @param orderNo
+     * @param spbillCreateIp 终端IP
+     * @param deviceInfo 设备号
+     * @param customerId
+     * @param openid
+     * @return
+     */
+    OrderPayVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId,
+            String openid);
 }

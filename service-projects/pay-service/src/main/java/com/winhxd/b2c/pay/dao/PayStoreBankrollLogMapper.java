@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
 
 public interface PayStoreBankrollLogMapper {
@@ -14,4 +16,6 @@ public interface PayStoreBankrollLogMapper {
     int updateByPrimaryKeySelective(PayStoreBankrollLog record);
 
     int updateByPrimaryKey(PayStoreBankrollLog record);
+    
+    List<PayStoreBankrollLog> selectListByOrderNoAndType();
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.service;
 
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
@@ -8,6 +10,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
@@ -78,5 +81,14 @@ public interface PayService {
      * @return
      */
     String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月16日 下午8:40:14
+     * @Description 获取提现钱包
+     * @param storeId
+     * @return
+     */
+    List<PayStoreWallet> selectPayStoreWalletByStoreId();
 	
 }

@@ -86,7 +86,6 @@ public final class BusinessCode {
     public static final int CODE_200013 = 200013;
     /**门店小程序码url参数为空*/
     public static final int CODE_200017 = 200017;
-
     /**门店小程序码图片生成失败*/
     public static final int CODE_200018 = 200018;
 

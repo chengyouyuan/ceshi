@@ -7,8 +7,8 @@
     <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
     <result column="level" jdbcType="SMALLINT" property="level" />
     <result column="status" jdbcType="SMALLINT" property="status" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
@@ -31,8 +31,8 @@
       created_by, created, updated
       )
     values (#{id,jdbcType=BIGINT}, #{areaName,jdbcType=VARCHAR}, #{areaCode,jdbcType=VARCHAR}, 
-      #{level,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, #{updatedBy,jdbcType=BIGINT}, 
-      #{createdBy,jdbcType=BIGINT}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
+      #{level,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT}, #{updatedBy,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreRegion">
@@ -83,10 +83,10 @@
         #{status,jdbcType=SMALLINT},
       </if>
       <if test="updatedBy != null">
-        #{updatedBy,jdbcType=BIGINT},
+        #{updatedBy,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
+        #{createdBy,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -112,10 +112,10 @@
         status = #{status,jdbcType=SMALLINT},
       </if>
       <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
       </if>
       <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=BIGINT},
+        created_by = #{createdBy,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -132,8 +132,8 @@
       area_code = #{areaCode,jdbcType=VARCHAR},
       level = #{level,jdbcType=SMALLINT},
       status = #{status,jdbcType=SMALLINT},
-      updated_by = #{updatedBy,jdbcType=BIGINT},
-      created_by = #{createdBy,jdbcType=BIGINT},
+      updated_by = #{updatedBy,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

@@ -65,7 +65,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setId(id);
         storeRegion.setStatus(StoreRegionEnum.VALIDATE.getCode());
         storeRegion.setUpdated(new Date());
-        storeRegion.setUpdatedBy(Long.parseLong(UserContext.getCurrentAdminUser().getAccount()));
+        storeRegion.setUpdatedBy(UserContext.getCurrentAdminUser().getAccount());
         return storeRegionMapper.updateByPrimaryKey(storeRegion);
     }
 
@@ -101,7 +101,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setAreaName(sb.toString());
         storeRegion.setAreaCode(condition.getAreaCode());
         Date current = new Date();
-        Long account = Long.parseLong(UserContext.getCurrentAdminUser().getAccount());
+        String account = UserContext.getCurrentAdminUser().getAccount();
         storeRegion.setCreated(current);
         storeRegion.setUpdated(current);
         storeRegion.setCreatedBy(account);

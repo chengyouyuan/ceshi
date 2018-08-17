@@ -260,19 +260,19 @@ public class CouponController {
 
 	/**
 	 *
-	 *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
-	 *@Params  ids  多个页面勾选的ID 用逗号","隔开
+	 *@Deccription  设为无效
+	 *@Params  id
 	 *@Return  ResponseResult 删除是否成功
 	 *@User  wl
 	 *@Date   2018/8/6 20:39
 	 */
 	@ApiOperation("优惠券模板设为无效")
 	@PostMapping(value = "/5013/v1/updateCouponTemplateToValid")
-	public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids){
+	public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("id") String id){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		ResponseResult<Integer> responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(ids,userId,userName);
+		ResponseResult<Integer> responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(id,userId,userName);
 		return responseResult;
 	}
 

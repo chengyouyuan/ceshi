@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "type": "report",
+    "title": "提款申请列表",
+    "buttons": [
+      {
+        "name": "查询",
+        "event": {
+          "type": "ajax",
+          "ajaxType": "get",
+          "path": "/pay/verify/storeWithdrawList"
+        }
+      },
+      {
+        "name": "重置",
+        "event": {
+          "type": "reset"
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "align": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "operatedByName",
+        "title": "操作人员"
+      },
+      {
+        "name": "operated",
+        "title": "操作时间"
+      }
+    ],
+    "params": [
+    ]
+  }
+}

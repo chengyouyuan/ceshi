@@ -57,6 +57,7 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Primary
     public CachingConnectionFactory normalCachingConnectionFactory(MessageQueueProperties normalMessageQueueProperties) {
         CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setPublisherConfirms(true);
         factory.setAddresses(normalMessageQueueProperties.getAddress());
         factory.setUsername(normalMessageQueueProperties.getUsername());
         factory.setPassword(normalMessageQueueProperties.getPassword());

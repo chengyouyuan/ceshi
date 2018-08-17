@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.message.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author chengyy
@@ -11,29 +12,17 @@ import lombok.Data;
 @ApiModel("小程序配置信息VO")
 @Data
 public class MiniProgramConfigVO {
-
-    /**
-     * 第三方用户唯一凭证
-     */
-    @ApiModelProperty("第三方用户唯一凭证")
-    private String appid;
-
-    /**
-     * 第三方用户唯一凭证密码
-     */
-    @ApiModelProperty("第三方用户唯一凭证密码")
-    private String secret;
-
-    /**
-     * 扫描二维码跳转默认页面
-     */
-    @ApiModelProperty("扫描二维码跳转默认页面")
-    private String pageUrl;
-
-    /**
-     *门店名称
-     */
-    @ApiModelProperty("门店名称")
-    private String storeName;
+    @ApiModelProperty("web页面地址url")
+    private String webpageUrl;
+    @ApiModelProperty("用户名")
+    private String userName;
+    @ApiModelProperty("跳转小程序页面")
+    private String path;
+    @ApiModelProperty("标题")
+    private String title;
+    @ApiModelProperty("描述信息")
+    private String description;
+    @ApiModelProperty("交易")
+    private String transaction;
 
 }

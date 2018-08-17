@@ -223,6 +223,7 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
             @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
             @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
+            @ApiResponse(code = BusinessCode.ORDER_GET_PAY_INFO_ERROR, message = "订单获取支付信息失败"),
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_PAID, message = "订单已经支付")
     })
     @RequestMapping(value = "/4015/v1/getOrderPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

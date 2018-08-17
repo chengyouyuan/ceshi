@@ -91,6 +91,7 @@
         "options":[
           {"1":"通用券"},
           {"2":"品牌券"},
+          {"3":"品类券"},
           {"4":"商品券"}
         ]
       },
@@ -250,7 +251,7 @@
       },
       {
         "name": "created",
-        "inputModel": "fe-double-date-picker",
+        "inputModel": "double-date-picker",
         "title": "创建时间",
         "value": "",
         "placeholder": "",

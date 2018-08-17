@@ -54,24 +54,12 @@ public class OrderQueryAspect {
     public static final String ORDER_ITEMVO_LIST = "orderItemVoList";
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryAspect.class);
 
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
     @Autowired
     private CustomerServiceClient customerServiceclient;
-    @Resource
+    @Autowired
     private ProductServiceClient productServiceClient;
-
-    @AfterReturning(returning = "detailVO", value = "@annotation(com.winhxd.b2c.order.support.annotation.OrderEnumConvertAnnotation)")
-    public void orderEnumConvert(OrderInfoDetailVO detailVO) {
-        if (null != detailVO) {
-            //订单状态转换
-            detailVO.setOrderStatusDesc(OrderStatusEnum.getMarkByCode(detailVO.getOrderStatus()));
-            detailVO.setPayStatusDesc(PayStatusEnum.getDesc(detailVO.getPayStatus()));
-            detailVO.setPayTypeDesc(PayTypeEnum.getPayTypeEnumDescByTypeCode(detailVO.getPayType()));
-            detailVO.setPickupTypeDesc(PickUpTypeEnum.getPickUpTypeDescByCode(detailVO.getPickupType()));
-            detailVO.setValuationTypeDesc(ValuationTypeEnum.getDescByCode(detailVO.getValuationType()));
-        }
-    }
 
     @AfterReturning(returning = "ret", value = "@annotation(com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation)")
     public void orderEnumConvert(JoinPoint joinPoint, Object ret) {
@@ -115,7 +103,7 @@ public class OrderQueryAspect {
         }
         if (orderInfoConvertAnnotation.queryProductInfo()) {
             // 获取商品相关信息，订单项中已经冗余
-//            productInfoConvert(joinPoint, ret);
+            //productInfoConvert(joinPoint, ret);
         }
     }
 
@@ -215,7 +203,7 @@ public class OrderQueryAspect {
             }
 
             ResponseResult<List<StoreUserInfoVO>> storeResponseResultData = this.storeServiceClient.findStoreUserInfoList(storeIds);
-            if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
+             if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
                 List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
                 for (Object obj : objArr) {
                     Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
@@ -235,7 +223,7 @@ public class OrderQueryAspect {
                 logger.info("根据门店storeId 查询门店信息失败：返回状态码:{}", storeResponseResultData == null ? null : storeResponseResultData.getCode());
             }
         } catch (Exception e) {
-            logger.error("订单用户信息封装异常", e);
+            logger.error("订单门店信息封装异常", e);
         }
     }
 

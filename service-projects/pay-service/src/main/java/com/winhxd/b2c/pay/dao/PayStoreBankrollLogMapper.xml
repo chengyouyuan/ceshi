@@ -10,7 +10,9 @@
     <result column="presented_money" jdbcType="DECIMAL" property="presentedMoney" />
     <result column="presented_frozen_money" jdbcType="DECIMAL" property="presentedFrozenMoney" />
     <result column="settlement_settled_money" jdbcType="DECIMAL" property="settlementSettledMoney" />
+    <result column="already_presented_money" jdbcType="DECIMAL" property="alreadyPresentedMoney" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="money_type" jdbcType="SMALLINT" property="moneyType" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
@@ -23,7 +25,7 @@
   <sql id="Base_Column_List">
     id, store_id, order_no, withdrawals_no, total_moeny, presented_money, presented_frozen_money, 
     settlement_settled_money, status, remarks, created_by, created_by_name, created, 
-    updated_by, updated_by_name, updated,type
+    updated_by, updated_by_name, updated,type,money_type, already_presented_money
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -41,13 +43,14 @@
       presented_frozen_money, settlement_settled_money, 
       status, remarks, created_by, 
       created_by_name, created, updated_by, 
-      updated_by_name, updated,type)
+      updated_by_name, updated,type,money_type, already_presented_money)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, 
       #{withdrawalsNo,jdbcType=CHAR}, #{totalMoeny,jdbcType=DECIMAL}, #{presentedMoney,jdbcType=DECIMAL}, 
       #{presentedFrozenMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL}, 
       #{status,jdbcType=SMALLINT}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
       #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP},#{type,jdbcType=INTEGER})
+      #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP},#{type,jdbcType=INTEGER},#{moneyType,jdbcType=SMALLINT},
+      #{alreadyPresentedMoney,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog">
     insert into pay_store_bankroll_log
@@ -76,8 +79,14 @@
       <if test="settlementSettledMoney != null">
         settlement_settled_money,
       </if>
+      <if test="alreadyPresentedMoney != null">
+        already_presented_money,
+      </if>
       <if test="status != null">
         status,
+      </if>
+      <if test="moneyType != null">
+        money_type,
       </if>
       <if test="remarks != null">
         remarks,
@@ -129,8 +138,14 @@
       <if test="settlementSettledMoney != null">
         #{settlementSettledMoney,jdbcType=DECIMAL},
       </if>
+      <if test="alreadyPresentedMoney != null">
+        #{alreadyPresentedMoney,jdbcType=DECIMAL},
+      </if>
       <if test="status != null">
         #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="moneyType != null">
+        #{moneyType,jdbcType=SMALLINT},
       </if>
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
@@ -182,8 +197,14 @@
       <if test="settlementSettledMoney != null">
         settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
       </if>
+      <if test="alreadyPresentedMoney != null">
+        already_presented_money = #{alreadyPresentedMoney,jdbcType=DECIMAL},
+      </if>
       <if test="status != null">
         status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="moneyType != null">
+        money_type = #{moneyType,jdbcType=SMALLINT},
       </if>
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
@@ -221,7 +242,9 @@
       presented_money = #{presentedMoney,jdbcType=DECIMAL},
       presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
       settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
+      already_presented_money = #{alreadyPresentedMoney,jdbcType=DECIMAL},
       status = #{status,jdbcType=SMALLINT},
+      money_type = #{moneyType,jdbcType=SMALLINT},
       remarks = #{remarks,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
@@ -242,6 +265,9 @@
      </if>
      <if test="withdrawalsNo != null and withdrawalsNo != ''">
        and withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+     </if>
+     <if test="moneyType != null">
+       and money_type = #{moneyType,jdbcType=SMALLINT},
      </if>
     and store_id = #{storeId,jdbcType=BIGINT} 
     and status=1

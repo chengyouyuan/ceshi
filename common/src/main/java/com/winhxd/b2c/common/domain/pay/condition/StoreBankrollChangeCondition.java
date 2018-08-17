@@ -19,14 +19,22 @@ public class StoreBankrollChangeCondition {
 
 	@ApiModelProperty("待结算金额")
     private BigDecimal settlementSettledMoney;
+	
+	@ApiModelProperty("门店已提现金额")
+    private BigDecimal alreadyPresentedMoney;
     
 	@ApiModelProperty("描述")
     private String remarks;
 	
 	@ApiModelProperty("类型：1.支付完成,2.结算审核,3.提现申请,4.提现审核")
     private Integer type;
+	
+	@ApiModelProperty("费用类型：1.货款审核,2.促销费用")
+	private Short moneyType;
+	
     @ApiModelProperty("订单号")
     private String orderNo;
+    
     @ApiModelProperty("提现单号")
     private String withdrawalsNo;
     

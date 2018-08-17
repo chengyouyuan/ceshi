@@ -3,10 +3,14 @@ package com.winhxd.b2c.pay.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,7 +194,6 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--订单出账明细表插入失败");
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
-		List<OrderRefundCallbackCondition> aaList=new ArrayList<>();
 
 		logger.info(log+"--结束");
 		return 0;
@@ -203,6 +206,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600001);
 		}
+		Long storeId=condition.getStoreId();
 		if (condition.getStoreId()==null) {
 			logger.info(log+"--门店id为空");
 			throw new BusinessException(BusinessCode.CODE_600002);
@@ -211,27 +215,71 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--操作类型为空");
 			throw new BusinessException(BusinessCode.CODE_600003);
 		}
+		if (condition.getMoney()==null) {
+			logger.info(log+"--金额为空");
+			throw new BusinessException(BusinessCode.CODE_600009);
+		}
 		logger.info(log+"--参数"+condition.toString());
 		boolean flag=false;
+		Map<String, Object> map=new HashMap<>();
+		StoreBankrollChangeCondition changeCondition=null;
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			// 验证该订单是否已经做过此项操作
 			String orderNo=condition.getOrderNo();
 			if (StringUtils.isNotBlank(orderNo)) {
-				logger.info(log+"--订单号为空");
+				logger.info(log+"--订单闭环订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
+			//（待定）不知是否需要  验证订单状态
+			//验证该订单是否做过此项操作
+			map.put("orderNo",orderNo);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明在订单闭环的时候  已经给用户添加过资金
+				logger.info(log+"--订单闭环计算用户资金重复--订单号"+orderNo);
+				throw new BusinessException(BusinessCode.CODE_600006);
+			}
+			 changeCondition=new StoreBankrollChangeCondition();
+			 changeCondition.setStoreId(storeId);
+			 changeCondition.setType(condition.getType());
+			 condition.setOrderNo(orderNo);
+			 //待结算金额增加
+			 changeCondition.setPresentedMoney(condition.getMoney());
+			 flag=true;
 		}
 
 		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
           //验证订单信息
 			String orderNo=condition.getOrderNo();
+			Short moneyType=condition.getMoneyType();
 			if (StringUtils.isNotBlank(orderNo)) {
-				logger.info(log+"--订单号为空");
+				logger.info(log+"--结算审核订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
-			//获取订单信息  如果订单状态不是完成状态  不可以进行此操作
+			if (moneyType==null) {
+				logger.info(log+"--结算审核费用类型为空");
+				throw new BusinessException(BusinessCode.CODE_600007);
+			}
 			
 			//验证该订单是否做过此项操作
+			map.put("orderNo",orderNo);
+			map.put("moneyType", moneyType);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明在订单闭环的时候  已经给用户添加过资金
+				logger.info(log+"--结算审核计算用户资金重复--订单号"+orderNo+"费用类型"+moneyType);
+				throw new BusinessException(BusinessCode.CODE_600008);
+			}
+			 changeCondition=new StoreBankrollChangeCondition();
+			 changeCondition.setType(condition.getType());
+			 changeCondition.setOrderNo(orderNo);
+			 changeCondition.setMoneyType(moneyType);
+			 //待结算金额减少(因为用户资金变化都是add，这里需要传负数)
+			 changeCondition.setSettlementSettledMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			 //可提现金额增加
+			 changeCondition.setPresentedMoney(condition.getMoney());
+			 flag=true;
+		
 			
 		}
 
@@ -239,9 +287,25 @@ public class PayServiceImpl implements PayService{
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
 			if (StringUtils.isNotBlank(withdrawalsNo)) {
-				logger.info(log+"--提现单号为空");
+				logger.info(log+"--提现申请提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}
+			map.put("withdrawalsNo",withdrawalsNo);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明在订单闭环的时候  已经给用户添加过资金
+				logger.info(log+"--提现申请计算用户资金重复--提现单号"+withdrawalsNo);
+				throw new BusinessException(BusinessCode.CODE_600008);
+			}
+			 changeCondition=new StoreBankrollChangeCondition();
+			 changeCondition.setType(condition.getType());
+			 changeCondition.setWithdrawalsNo(withdrawalsNo);
+			 //可提现金额减少(因为用户资金变化都是add，这里需要传负数)
+			 changeCondition.setPresentedMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			 //冻结金额增加
+			 changeCondition.setPresentedFrozenMoney(condition.getMoney());
+			 flag=true;
+			
 		}
 
 		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
@@ -251,9 +315,24 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}
+			map.put("withdrawalsNo",withdrawalsNo);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明在订单闭环的时候  已经给用户添加过资金
+				logger.info(log+"--提现审核计算用户资金重复--提现单号"+withdrawalsNo);
+				throw new BusinessException(BusinessCode.CODE_600008);
+			}
+			 changeCondition=new StoreBankrollChangeCondition();
+			 changeCondition.setType(condition.getType());
+			 changeCondition.setWithdrawalsNo(withdrawalsNo);
+			 //冻结金额减少(因为用户资金变化都是add，这里需要传负数)
+			 changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			 changeCondition.setAlreadyPresentedMoney(condition.getMoney());
+			 flag=true;
+			
 		}
 		if (flag) {
-			
+			storeBankrollChange(changeCondition);
 		}
 		
 	}
@@ -263,6 +342,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
 		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
+		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
 		
 		BigDecimal totalMoney=settlementSettledMoney;
 		if (storeBankroll==null) {
@@ -276,17 +356,20 @@ public class PayServiceImpl implements PayService{
 			totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
 			presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 			presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
+			alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
 			settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
 			
 			totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
 			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
 			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
+			alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
 			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 			
 			storeBankroll.setTotalMoeny(totalMoney);
 			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
 			storeBankroll.setPresentedMoney(presentedMoney);
 			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+			storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
 			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 		}
 		//加入资金流转日志
@@ -300,6 +383,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal presentedMoney=condition.getPresentedMoney();
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney();
+		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney();
 		String remarks="";
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
@@ -314,7 +398,7 @@ public class PayServiceImpl implements PayService{
 		}
 
 		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
-			 remarks = "提现审核:提现冻结金额减少"+presentedFrozenMoney +"元";
+			 remarks = "提现审核:提现冻结金额减少"+presentedFrozenMoney +"元,已提现金额增加"+alreadyPresentedMoney+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());
@@ -322,8 +406,10 @@ public class PayServiceImpl implements PayService{
 		payStoreBankrollLog.setPresentedMoney(presentedMoney);
 		payStoreBankrollLog.setSettlementSettledMoney(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedFrozenMoney(presentedFrozenMoney);
+		payStoreBankrollLog.setAlreadyPresentedMoney(alreadyPresentedMoney);
 		payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
 		payStoreBankrollLog.setRemarks(remarks);
+		payStoreBankrollLog.setMoneyType(condition.getMoneyType());
 		payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 	}
 
@@ -410,6 +496,7 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+		
 		
 		return transfersService.transfersToChange(toWxBalanceCondition);
 	}

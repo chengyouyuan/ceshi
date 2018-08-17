@@ -19,8 +19,12 @@ public class PayStoreBankrollLog {
     private BigDecimal presentedFrozenMoney;
 
     private BigDecimal settlementSettledMoney;
+    
+    private BigDecimal alreadyPresentedMoney;
 
     private Short status;
+    
+    private Short moneyType;
 
     private String remarks;
 
@@ -172,5 +176,21 @@ public class PayStoreBankrollLog {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Short getMoneyType() {
+		return moneyType;
+	}
+
+	public void setMoneyType(Short moneyType) {
+		this.moneyType = moneyType;
+	}
+
+	public BigDecimal getAlreadyPresentedMoney() {
+		return alreadyPresentedMoney;
+	}
+
+	public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
+		this.alreadyPresentedMoney = alreadyPresentedMoney;
 	}
 }

@@ -389,6 +389,18 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  提现单号为空")
     public static final int CODE_600005 = 600005;
     
+    @ApiModelProperty("门店资金变化  订单闭环计算用户资金重复")
+    public static final int CODE_600006 = 600006;
+    
+    @ApiModelProperty("门店资金变化  结算审核费用类型为空")
+    public static final int CODE_600007 = 600007;
+    
+    @ApiModelProperty("门店资金变化  结算审核计算用户资金重复")
+    public static final int CODE_600008 = 600008;
+    
+    @ApiModelProperty("门店资金变化 金额为空")
+    public static final int CODE_600009 = 600009;
+    
     @ApiModelProperty("门店绑定微信钱包  未获取到门店信息")
     public static final int CODE_600701 = 600701;
     

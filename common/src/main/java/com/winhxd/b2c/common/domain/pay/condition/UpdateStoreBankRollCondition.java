@@ -12,6 +12,9 @@ public class UpdateStoreBankRollCondition {
 	@ApiModelProperty("类型：1.支付完成,2.结算审核,3.提现申请,4.提现审核")
     private Integer type;
 	
+	@ApiModelProperty("费用类型：1.货款审核,2.促销费用")
+	private Short moneyType;
+	
 	@ApiModelProperty("门店Id")
 	private Long storeId;
 	

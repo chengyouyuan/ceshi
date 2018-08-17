@@ -329,6 +329,12 @@ public final class BusinessCode {
     public static final int CODE_610023 = 610023;
     @ApiModelProperty("当前要绑定的银行卡已经存在")
     public static final int CODE_610024 = 610024;
+    @ApiModelProperty("请先绑定银行卡")
+    public static final int CODE_610025 = 610025;
+    @ApiModelProperty("请先绑定微信")
+    public static final int CODE_610026 = 610026;
+    @ApiModelProperty("门店当前没有可提现的记录")
+    public static final int CODE_610027 = 610027;
     
     
     

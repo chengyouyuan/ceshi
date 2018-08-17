@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 import org.slf4j.Logger;
@@ -78,7 +79,7 @@ public interface CouponInvestorServiceClient {
      *@Date   2018/8/11 14:30
      */
     @RequestMapping(value = "/promotion/5025/v1/findInvertorTempleteCountPage", method = RequestMethod.POST)
-    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
+    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition);
 }
 
 @Component
@@ -111,7 +112,7 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     }
 
     @Override
-    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
         logger.error("CouponInvestorServiceClient -> findInvertorTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }

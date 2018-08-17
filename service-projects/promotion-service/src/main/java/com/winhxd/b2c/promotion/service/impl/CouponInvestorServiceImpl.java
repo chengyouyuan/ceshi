@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
@@ -111,11 +112,11 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
-    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
         ResponseResult<PagedList<InvertorTempleteCountVO>> result= new ResponseResult<PagedList<InvertorTempleteCountVO>>();
         PagedList<InvertorTempleteCountVO> pagedList = new PagedList<>();
-        PageHelper.startPage(pageNo,pageSize);
-        List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(Long.parseLong(invertorId));
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(condition.getId());
         PageInfo<InvertorTempleteCountVO> pageInfo = new PageInfo<>(couponInvestorCountPageList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
@@ -114,8 +115,8 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @ApiOperation(value = "适用对象规则关联模板分页查询", notes = "适用对象规则关联模板分页查询")
     @Override
-    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo") Integer pageNo,@RequestParam("pageSize") Integer pageSize) {
-        ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(applyId,pageNo,pageSize);
+    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
+        ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(condition);
         return result;
     }
 }

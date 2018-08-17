@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
@@ -148,11 +149,11 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
-    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(String applyId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
         ResponseResult<PagedList<ApplyTempleteCountVO>> result= new ResponseResult<PagedList<ApplyTempleteCountVO>>();
         PagedList<ApplyTempleteCountVO> pagedList = new PagedList<>();
-        PageHelper.startPage(pageNo,pageSize);
-        List<ApplyTempleteCountVO> couponApplyList = couponApplyMapper.findApplyTempleteCountPage(Long.parseLong(applyId));
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<ApplyTempleteCountVO> couponApplyList = couponApplyMapper.findApplyTempleteCountPage(condition.getId());
         PageInfo<ApplyTempleteCountVO> pageInfo = new PageInfo<>(couponApplyList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/promotion/5029/v1/queryCouponActivity",
+    "path": "/promotion/5029/v1/queryCouponActivity?type=1",
     "type": "report",
     "id": "coupon_activity_pull_list",
     "code": "coupon_activity_pull_list",
@@ -125,9 +125,7 @@
       },
       {
         "name": "couponNumType",
-        "inputModel": "select",
         "title": "优惠券数量的限制方式",
-        "placeholder": "",
         "isHidden": false,
         "options": [{
           "value": "1",

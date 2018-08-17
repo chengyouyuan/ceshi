@@ -163,6 +163,12 @@
     WHERE
     1 = 1
     AND ca.`status` = '1'
+    <if test="condition.type == 1">
+      AND ca.`status` = '1'
+    </if>
+    <if test="condition.type == 2">
+      AND ca.`status` = '2'
+    </if>
     <if test="condition.code != null">
       AND ca.`code` = #{condition.code}
     </if>

@@ -82,7 +82,8 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
             @ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定银行卡失败"),
             @ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
-            @ApiResponse(code = BusinessCode.CODE_610020, message = "请先获取验证码")
+            @ApiResponse(code = BusinessCode.CODE_610020, message = "请先获取验证码"),
+            @ApiResponse(code = BusinessCode.CODE_610024, message = "当前要绑定的银行卡已经存在")
     })
     @RequestMapping(value = "/6105/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {

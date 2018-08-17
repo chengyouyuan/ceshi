@@ -329,6 +329,12 @@ public final class BusinessCode {
     public static final int CODE_610023 = 610023;
     @ApiModelProperty("当前要绑定的银行卡已经存在")
     public static final int CODE_610024 = 610024;
+    @ApiModelProperty("请先绑定银行卡")
+    public static final int CODE_610025 = 610025;
+    @ApiModelProperty("请先绑定微信")
+    public static final int CODE_610026 = 610026;
+    @ApiModelProperty("门店当前没有可提现的记录")
+    public static final int CODE_610027 = 610027;
     
     
     
@@ -383,6 +389,23 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  提现单号为空")
     public static final int CODE_600005 = 600005;
     
+    @ApiModelProperty("门店绑定微信钱包  未获取到门店信息")
+    public static final int CODE_600701 = 600701;
+    
+    @ApiModelProperty("门店绑定微信钱包  参数为空")
+    public static final int CODE_600702 = 600702;
+    
+    @ApiModelProperty("门店绑定微信钱包 openid为空")
+    public static final int CODE_600703 = 600703;
+    
+    @ApiModelProperty("门店绑定微信钱包  真实姓名为空")
+    public static final int CODE_600704 = 600704;
+
+    @ApiModelProperty("门店绑定微信钱包  昵称为空")
+    public static final int CODE_600705 = 600706;
+    
+    @ApiModelProperty("获取门店绑定钱包  未获取到门店信息")
+    public static final int CODE_600601 = 600601;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;

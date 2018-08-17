@@ -183,6 +183,7 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="type" jdbcType="SMALLINT" property="type" />
+    <result column="grade_type_name" jdbcType="VARCHAR" property="gradeTypeName" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -259,7 +260,16 @@
 
   <select id="getCouponGradePage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition" resultMap="ResultDetailMap">
     select
-    a.id,a.code, a.name ,a.remarks ,a.status ,a.type ,a.created_by,
+    a.id,a.code, a.name ,a.remarks ,a.status ,
+    a.type ,
+    (case when a.type=1 then '满减'
+    when a.type=2 then '满赠'
+    when a.type=3 then '按件减阶梯'
+    when a.type=4 then '按件减翻倍'
+    when a.type=5 then '按件增阶梯'
+    when a.type=6 then '按件增翻倍'
+    end )as grade_type_name,
+    a.created_by,
     a.created_by_name,a.created,a.updated_by,a.updated_by_name,
     a.updated,b.reduced_amt,b.reduced_type,b.discounted_amt,
     b.discounted,b.discounted_max_amt,b.full_give_amt,

@@ -29,7 +29,7 @@ public class OrderQueryServiceTest {
         OrderInfoQuery4ManagementCondition condition = new OrderInfoQuery4ManagementCondition();
         condition.setCustomerId(0L);
         DateInterval dateInterval = new DateInterval();
-        dateInterval.setStartDate(DateUtils.parseDate("2018-05-15 00:00:00", "yyyy-MM-dd HH:mm:ss"));
+        dateInterval.setStart(DateUtils.parseDate("2018-05-15 00:00:00", "yyyy-MM-dd HH:mm:ss"));
         condition.setValuationType((short)2);
         condition.setDateInterval(dateInterval);
         System.out.println(JsonUtil

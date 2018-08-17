@@ -53,9 +53,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition) {
         if(condition.getDateInterval() != null){
-            if(condition.getDateInterval().getStartDate() != null){
+            if(condition.getDateInterval().getStart() != null){
                 Calendar createdS = Calendar.getInstance();
-                createdS.setTime(condition.getDateInterval().getStartDate());
+                createdS.setTime(condition.getDateInterval().getStart());
                 createdS.set(Calendar.HOUR_OF_DAY, 0);
                 createdS.set(Calendar.MINUTE, 0);
                 createdS.set(Calendar.SECOND, 0);
@@ -63,9 +63,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 Date createdStart = createdS.getTime();
                 condition.setCreatedStart(createdStart);
             }
-            if(condition.getDateInterval().getEndDate() != null){
+            if(condition.getDateInterval().getEnd() != null){
                 Calendar createdE = Calendar.getInstance();
-                createdE.setTime(condition.getDateInterval().getEndDate());
+                createdE.setTime(condition.getDateInterval().getEnd());
                 createdE.set(Calendar.HOUR_OF_DAY, 23);
                 createdE.set(Calendar.MINUTE, 59);
                 createdE.set(Calendar.SECOND, 59);

@@ -72,8 +72,8 @@ public class StoreServiceController implements StoreServiceClient {
 //    private ProductServiceClient productServiceClient;
 
     @Override
-    public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-        ResponseResult<Void> result = new ResponseResult<>();
+    public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
+        ResponseResult<Integer> result = new ResponseResult<>();
         if(customerId == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
@@ -90,13 +90,7 @@ public class StoreServiceController implements StoreServiceClient {
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
         int status = storeService.bindCustomer(customerId,storeUserId);
-        if(status == 0){
-			result.setCode(BusinessCode.CODE_1001);
-		}else if(status == -1){
-        	result.setCode(BusinessCode.CODE_200011);
-		}else if(status == -2){
-        	result.setCode(BusinessCode.CODE_200003);
-		}
+		result.setData(status);
         return result;
     }
 

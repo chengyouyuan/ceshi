@@ -16,9 +16,6 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 
 	private static final long serialVersionUID = 5825339934872843457L;
 
-	@ApiModelProperty("公众账号ID/小程序ID")
-	private String appid;
-
 	@ApiModelProperty("商户订单号")
 	private String outTradeNo;
 
@@ -37,13 +34,8 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 	@ApiModelProperty("创建人姓名")
 	private String createdByName;
 
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
+	@ApiModelProperty("订单号")
+	private String orderNo;
 
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -91,5 +83,13 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 
 	public void setCreatedByName(String createdByName) {
 		this.createdByName = createdByName;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 }

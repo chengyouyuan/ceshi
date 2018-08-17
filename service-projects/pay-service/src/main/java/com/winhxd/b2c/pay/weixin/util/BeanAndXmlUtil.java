@@ -363,4 +363,23 @@ public class BeanAndXmlUtil {
         return retVal;
     }
 
+    /**
+     * 将map装换为javabean对象
+     * @param map
+     * @param
+     * @return
+     */
+    public static <T> T mapToBean(Map<String, String> map,Class<T> c) throws Exception{
+        T bean = null;
+        try {
+            bean = c.newInstance();
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                invokeSet(bean,underlineToHump(entry.getKey()),entry.getValue());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+        return bean;
+    }
 }

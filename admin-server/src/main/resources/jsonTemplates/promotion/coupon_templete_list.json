@@ -104,7 +104,7 @@
         ]
       },
       {
-        "name": "status",
+        "name": "calType",
         "title": "优惠券金额计算方式",
         "options":[
           {"1":"订单"},

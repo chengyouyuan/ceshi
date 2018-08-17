@@ -55,13 +55,13 @@ public interface CouponTemplateService {
 
     /**
      *
-     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
+     *@Deccription  设为无效
      *@Params  ids  多个页面勾选的ID 用逗号","隔开
      *@Return  ResponseResult 删除是否成功
      *@User  wl
      *@Date   2018/8/6 20:39
      */
-    int updateCouponTemplateToValid(Long id, Long updateBy, Date updated, String updateByName);
+    int updateCouponTemplateToValid(Long id, Long updatedBy, Date updated, String updatedByName);
 
 
 

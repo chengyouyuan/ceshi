@@ -22,10 +22,10 @@ public class StoreRegionVO {
     private Short level;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private String updatedBy;
 
     @ApiModelProperty(value = "更新时间")
-    private Long createdBy;
+    private String createdBy;
 
     @ApiModelProperty(value = "创建人")
     private Date created;

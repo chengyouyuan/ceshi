@@ -28,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -44,6 +41,10 @@ import java.util.stream.Collectors;
 public class ShopCarServiceImpl implements ShopCarService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShopCarServiceImpl.class);
+
+    private static final String READY_ORDER = "预订单接口readyOrder";
+
+    private static final Integer INTEGER_ZERO = 0;
 
     @Autowired
     private ShopCarMapper shopCarMapper;
@@ -61,6 +62,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Transactional(rollbackFor= {Exception.class})
     @Override
     public int saveShopCar(ShopCarCondition condition, Long customerId){
+        logger.info("saveShopCar {}-> 新增购物车执行...");
         // 校验商品
         checkShopCarProdInfo(condition);
         // 加购：存在则更新数量，不存在保存
@@ -71,6 +73,9 @@ public class ShopCarServiceImpl implements ShopCarService {
         shopCar.setSkuCode(condition.getSkuCode());
         ShopCar result = shopCarMapper.selectShopCarsBySkuCode(shopCar);
         if (null != result) {
+            if (INTEGER_ZERO.equals(condition.getAmount())) {
+                return shopCarMapper.deleteByPrimaryKey(result.getId());
+            }
             result.setAmount(condition.getAmount());
             return shopCarMapper.updateByPrimaryKey(result);
         }
@@ -85,12 +90,9 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Override
     public List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId) {
+        logger.info("findShopCar {}-> 查询购物车执行...");
         List<ShopCarProdInfoVO> result = new ArrayList<>();
-        ShopCar shopCar = new ShopCar();
-        // 获取当前用户信息
-        shopCar.setCustomerId(customerId);
-        shopCar.setStoreId(storeId);
-        List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
+        List<ShopCar> shopCars = queryShopCars(customerId, storeId);
         if (CollectionUtils.isEmpty(shopCars)) {
             return result;
         }
@@ -103,11 +105,8 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO = new ShopCarProdInfoVO();
                     shopCarProdInfoVO.setSkuCode(shopCar2.getSkuCode());
                     shopCarProdInfoVO.setAmount(shopCar2.getAmount());
+                    BeanUtils.copyProperties(shopCarProdVO, shopCarProdInfoVO);
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
-                    shopCarProdInfoVO.setSkuImage(shopCarProdVO.getSkuImage());
-                    shopCarProdInfoVO.setProdName(shopCarProdVO.getProdName());
-                    shopCarProdInfoVO.setBrandCode(shopCarProdVO.getBrandCode());
-                    shopCarProdInfoVO.setSkuAttributeOption(shopCarProdVO.getSkuAttributeOption());
                     result.add(shopCarProdInfoVO);
                 }
             }
@@ -117,30 +116,26 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Override
     public int removeShopCar(Long customerId) {
+        logger.info("removeShopCar {}-> 清空购物车执行...");
         return shopCarMapper.deleteShopCars(customerId);
     }
 
     @Override
     public OrderPayVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
+        logger.info(READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
             if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
                 // 后台去获取购物车信息
-                ShopCar shopCar = new ShopCar();
-                shopCar.setCustomerId(customerId);
-                shopCar.setStoreId(condition.getStoreId());
-                logger.info("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars}执行...");
-                List<ShopCar> shopCars = shopCarMapper.selectShopCars(shopCar);
+                List<ShopCar> shopCars = queryShopCars(customerId, condition.getStoreId());
                 if (CollectionUtils.isEmpty(shopCars)) {
-                    logger.error("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars} 未获取到购物车信息");
+                    logger.error(READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
-                logger.info("预订单接口readyOrder -> 调用查询购物车接口{selectShopCars}执行结束..." + JsonUtil.toJSONString(shopCars));
 
-                logger.info("预订单接口readyOrder -> 校验购物车商品状态执行...");
+                logger.info(READY_ORDER + "{}-> 校验购物车商品状态执行...");
                 checkShopCarProdInfo(shopCars);
-                logger.info("预订单接口readyOrder -> 校验购物车商品状态执行结束...");
 
                 List<OrderItemCondition> items = new ArrayList<>(shopCars.size());
                 shopCars.stream().forEach( shopCar1 ->{
@@ -154,17 +149,17 @@ public class ShopCarServiceImpl implements ShopCarService {
                 BeanUtils.copyProperties(condition, orderCreateCondition);
                 orderCreateCondition.setCustomerId(customerId);
                 orderCreateCondition.setOrderItemConditions(items);
-                logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行...");
+                logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
-                logger.info("预订单接口readyOrder -> 调用订单接口{submitOrder}执行结束...");
+                logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
                 OrderPayVO orderPayVO = new OrderPayVO();
                 if (null != condition.getOrderTotalMoney()) {
-                    logger.info("预订单接口readyOrder -> 统一下单接口执行...");
+                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo开始...");
                     orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, condition.getOpenid());
-                    logger.info("预订单接口readyOrder -> 统一下单接口执行结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
+                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
                 }
                 // 保存成功删除此用户门店的购物车
-                shopCarMapper.deleteShopCarsByStoreId(shopCar);
+                shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));
                 this.removeShopCar(customerId);
                 return orderPayVO;
             } else {
@@ -226,6 +221,16 @@ public class ShopCarServiceImpl implements ShopCarService {
             throw new BusinessException(BusinessCode.CODE_402011);
         }
         return shopCarProds.getData();
+    }
+
+    private List<ShopCar> queryShopCars(Long customerId, Long storeId){
+        if (null == customerId || null == storeId) {
+            return Collections.emptyList();
+        }
+        ShopCar shopCar = new ShopCar();
+        shopCar.setCustomerId(customerId);
+        shopCar.setStoreId(storeId);
+        return shopCarMapper.selectShopCars(shopCar);
     }
 
 }

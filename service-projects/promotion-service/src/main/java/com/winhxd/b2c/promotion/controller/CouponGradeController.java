@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -75,9 +76,9 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @ApiOperation(value = "坎级规则设为无效/逻辑删除", notes = "坎级规则设为无效/逻辑删除")
     @Override
-    public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
+    public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
-            int count = couponGradeService.updateCouponGradeValid(Long.parseLong(id),Long.parseLong(userId),userName);
+            int count = couponGradeService.updateCouponGradeValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");

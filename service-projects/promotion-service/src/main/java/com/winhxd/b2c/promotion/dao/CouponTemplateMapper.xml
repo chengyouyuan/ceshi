@@ -434,7 +434,7 @@
   <update id="updateCouponTemplateToValid" parameterType="java.util.List">
       update coupon_template set status= 0 ,
       updated_by=#{updatedBy},
-      updated_by_name=#{updateByName},
+      updated_by_name=#{updatedByName},
       updated=#{updated}
       where id = #{id}
   </update>

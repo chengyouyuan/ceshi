@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-
 /**
  * @author zhangzhengyang
  * @description 系统用户控制
@@ -114,7 +112,7 @@ public class SysUserController implements UserServiceClient {
     @ApiOperation(value = "根据登录账号获取用户信息")
     public ResponseResult<SysUser> getByAccount(@PathVariable("account") String account){
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
-        ResponseResult<SysUser> result = new ResponseResult<>();
+        ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
         SysUser sysUser = sysUserService.getByAccount(account);
         result.setData(sysUser);
         return result;

@@ -25,10 +25,10 @@ public class StoreRegion {
     private Short status;
 
     @ApiModelProperty(value = "更新人")
-    private Long updatedBy;
+    private String updatedBy;
 
     @ApiModelProperty(value = "创建人")
-    private Long createdBy;
+    private String createdBy;
 
     @ApiModelProperty(value = "创建时间")
     private Date created;

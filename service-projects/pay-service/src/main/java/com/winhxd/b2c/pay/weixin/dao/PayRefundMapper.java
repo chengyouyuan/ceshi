@@ -14,4 +14,11 @@ public interface PayRefundMapper {
     int updateByPrimaryKeySelective(PayRefund record);
 
     int updateByPrimaryKey(PayRefund record);
+
+    /**
+     * 根据退款单号查询
+     * @param outRefundNo
+     * @return
+     */
+    PayRefund selectByOutRefundNo(String outRefundNo);
 }

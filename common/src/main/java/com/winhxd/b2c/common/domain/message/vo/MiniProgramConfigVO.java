@@ -13,7 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 @Data
 public class MiniProgramConfigVO {
     @ApiModelProperty("web页面地址url")
-    private String webpageUrl;
+    private String webPageUrl;
     @ApiModelProperty("用户名")
     private String userName;
     @ApiModelProperty("跳转小程序页面")

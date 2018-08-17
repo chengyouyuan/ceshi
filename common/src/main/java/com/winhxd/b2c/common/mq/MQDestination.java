@@ -11,7 +11,6 @@ public enum MQDestination {
      *
      */
     NETEASE_MESSAGE,
-    NETEASE_MESSAGE_DELAYED(true),
     SMS_MESSAGE,
     /**
      * 订单超时未接单延时消息

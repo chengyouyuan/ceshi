@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
 import org.slf4j.Logger;
@@ -54,8 +55,8 @@ public interface CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/8 14:47
      */
-    @RequestMapping(value = "/promotion/5016/v1/updateCouponInvestorToValid", method = RequestMethod.GET)
-    ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    @RequestMapping(value = "/promotion/5016/v1/updateCouponInvestorToValid", method = RequestMethod.POST)
+    ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition);
 
     /**
      *
@@ -98,7 +99,7 @@ class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
     }
 
     @Override
-    public ResponseResult<Integer> updateCouponInvestorToValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponInvestorToValid(CouponSetToValidCondition condition) {
         logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

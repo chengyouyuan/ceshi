@@ -45,7 +45,6 @@ import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreProdOperateEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
-import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.vo.LoginCheckSellMoneyVO;
 import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
@@ -237,47 +236,33 @@ public class ApiStoreProductManageController {
         // 判断操作类型
         if (StoreProdOperateEnum.PUTAWAY.getOperateCode() == operateType) {
 
-            // 查询过来的sku是否有的已经上架
-            StoreProductManageCondition spmCondition = new StoreProductManageCondition();
-            spmCondition.setStoreId(storeId);
-            spmCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-            List<StoreProductManage> spms = storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
-            // 上架操作
-            // 表示还没上架过
-            if (spms == null || spms.size() == 0) {
-                // 调用商品接口获取商品相关信息
-                ProductCondition prodCondition = new ProductCondition();
-                prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
-                prodCondition.setProductSkus(skuCodes);
-                // 查询商品详情
-                ResponseResult<List<ProductSkuVO>> productResult = productServiceClient.getProductSkus(prodCondition);
-                if (productResult.getCode() == 0) {
+            // 调用商品接口获取商品相关信息
+            ProductCondition prodCondition = new ProductCondition();
+            prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+            prodCondition.setProductSkus(skuCodes);
+            // 查询商品详情
+            ResponseResult<List<ProductSkuVO>> productResult = productServiceClient.getProductSkus(prodCondition);
+            if (productResult.getCode() == 0) {
 
-                    List<ProductSkuVO> productList = productResult.getData();
-                    // 查询信息一一对应
-                    if (productList != null && productList.size() == prodInfo.size()) {
-                        Map<String, ProdOperateInfoCondition> putawayInfo = new HashMap<>();
-                        for (ProdOperateInfoCondition p : prodInfo) {
-                            putawayInfo.put(p.getSkuCode(), p);
-                        }
-                        Map<String, ProductSkuVO> prodSkuInfo = new HashMap<>();
-                        for (ProductSkuVO prod : productList) {
-                            prodSkuInfo.put(prod.getSkuCode(), prod);
-                        }
-                        // 商品上架
-                        this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo,
-                                prodSkuInfo);
-                    } else {
-                        responseResult = new ResponseResult<>(BusinessCode.CODE_200012);
-                        return responseResult;
+                List<ProductSkuVO> productList = productResult.getData();
+                // 查询信息一一对应
+                if (productList != null && productList.size() == prodInfo.size()) {
+                    Map<String, ProdOperateInfoCondition> putawayInfo = new HashMap<>();
+                    for (ProdOperateInfoCondition p : prodInfo) {
+                        putawayInfo.put(p.getSkuCode(), p);
                     }
+                    Map<String, ProductSkuVO> prodSkuInfo = new HashMap<>();
+                    for (ProductSkuVO prod : productList) {
+                        prodSkuInfo.put(prod.getSkuCode(), prod);
+                    }
+                    // 商品上架
+                    this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo, prodSkuInfo);
                 } else {
                     responseResult = new ResponseResult<>(BusinessCode.CODE_200012);
                     return responseResult;
                 }
             } else {
-                // 表示商品中有部分已经上架过了
-                responseResult = new ResponseResult<>(BusinessCode.CODE_200013);
+                responseResult = new ResponseResult<>(BusinessCode.CODE_200012);
                 return responseResult;
             }
 

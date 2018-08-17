@@ -87,7 +87,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 						logger.error("StoreProductManageService ->batchPutawayStoreProductManage查询不到skuCode:" + skuCode + "的商品信息");
 						throw new BusinessException(BusinessCode.CODE_1001);
 					}
-					//不存在需要重新插入
+					//不存在，需要重新插入
 					spManage = new StoreProductManage();
 					spManage.setStoreId(storeId);
 					spManage.setSkuCode(skuCode);
@@ -108,7 +108,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					storeProductManageMapper.insert(spManage);
 
 				} else {
-					//存在，可能是下架了或则删除
+					//存在，可能是重复上架，下架了或则删除
 					spManage.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 					spManage.setUpdated(new Date());
 					spManage.setUpdatedBy(storeId);

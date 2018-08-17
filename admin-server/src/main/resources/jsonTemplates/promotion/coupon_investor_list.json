@@ -74,7 +74,7 @@
         "title": "出资方名称"
       },
       {
-        "name": "code",
+        "name": "investorPercents",
         "title": "出资方占比"
       },
       {

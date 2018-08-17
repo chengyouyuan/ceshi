@@ -36,6 +36,8 @@ public class CouponApplyVO {
     private Date updated;
     @ApiModelProperty(value = "关联模板数量")
     private String relTempleteCount;
+    @ApiModelProperty(value = "适用对象类型--转汉字")
+    private String applyRuleName;
 
 
     public Long getId() {
@@ -140,5 +142,13 @@ public class CouponApplyVO {
 
     public void setRelTempleteCount(String relTempleteCount) {
         this.relTempleteCount = relTempleteCount;
+    }
+
+    public String getApplyRuleName() {
+        return applyRuleName;
+    }
+
+    public void setApplyRuleName(String applyRuleName) {
+        this.applyRuleName = applyRuleName;
     }
 }

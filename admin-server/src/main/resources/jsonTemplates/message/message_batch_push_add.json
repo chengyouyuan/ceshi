@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "",
+    "id": "message_batch_push_add",
+    "title": "消息添加",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/message/addBatchPush",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "msgContent",
+        "inputModel": "text",
+        "title": "消息内容",
+        "value": "",
+        "placeholder": "请输入消息内容",
+        "isHidden": false
+      },
+      {
+        "name": "timingPush",
+        "inputModel": "single-date-picker",
+        "title": "定时推送",
+        "value": "",
+        "placeholder": "请选择推送时间",
+        "isHidden": false,
+        "format": "yyyy-MM-dd HH:mm:ss"
+      }
+    ]
+  }
+}

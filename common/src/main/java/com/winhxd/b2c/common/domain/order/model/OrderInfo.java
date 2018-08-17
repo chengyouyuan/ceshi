@@ -124,7 +124,7 @@ public class OrderInfo {
      */
     private Date acceptOrderDatetime;
     /**
-     * 提货方式:1自提;2配送; 现阶段只有自提
+     * 提货方式:1立即自提;2普通自提; 现阶段只有自提
      */
     private Short pickupType;
     /**

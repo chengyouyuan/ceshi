@@ -58,21 +58,6 @@
               "path": "/contributiveRule/index",
               "configKey": ""
             }
-          },
-          {
-            "name": "设置为无效",
-            "icon": null,
-            "event": {
-              "type": "ajax",
-              "ajaxType":"post",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": ""
-              },
-              "path": "/promotion/5016/v1/updateCouponInvestorToValid"
-            }
           }
         ]
       },

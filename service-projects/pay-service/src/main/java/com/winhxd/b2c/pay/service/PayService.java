@@ -12,6 +12,7 @@ import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 
 /**
@@ -31,7 +32,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(OrderPayCallbackCondition condition);
+	Integer callbackOrderPay(PayBill condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13

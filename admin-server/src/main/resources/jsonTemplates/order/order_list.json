@@ -60,7 +60,7 @@
       },
       {
         "name": "couponTitles",
-        "title": "商品数量"
+        "title": "所用优惠券"
       },
       {
         "name": "orderTotalMoney",
@@ -141,12 +141,14 @@
         "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "下单时间",
+        "value":{},
         "placeholder": "",
         "isHidden": false
       },
       {
         "name": "moneyInterval",
         "inputModel": "range",
+        "value":{},
         "title": "下单金额",
         "placeholder": "",
         "isHidden": false

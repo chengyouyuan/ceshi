@@ -536,17 +536,17 @@
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
         </if> 
-        <if test="condition.dateInterval != null and condition.dateInterval.startDate != null">
-            and created &gt;= #{condition.dateInterval.startDate,jdbcType=TIMESTAMP}
+        <if test="condition.dateInterval != null and condition.dateInterval.start != null">
+            and created &gt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
         </if>
-        <if test="condition.dateInterval != null and condition.dateInterval.endDate != null">
-            and created &lt;= #{condition.dateInterval.endDate,jdbcType=TIMESTAMP}
+        <if test="condition.dateInterval != null and condition.dateInterval.end != null">
+            and created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
         </if>
-        <if test="condition.moneyInterval != null and condition.moneyInterval.startNum != null">
-            and created &gt;= #{condition.moneyInterval.startNum,jdbcType=DECIMAL}
+        <if test="condition.moneyInterval != null and condition.moneyInterval.start != null">
+            and created &gt;= #{condition.moneyInterval.start,jdbcType=DECIMAL}
         </if>
-        <if test="condition.moneyInterval != null and condition.moneyInterval.endNum != null">
-            and created &lt;= #{condition.moneyInterval.endNum,jdbcType=DECIMAL}
+        <if test="condition.moneyInterval != null and condition.moneyInterval.end != null">
+            and created &lt;= #{condition.moneyInterval.end,jdbcType=DECIMAL}
         </if>
         <if test="condition.valuationType != null">
             and valuation_type = #{condition.valuationType,jdbcType=SMALLINT}

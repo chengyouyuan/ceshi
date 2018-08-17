@@ -27,11 +27,11 @@ public enum MQDestination {
     /**
      * C端申请退款订单剩1天未确认延时消息
      */
-    ORDER_REFUND_TIME_OUT_1_DAY_UNCONFIRMED(true),
+    ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED(true),
     /**
      * C端申请退款订单剩1小时未确认延时消息
      */
-    ORDER_REFUND_TIME_OUT_1_HOUR_UNCONFIRMED(true);
+    ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED(true);
 
     private boolean delayed;
 

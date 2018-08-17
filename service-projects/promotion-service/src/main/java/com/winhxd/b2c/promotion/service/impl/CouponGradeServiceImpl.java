@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
@@ -122,11 +123,11 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     }
 
     @Override
-    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(String gradeId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
         ResponseResult<PagedList<GradeTempleteCountVO>> result= new ResponseResult<PagedList<GradeTempleteCountVO>>();
         PagedList<GradeTempleteCountVO> pagedList = new PagedList<>();
-        PageHelper.startPage(pageNo,pageSize);
-        List<GradeTempleteCountVO> couponGradeCountList = couponGradeMapper.getGradeTempleteCountPage(Long.parseLong(gradeId));
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<GradeTempleteCountVO> couponGradeCountList = couponGradeMapper.getGradeTempleteCountPage(condition.getId());
         PageInfo<GradeTempleteCountVO> pageInfo = new PageInfo<>(couponGradeCountList);
         pagedList.setData(pageInfo.getList());
         pagedList.setPageNo(pageInfo.getPageNum());

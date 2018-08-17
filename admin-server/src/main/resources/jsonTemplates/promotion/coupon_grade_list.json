@@ -58,6 +58,18 @@
               "path": "/promotion/candyruleAdd",
               "configKey": ""
             }
+          },
+          {
+            "name": "关联模板数量",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_grade_reltemp_list.json"
+            }
           }
         ]
       },

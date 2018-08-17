@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import org.slf4j.Logger;
@@ -78,7 +79,7 @@ public interface CouponGradeServiceClient {
      *@Date   2018/8/11 14:28
      */
     @RequestMapping(value = "/promotion/5026/v1/findGradeTempleteCountPage", method = RequestMethod.POST)
-    ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
+    ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage( @RequestBody RuleRealationCountCondition condition);
 }
 
 
@@ -112,7 +113,7 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     }
 
     @Override
-    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(String gradeId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
         logger.error("CouponGradeServiceClient -> findGradeTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }

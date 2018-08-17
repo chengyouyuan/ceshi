@@ -24,7 +24,7 @@ public class VerifySummaryVO {
     private Date lastRecordedTime;
 
     @ApiModelProperty("操作时间")
-    private Date operated_time;
+    private Date operatedTime;
 
     @ApiModelProperty("操作人")
     private String operatedByName;

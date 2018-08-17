@@ -1,6 +1,7 @@
 {
   "meta": {
     "ajaxType": "get",
+    "path": "/pay/verify/storeWithdrawList",
     "type": "report",
     "title": "提款申请列表",
     "buttons": [
@@ -29,12 +30,56 @@
         "fixed": "left"
       },
       {
-        "name": "operatedByName",
-        "title": "操作人员"
+        "name": "storeName",
+        "title": "提款门店"
       },
       {
-        "name": "operated",
-        "title": "操作时间"
+        "name": "totalFee",
+        "title": "提款金额"
+      },
+      {
+        "name": "flowDirectionType",
+        "title": "流向"
+      },
+      {
+        "name": "cmmsAmt",
+        "title": "手续费"
+      },
+      {
+        "name": "realFee",
+        "title": "实际到款金额"
+      },
+      {
+        "name": "paymentAccount",
+        "title": "付款账户"
+      },
+      {
+        "name": "name",
+        "title": "提款人"
+      },
+      {
+        "name": "mobile",
+        "title": "提款手机号"
+      },
+      {
+        "name": "updated",
+        "title": "提款时间"
+      },
+      {
+        "name": "auditStatus",
+        "title": "审核状态"
+      },
+      {
+        "name": "callbackStatus",
+        "title": "提款状态"
+      },
+      {
+        "name": "auditDesc",
+        "title": "备注"
+      },
+      {
+        "name": "operatedByName",
+        "title": "操作人员"
       }
     ],
     "params": [

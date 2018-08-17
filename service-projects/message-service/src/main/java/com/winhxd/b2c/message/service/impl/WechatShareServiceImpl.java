@@ -201,6 +201,7 @@ public class WechatShareServiceImpl implements WechatShareService {
         }
         miniProgramConfigVO.setDescription(description);
         miniProgramConfigVO.setTransaction(transaction);
+        miniProgramConfigVO.setWebPageUrl("http://www.hxd.com");
         return miniProgramConfigVO;
     }
 

@@ -1,6 +1,5 @@
 {
   "meta": {
-    "ajaxType": "post",
     "path": "/store/1021/v1/getStoreInfoById/{id}",
     "type": "base-form",
     "id": "store_user_list_view",
@@ -11,47 +10,80 @@
     "items": [
       {
         "name": "storeCustomerId",
-        "title": "门店编码"
+        "inputModel": "input",
+        "title": "门店编码",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "storeMobile",
-        "title": "门店账号"
+        "title": "门店账号",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "storeName",
-        "title": "门店名称"
+        "title": "门店名称",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "province",
-        "title": "省"
+        "title": "省",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "city",
-        "title": "市"
+        "title": "市",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "county",
-        "title": "县"
+        "title": "县",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "town",
-        "title": "乡/镇"
+        "title": "乡/镇",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "village",
-        "title": "村"
+        "title": "村",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "storeAddress",
-        "title": "地址"
+        "title": "地址",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "shopkeeper",
-        "title": "联系人"
+        "title": "联系人",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "payType",
-        "title": "支付方式"
+        "title": "支付方式",
+        "inputModel": "input",
+        "value": "",
+        "isHidden": false
       },
       {
         "name": "storeStatus",

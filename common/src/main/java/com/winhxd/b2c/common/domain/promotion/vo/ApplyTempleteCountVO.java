@@ -23,7 +23,8 @@ public class ApplyTempleteCountVO {
      private String templeteStatus;
     @ApiModelProperty(value = "优惠券使用时间")
      private String templeteUseTime;
-
+    @ApiModelProperty(value = "状态")
+    private String templeteStatusName;
 
     public String getApplyId() {
         return applyId;
@@ -79,5 +80,13 @@ public class ApplyTempleteCountVO {
 
     public void setTempleteUseTime(String templeteUseTime) {
         this.templeteUseTime = templeteUseTime;
+    }
+
+    public String getTempleteStatusName() {
+        return templeteStatusName;
+    }
+
+    public void setTempleteStatusName(String templeteStatusName) {
+        this.templeteStatusName = templeteStatusName;
     }
 }

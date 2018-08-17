@@ -146,8 +146,7 @@ public class ApiStoreProductManageController {
                 prodConditionByPage.setHxdProductSkus(hxdBuyedProdSkuList);
             } else {
                 // 没有下过单
-                responseResult.setCode(BusinessCode.CODE_1006);
-                responseResult.setMessage("账号未启用！");
+                responseResult= new ResponseResult<>(BusinessCode.CODE_1006);
                 return responseResult;
             }
         }
@@ -357,7 +356,7 @@ public class ApiStoreProductManageController {
             pageList = new PagedList<>();
         }
         responseResult.setData(pageList);
-
+        logger.info("B端门店提报商品列表接口返参为：{}", responseResult);
         return responseResult;
     }
 
@@ -396,6 +395,7 @@ public class ApiStoreProductManageController {
         productCondition.setProductSkus(putwaySkusByConditon);
         productCondition.setPageNo(condition.getPageNo());
         productCondition.setPageSize(condition.getPageSize());
+        productCondition.setSearchSkuCode(SearchSkuCodeEnum.NOT_IN_SKU_CODE);
         // hxd购买过的商品
         if (HXD_PROD_TYPE.equals(condition.getProdType())) {
             productCondition.setHxdProductSkus(getStoreBuyedHxdProdSkuCodes(storeCustomerId));
@@ -476,7 +476,7 @@ public class ApiStoreProductManageController {
         }
 
         responseResult.setData(list);
-
+        logger.info("B端我的商品管理接口返参为：{}", responseResult);
         return responseResult;
     }
 
@@ -497,7 +497,7 @@ public class ApiStoreProductManageController {
     ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition) {
         ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
         LoginCheckSellMoneyVO vo = new LoginCheckSellMoneyVO();
-
+        logger.info("B端获取门店未设置价格上架商品数量接口入参为：{}", condition);
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {
@@ -525,7 +525,7 @@ public class ApiStoreProductManageController {
         vo.setNoSetPriceCount(count);
 
         responseResult.setData(vo);
-
+        logger.info("B端获取门店未设置价格上架商品数量接口返参为：{}", responseResult);
         return responseResult;
     }
 
@@ -584,6 +584,7 @@ public class ApiStoreProductManageController {
         }
 
         responseResult.setData(imageVOList);
+        logger.info("提报商品图片上传接口接口返参为：{}", responseResult);
         return responseResult;
     }
 

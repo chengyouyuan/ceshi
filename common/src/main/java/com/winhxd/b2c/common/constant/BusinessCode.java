@@ -369,6 +369,12 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  操作类型为空")
     public static final int CODE_600003 = 600003;
     
+    @ApiModelProperty("门店资金变化  订单号为空")
+    public static final int CODE_600004 = 600004;
+    
+    @ApiModelProperty("门店资金变化  提现单号为空")
+    public static final int CODE_600005 = 600005;
+    
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;

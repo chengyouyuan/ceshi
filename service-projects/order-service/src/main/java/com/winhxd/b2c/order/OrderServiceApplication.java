@@ -1,7 +1,7 @@
 package com.winhxd.b2c.order;
 
 import com.winhxd.b2c.common.config.MicroServiceConfig;
-import com.winhxd.b2c.common.mq.event.EnableEventMessage;
+import com.winhxd.b2c.common.mq.event.support.EnableEventMessage;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;

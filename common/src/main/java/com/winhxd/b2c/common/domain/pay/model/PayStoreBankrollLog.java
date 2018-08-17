@@ -35,6 +35,8 @@ public class PayStoreBankrollLog {
     private String updatedByName;
 
     private Date updated;
+    
+    private Integer type;
 
     public Long getId() {
         return id;
@@ -163,4 +165,12 @@ public class PayStoreBankrollLog {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
 }

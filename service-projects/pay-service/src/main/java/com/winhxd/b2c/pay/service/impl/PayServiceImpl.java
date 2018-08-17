@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.pay.model.*;
-import com.winhxd.b2c.pay.dao.*;
-import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
@@ -24,13 +23,26 @@ import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
+import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
+import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
+import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
@@ -59,6 +71,9 @@ public class PayServiceImpl implements PayService{
 	private WXRefundService refundService;
 	@Autowired
 	private WXTransfersService transfersService;
+	
+	@Autowired
+	private PayStoreWalletMapper payStoreWalletMapper;
 	
 	private static final String logLabel="PayServiceImpl--";
 
@@ -162,7 +177,44 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--操作类型为空");
 			throw new BusinessException(BusinessCode.CODE_600003);
 		}
-		if (condition.getType().equals(1)) {
+		logger.info(log+"--参数"+condition.toString());
+		boolean flag=false;
+		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
+			// 验证该订单是否已经做过此项操作
+			String orderNo=condition.getOrderNo();
+			if (StringUtils.isNotBlank(orderNo)) {
+				logger.info(log+"--订单号为空");
+				throw new BusinessException(BusinessCode.CODE_600004);
+			}
+		}
+
+		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
+          //todo 验证该订单是否做过此项操作
+			String orderNo=condition.getOrderNo();
+			if (StringUtils.isNotBlank(orderNo)) {
+				logger.info(log+"--订单号为空");
+				throw new BusinessException(BusinessCode.CODE_600004);
+			}
+		}
+
+		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
+			//todo 验证该订单是否做过此项操作
+			String withdrawalsNo=condition.getWithdrawalsNo();
+			if (StringUtils.isNotBlank(withdrawalsNo)) {
+				logger.info(log+"--提现单号为空");
+				throw new BusinessException(BusinessCode.CODE_600005);
+			}
+		}
+
+		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
+			//todo 验证该订单是否做过此项操作
+			String withdrawalsNo=condition.getWithdrawalsNo();
+			if (StringUtils.isNotBlank(withdrawalsNo)) {
+				logger.info(log+"--提现单号为空");
+				throw new BusinessException(BusinessCode.CODE_600005);
+			}
+		}
+		if (flag) {
 			
 		}
 		
@@ -211,19 +263,19 @@ public class PayServiceImpl implements PayService{
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney();
 		String remarks="";
-		if(1 == condition.getType()){
+		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
 		}
 
-		if(2 == condition.getType()){
+		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
 			 remarks = "结算审核：待结算减少"+settlementSettledMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 
-		if(3 == condition.getType()){
+		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
 			 remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedFrozenMoney+"元";
 		}
 
-		if(4 == condition.getType()){
+		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
 			 remarks = "提现审核:提现冻结金额减少"+presentedFrozenMoney +"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
@@ -321,13 +373,22 @@ public class PayServiceImpl implements PayService{
 	@Override
 	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
 		
-		return"";
-//		return transfersService.transfersToChange(toWxBalanceCondition);
+		return transfersService.transfersToChange(toWxBalanceCondition);
 	}
 
 	@Override
 	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-//		return transfersService.transfersToBank(toWxBankCondition);
-		return "";
+		return transfersService.transfersToBank(toWxBankCondition);
+	}
+
+
+	@Override
+	public List<PayStoreWallet> selectPayStoreWalletByStoreId() {
+		StoreUser storeUser=UserContext.getCurrentStoreUser();
+		Long storeId=null;
+		if (storeUser!=null) {
+			storeId=storeUser.getBusinessId();
+		}
+		return payStoreWalletMapper.selectByStoreId(storeId);
 	}
 }

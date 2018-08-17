@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ShopCartServiceClient shopCartServiceClient;
 
-    private ProductConditionByPage buildProductConditionByPage(CustomerSearchProductCondition condition, List<StoreProductManage> storeProductManages) {
+    private ProductConditionByPage buildProductConditionByPage(boolean bool, CustomerSearchProductCondition condition, List<StoreProductManage> storeProductManages) {
         ProductConditionByPage productConditionByPage = new ProductConditionByPage();
         productConditionByPage.setPageNo(condition.getPageNo());
         productConditionByPage.setPageSize(condition.getPageSize());
@@ -49,9 +49,16 @@ public class ProductServiceImpl implements ProductService {
         productConditionByPage.setCategoryCode(condition.getCategoryCode());
         productConditionByPage.setProductSkus(storeProductManages.stream()
                 .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
-        productConditionByPage.setRecommendSkus(storeProductManages.stream()
-                .filter(storeProductManage -> storeProductManage.getRecommend() == 1)
-                .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
+        //初始化页面不需要判断推荐状态
+        if (bool){
+            productConditionByPage.setRecommendSkus(storeProductManages.stream()
+                    .filter(storeProductManage -> storeProductManage.getRecommend() == 1)
+                    .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()));
+        }else{
+            productConditionByPage.setRecommendSkus(condition.getRecommend() != null && condition.getRecommend() == 1 ?storeProductManages.stream()
+                    .filter(storeProductManage -> storeProductManage.getRecommend() == 1)
+                    .map(storeProductManage -> storeProductManage.getSkuCode()).collect(Collectors.toList()):null);
+        }
         productConditionByPage.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
         return productConditionByPage;
     }
@@ -114,12 +121,12 @@ public class ProductServiceImpl implements ProductService {
             return responseResult;
         }
         //获取分类信息 初始化商品信息
-        ProductConditionByPage productConditionByPage = buildProductConditionByPage(condition,storeProductManages);
+        ProductConditionByPage productConditionByPage = buildProductConditionByPage(true, condition, storeProductManages);
         responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
 
         //判断是否有店主推荐
         responseResult.getData().setRecommendFlag(0);
-        if (productConditionByPage.getRecommendSkus().size() > 0){
+        if (productConditionByPage.getRecommendSkus() != null && productConditionByPage.getRecommendSkus().size() > 0){
             responseResult.getData().setRecommendFlag(1);
         }
 
@@ -144,7 +151,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         //获取商品列表信息
-        ProductConditionByPage productConditionByPage = buildProductConditionByPage(condition, storeProductManages);
+        ProductConditionByPage productConditionByPage = buildProductConditionByPage(false, condition, storeProductManages);
         responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
         //价格赋值
         assignSellMoney(responseResult.getData().getData(),storeProductManages);

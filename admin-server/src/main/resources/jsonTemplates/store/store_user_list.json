@@ -42,7 +42,7 @@
               "static": {
                 "method": "detail"
               },
-              "path": "",
+              "path": "/store/1021/v1/getStoreInfoById/{id}",
               "configKey": "/template/module/store/store_user_list_view.json"
             }
           },

@@ -2,7 +2,6 @@ package com.winhxd.b2c.common.i18n;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
@@ -10,8 +9,14 @@ import java.util.Locale;
  * @author lixiaodong
  */
 public class MessageHelper {
+    private static MessageHelper instance;
+
     @Autowired
     private MessageSource messageSource;
+
+    public static MessageHelper getInstance() {
+        return instance;
+    }
 
     public MessageHelper() {
         instance = this;
@@ -21,15 +26,15 @@ public class MessageHelper {
         return getMessageWithLocale(null, code, args);
     }
 
-
     public String getMessageWithLocale(Locale locale, String code, Object... args) {
         return messageSource.getMessage(code, args, locale);
     }
 
+    public String getMessage(String code, String defaultMessage, Object... args) {
+        return getMessage(null, code, defaultMessage, args);
+    }
 
-    private static MessageHelper instance;
-
-    public static MessageHelper getInstance() {
-        return instance;
+    public String getMessage(Locale locale, String code, String defaultMessage, Object... args) {
+        return messageSource.getMessage(code, args, defaultMessage, locale);
     }
 }

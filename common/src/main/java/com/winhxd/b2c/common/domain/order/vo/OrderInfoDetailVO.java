@@ -128,7 +128,7 @@ public class OrderInfoDetailVO implements Serializable {
     @ApiModelProperty(value = "申请退款时间", required = true)
     private Date applyRefundDatetime;
     /**
-     * 提货方式:1自提;2配送; 现阶段只有自提
+     * 提货方式:1立即自提;2普通自提; 现阶段只有自提
      */
     @ApiModelProperty(value = "提货方式:1立即自提;2普通自提;", required = true)
     private Short pickupType;

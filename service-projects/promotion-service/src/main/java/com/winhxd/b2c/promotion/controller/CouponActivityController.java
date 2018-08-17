@@ -42,7 +42,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @ApiOperation(value = "领券推券活动列表接口", notes = "领券推券活动列表接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
         result = couponActivityService.findCouponActivity(condition);

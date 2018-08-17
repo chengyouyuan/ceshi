@@ -47,15 +47,32 @@ public class CouponController {
 	//=====================================优惠券活动开始=============================================================
 	/**
 	 *
-	 *@Deccription  获取优惠券活动列表（领券、推券）
+	 *@Deccription  获取优惠券活动列表（领券）
 	 *@Params  condition
 	 *@Return  ResponseResult<PagedList<CouponActivityVO>>
 	 *@User  sjx
 	 *@Date   2018/8/7
 	 */
-	@ApiOperation("获取优惠券活动列表")
-	@PostMapping(value = "/5029/v1/queryCouponActivity")
-	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition){
+	@ApiOperation("获取优惠券活动领券列表")
+	@PostMapping(value = "/5029/v1/queryCouponActivityPull")
+	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivityPull(@RequestBody CouponActivityCondition condition){
+		condition.setType((short) 1);
+		logger.info("获取优惠券活动领券列表，type="+condition.getType());
+		return couponActivityServiceClient.queryCouponActivity(condition);
+	}
+	/**
+	 *
+	 *@Deccription  获取优惠券活动列表（推券）
+	 *@Params  condition
+	 *@Return  ResponseResult<PagedList<CouponActivityVO>>
+	 *@User  sjx
+	 *@Date   2018/8/7
+	 */
+	@ApiOperation("获取优惠券活动推券列表")
+	@PostMapping(value = "/5049/v1/queryCouponActivityPush")
+	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivityPush(@RequestBody CouponActivityCondition condition){
+		condition.setType((short) 2);
+		logger.info("获取优惠券活动推券列表，type="+condition.getType());
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
 	/**

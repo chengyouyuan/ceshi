@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
@@ -58,30 +59,52 @@ public class VerifyService {
             OrderInfoDetailVO4Management orderInfoDetailVO4Management = responseResult.getData();
             OrderInfoDetailVO orderInfoDetailVO = orderInfoDetailVO4Management.getOrderInfoDetailVO();
             if (orderInfoDetailVO != null) {
-                // 插入微信支付手续费，按0.6%计算，如果有变更，另行调整
-                AccountingDetail thirdPartyfee = new AccountingDetail();
-                thirdPartyfee.setOrderNo(orderNo);
-                thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
-                thirdPartyfee.setDetailMoney(FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney()));
-                thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
-                count++;
-                accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
-                AccountingDetail realPay = new AccountingDetail();
-                realPay.setOrderNo(orderNo);
-                realPay.setDetailType(AccountingDetail.DetailTypeEnum.REAL_PAY.getCode());
-                realPay.setDetailMoney(orderInfoDetailVO.getRealPaymentMoney());
-                realPay.setStoreId(orderInfoDetailVO.getStoreId());
-                accountingDetailMapper.insertAccountingDetail(realPay);
-                count++;
-                if (orderInfoDetailVO.getDiscountMoney() != null
-                        && orderInfoDetailVO.getDiscountMoney().compareTo(BigDecimal.ZERO) != 0) {
-                    AccountingDetail discount = new AccountingDetail();
-                    discount.setOrderNo(orderNo);
-                    discount.setDetailType(AccountingDetail.DetailTypeEnum.DISCOUNT.getCode());
-                    discount.setDetailMoney(orderInfoDetailVO.getDiscountMoney());
-                    discount.setStoreId(orderInfoDetailVO.getStoreId());
-                    accountingDetailMapper.insertAccountingDetail(discount);
+                // 订单费用是否重复记账校验
+                List<AccountingDetail> list = accountingDetailMapper.selectAccountingDetailListByOrderNo(orderNo);
+                boolean isHasThirdPartyfee = false;
+                boolean isHasRealPay = false;
+                boolean isHasDiscount = false;
+                for (AccountingDetail detail : list) {
+                    if (detail.getDetailType().compareTo(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode()) == 0) {
+                        isHasThirdPartyfee = true;
+                    }
+                    if (detail.getDetailType().compareTo(AccountingDetail.DetailTypeEnum.REAL_PAY.getCode()) == 0) {
+                        isHasRealPay = true;
+                    }
+                    if (detail.getDetailType().compareTo(AccountingDetail.DetailTypeEnum.DISCOUNT.getCode()) == 0) {
+                        isHasDiscount = true;
+                    }
+                }
+                if (isHasThirdPartyfee) {
+                    // 插入微信支付手续费，按0.6%计算，如果有变更，另行调整
+                    AccountingDetail thirdPartyfee = new AccountingDetail();
+                    thirdPartyfee.setOrderNo(orderNo);
+                    thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
+                    thirdPartyfee.setDetailMoney(FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney()));
+                    thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
+                    accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                     count++;
+                }
+                if (isHasRealPay) {
+                    AccountingDetail realPay = new AccountingDetail();
+                    realPay.setOrderNo(orderNo);
+                    realPay.setDetailType(AccountingDetail.DetailTypeEnum.REAL_PAY.getCode());
+                    realPay.setDetailMoney(orderInfoDetailVO.getRealPaymentMoney());
+                    realPay.setStoreId(orderInfoDetailVO.getStoreId());
+                    accountingDetailMapper.insertAccountingDetail(realPay);
+                    count++;
+                }
+                if (isHasDiscount) {
+                    if (orderInfoDetailVO.getDiscountMoney() != null
+                            && orderInfoDetailVO.getDiscountMoney().compareTo(BigDecimal.ZERO) != 0) {
+                        AccountingDetail discount = new AccountingDetail();
+                        discount.setOrderNo(orderNo);
+                        discount.setDetailType(AccountingDetail.DetailTypeEnum.DISCOUNT.getCode());
+                        discount.setDetailMoney(orderInfoDetailVO.getDiscountMoney());
+                        discount.setStoreId(orderInfoDetailVO.getStoreId());
+                        accountingDetailMapper.insertAccountingDetail(discount);
+                        count++;
+                    }
                 }
             } else {
                 throw new BusinessException(-1, "订单明细为NULL");
@@ -90,7 +113,7 @@ public class VerifyService {
             throw new BusinessException(-1, String.format("订单服务-查询订单详情-返回失败-[%d]-%s",
                     responseResult.getCode(), responseResult.getMessage()));
         }
-        log.info(String.format("保存[%d]笔订单费用明细-%s", count, orderNo));
+        log.info(String.format("保存订单[%s]费用，共[%d]笔费用", orderNo, count));
         return count;
     }
 
@@ -118,6 +141,7 @@ public class VerifyService {
             throw new BusinessException(-1, String.format("订单服务-查询订单详情-返回失败-[%d]-%s",
                     responseResult.getCode(), responseResult.getMessage()));
         }
+        log.info(String.format("订单[%s]费用入账，共[%d]笔费用", orderNo, count));
         return count;
     }
 
@@ -166,9 +190,13 @@ public class VerifyService {
     public int verifyByStoreSummary(List<VerifySummaryCondition.StoreAndDateVO> list, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
-        accountingDetailMapper.insertVerifyHistory(
-                AccountingDetail.VerifyStatusEnum.VERIFIED.getCode(),
-                verifyCode, verifyRemark, operatedBy, operatedByName);
+        VerifyHistory verifyHistory = new VerifyHistory();
+        verifyHistory.setVerifyCode(verifyCode);
+        verifyHistory.setVerifyStatus(AccountingDetail.VerifyStatusEnum.VERIFIED.getCode());
+        verifyHistory.setVerifyRemark(verifyRemark);
+        verifyHistory.setOperatedBy(operatedBy);
+        verifyHistory.setOperatedByName(operatedByName);
+        accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = 0;
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
@@ -190,9 +218,13 @@ public class VerifyService {
     public int verifyByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
-        accountingDetailMapper.insertVerifyHistory(
-                AccountingDetail.VerifyStatusEnum.VERIFIED.getCode(),
-                verifyCode, verifyRemark, operatedBy, operatedByName);
+        VerifyHistory verifyHistory = new VerifyHistory();
+        verifyHistory.setVerifyCode(verifyCode);
+        verifyHistory.setVerifyStatus(AccountingDetail.VerifyStatusEnum.VERIFIED.getCode());
+        verifyHistory.setVerifyRemark(verifyRemark);
+        verifyHistory.setOperatedBy(operatedBy);
+        verifyHistory.setOperatedByName(operatedByName);
+        accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
         return updatedCount;
     }
@@ -210,9 +242,13 @@ public class VerifyService {
     public int pauseByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
-        accountingDetailMapper.insertVerifyHistory(
-                AccountingDetail.VerifyStatusEnum.PAUSED.getCode(),
-                verifyCode, verifyRemark, operatedBy, operatedByName);
+        VerifyHistory verifyHistory = new VerifyHistory();
+        verifyHistory.setVerifyCode(verifyCode);
+        verifyHistory.setVerifyStatus(AccountingDetail.VerifyStatusEnum.PAUSED.getCode());
+        verifyHistory.setVerifyRemark(verifyRemark);
+        verifyHistory.setOperatedBy(operatedBy);
+        verifyHistory.setOperatedByName(operatedByName);
+        accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
         return updatedCount;
     }
@@ -230,9 +266,13 @@ public class VerifyService {
     public int restoreByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
-        accountingDetailMapper.insertVerifyHistory(
-                AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode(),
-                verifyCode, verifyRemark, operatedBy, operatedByName);
+        VerifyHistory verifyHistory = new VerifyHistory();
+        verifyHistory.setVerifyCode(verifyCode);
+        verifyHistory.setVerifyStatus(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode());
+        verifyHistory.setVerifyRemark(verifyRemark);
+        verifyHistory.setOperatedBy(operatedBy);
+        verifyHistory.setOperatedByName(operatedByName);
+        accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
         return updatedCount;
     }

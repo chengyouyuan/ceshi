@@ -28,6 +28,18 @@
     <result column="operated_by_name" property="operatedByName"></result>
   </resultMap>
 
+  <select id="selectAccountingDetailById" resultMap="VerifyDetailVOMap">
+    select *
+    from pay_accounting_detail d
+    where id = #{id}
+  </select>
+
+  <select id="selectAccountingDetailListByOrderNo" resultMap="VerifyDetailVOMap">
+    select *
+    from pay_accounting_detail d
+    where order_no = #{orderNo}
+  </select>
+
   <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition">
     select *
     from pay_accounting_detail d

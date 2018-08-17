@@ -23,6 +23,22 @@ public interface AccountingDetailMapper {
     AccountingDetail insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
+     * 按指定ID查询的费用明细
+     *
+     * @param id
+     * @return
+     */
+    AccountingDetail selectAccountingDetailById(@Param("id") Long id);
+
+    /**
+     * 按订单号查询的费用明细
+     *
+     * @param orderNo
+     * @return
+     */
+    List<AccountingDetail> selectAccountingDetailListByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
      * 查询费用明细
      *
      * @param condition
@@ -58,18 +74,10 @@ public interface AccountingDetailMapper {
     /**
      * 插入结算历史
      *
-     * @param verifyStatus
-     * @param verifyCode
-     * @param verifyRemark
-     * @param operatedBy
-     * @param operatedByName
+     * @param verifyHistory
      * @return
      */
-    VerifyHistory insertVerifyHistory(@Param("verifyStatus") Integer verifyStatus,
-                                      @Param("verifyCode") String verifyCode,
-                                      @Param("verifyRemark") String verifyRemark,
-                                      @Param("operatedBy") Long operatedBy,
-                                      @Param("operatedByName") String operatedByName);
+    VerifyHistory insertVerifyHistory(VerifyHistory verifyHistory);
 
     /**
      * 按门店结算汇总更新费用明细状态

@@ -346,7 +346,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void applyRefund(OrderInfo order, Long operatorId, String operator, String reason) {
         if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款状态异常");
+            throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, "退款状态异常");
         }
         PayRefundCondition payRefundCondition = new PayRefundCondition();
         payRefundCondition.setOutTradeNo(order.getPaymentSerialNum());
@@ -357,7 +357,7 @@ public class CommonOrderServiceImpl implements OrderService {
         payRefundCondition.setRefundDesc(reason);
         PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
         if (!payRefundVO.isStatus()) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款申请异常");
+            throw new BusinessException(BusinessCode.ORDER_REFUND_FAIL, "退款申请异常");
         }
     }
 

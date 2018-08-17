@@ -22,7 +22,9 @@ public class ResponseResult<T> {
 
     public ResponseResult(int code) {
         this.code = code;
-        this.message = MessageHelper.getInstance().getMessage(String.valueOf(code));
+        if (code != 0) {
+            this.message = MessageHelper.getInstance().getMessage(String.valueOf(code), "ERROR:" + code);
+        }
     }
 
     public ResponseResult(T data) {

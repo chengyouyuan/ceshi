@@ -19,6 +19,9 @@
       <if test="customerId != null">
         and customer_id = #{customerId}
       </if>
+    <if test="storeUserId != null">
+      and store_user_id = #{storeUserId}
+    </if>
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

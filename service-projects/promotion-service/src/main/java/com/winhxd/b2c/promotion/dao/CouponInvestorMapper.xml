@@ -270,7 +270,7 @@
         count(a.id) rel_templete_count
     FROM
         coupon_investor a
-    LEFT JOIN coupon_template c ON a.id = c.investor_id
+    INNER JOIN coupon_template c ON a.id = c.investor_id
     WHERE
         a.id = #{id}
   </select>
@@ -301,7 +301,7 @@
         b.id AS invertor_id
     FROM
         coupon_template a
-    LEFT JOIN coupon_investor b ON a.investor_id = b.id
+    INNER JOIN coupon_investor b ON a.investor_id = b.id
     WHERE
         a.investor_id = #{investorId}
   </select>

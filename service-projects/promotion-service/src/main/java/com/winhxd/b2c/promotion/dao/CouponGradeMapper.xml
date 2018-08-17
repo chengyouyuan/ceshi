@@ -238,7 +238,7 @@
     count(a.id) as rel_templete_count
     FROM
     coupon_grade a
-    LEFT JOIN coupon_template c ON a.id = c.grade_id
+    INNER JOIN coupon_template c ON a.id = c.grade_id
     WHERE
     a.id = #{id}
   </select>
@@ -312,7 +312,7 @@
       b.id AS grade_id
   FROM
       coupon_template a
-  LEFT JOIN coupon_grade b ON a.grade_id = b.id
+  INNER JOIN coupon_grade b ON a.grade_id = b.id
   WHERE
       a.grade_id = #{gradeId}
   </select>

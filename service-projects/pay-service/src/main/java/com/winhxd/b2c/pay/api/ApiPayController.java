@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
@@ -56,5 +57,17 @@ public class ApiPayController {
 		result.setData(wallet);
 		return result;
 	}
+	@ApiOperation(value = "门店绑定转账钱包", notes = "门店绑定转账钱包")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+	})
+	@PostMapping(value = "/6007/v1/storeBindStoreWallet", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseResult<Void> storeBindStoreWallet(@RequestBody StoreBindStoreWalletCondition condition){
+		ResponseResult<Void> result=new ResponseResult<>();
+		payService.storeBindStoreWallet(condition);
+		return result;
+	}
+	
+	
 	
 }

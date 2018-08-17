@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
@@ -79,25 +81,44 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	@Transactional
-	public Integer callbackOrderPay(OrderPayCallbackCondition condition) {
+	public Integer callbackOrderPay(PayBill condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
-		//todo判断支付成功之后更新订单信息
-        orderServiceClient.orderPaySuccessNotify("订单号", "交易号");
+		if (StringUtils.isBlank(condition.getOutOrderNo())) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600004);
+		}
+		//判断支付成功之后更新订单信息
+		if(1 == condition.getStatus()){
+			orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
+		}
+
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
-		int insertResult=payOrderPaymentMapper.updateByPrimaryKeySelective(payOrderPayment);
+		payOrderPayment.setOrderNo(condition.getOutOrderNo());
+		payOrderPayment.setOrderPamentNo(condition.getOutTradeNo());
+		payOrderPayment.setCallbackDate(new Date());
+		payOrderPayment.setCreated(new Date());
+		payOrderPayment.setTimeEnd(condition.getTimeEnd());
+		payOrderPayment.setCallbackStatus(condition.getStatus());
+		payOrderPayment.setCallbackReason(condition.getErrorCode());
+		payOrderPayment.setBuyerId(condition.getBuyerId());
+		payOrderPayment.setTransactionId(condition.getTransactionId());
+		payOrderPayment.setRealPaymentMoney(condition.getTotalAmount());
+		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
+//		payOrderPayment.setPayType(condition.getty);
+		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
 		if (insertResult<1) {
 			//订单更新失败
 			logger.info(log+"--订单支付流更新失败");
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 
-		return null;
+		return insertResult;
 	}
 
 
@@ -108,7 +129,11 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-//			throw new BusinessException(BusinessCode.CODE_600303);
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
+		if (StringUtils.isBlank(condition.getOrderNo())) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_600004);
 		}
 		logger.info(log+"--参数"+condition.toString());
 		//插入流水数据
@@ -132,7 +157,7 @@ public class PayServiceImpl implements PayService{
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 		//根据退款状态  判断是否更新订单状态
-		if(null != condition.getCallbackRefundStatus() && condition.getCallbackRefundStatus().equals(1)){
+		if(1 == condition.getCallbackRefundStatus()){
 			//更新订单状态
 			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
 			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
@@ -189,12 +214,16 @@ public class PayServiceImpl implements PayService{
 		}
 
 		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
-          //todo 验证该订单是否做过此项操作
+          //验证订单信息
 			String orderNo=condition.getOrderNo();
 			if (StringUtils.isNotBlank(orderNo)) {
 				logger.info(log+"--订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
+			//获取订单信息  如果订单状态不是完成状态  不可以进行此操作
+			
+			//验证该订单是否做过此项操作
+			
 		}
 
 		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
@@ -390,5 +419,18 @@ public class PayServiceImpl implements PayService{
 			storeId=storeUser.getBusinessId();
 		}
 		return payStoreWalletMapper.selectByStoreId(storeId);
+	}
+
+
+	@Override
+	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
+		// TODO Auto-generated method stub
+		PayStoreWallet wallet=new PayStoreWallet();
+		wallet.setStoreId(111L);
+		wallet.setName(condition.getName());
+		wallet.setNick(condition.getNick());
+		wallet.setOpenid(condition.getOpenid());
+		wallet.setStatus((short)1);
+		payStoreWalletMapper.insertSelective(wallet);
 	}
 }

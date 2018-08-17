@@ -18,8 +18,8 @@ import java.util.Date;
 public class DateInterval {
 
     @ApiModelProperty(value = "开始时间")
-    private Date startDate;
+    private Date start;
 
     @ApiModelProperty(value = "结束时间")
-    private Date endDate;
+    private Date end;
 }

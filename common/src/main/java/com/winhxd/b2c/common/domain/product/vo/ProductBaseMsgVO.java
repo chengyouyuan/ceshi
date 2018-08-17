@@ -22,5 +22,8 @@ public class ProductBaseMsgVO {
 	@ApiModelProperty(value = "是否在门店上架商品内查找")
 	private String searchSkuCode;
 
+	@ApiModelProperty(value = "是否有店主推荐 0不包含 1包含")
+	private Integer recommendFlag;
+
 
 }

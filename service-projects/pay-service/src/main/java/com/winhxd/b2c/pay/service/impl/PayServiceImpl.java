@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -110,7 +111,15 @@ public class PayServiceImpl implements PayService{
 		payOrderPayment.setTransactionId(condition.getTransactionId());
 		payOrderPayment.setRealPaymentMoney(condition.getTotalAmount());
 		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
-//		payOrderPayment.setPayType(condition.getty);
+		if(condition.getTradeType().equals(TradeTypeEnums.JSAPI.getCode())){
+			payOrderPayment.setPayType((short) 1);
+		}
+		if(condition.getTradeType().equals(TradeTypeEnums.NATIVE.getCode())){
+			payOrderPayment.setPayType((short) 2);
+		}
+		if(condition.getTradeType().equals(TradeTypeEnums.APP.getCode())){
+			payOrderPayment.setPayType((short) 3);
+		}
 		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
 		if (insertResult<1) {
 			//订单更新失败

@@ -75,13 +75,26 @@
   <!-- 跳转到修改时获取模板以及关联信息返回字段 -->
   <sql id="Select_CouponTemplate_Column_List">
       a.id,a.code,a.title,a.exolian,
-      a.remarks,a.investor_id,a.grade_id,a.apply_rule_id,
+      a.remarks,a.investor_id,a.grade_id,
+      a.apply_rule_id,
       a.corner,a.coupon_label,
       a.coupon_label_color,
-      a.STATUS,a.reason,a.CODE,a.cal_type,a.pay_type,a.created_by,
+      a.STATUS,
+      (case when a.STATUS=0 then '无效'
+       when a.STATUS =1 then '有效' end) as status_name,
+      a.reason,a.CODE,
+      a.cal_type,
+      (case when a.cal_type=1 then '订单'
+       when a.cal_type=2 then '商品' end ) as cal_type_name,
+      a.pay_type,a.created_by,
       a.created_by_name,a.created,a.updated_by,a.updated_by_name,
       a.updated,b.`name` as investor_name,c.`name` as grade_name,
-      d.`name` as apply_rule_name,d.apply_rule_type
+      d.name  as apply_rule_name,
+      (case when d.apply_rule_type=1 then '通用券'
+        when d.apply_rule_type=2 then '品牌券'
+        when d.apply_rule_type=3 then '品类券'
+        when d.apply_rule_type=4 then '商品券' end ) as apply_rule_type_name ,
+       d.apply_rule_type
   </sql>
 
   <!-- 跳转到修改时获取模板以及关联信息sql -->
@@ -371,9 +384,11 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="investor_name" jdbcType="VARCHAR" property="investorName" />
     <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
+    <result column="apply_rule_type_name" jdbcType="VARCHAR" property="applyRuleTypeName" />
     <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
     <result column="apply_rule_type" jdbcType="VARCHAR" property="applyRuleType" />
-
+    <result column="cal_type_name" jdbcType="VARCHAR" property="calTypeName" />
+    <result column="status_name" jdbcType="VARCHAR" property="statusName" />
   </resultMap>
 
   <!-- 优惠券列表多条件分页查询sql -->

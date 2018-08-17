@@ -275,6 +275,7 @@
     <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
     <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
     <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+    <result column="templete_status_name" jdbcType="VARCHAR" property="templeteStatusName" />
   </resultMap>
 
 
@@ -283,12 +284,14 @@
     a.title AS templete_name,
     a.`code` AS templete_code,
     a.`status` AS templete_status,
+    (case when a.`status`=0 then '无效'
+    when a.`status`=1 then '有效' end) as templete_status_name,
     b.`code` AS apply_code,
     b.`name` AS apply_name,
     b.id AS apply_id
     FROM
     coupon_template a
-    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id
+    INNER JOIN coupon_apply b ON a.apply_rule_id = b.id
     WHERE
     a.apply_rule_id = #{applyId}
   </select>
@@ -304,7 +307,7 @@
     count(a.id) rel_templete_count
     FROM
     coupon_apply a
-    LEFT JOIN coupon_template c ON a.id = c.apply_rule_id
+    INNER JOIN coupon_template c ON a.id = c.apply_rule_id
     WHERE
     a.id = #{id}
   </select>

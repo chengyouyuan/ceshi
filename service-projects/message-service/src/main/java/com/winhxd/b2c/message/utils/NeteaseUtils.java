@@ -1,5 +1,6 @@
 package com.winhxd.b2c.message.utils;
 
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -79,11 +80,11 @@ public class NeteaseUtils {
             httpPost.addHeader("CheckSum", checkSum);
             httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             // 设置请求的参数
-            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+            httpPost.setEntity(new UrlEncodedFormEntity(nvps, ContextHelper.UTF_8));
 
             // 执行请求
             HttpResponse response = httpClient.execute(httpPost);
-            result = JsonUtil.parseJSONObject(EntityUtils.toString(response.getEntity(), "utf-8"));
+            result = JsonUtil.parseJSONObject(EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8));
         }  catch (IOException e) {
             LOGGER.error("NeteaseUtils ->sendHttpClientPost,发送云信http请求出错，异常信息为={}", e);
         }   catch (Exception e){

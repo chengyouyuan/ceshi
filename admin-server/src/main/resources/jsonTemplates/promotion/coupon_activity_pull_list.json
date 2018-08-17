@@ -61,7 +61,7 @@
               "static": {
                 "method": "detail"
               },
-              "path": "/promotion/pushvolume",
+              "path": "/couponReceive/index",
               "configKey": ""
             }
           },

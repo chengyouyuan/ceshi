@@ -1,13 +1,13 @@
 package com.winhxd.b2c.pay.weixin.constant;
 
 /**
- * WithDrawChannelType
+ * TransfersChannelType
  *
  * @Author yindanqing
  * @Date 2018/8/14 9:55
  * @Description: 转账通道枚举
  */
-public enum WithDrawChannelType {
+public enum TransfersChannelType {
 
     /**
      * 微信余额
@@ -22,7 +22,7 @@ public enum WithDrawChannelType {
     private int code;
     private String text;
 
-    private WithDrawChannelType(int code, String text){
+    private TransfersChannelType(int code, String text){
 
     }
 

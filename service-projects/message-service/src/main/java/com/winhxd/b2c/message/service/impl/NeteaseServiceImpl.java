@@ -81,9 +81,9 @@ public class NeteaseServiceImpl implements NeteaseService {
 		}
 		//创建云信用户
 		//从云信获取该用户的信息，判断该用户是否在云信已经存在
-		String accidUinfo = "[\""+customerId + accidSuffix+"\"]";
+		String accidUinfo = "[\"" + customerId + accidSuffix + "\"]";
 		Map<String, Object> userInfo = neteaseUtils.getUserInfo(accidUinfo);
-		LOGGER.info("NeteaseServiceImpl ->createNeteaseAccount,创建云信用户前获取用户信息userinfo={}",JsonUtil.toJSONString(userInfo));
+		LOGGER.info("NeteaseServiceImpl ->createNeteaseAccount,创建云信用户前获取用户信息userinfo={}", JsonUtil.toJSONString(userInfo));
 		String codeMes = String.valueOf(userInfo.get(PARAM_CODE));
 		String desc = String.valueOf(userInfo.get(PARAM_DESC));
 		if (SUCCESS_CODE.equals(codeMes)) {

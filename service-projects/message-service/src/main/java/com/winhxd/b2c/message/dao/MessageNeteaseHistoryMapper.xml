@@ -38,7 +38,9 @@
         from message_netease_history
         where id = #{id,jdbcType=BIGINT}
     </select>
-    <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition"  resultMap="NeteaseMsgVOResultMap">
+    <select id="selectVoByCondition"
+            parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition"
+            resultMap="NeteaseMsgVOResultMap">
         select
         <include refid="Message_List"/>
         <if test="timeType != null and timeType != ''">
@@ -195,7 +197,8 @@
       msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-    <update id="updateReadStatusByCondition" parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition">
+    <update id="updateReadStatusByCondition"
+            parameterType="com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition">
         update message_netease_history
         set read_status = 1
         where 1=1

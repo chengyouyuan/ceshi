@@ -106,7 +106,7 @@
   <select id="selectByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pay_store_wallet and status=1
-    where store_id = #{storeId,jdbcType=BIGINT}
+    from pay_store_wallet 
+    where store_id = #{storeId,jdbcType=BIGINT} and status=1
   </select>
 </mapper>

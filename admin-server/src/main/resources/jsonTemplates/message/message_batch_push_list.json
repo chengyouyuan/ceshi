@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/message/findMessageBatchPushPageInfo",
+    "type": "report",
+    "id": "message_batch_push_list",
+    "code": "message_batch_push_list",
+    "title": "消息管理-手动推送消息列表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/message/message_batch_push_add.json",
+          "callBack": {
+          }
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "msgContent",
+        "title": "消息内容"
+
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人姓名"
+      },
+      {
+        "name": "lastPushTime",
+        "title": "最后推送时间"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": "/template/module/message/message_batch_push_edit.json"
+            }
+          },
+          {
+            "name": "推送",
+            "icon": null,
+            "event": {
+              "ajaxType": "get",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/message/batchPushMessage/{id}"
+            }
+          },
+          {
+            "name": "删除",
+            "icon": null,
+            "event": {
+              "ajaxType": "get",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "confirm":{
+                "title": "确认提示",
+                "message":"确定删除吗?"
+              },
+              "path": "/message/removeBatchPush/{id}"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+
+    ]
+  }
+}

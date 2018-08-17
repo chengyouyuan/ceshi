@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -74,6 +75,12 @@ public class CouponController {
 		condition.setType((short) 2);
 		logger.info("获取优惠券活动推券列表，type="+condition.getType());
 		return couponActivityServiceClient.queryCouponActivity(condition);
+	}
+
+	@ApiOperation("优惠券活动导入小店信息")
+	@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
+	public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+		return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
 	}
 	/**
 	 *
@@ -626,15 +633,15 @@ public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPag
  *@Date   2018/8/11 12:11
  */
 @ApiOperation("点适用对象列表上模板引用数量表分页")
-@GetMapping(value = "/5027/v1/findApplyTempleteCountPage")
-public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
-	if(pageNo!=null){
-		pageNo = 1;
+@PostMapping(value = "/5027/v1/findApplyTempleteCountPage")
+public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
+	if(condition.getPageNo()!=null){
+		condition.setPageNo(1);
 	}
-	if(pageSize!=null){
-		pageSize = 10;
+	if(condition.getPageSize()==null){
+		condition.setPageSize(10);
 	}
-	ResponseResult<PagedList<ApplyTempleteCountVO>> responseResult = couponApplyServiceClient.findApplyTempleteCountPage(applyId,pageNo,pageSize);
+	ResponseResult<PagedList<ApplyTempleteCountVO>> responseResult = couponApplyServiceClient.findApplyTempleteCountPage(condition);
 	return responseResult;
 }
 

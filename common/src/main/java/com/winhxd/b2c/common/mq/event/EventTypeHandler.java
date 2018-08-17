@@ -9,7 +9,7 @@ public enum EventTypeHandler {
     /**
      * 事件类型定义
      */
-    CUSTOMER_ORDER_CREATED_HANDLER(EventType.CUSTOMER_ORDER_CREATED);
+    EVENT_CUSTOMER_ORDER_CREATED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CREATED);
 
     private EventType eventType;
 

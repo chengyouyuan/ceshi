@@ -1,6 +1,5 @@
-package com.winhxd.b2c.common.mq.event;
+package com.winhxd.b2c.common.mq.event.support;
 
-import com.winhxd.b2c.common.mq.event.support.EventMessageConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

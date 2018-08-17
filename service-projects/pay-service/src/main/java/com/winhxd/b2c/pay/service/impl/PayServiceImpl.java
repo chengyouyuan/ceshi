@@ -424,9 +424,32 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
-		// TODO Auto-generated method stub
+		String log=logLabel+"门店绑定storeBindStoreWallet";
+		logger.info(log+"--开始");
+		StoreUser storeUser=UserContext.getCurrentStoreUser();
+		if (storeUser==null||storeUser.getBusinessId()==null) {
+			logger.info("--未获取到门店信息");
+			throw new BusinessException(BusinessCode.CODE_600701);
+		}
+		if (condition==null) {
+			logger.info("--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600702);
+		}
+		if (StringUtils.isBlank(condition.getOpenid())) {
+			logger.info("--openid为空");
+			throw new BusinessException(BusinessCode.CODE_600703);
+		}
+		if (StringUtils.isBlank(condition.getName())) {
+			logger.info("--真实姓名为空");
+			throw new BusinessException(BusinessCode.CODE_600704);
+		}
+		if (StringUtils.isBlank(condition.getNick())) {
+			logger.info("--昵称为空");
+			throw new BusinessException(BusinessCode.CODE_600705);
+		}
+		
 		PayStoreWallet wallet=new PayStoreWallet();
-		wallet.setStoreId(111L);
+		wallet.setStoreId(storeUser.getBusinessId());
 		wallet.setName(condition.getName());
 		wallet.setNick(condition.getNick());
 		wallet.setOpenid(condition.getOpenid());

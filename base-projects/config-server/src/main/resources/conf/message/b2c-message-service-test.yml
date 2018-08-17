@@ -15,6 +15,13 @@ wechat:
     width: 430
     autoColor: true
     isHyaline: true
+  config:
+    webpageUrl: https://xxxxx
+    userName: gh_353d7980e3f8
+    path: pages/index/store
+    title: 惠小店
+    description: 进店领券享优惠！欢迎光临
+    transaction: transaction
 
   miniProgram:
         appid: wxdbbbd5e596ab6f4d

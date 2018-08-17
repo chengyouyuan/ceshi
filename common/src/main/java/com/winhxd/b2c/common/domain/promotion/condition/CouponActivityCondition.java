@@ -45,6 +45,9 @@ public class CouponActivityCondition extends PagedCondition implements Serializa
     @ApiModelProperty(value = "用户领券限制 1不限制 2每个门店可领取数量")
     private Short customerVoucherLimitType;
 
+    @ApiModelProperty(value = "1领券2推券")
+    private Short type;
+
     @ApiModelProperty(value = "创建人")
     private String createdByName;
 

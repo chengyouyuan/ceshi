@@ -11,6 +11,12 @@ public class PayRefundVO {
     @ApiModelProperty("退款接收状态")
     private boolean status;
 
+    @ApiModelProperty("错误代码")
+    private String errorCode;
+
+    @ApiModelProperty("错误代码描述")
+    private String errorCodeDesc;
+
     @ApiModelProperty("公众号ID/小程序ID")
     private String appid;
 

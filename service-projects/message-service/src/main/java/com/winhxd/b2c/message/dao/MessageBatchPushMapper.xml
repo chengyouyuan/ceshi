@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.message.dao.MessageBatchPushMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="msg_content" jdbcType="VARCHAR" property="msgContent" />
+    <result column="timing_push" jdbcType="TIMESTAMP" property="timingPush" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="last_push_time" jdbcType="TIMESTAMP" property="lastPushTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, msg_content, timing_push, created, created_by, created_by_name, last_push_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from message_batch_push
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from message_batch_push
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+    insert into message_batch_push (id, msg_content, timing_push, 
+      created, created_by, created_by_name, 
+      last_push_time)
+    values (#{id,jdbcType=BIGINT}, #{msgContent,jdbcType=VARCHAR}, #{timingPush,jdbcType=TIMESTAMP}, 
+      #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
+      #{lastPushTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+    insert into message_batch_push
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="msgContent != null">
+        msg_content,
+      </if>
+      <if test="timingPush != null">
+        timing_push,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdByName != null">
+        created_by_name,
+      </if>
+      <if test="lastPushTime != null">
+        last_push_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="msgContent != null">
+        #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="timingPush != null">
+        #{timingPush,jdbcType=TIMESTAMP},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPushTime != null">
+        #{lastPushTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+    update message_batch_push
+    <set>
+      <if test="msgContent != null">
+        msg_content = #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="timingPush != null">
+        timing_push = #{timingPush,jdbcType=TIMESTAMP},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPushTime != null">
+        last_push_time = #{lastPushTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+    update message_batch_push
+    set msg_content = #{msgContent,jdbcType=VARCHAR},
+      timing_push = #{timingPush,jdbcType=TIMESTAMP},
+      created = #{created,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      last_push_time = #{lastPushTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectMessageBatchPush" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message_batch_push
+    order by created desc
+  </select>
+</mapper>

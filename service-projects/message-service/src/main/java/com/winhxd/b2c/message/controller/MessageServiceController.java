@@ -1,23 +1,22 @@
 package com.winhxd.b2c.message.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
-import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.*;
+import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
+import com.winhxd.b2c.common.domain.message.vo.MessageBatchPushVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.message.service.MessageBatchPushService;
 import com.winhxd.b2c.message.service.MiniProgramService;
 import com.winhxd.b2c.message.service.NeteaseService;
 import com.winhxd.b2c.message.service.SMSService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author jujinbiao
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description
  */
 @RestController
+@RequestMapping("/")
 public class MessageServiceController implements MessageServiceClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageServiceController.class);
 
@@ -36,6 +36,9 @@ public class MessageServiceController implements MessageServiceClient {
 
     @Autowired
     MiniProgramService miniProgramService;
+
+    @Autowired
+    MessageBatchPushService messageBatchPushService;
 
     @Override
     public ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition) {
@@ -129,4 +132,83 @@ public class MessageServiceController implements MessageServiceClient {
         }
         return result;
     }
+
+    @Override
+    public ResponseResult<PagedList<MessageBatchPushVO>> findMessageBatchPushPageInfo(@RequestBody MessageBatchPushCondition condition) {
+        ResponseResult<PagedList<MessageBatchPushVO>> result = new ResponseResult<>();
+        try {
+            PagedList<MessageBatchPushVO> page = messageBatchPushService.findMessageBatchPushPageInfo(condition);
+            result.setData(page);
+        } catch (Exception e) {
+            LOGGER.error("/message/7030/v1/queryMessageBatchPushPageInfo,后台查询手动推送消息列表出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<Long> addBatchPush(@RequestBody MessageBatchPush messageBatchPush) {
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            messageBatchPushService.addBatchPush(messageBatchPush);
+            result.setData(messageBatchPush.getId());
+        } catch (Exception e) {
+            LOGGER.error("/message/7031/v1/addBatchPush,后台新增手动推送消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<Long> modifyBatchPush(@RequestBody MessageBatchPush messageBatchPush) {
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            messageBatchPushService.modifyBatchPush(messageBatchPush);
+            result.setData(messageBatchPush.getId());
+        } catch (Exception e) {
+            LOGGER.error("/message/7032/v1/modifyBatchPush,后台修改手动推送消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<MessageBatchPush> getBatchPush(@PathVariable("id") Long id) {
+        ResponseResult<MessageBatchPush> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            MessageBatchPush batchPush = messageBatchPushService.getBatchPush(id);
+            result.setData(batchPush);
+        } catch (Exception e) {
+            LOGGER.error("/message/7033/v1/modifyBatchPush,后台获取手动推送消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<Long> removeBatchPush(@PathVariable("id") Long id) {
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            messageBatchPushService.removeBatchPush(id);
+            result.setData(id);
+        } catch (Exception e) {
+            LOGGER.error("/message/7034/v1/modifyBatchPush,后台删除手动推送消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
+    @Override
+    public ResponseResult<Long> batchPushMessage(@PathVariable("id") Long id) {
+        ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
+        try {
+            messageBatchPushService.batchPushMessage(id);
+            result.setData(id);
+        } catch (Exception e) {
+            LOGGER.error("/message/7035/v1/batchPushMessage,后台手动推送消息出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
+
 }

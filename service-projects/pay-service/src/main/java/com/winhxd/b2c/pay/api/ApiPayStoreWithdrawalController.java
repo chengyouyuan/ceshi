@@ -38,7 +38,8 @@ public class ApiPayStoreWithdrawalController {
 	
 	@ApiOperation(value = "返回提现类型", notes = "返回提现类型")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+		@ApiResponse(code = BusinessCode.CODE_610023, message = "当前没有提现类型")
 	})
 	@PostMapping(value = "/6107/v1/getWithdrawalType", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<List<PayWithdrawalsTypeVO>> getStoreWithdrawalType(@RequestBody PayCondition condition){

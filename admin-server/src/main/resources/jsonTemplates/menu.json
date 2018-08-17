@@ -292,24 +292,10 @@
       "permission": "",
       "children": [
         {
-          "id": "7_1",
-          "menuName": "自动推送列表",
-          "path": "",
-          "configKey": "",
-          "permission": ""
-        },
-        {
           "id": "7_2",
           "menuName": "手动推送列表",
           "path": "",
-          "configKey": "",
-          "permission": ""
-        },
-        {
-          "id": "7_3",
-          "menuName": "(临时)消息编辑",
-          "path": "",
-          "configKey": "",
+          "configKey": "/template/module/message/message_batch_push_list.json",
           "permission": ""
         }
       ]

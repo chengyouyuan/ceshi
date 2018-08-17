@@ -2,22 +2,19 @@ package com.winhxd.b2c.common.feign.message;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
-import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.*;
+import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
+import com.winhxd.b2c.common.domain.message.vo.MessageBatchPushVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description 消息服务接口
@@ -82,6 +79,51 @@ public interface MessageServiceClient {
      */
     @RequestMapping(value = "/message/7023/v1/saveFormIds",method = RequestMethod.POST)
     ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition miniFormIdCondition);
+
+    /**
+     * 后台消息管理，查询手动推送消息列表
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/message/7030/v1/findMessageBatchPushPageInfo",method = RequestMethod.POST)
+    ResponseResult<PagedList<MessageBatchPushVO>> findMessageBatchPushPageInfo(@RequestBody MessageBatchPushCondition condition);
+
+    /**
+     * 后台消息管理，新增手动推送消息列表
+     * @param messageBatchPush
+     * @return
+     */
+    @RequestMapping(value = "/message/7031/v1/addBatchPush",method = RequestMethod.POST)
+    ResponseResult<Long> addBatchPush(@RequestBody MessageBatchPush messageBatchPush);
+    /**
+     * 后台消息管理，修改手动推送消息
+     * @param messageBatchPush
+     * @return
+     */
+    @RequestMapping(value = "/message/7032/v1/modifyBatchPush",method = RequestMethod.POST)
+    ResponseResult<Long> modifyBatchPush(@RequestBody MessageBatchPush messageBatchPush);
+    /**
+     * 后台消息管理，获取手动推送消息
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/message/7033/v1/getBatchPush/{id}",method = RequestMethod.GET)
+    ResponseResult<MessageBatchPush> getBatchPush(@PathVariable("id") Long id);
+    /**
+     * 后台消息管理，删除手动推送消息
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/message/7034/v1/removeBatchPush/{id}",method = RequestMethod.GET)
+    ResponseResult<Long> removeBatchPush(@PathVariable("id") Long id);
+
+    /**
+     * 后台消息管理，手动推送消息
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/message/7035/v1/batchPushMessage/{id}",method = RequestMethod.GET)
+    ResponseResult<Long> batchPushMessage(@PathVariable("id") Long id);
 }
 
 /**
@@ -140,6 +182,42 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     @Override
     public ResponseResult<Void> saveFormIds(MiniFormIdCondition miniFormIdCondition) {
         logger.error("MessageServiceClientFallBack -> saveFormIds，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<MessageBatchPushVO>> findMessageBatchPushPageInfo(MessageBatchPushCondition condition) {
+        logger.error("MessageServiceClientFallBack -> queryMessageBatchPushPageInfo，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Long> addBatchPush(MessageBatchPush messageBatchPush) {
+        logger.error("MessageServiceClientFallBack -> addBatchPush，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Long> modifyBatchPush(MessageBatchPush messageBatchPush) {
+        logger.error("MessageServiceClientFallBack -> modifyBatchPush，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<MessageBatchPush> getBatchPush(Long id) {
+        logger.error("MessageServiceClientFallBack -> getBatchPush，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Long> removeBatchPush(Long id) {
+        logger.error("MessageServiceClientFallBack -> removeBatchPush，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Long> batchPushMessage(Long id) {
+        logger.error("MessageServiceClientFallBack -> batchPushMessage，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

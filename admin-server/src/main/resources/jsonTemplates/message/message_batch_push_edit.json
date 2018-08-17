@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "/message/getBatchPush/{id}",
+    "id": "message_batch_push_edit",
+    "title": "消息编辑",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/message/modifyBatchPush",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "id",
+        "inputModel": "input",
+        "title": "",
+        "value": "",
+        "placeholder": "",
+        "isHidden": true
+      },{
+        "name": "msgContent",
+        "inputModel": "text",
+        "title": "消息内容",
+        "value": "",
+        "placeholder": "请输入消息内容",
+        "isHidden": false
+      },
+      {
+        "name": "timingPush",
+        "inputModel": "single-date-picker",
+        "title": "定时推送",
+        "value": "",
+        "placeholder": "请选择推送时间",
+        "isHidden": false,
+        "format": "yyyy-MM-dd HH:mm:ss"
+      }
+    ]
+  }
+}

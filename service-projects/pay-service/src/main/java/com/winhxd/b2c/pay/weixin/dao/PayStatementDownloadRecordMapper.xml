@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayStatementDownloadRecordMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="bill_type" jdbcType="INTEGER" property="billType" />
     <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
@@ -24,7 +24,7 @@
     delete from pay_statement_download_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     insert into pay_statement_download_record (id, bill_type, bill_date, 
       return_code, return_msg, result_code, 
       err_code, err_code_des)
@@ -32,7 +32,7 @@
       #{returnCode,jdbcType=VARCHAR}, #{returnMsg,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
       #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     insert into pay_statement_download_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -87,7 +87,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     update pay_statement_download_record
     <set>
       <if test="billType != null">
@@ -114,7 +114,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     update pay_statement_download_record
     set bill_type = #{billType,jdbcType=INTEGER},
       bill_date = #{billDate,jdbcType=TIMESTAMP},

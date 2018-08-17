@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayFinancialBillMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="accounting_time" jdbcType="TIMESTAMP" property="accountingTime" />
     <result column="wx_pay_no" jdbcType="VARCHAR" property="wxPayNo" />
@@ -31,7 +31,7 @@
     delete from pay_financial_bill
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     insert into pay_financial_bill (id, accounting_time, wx_pay_no, 
       swift_no, busi_name, busi_type, 
       budget, budget_amount, account_balance, 
@@ -43,7 +43,7 @@
       #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
       #{billDate,jdbcType=TIMESTAMP}, #{financialBillCountId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     insert into pay_financial_bill
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -134,7 +134,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     update pay_financial_bill
     <set>
       <if test="accountingTime != null">
@@ -179,7 +179,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     update pay_financial_bill
     set accounting_time = #{accountingTime,jdbcType=TIMESTAMP},
       wx_pay_no = #{wxPayNo,jdbcType=VARCHAR},

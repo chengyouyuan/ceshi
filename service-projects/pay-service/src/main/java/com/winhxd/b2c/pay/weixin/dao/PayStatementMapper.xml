@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.common.domain.store.PayStatementMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.PayStatement">
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayStatementMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatement">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
     <result column="appid" jdbcType="VARCHAR" property="appid" />
@@ -48,7 +48,7 @@
     delete from pay_statement
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.PayStatement">
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatement">
     insert into pay_statement (id, pay_time, appid, 
       mch_id, sub_mch_id, device_id, 
       wx_order_no, out_order_no, user_identity, 
@@ -72,7 +72,7 @@
       #{rate,jdbcType=REAL}, #{billDate,jdbcType=TIMESTAMP}, #{statementCountId,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.PayStatement">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatement">
     insert into pay_statement
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -253,7 +253,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.PayStatement">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatement">
     update pay_statement
     <set>
       <if test="payTime != null">
@@ -343,7 +343,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.PayStatement">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatement">
     update pay_statement
     set pay_time = #{payTime,jdbcType=TIMESTAMP},
       appid = #{appid,jdbcType=VARCHAR},

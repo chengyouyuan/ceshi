@@ -33,7 +33,8 @@ public enum BillType {
 	private String text;
 
 	private BillType(int code, String text) {
-
+		this.code = code;
+		this.text = text;
 	}
 
 	public int getCode() {

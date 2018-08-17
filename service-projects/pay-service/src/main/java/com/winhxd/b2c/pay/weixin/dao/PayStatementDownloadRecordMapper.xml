@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayStatementDownloadRecordMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bill_type" jdbcType="INTEGER" property="billType" />
+    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="return_code" jdbcType="VARCHAR" property="returnCode" />
+    <result column="return_msg" jdbcType="VARCHAR" property="returnMsg" />
+    <result column="result_code" jdbcType="VARCHAR" property="resultCode" />
+    <result column="err_code" jdbcType="VARCHAR" property="errCode" />
+    <result column="err_code_des" jdbcType="VARCHAR" property="errCodeDes" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bill_type, bill_date, return_code, return_msg, result_code, err_code, err_code_des
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_statement_download_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_statement_download_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
+    insert into pay_statement_download_record (id, bill_type, bill_date, 
+      return_code, return_msg, result_code, 
+      err_code, err_code_des)
+    values (#{id,jdbcType=BIGINT}, #{billType,jdbcType=INTEGER}, #{billDate,jdbcType=TIMESTAMP}, 
+      #{returnCode,jdbcType=VARCHAR}, #{returnMsg,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
+      #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
+    insert into pay_statement_download_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="billType != null">
+        bill_type,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+      <if test="returnCode != null">
+        return_code,
+      </if>
+      <if test="returnMsg != null">
+        return_msg,
+      </if>
+      <if test="resultCode != null">
+        result_code,
+      </if>
+      <if test="errCode != null">
+        err_code,
+      </if>
+      <if test="errCodeDes != null">
+        err_code_des,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="billType != null">
+        #{billType,jdbcType=INTEGER},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnCode != null">
+        #{returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="returnMsg != null">
+        #{returnMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null">
+        #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCode != null">
+        #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCodeDes != null">
+        #{errCodeDes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
+    update pay_statement_download_record
+    <set>
+      <if test="billType != null">
+        bill_type = #{billType,jdbcType=INTEGER},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnCode != null">
+        return_code = #{returnCode,jdbcType=VARCHAR},
+      </if>
+      <if test="returnMsg != null">
+        return_msg = #{returnMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="resultCode != null">
+        result_code = #{resultCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCode != null">
+        err_code = #{errCode,jdbcType=VARCHAR},
+      </if>
+      <if test="errCodeDes != null">
+        err_code_des = #{errCodeDes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
+    update pay_statement_download_record
+    set bill_type = #{billType,jdbcType=INTEGER},
+      bill_date = #{billDate,jdbcType=TIMESTAMP},
+      return_code = #{returnCode,jdbcType=VARCHAR},
+      return_msg = #{returnMsg,jdbcType=VARCHAR},
+      result_code = #{resultCode,jdbcType=VARCHAR},
+      err_code = #{errCode,jdbcType=VARCHAR},
+      err_code_des = #{errCodeDes,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 public class NumInterval {
 
     @ApiModelProperty(value = "开始数字")
-    private BigDecimal startNum;
+    private BigDecimal start;
 
     @ApiModelProperty(value = "结束数字")
-    private BigDecimal endNum;
+    private BigDecimal end;
 }

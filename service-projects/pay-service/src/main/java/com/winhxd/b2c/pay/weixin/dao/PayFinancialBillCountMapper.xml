@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayFinancialBillCountMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="financial_swift_num_count" jdbcType="DECIMAL" property="financialSwiftNumCount" />
+    <result column="income_num_count" jdbcType="DECIMAL" property="incomeNumCount" />
+    <result column="income_amount_count" jdbcType="DECIMAL" property="incomeAmountCount" />
+    <result column="expenditure_num_count" jdbcType="DECIMAL" property="expenditureNumCount" />
+    <result column="expenditure_amount_count" jdbcType="DECIMAL" property="expenditureAmountCount" />
+    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, financial_swift_num_count, income_num_count, income_amount_count, expenditure_num_count, 
+    expenditure_amount_count, bill_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_financial_bill_count
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_financial_bill_count
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    insert into pay_financial_bill_count (id, financial_swift_num_count, income_num_count, 
+      income_amount_count, expenditure_num_count, 
+      expenditure_amount_count, bill_date)
+    values (#{id,jdbcType=BIGINT}, #{financialSwiftNumCount,jdbcType=DECIMAL}, #{incomeNumCount,jdbcType=DECIMAL}, 
+      #{incomeAmountCount,jdbcType=DECIMAL}, #{expenditureNumCount,jdbcType=DECIMAL}, 
+      #{expenditureAmountCount,jdbcType=DECIMAL}, #{billDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    insert into pay_financial_bill_count
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="financialSwiftNumCount != null">
+        financial_swift_num_count,
+      </if>
+      <if test="incomeNumCount != null">
+        income_num_count,
+      </if>
+      <if test="incomeAmountCount != null">
+        income_amount_count,
+      </if>
+      <if test="expenditureNumCount != null">
+        expenditure_num_count,
+      </if>
+      <if test="expenditureAmountCount != null">
+        expenditure_amount_count,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="financialSwiftNumCount != null">
+        #{financialSwiftNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeNumCount != null">
+        #{incomeNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeAmountCount != null">
+        #{incomeAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditureNumCount != null">
+        #{expenditureNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditureAmountCount != null">
+        #{expenditureAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    update pay_financial_bill_count
+    <set>
+      <if test="financialSwiftNumCount != null">
+        financial_swift_num_count = #{financialSwiftNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeNumCount != null">
+        income_num_count = #{incomeNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="incomeAmountCount != null">
+        income_amount_count = #{incomeAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditureNumCount != null">
+        expenditure_num_count = #{expenditureNumCount,jdbcType=DECIMAL},
+      </if>
+      <if test="expenditureAmountCount != null">
+        expenditure_amount_count = #{expenditureAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+    update pay_financial_bill_count
+    set financial_swift_num_count = #{financialSwiftNumCount,jdbcType=DECIMAL},
+      income_num_count = #{incomeNumCount,jdbcType=DECIMAL},
+      income_amount_count = #{incomeAmountCount,jdbcType=DECIMAL},
+      expenditure_num_count = #{expenditureNumCount,jdbcType=DECIMAL},
+      expenditure_amount_count = #{expenditureAmountCount,jdbcType=DECIMAL},
+      bill_date = #{billDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

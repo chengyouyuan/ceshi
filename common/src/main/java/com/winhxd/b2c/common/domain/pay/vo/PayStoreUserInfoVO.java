@@ -39,7 +39,7 @@ public class PayStoreUserInfoVO implements Serializable {
     @ApiModelProperty("流向类型 1微信 2银行卡")
     private short flowDirectionType;
     @ApiModelProperty("流向名称 微信或者各个银行卡名称")
-    private short flowDirectionName;
+    private String flowDirectionName;
     @ApiModelProperty("银行卡卡号")
     private String cardNumber;
 }

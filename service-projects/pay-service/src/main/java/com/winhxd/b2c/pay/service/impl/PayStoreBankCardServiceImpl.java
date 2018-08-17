@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.cache.Cache;
@@ -79,15 +80,15 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		res = BusinessCode.CODE_610016;
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
-    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+//    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
-//    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(1l);
+    	StoreUser currentStoreUser = new StoreUser();
+    	currentStoreUser.setBusinessId(1l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){
     		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
-    		System.out.print("exists-----------"+exists);
+    		System.out.print("验证码是否存在-----------"+exists);
     		if(exists){
     			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
     			if(!verificationCode.equals(code)){
@@ -107,7 +108,19 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		condition.setUpdatedBy(currentStoreUser.getBusinessId());
     		condition.setCreatedByName(condition.getBankUserName());
     		condition.setUpdatedByName(condition.getBankUserName());
-    		res = storeBankCardMapper.insertStoreBankCardinfo(condition);
+    		// 判断当前门店是否绑定过当前要绑定的银行卡信息
+    		StoreBankCardCondition scondition = new StoreBankCardCondition();
+    		BeanUtils.copyProperties(condition, scondition);
+    		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ scondition);
+    		scondition.setCreated(null);
+    		scondition.setUpdated(null);
+    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(scondition);
+    		if(storBankCardInfo != null){
+    			res = BusinessCode.CODE_610024;
+    			LOGGER.info("当前银行卡已经存在");
+    		}else{
+    			storeBankCardMapper.insertStoreBankCardinfo(condition);
+    		}
     	}
 		return res;
 	}

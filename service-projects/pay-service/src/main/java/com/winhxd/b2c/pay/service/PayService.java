@@ -7,10 +7,12 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 
 /**
@@ -30,7 +32,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(OrderPayCallbackCondition condition);
+	Integer callbackOrderPay(PayBill condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13
@@ -89,5 +91,13 @@ public interface PayService {
      * @return
      */
     List<PayStoreWallet> selectPayStoreWalletByStoreId();
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月17日 上午10:46:26
+     * @Description 门店绑定微信钱包
+     * @param condition
+     */
+    void storeBindStoreWallet(StoreBindStoreWalletCondition condition);
 	
 }

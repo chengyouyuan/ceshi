@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayStatementCountMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pay_num_count" jdbcType="INTEGER" property="payNumCount" />
+    <result column="pay_amount_count" jdbcType="DECIMAL" property="payAmountCount" />
+    <result column="refund_amount_count" jdbcType="DECIMAL" property="refundAmountCount" />
+    <result column="refund_discount_count" jdbcType="DECIMAL" property="refundDiscountCount" />
+    <result column="fee_count" jdbcType="DECIMAL" property="feeCount" />
+    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pay_num_count, pay_amount_count, refund_amount_count, refund_discount_count, 
+    fee_count, bill_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_statement_count
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pay_statement_count
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+    insert into pay_statement_count (id, pay_num_count, pay_amount_count, 
+      refund_amount_count, refund_discount_count, 
+      fee_count, bill_date)
+    values (#{id,jdbcType=BIGINT}, #{payNumCount,jdbcType=INTEGER}, #{payAmountCount,jdbcType=DECIMAL}, 
+      #{refundAmountCount,jdbcType=DECIMAL}, #{refundDiscountCount,jdbcType=DECIMAL}, 
+      #{feeCount,jdbcType=DECIMAL}, #{billDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+    insert into pay_statement_count
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="payNumCount != null">
+        pay_num_count,
+      </if>
+      <if test="payAmountCount != null">
+        pay_amount_count,
+      </if>
+      <if test="refundAmountCount != null">
+        refund_amount_count,
+      </if>
+      <if test="refundDiscountCount != null">
+        refund_discount_count,
+      </if>
+      <if test="feeCount != null">
+        fee_count,
+      </if>
+      <if test="billDate != null">
+        bill_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="payNumCount != null">
+        #{payNumCount,jdbcType=INTEGER},
+      </if>
+      <if test="payAmountCount != null">
+        #{payAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundAmountCount != null">
+        #{refundAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundDiscountCount != null">
+        #{refundDiscountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="feeCount != null">
+        #{feeCount,jdbcType=DECIMAL},
+      </if>
+      <if test="billDate != null">
+        #{billDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+    update pay_statement_count
+    <set>
+      <if test="payNumCount != null">
+        pay_num_count = #{payNumCount,jdbcType=INTEGER},
+      </if>
+      <if test="payAmountCount != null">
+        pay_amount_count = #{payAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundAmountCount != null">
+        refund_amount_count = #{refundAmountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="refundDiscountCount != null">
+        refund_discount_count = #{refundDiscountCount,jdbcType=DECIMAL},
+      </if>
+      <if test="feeCount != null">
+        fee_count = #{feeCount,jdbcType=DECIMAL},
+      </if>
+      <if test="billDate != null">
+        bill_date = #{billDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
+    update pay_statement_count
+    set pay_num_count = #{payNumCount,jdbcType=INTEGER},
+      pay_amount_count = #{payAmountCount,jdbcType=DECIMAL},
+      refund_amount_count = #{refundAmountCount,jdbcType=DECIMAL},
+      refund_discount_count = #{refundDiscountCount,jdbcType=DECIMAL},
+      fee_count = #{feeCount,jdbcType=DECIMAL},
+      bill_date = #{billDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

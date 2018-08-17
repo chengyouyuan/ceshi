@@ -327,6 +327,8 @@ public final class BusinessCode {
     public static final int CODE_610022 = 610022;
     @ApiModelProperty("当前没有提现类型")
     public static final int CODE_610023 = 610023;
+    @ApiModelProperty("当前要绑定的银行卡已经存在")
+    public static final int CODE_610024 = 610024;
     
     
     

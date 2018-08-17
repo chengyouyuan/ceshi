@@ -402,11 +402,11 @@
     where 1=1
 
     <if test="condition.dateInterval!=null and  condition.dateInterval!=''">
-      <if test="condition.dateInterval.startDate!=null and  condition.dateInterval.startDate!=''">
-        and a.created <![CDATA[ >= ]]> #{condition.dateInterval.startDate}
+      <if test="condition.dateInterval.start!=null and  condition.dateInterval.start!=''">
+        and a.created <![CDATA[ >= ]]> #{condition.dateInterval.start}
       </if>
-      <if test="condition.dateInterval.endDate!=null and  condition.dateInterval.endDate!=''">
-        and a.created <![CDATA[ <= ]]> #{condition.dateInterval.endDate}
+      <if test="condition.dateInterval.end!=null and  condition.dateInterval.end!=''">
+        and a.created <![CDATA[ <= ]]> #{condition.dateInterval.end}
       </if>
     </if>
 

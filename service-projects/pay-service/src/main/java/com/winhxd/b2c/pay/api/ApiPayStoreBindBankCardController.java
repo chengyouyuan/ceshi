@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
@@ -46,7 +46,7 @@ public class ApiPayStoreBindBankCardController {
 	@Autowired
 	private Cache cache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 60*60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
 
 	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -117,11 +117,11 @@ public class ApiPayStoreBindBankCardController {
 		ResponseResult<String> result = new ResponseResult<String>();
 		
 		/////////////////////////////// 测试数据
-//		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(1l);
-//		Long businessId = currentStoreUser.getBusinessId();
+		StoreUser currentStoreUser = new StoreUser();
+		currentStoreUser.setBusinessId(1l);
+		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+businessId);
 		LOGGER.info("验证码:------"+modileVerifyCode);

@@ -613,6 +613,52 @@ public class WXPay {
         return ret;
     }
 
+    /**
+     * 作用：资金账单下载（成功时返回对账单数据，失败时返回XML格式数据）<br>
+     * 场景：资金账单中的数据反映的是商户微信账户资金变动情况 
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public Map<String, String> downloadFundFlow(Map<String, String> reqData) throws Exception {
+        return this.downloadFundFlow(reqData, this.config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+    }
+    
+    /**
+     * 作用：资金账单下载<br>
+     * 场景：资金账单中的数据反映的是商户微信账户资金变动情况 <br>
+     * 其他：无论是否成功都返回Map。若成功，返回的Map中含有return_code、return_msg、data，
+     *      其中return_code为`SUCCESS`，data为资金账单数据。
+     * @param reqData 向wxpay post的请求数据
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return 经过封装的API返回数据
+     * @throws Exception
+     */
+    public Map<String, String> downloadFundFlow(Map<String, String> reqData, int connectTimeoutMs, int readTimeoutMs) throws Exception {
+    	String url;
+    	if (this.useSandbox) {
+    		url = WXPayConstants.SANDBOX_DOWNLOADFUNDFLOW_URL_SUFFIX;
+    	}
+    	else {
+    		url = WXPayConstants.DOWNLOADFUNDFLOW_URL_SUFFIX;
+    	}
+    	String respStr = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs).trim();
+    	Map<String, String> ret;
+    	// 出现错误，返回XML数据
+    	if (respStr.indexOf("<") == 0) {
+    		ret = WXPayUtil.xmlToMap(respStr);
+    	}
+    	else {
+    		// 正常返回csv数据
+    		ret = new HashMap<String, String>();
+    		ret.put("return_code", WXPayConstants.SUCCESS);
+    		ret.put("return_msg", "ok");
+    		ret.put("data", respStr);
+    	}
+    	return ret;
+    }
+
 
     /**
      * 作用：交易保障<br>

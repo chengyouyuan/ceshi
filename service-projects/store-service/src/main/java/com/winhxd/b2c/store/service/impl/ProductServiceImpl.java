@@ -117,6 +117,12 @@ public class ProductServiceImpl implements ProductService {
         ProductConditionByPage productConditionByPage = buildProductConditionByPage(condition,storeProductManages);
         responseResult = productServiceClient.getProductSkuMsg(productConditionByPage);
 
+        //判断是否有店主推荐
+        responseResult.getData().setRecommendFlag(0);
+        if (productConditionByPage.getRecommendSkus().size() > 0){
+            responseResult.getData().setRecommendFlag(1);
+        }
+
         //赋值商品价格
         assignSellMoney(responseResult.getData().getProductSkus().getData(), storeProductManages);
 

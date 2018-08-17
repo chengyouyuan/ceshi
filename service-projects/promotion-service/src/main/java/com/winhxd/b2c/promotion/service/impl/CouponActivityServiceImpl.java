@@ -10,11 +10,13 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.promotion.dao.CouponActivityAreaMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
 import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
@@ -43,6 +45,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityTemplateMapper couponActivityTemplateMapper;
     @Autowired
     private CouponActivityStoreCustomerMapper couponActivityStoreCustomerMapper;
+    @Autowired
+    private CouponActivityAreaMapper couponActivityAreaMapper;
     @Autowired
     private CouponService couponService;
 
@@ -137,6 +141,18 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         int n = couponActivityMapper.insertSelective(couponActivity);
         if(n==0){
             throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+        }
+        //获取区域信息
+        for (int a = 0 ; a < condition.getCouponActivityAreaList().size(); a++){
+            CouponActivityArea couponActivityArea = new CouponActivityArea();
+            couponActivityArea.setCouponActivityId(couponActivity.getId());
+            couponActivityArea.setRegionCode(condition.getCouponActivityAreaList().get(a).getRegionCode());
+            couponActivityArea.setRegionName(condition.getCouponActivityAreaList().get(a).getRegionName());
+            couponActivityArea.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+            int n4 = couponActivityAreaMapper.insertSelective(couponActivityArea);
+            if(n4==0){
+                throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+            }
         }
 
         //CouponActivityTemplate

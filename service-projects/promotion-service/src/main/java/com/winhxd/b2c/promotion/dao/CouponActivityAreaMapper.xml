@@ -27,7 +27,7 @@
     values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{regionCode,jdbcType=CHAR}, 
       #{regionName,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea" useGeneratedKeys="true" keyProperty="id">
     insert into coupon_activity_area
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

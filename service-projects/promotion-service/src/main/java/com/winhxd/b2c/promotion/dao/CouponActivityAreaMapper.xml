@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.promotion.dao.CouponActivityAreaMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="coupon_activity_id" jdbcType="BIGINT" property="couponActivityId" />
+    <result column="region_code" jdbcType="CHAR" property="regionCode" />
+    <result column="region_name" jdbcType="VARCHAR" property="regionName" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, coupon_activity_id, region_code, region_name, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from coupon_activity_area
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from coupon_activity_area
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+    insert into coupon_activity_area (id, coupon_activity_id, region_code, 
+      region_name, status)
+    values (#{id,jdbcType=BIGINT}, #{couponActivityId,jdbcType=BIGINT}, #{regionCode,jdbcType=CHAR}, 
+      #{regionName,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+    insert into coupon_activity_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="couponActivityId != null">
+        coupon_activity_id,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
+      <if test="regionName != null">
+        region_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="couponActivityId != null">
+        #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=CHAR},
+      </if>
+      <if test="regionName != null">
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+    update coupon_activity_area
+    <set>
+      <if test="couponActivityId != null">
+        coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      </if>
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=CHAR},
+      </if>
+      <if test="regionName != null">
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea">
+    update coupon_activity_area
+    set coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      region_code = #{regionCode,jdbcType=CHAR},
+      region_name = #{regionName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -397,6 +397,9 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店绑定微信钱包  昵称为空")
     public static final int CODE_600705 = 600706;
+    
+    @ApiModelProperty("获取门店绑定钱包  未获取到门店信息")
+    public static final int CODE_600601 = 600601;
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;

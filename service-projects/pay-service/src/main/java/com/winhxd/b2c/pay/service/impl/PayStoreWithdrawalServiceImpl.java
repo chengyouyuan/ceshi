@@ -3,6 +3,7 @@ package com.winhxd.b2c.pay.service.impl;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,9 +25,12 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
+import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsTypeMapper;
 import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
 
 /**
@@ -40,16 +43,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PayFinancialManagerServiceImpl.class);
 	@Autowired
 	private PayWithdrawalsMapper payWithdrawalsMapper;
+	@Autowired
+	private PayWithdrawalsTypeMapper payWithdrawalsTypeMapper;
 	
 	@Resource
 	Cache cache;
 	
-//	@Value("${pay.withdrawal.cmms_amt}")
-	private BigDecimal cmms_amt;// 银行手续费
-//	@Value("${pay.withdrawal.rate}")
-	private BigDecimal rate;// 微信费率
-//	@Value("${pay.withdrawal.maxmoney}")//最高限额
-	private BigDecimal maxMoney;
+	@Resource
+	private PayWithdrawalConfig payWithDrawalConfig;
 
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
@@ -57,7 +58,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		////////////////////////测试数据////////////////////////////////////
+		Long businessId = 1l;
+		//////////////////////结束////////////////////////////////////////
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
 			int code = bindBank.getCode();
@@ -67,12 +71,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 }else{
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(bindBank.getData().getTotalFee());
-				 withdrawalPage.setTotal_moeny(maxMoney);
+				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 String carnumber = bindBank.getData().getCardNumber();
 				 withdrawalPage.setUserAcountName(bindBank.getData().getStoreName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
 				 result.setData(withdrawalPage);
 				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, bindBank.getData().getContactMobile()+","+ bindBank.getData().getStoreName());
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, bindBank.getData().getStoreMobile()+","+ bindBank.getData().getStoreName());
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -83,7 +87,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 }else{
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(bindAccount.getData().getTotalFee());
-				 withdrawalPage.setTotal_moeny(maxMoney);
+				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 withdrawalPage.setUserAcountName(bindAccount.getData().getOpenid());
 				 result.setData(withdrawalPage);
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, bindAccount.getData().getContactMobile()+","+ bindAccount.getData().getStoreName());
@@ -95,7 +99,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	@Override
 	public ResponseResult<Integer> saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		///////////////测试数据//////////////////////////
+		Long businessId = 1l;
+		//////////////////结束/////////////////////////
+		
 		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
 		String[] info = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
@@ -106,18 +114,18 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		payWithdrawal.setTotalFee(condition.getTotalFee());
 		if(bankType == condition.getWithdrawType()){
-			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(cmms_amt)));
-			System.out.println("当前计算所得银行的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ cmms_amt);
+			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getCmmsamt())));
+			System.out.println("当前计算所得银行的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getCmmsamt());
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType((short)2);
 		}else if(weixType == condition.getWithdrawType()){
-			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(rate)));
-			System.out.println("当前计算所得微信的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ rate);
+			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getRate())));
+			System.out.println("当前计算所得微信的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
 			payWithdrawal.setFlowDirectionName("微信");
 			payWithdrawal.setFlowDirectionType((short)1);
 		}
-		payWithdrawal.setCmmsAmt(cmms_amt);
-		payWithdrawal.setRate(rate);
+		payWithdrawal.setCmmsAmt(payWithDrawalConfig.getCmmsamt());
+		payWithdrawal.setRate(payWithDrawalConfig.getRate());
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setName(info[1]);
@@ -129,6 +137,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setUpdated(new Date());
 		payWithdrawal.setUpdatedBy(businessId);
 		payWithdrawal.setUpdatedByName(info[1]);
+		saveStoreWithdrawalInfo(businessId, payWithdrawal);
 		return result;
 	} 
 	
@@ -160,9 +169,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return res;
 	}
 	/**验证通过之后保存当前的用户提现信息*/
-	public ResponseResult<Integer> saveStoreWithdrawalInfo(Long businessId){
+	public ResponseResult<Integer> saveStoreWithdrawalInfo(Long businessId,PayWithdrawals payWithdrawals){
 		ResponseResult<Integer> res = new ResponseResult<Integer>();
-		
+		int re = payWithdrawalsMapper.insertSelective(payWithdrawals);
+		LOGGER.info("保存用户提现信息返回值：----"+re);
 		return res;
 	}
 	
@@ -220,4 +230,17 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
             return true;
         }
     }
+
+	@Override
+	public ResponseResult<List<PayWithdrawalsType>> getAllWithdrawalType() {
+		ResponseResult<List<PayWithdrawalsType>> result = new ResponseResult<>();
+		List<PayWithdrawalsType> types = payWithdrawalsTypeMapper.selectAll();
+		 LOGGER.info("types------"+types);
+		if(!types.isEmpty()){
+			result.setData(types);
+		}else{
+			result.setCode(BusinessCode.CODE_610023);
+		}
+		return result;
+	}
 }

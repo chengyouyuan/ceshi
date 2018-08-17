@@ -93,6 +93,10 @@
             "event": {
               "ajaxType": "post",
               "type": "ajax",
+              "confirm":{
+              "title": "确认提示",
+              "message":"确定这样操作吗?"
+             },
               "params": [
                 "id","prodStatus"
               ],
@@ -107,21 +111,21 @@
         "name": "prodStatus",
         "title": "商品状态",
         "inputModel": "select",
-        "options":[
-			{
-				"lable":"下架",
-				"value":"0"
-			},
-			{
-				"lable":"上架",
-				"value":"1"
-			},
-			{
-				"lable":"已删除",
-				"value":"2"
-			}
-		],
         "placeholder": "请选择",
+        "options":[
+          {
+            "label":"下架",
+            "value":0
+          },
+          {
+            "label":"上架",
+            "value":1
+          },
+          {
+            "label":"已删除",
+            "value":2
+          }],
+
         "isHidden": false
       },
       {

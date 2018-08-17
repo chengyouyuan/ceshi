@@ -3,6 +3,7 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -44,6 +45,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public PagedList<StoreRegionVO> findStoreRegions(StoreRegionCondition condition) {
+        checkCurrentAdminUser();
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         PagedList<StoreRegionVO> pagedList = new PagedList();
         StoreRegion region = new StoreRegion();
@@ -58,16 +60,18 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public int removeStoreRegion(Long id) {
+        checkCurrentAdminUser();
         StoreRegion storeRegion = new StoreRegion();
         storeRegion.setId(id);
         storeRegion.setStatus(StoreRegionEnum.VALIDATE.getCode());
         storeRegion.setUpdated(new Date());
-        storeRegion.setUpdatedBy(Long.parseLong(UserContext.getCurrentAdminUser().getAccount()));
+        storeRegion.setUpdatedBy(UserContext.getCurrentAdminUser().getAccount());
         return storeRegionMapper.updateByPrimaryKey(storeRegion);
     }
 
     @Override
     public int saveStoreRegion(StoreRegionCondition condition) {
+        checkCurrentAdminUser();
         String areaCode = condition.getAreaCode().substring(0, 3);
         List<StoreRegion> repeat = storeRegionMapper.selectRepeatStoreRegion(areaCode);
         if (CollectionUtils.isNotEmpty(repeat)) {
@@ -97,14 +101,27 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setAreaName(sb.toString());
         storeRegion.setAreaCode(condition.getAreaCode());
         Date current = new Date();
-//        Long account = Long.parseLong(UserContext.getCurrentAdminUser().getAccount());
-        Long account = 123L;
+        String account = UserContext.getCurrentAdminUser().getAccount();
         storeRegion.setCreated(current);
         storeRegion.setUpdated(current);
         storeRegion.setCreatedBy(account);
         storeRegion.setUpdatedBy(account);
         storeRegion.setStatus(StoreRegionEnum.EFFICTIVE.getCode());
         return storeRegionMapper.insertSelective(storeRegion);
+    }
+
+    /**
+     *
+     * @author: wangbaokuo
+     * @date: 2018/8/10 10:31
+     * @return: 获取用户info
+     */
+    private void checkCurrentAdminUser() {
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        if (null == adminUser) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
     }
 
     @Override

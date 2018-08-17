@@ -1,20 +1,6 @@
 package com.winhxd.b2c.store.controller;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -30,6 +16,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -38,6 +25,20 @@ import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import com.winhxd.b2c.store.service.StoreService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -70,8 +71,8 @@ public class StoreServiceController implements StoreServiceClient {
 //    private ProductServiceClient productServiceClient;
 
     @Override
-    public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-        ResponseResult<Void> result = new ResponseResult<>();
+    public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
+        ResponseResult<Integer> result = new ResponseResult<>();
         if(customerId == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
@@ -88,13 +89,7 @@ public class StoreServiceController implements StoreServiceClient {
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
         int status = storeService.bindCustomer(customerId,storeUserId);
-        if(status == 0){
-			result.setCode(BusinessCode.CODE_1001);
-		}else if(status == -1){
-        	result.setCode(BusinessCode.CODE_200011);
-		}else if(status == -2){
-        	result.setCode(BusinessCode.CODE_200003);
-		}
+		result.setData(status);
         return result;
     }
 

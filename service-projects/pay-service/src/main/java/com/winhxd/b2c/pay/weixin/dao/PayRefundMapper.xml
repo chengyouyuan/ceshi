@@ -39,6 +39,7 @@
         <result column="callback_refund_recv_accout" property="callbackRefundRecvAccout" jdbcType="VARCHAR" />
         <result column="callback_refund_account" property="callbackRefundAccount" jdbcType="VARCHAR" />
         <result column="callback_refund_request_source" property="callbackRefundRequestSource" jdbcType="VARCHAR" />
+        <result column="callback_req_info" property="callbackReqInfo" jdbcType="VARCHAR" />
         <result column="created" property="created" jdbcType="TIMESTAMP" />
         <result column="created_by" property="createdBy" jdbcType="BIGINT" />
         <result column="created_by_name" property="createdByName" jdbcType="VARCHAR" />
@@ -52,7 +53,8 @@
         callback_total_fee, callback_settlement_total_fee, callback_fee_type, callback_cash_fee,
         callback_cash_fee_type, callback_cash_refund_fee, callback_refund_status, error_code,
         error_message, callback_success_time, callback_refund_recv_accout, callback_refund_account,
-        callback_refund_request_source, created, created_by, created_by_name, updated
+        callback_refund_request_source, callback_req_info, created, created_by, created_by_name,
+        updated
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
         select
@@ -79,8 +81,8 @@
         callback_refund_status, error_code, error_message,
         callback_success_time, callback_refund_recv_accout,
         callback_refund_account, callback_refund_request_source,
-        created, created_by, created_by_name,
-        updated)
+        callback_req_info, created, created_by,
+        created_by_name, updated)
         values (#{id,jdbcType=BIGINT}, #{appid,jdbcType=VARCHAR}, #{mchId,jdbcType=VARCHAR},
         #{nonceStr,jdbcType=VARCHAR}, #{sign,jdbcType=VARCHAR}, #{signType,jdbcType=VARCHAR},
         #{transactionId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, #{outRefundNo,jdbcType=VARCHAR},
@@ -95,8 +97,8 @@
         #{callbackRefundStatus,jdbcType=SMALLINT}, #{errorCode,jdbcType=VARCHAR}, #{errorMessage,jdbcType=VARCHAR},
         #{callbackSuccessTime,jdbcType=TIMESTAMP}, #{callbackRefundRecvAccout,jdbcType=VARCHAR},
         #{callbackRefundAccount,jdbcType=VARCHAR}, #{callbackRefundRequestSource,jdbcType=VARCHAR},
-        #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR},
-        #{updated,jdbcType=TIMESTAMP})
+        #{callbackReqInfo,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT},
+        #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" useGeneratedKeys="true" keyProperty="id" keyColumn="ID" >
         insert into pay_refund
@@ -211,6 +213,9 @@
             </if>
             <if test="callbackRefundRequestSource != null" >
                 callback_refund_request_source,
+            </if>
+            <if test="callbackReqInfo != null" >
+                callback_req_info,
             </if>
             <if test="created != null" >
                 created,
@@ -337,6 +342,9 @@
             <if test="callbackRefundRequestSource != null" >
                 #{callbackRefundRequestSource,jdbcType=VARCHAR},
             </if>
+            <if test="callbackReqInfo != null" >
+                #{callbackReqInfo,jdbcType=VARCHAR},
+            </if>
             <if test="created != null" >
                 #{created,jdbcType=TIMESTAMP},
             </if>
@@ -462,6 +470,9 @@
             <if test="callbackRefundRequestSource != null" >
                 callback_refund_request_source = #{callbackRefundRequestSource,jdbcType=VARCHAR},
             </if>
+            <if test="callbackReqInfo != null" >
+                callback_req_info = #{callbackReqInfo,jdbcType=VARCHAR},
+            </if>
             <if test="created != null" >
                 created = #{created,jdbcType=TIMESTAMP},
             </if>
@@ -478,47 +489,54 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayRefund" >
-    update pay_refund
-    set appid = #{appid,jdbcType=VARCHAR},
-      mch_id = #{mchId,jdbcType=VARCHAR},
-      nonce_str = #{nonceStr,jdbcType=VARCHAR},
-      sign = #{sign,jdbcType=VARCHAR},
-      sign_type = #{signType,jdbcType=VARCHAR},
-      transaction_id = #{transactionId,jdbcType=VARCHAR},
-      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
-      out_refund_no = #{outRefundNo,jdbcType=VARCHAR},
-      total_fee = #{totalFee,jdbcType=INTEGER},
-      total_amount = #{totalAmount,jdbcType=DECIMAL},
-      refund_fee = #{refundFee,jdbcType=INTEGER},
-      refund_amount = #{refundAmount,jdbcType=DECIMAL},
-      refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
-      refund_desc = #{refundDesc,jdbcType=VARCHAR},
-      refund_account = #{refundAccount,jdbcType=VARCHAR},
-      notify_url = #{notifyUrl,jdbcType=VARCHAR},
-      order_no = #{orderNo,jdbcType=VARCHAR},
-      pay_type = #{payType,jdbcType=SMALLINT},
-      callback_refund_id = #{callbackRefundId,jdbcType=VARCHAR},
-      callback_refund_fee = #{callbackRefundFee,jdbcType=INTEGER},
-      callback_refund_amount = #{callbackRefundAmount,jdbcType=DECIMAL},
-      callback_settlement_refund_fee = #{callbackSettlementRefundFee,jdbcType=INTEGER},
-      callback_settlement_refund_amount = #{callbackSettlementRefundAmount,jdbcType=DECIMAL},
-      callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
-      callback_settlement_total_fee = #{callbackSettlementTotalFee,jdbcType=INTEGER},
-      callback_fee_type = #{callbackFeeType,jdbcType=VARCHAR},
-      callback_cash_fee = #{callbackCashFee,jdbcType=INTEGER},
-      callback_cash_fee_type = #{callbackCashFeeType,jdbcType=VARCHAR},
-      callback_cash_refund_fee = #{callbackCashRefundFee,jdbcType=INTEGER},
-      callback_refund_status = #{callbackRefundStatus,jdbcType=SMALLINT},
-      error_code = #{errorCode,jdbcType=VARCHAR},
-      error_message = #{errorMessage,jdbcType=VARCHAR},
-      callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
-      callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
-      callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
-      callback_refund_request_source = #{callbackRefundRequestSource,jdbcType=VARCHAR},
-      created = #{created,jdbcType=TIMESTAMP},
-      created_by = #{createdBy,jdbcType=BIGINT},
-      created_by_name = #{createdByName,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        update pay_refund
+        set appid = #{appid,jdbcType=VARCHAR},
+          mch_id = #{mchId,jdbcType=VARCHAR},
+          nonce_str = #{nonceStr,jdbcType=VARCHAR},
+          sign = #{sign,jdbcType=VARCHAR},
+          sign_type = #{signType,jdbcType=VARCHAR},
+          transaction_id = #{transactionId,jdbcType=VARCHAR},
+          out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+          out_refund_no = #{outRefundNo,jdbcType=VARCHAR},
+          total_fee = #{totalFee,jdbcType=INTEGER},
+          total_amount = #{totalAmount,jdbcType=DECIMAL},
+          refund_fee = #{refundFee,jdbcType=INTEGER},
+          refund_amount = #{refundAmount,jdbcType=DECIMAL},
+          refund_fee_type = #{refundFeeType,jdbcType=VARCHAR},
+          refund_desc = #{refundDesc,jdbcType=VARCHAR},
+          refund_account = #{refundAccount,jdbcType=VARCHAR},
+          notify_url = #{notifyUrl,jdbcType=VARCHAR},
+          order_no = #{orderNo,jdbcType=VARCHAR},
+          pay_type = #{payType,jdbcType=SMALLINT},
+          callback_refund_id = #{callbackRefundId,jdbcType=VARCHAR},
+          callback_refund_fee = #{callbackRefundFee,jdbcType=INTEGER},
+          callback_refund_amount = #{callbackRefundAmount,jdbcType=DECIMAL},
+          callback_settlement_refund_fee = #{callbackSettlementRefundFee,jdbcType=INTEGER},
+          callback_settlement_refund_amount = #{callbackSettlementRefundAmount,jdbcType=DECIMAL},
+          callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
+          callback_settlement_total_fee = #{callbackSettlementTotalFee,jdbcType=INTEGER},
+          callback_fee_type = #{callbackFeeType,jdbcType=VARCHAR},
+          callback_cash_fee = #{callbackCashFee,jdbcType=INTEGER},
+          callback_cash_fee_type = #{callbackCashFeeType,jdbcType=VARCHAR},
+          callback_cash_refund_fee = #{callbackCashRefundFee,jdbcType=INTEGER},
+          callback_refund_status = #{callbackRefundStatus,jdbcType=SMALLINT},
+          error_code = #{errorCode,jdbcType=VARCHAR},
+          error_message = #{errorMessage,jdbcType=VARCHAR},
+          callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+          callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+          callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
+          callback_refund_request_source = #{callbackRefundRequestSource,jdbcType=VARCHAR},
+          callback_req_info = #{callbackReqInfo,jdbcType=VARCHAR},
+          created = #{created,jdbcType=TIMESTAMP},
+          created_by = #{createdBy,jdbcType=BIGINT},
+          created_by_name = #{createdByName,jdbcType=VARCHAR},
+          updated = #{updated,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="selectByOutRefundNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from pay_refund
+        where out_refund_no = #{outRefundNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

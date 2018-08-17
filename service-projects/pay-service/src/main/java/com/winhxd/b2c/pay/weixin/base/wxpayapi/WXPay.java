@@ -12,7 +12,7 @@ public class WXPay {
 
     @Autowired
     private WXPayConfig config;
-    private SignType signType = SignType.HMACSHA256;
+    private SignType signType = SignType.MD5;
     private boolean autoReport = false;
     private boolean useSandbox = false;
     private String notifyUrl = null;
@@ -115,7 +115,12 @@ public class WXPay {
         reqData.put("appid", config.getAppID());
         reqData.put("mch_id", config.getMchID());
         reqData.put("nonce_str", WXPayUtil.generateNonceStr());
-        reqData.put("sign_type", WXPayConstants.MD5);
+        if (SignType.MD5.equals(this.signType)) {
+            reqData.put("sign_type", WXPayConstants.MD5);
+        }
+        else if (SignType.HMACSHA256.equals(this.signType)) {
+            reqData.put("sign_type", WXPayConstants.HMACSHA256);
+        }
         reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), SignType.MD5));
         return reqData;
     }

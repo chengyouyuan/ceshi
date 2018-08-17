@@ -92,10 +92,10 @@ public class ApiStoreLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+			@ApiResponse(code = BusinessCode.CODE_1021, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_1011, message = "微信快捷登录绑定账号无效") })
+			@ApiResponse(code = BusinessCode.CODE_1022, message = "您还不是惠下单用户快去注册吧") })
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
@@ -126,8 +126,8 @@ public class ApiStoreLoginController {
 			 * 查库
 			 */
 			if (db == null) {
-				logger.info("{} - , 账号无效");
-				result = new ResponseResult<>(BusinessCode.CODE_1004);
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				result = new ResponseResult<>(BusinessCode.CODE_1022);
 				return result;
 			} else {
 				
@@ -155,8 +155,8 @@ public class ApiStoreLoginController {
 					storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
-				logger.info("{} - , 账号无效");
-				throw new BusinessException(BusinessCode.CODE_1004);
+				logger.info("{} - , 您的账号或者密码错误");
+				throw new BusinessException(BusinessCode.CODE_1021);
 			} else {
 				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -227,15 +227,15 @@ public class ApiStoreLoginController {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
-				logger.info("{} - , 账号无效");
-				throw new BusinessException(BusinessCode.CODE_1004);
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				throw new BusinessException(BusinessCode.CODE_1022);
 			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
-				logger.info("{} - , 微信快捷登录绑定账号无效");
-				throw new BusinessException(BusinessCode.CODE_1011);
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				throw new BusinessException(BusinessCode.CODE_1022);
 			}
 			/**
 			 * 调用云信服务获取用户信息
@@ -271,8 +271,8 @@ public class ApiStoreLoginController {
 			 * 查库
 			 */
 			if (db == null) {
-				logger.info("{} - , 账号无效");
-				throw new BusinessException(BusinessCode.CODE_1004);
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				throw new BusinessException(BusinessCode.CODE_1022);
 			} else {
 				/**
 				 * 调用云信服务获取用户信息
@@ -299,8 +299,8 @@ public class ApiStoreLoginController {
 					storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
-				logger.info("{} - , 账号无效");
-				throw new BusinessException(BusinessCode.CODE_1004);
+				logger.info("{} - , 您的账号或者密码错误");
+				throw new BusinessException(BusinessCode.CODE_1021);
 			} else {
 				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -383,7 +383,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
-			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+			@ApiResponse(code = BusinessCode.CODE_1022, message = "您还不是惠下单用户快去注册吧"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
 	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
@@ -393,7 +393,7 @@ public class ApiStoreLoginController {
 		ResponseResult<String> result = new ResponseResult<>();
 		if (null == storeSendVerificationCodeCondition) {
 			logger.info("{} - , 参数无效");
-			throw new BusinessException(BusinessCode.CODE_1004);
+			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		/**
 		 * 掉惠下单服务查询门店用户信息
@@ -402,8 +402,8 @@ public class ApiStoreLoginController {
 				.getStoreUserInfo(storeSendVerificationCodeCondition.getStoreMobile(), "");
 		StoreUserSimpleInfo map = object.getData();
 		if (map == null) {
-			logger.info("{} - , 账号无效");
-			throw new BusinessException(BusinessCode.CODE_1004);
+			logger.info("{} - , 您还不是惠下单用户快去注册吧");
+			throw new BusinessException(BusinessCode.CODE_1022);
 		} else {
 			/**
 			 * 用惠下单StoreCustomerId查询惠小店数据库是否已经存在
@@ -582,7 +582,7 @@ public class ApiStoreLoginController {
 	 * 
 	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+	 * @ApiResponse(code = BusinessCode.CODE_1021, message = "您的账号或者密码错误"),
 	 * 
 	 * @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
 	 * 

@@ -112,7 +112,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                         dataBuffer.read(bs);
                         String req = new String(bs, StandardCharsets.UTF_8);
                         currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
-                        logger.debug("Gateway请求数据: {}", req);
+                        logger.debug("Gateway请求数据-{}: {}", currentSpan.context().traceIdString(), req);
                         dataBuffer.readPosition(0);
                     }
                     return Flux.just(dataBuffer);
@@ -137,7 +137,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                                         currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
                                     }
                                 }
-                                logger.debug("Gateway响应数据: {}", repJson);
+                                logger.debug("Gateway响应数据-{}: {}", currentSpan.context().traceIdString(), repJson);
                                 dataBuffer.readPosition(0);
                             }
                             return Flux.just(dataBuffer);

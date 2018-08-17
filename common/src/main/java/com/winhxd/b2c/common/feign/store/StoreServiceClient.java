@@ -33,14 +33,14 @@ import java.util.Set;
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
-     * @return 无  (根据状态码进行判断绑定状态 1001绑定失败, 0绑定成功, 200011用户已经和当前门店存在绑定关系 ， 200003用户已经和其他门店存在绑定关系)
+     * @return 0绑定失败, 1绑定成功, - 1用户已经和当前门店存在绑定关系 ， - 2用户已经和其他门店存在绑定关系
      * @author chengyy
      * @date 2018/8/3 10:32
      * @Description 门店绑定用户
      * @Param storeUserId  门店id主键
      */
     @RequestMapping(value = "/store/1030/v1/bindCustomer", method = RequestMethod.GET)
-    ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId);
+    ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId);
 
     /**
      * 获取购物车内商品信息
@@ -172,7 +172,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     }
 
     @Override
-    public ResponseResult<Void> bindCustomer(Long customerId, Long storeUserId) {
+    public ResponseResult<Integer> bindCustomer(Long customerId, Long storeUserId) {
         logger.error("StoreServiceClientFallBack -> bindCustomer报错，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

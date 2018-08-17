@@ -112,8 +112,8 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
         logger.info("{} 成功提交后处理逻辑开始", ORDER_TYPE_DESC);
-        ResponseResult<Void> result = storeServiceClient.bindCustomer(orderInfo.getCustomerId(), orderInfo.getStoreId());
-        if (result == null || result.getCode() != BusinessCode.CODE_OK) {
+        ResponseResult<Integer> result = storeServiceClient.bindCustomer(orderInfo.getCustomerId(), orderInfo.getStoreId());
+        if (result == null || result.getData() != 1) {
             logger.error("门店storeId={}，客户customerId={} 绑定关系失败", orderInfo.getStoreId(), orderInfo.getCustomerId());
         }
         logger.info("{} 成功提交后处理逻辑结束", ORDER_TYPE_DESC);

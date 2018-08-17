@@ -54,10 +54,9 @@
       <result property="created" column="created"/>
   </resultMap>
   <select id="selectCustomerUserByIds" resultMap="customerUserInfoVO1">
-    select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created
-    from customer_user_info cui left join customer_store_relation csr
-    on cui.customer_id = csr.customer_id left join store_user_info sui on csr.store_user_id = sui.id
-    where cui.status =1 and cui.customer_id in
+    select *
+    from customer_user_info
+    where status =1 and customer_id in
     <foreach collection="ids" item="id" open="(" close=")" separator=",">
         #{id}
     </foreach>
@@ -79,7 +78,7 @@
       <if test="openid != null and openid != ''">
         and cui.openid like CONCAT('%',  #{openid,jdbcType=VARCHAR}, '%')
       </if>
-      <if test="status != null and status != ''">
+      <if test="status != null">
         and cui.status = #{status,jdbcType=TINYINT}
       </if>
       <if test="storeName != null and storeName != ''">
@@ -111,6 +110,7 @@
       </if>
       <if test="openid != null" >
         openid,
+
       </if>
       <if test="lat != null" >
         lat,

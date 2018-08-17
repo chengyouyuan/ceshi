@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
@@ -54,9 +55,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @ApiOperation(value = "适用对象规则设置无效", notes = "适用对象规则设置无效")
     @Override
-    public ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id") String id,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
-            int count = couponApplyService.updateCouponApplyToValid(Long.parseLong(id),Long.parseLong(userId),userName);
+            int count = couponApplyService.updateCouponApplyToValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");

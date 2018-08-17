@@ -40,7 +40,10 @@ public final class BusinessCode {
     public static final int CODE_1014 = 1014;
     /**请求超时*/
     public static final int CODE_1015 = 1015;
-    
+    /**您的账号或者密码错误*/
+    public static final int CODE_1021 = 1021;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int CODE_1022 = 1022;
     /**上传图片格式不正确**/
     public static final int CODE_1016 = 1016;
     /**上传图片是失败**/
@@ -86,7 +89,6 @@ public final class BusinessCode {
     public static final int CODE_200013 = 200013;
     /**门店小程序码url参数为空*/
     public static final int CODE_200017 = 200017;
-
     /**门店小程序码图片生成失败*/
     public static final int CODE_200018 = 200018;
 
@@ -323,6 +325,10 @@ public final class BusinessCode {
     public static final int CODE_610021 = 610021;
     @ApiModelProperty("请传入提现类型")
     public static final int CODE_610022 = 610022;
+    @ApiModelProperty("当前没有提现类型")
+    public static final int CODE_610023 = 610023;
+    
+    
     
     @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;

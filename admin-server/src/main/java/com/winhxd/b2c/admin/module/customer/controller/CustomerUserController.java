@@ -52,7 +52,7 @@ public class CustomerUserController {
     @ApiOperation(value = "根据条件查询用户的分页数据信息", notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/findCustomerPageInfo")
-    public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(BackStageCustomerInfoCondition condition) {
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
         return responseResult;
     }

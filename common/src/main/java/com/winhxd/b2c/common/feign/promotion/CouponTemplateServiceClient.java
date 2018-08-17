@@ -4,16 +4,14 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author wl
@@ -49,14 +47,14 @@ public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondi
 
     /**
      *
-     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
-     *@Params  ids  多个页面勾选的ID 用逗号","隔开
+     *@Deccription   设为无效
+     *@Params  id
      *@Return  ResponseResult 删除是否成功
      *@User  wl
      *@Date   2018/8/6 20:39
      */
     @RequestMapping(value = "/promotion/5013/v1/updateCouponTemplateToValid", method = RequestMethod.POST)
-    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("id") String id,@RequestParam("userId") String userId,@RequestParam("userName") String userName);
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition);
 
     /**
      *
@@ -94,7 +92,7 @@ class CouponTemplateServiceFallback implements CouponTemplateServiceClient{
 
 
     @Override
-    public ResponseResult<Integer> updateCouponTemplateToValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(CouponSetToValidCondition condition) {
         logger.error("CouponTemplateServiceClient -> updateCouponTemplateToValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

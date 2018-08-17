@@ -200,6 +200,11 @@ public class PayRefund {
     private String callbackRefundRequestSource;
 
     /**
+     * 加密信息
+     */
+    private String callbackReqInfo;
+
+    /**
      * 创建时间
      */
     private Date created;
@@ -513,6 +518,14 @@ public class PayRefund {
 
     public void setCallbackRefundRequestSource(String callbackRefundRequestSource) {
         this.callbackRefundRequestSource = callbackRefundRequestSource == null ? null : callbackRefundRequestSource.trim();
+    }
+
+    public String getCallbackReqInfo() {
+        return callbackReqInfo;
+    }
+
+    public void setCallbackReqInfo(String callbackReqInfo) {
+        this.callbackReqInfo = callbackReqInfo == null ? null : callbackReqInfo.trim();
     }
 
     public Date getCreated() {

@@ -450,7 +450,7 @@ public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") S
  *@Date   2018/8/11 12:21
  */
 @ApiOperation("坎级设置为无效")
-@GetMapping (value = "/5020/v1/updateCouponGradeValid")
+@PostMapping (value = "/5020/v1/updateCouponGradeValid")
 public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition){
 	UserInfo userInfo = UserManager.getCurrentUser();
 	condition.setUserId(userInfo.getId());

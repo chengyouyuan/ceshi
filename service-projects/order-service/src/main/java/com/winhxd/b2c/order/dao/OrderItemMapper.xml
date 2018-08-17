@@ -55,8 +55,8 @@
 	values
 	<foreach collection="list" item="item" index="index" separator=",">
 		(
-		#{item.orderNo,jdbcType=CHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{skuDesc,jdbcType=VARCHAR}, 
-		#{skuUrl,jdbcType=VARCHAR}, #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
+		#{item.orderNo,jdbcType=CHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuDesc,jdbcType=VARCHAR}, 
+		#{item.skuUrl,jdbcType=VARCHAR}, #{item.amount,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL},
 		#{item.created,jdbcType=TIMESTAMP},
 		#{item.createdBy,jdbcType=BIGINT}, #{item.updated,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
 		#{item.updatedByName,jdbcType=VARCHAR}, #{item.createdByName,jdbcType=VARCHAR}

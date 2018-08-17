@@ -156,22 +156,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      */
     @Override
     @Transactional
-    public int updateCouponTemplateToValid(List<String> idsList, Long updateBy, Date updated, String updateByName) {
-       return couponTemplateMapper.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
-    }
-
-    /**
-     *
-     *@Deccription 修改优惠券模板
-     *@Params  condition
-     *@Return  ResponseResult
-     *@User  wl
-     *@Date   2018/8/7 16:31
-     */
-    @Override
-    @Transactional
-    public int confirmUpdateCouponTemplate(Long updateBy, Date updated, String updateByName, CouponTemplateCondition condition) {
-        return couponTemplateMapper.confirmUpdateCouponTemplate(updateBy,  updated,  updateByName, condition);
+    public int updateCouponTemplateToValid(Long id, Long updateBy, Date updated, String updateByName) {
+       return couponTemplateMapper.updateCouponTemplateToValid(id,updateBy,updated,updateByName);
     }
 
 

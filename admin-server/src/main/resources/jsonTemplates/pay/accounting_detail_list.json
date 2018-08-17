@@ -1,14 +1,13 @@
 {
   "meta": {
     "ajaxType": "get",
-    "path": "/pay/verify/accountingDetailList",
     "type": "report",
     "title": "核销明细列表",
     "buttons": [
       {
         "name": "查询",
         "event": {
-          "type": "submit",
+          "type": "ajax",
           "ajaxType": "get",
           "path": "/pay/verify/accountingDetailList"
         }

@@ -5,11 +5,17 @@ package com.winhxd.b2c.common.constant;
  * 缓存前缀常量
  */
 public class CacheName {
-    /** 后台管理用户登录key */
+    /**
+     * 后台管理用户登录key
+     */
     public static final String CACHE_KEY_USER_TOKEN = "TOKEN:USER:";
-    /** B端用户登录key */
+    /**
+     * B端用户登录key
+     */
     public static final String STORE_USER_INFO_TOKEN = "TOKEN:STORE:";
-    /** C端用户登录key */
+    /**
+     * C端用户登录key
+     */
     public static final String CUSTOMER_USER_INFO_TOKEN = "TOKEN:CUSTOMER:";
     /**
      * 订单门店提货码锁KEY
@@ -55,16 +61,32 @@ public class CacheName {
      * JSON模板文件缓存
      */
     public static final String JSON_TEMPLATES = "JSON_TEMPLATES:";
-    
-    /**B端绑定银行卡存入验证码 key
-     * */
+
+    /**
+     * B端绑定银行卡存入验证码 key
+     */
     public static final String PAY_VERIFICATION_CODE = "PAY:MOBILE:VERIFICATION:";
 
     /**
      * 小程序accesstoken
      */
     public static final String MESSAGE_MINI_ACCESS_TOKEN = "MINIPROGRAM:ACCESSTOKEN:";
-    
-    /**门店提现模块的门店信息*/
+
+    /**
+     * 事件消息ID,SortedSet
+     */
+    public static final String EVENT_MESSAGE_ID = "EVENT:MESSAGE:ID:";
+    /**
+     * 事件消息内容,Hash
+     */
+    public static final String EVENT_MESSAGE_BODY = "EVENT:MESSAGE:BODY:";
+    /**
+     * 事件消息处理去重
+     */
+    public static final String EVENT_MESSAGE_HANDLER = "EVENT:MESSAGE:HANDLER:";
+
+    /**
+     * 门店提现模块的门店信息
+     */
     public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
 }

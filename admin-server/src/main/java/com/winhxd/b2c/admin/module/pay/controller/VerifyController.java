@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api("结算")
+@Api(tags = "结算")
 @RequestMapping("/pay/verify")
 @RestController
 public class VerifyController {

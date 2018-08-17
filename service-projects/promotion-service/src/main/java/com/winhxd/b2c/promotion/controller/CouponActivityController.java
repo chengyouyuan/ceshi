@@ -111,6 +111,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.saveCouponActivity(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
+        responseResult.setMessage("添加成功！");
         return responseResult;
     }
 

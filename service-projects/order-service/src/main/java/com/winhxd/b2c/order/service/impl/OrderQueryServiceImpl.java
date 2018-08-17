@@ -27,6 +27,7 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
@@ -39,9 +40,11 @@ import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -67,12 +70,9 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
+    
     @Autowired
-    private CustomerServiceClient customerServiceClient;
-    @Autowired
-    private ProductServiceClient productServiceClient;
-    @Autowired
-    private StoreServiceClient storeServiceClient;
+    private PayServiceClient payServiceClient;
 
     /**
      * 根据用户ID查询所有订单
@@ -344,7 +344,18 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             try {
                 //支付 显示title
                 String body = MessageFormat.format(OrderNotifyMsg.ORDER_ITEM_TITLE_4_PAYMENT, orderInfoDetailVO.getOrderItemVoList().get(0).getSkuDesc(), orderInfoDetailVO.getSkuQuantity());
-                ret = null;
+                PayPreOrderCondition payPreOrderCondition = new PayPreOrderCondition();
+                payPreOrderCondition.setBody(body);
+                payPreOrderCondition.setOutOrderNo(orderNo);
+                payPreOrderCondition.setDeviceInfo(deviceInfo);
+                payPreOrderCondition.setOpenid(openid);
+                payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
+                payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
+                ResponseResult<OrderPayVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
+                if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
+                    throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+                }
+                ret = responseResult.getData();
             }finally {
                 lock.unlock();
             }

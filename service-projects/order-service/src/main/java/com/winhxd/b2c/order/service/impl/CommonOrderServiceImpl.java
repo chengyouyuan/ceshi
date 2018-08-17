@@ -1,76 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.constant.OrderNotifyMsg;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
-import com.winhxd.b2c.common.domain.order.util.OrderUtil;
-import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
-import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
-import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.message.MessageServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.mq.MQDestination;
-import com.winhxd.b2c.common.mq.MQHandler;
-import com.winhxd.b2c.common.mq.StringMessageListener;
-import com.winhxd.b2c.common.mq.StringMessageSender;
-import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.order.dao.OrderInfoMapper;
-import com.winhxd.b2c.order.dao.OrderItemMapper;
-import com.winhxd.b2c.order.service.OrderChangeLogService;
-import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
-import com.winhxd.b2c.order.service.OrderHandler;
-import com.winhxd.b2c.order.service.OrderService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
@@ -88,12 +17,93 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.feign.pay.PayServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.MQDestination;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
+import com.winhxd.b2c.order.dao.OrderItemMapper;
+import com.winhxd.b2c.order.service.OrderChangeLogService;
+import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
+import com.winhxd.b2c.order.service.OrderHandler;
+import com.winhxd.b2c.order.service.OrderService;
+
 /**
  * @author wangbin
  */
 @Service
 public class CommonOrderServiceImpl implements OrderService {
 
+    private static final String ORDER_BEING_MODIFIED = "订单正在修改中";
+    private static final String ORDER_NO_CANNOT_NULL = "订单号不能为空";
     private static final int QUEUE_CAPACITY = 1000;
     private static final int KEEP_ALIVE_TIME = 50;
     private static final int MAXIMUM_POOL_SIZE = 20;
@@ -112,29 +122,31 @@ public class CommonOrderServiceImpl implements OrderService {
     @Qualifier("OnlinePayPickUpInStoreOfflineOrderHandler")
     private OrderHandler onlinePayPickUpInStoreOfflineOrderHandler;
 
-    @Resource
+    @Autowired
     private OrderInfoMapper orderInfoMapper;
 
-    @Resource
+    @Autowired
     private OrderItemMapper orderItemMapper;
 
     @Autowired
     private OrderChangeLogService orderChangeLogService;
-    @Resource
+    @Autowired
     private StoreServiceClient storeServiceClient;
-    @Resource
+    @Autowired
     private CouponServiceClient couponServiceClient;
-    @Resource
+    @Autowired
     private Cache cache;
 
     @Autowired
     private CustomerServiceClient customerServiceclient;
-    @Resource
+    @Autowired
     private ProductServiceClient productServiceClient;
-    @Resource
+    @Autowired
     private MessageServiceClient messageServiceClient;
-    @Resource
+    @Autowired
     private StringMessageSender stringMessageSender;
+    @Autowired
+    private PayServiceClient payServiceClient;
 
 
     private ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("order-thread-pool-%d").build();
@@ -276,7 +288,7 @@ public class CommonOrderServiceImpl implements OrderService {
         boolean callbackResult;
         String orderNo = condition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
@@ -322,6 +334,31 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.unlock();
         }
         return callbackResult;
+    }
+
+    /**
+     * 申请退款发送请求
+     *
+     * @param order      订单
+     * @param operatorId 操作人ID
+     * @param operator   操作人
+     * @param reason     退款原因
+     */
+    private void applyRefund(OrderInfo order, Long operatorId, String operator, String reason) {
+        if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款状态异常");
+        }
+        PayRefundCondition payRefundCondition = new PayRefundCondition();
+        payRefundCondition.setOutTradeNo(order.getPaymentSerialNum());
+        payRefundCondition.setTotalAmount(order.getRealPaymentMoney());
+        payRefundCondition.setRefundAmount(order.getRealPaymentMoney());
+        payRefundCondition.setCreatedBy(operatorId);
+        payRefundCondition.setCreatedByName(operator);
+        payRefundCondition.setRefundDesc(reason);
+        PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
+        if (!payRefundVO.isStatus()) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "退款申请异常");
+        }
     }
 
 
@@ -390,7 +427,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void cancelOrderByStore(OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         StoreUser store = UserContext.getCurrentStoreUser();
         if (null == store) {
@@ -421,7 +458,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -439,7 +476,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         String orderNo = orderCancelCondition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
         CustomerUserInfoVO customer = getCustomerUserInfoVO(user.getCustomerId());
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
@@ -496,7 +533,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -577,7 +614,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, "订单正在修改中");
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
         }
     }
 
@@ -615,7 +652,9 @@ public class CommonOrderServiceImpl implements OrderService {
         int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
         //添加订单流转日志
         if (updateResult > 0) {
-            //TODO 调用订单退款接口 请求返回成功状态改为退款中
+            logger.info("订单退款-申请退款开始-订单号={}", orderNo);
+            applyRefund(order, operatorId, operatorName, cancelReason);
+            logger.info("订单退款-申请退款结束-订单号={}", orderNo);
             //退优惠券
             logger.info("订单退款-退优惠券开始-订单号={}", orderNo);
             OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
@@ -875,7 +914,11 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setPayType(orderCreateCondition.getPayType());
         orderInfo.setPickupDateTime(orderCreateCondition.getPickupDateTime());
         orderInfo.setRemarks(orderCreateCondition.getRemark());
-        orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP.getTypeCode());
+        if (orderInfo.getPickupDateTime() == null) {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_NOW.getTypeCode());
+        } else {
+            orderInfo.setPickupType((short) PickUpTypeEnum.SELF_PICK_UP_LATER.getTypeCode());
+        }
         orderInfo.setOrderNo(generateOrderNo());
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
@@ -1032,9 +1075,6 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderCreateCondition.getPayType() == null || PayTypeEnum.getPayTypeEnumByTypeCode(orderCreateCondition.getPayType()) == null) {
             throw new BusinessException(BusinessCode.CODE_401003);
         }
-        if (orderCreateCondition.getPickupDateTime() == null) {
-            throw new BusinessException(BusinessCode.CODE_401004);
-        }
         if (orderCreateCondition.getOrderItemConditions() == null || orderCreateCondition.getOrderItemConditions().isEmpty()) {
             throw new BusinessException(BusinessCode.CODE_401005);
         }
@@ -1086,7 +1126,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderItem orderItem = iterator.next();
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
                 if (skuVO != null) {
-                    orderItem.setSkuDesc(skuVO.getSkuName());
+                    orderItem.setSkuDesc(skuVO.getSkuName() + "/" + skuVO.getSkuAttributeOption());
                     orderItem.setSkuUrl(skuVO.getSkuImage());
                 }
             }
@@ -1273,22 +1313,51 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             //支付成功清空门店订单销量统计cache
             cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
-            //TODO 发送云信
-            String last4MobileNums;
-            CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
-            if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
-                logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
-                last4MobileNums = "";
-            } else {
-                last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+            try {
+                String last4MobileNums;
+                CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
+                if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {
+                    logger.info("用户customerId={}，未找到手机号", orderInfo.getCustomerId());
+                    last4MobileNums = "";
+                } else {
+                    last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
+                }
+                String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
+                String createdBy= "";
+                int expiration = 0;
+                int msgType = 0;
+                short pageType = 1;
+                int audioType = 0;
+                String treeCode = "treeCode";
+                NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(orderInfo.getStoreId(), storeMsg, createdBy, expiration, msgType,
+                        pageType, audioType, treeCode);
+                if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单提货完成给门店发送消息失败：", e);
             }
-            String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
-            String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
+            //给用户发信息
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单提货完成给用户发送消息失败：", e);
+            }
             //TODO 发送mq完成消息
         }
     }
 
-    /**
+    /**s
      * 订单门店确认完成 处理
      *
      * @author wangbin
@@ -1327,8 +1396,22 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            //客户信息发送
-            String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
+            //给用户发信息
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.STORE_NOT_CONFIRM_TIMEOUT.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单未接单超时给用户发送消息失败：", e);
+            }
         }
     }
 
@@ -1351,10 +1434,26 @@ public class CommonOrderServiceImpl implements OrderService {
         public void run() {
             //客户信息发送
             String customerMsg;
+            short msgType2C;
             if (orderInfo.getPayStatus().shortValue() == PayStatusEnum.PAID.getStatusCode()) {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
+                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_PAID.getMsgType();
             } else {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER;
+                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_NO_PAYMENT.getMsgType();
+            }
+            try {
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName("keyword1");
+                data.setValue(customerMsg);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                    throw new BusinessException(BusinessCode.CODE_1001);
+                }
+            } catch (Exception e) {
+                logger.error("订单未提货超时给用户发送消息失败：", e);
             }
         }
     }

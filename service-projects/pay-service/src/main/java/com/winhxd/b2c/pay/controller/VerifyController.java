@@ -4,8 +4,8 @@ import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.VerifyResultVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.pay.service.VerifyService;
 import io.swagger.annotations.Api;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api("结算接口")
+@Api(tags = "结算")
 @RestController
 public class VerifyController {
 
@@ -77,7 +77,7 @@ public class VerifyController {
 
     @ApiOperation(value = "费用结算", notes = "按明细结算")
     @PostMapping("/pay/6094/v1/verifyByDetail")
-    public ResponseResult<VerifyResultVO> verifyByDetail(VerifyDetailCondition condition) {
+    public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
         int count = verifyService.verifyByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);
@@ -100,14 +100,21 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
-    @PostMapping("/pay/6097/v1/storeWithdrawList")
-    public ResponseResult<VerifyResultVO> storeWithdrawList(OrderRecordAccountingCondition condition) {
-        return new ResponseResult<>();
+    @PostMapping("/pay/6097/v1/storeWithdrawalsList")
+    public ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(PayWithdrawalsListCondition condition) {
+        Page<PayWithdrawalsVO> page = verifyService.findPayWithdrawalsList(condition);
+        PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
+        pagedList.setData(page.getResult());
+        pagedList.setPageNo(page.getPageNum());
+        pagedList.setPageSize(page.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return new ResponseResult<>(pagedList);
     }
 
     @ApiOperation(value = "批准门店提现申请")
-    @PostMapping("/pay/6098/v1/approveStoreWithdraw")
-    public ResponseResult<VerifyResultVO> approveStoreWithdraw(OrderRecordAccountingCondition condition) {
-        return new ResponseResult<>();
+    @PostMapping("/pay/6098/v1/approveStoreWithdrawals")
+    public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+        int count = verifyService.approveWithdrawals(condition);
+        return new ResponseResult<>(count);
     }
 }

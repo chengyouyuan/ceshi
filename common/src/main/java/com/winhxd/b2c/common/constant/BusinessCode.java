@@ -40,9 +40,23 @@ public final class BusinessCode {
     public static final int CODE_1014 = 1014;
     /**请求超时*/
     public static final int CODE_1015 = 1015;
+    
+    /**上传图片格式不正确**/
+    public static final int CODE_1016 = 1016;
+    /**上传图片是失败**/
+    public static final int CODE_1017 = 1017;
+    /**图片大小超过限制**/
+    public static final int CODE_1018= 1018;
+    /**图片名称不能为空**/
+    public static final int CODE_1019= 1019;
+    /**图片不能为空**/
+    public static final int CODE_1020= 1020;
+    
 
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;
+    /** 测试门店区域:查询区域失败*/
+    public static final int CODE_103902 = 103902;
 
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
@@ -70,12 +84,11 @@ public final class BusinessCode {
     public static final int CODE_200012 = 200012;
     /**sku已上架**/
     public static final int CODE_200013 = 200013;
-    /**上传图片格式不正确**/
-    public static final int CODE_200014 = 200014;
-    /**上传图片是失败**/
-    public static final int CODE_200015 = 200015;
-    /**图片大小超过300KB**/
-    public static final int CODE_200016 = 200016;
+    /**门店小程序码url参数为空*/
+    public static final int CODE_200017 = 200017;
+
+    /**门店小程序码图片生成失败*/
+    public static final int CODE_200018 = 200018;
 
 
     /** 原密码输入错误 */
@@ -237,6 +250,21 @@ public final class BusinessCode {
     
     @ApiModelProperty("订单金额没有变化")
     public static final int WRONG_ORDER_TOTAL_MONEY_NO_CHANGE = 400015;
+    
+    @ApiModelProperty("顾客id为空")
+    public static final int CUSTOMER_ID_EMPTY = 400016;
+
+    @ApiModelProperty("订单商品信息为空")
+    public static final int ORDER_SKU_EMPTY = 400017;
+
+    @ApiModelProperty("订单状态异常不能退款")
+    public static final int ORDER_REFUND_STATUS_ERROR = 400018;
+
+    @ApiModelProperty("订单退款失败")
+    public static final int ORDER_REFUND_FAIL = 400019;
+
+    @ApiModelProperty("订单获取支付信息失败")
+    public static final int ORDER_GET_PAY_INFO_ERROR = 400018;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;
@@ -293,30 +321,64 @@ public final class BusinessCode {
     public static final int CODE_610020 = 610020;
     @ApiModelProperty("查询结果有误，请联系管理员")
     public static final int CODE_610021 = 610021;
+    @ApiModelProperty("请传入提现类型")
+    public static final int CODE_610022 = 610022;
     
-    
-    /**
-     * 退款回调  订单更新失败
-     */
-    public static final int CODE_600301 = 600301;
-    /**
-     *  退款回调  订单退款流水插入失败
-     */
-    public static final int CODE_600302 = 600302;
-    
-	/**
-     *  退款回调  参数为空
-     */
-    public static final int CODE_600303 = 600303;
-    /**
-     *  支付回调  参数为空
-     */
+    @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;
-    /**
-     *  订单支付  参数为空
-     */
+     
+    @ApiModelProperty("订单支付  订单号为空")
     public static final int CODE_600102 = 600102;
+     
+    @ApiModelProperty("订单支付  商品描述为空")
+    public static final int CODE_600103 = 600103;
+     
+    @ApiModelProperty("订单支付  用户openid为空")
+    public static final int CODE_600104 = 600104;
+     
+    @ApiModelProperty("订单支付  设备Ip为空")
+    public static final int CODE_600105 = 600105;
+    
+    @ApiModelProperty("退款  参数为空")
+    public static final int CODE_600201 = 600201;
+   
+    @ApiModelProperty("退款  订单号为空")
+    public static final int CODE_600202 = 600202;
+    
+    @ApiModelProperty("退款  appid为空")
+    public static final int CODE_600203 = 600203;
+    
+    @ApiModelProperty("退款  订单金额为空")
+    public static final int CODE_600204 = 600204;
+    
+    @ApiModelProperty("退款  退款金额为空")
+    public static final int CODE_600205 = 600205;
+    
+    @ApiModelProperty("退款  创建人为空")
+    public static final int CODE_600206 = 600206;
+    
+    @ApiModelProperty("退款  创建人姓名为空")
+    public static final int CODE_600207 = 600207;
+    
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600001 = 600001;
+    
+    @ApiModelProperty("门店资金变化  参数为空")
+    public static final int CODE_600002 = 600002;
+    
+    @ApiModelProperty("门店资金变化  操作类型为空")
+    public static final int CODE_600003 = 600003;
+    
+    @ApiModelProperty("门店资金变化  订单号为空")
+    public static final int CODE_600004 = 600004;
+    
+    @ApiModelProperty("门店资金变化  提现单号为空")
+    public static final int CODE_600005 = 600005;
+    
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
-    public static final int CODE_600201 = 600201;
+    public static final int CODE_600301 = 600301;
+
+    @ApiModelProperty("云信账户异常")
+    public static final int CODE_701101 = 701101;
 }

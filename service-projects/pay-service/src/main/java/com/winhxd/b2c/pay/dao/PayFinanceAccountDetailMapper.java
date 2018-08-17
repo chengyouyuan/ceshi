@@ -1,10 +1,15 @@
 package com.winhxd.b2c.pay.dao;
 
-import java.util.List;
-
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialSummary;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface PayFinanceAccountDetailMapper {
     int deleteByPrimaryKey(Long id);
@@ -31,7 +36,27 @@ public interface PayFinanceAccountDetailMapper {
 
 	PayFinanceAccountDetailVO selectTodayCouponUsedMoney(Long storeId);
 
-	List<PayFinanceAccountDetailVO> selectFinancialInDetail(PayFinanceAccountDetailCondition condition);
+	List<OrderInfoFinancialInDetailVO> selectFinancialInDetail(OrderInfoFinancialInDetailCondition condition);
 
-	List<PayFinanceAccountDetailVO> selectFinancialOutDetail(PayFinanceAccountDetailCondition condition);
+	List<OrderInfoFinancialOutDetailVO> selectFinancialOutDetail(OrderInfoFinancialOutDetailCondition condition);
+
+	/**
+	 * 提现数据
+	 * @return
+	 */
+	PayFinancialSummary getWithdrawals(String isToday);
+
+
+	/**
+	 * 退款数据
+	 * @return
+	 */
+	PayFinancialSummary getRefund(String isToday);
+
+	/**
+	 * 进账数据及优惠券抵用金额
+	 * @param type
+	 * @return
+	 */
+    BigDecimal getIncome(String type);
 }

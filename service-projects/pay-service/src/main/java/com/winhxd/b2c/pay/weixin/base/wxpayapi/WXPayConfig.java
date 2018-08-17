@@ -1,17 +1,23 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public abstract class WXPayConfig {
 
-
-
     /**
      * 获取 App ID
-     *
+     * 公众账号ID
      * @return App ID
      */
-    abstract String getAppID();
+    public abstract String getAppID();
+
+    /**
+     * 获取 Mch App ID
+     * 商户号的appid或商户号绑定的appid
+     * @return Mch App ID
+     */
+    public abstract String getMchAppID();
 
 
     /**
@@ -19,7 +25,7 @@ public abstract class WXPayConfig {
      *
      * @return Mch ID
      */
-    abstract String getMchID();
+    public abstract String getMchID();
 
 
     /**
@@ -27,7 +33,7 @@ public abstract class WXPayConfig {
      *
      * @return API密钥
      */
-    abstract String getKey();
+    public abstract String getKey();
 
 
     /**
@@ -35,7 +41,7 @@ public abstract class WXPayConfig {
      *
      * @return 商户证书内容
      */
-    abstract InputStream getCertStream();
+    public abstract InputStream getCertStream() throws FileNotFoundException;
 
     /**
      * HTTP(S) 连接超时时间，单位毫秒
@@ -59,7 +65,7 @@ public abstract class WXPayConfig {
      * 获取WXPayDomain, 用于多域名容灾自动切换
      * @return
      */
-    abstract IWXPayDomain getWXPayDomain();
+    public abstract IWXPayDomain getWXPayDomain();
 
     /**
      * 是否自动上报。
@@ -68,7 +74,7 @@ public abstract class WXPayConfig {
      * @return
      */
     public boolean shouldAutoReport() {
-        return true;
+        return false;
     }
 
     /**

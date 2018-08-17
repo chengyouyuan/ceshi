@@ -35,7 +35,16 @@ public class ReadyShopCarCondition extends ApiCondition {
     @ApiModelProperty(value = "备注")
     private String remark;
 
-    @ApiModelProperty(value = "金额", required=false)
+    @ApiModelProperty(value = "金额")
     private BigDecimal orderTotalMoney;
+
+    @ApiModelProperty(value = "终端IP")
+    private String spbillCreateIp;
+
+    @ApiModelProperty(value = "设备号")
+    private String deviceInfo;
+
+    @ApiModelProperty(value = "openid")
+    private String openid;
 
 }

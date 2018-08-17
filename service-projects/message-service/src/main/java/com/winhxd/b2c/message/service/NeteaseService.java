@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
 
@@ -33,5 +34,12 @@ public interface NeteaseService {
      * @param neteaseMsgBoxCondition
      * @return
      */
-    PagedList<NeteaseMsgVO> getNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long customerId);
+    PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long customerId);
+
+    /**
+     * 修改云信消息已读状态
+     * @param neteaseMsgReadStatusCondition
+     * @return
+     */
+    Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition neteaseMsgReadStatusCondition, Long customerId);
 }

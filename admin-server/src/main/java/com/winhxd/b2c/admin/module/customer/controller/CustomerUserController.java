@@ -24,12 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -74,17 +69,27 @@ public class CustomerUserController {
         return ExcelUtils.exp(list, "用户信息");
     }
 
-    @ApiOperation(value = "根据用户id更新status状态（有效、无效）", notes = "根据用户的id更新用户的状态")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "状态更新成功"), @ApiResponse(code = BusinessCode.CODE_200008, message = "状态更新失败")})
-    @PostMapping(value = "/updateStatus")
-    public ResponseResult<Void> updateStatus(BackStageCustomerInfoCondition condition) {
+    @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
+    @PostMapping(value = "/addBlackList")
+    public ResponseResult<Void> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
             throw new BusinessException(BusinessCode.CODE_200001);
         }
-        if (condition.getStatus() == null) {
-            throw new BusinessException(BusinessCode.CODE_200007);
+        condition.setStatus(0);
+        return customerServiceClient.updateStatus(condition);
+    }
+
+    @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
+    @PostMapping(value = "/removeBlackList")
+    public ResponseResult<Void> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
+        if (condition.getCustomerId() == null) {
+            logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
+            throw new BusinessException(BusinessCode.CODE_200001);
         }
+        condition.setStatus(1);
         return customerServiceClient.updateStatus(condition);
     }
 

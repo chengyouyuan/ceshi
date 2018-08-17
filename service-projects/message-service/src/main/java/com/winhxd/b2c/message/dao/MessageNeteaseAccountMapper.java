@@ -1,6 +1,7 @@
 package com.winhxd.b2c.message.dao;
 
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,4 +19,6 @@ public interface MessageNeteaseAccountMapper {
     int updateByPrimaryKey(MessageNeteaseAccount record);
 
     MessageNeteaseAccount getNeteaseAccountByCustomerId(Long customerId);
+
+    int updateByCustomerId(@Param("customerId") Long customerId, @Param("accid") String accid, @Param("token") String token);
 }

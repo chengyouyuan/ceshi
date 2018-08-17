@@ -15,6 +15,8 @@ public class StoreBankroll {
     private BigDecimal presentedFrozenMoney;
 
     private BigDecimal settlementSettledMoney;
+    
+    private BigDecimal alreadyPresentedMoney;
 
     private Long createdBy;
 
@@ -123,4 +125,12 @@ public class StoreBankroll {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+	public BigDecimal getAlreadyPresentedMoney() {
+		return alreadyPresentedMoney;
+	}
+
+	public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
+		this.alreadyPresentedMoney = alreadyPresentedMoney;
+	}
 }

@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -27,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class StoreServiceImpl implements StoreService {
             //当前用户已经存在绑定关系
             record.setStoreUserId(storeUserId);
             List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
-            if(list != null && list.size() > 0){
+            if (list != null && list.size() > 0) {
                 return -1;
             }
             return -2;
@@ -74,9 +74,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
-        StoreUserInfo info =  storeUserInfoMapper.selectByPrimaryKey(storeUserId);
+        StoreUserInfo info = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         StoreUserInfoVO infoVO1 = new StoreUserInfoVO();
-        if(info != null) {
+        if (info != null) {
             BeanUtils.copyProperties(info, infoVO1);
             return infoVO1;
         }
@@ -100,7 +100,7 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
         List<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
-        if (userInfoList.isEmpty()){
+        if (userInfoList.isEmpty()) {
             return pagedList;
         }
 
@@ -112,13 +112,13 @@ public class StoreServiceImpl implements StoreService {
         Set<String> codes = new HashSet<>();
         userInfoList.stream().forEach(storeUserInfo1 -> {
             BackStageStoreVO storeVO = new BackStageStoreVO();
-            BeanUtils.copyProperties(storeUserInfo1,storeVO);
+            BeanUtils.copyProperties(storeUserInfo1, storeVO);
             codes.add(storeUserInfo1.getStoreRegionCode());
-            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())){
+            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())) {
 
                 //获取地理区域名称
                 for (SysRegion sysRegion : sysRegions) {
-                    if (sysRegion.getRegionCode().equals(storeUserInfo1.getStoreRegionCode())){
+                    if (sysRegion.getRegionCode().equals(storeUserInfo1.getStoreRegionCode())) {
                         storeVO.setCity(sysRegion.getCity());
                         storeVO.setCounty(sysRegion.getCounty());
                         storeVO.setProvince(sysRegion.getProvince());
@@ -138,11 +138,11 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId) {
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
-        if(storeUserInfo == null){
+        if (storeUserInfo == null) {
             return null;
         }
         StoreUserInfoVO infoVo = new StoreUserInfoVO();
-        BeanUtils.copyProperties(storeUserInfo,infoVo);
+        BeanUtils.copyProperties(storeUserInfo, infoVo);
         return infoVo;
     }
 
@@ -153,16 +153,16 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids) {
-        if(ids == null || ids.size() == 0){
+        if (ids == null || ids.size() == 0) {
             return null;
         }
-        List<StoreUserInfo> userInfos =  storeUserInfoMapper.selectStoreUserByIds(ids);
+        List<StoreUserInfo> userInfos = storeUserInfoMapper.selectStoreUserByIds(ids);
         List<StoreUserInfoVO> list = new ArrayList<>();
-        if(userInfos != null && userInfos.size() > 0){
-        for(StoreUserInfo info:userInfos){
-            StoreUserInfoVO infoVO = new StoreUserInfoVO();
-            BeanUtils.copyProperties(info,infoVO);
-            list.add(infoVO);
+        if (userInfos != null && userInfos.size() > 0) {
+            for (StoreUserInfo info : userInfos) {
+                StoreUserInfoVO infoVO = new StoreUserInfoVO();
+                BeanUtils.copyProperties(info, infoVO);
+                list.add(infoVO);
             }
         }
         return list;
@@ -176,7 +176,7 @@ public class StoreServiceImpl implements StoreService {
         BeanUtils.copyProperties(storeUserInfo, backStageStoreVO);
         //查询省市县五级信息
         SysRegion sysRegion = regionServiceClient.getRegionByCode(storeUserInfo.getStoreRegionCode()).getData();
-        if(sysRegion != null) {
+        if (sysRegion != null) {
             BeanUtils.copyProperties(sysRegion, backStageStoreVO);
         } else {
             logger.error("门店详细信息查询，未查询到该门店的行政区域！区域编码为：{}", storeUserInfo.getStoreRegionCode());
@@ -191,10 +191,10 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public PagedList<StoreUserInfoVO> findStorePageInfo(BackStageStoreInfoSimpleCondition condition) {
-        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         StoreUserInfo record = new StoreUserInfo();
-        BeanUtils.copyProperties(condition,record);
-        List<StoreUserInfoVO> list =  storeUserInfoMapper.selectStoreByCondition(record);
+        BeanUtils.copyProperties(condition, record);
+        List<StoreUserInfoVO> list = storeUserInfoMapper.selectStoreByCondition(record);
         PageInfo<StoreUserInfoVO> pageInfo = new PageInfo<>(list);
         PagedList<StoreUserInfoVO> pagedList = new PagedList<>();
         pagedList.setTotalRows(pageInfo.getTotal());
@@ -236,5 +236,14 @@ public class StoreServiceImpl implements StoreService {
             throw new BusinessException(BusinessCode.CODE_1001);
         }
         return storeMessageAccountVO;
+    }
+
+    @Override
+    public boolean updateStoreCodeUrl(StoreUserInfoCondition condition) {
+        StoreUserInfo record = new StoreUserInfo();
+        record.setId(condition.getId());
+        record.setMiniProgramCodeUrl(condition.getMiniProgramCodeUrl());
+        int count = storeUserInfoMapper.updateByPrimaryKeySelective(record);
+        return count == 1 ? true : false;
     }
 }

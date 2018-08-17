@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.ShopCarService;
 import io.swagger.annotations.Api;
@@ -17,13 +18,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class ApiShopCarController {
 
     private static final Logger logger = LoggerFactory.getLogger(ApiShopCarController.class);
 
-    @Resource
+    @Autowired
     private ShopCarService shopCarService;
 
     /**
@@ -116,10 +117,12 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
     @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<String> readyOrder(@RequestBody ReadyShopCarCondition condition){
+    public ResponseResult<OrderPayVO> readyOrder(@RequestBody ReadyShopCarCondition condition){
+        ResponseResult result = new ResponseResult<>();
         shopCarParam(condition);
-        shopCarService.readyOrder(condition, getCurrentCustomerId());
-        return new ResponseResult<>();
+        OrderPayVO orderPayVO = shopCarService.readyOrder(condition, getCurrentCustomerId());
+        result.setData(orderPayVO);
+        return result;
     }
 
     /**

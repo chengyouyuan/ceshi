@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.system.login.condition;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,4 +33,6 @@ public class StoreUserInfoCondition extends ApiCondition{
 	private Integer loginPasswordFlag;
     @ApiModelProperty(value = "记录订单下单渠道,如ios,android等")
     private String platform;
+    @ApiModelProperty(value = "门店小程序url")
+    private String miniProgramCodeUrl;
 }

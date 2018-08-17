@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.feign.system.enums.RegionLevelEnum;
 import com.winhxd.b2c.system.dao.SysRegionMapper;
 import com.winhxd.b2c.system.service.SysRegionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,8 +21,9 @@ import java.util.List;
  **/
 @Service
 public class SysRegionServiceImpl implements SysRegionService {
-    @Resource
-    private SysRegionMapper sysRegionMapper;
+
+    @Autowired
+    public SysRegionMapper sysRegionMapper;
 
     @Override
     public SysRegion getRegionByCode(String regionCode) {

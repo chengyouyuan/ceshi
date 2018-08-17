@@ -90,12 +90,60 @@ public class PayPreOrderDTO implements Serializable {
      */
     private String limitPay;
 
+	public String getAppid() {
+		return appid;
+	}
+
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+
+	public String getMchId() {
+		return mchId;
+	}
+
+	public void setMchId(String mchId) {
+		this.mchId = mchId;
+	}
+
+	public String getNonceStr() {
+		return nonceStr;
+	}
+
+	public void setNonceStr(String nonceStr) {
+		this.nonceStr = nonceStr;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public String getSignType() {
+		return signType;
+	}
+
+	public void setSignType(String signType) {
+		this.signType = signType;
+	}
+
 	public String getOutOrderNo() {
 		return outOrderNo;
 	}
 
 	public void setOutOrderNo(String outOrderNo) {
 		this.outOrderNo = outOrderNo;
+	}
+
+	public String getOutTradeNo() {
+		return outTradeNo;
+	}
+
+	public void setOutTradeNo(String outTradeNo) {
+		this.outTradeNo = outTradeNo;
 	}
 
 	public BigDecimal getTotalAmount() {

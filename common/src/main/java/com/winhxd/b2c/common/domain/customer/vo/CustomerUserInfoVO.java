@@ -35,7 +35,7 @@ public class CustomerUserInfoVO {
      */
     @ApiModelProperty("微信openId")
     @Excel(name = "微信openId", orderNum = "3", width = 30)
-    private String openId;
+    private String openid;
 
     /**
      * 用户头像

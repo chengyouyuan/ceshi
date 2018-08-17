@@ -385,12 +385,17 @@
     left join coupon_grade c on a.grade_id = c.id
     left join coupon_apply d on a.apply_rule_id = d.id
     where 1=1
-    <if test="condition.createdBegin!=null and  condition.createdBegin!=''">
-      and a.created <![CDATA[ >= ]]> #{condition.createdBegin}
+
+    <if test="condition.dateInterval!=null and  condition.dateInterval!=''">
+      <if test="condition.dateInterval.startDate!=null and  condition.dateInterval.startDate!=''">
+        and a.created <![CDATA[ >= ]]> #{condition.dateInterval.startDate}
+      </if>
+      <if test="condition.dateInterval.endDate!=null and  condition.dateInterval.endDate!=''">
+        and a.created <![CDATA[ <= ]]> #{condition.dateInterval.endDate}
+      </if>
     </if>
-    <if test="condition.createdEnd!=null and  condition.createdEnd!=''">
-      and a.created <![CDATA[ <= ]]> #{condition.createdEnd}
-    </if>
+
+
     <if test="condition.createdByName!=null and  condition.createdByName!=''">
       and a.created_by_name = #{condition.createdByName}
     </if>
@@ -425,56 +430,22 @@
   </select>
 
 
-  <!-- 批量（单个）设置无效或批量（单个）非物理删除 -->
+  <!-- 设为无效 -->
   <update id="updateCouponTemplateToValid" parameterType="java.util.List">
-      update coupon_template set status= 0 ,updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
-      where id in
-    <foreach collection="idsList" index="index" item="item" open="(" separator="," close=")">
-       #{item}
-    </foreach>
-  </update>
-
-
-<!-- 更新优惠券模板 -->
-  <update id="confirmUpdateCouponTemplate">
-    update coupon_template set
-      updated_by=#{updatedBy},updated_by_name=#{updateByName},updated=#{updated}
-      <if test="condition.title!=null and condition.title!=''">
-        ,title = #{condition.title}
-      </if>
-    <if test="condition.exolian!=null and condition.exolian!=''">
-      ,exolian = #{condition.exolian}
-    </if>
-    <if test="condition.remarks!=null and condition.remarks!=''">
-      ,remarks = #{condition.remarks}
-    </if>
-    <if test="condition.investorId!=null and condition.investorId!=''">
-      ,investor_id = #{condition.investorId}
-    </if>
-    <if test="condition.gradeId !=null and condition.gradeId  !=''">
-      ,grade_id = #{condition.gradeId}
-    </if>
-    <if test="condition.applyRuleId!=null and condition.applyRuleId!=''">
-      ,apply_rule_id = #{condition.applyRuleId}
-    </if>
-    <if test="condition.couponLabel!=null and condition.couponLabel!=''">
-      ,coupon_label = #{condition.couponLabel}
-    </if>
-    <if test="condition.status!=null and condition.status!=''">
-      ,status = #{condition.status }
-    </if>
-    where id = #{condition.id}
+      update coupon_template set status= 0 ,
+      updated_by=#{updatedBy},
+      updated_by_name=#{updateByName},
+      updated=#{updated}
+      where id = #{id}
   </update>
 
 
 
   <resultMap id="couponGetedAndUsedResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
-
+    <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
     <result column="storeId" jdbcType="BIGINT" property="storeId" />
     <result column="applyId" jdbcType="BIGINT" property="applyId" />
-    <result column="applyRuleType" jdbcType="SMALLINT" property="type" />
-    <result column="totalCount" jdbcType="INTEGER" property="totalCount" />
-    <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
+    <result column="applyRuleType" jdbcType="SMALLINT" property="applyRuleType" />
     <result column="reduceType" jdbcType="SMALLINT" property="reduceType" />
     <result column="reduceAmt" jdbcType="DECIMAL" property="reduceAmt" />
     <result column="cost" jdbcType="DECIMAL" property="cost" />
@@ -488,11 +459,9 @@
  <!-- 获取门店优惠券使用情况 领取情况统计列表 -->
   <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.lang.Long" resultMap="couponGetedAndUsedResultMap">
     SELECT
-    d.store_id storeId,
+    c.template_id as templeteId,
     b.apply_rule_type as applyRuleType,
     b.id as applyId,
-    count(1) as totalCount ,
-    sum(case when c.`status`=2 then 1 else 0 end) as usesedCount,
     h.reduced_type as reduceType,
     (case WHEN h.reduced_amt is null then 0 else h.reduced_amt end) as reduceAmt,
     (case WHEN h.cost is null then 0 else h.cost end) as cost,
@@ -503,14 +472,38 @@
     c.end_time as endTime
     FROM
     coupon_template_send c
-    INNER JOIN coupon_template a ON a.id = c.template_id
-    INNER JOIN coupon_apply b ON a.apply_rule_id = b.id AND b.`status` = 1 AND a.`status` = 1
-    INNER JOIN coupon_activity_record d on d.template_id = a.id
+    LEFT JOIN coupon_template a ON a.id = c.template_id
+    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id AND b.`status` = 1 AND a.`status` = 1
+    LEFT JOIN coupon_grade e on e.id = a.grade_id
+    LEFT JOIN coupon_grade_detail h on h.grade_id = e.id
+    LEFT JOIN coupon_activity_record d on d.template_id = c.template_id
     and d.store_id = #{storeId} and d.send_id= c.id
-    INNER JOIN coupon_grade e on e.id = a.grade_id
-    LEFT  JOIN coupon_grade_detail h on h.grade_id = e.id
     WHERE 1=1
-    group by b.apply_rule_type
+    GROUP BY c.template_id
+  </select>
+
+  <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
+  <resultMap id="couponGetedAndUsedCoutMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
+    <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
+    <result column="totalCount" jdbcType="INTEGER" property="totalCount" />
+    <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
+  </resultMap>
+
+  <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
+    SELECT
+    count(1) as totalCount,
+    sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
+    c.template_id as templeteId
+    FROM
+    coupon_template_send c
+    LEFT JOIN coupon_template a ON a.id = c.template_id
+    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id AND b.`status` = 1 AND a.`status` = 1
+    LEFT JOIN coupon_grade e on e.id = a.grade_id
+    LEFT JOIN coupon_grade_detail h on h.grade_id = e.id
+    LEFT JOIN coupon_activity_record d on d.template_id = c.template_id
+    and d.store_id = #{storeId} and d.send_id= c.id
+    WHERE 1=1
+    group by c.template_id
   </select>
 
 

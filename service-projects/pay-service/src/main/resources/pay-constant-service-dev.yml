@@ -1,0 +1,5 @@
+pay: 
+  withdrawal: 
+    cmms_amt: 0.006
+    rate: 0.006
+    maxmoney: 20000

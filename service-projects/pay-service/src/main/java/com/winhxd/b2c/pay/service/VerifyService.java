@@ -5,16 +5,16 @@ import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.pay.condition.ThirdPartyVerifyAccountingCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
+import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +38,13 @@ public class VerifyService {
     private AccountingDetailMapper accountingDetailMapper;
 
     @Autowired
+    private PayWithdrawalsMapper payWithdrawalsMapper;
+
+    @Autowired
     private OrderServiceClient orderServiceClient;
 
     /**
-     * 保存订单费用明细
+     * 订单支付成功，保存订单费用明细
      *
      * @param orderNo
      * @return
@@ -91,7 +95,7 @@ public class VerifyService {
     }
 
     /**
-     * 订单费用标记入账
+     * 订单闭环，标记订单费用明细入账
      *
      * @param orderNo
      * @return
@@ -231,5 +235,43 @@ public class VerifyService {
                 verifyCode, verifyRemark, operatedBy, operatedByName);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
         return updatedCount;
+    }
+
+    /**
+     * 查询门店提现申请列表
+     *
+     * @param condition
+     * @return
+     */
+    public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
+        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        return payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
+    }
+
+    /**
+     * 审核门店提现申请
+     *
+     * @param condition
+     * @return
+     */
+    @Transactional
+    public int approveWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+        int count = 0;
+        Short auditStatus = condition.getAuditStatus();
+        String auditDesc = condition.getAuditDesc();
+        Long updatedBy = condition.getUpdatedBy();
+        String updatedByName = condition.getUpdatedByName();
+        for (Long id : condition.getIds()) {
+            PayWithdrawals payWithdrawals = new PayWithdrawals();
+            payWithdrawals.setId(id);
+            payWithdrawals.setAuditStatus(auditStatus);
+            payWithdrawals.setAuditDesc(auditDesc);
+            payWithdrawals.setUpdated(new Date());
+            payWithdrawals.setUpdatedBy(updatedBy);
+            payWithdrawals.setUpdatedByName(updatedByName);
+            payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
+            count++;
+        }
+        return count;
     }
 }

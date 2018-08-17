@@ -88,17 +88,15 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "优惠券模板设为无效", notes = "优惠券模板设为无效")
     @Override
-    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("ids") String ids,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("id") String id,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(ids)){
+        if(StringUtils.isBlank(id)){
             throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
         }
         Long updateBy = Long.parseLong(userId);
         Date updated = new Date();
         String updateByName = userName ;
-        String[] idsArr = ids.split(",");
-        List<String> idsList = Arrays.asList(idsArr);
-        int count = couponTemplateService.updateCouponTemplateToValid(idsList,updateBy,updated,updateByName);
+        int count = couponTemplateService.updateCouponTemplateToValid(Long.parseLong(id),updateBy,updated,updateByName);
         if(count!=1){
            throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
         }

@@ -43,7 +43,7 @@ public class OrderInfoDetailVO implements Serializable {
      * 订单状态 1:已提交;2:待付款;3:待接单;5:待计价;7:已计价;
      * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
      */
-    @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
     private Short orderStatus;
     @ApiModelProperty(value = "订单状态描述", required = true)
     private String orderStatusDesc;
@@ -130,7 +130,7 @@ public class OrderInfoDetailVO implements Serializable {
     /**
      * 提货方式:1自提;2配送; 现阶段只有自提
      */
-    @ApiModelProperty(value = "提货方式:1自提;2配送;", required = true)
+    @ApiModelProperty(value = "提货方式:1立即自提;2普通自提;", required = true)
     private Short pickupType;
     @ApiModelProperty(value = "提货方式描述", required = true)
     private String pickupTypeDesc;

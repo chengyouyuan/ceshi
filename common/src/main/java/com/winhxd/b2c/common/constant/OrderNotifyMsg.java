@@ -16,6 +16,8 @@ public class OrderNotifyMsg {
     
     public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER = "您要购买的商品店主已经知道啦，正在为您备货，请于{0}到店取货";
     
+    public static final String WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER_PICKUP_NOW = "您要购买的商品店主已经知道啦，正在为您备货，请到店取货";
+    
     public static final String ORDER_COMPLETE_MSG_4_STORE = "【已完成】 手机尾号{0}订单已完成";
     
     public static final String ORDER_COMPLETE_MSG_4_CUSTOMER = "您购买的商品已成功取货";
@@ -25,4 +27,6 @@ public class OrderNotifyMsg {
     public static final String ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消，订单金额已退回至您的付款账户，请注意查收";
     
     public static final String ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER = "您未在限定时间内取货，订单已取消";
+    
+    public static final String ORDER_ITEM_TITLE_4_PAYMENT = "{0}等{1}件商品";
 }

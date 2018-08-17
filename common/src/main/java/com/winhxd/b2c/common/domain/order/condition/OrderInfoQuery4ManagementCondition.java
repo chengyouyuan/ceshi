@@ -23,6 +23,9 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     @ApiModelProperty(value = "订单号数组")
     private String[] orderNos;
     
+    @ApiModelProperty(value = "订单号")
+    private String orderNo;
+    
     @ApiModelProperty(value = "下单时间区间")
     private DateInterval dateInterval;
     
@@ -37,6 +40,9 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     
     @ApiModelProperty(value = "订单状态 1:已提交;2:待付款;3:待接单;7:已计价;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;")
     private Short orderStatus;
+    
+    @ApiModelProperty(value = "是否使用优惠券 1:是;2:否")
+    private Short useCoupon;
     
     @ApiModelProperty(value = "地理区域编码")
     private String regionCode;
@@ -112,6 +118,22 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
 
     public void setRegionCode(String regionCode) {
         this.regionCode = regionCode;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public Short getUseCoupon() {
+        return useCoupon;
+    }
+
+    public void setUseCoupon(Short useCoupon) {
+        this.useCoupon = useCoupon;
     }
     
 }

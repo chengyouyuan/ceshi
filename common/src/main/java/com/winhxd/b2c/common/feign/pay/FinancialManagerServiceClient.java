@@ -11,7 +11,10 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.PayFinanceAccountDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
 
 import feign.hystrix.FallbackFactory;
@@ -24,12 +27,11 @@ public interface FinancialManagerServiceClient {
 	
 	/**财务入账明细*/
 	@PostMapping("/pay/61002/v1/queryFinancialInDetail")
-	ResponseResult<PagedList<PayFinanceAccountDetailVO>> queryFinancialInDetail(@RequestBody PayFinanceAccountDetailCondition condition);
+	ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition);
 	
 	/**财务出账明细*/
 	@PostMapping("/pay/61003/v1/queryFinancialOutDetail")
-	ResponseResult<PagedList<PayFinanceAccountDetailVO>> queryFinancialOutDetail(@RequestBody PayFinanceAccountDetailCondition condition);
-	
+	ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition);
 	/**公司入账明细*/
 	// 待定
 
@@ -58,13 +60,13 @@ class FinancialManagerServiceClientFallback implements FinancialManagerServiceCl
 	}
 
 	@Override
-	public ResponseResult<PagedList<PayFinanceAccountDetailVO>> queryFinancialInDetail(@RequestBody PayFinanceAccountDetailCondition condition) {
+	public ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition) {
 		logger.error("FinancialManagerServiceClientFallback -> queryFinancialDetail", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
 	@Override
-	public ResponseResult<PagedList<PayFinanceAccountDetailVO>> queryFinancialOutDetail(@RequestBody PayFinanceAccountDetailCondition condition) {
+	public ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition) {
 		logger.error("FinancialManagerServiceClientFallback -> queryFinancialOutDetail", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}

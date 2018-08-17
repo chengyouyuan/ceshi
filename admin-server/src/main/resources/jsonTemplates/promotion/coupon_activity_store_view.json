@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5037/v1/queryStoreByActivity",
+    "type": "report",
+    "id": "coupon_activity_store_view",
+    "code": "coupon_activity_store_view",
+    "title": "优惠券活动关联小店信息",
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "storeName",
+        "title": "小店名称"
+      },
+      {
+        "name": "storeMobile",
+        "title": "小店手机号"
+      },
+      {
+        "name": "activityName",
+        "title": "优惠券活动名称"
+      },
+      {
+        "name": "activityCode",
+        "title": "优惠券活动编码"
+      },
+      {
+        "name": "status",
+        "inputModel": "select",
+        "title": "小店状态",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "0",
+          "label": "未开店"
+        },
+          {
+            "value": "1",
+            "label": "有效"
+          },
+          {
+            "value": "2",
+            "label": "无效"
+          }
+        ]
+      }
+    ]
+  }
+}

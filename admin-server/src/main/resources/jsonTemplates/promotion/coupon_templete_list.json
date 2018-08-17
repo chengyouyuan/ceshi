@@ -1,1 +1,262 @@
-{}
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5010/v1/getCouponTemplatePage",
+    "type": "report",
+    "id": "coupon_templete_list",
+    "code": "coupon_templete_list",
+    "title": "优惠券模板列表",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "/promotion/addtemplate"
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/promotion/5010/v1/getCouponTemplatePage"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id","details"
+              ],
+              "path": "/promotion/addtemplate",
+              "configKey": ""
+            }
+          },
+          {
+            "name": "设置为无效",
+            "icon": null,
+            "event": {
+              "ajaxType": "post",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/promotion/5013/v1/updateCouponTemplateToValid"
+            }
+          }
+        ]
+      },
+      {
+        "name": "code",
+        "title": "优惠券编码"
+      },
+      {
+        "name": "title",
+        "title": "优惠券标题"
+      },
+      {
+        "name": "couponLabel",
+        "title": "优惠券标签"
+      },
+      {
+        "name": "title",
+        "title": "优惠券适用范围",
+        "options":[
+          {"1":"通用券"},
+          {"2":"品牌券"},
+          {"3":"品类券"},
+          {"4":"商品券"}
+        ]
+      },
+      {
+        "name": "status",
+        "title": "是否有效",
+        "options":[
+          {"0":"无效"},
+          {"1":"有效"}
+        ]
+      },
+      {
+        "name": "status",
+        "title": "优惠券金额计算方式",
+        "options":[
+          {"1":"订单"},
+          {"2":"商品"}
+        ]
+      },
+      {
+        "name": "investorName",
+        "title": "出资方规则名称"
+      },
+      {
+        "name": "gradeName",
+        "title": "坎级规则名称"
+      },
+      {
+        "name": "applyRuleName",
+        "title": "适用范围名称"
+      },
+      {
+        "name": "createdByName",
+        "title": "创建人"
+      },
+      {
+        "name": "created",
+        "title": "创建时间"
+      },
+      {
+        "name": "updatedByName",
+        "title": "修改人"
+      },
+      {
+        "name": "updated",
+        "title": "修改时间"
+      }
+    ],
+    "params": [
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "优惠券编码",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "优惠券标题",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "couponLabel",
+        "inputModel": "input",
+        "title": "优惠券标签",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "calType",
+        "inputModel": "select",
+        "title": "优惠券金额计算方式",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "订单"
+        },
+          {
+            "value": "2",
+            "label": "商品"
+          }
+        ]
+      },
+      {
+        "name": "investorName",
+        "inputModel": "input",
+        "title": "出资方规则名称",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "gradeName",
+        "inputModel": "input",
+        "title": "坎级规则名称",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "applyRuleName",
+        "inputModel": "input",
+        "title": "优惠券适用范围名称",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "applyRuleType",
+        "inputModel": "select",
+        "title": "优惠券类型",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "通用券"
+        },
+          {
+            "value": "2",
+            "label": "品牌券"
+          },
+          {
+            "value": "4",
+            "label": "商品券"
+          }
+        ]
+      },
+      {
+        "name": "status",
+        "inputModel": "select",
+        "title": "是否有效",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "0",
+          "label": "无效"
+        },
+          {
+            "value": "1",
+            "label": "有效"
+          }
+        ]
+      },
+      {
+        "name": "createdByName",
+        "inputModel": "input",
+        "title": "创建人",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      },
+      {
+        "name": "created",
+        "inputModel": "double-date-picker",
+        "title": "创建时间",
+        "value": "",
+        "placeholder": "",
+        "isHidden": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "",
+    "id": "store_region_save",
+    "title": "新增门店测试区域",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/store/1039/v1/saveStoreRegion",
+          "callback": {
+            "refresh": true
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "areaCode",
+        "inputModel": "inputDia",
+        "title": "区域",
+        "placeholder": "请选择门店所属区域",
+        "path": "",
+        "configKey": "/template/module/system/system_region_list_radio_win.json",
+        "isHidden": false
+      }
+    ]
+  }
+}

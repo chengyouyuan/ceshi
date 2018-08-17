@@ -27,14 +27,6 @@
     ],
     "columns": [
       {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "aglign": "center",
-        "width": "50",
-        "fixed": "left"
-      },
-      {
         "name": "orderNo",
         "title": "订单编号"
       },
@@ -56,11 +48,7 @@
       },
       {
         "name": "valuationTypeDesc",
-        "title": "订单类型"
-      },
-      {
-        "name": "payTypeDesc",
-        "title": "支付方式"
+        "title": "计价类型"
       },
       {
         "name": "created",
@@ -68,6 +56,10 @@
       },
       {
         "name": "skuQuantity",
+        "title": "商品数量"
+      },
+      {
+        "name": "couponTitles",
         "title": "商品数量"
       },
       {
@@ -111,7 +103,7 @@
     ],
     "params": [
       {
-        "name": "orderNos",
+        "name": "orderNo",
         "inputModel": "input",
         "title": "订单号",
         "value": "",
@@ -175,14 +167,17 @@
         }]
       },
       {
-        "name": "payType",
+        "name": "useCoupon",
         "inputModel": "select",
-        "title": "支付方式",
+        "title": "是否使用优惠券",
         "placeholder": "",
         "isHidden": false,
         "options": [{
         	"value": "1",
-        	"label": "线上支付"
+        	"label": "是"
+        },{
+        	"value": "2",
+        	"label": "否"
         }]
       },
       {

@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.api;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderRefundCondition;
 import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderRefundVO;
-import com.winhxd.b2c.pay.config.WechatConfig;
 import com.winhxd.b2c.pay.service.PayService;
 
 import io.swagger.annotations.Api;
@@ -33,52 +31,29 @@ public class ApiPayController {
 	@Autowired
 	private PayService payService;
 	
-	
-	@ApiOperation(value = "订单支付", notes = "订单支付")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
-            @ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-            @ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
-    })
-	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<OrderPayVO> orderPay(@RequestBody OrderPayCondition condition){
-		ResponseResult<OrderPayVO> result=payService.orderPay(condition);
-		return result;
-	}
-	@ApiOperation(value = "退款", notes = "退款")
-	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-		@ApiResponse(code = BusinessCode.ORDER_NO_EMPTY, message = "订单号为空"),
-		@ApiResponse(code = BusinessCode.WRONG_ORDERNO, message = "订单号错误"),
-		@ApiResponse(code = BusinessCode.WRONG_ORDER_STATUS, message = "订单状态错误"),
-	})
-	@PostMapping(value = "/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<OrderRefundVO> orderRefund(@RequestBody OrderRefundCondition condition){
-		ResponseResult<OrderRefundVO> result=payService.orderRefund(condition);
-		return result;
-	}
-	@ApiOperation(value = "获取支付凭证", notes = "获取支付凭证")
-	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-	})
-	@PostMapping(value = "/6003/v1/getprepayId", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<String> getprepayId(@RequestBody OrderPayCondition condition){
-		ResponseResult<String> result=payService.getprepayId(condition);
-		
-		return result;
-	}
 	@ApiOperation(value = "获取转账银行列表", notes = "获取转账银行列表")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
-	@PostMapping(value = "/6004/v1/getBanks", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/6005/v1/getBanks", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<List<BanksVO>> getBanks(@RequestBody OrderPayCondition condition){
 		ResponseResult<List<BanksVO>> result=new ResponseResult<>();
 		result.setData(BanksEnums.getValus());
+		return result;
+	}
+	@ApiOperation(value = "获取转账钱包", notes = "获取转账钱包")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+	})
+	@PostMapping(value = "/6006/v1/getPayStoreWallet", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseResult<PayStoreWallet> getPayStoreWallet(@RequestBody OrderPayCondition condition){
+		ResponseResult<PayStoreWallet> result=new ResponseResult<>();
+		List<PayStoreWallet> walletList=payService.selectPayStoreWalletByStoreId();
+		PayStoreWallet wallet=null;
+		if (CollectionUtils.isNotEmpty(walletList)) {
+			wallet=walletList.get(0);
+		}
+		result.setData(wallet);
 		return result;
 	}
 	

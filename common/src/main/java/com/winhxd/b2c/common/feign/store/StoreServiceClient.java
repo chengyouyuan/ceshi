@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.util.Set;
  * @Description: 门店服务接口
  * @date 2018/8/3 10:18
  */
-@FeignClient(value = ServiceName.STORE_SERVICE,fallbackFactory = StoreServiceClientFallBack.class)
+@FeignClient(value = ServiceName.STORE_SERVICE, fallbackFactory = StoreServiceClientFallBack.class)
 public interface StoreServiceClient {
     /**
      * @param customerId 用户id主键
@@ -43,9 +44,10 @@ public interface StoreServiceClient {
 
     /**
      * 获取购物车内商品信息
+     *
      * @param skuCodes
      * @param storeId
-     * @return ResponseResult<List                               <                               ShopCarProdVO>>
+     * @return ResponseResult<List<ShopCarProdVO>>
      * @Title: findShopCarProd
      * @Description: TODO
      * @author wuyuanbao
@@ -72,7 +74,7 @@ public interface StoreServiceClient {
      * @Description 根据门店id(主键)查询门店信息
      */
     @RequestMapping(value = "/store/1032/v1/findStoreUserInfo", method = RequestMethod.GET)
-    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@RequestParam("id")Long id);
+    ResponseResult<StoreUserInfoVO> findStoreUserInfo(@RequestParam("id") Long id);
 
     /**
      * @param ids 门店id
@@ -86,6 +88,7 @@ public interface StoreServiceClient {
 
     /**
      * 更新门店商品统计信息
+     *
      * @param conditions
      * @return ResponseResult<Void>
      * @Title: updateStoreProductStatistics
@@ -98,16 +101,18 @@ public interface StoreServiceClient {
 
     /**
      * 查询测试区域配置
+     *
      * @author: wangbaokuo
      * @date: 2018/8/10 15:26
      * @param: [conditions]
-     * @return: com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.PagedList       <       com.winhxd.b2c.common.domain.store.vo.StoreRegionVO>>
+     * @return: com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.PagedList                               <                               com.winhxd.b2c.common.domain.store.vo.StoreRegionVO>>
      */
     @RequestMapping(value = "/store/1037/v1/findStoreRegions", method = RequestMethod.POST)
     ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition conditions);
 
     /**
      * 删除测试区域配置
+     *
      * @author: wangbaokuo
      * @date: 2018/8/10 15:27
      * @param: [id]
@@ -118,6 +123,7 @@ public interface StoreServiceClient {
 
     /**
      * 保存测试区域配置
+     *
      * @author: wangbaokuo
      * @date: 2018/8/10 15:27
      * @param: [conditions]
@@ -133,8 +139,18 @@ public interface StoreServiceClient {
      * @date 2018/8/13 19:17
      * @Description 根据条件查询门店分页列表
      */
-    @RequestMapping(value = "/store/1050/v1/queryStorePageInfo",method = RequestMethod.POST)
+    @RequestMapping(value = "/store/1050/v1/queryStorePageInfo", method = RequestMethod.POST)
     ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition);
+
+    /**
+     * @param condition 条件
+     * @return true 保存成功  flase 保存失败
+     * @author chengyy
+     * @date 2018/8/15 19:17
+     * @Description 保存更新门店小程序二维码url
+     */
+    @RequestMapping(value = "/store/1057/v1/saveStoreCodeUrl", method = RequestMethod.POST)
+    ResponseResult<Boolean> saveStoreCodeUrl(@RequestBody StoreUserInfoCondition condition);
 }
 
 /**
@@ -212,6 +228,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     @Override
     public ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(BackStageStoreInfoSimpleCondition condition) {
         logger.error("StoreServiceClientFallBack -> queryStorePageInfo，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Boolean> saveStoreCodeUrl(StoreUserInfoCondition condition) {
+        logger.error("StoreServiceClientFallBack -> saveStoreCodeUrl，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

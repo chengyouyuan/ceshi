@@ -15,6 +15,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -24,12 +27,11 @@ import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 
+@Component
 public class WXPayRequest {
-    private WXPayConfig config;
-    public WXPayRequest(WXPayConfig config) throws Exception{
 
-        this.config = config;
-    }
+    @Autowired
+    private WXPayConfig config;
 
     /**
      * 请求，只请求一次，不做重试
@@ -119,7 +121,7 @@ public class WXPayRequest {
         boolean firstHasReadTimeout = false;
         IWXPayDomain.DomainInfo domainInfo = config.getWXPayDomain().getDomain(config);
         if(domainInfo == null){
-            throw new Exception("WXPayConfig.getWXPayDomain().getDomain() is empty or null");
+            throw new Exception("PayConfig.getWXPayDomain().getDomain() is empty or null");
         }
         try {
             String result = requestOnce(domainInfo.domain, urlSuffix, uuid, data, connectTimeoutMs, readTimeoutMs, useCert);

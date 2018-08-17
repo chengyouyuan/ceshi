@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.system.user.model.SysRolePermission;
 import com.winhxd.b2c.system.dao.SysRoleMapper;
 import com.winhxd.b2c.system.dao.SysRolePermissionMapper;
 import com.winhxd.b2c.system.service.SysRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +23,9 @@ import javax.annotation.Resource;
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
 
-    @Resource
+    @Autowired
     private SysRoleMapper sysRoleMapper;
-    @Resource
+    @Autowired
     private SysRolePermissionMapper sysRolePermissionMapper;
 
 

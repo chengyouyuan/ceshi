@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5025/v1/findInvertorTempleteCountPage",
+    "type": "report",
+    "id": "coupon_investor_reltemp_list",
+    "code": "coupon_investor_reltemp_list",
+    "title": "出资方规则关联模板列表",
+    "buttons": [],
+    "columns": [
+      {
+        "type": "index",
+        "name": "invertorId",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "invertorName",
+        "title": "出资方规则名称"
+      },
+      {
+        "name": "invertorCode",
+        "title": "出资方规则编码"
+      },
+      {
+        "name": "templeteName",
+        "title": "优惠券模板名称"
+      },
+      {
+        "name": "templeteCode",
+        "title": "优惠券模板编码"
+      },
+      {
+        "name": "templeteStatus",
+        "title": "优惠券状态",
+        "options":[
+          {"0":"无效"},
+          {"1":"有效"}
+        ]
+      }
+    ],
+    "params": []
+  }
+}

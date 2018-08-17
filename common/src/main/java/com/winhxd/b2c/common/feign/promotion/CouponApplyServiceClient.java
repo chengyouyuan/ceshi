@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public interface CouponApplyServiceClient {
      *@Date   2018/8/11 14:24
      */
     @RequestMapping(value = "/promotion/5027/v1/findApplyTempleteCountPage", method = RequestMethod.POST)
-    ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestParam("applyId") String applyId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize);
+    ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition);
 }
 
 @Component
@@ -110,7 +111,7 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     }
 
     @Override
-    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(String applyId, Integer pageNo, Integer pageSize) {
+    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
         logger.error("CouponApplyServiceClient -> findApplyTempleteCountPage", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }

@@ -275,6 +275,7 @@
     <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
     <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
     <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+    <result column="templete_status_name" jdbcType="VARCHAR" property="templeteStatusName" />
   </resultMap>
 
 
@@ -283,6 +284,8 @@
     a.title AS templete_name,
     a.`code` AS templete_code,
     a.`status` AS templete_status,
+    (case when a.`status`=0 then '无效'
+    when a.`status`=1 then '有效' end) as templete_status_name,
     b.`code` AS apply_code,
     b.`name` AS apply_name,
     b.id AS apply_id

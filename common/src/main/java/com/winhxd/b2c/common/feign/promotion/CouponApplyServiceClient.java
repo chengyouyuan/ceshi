@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public interface CouponApplyServiceClient {
      *@Date   2018/8/11 14:20
      */
     @RequestMapping(value = "/promotion/5023/v1/updateCouponApplyToValid", method = RequestMethod.POST)
-    ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition);
 
     /**
      *
@@ -91,7 +92,7 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     }
 
     @Override
-    public ResponseResult<Integer> updateCouponApplyToValid(String id, String userId, String userName) {
+    public ResponseResult<Integer> updateCouponApplyToValid(CouponSetToValidCondition condition) {
         logger.error("CouponApplyServiceClient -> updateCouponApplyToValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

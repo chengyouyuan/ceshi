@@ -268,11 +268,11 @@ public class CouponController {
 	 */
 	@ApiOperation("优惠券模板设为无效")
 	@PostMapping(value = "/5013/v1/updateCouponTemplateToValid")
-	public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("id") String id){
+	public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
-		String userId = userInfo.getId()+"";
-		String userName = userInfo.getUsername();
-		ResponseResult<Integer> responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(id,userId,userName);
+		condition.setUserId(userInfo.getId());
+		condition.setUserName(userInfo.getUsername());
+		ResponseResult<Integer> responseResult = couponTemplateServiceClient.updateCouponTemplateToValid(condition);
 		return responseResult;
 	}
 
@@ -354,12 +354,12 @@ public class CouponController {
 
 
 	@ApiOperation("出资方规则设置无效")
-	@GetMapping(value = "/5016/v1/updateCouponInvestorToValid")
-	public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id){
+	@PostMapping(value = "/5016/v1/updateCouponInvestorToValid")
+	public ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
-		String userId = userInfo.getId()+"";
-		String userName = userInfo.getUsername();
-		ResponseResult<Integer> responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(id,userId,userName);
+		condition.setUserId(userInfo.getId());
+		condition.setUserName(userInfo.getUsername());
+		ResponseResult<Integer> responseResult = couponInvestorServiceClient.updateCouponInvestorToValid(condition);
 		return responseResult;
 	}
 
@@ -451,11 +451,11 @@ public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") S
  */
 @ApiOperation("坎级设置为无效")
 @GetMapping (value = "/5020/v1/updateCouponGradeValid")
-public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String id){
+public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition){
 	UserInfo userInfo = UserManager.getCurrentUser();
-	String userId = userInfo.getId()+"";
-	String userName = userInfo.getUsername();
-	ResponseResult<Integer> responseResult = couponGradeServiceClient.updateCouponGradeValid(id,userId,userName);
+	condition.setUserId(userInfo.getId());
+	condition.setUserName(userInfo.getUsername());
+	ResponseResult<Integer> responseResult = couponGradeServiceClient.updateCouponGradeValid(condition);
 	return responseResult;
 }
 
@@ -530,11 +530,11 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id") String
 	 */
 	@ApiOperation("适用对象设置无效")
 	@PostMapping(value = "/5023/v1/updateCouponApplyToValid")
-	public ResponseResult<Integer> updateCouponApplyToValid(@RequestParam("id") String id){
+	public ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
-		String userId = userInfo.getId()+"";
-		String userName = userInfo.getUsername();
-		ResponseResult<Integer> responseResult = couponApplyServiceClient.updateCouponApplyToValid(id,userId,userName);
+		condition.setUserId(userInfo.getId());
+		condition.setUserName(userInfo.getUsername());
+		ResponseResult<Integer> responseResult = couponApplyServiceClient.updateCouponApplyToValid(condition);
 		return responseResult;
 	}
 

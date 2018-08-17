@@ -3,8 +3,10 @@ package com.winhxd.b2c.promotion.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
+import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -15,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -88,15 +91,10 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @ApiOperation(value = "优惠券模板设为无效", notes = "优惠券模板设为无效")
     @Override
-    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestParam("id") String id,@RequestParam("userId") String userId,@RequestParam("userName") String userName) {
+    public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult responseResult = new ResponseResult();
-        if(StringUtils.isBlank(id)){
-            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
-        }
-        Long updateBy = Long.parseLong(userId);
         Date updated = new Date();
-        String updateByName = userName ;
-        int count = couponTemplateService.updateCouponTemplateToValid(Long.parseLong(id),updateBy,updated,updateByName);
+        int count = couponTemplateService.updateCouponTemplateToValid(condition.getId(),condition.getUserId(),updated,condition.getUserName());
         if(count!=1){
            throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
         }

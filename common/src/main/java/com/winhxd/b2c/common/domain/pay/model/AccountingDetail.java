@@ -1,14 +1,19 @@
 package com.winhxd.b2c.common.domain.pay.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@ApiModel("费用明细")
 @Data
 public class AccountingDetail {
 
     private Long id;
+
+    @ApiModelProperty("订单号")
     private String orderNo;
 
     /**
@@ -44,23 +49,22 @@ public class AccountingDetail {
         }
     }
 
+    @ApiModelProperty("费用类型")
     private Integer detailType;
-    /**
-     * 费用金额
-     */
+
+    @ApiModelProperty("费用金额")
     private BigDecimal detailMoney;
+
+    @ApiModelProperty("门店ID")
     private Long storeId;
-    /**
-     * 订单是否完成：0-未完成；1-已完成；
-     */
+
+    @ApiModelProperty("订单是否完成：0-未完成；1-已完成")
     private Integer orderCompleteStatus;
-    /**
-     * 入账时间
-     */
+
+    @ApiModelProperty("入账时间")
     private Date recordedTime;
-    /**
-     * 记录插入时间
-     */
+
+    @ApiModelProperty("记录插入时间")
     private Date insertTime;
 
     /**
@@ -96,7 +100,10 @@ public class AccountingDetail {
         }
     }
 
+    @ApiModelProperty("与支付平台结算状态")
     private Integer thirdPartyVerifyStatus;
+
+    @ApiModelProperty("与支付平台结算时间")
     private Date thirdPartyVerifyTime;
 
     /**
@@ -132,10 +139,21 @@ public class AccountingDetail {
         }
     }
 
+    @ApiModelProperty("结算状态")
     private Integer verifyStatus;
+
+    @ApiModelProperty("处理批次编码")
     private String verifyCode;
+
+    @ApiModelProperty("结算时间")
     private Date verifyTime;
+
+    @ApiModelProperty("操作时间")
     private Date operatedTime;
+
+    @ApiModelProperty("操作人")
     private Long operatedBy;
+
+    @ApiModelProperty("操作人")
     private String operatedByName;
 }

@@ -17,7 +17,7 @@ public class PayOrderPayment implements Serializable {
 
     private Date callbackDate;
 
-    private String timeEnd;
+    private Date timeEnd;
 
     private Short callbackStatus;
 
@@ -87,11 +87,11 @@ public class PayOrderPayment implements Serializable {
         this.callbackDate = callbackDate;
     }
 
-    public String getTimeEnd() {
+    public Date getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(String timeEnd) {
+    public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd == null ? null : timeEnd.trim();
     }
 

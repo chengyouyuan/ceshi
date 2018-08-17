@@ -40,6 +40,8 @@ public class CouponGradeVO {
     private List<CouponGradeDetail> details;
     @ApiModelProperty(value = "关联模板数量")
     private String relTempleteCount;
+    @ApiModelProperty(value = "坎级类型--转汉字")
+    private String gradeTypeName;
 
     public Long getId() {
         return id;
@@ -151,5 +153,13 @@ public class CouponGradeVO {
 
     public void setRelTempleteCount(String relTempleteCount) {
         this.relTempleteCount = relTempleteCount;
+    }
+
+    public String getGradeTypeName() {
+        return gradeTypeName;
+    }
+
+    public void setGradeTypeName(String gradeTypeName) {
+        this.gradeTypeName = gradeTypeName;
     }
 }

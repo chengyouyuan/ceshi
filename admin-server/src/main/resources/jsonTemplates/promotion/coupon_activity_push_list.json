@@ -5,7 +5,7 @@
     "type": "report",
     "id": "coupon_activity_push_list",
     "code": "coupon_activity_push_list",
-    "title": "优惠券推券管理表",
+    "title": "优惠券推券管理表.",
     "buttons": [
       {
         "name": "新增",

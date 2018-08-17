@@ -40,7 +40,10 @@ public final class BusinessCode {
     public static final int CODE_1014 = 1014;
     /**请求超时*/
     public static final int CODE_1015 = 1015;
-    
+    /**您的账号或者密码错误*/
+    public static final int CODE_1021 = 1021;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int CODE_1022 = 1022;
     /**上传图片格式不正确**/
     public static final int CODE_1016 = 1016;
     /**上传图片是失败**/

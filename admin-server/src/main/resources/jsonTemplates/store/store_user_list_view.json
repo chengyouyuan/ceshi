@@ -2,11 +2,13 @@
   "meta": {
     "ajaxType": "post",
     "path": "/store/1021/v1/getStoreInfoById/{id}",
-    "type": "report",
-    "id": "store_cite_view",
-    "code": "store_cite_view",
+    "type": "base-form",
+    "id": "store_user_list_view",
+    "code": "store_user_list_view",
     "title": "门店详情",
-    "columns": [
+    "buttons": [
+    ],
+    "items": [
       {
         "name": "storeCustomerId",
         "title": "门店编码"

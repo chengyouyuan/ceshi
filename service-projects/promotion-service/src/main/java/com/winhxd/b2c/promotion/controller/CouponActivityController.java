@@ -107,6 +107,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }
+        //区域信息验证
+        if(condition.getCouponActivityAreaList() == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
+                && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
 
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.saveCouponActivity(condition);

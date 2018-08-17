@@ -452,11 +452,11 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <!-- 是否支付完成 -->
- <!--  <select id="selectPaidByOutOrderNo" resultMap="long" parameterType="java.lang.String" >
+  <select id="selectPaidByOutOrderNo" resultType="java.lang.long" parameterType="java.lang.String" >
     select 
     count(out_order_no)
     from pay_bill
     where out_order_no = #{outOrderNo}
     and status=1
-  </select> -->
+  </select> 
 </mapper>

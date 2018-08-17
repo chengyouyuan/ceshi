@@ -31,8 +31,6 @@ public class StoreUserInfoCondition extends ApiCondition{
 	private Integer loginFlag;
 	@ApiModelProperty(value = "1、验证码登录，2、密码登录,3、快捷登录")
 	private Integer loginPasswordFlag;
-    @ApiModelProperty(value = "记录订单下单渠道,如ios,android等")
-    private String platform;
     @ApiModelProperty(value = "门店小程序url")
     private String miniProgramCodeUrl;
 }

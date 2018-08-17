@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/store/1021/v1/getStoreInfoById/{id}",
+    "type": "report",
+    "id": "store_cite_view",
+    "code": "store_cite_view",
+    "title": "门店详情",
+    "columns": [
+      {
+        "name": "storeCustomerId",
+        "title": "门店编码"
+      },
+      {
+        "name": "storeMobile",
+        "title": "门店账号"
+      },
+      {
+        "name": "storeName",
+        "title": "门店名称"
+      },
+      {
+        "name": "province",
+        "title": "省"
+      },
+      {
+        "name": "city",
+        "title": "市"
+      },
+      {
+        "name": "county",
+        "title": "县"
+      },
+      {
+        "name": "town",
+        "title": "乡/镇"
+      },
+      {
+        "name": "village",
+        "title": "村"
+      },
+      {
+        "name": "storeAddress",
+        "title": "地址"
+      },
+      {
+        "name": "shopkeeper",
+        "title": "联系人"
+      },
+      {
+        "name": "payType",
+        "title": "支付方式"
+      },
+      {
+        "name": "storeStatus",
+        "inputModel": "select",
+        "title": "门店状态",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "0",
+          "label": "未开店"
+        },
+          {
+            "value": "1",
+            "label": "有效"
+          },
+          {
+            "label":"无效",
+            "value":2
+          }
+        ]
+      }
+    ]
+  }
+}

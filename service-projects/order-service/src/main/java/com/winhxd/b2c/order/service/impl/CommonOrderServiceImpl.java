@@ -254,7 +254,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @StringMessageListener(value = MQHandler.ORDER__REFUND__TIME_OUT_1_DAY__UNCONFIRMED_HANDLER)
+    @StringMessageListener(value = MQHandler.ORDER_REFUND_TIME_OUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
         OrderInfo order = getOrderInfo(orderNo);
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
@@ -269,7 +269,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @StringMessageListener(value = MQHandler.ORDER__REFUND__TIME_OUT_1_HOUR__UNCONFIRMED_HANDLER)
+    @StringMessageListener(value = MQHandler.ORDER_REFUND_TIME_OUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
         OrderInfo order = getOrderInfo(orderNo);
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
@@ -598,12 +598,12 @@ public class CommonOrderServiceImpl implements OrderService {
                         //获取两天后的时间
                         Calendar time2DaysAfter = Calendar.getInstance();
                         time2DaysAfter.add(Calendar.DATE, 2);
-                        stringMessageSender.send(MQDestination.ORDER__REFUND__TIME_OUT_1_DAY__UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
+                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIME_OUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
                         //获取3天后-1小时
                         Calendar time1HourAfter = Calendar.getInstance();
                         time1HourAfter.add(Calendar.DATE, 3);
                         long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
-                        stringMessageSender.send(MQDestination.ORDER__REFUND__TIME_OUT_1_HOUR__UNCONFIRMED, orderNo, (int) hour1mills);
+                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIME_OUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
                         logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
                     } else {
                         logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);

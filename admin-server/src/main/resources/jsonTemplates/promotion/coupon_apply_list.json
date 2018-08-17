@@ -58,18 +58,6 @@
               "path": "/appliyObjectRule/index",
               "configKey": ""
             }
-          },
-          {
-            "name": "设置为无效",
-            "icon": null,
-            "event": {
-              "type": "ajax",
-              "ajaxType":"post",
-              "params": [
-                "id"
-              ],
-              "path": "/promotion/5023/v1/updateCouponApplyToValid"
-            }
           }
         ]
       },

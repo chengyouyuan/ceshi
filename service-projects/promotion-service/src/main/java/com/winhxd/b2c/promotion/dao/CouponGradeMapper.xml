@@ -219,7 +219,7 @@
 
   <update id="updateCouponGradeValid">
     update coupon_grade
-    set status = 1 ,
+    set status = 0 ,
     updated_by = #{userId},
     updated_by_name = #{userName},
     updated = now()

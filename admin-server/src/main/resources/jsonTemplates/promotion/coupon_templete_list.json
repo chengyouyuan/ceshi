@@ -74,22 +74,12 @@
         "title": "优惠券标签"
       },
       {
-        "name": "title",
-        "title": "优惠券适用范围",
-        "options":[
-          {"1":"通用券"},
-          {"2":"品牌券"},
-          {"3":"品类券"},
-          {"4":"商品券"}
-        ]
+        "name": "applyRuleTypeName",
+        "title": "优惠券适用范围"
       },
       {
-        "name": "calType",
-        "title": "优惠券金额计算方式",
-        "options":[
-          {"1":"订单"},
-          {"2":"商品"}
-        ]
+        "name": "calTypeName",
+        "title": "金额计算方式"
       },
       {
         "name": "investorName",
@@ -102,6 +92,10 @@
       {
         "name": "applyRuleName",
         "title": "适用范围名称"
+      },
+      {
+        "name": "statusName",
+        "title": "状态"
       },
       {
         "name": "createdByName",

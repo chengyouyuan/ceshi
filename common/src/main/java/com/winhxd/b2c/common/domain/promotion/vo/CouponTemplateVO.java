@@ -60,6 +60,14 @@ public class CouponTemplateVO {
     private String applyRuleName;
     @ApiModelProperty(value = "优惠券类型规则类型")
     private Short applyRuleType;
+    @ApiModelProperty(value = "适用对象范围类型--转汉字")
+    private String applyRuleTypeName;
+    @ApiModelProperty(value = "计算方式--转汉字")
+    private String calTypeName;
+    @ApiModelProperty(value = "状态--转汉字")
+    private String statusName;
+
+
 
 
     public Long getId() {
@@ -260,5 +268,29 @@ public class CouponTemplateVO {
 
     public void setApplyRuleType(Short applyRuleType) {
         this.applyRuleType = applyRuleType;
+    }
+
+    public String getApplyRuleTypeName() {
+        return applyRuleTypeName;
+    }
+
+    public void setApplyRuleTypeName(String applyRuleTypeName) {
+        this.applyRuleTypeName = applyRuleTypeName;
+    }
+
+    public String getCalTypeName() {
+        return calTypeName;
+    }
+
+    public void setCalTypeName(String calTypeName) {
+        this.calTypeName = calTypeName;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 }

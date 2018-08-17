@@ -582,15 +582,15 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 *@Date   2018/8/11 12:11
 	 */
 @ApiOperation("点出资方列表上模板引用数量表分页")
-@GetMapping(value = "/5025/v1/findInvertorTempleteCountPage")
-public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestParam("invertorId") String invertorId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
-    if(pageNo!=null){
-		pageNo = 1;
+@PostMapping(value = "/5025/v1/findInvertorTempleteCountPage")
+public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
+    if(condition.getPageNo()!=null){
+		condition.setPageNo(1);
 	}
-	if(pageSize!=null){
-		pageSize = 10;
+	if(condition.getPageSize()==null){
+		condition.setPageSize(10);
 	}
-	ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = couponInvestorServiceClient.findInvertorTempleteCountPage(invertorId,pageNo,pageSize);
+	ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = couponInvestorServiceClient.findInvertorTempleteCountPage(condition);
    return responseResult;
 }
 

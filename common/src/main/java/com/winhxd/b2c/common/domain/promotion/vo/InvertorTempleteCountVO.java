@@ -24,6 +24,8 @@ public class InvertorTempleteCountVO {
     @ApiModelProperty(value = "优惠券使用时间")
     private String templeteUseTime;
 
+   private String templeteStatusName;
+
     public String getInvertorId() {
         return invertorId;
     }
@@ -78,5 +80,13 @@ public class InvertorTempleteCountVO {
 
     public void setTempleteUseTime(String templeteUseTime) {
         this.templeteUseTime = templeteUseTime;
+    }
+
+    public String getTempleteStatusName() {
+        return templeteStatusName;
+    }
+
+    public void setTempleteStatusName(String templeteStatusName) {
+        this.templeteStatusName = templeteStatusName;
     }
 }

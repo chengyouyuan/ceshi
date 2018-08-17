@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
@@ -23,5 +24,5 @@ public interface CouponInvestorService {
 
     ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
 
-    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(String invertorId, Integer pageNo, Integer pageSize);
+    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition);
 }

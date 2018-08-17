@@ -286,6 +286,7 @@
     <result column="templete_name" jdbcType="VARCHAR" property="templeteName" />
     <result column="templete_code" jdbcType="VARCHAR" property="templeteCode" />
     <result column="templete_status" jdbcType="VARCHAR" property="templeteStatus" />
+    <result column="templete_status_name" jdbcType="VARCHAR" property="templeteStatusName" />
   </resultMap>
 
   <select id="getInvertorTempleteCountPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition" resultMap="ResultCountPageMap">
@@ -293,6 +294,8 @@
         a.title AS templete_name,
         a.`code` AS templete_code,
         a.`status` AS templete_status,
+        (case when a.`status`=0 then '无效'
+         when a.`status`=1 then '有效' end) as templete_status_name,
         b.`code` AS invertor_code,
         b.`name` AS invertor_name,
         b.id AS invertor_id
@@ -300,7 +303,7 @@
         coupon_template a
     LEFT JOIN coupon_investor b ON a.investor_id = b.id
     WHERE
-        a.grade_id = #{investorId}
+        a.investor_id = #{investorId}
   </select>
 
 

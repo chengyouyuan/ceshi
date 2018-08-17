@@ -192,6 +192,7 @@
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
+    <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
   </resultMap>
 
   <select id="viewCouponApplyDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">
@@ -217,11 +218,27 @@
 
 
   <select id="getCouponApplyPage" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition" resultMap="BaseResultMap2">
-    select
-    a.id, a.name, a.code, a.remarks, a.apply_rule_type, a.status, a.created_by, a.created_by_name, a.created,
-    a.updated_by, a.updated_by_name, a.updated
-    from coupon_apply a
-    where 1=1
+      SELECT
+      a.id,
+      a. NAME,
+      a. CODE,
+      a.remarks,
+      a.apply_rule_type,
+      (case when a.apply_rule_type=1 then '通用券'
+      when a.apply_rule_type=2 then '品牌券'
+      when a.apply_rule_type=3 then '品类券'
+      when a.apply_rule_type=4 then '商品券' end ) as apply_rule_name,
+      a. STATUS,
+      a.created_by,
+      a.created_by_name,
+      a.created,
+      a.updated_by,
+      a.updated_by_name,
+      a.updated
+      FROM
+      coupon_apply a
+      WHERE
+      1 = 1
       <if test="condition.code!=null and  condition.code!=''">
         and a.code = #{condition.code}
       </if>

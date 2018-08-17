@@ -70,14 +70,8 @@
         "title": "适用对象编码"
       },
       {
-        "name": "applyRuleType",
-        "title": "优惠券类型",
-        "options":[
-          {"1":"通用券"},
-          {"2":"品牌券"},
-          {"3":"品类券"},
-          {"4":"商品券"}
-        ]
+        "name": "applyRuleName",
+        "title": "优惠券类型"
       },
       {
         "name": "relTempleteCount",

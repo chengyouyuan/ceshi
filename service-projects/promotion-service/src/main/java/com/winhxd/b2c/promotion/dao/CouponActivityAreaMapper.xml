@@ -11,6 +11,14 @@
   <sql id="Base_Column_List">
     id, coupon_activity_id, region_code, region_name, status
   </sql>
+  <select id="selectAreaByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_activity_area
+    where 1=1
+     AND status = 1
+     AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

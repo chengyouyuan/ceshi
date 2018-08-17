@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -88,5 +89,8 @@ public class CouponActivityVO {
 
     @ApiModelProperty(value = "优惠券详情")
     private List<CouponActivityTemplate> couponActivityTemplateList;
+
+    @ApiModelProperty(value = "区域信息")
+    private List<CouponActivityArea> couponActivityAreaList;
 
 }

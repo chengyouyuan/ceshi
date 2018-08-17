@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
 import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
+import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -59,4 +60,7 @@ public class CouponActivityAddCondition {
 
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
+
+    @ApiModelProperty(value = "活动区域信息")
+    private List<CouponActivityArea> couponActivityAreaList;
 }

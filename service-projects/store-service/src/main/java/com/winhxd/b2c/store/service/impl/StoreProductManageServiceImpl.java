@@ -252,6 +252,15 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 		if(condition!=null){
 	
 			Page<BackStageStoreProdVO> page=storeProductManageMapper.selectBackStageVoByCondition(condition);
+			for(BackStageStoreProdVO vo:page.getResult()){
+			    if(StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(vo.getProdStatus())){
+			        vo.setProdStatusStr(StoreProductStatusEnum.PUTAWAY.getStatusDes());
+			    }else if(StoreProductStatusEnum.UNPUTAWAY.getStatusCode().equals(vo.getProdStatus())){
+			        vo.setProdStatusStr(StoreProductStatusEnum.UNPUTAWAY.getStatusDes());
+			    }else if(StoreProductStatusEnum.DELETED.getStatusCode().equals(vo.getProdStatus())){
+			        vo.setProdStatusStr(StoreProductStatusEnum.DELETED.getStatusDes());
+                }
+			}
 			list=new PagedList<>();
 			list.setPageNo(condition.getPageNo());
 			list.setPageSize(condition.getPageSize());

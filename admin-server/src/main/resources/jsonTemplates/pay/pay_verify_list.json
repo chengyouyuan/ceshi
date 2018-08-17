@@ -1,6 +1,7 @@
 {
   "meta": {
     "ajaxType": "get",
+    "path": "/pay/verify/verifyList",
     "type": "report",
     "title": "门店核销列表",
     "buttons": [
@@ -29,18 +30,40 @@
         "fixed": "left"
       },
       {
-        "name": "operatedByName",
-        "title": "操作人员"
-      }
-    ],
-    "columns": [
+        "name": "storeId",
+        "title": "门店ID"
+      },
       {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "align": "center",
-        "width": "50",
-        "fixed": "left"
+        "name": "storeName",
+        "title": "门店名称"
+      },
+      {
+        "name": "verifyStatus",
+        "title": "结算状态"
+      },
+      {
+        "name": "lastRecordedTime",
+        "title": "订单截止日"
+      },
+      {
+        "name": "operatedTime",
+        "title": "核销日"
+      },
+      {
+        "name": "realPay",
+        "title": "实收总额"
+      },
+      {
+        "name": "thirdPartyFee",
+        "title": "手续费总额"
+      },
+      {
+        "name": "discount",
+        "title": "优惠券总额"
+      },
+      {
+        "name": "realVerify",
+        "title": "实结总额"
       },
       {
         "name": "operatedByName",

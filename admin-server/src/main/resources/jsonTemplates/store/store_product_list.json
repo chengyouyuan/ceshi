@@ -35,7 +35,7 @@
         "fixed": "left"
       },
       {
-        "name": "prodStatus",
+        "name": "prodStatusStr",
         "title": "状态"
       
       },
@@ -83,7 +83,7 @@
               "static": {
                 "method": "detail"
               },
-              "path": "",
+              "path": "/goodsInfo/index",
               "configKey": ""
             }
           },
@@ -113,6 +113,10 @@
         "inputModel": "select",
         "placeholder": "请选择",
         "options":[
+          {
+          	"label":"全部",
+            "value":null
+          },
           {
             "label":"下架",
             "value":0

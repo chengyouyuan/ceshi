@@ -597,7 +597,7 @@
         <if test="condition.orderStatus != null">
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
         </if>
-        <if test="condition.pickupCode != null">
+        <if test="condition.pickupCode != null and condition.pickupCode !=''">
             and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
         </if>
         and store_id = #{storeId,jdbcType=BIGINT}

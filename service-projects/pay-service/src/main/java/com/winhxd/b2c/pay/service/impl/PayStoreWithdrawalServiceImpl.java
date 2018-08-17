@@ -109,7 +109,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//////////////////结束/////////////////////////
 		
 		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
-		String[] info = userInfo.split(",");
+		String[] user = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		PayWithdrawals payWithdrawal = new PayWithdrawals();
@@ -120,27 +120,27 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getCmmsamt())));
 			System.out.println("当前计算所得银行的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getCmmsamt());
-			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
-			payWithdrawal.setFlowDirectionType((short)2);
+			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusDesc());
+			payWithdrawal.setFlowDirectionType(bankType);
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getRate())));
 			System.out.println("当前计算所得微信的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
-			payWithdrawal.setFlowDirectionName("微信");
-			payWithdrawal.setFlowDirectionType((short)1);
+			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusDesc());
+			payWithdrawal.setFlowDirectionType(weixType);
 		}
 		payWithdrawal.setCmmsAmt(payWithDrawalConfig.getCmmsamt());
 		payWithdrawal.setRate(payWithDrawalConfig.getRate());
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
-		payWithdrawal.setName(info[1]);
-		payWithdrawal.setMobile(info[0]);
+		payWithdrawal.setName(user[1]);
+		payWithdrawal.setMobile(user[0]);
 		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		payWithdrawal.setCreated(new Date());
-		payWithdrawal.setCreatedByName(info[1]);
+		payWithdrawal.setCreatedByName(user[1]);
 		payWithdrawal.setCreatedBy(businessId);
 		payWithdrawal.setUpdated(new Date());
 		payWithdrawal.setUpdatedBy(businessId);
-		payWithdrawal.setUpdatedByName(info[1]);
+		payWithdrawal.setUpdatedByName(user[1]);
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
 		return result;
 	} 

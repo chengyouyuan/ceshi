@@ -58,7 +58,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @ApiParam()
-    @PostMapping(value = "/1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/1021/v1/getStoreInfoById/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<BackStageStoreVO> getStoreInfoById(@PathVariable("id") Long id) {
         ResponseResult<BackStageStoreVO> responseResult = new ResponseResult<>();
         logger.info("查询门店账户详细信息接口入参为：{}", id);

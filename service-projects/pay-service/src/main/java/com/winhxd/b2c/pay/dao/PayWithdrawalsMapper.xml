@@ -343,7 +343,7 @@
         <include refid="common_statusBank"/>,sui.store_name as storeName,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
         from store_bank_card sbc left join store_bankroll sbk on sbc.store_id = sbk.store_id
         left join store_user_info sui on sbc.store_id = sui.id
-        where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1
+        where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC
    </select>
    
    

@@ -58,7 +58,10 @@ public class ApiPayStoreWithdrawalController {
 	@ApiOperation(value = "门店进入提现页面", notes = "门店进入提现页面")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数")
+		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
+		@ApiResponse(code = BusinessCode.CODE_610025, message = "请先绑定银行卡"),
+		@ApiResponse(code = BusinessCode.CODE_610026, message = "请先绑定微信账号")
+		
 	})
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){

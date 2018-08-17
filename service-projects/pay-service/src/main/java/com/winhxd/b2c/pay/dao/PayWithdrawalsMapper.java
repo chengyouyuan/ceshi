@@ -26,7 +26,7 @@ public interface PayWithdrawalsMapper {
 
     Page<PayWithdrawalsVO> selectPayWithdrawalsListByCondition(PayWithdrawalsListCondition condition);
     
-    PayStoreUserInfoVO getPayStoreUserInfo(@Param("storeId") Long storeId);
+    List<PayStoreUserInfoVO> getPayStoreUserInfo(@Param("storeId") Long storeId);
 
-	PayStoreUserInfoVO getStorBankCardInfo(@Param("storeId") Long storeId);
+	List<PayStoreUserInfoVO> getStorBankCardInfo(@Param("storeId") Long storeId);
 }

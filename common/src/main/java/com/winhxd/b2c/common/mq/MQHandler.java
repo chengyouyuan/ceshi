@@ -11,7 +11,6 @@ public enum MQHandler {
      *
      */
     NETEASE_MESSAGE_HANDLER(MQDestination.NETEASE_MESSAGE),
-    NETEASE_MESSAGE_DELAYED_HANDLER(MQDestination.NETEASE_MESSAGE_DELAYED),
 
     SMS_MESSAGE_HANDLER(MQDestination.SMS_MESSAGE),
     /**

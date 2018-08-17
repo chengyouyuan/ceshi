@@ -23,6 +23,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
@@ -189,12 +190,16 @@ public class PayServiceImpl implements PayService{
 		}
 
 		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
-          //todo 验证该订单是否做过此项操作
+          //验证订单信息
 			String orderNo=condition.getOrderNo();
 			if (StringUtils.isNotBlank(orderNo)) {
 				logger.info(log+"--订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
+			//获取订单信息  如果订单状态不是完成状态  不可以进行此操作
+			
+			//验证该订单是否做过此项操作
+			
 		}
 
 		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
@@ -390,5 +395,18 @@ public class PayServiceImpl implements PayService{
 			storeId=storeUser.getBusinessId();
 		}
 		return payStoreWalletMapper.selectByStoreId(storeId);
+	}
+
+
+	@Override
+	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
+		// TODO Auto-generated method stub
+		PayStoreWallet wallet=new PayStoreWallet();
+		wallet.setStoreId(111L);
+		wallet.setName(condition.getName());
+		wallet.setNick(condition.getNick());
+		wallet.setOpenid(condition.getOpenid());
+		wallet.setStatus((short)1);
+		payStoreWalletMapper.insertSelective(wallet);
 	}
 }

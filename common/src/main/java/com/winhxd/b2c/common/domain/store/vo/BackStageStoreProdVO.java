@@ -42,6 +42,9 @@ public class BackStageStoreProdVO implements Serializable{
     @ApiModelProperty("商品状态 0下架1上架2已删除")
     private Short prodStatus;
     
+    @ApiModelProperty("商品状态（字符串） 0下架1上架2已删除")
+    private String prodStatusStr;
+    
     @ApiModelProperty("商品sku")
     private String prodCode;
     

@@ -29,7 +29,7 @@
             <appender-ref ref="console"/>
             <appender-ref ref="async_log"/>
         </root>
-        <logger name="con.winhxd.b2c" level="debug" additivity="false">
+        <logger name="com.winhxd.b2c" level="debug" additivity="false">
             <appender-ref ref="console"/>
             <appender-ref ref="async_log"/>
         </logger>
@@ -39,7 +39,7 @@
             <appender-ref ref="console"/>
             <appender-ref ref="async_log"/>
         </root>
-        <logger name="con.winhxd.b2c" level="info" additivity="false">
+        <logger name="com.winhxd.b2c" level="info" additivity="false">
             <appender-ref ref="console"/>
             <appender-ref ref="async_log"/>
         </logger>

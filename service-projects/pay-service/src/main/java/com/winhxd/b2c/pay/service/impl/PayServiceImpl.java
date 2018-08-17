@@ -422,12 +422,14 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public List<PayStoreWallet> selectPayStoreWalletByStoreId() {
+		String log=logLabel+"查询门店绑定钱包selectPayStoreWalletByStoreId";
+		logger.info(log+"--开始");
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		Long storeId=null;
-		if (storeUser!=null) {
-			storeId=storeUser.getBusinessId();
+		if (storeUser==null||storeUser.getBusinessId()==null) {
+			logger.info(log+"--未获取到门店信息");
+			throw new BusinessException(BusinessCode.CODE_600601);
 		}
-		return payStoreWalletMapper.selectByStoreId(storeId);
+		return payStoreWalletMapper.selectByStoreId(storeUser.getBusinessId());
 	}
 
 
@@ -456,7 +458,7 @@ public class PayServiceImpl implements PayService{
 			logger.info("--昵称为空");
 			throw new BusinessException(BusinessCode.CODE_600705);
 		}
-		
+		logger.info("--参数"+condition.toString());
 		PayStoreWallet wallet=new PayStoreWallet();
 		wallet.setStoreId(storeUser.getBusinessId());
 		wallet.setName(condition.getName());

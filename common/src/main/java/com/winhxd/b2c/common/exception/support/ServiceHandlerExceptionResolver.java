@@ -45,7 +45,7 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
             Span currentSpan = tracer.currentSpan();
             currentSpan.error(ex);
             currentSpan.tag(ContextHelper.TRACER_API_ERROR, stackTrace);
-            log.error("Controller未知异常,TraceId=" + currentSpan.context().traceIdString() + ",message=" + ex.getMessage(), ex);
+            log.error("Controller未知异常,traceId=" + currentSpan.context().traceIdString() + ",message=" + ex.getMessage(), ex);
             code = BusinessCode.CODE_1001;
             message = MessageHelper.getInstance().getMessage(String.valueOf(BusinessCode.CODE_1001));
         }

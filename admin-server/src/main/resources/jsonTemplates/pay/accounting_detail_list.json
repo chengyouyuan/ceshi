@@ -1,6 +1,7 @@
 {
   "meta": {
     "ajaxType": "get",
+    "path": "/pay/verify/accountingDetailList",
     "type": "report",
     "title": "核销明细列表",
     "buttons": [
@@ -29,12 +30,48 @@
         "fixed": "left"
       },
       {
-        "name": "operatedByName",
-        "title": "操作人员"
+        "name": "verifyStatus",
+        "title": "结算状态"
       },
       {
-        "name": "operated",
-        "title": "操作时间"
+        "name": "storeName",
+        "title": "门店名称"
+      },
+      {
+        "name": "storeId",
+        "title": "门店ID"
+      },
+      {
+        "name": "recordedTime",
+        "title": "订单完成时间"
+      },
+      {
+        "name": "recordedTime",
+        "title": "订单入账时间"
+      },
+      {
+        "name": "thirdPartyVerifyStatusName",
+        "title": "微信入账"
+      },
+      {
+        "name": "orderNo",
+        "title": "关联订单"
+      },
+      {
+        "name": "detailTypeName",
+        "title": "费用类型"
+      },
+      {
+        "name": "detailMoney",
+        "title": "金额"
+      },
+      {
+        "name": "verifyTime",
+        "title": "实际结算时间"
+      },
+      {
+        "name": "operatedByName",
+        "title": "操作人"
       }
     ],
     "params": [

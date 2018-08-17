@@ -144,11 +144,18 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
 			prodCondition.setProductSkus(finalSkuCodes);
 			ResponseResult<List<ProductSkuVO>>  prodResult=productServiceClient.getProductSkus(prodCondition);
+			
 			if(prodResult!=null&&prodResult.getCode()==0
-					&&prodResult.getData()!=null&&prodResult.getData().size()==finalSkuCodes.size()){
+					&&prodResult.getData()!=null){
 				for(int i=0;i<prodResult.getData().size();i++){
-					resultVO.getData().get(i).setProdName(prodResult.getData().get(i).getSkuName());
-					resultVO.getData().get(i).setSkuImage(prodResult.getData().get(i).getSkuImage());
+				    for(int j=0;j<resultVO.getData().size();j++){
+				        if(resultVO.getData().get(j).getSkuCode().equals(prodResult.getData().get(i).getSkuCode())){
+				            resultVO.getData().get(j).setProdName(prodResult.getData().get(i).getSkuName());
+		                    resultVO.getData().get(j).setSkuImage(prodResult.getData().get(i).getSkuImage());
+		                    break;
+				        }
+				    }
+					
 				}
 			}
 			responseResult.setData(resultVO);

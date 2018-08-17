@@ -452,7 +452,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <!-- 是否支付完成 -->
-  <select id="selectPaidByOutOrderNo" resultMap="java.lang.long" parameterType="java.lang.String" >
+  <select id="selectPaidByOutOrderNo" resultType="java.lang.long" parameterType="java.lang.String" >
     select 
     count(out_order_no)
     from pay_bill

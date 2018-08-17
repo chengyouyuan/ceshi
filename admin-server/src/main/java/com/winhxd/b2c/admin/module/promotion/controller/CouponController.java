@@ -603,15 +603,15 @@ public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCo
 	 *@Date   2018/8/11 12:11
 	 */
 @ApiOperation("点坎级列表上模板引用数量表分页")
-@GetMapping(value = "/5026/v1/findGradeTempleteCountPage")
-public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo")Integer pageNo,@RequestParam("pageSize")Integer pageSize){
-	if(pageNo!=null){
-		pageNo = 1;
+@PostMapping(value = "/5026/v1/findGradeTempleteCountPage")
+public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
+	if(condition.getPageNo()!=null){
+		condition.setPageNo(1);
 	}
-	if(pageSize!=null){
-		pageSize = 10;
+	if(condition.getPageSize()==null){
+		condition.setPageSize(10);
 	}
-	ResponseResult<PagedList<GradeTempleteCountVO>> responseResult = couponGradeServiceClient.findGradeTempleteCountPage(gradeId,pageNo,pageSize);
+	ResponseResult<PagedList<GradeTempleteCountVO>> responseResult = couponGradeServiceClient.findGradeTempleteCountPage(condition);
 	return responseResult;
 }
 

@@ -33,12 +33,8 @@
         "title": "优惠券模板编码"
       },
       {
-        "name": "templeteStatus",
-        "title": "优惠券状态",
-        "options":[
-          {"0":"无效"},
-          {"1":"有效"}
-        ]
+        "name": "templeteStatusName",
+        "title": "优惠券状态"
       }
     ],
     "params": []

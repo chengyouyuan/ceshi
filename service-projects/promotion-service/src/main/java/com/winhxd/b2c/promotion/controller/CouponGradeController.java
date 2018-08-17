@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -113,8 +114,8 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @ApiOperation(value = "坎级规则关联模板分页查询", notes = "坎级规则关联模板分页查询")
     @Override
-    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestParam("gradeId") String gradeId,@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize")Integer pageSize) {
-        ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(gradeId,pageNo,pageSize);
+    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
+        ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(condition);
         return result;
     }
 

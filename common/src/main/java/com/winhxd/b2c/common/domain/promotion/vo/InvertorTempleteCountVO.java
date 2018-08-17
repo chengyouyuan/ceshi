@@ -23,7 +23,7 @@ public class InvertorTempleteCountVO {
     private String templeteStatus;
     @ApiModelProperty(value = "优惠券使用时间")
     private String templeteUseTime;
-
+    @ApiModelProperty(value = "状态")
    private String templeteStatusName;
 
     public String getInvertorId() {

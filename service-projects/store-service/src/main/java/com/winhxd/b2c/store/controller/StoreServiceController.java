@@ -6,14 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -30,6 +31,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
@@ -70,8 +72,8 @@ public class StoreServiceController implements StoreServiceClient {
 //    private ProductServiceClient productServiceClient;
 
     @Override
-    public ResponseResult<Void> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
-        ResponseResult<Void> result = new ResponseResult<>();
+    public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
+        ResponseResult<Integer> result = new ResponseResult<>();
         if(customerId == null) {
             throw new BusinessException(BusinessCode.CODE_200001);
         }
@@ -88,13 +90,7 @@ public class StoreServiceController implements StoreServiceClient {
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
         int status = storeService.bindCustomer(customerId,storeUserId);
-        if(status == 0){
-			result.setCode(BusinessCode.CODE_1001);
-		}else if(status == -1){
-        	result.setCode(BusinessCode.CODE_200011);
-		}else if(status == -2){
-        	result.setCode(BusinessCode.CODE_200003);
-		}
+		result.setData(status);
         return result;
     }
 
@@ -112,12 +108,13 @@ public class StoreServiceController implements StoreServiceClient {
 	@Override
 	public ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes")List<String> skuCodes, @RequestParam("storeId")Long storeId) {
 		ResponseResult<List<ShopCartProdVO>> result = new ResponseResult<>();
+		
 		//参数检验
 		if(storeId==null||CollectionUtils.isEmpty(skuCodes)){
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
-			 result.setCode(BusinessCode.CODE_1007);
-			 result.setMessage("参数无效！");
+			 result= new ResponseResult<>(BusinessCode.CODE_1007);
 		}
+		logger.info("StoreServiceClient-->findShopCarProd 入参：skuCodes="+skuCodes+",storeId="+storeId);
 		String skuCodeArray[]=new String[skuCodes.size()];
 		skuCodeArray=skuCodes.toArray(skuCodeArray);
 		//查询门店下商品信息集合--判断数据权限
@@ -127,8 +124,7 @@ public class StoreServiceController implements StoreServiceClient {
 		//查询结果不为空
 		if(CollectionUtils.isNotEmpty(storeProds)){
 			if(storeProds.size()!=skuCodes.size()){
-				result.setCode(BusinessCode.CODE_200012);
-				result.setMessage("部分skuCode已经下架");
+				result= new ResponseResult<>(BusinessCode.CODE_200012);
 				return result;
 			}
 			
@@ -138,15 +134,13 @@ public class StoreServiceController implements StoreServiceClient {
 			
 			ResponseResult<List<ProductSkuVO>> prodResult=productServiceClient.getProductSkus(prodCondition);
 			if(prodResult==null||prodResult.getCode()!=0){
-				result.setCode(BusinessCode.CODE_1001);
-				result.setMessage("查询商品信息异常！");
+			    result= new ResponseResult<>(BusinessCode.CODE_1001);
 				return result;
 			}
 			//调用商品feigin查询商品基本信息
 			List<ProductSkuVO> prodList=prodResult.getData();
 			if(prodList==null||(prodList.size()!=skuCodes.size())){
-				result.setCode(BusinessCode.CODE_200012);
-				result.setMessage("部分skuCode失效");
+			    result= new ResponseResult<>(BusinessCode.CODE_200012);
 				return result;
 			}
 			
@@ -170,7 +164,7 @@ public class StoreServiceController implements StoreServiceClient {
 			
 			result.setData(shopCarProdList);
 		}
-		
+		logger.info("StoreServiceClient-->findShopCarProd 返参：result="+result);
 		return result;
 	}
 
@@ -216,17 +210,17 @@ public class StoreServiceController implements StoreServiceClient {
 	@Override
 	public ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions) {
 		ResponseResult<Void> result=new ResponseResult<>();
+		logger.info("StoreServiceClient-->findShopCarProd 入参：conditions="+conditions);
 		if(conditions==null||conditions.size()<=0){
-			result.setCode(BusinessCode.CODE_1007);
-			result.setMessage("参数异常！");
+		    result=new ResponseResult<>(BusinessCode.CODE_1007);
+		    return result;
 		}
 		List<StoreProductStatistics> beanList=new ArrayList<>();
 		
 		for(StoreProductStatisticsCondition condition:conditions){
 			StoreProductStatistics bean=new StoreProductStatistics();
 			if(condition.getStoreId()==null||StringUtils.isEmpty(condition.getSkuCode())){
-				result.setCode(BusinessCode.CODE_1007);
-				result.setMessage("参数异常！");
+			    result=new ResponseResult<>(BusinessCode.CODE_1007);
 				return result;
 			}
 			BeanUtils.copyProperties(condition, bean);
@@ -234,6 +228,7 @@ public class StoreServiceController implements StoreServiceClient {
 			beanList.add(bean);
 		}
 		storeProductStatisticsService.bathSaveStoreProductStatistics(beanList);
+		logger.info("StoreServiceClient-->saveStoreProductStatistics 返参：result="+result);
 		return result;
 	}
 

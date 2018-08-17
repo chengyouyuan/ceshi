@@ -335,7 +335,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600201);
 		}
 		String orderNo=payRefund.getOutTradeNo();
-		String appid=payRefund.getAppid();
+		//String appid=payRefund.getAppid();
 		BigDecimal totalAmount=payRefund.getTotalAmount();
 		BigDecimal refundAmount=payRefund.getRefundAmount();
 		Long createdBy=payRefund.getCreatedBy();
@@ -345,10 +345,10 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600202);
 		}
-		if (StringUtils.isBlank(appid)) {
+		/*if (StringUtils.isBlank(appid)) {
 			logger.info(log+"--appid为空");
 			throw new BusinessException(BusinessCode.CODE_600203);
-		}
+		}*/
 		if (totalAmount==null) {
 			logger.info(log+"--订单金额为空");
 			throw new BusinessException(BusinessCode.CODE_600204);

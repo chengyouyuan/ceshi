@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public interface CouponGradeServiceClient {
      *@Date   2018/8/11 14:27
      */
     @RequestMapping(value = "/promotion/5020/v1/updateCouponGradeValid", method = RequestMethod.POST)
-    ResponseResult<Integer> updateCouponGradeValid(@RequestParam("id")String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName);
+    ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition);
 
     /**
      *
@@ -99,7 +100,7 @@ class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
     }
 
     @Override
-    public ResponseResult<Integer> updateCouponGradeValid(String id,String userId,String userName) {
+    public ResponseResult<Integer> updateCouponGradeValid(CouponSetToValidCondition condition) {
         logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
         return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }

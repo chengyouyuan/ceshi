@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>logback</contextName>
 
-    <property name="app.log" value="b2c-customer-c-service"/>
+    <property name="app.log" value="b2c-customer-service"/>
     <property name="LOG_HOME" value="/opt/logs/${app.log}"/>
     <property name="PATTERN" value="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%c{12}:%L] %msg%n"/>
 

@@ -58,18 +58,6 @@
               "path": "/promotion/addtemplate",
               "configKey": ""
             }
-          },
-          {
-            "name": "设置为无效",
-            "icon": null,
-            "event": {
-              "ajaxType": "post",
-              "type": "ajax",
-              "params": [
-                "id"
-              ],
-              "path": "/promotion/5013/v1/updateCouponTemplateToValid"
-            }
           }
         ]
       },
@@ -96,15 +84,7 @@
         ]
       },
       {
-        "name": "status",
-        "title": "是否有效",
-        "options":[
-          {"0":"无效"},
-          {"1":"有效"}
-        ]
-      },
-      {
-        "name": "status",
+        "name": "calType",
         "title": "优惠券金额计算方式",
         "options":[
           {"1":"订单"},

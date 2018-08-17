@@ -9,7 +9,7 @@ package com.winhxd.b2c.pay.weixin.base.dto;
 public class PayRefundDTO {
 
 	/**
-	 * 公众号ID
+	 * 公众号ID/小程序ID
 	 */
 	private String appid;
 
@@ -29,6 +29,11 @@ public class PayRefundDTO {
 	private String sign;
 
 	/**
+	 * (非必填)签名类型
+	 */
+	private String singType;
+
+	/**
 	 * 微信生成的订单号
 	 */
 	private String transactionId;
@@ -44,9 +49,9 @@ public class PayRefundDTO {
 	private String outRefundNo;
 
 	/**
-	 * 回调微信退款单号
+	 * 回调订单总金额：分/单位
 	 */
-	private String refundId;
+	private Integer totalFee;
 
 	/**
 	 * 回调退款金额：分/单位
@@ -54,69 +59,24 @@ public class PayRefundDTO {
 	private Integer refundFee;
 
 	/**
-	 * 回调应结退款总金额：分/单位
+	 * (非必填)退款货币种类
 	 */
-	private Integer settlementRefundFee;
+	private String refundFeeType;
 
 	/**
-	 * 回调订单总金额：分/单位
+	 * (非必填)退款原因
 	 */
-	private Integer totalFee;
+	private String refundDesc;
 
 	/**
-	 * 回调应结订单总金额：分/单位
-	 */
-	private Integer settlementTotalFee;
-
-	/**
-	 * 回调退款货币种类
-	 */
-	private String feeType;
-
-	/**
-	 * 回调现金支付金额：分/单位
-	 */
-	private Integer cashFee;
-
-	/**
-	 * 回调现金支付币种
-	 */
-	private String cashFeeType;
-
-	/**
-	 * 回调现金退款金额：分/单位
-	 */
-	private Integer cashRefundFee;
-
-	/**
-	 * 退款状态 0退款异常 1退款成功 2退款关闭
-	 */
-	private String refundStatus;
-
-	/**
-	 * 资金退款至用户帐号的时间 YYYY-MM-DD hh:mm:ss
-	 */
-	private String successTime;
-
-	/**
-	 * 退款入账账户   1)退回银行卡:{银行名称}{卡类型}{卡尾号}
-	 *               2)退回支付用户零钱:支付用户零钱
-	 *               3)退还商户:商户基本账户
-	 *               4)退回支付用户零钱通:支付用户零钱通
-	 */
-	private String refundRecvAccout;
-
-	/**
-	 * 1:REFUND_SOURCE_RECHARGE_FUNDS 可用余额退款/基本账户
-	 * 2:REFUND_SOURCE_UNSETTLED_FUNDS 未结算资金退款
+	 * 退款资金来源
 	 */
 	private String refundAccount;
 
 	/**
-	 * 1:API接口
-	 * 2:VENDOR_PLATFORM商户平台
+	 * 退款结果通知URL
 	 */
-	private String refundRequestSource;
+	private String notifyUrl;
 
 	public String getAppid() {
 		return appid;
@@ -150,6 +110,14 @@ public class PayRefundDTO {
 		this.sign = sign;
 	}
 
+	public String getSingType() {
+		return singType;
+	}
+
+	public void setSingType(String singType) {
+		this.singType = singType;
+	}
+
 	public String getTransactionId() {
 		return transactionId;
 	}
@@ -174,12 +142,12 @@ public class PayRefundDTO {
 		this.outRefundNo = outRefundNo;
 	}
 
-	public String getRefundId() {
-		return refundId;
+	public Integer getTotalFee() {
+		return totalFee;
 	}
 
-	public void setRefundId(String refundId) {
-		this.refundId = refundId;
+	public void setTotalFee(Integer totalFee) {
+		this.totalFee = totalFee;
 	}
 
 	public Integer getRefundFee() {
@@ -190,84 +158,20 @@ public class PayRefundDTO {
 		this.refundFee = refundFee;
 	}
 
-	public Integer getSettlementRefundFee() {
-		return settlementRefundFee;
+	public String getRefundFeeType() {
+		return refundFeeType;
 	}
 
-	public void setSettlementRefundFee(Integer settlementRefundFee) {
-		this.settlementRefundFee = settlementRefundFee;
+	public void setRefundFeeType(String refundFeeType) {
+		this.refundFeeType = refundFeeType;
 	}
 
-	public Integer getTotalFee() {
-		return totalFee;
+	public String getRefundDesc() {
+		return refundDesc;
 	}
 
-	public void setTotalFee(Integer totalFee) {
-		this.totalFee = totalFee;
-	}
-
-	public Integer getSettlementTotalFee() {
-		return settlementTotalFee;
-	}
-
-	public void setSettlementTotalFee(Integer settlementTotalFee) {
-		this.settlementTotalFee = settlementTotalFee;
-	}
-
-	public String getFeeType() {
-		return feeType;
-	}
-
-	public void setFeeType(String feeType) {
-		this.feeType = feeType;
-	}
-
-	public Integer getCashFee() {
-		return cashFee;
-	}
-
-	public void setCashFee(Integer cashFee) {
-		this.cashFee = cashFee;
-	}
-
-	public String getCashFeeType() {
-		return cashFeeType;
-	}
-
-	public void setCashFeeType(String cashFeeType) {
-		this.cashFeeType = cashFeeType;
-	}
-
-	public Integer getCashRefundFee() {
-		return cashRefundFee;
-	}
-
-	public void setCashRefundFee(Integer cashRefundFee) {
-		this.cashRefundFee = cashRefundFee;
-	}
-
-	public String getRefundStatus() {
-		return refundStatus;
-	}
-
-	public void setRefundStatus(String refundStatus) {
-		this.refundStatus = refundStatus;
-	}
-
-	public String getSuccessTime() {
-		return successTime;
-	}
-
-	public void setSuccessTime(String successTime) {
-		this.successTime = successTime;
-	}
-
-	public String getRefundRecvAccout() {
-		return refundRecvAccout;
-	}
-
-	public void setRefundRecvAccout(String refundRecvAccout) {
-		this.refundRecvAccout = refundRecvAccout;
+	public void setRefundDesc(String refundDesc) {
+		this.refundDesc = refundDesc;
 	}
 
 	public String getRefundAccount() {
@@ -278,11 +182,11 @@ public class PayRefundDTO {
 		this.refundAccount = refundAccount;
 	}
 
-	public String getRefundRequestSource() {
-		return refundRequestSource;
+	public String getNotifyUrl() {
+		return notifyUrl;
 	}
 
-	public void setRefundRequestSource(String refundRequestSource) {
-		this.refundRequestSource = refundRequestSource;
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
 	}
 }

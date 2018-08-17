@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponInvestorCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestor;
 import com.winhxd.b2c.common.domain.promotion.model.CouponInvestorDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
@@ -87,9 +88,9 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      */
     @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效")
     @Override
-    public ResponseResult<Integer> updateCouponInvestorToValid(@RequestParam("id") String id,@RequestParam("userId")String userId,@RequestParam("userName")String userName) {
+    public ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
-            int count = couponInvestorService.updateCouponInvestorToValid(Long.parseLong(id),Long.parseLong(userId),userName);
+            int count = couponInvestorService.updateCouponInvestorToValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("删除成功");

@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.base.config;
 
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.IWXPayDomain;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConfig;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +36,7 @@ public class PayConfig extends WXPayConfig {
      * 商户号
      */
     @Value("${WX.mchID}")
-    private String mchID;
+    private String mchID = "1467361502";
 
     /**
      * API 密钥
@@ -86,7 +87,17 @@ public class PayConfig extends WXPayConfig {
 
     @Override
     public IWXPayDomain getWXPayDomain() {
-        return null;
+        return new IWXPayDomain(){
+
+            @Override
+            public void report(String domain, long elapsedTimeMillis, Exception ex) {
+            }
+
+            @Override
+            public DomainInfo getDomain(WXPayConfig config) {
+                return new DomainInfo(WXPayConstants.DOMAIN_API, true);
+            }
+        };
     }
 
     @Override

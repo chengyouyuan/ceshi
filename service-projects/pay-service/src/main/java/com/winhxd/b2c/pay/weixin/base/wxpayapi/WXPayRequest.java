@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -31,7 +32,7 @@ import java.security.SecureRandom;
 public class WXPayRequest {
 
     @Autowired
-    private WXPayConfig config;
+    private WXPayConfig config = new PayConfig();
 
     /**
      * 请求，只请求一次，不做重试
@@ -125,18 +126,20 @@ public class WXPayRequest {
         }
         try {
             String result = requestOnce(domainInfo.domain, urlSuffix, uuid, data, connectTimeoutMs, readTimeoutMs, useCert);
-            elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
-            config.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, null);
-            WXPayReport.getInstance(config).report(
-                    uuid,
-                    elapsedTimeMillis,
-                    domainInfo.domain,
-                    domainInfo.primaryDomain,
-                    connectTimeoutMs,
-                    readTimeoutMs,
-                    firstHasDnsErr,
-                    firstHasConnectTimeout,
-                    firstHasReadTimeout);
+            if(autoReport){
+                elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
+                config.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, null);
+                WXPayReport.getInstance(config).report(
+                        uuid,
+                        elapsedTimeMillis,
+                        domainInfo.domain,
+                        domainInfo.primaryDomain,
+                        connectTimeoutMs,
+                        readTimeoutMs,
+                        firstHasDnsErr,
+                        firstHasConnectTimeout,
+                        firstHasReadTimeout);
+            }
             return result;
         }
         catch (UnknownHostException ex) {  // dns 解析错误，或域名不存在

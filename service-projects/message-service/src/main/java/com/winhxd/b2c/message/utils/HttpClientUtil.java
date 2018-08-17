@@ -1,4 +1,6 @@
 package com.winhxd.b2c.message.utils;
+
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -53,7 +55,7 @@ public class HttpClientUtil implements ApplicationContextAware {
             response = getHttpClient().execute(httpGet);
             // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
-                content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                content = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
                 return content;
             }
         } finally {
@@ -103,7 +105,7 @@ public class HttpClientUtil implements ApplicationContextAware {
             response = getHttpClient().execute(httpPost);
             // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
-                content = EntityUtils.toString(response.getEntity(), "UTF-8");
+                content = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
             }
         } finally {
             if (response != null) {

@@ -1,8 +1,6 @@
 package com.winhxd.b2c.common.domain.message.enums;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -44,7 +42,11 @@ public enum PageTypeEnum {
 	/**
 	 * 提现失败
 	 */
-	WITHDRAW_FAIL((short) 12, "败", "提现失败");
+	WITHDRAW_FAIL((short) 12, "败", "提现失败"),
+	/**
+	 * 惠小店通知
+	 */
+	HUI_NOTICE((short) 13, "惠", "惠小店通知");
 
 	private short typeCode;
 	private String typeSummary;

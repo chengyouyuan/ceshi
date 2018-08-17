@@ -73,6 +73,11 @@ public class CacheName {
     public static final String MESSAGE_MINI_ACCESS_TOKEN = "MINIPROGRAM:ACCESSTOKEN:";
 
     /**
+     * B端发送短信 验证次数 key
+     */
+    public static final String MESSAGE_SMS_SEND_VERIFICATION_CODE = "MESSAGE:SMS:SEND:VERIFICATION:CODE:";
+
+    /**
      * 事件消息ID,SortedSet
      */
     public static final String EVENT_MESSAGE_ID = "EVENT:MESSAGE:ID:";

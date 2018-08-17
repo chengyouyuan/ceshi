@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.message.dao.MessageSmsHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="revice_time" jdbcType="TIMESTAMP" property="reviceTime"/>
+        <result column="telephone" jdbcType="CHAR" property="telephone"/>
+        <result column="error_code" jdbcType="SMALLINT" property="errorCode"/>
+        <result column="send_status" jdbcType="SMALLINT" property="sendStatus"/>
+        <result column="supply_id" jdbcType="VARCHAR" property="supplyId"/>
+        <result column="send_type" jdbcType="SMALLINT" property="sendType"/>
+        <result column="grp" jdbcType="VARCHAR" property="grp"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="scheduled_date" jdbcType="TIMESTAMP" property="scheduledDate"/>
+        <result column="store_id" jdbcType="BIGINT" property="storeId"/>
+        <result column="sms_send_groupId" jdbcType="VARCHAR" property="smsSendGroupid"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+               type="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+        <result column="repeat_time" jdbcType="LONGVARCHAR" property="repeatTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, content, send_time, revice_time, telephone, error_code, send_status, supply_id, 
+    send_type, grp, user_name, scheduled_date, store_id, sms_send_groupId
+  </sql>
+    <sql id="Blob_Column_List">
+    repeat_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from message_sms_history
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from message_sms_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+        insert into message_sms_history (content, send_time,
+          revice_time, telephone, error_code,
+          send_status, supply_id, send_type,
+          grp, user_name, scheduled_date,
+          store_id, sms_send_groupId, repeat_time
+          )
+        values (#{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP},
+          #{reviceTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=CHAR}, #{errorCode,jdbcType=SMALLINT},
+          #{sendStatus,jdbcType=SMALLINT}, #{supplyId,jdbcType=SMALLINT}, #{sendType,jdbcType=SMALLINT},
+          #{grp,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{scheduledDate,jdbcType=TIMESTAMP},
+          #{storeId,jdbcType=BIGINT}, #{smsSendGroupid,jdbcType=VARCHAR}, #{repeatTime,jdbcType=LONGVARCHAR}
+          )
+    </insert>
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+        insert into message_sms_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="content != null">
+                content,
+            </if>
+            <if test="sendTime != null">
+                send_time,
+            </if>
+            <if test="reviceTime != null">
+                revice_time,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="errorCode != null">
+                error_code,
+            </if>
+            <if test="sendStatus != null">
+                send_status,
+            </if>
+            <if test="supplyId != null">
+                supply_id,
+            </if>
+            <if test="sendType != null">
+                send_type,
+            </if>
+            <if test="grp != null">
+                grp,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="scheduledDate != null">
+                scheduled_date,
+            </if>
+            <if test="storeId != null">
+                store_id,
+            </if>
+            <if test="smsSendGroupid != null">
+                sms_send_groupId,
+            </if>
+            <if test="repeatTime != null">
+                repeat_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reviceTime != null">
+                #{reviceTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=CHAR},
+            </if>
+            <if test="errorCode != null">
+                #{errorCode,jdbcType=SMALLINT},
+            </if>
+            <if test="sendStatus != null">
+                #{sendStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="supplyId != null">
+                #{supplyId,jdbcType=SMALLINT},
+            </if>
+            <if test="sendType != null">
+                #{sendType,jdbcType=SMALLINT},
+            </if>
+            <if test="grp != null">
+                #{grp,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduledDate != null">
+                #{scheduledDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="storeId != null">
+                #{storeId,jdbcType=BIGINT},
+            </if>
+            <if test="smsSendGroupid != null">
+                #{smsSendGroupid,jdbcType=VARCHAR},
+            </if>
+            <if test="repeatTime != null">
+                #{repeatTime,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into redeem_code
+        (content, send_time, revice_time, telephone, error_code, send_status, supply_id,
+        send_type, grp, user_name, scheduled_date, store_id, sms_send_groupId)
+        values
+        <foreach collection="list" item="messageSmsHistory" index="index" separator=",">
+            (
+            #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP},
+            #{reviceTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=CHAR}, #{errorCode,jdbcType=SMALLINT},
+            #{sendStatus,jdbcType=SMALLINT}, #{supplyId,jdbcType=SMALLINT}, #{sendType,jdbcType=SMALLINT},
+            #{grp,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{scheduledDate,jdbcType=TIMESTAMP},
+            #{storeId,jdbcType=BIGINT}, #{smsSendGroupid,jdbcType=VARCHAR}, #{repeatTime,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+        update message_sms_history
+        <set>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="sendTime != null">
+                send_time = #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reviceTime != null">
+                revice_time = #{reviceTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=CHAR},
+            </if>
+            <if test="errorCode != null">
+                error_code = #{errorCode,jdbcType=SMALLINT},
+            </if>
+            <if test="sendStatus != null">
+                send_status = #{sendStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="supplyId != null">
+                supply_id = #{supplyId,jdbcType=VARCHAR},
+            </if>
+            <if test="sendType != null">
+                send_type = #{sendType,jdbcType=SMALLINT},
+            </if>
+            <if test="grp != null">
+                grp = #{grp,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="scheduledDate != null">
+                scheduled_date = #{scheduledDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="storeId != null">
+                store_id = #{storeId,jdbcType=BIGINT},
+            </if>
+            <if test="smsSendGroupid != null">
+                sms_send_groupId = #{smsSendGroupid,jdbcType=VARCHAR},
+            </if>
+            <if test="repeatTime != null">
+                repeat_time = #{repeatTime,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs"
+            parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+    update message_sms_history
+    set content = #{content,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      revice_time = #{reviceTime,jdbcType=TIMESTAMP},
+      telephone = #{telephone,jdbcType=CHAR},
+      error_code = #{errorCode,jdbcType=SMALLINT},
+      send_status = #{sendStatus,jdbcType=SMALLINT},
+      supply_id = #{supplyId,jdbcType=VARCHAR},
+      send_type = #{sendType,jdbcType=SMALLINT},
+      grp = #{grp,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      scheduled_date = #{scheduledDate,jdbcType=TIMESTAMP},
+      store_id = #{storeId,jdbcType=BIGINT},
+      sms_send_groupId = #{smsSendGroupid,jdbcType=VARCHAR},
+      repeat_time = #{repeatTime,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
+    update message_sms_history
+    set content = #{content,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      revice_time = #{reviceTime,jdbcType=TIMESTAMP},
+      telephone = #{telephone,jdbcType=CHAR},
+      error_code = #{errorCode,jdbcType=SMALLINT},
+      send_status = #{sendStatus,jdbcType=SMALLINT},
+      supply_id = #{supplyId,jdbcType=VARCHAR},
+      send_type = #{sendType,jdbcType=SMALLINT},
+      grp = #{grp,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      scheduled_date = #{scheduledDate,jdbcType=TIMESTAMP},
+      store_id = #{storeId,jdbcType=BIGINT},
+      sms_send_groupId = #{smsSendGroupid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -39,3 +39,44 @@ netease:
   accidSuffix: _message_uat
 
 
+##短信的相关配置
+ym_hy:
+  replace: hxd
+one_key: 12345678901234567890123456789012
+defualt:
+  class: com.winchannel.sms.process.HxdSmsProcess
+account_yxt: yingxt1
+ym:
+  class: com.winchannel.sms.process.YmSmsProcess
+hxd:
+  class: com.winchannel.sms.process.HxdSmsProcess
+default_key: 12345678901234567890123456789012
+account_cl_yy: yy_sz_sz01
+account_cl_yx: yingxt1yx
+verification_url: http://222.73.117.146/msg/
+ym_tg:
+  replace: hxd
+hxrt:
+  replace: hxd
+  class: com.winchannel.sms.process.HxrtSmsProcess
+pswd: Tch456789
+account_hxd: yingxt2
+monitor:
+  list: 18600122630,15010589281,13366660531
+url: http://222.73.117.158/msg/
+marketing_url: http://222.73.117.169/msg/
+mandao:
+  class: com.winchannel.sms.process.ManDaoSmsProcess
+mandaoretail:
+  replace: hxd
+  class: com.winchannel.sms.process.ManDaoRetailProcess
+longmessage:
+  class: com.winchannel.sms.process.ManDaoLongMessageProcess
+yxt:
+  replace: hxd
+pswd_cl_yx: Tch456789
+mandaoi:
+  replace: hxd
+  class: com.winchannel.sms.process.ManDaoInternationalSmsProcess
+pswd_cl_yy: Wo123456
+verification_url_yx: http://60.205.14.180:9000/HttpSmsMt

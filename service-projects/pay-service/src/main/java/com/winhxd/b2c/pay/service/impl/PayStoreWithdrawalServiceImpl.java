@@ -117,6 +117,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		// 生成提现订单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		payWithdrawal.setTotalFee(condition.getTotalFee());
+		payWithdrawal.setRealFee(condition.getRealFee());
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getCmmsamt())));
 			System.out.println("当前计算所得银行的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getCmmsamt());

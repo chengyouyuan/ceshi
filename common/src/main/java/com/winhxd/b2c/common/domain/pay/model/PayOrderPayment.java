@@ -92,7 +92,7 @@ public class PayOrderPayment implements Serializable {
     }
 
     public void setTimeEnd(Date timeEnd) {
-        this.timeEnd = timeEnd == null ? null : timeEnd.trim();
+        this.timeEnd = timeEnd == null ? null : timeEnd;
     }
 
     public Short getCallbackStatus() {

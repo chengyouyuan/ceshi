@@ -73,10 +73,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
 			int code = bindBank.getCode();
+			result.setCode(code);
 			if(code == 0){
-				 result.setCode(BusinessCode.CODE_610025); 
-				 LOGGER.info("当前用户没有绑定银行卡");
-			 }else{
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(bindBank.getData().getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
@@ -89,10 +87,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
 			 int code = bindAccount.getCode();
+			 result.setCode(code);
 			 if(code == 0){
-				 result.setCode(BusinessCode.CODE_610026); 
-				 LOGGER.info("当前用户没有绑定微信");
-			 }else{
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(bindAccount.getData().getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
@@ -163,6 +159,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			storeUserinfo.setOpenid(payStoreWallet.get(0).getOpenid());
 			storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
 			storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
+			res.setCode(0);
 		}else{
 			res.setCode(BusinessCode.CODE_610027);
 			LOGGER.info("门店当前没有可提现的金额记录");
@@ -181,9 +178,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
 		if(selectStorBankCardInfo == null){
-			res.setCode(0);
+			res.setCode(BusinessCode.CODE_610025);
+			LOGGER.info("当前用户没有绑定银行卡");
 		}else{
-			res.setCode(1);
+			res.setCode(0);
 			res.setData(selectStorBankCardInfo.get(0));//返回最新插入的一条银行卡信息
 		}
 		return res;

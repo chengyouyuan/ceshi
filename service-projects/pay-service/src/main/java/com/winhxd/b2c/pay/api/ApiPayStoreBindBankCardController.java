@@ -46,13 +46,13 @@ public class ApiPayStoreBindBankCardController {
 	@Autowired
 	private Cache cache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 60*60;// 验证码有效时间
 
 	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
     })
-    @RequestMapping(value = "/6104/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @RequestMapping(value = "/6104/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankCardVO> queryStoreBindBankCard(@RequestBody StoreBankCardCondition condition) {
         String logTitle = "/api-pay/bankCard/6104/v1/storeBindBankCard-B端获取银行卡信息";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
@@ -125,13 +125,14 @@ public class ApiPayStoreBindBankCardController {
 //		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+businessId);
-		LOGGER.info("验证码:------"+modileVerifyCode);
+		LOGGER.info("验证码生成前:------"+modileVerifyCode);
 		//生成验证码
 		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
 			result.setCode(BusinessCode.CODE_610018);
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
+			LOGGER.info("验证码生成后:------"+modileVerifyCode);
 		}
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+businessId, modileVerifyCode);

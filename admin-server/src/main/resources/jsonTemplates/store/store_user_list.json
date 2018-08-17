@@ -27,41 +27,12 @@
     ],
     "columns": [
       {
-        "name": "",
-        "title": "操作",
-        "type": "button",
-        "buttons": [
-          {
-            "name": "查看",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "",
-              "configKey": "/template/module/store/store_user_list_view.json"
-            }
-          },
-          {
-            "name": "编辑",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "update"
-              },
-              "path": "",
-              "configKey": "/template/module/store/store_user_list_edit.json"
-            }
-          }
-        ]
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
       },
       {
         "name": "storeStatus",
@@ -158,6 +129,43 @@
         "path": "",
         "configKey": "/template/module/system/system_region_list_radio_win.json",
         "isHidden": false
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_user_list_view.json"
+            }
+          },
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_user_list_edit.json"
+            }
+          }
+        ]
       }
     ]
   }

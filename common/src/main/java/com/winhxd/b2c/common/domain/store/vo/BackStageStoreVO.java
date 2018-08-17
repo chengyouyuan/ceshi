@@ -13,6 +13,9 @@ import lombok.Data;
 @Data
 public class BackStageStoreVO {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
+
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Short storeStatus;
 

@@ -626,7 +626,7 @@
     </select>
     <update id="updateOrderStatusForCancel">
         update order_info
-        set order_status=33,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now(),pickup_code=null
+        set order_status=99,cancel_reason = #{cancelReason,jdbcType=VARCHAR},cancel_datetime = now(),pickup_code=null
         where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status != 1
     </update>
 

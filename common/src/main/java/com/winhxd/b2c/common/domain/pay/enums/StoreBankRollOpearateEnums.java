@@ -23,7 +23,7 @@ public enum StoreBankRollOpearateEnums {
 	 */
 	WITHDRAWALS_AUDIT_NOT_PASS(5,"提现审核不通过"),
 	/**
-	 * 提现审核不通过操作
+	 * 提现失败
 	 */
 	WITHDRAWALS_FAIL(6,"提现失败");
 	

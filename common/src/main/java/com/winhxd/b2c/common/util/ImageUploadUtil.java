@@ -64,7 +64,6 @@ public class ImageUploadUtil {
 			//return result;
 		}
 	   return 	uploadImage(imageFile.getOriginalFilename(),imageFile.getInputStream(),null);
-
 //		String fileName=imageFile.getOriginalFilename();
 //		if (StringUtils.isEmpty(fileName)) {
 //			logger.error("上传图片：图片名称不能为空！");
@@ -202,16 +201,4 @@ public class ImageUploadUtil {
 		return baseImageFile;
 	}
 
-	/**
-	 * 功能描述: 批量上传图片(未完成)
-	 * @auther: zhanglingke
-	 * @date: 2018-08-17 14:44
-	 * @param:
-	 * @return:
-	 */
-	public List<BaseImageFile> batchUploadImage(List<MultipartFile> files,Long size)  throws IOException {
-		List<BaseImageFile> list = null;
-	   //todo
-		return  null;
-	}
 }

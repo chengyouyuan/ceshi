@@ -42,11 +42,11 @@ public class UploadUtil {
     @Value("${cdn.picture}")
     private String baseHost = "";
 
-    @Value("${cdn.dir}")
-    private String dir = "";
-
-    @Value("${cdn.uploadUrl}")
-    private String uploadUrl = "";
+//    @Value("${cdn.dir}")
+//    private String dir = "";
+//
+//    @Value("${cdn.uploadUrl}")
+//    private String uploadUrl = "";
 
     /**
      * 功能描述: 上传文件
@@ -126,66 +126,4 @@ public class UploadUtil {
         return baseFile;
     }
 
-
-    public BaseFile UploadFile(String folder, String fileName, InputStream inputStream, Boolean canOverwrite) throws Exception {
-        BaseFile result = null;
-        if (StringUtils.isBlank(fileName))
-            throw new Exception("上传文件名不能为空");
-        if (inputStream == null)
-            throw new Exception("上传文件内容不能为空");
-
-        String df = new SimpleDateFormat("yyMMdd").format(new Date());
-        if (StringUtils.isNotBlank(folder)) {
-            folder = folder + File.separator + df;
-        } else {
-            folder = df;
-        }
-        if (dir.endsWith("/") || dir.endsWith("\\")) {
-            dir = dir + folder;
-        } else {
-            dir = dir + File.separator + folder;
-        }
-
-        if (uploadUrl.endsWith("/")) {
-            uploadUrl = uploadUrl + folder + "/";
-        } else {
-            uploadUrl = uploadUrl + "/" + folder + "/";
-        }
-
-        File dirFile = new File(dir);
-        if (!dirFile.exists()) {
-            dirFile.mkdirs();
-        }
-        String filePath = dir + File.separator + fileName;
-        File file = new File(filePath);
-        if (file.exists()) {
-            if (canOverwrite) {
-                file.delete();
-            } else {
-                throw new Exception("上传失败，文件已存在");
-            }
-        }
-
-        FileOutputStream outStream = null;
-        try {
-            file.createNewFile();
-            outStream = new FileOutputStream(file);
-            byte[] buffer = new byte[8 * 1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
-            }
-            result = new BaseFile();
-            String fileUrl = uploadUrl + fileName;
-            result.setName(fileName);
-            result.setUrl(fileUrl);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            inputStream.close();
-            outStream.close();
-        }
-
-        return result;
-    }
 }

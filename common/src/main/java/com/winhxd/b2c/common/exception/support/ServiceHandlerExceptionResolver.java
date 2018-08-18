@@ -6,7 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.i18n.MessageHelper;
-import feign.codec.DecodeException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -34,12 +34,11 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         BusinessException businessException = findBusinessException(ex);
         if (businessException != null) {
             code = businessException.getErrorCode();
-            if (StringUtils.isNotBlank(businessException.getMessage())) {
+            message = MessageHelper.getInstance().getMessage(String.valueOf(code), StringUtils.EMPTY);
+            if (StringUtils.isBlank(message)) {
                 message = businessException.getMessage();
-            } else {
-                message = MessageHelper.getInstance().getMessage(String.valueOf(code));
             }
-            log.warn("Controller业务异常:{},{}", code, businessException.getMessage());
+            log.warn(getBusinessExceptionInfo(businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             Span currentSpan = tracer.currentSpan();
@@ -63,6 +62,20 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
             return (BusinessException) ex;
         }
         return findBusinessException(ex.getCause());
+    }
+
+    private String getBusinessExceptionInfo(BusinessException e) {
+        StringBuilder str = new StringBuilder(200);
+        str.append("Controller业务异常:")
+                .append(e.getErrorCode())
+                .append(StringUtils.SPACE).append(e.getMessage());
+        if (ArrayUtils.isNotEmpty(e.getStackTrace())) {
+            StackTraceElement trace = e.getStackTrace()[0];
+            str.append(StringUtils.SPACE).append(trace.getClassName())
+                    .append("#").append(trace.getMethodName())
+                    .append(":").append(trace.getLineNumber());
+        }
+        return str.toString();
     }
 }
 

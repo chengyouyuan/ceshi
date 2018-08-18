@@ -92,7 +92,7 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
-    private static final ThreadLocal<Map<String, ProductSkuVO>> skuInfoMapThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, ProductSkuVO>> SKU_INFO_MAP_THREADLOCAL = new ThreadLocal<>();
 
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
@@ -1006,7 +1006,7 @@ public class CommonOrderServiceImpl implements OrderService {
             couponProductConditions.add(couponProductCondition);
 
         }
-        Map<String, ProductSkuVO> skuInfoMap = skuInfoMapThreadLocal.get();
+        Map<String, ProductSkuVO> skuInfoMap = SKU_INFO_MAP_THREADLOCAL.get();
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext(); ) {
             CouponProductCondition couponProductCondition = iterator.next();
             if (skuInfoMap != null && skuInfoMap.size() > 0) {
@@ -1015,6 +1015,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);
+        SKU_INFO_MAP_THREADLOCAL.remove();
         return couponPreAmountCondition;
     }
 
@@ -1105,7 +1106,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //查询商品相关信息
         Map<String, ProductSkuVO> skuInfoMap = querySkuInfos(orderInfo, skuCodes);
         if (skuInfoMap != null && skuInfoMap.size() > 0) {
-            skuInfoMapThreadLocal.set(skuInfoMap);
+            SKU_INFO_MAP_THREADLOCAL.set(skuInfoMap);
             for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext(); ) {
                 OrderItem orderItem = iterator.next();
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());

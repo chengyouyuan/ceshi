@@ -28,7 +28,7 @@ public class ReadyShopCarCondition extends ApiCondition {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pickupDateTime;
 
-    @ApiModelProperty(value = "支付方式(1:微信扫码付款,2微信在线付款)", required = true)
+    @ApiModelProperty(value = "支付方式(1:微信在线付款,2:微信扫码付款)", required = true)
     private Short payType;
 
     @ApiModelProperty(value = "优惠券ID", required = false)

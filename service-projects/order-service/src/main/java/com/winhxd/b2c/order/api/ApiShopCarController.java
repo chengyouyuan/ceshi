@@ -61,7 +61,6 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
@@ -118,7 +117,6 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
@@ -183,10 +181,6 @@ public class ApiShopCarController {
         if (null == condition.getExtractAddress()){
             logger.error("商品加购异常{}  参数extractAddress为空");
             throw new BusinessException(BusinessCode.CODE_402002);
-        }
-        if (null == condition.getPickupDateTime()){
-            logger.error("商品加购异常{}  参数pickupDateTime为空");
-            throw new BusinessException(BusinessCode.CODE_402003);
         }
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");

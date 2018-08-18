@@ -264,6 +264,10 @@ public final class BusinessCode {
 
     @ApiModelProperty("订单退款失败")
     public static final int ORDER_REFUND_FAIL = 400019;
+    @ApiModelProperty("订单退款已完成")
+    public static final int ORDER_REFUND_FINISHED = 400020;
+    @ApiModelProperty("订单退款失败")
+    public static final int ORDER_REFUND_CLOSED = 400021;
 
     @ApiModelProperty("订单获取支付信息失败")
     public static final int ORDER_GET_PAY_INFO_ERROR = 400018;

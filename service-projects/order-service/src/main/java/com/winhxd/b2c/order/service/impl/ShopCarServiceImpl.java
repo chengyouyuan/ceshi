@@ -189,7 +189,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     private void checkShopCarProdInfo(List<ShopCar> shopCars){
         List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
         for (ShopCartProdVO shopCarProdVO : list) {
-            if (StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
+            if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
                 logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402010);
             }

@@ -5,13 +5,16 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPay;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
@@ -30,7 +33,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	@Autowired
 	private PayBillMapper payBillMapper;
 	@Autowired
-    WXPay wxPay;
+	WXPayApi wxPayApi;
 
 	@Override
 	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
@@ -62,9 +65,19 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @Description 
 	 * @param condition
 	 * @return
+	 * @throws Exception 
 	 */
 	private OrderPayVO toPay(PayPreOrderCondition condition) {
 		OrderPayVO orderPayVO = new OrderPayVO();
+		//微信接口入参
+		PayPreOrderDTO payPreOrderDTO = new PayPreOrderDTO();
+		BeanUtils.copyProperties(condition, payPreOrderDTO);
+		// TODO 生产支付流水号
+		payPreOrderDTO.setOutTradeNo("dsafdsakfjasdkjf");
+		
+        //调用微信统一下单API
+		PayPreOrderResponseDTO payPreOrderResponseDTO = wxPayApi.unifiedOrder(payPreOrderDTO);
+		// TODO保存支付流水记录
 		
 		return orderPayVO;
 	}

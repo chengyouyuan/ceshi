@@ -31,20 +31,20 @@ public class EventMessageSender {
      * 发送事件消息
      *
      * @param eventType
-     * @param eventId
-     * @param eventObject
+     * @param eventKey 请使用业务相关Id,例如:订单相关事件可用订单编号
+     * @param eventObject 例如:订单相关事件可用订单对象
      * @param <T>
      */
-    public <T> void send(EventType eventType, String eventId, T eventObject) {
-        Objects.requireNonNull(eventId, "eventId不能为null");
+    public <T> void send(EventType eventType, String eventKey, T eventObject) {
+        Objects.requireNonNull(eventKey, "eventId不能为null");
         Objects.requireNonNull(eventObject, "eventObject不能为null");
-        String json = EventMessageHelper.toJson(eventId, eventObject);
+        String json = EventMessageHelper.toJson(eventKey, eventObject);
         String idKey = CacheName.EVENT_MESSAGE_ID + eventType.toString();
         String bodyKey = CacheName.EVENT_MESSAGE_BODY + eventType.toString();
-        cache.zadd(idKey, System.currentTimeMillis(), eventId);
-        cache.hset(bodyKey, eventId, json);
-        logger.info("事件消息发送开始: {} - {}", eventType, eventId);
+        cache.zadd(idKey, System.currentTimeMillis(), eventKey);
+        cache.hset(bodyKey, eventKey, json);
+        logger.info("事件消息发送开始: {} - {}", eventType, eventKey);
         rabbitTemplate.convertAndSend(eventType.toString(), null,
-                json, new EventCorrelationData(eventId, eventType));
+                json, new EventCorrelationData(eventKey, eventType));
     }
 }

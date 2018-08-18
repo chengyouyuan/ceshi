@@ -30,6 +30,9 @@ public class PayPreOrderCondition extends ApiCondition implements Serializable {
 
     @ApiModelProperty("终端IP")
     private String spbillCreateIp;
+    
+    @ApiModelProperty("支付方式")
+    private String payType;
 
     @ApiModelProperty("(非必填)设备号")
     private String deviceInfo;
@@ -81,6 +84,14 @@ public class PayPreOrderCondition extends ApiCondition implements Serializable {
 
 	public void setSpbillCreateIp(String spbillCreateIp) {
 		this.spbillCreateIp = spbillCreateIp;
+	}
+
+	public String getPayType() {
+		return payType;
+	}
+
+	public void setPayType(String payType) {
+		this.payType = payType;
 	}
 
 	public String getDeviceInfo() {

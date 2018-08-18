@@ -3,9 +3,11 @@ package com.winhxd.b2c.order.service.impl;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.*;
-
-import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -42,11 +44,9 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
-import com.winhxd.b2c.common.feign.product.ProductServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -316,7 +316,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
     
     @Override
-    public OrderPayVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId, String openid) {
+    public PayPreOrderVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId, String openid) {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
@@ -336,7 +336,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         if (orderInfoDetailVO.getOrderItemVoList() == null || orderInfoDetailVO.getOrderItemVoList().isEmpty()) {
             throw new BusinessException(BusinessCode.ORDER_SKU_EMPTY);
         }
-        OrderPayVO ret;
+        PayPreOrderVO ret;
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, 5000);
         if (lock.tryLock()) {
@@ -351,7 +351,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setOpenid(openid);
                 payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
-                ResponseResult<OrderPayVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
+                ResponseResult<PayPreOrderVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
                 if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
                     throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
                 }

@@ -1,17 +1,17 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
+import com.winhxd.b2c.common.domain.pay.enums.*;
 import com.winhxd.b2c.common.domain.pay.model.*;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.pay.dao.*;
+import com.winhxd.b2c.pay.service.*;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +27,6 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
@@ -35,12 +34,10 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
-import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
@@ -75,6 +72,10 @@ public class PayServiceImpl implements PayService{
 	
 	@Autowired
 	private PayStoreWalletMapper payStoreWalletMapper;
+	@Autowired
+	PayStoreCashService payStoreCashService;
+	@Autowired
+	PayFinanceAccountDetailService payFinanceAccountDetailService;
 	
 	private static final String logLabel="PayServiceImpl--";
 
@@ -179,14 +180,13 @@ public class PayServiceImpl implements PayService{
 		//出账明细表 pay_finance_account_detail
 		PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
 		payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
-		payFinanceAccountDetail.setOutType((short) 2);
+		payFinanceAccountDetail.setOutType(PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode());
 		payFinanceAccountDetail.setStatus((short) 1);
 		payFinanceAccountDetail.setCreated(new Date());
 		payFinanceAccountDetail.setTradeNo(condition.getOutRefundNo());
-		int payFinanceInsertResult = payFinanceAccountDetailMapper.insertSelective(payFinanceAccountDetail);
+        int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
 		if (payFinanceInsertResult<1) {
 			logger.info(log+"--订单出账明细表插入失败");
-//			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 
 		logger.info(log+"--结束");
@@ -552,7 +552,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+	public int transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
 		String  log =logLabel + "微信提现至余额transfersToChange";
 		logger.info(log+"--开始");
 		if (toWxBalanceCondition==null) {
@@ -568,18 +568,63 @@ public class PayServiceImpl implements PayService{
 		if(null == payTransfersToWxChangeVO){
 			logger.info(log+"--transfersService.transfersToChange返回结果为空");
 		}
-		PayWithdrawals payWithdrawals = new PayWithdrawals();
-		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
-//		payWithdrawals.setCallbackStatus();
-		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
-		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
-		payWithdrawals.setTimeEnd(new Date());
-		int i  = payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
-		return null;
+        PayWithdrawals payWithdrawals = new PayWithdrawals();
+        payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
+        if(payTransfersToWxChangeVO.isTransfersResult()){
+            payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+        }else{
+            //是否需要用户重新申请提现流程
+            if(payTransfersToWxChangeVO.isAbleContinue()){
+                payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+            }else{
+                payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+            }
+        }
+        payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
+        payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
+        payWithdrawals.setTimeEnd(new Date());
+        int transfersResult = this.transfersPublic(payWithdrawals,log);
+
+		return transfersResult;
 	}
 
+	public int transfersPublic(PayWithdrawals payWithdrawals,String log){
+		List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payWithdrawals.getWithdrawalsNo());
+		if(CollectionUtils.isEmpty(payWithdrawalsList)){
+			logger.info(log+"--提现记录不存在");
+			throw new BusinessException(BusinessCode.CODE_600010);
+		}
+
+        //step 1  修改提现申请状态
+        int payWithdrawalsResult  = payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
+
+        //step 2出账明细表 pay_finance_account_detail
+        PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
+        payFinanceAccountDetail.setOrderNo(payWithdrawals.getWithdrawalsNo());
+        payFinanceAccountDetail.setOutType(PayOutTypeEnum.STORE_WITHDRAW.getStatusCode());
+        payFinanceAccountDetail.setStatus((short) 1);
+        payFinanceAccountDetail.setCreated(new Date());
+        payFinanceAccountDetail.setTradeNo(payWithdrawals.getWithdrawalsNo());
+        int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
+        if (payFinanceInsertResult<1) {
+            logger.info(log+"--订单出账明细表插入失败");
+        }
+        //step 3保存交易记录
+        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
+		payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());
+		payStoreTransactionRecord.setType(StoreTransactionStatusEnum.TRANSFERS.getStatusCode());
+		payStoreTransactionRecord.setStatus((short) 1);
+        payStoreTransactionRecord.setStoreId(payWithdrawalsList.get(0).getStoreId());
+		payStoreTransactionRecord.setMoney(payWithdrawalsList.get(0).getTotalFee());
+		payStoreTransactionRecord.setCmmsAmt(payWithdrawalsList.get(0).getCmmsAmt());
+		payStoreTransactionRecord.setTransactionDate(payWithdrawalsList.get(0).getCreated());
+        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
+
+        return payWithdrawalsResult ;
+    }
+
 	@Override
-	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+	public int transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
 		String  log =logLabel + "微信提现至银行卡transfersToBank";
 		logger.info(log+"--开始");
 		if (toWxBankCondition==null) {
@@ -591,16 +636,26 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600005);
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
-
-		PayWithdrawals payWithdrawals = new PayWithdrawals();
-		payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
-		payWithdrawals.setCmmsAmt(payTransfersToWxBankVO.getCmmsAmt());
-//		payWithdrawals.setCallbackStatus();
-		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
-		payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
-		payWithdrawals.setTimeEnd(new Date());
-		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
-		return null;
+        if(null == payTransfersToWxBankVO){
+            logger.info(log+"--transfersService.transfersToChange返回结果为空");
+        }
+        PayWithdrawals payWithdrawals = new PayWithdrawals();
+        payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
+		if(payTransfersToWxBankVO.isTransfersResult()){
+			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+		}else{
+			//是否需要用户重新申请提现流程
+			if(payTransfersToWxBankVO.isAbleContinue()){
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+			}else{
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+			}
+		}
+        payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
+        payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
+        payWithdrawals.setTimeEnd(new Date());
+        int transfersResult = this.transfersPublic(payWithdrawals,log);
+		return transfersResult;
 	}
 
 	@Override

@@ -75,13 +75,13 @@ public interface PayService {
      * 微信提现至余额入口
      * @return
      */
-    String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
+    int transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition);
 
     /**
      * 微信提现至银行卡入口
      * @return
      */
-    String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+    int transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
     
     /**
      * @author liuhanning

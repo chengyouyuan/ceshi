@@ -31,4 +31,6 @@ public interface PayWithdrawalsMapper {
     List<PayStoreUserInfoVO> getStorBankCardInfo(@Param("storeId") Long storeId);
 
     int updateByWithdrawalsNoSelective(PayWithdrawals payWithdrawals);
+
+    List<PayWithdrawals> selectByWithdrawalsNo(String withdrawalsNo);
 }

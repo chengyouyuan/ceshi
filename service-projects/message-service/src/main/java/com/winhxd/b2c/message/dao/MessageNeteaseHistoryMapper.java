@@ -1,12 +1,9 @@
 package com.winhxd.b2c.message.dao;
 
-import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreSubmitProductVO;
 import feign.Param;
 import org.springframework.stereotype.Service;
 
@@ -39,4 +36,6 @@ public interface MessageNeteaseHistoryMapper {
 	 * @return
 	 */
 	List<NeteaseMsgVO> selectVoByCondition(@Param("condition") NeteaseMsgBoxCondition condition);
+
+	int insertHistories(List<MessageNeteaseHistory> list);
 }

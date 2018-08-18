@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.winhxd.b2c.pay.dao.PayWithdrawalsMapper">
+<mapper namespace="com.winhxd.b2c.common.domain.pay.PayWithdrawalsMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
+    <result column="withdrawals_transaction_no" jdbcType="VARCHAR" property="withdrawalsTransactionNo" />
     <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
     <result column="real_fee" jdbcType="DECIMAL" property="realFee" />
     <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
     <result column="rate" jdbcType="DECIMAL" property="rate" />
     <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
     <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
+    <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
+    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
     <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
     <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
     <result column="name" jdbcType="VARCHAR" property="name" />
@@ -22,11 +25,16 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="callback_money" jdbcType="DECIMAL" property="callbackMoney" />
+    <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, withdrawals_no, total_fee, real_fee, cmms_amt, rate, audit_status, 
-    audit_desc, flow_direction_type, flow_direction_name, name, mobile, payment_account, 
-    created, created_by, created_by_name, updated_by, updated_by_name, updated
+    id, store_id, withdrawals_no, withdrawals_transaction_no, total_fee, real_fee, cmms_amt, 
+    rate, audit_status, audit_desc, callback_status, callback_reason, flow_direction_type, 
+    flow_direction_name, name, mobile, payment_account, created, created_by, created_by_name, 
+    updated_by, updated_by_name, updated, buyer_id, transaction_id, callback_money, time_end
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -40,21 +48,25 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
     insert into pay_withdrawals (id, store_id, withdrawals_no, 
-      total_fee, real_fee, cmms_amt, 
-      rate, audit_status, audit_desc, 
+      withdrawals_transaction_no, total_fee, real_fee, 
+      cmms_amt, rate, audit_status, 
+      audit_desc, callback_status, callback_reason, 
       flow_direction_type, flow_direction_name, 
       name, mobile, payment_account, 
       created, created_by, created_by_name, 
-      updated_by, updated_by_name, updated
-      )
+      updated_by, updated_by_name, updated, 
+      buyer_id, transaction_id, callback_money, 
+      time_end)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{withdrawalsNo,jdbcType=CHAR}, 
-      #{totalFee,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, #{cmmsAmt,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=DECIMAL}, #{auditStatus,jdbcType=SMALLINT}, #{auditDesc,jdbcType=VARCHAR}, 
+      #{withdrawalsTransactionNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, 
+      #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, #{auditStatus,jdbcType=SMALLINT}, 
+      #{auditDesc,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, 
       #{flowDirectionType,jdbcType=SMALLINT}, #{flowDirectionName,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{paymentAccount,jdbcType=CHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
-      )
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
+      #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{callbackMoney,jdbcType=DECIMAL}, 
+      #{timeEnd,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
     insert into pay_withdrawals
@@ -67,6 +79,9 @@
       </if>
       <if test="withdrawalsNo != null">
         withdrawals_no,
+      </if>
+      <if test="withdrawalsTransactionNo != null">
+        withdrawals_transaction_no,
       </if>
       <if test="totalFee != null">
         total_fee,
@@ -85,6 +100,12 @@
       </if>
       <if test="auditDesc != null">
         audit_desc,
+      </if>
+      <if test="callbackStatus != null">
+        callback_status,
+      </if>
+      <if test="callbackReason != null">
+        callback_reason,
       </if>
       <if test="flowDirectionType != null">
         flow_direction_type,
@@ -119,6 +140,18 @@
       <if test="updated != null">
         updated,
       </if>
+      <if test="buyerId != null">
+        buyer_id,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="callbackMoney != null">
+        callback_money,
+      </if>
+      <if test="timeEnd != null">
+        time_end,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -129,6 +162,9 @@
       </if>
       <if test="withdrawalsNo != null">
         #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="withdrawalsTransactionNo != null">
+        #{withdrawalsTransactionNo,jdbcType=VARCHAR},
       </if>
       <if test="totalFee != null">
         #{totalFee,jdbcType=DECIMAL},
@@ -147,6 +183,12 @@
       </if>
       <if test="auditDesc != null">
         #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackReason != null">
+        #{callbackReason,jdbcType=VARCHAR},
       </if>
       <if test="flowDirectionType != null">
         #{flowDirectionType,jdbcType=SMALLINT},
@@ -181,6 +223,18 @@
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="buyerId != null">
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackMoney != null">
+        #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="timeEnd != null">
+        #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
@@ -191,6 +245,9 @@
       </if>
       <if test="withdrawalsNo != null">
         withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="withdrawalsTransactionNo != null">
+        withdrawals_transaction_no = #{withdrawalsTransactionNo,jdbcType=VARCHAR},
       </if>
       <if test="totalFee != null">
         total_fee = #{totalFee,jdbcType=DECIMAL},
@@ -209,6 +266,12 @@
       </if>
       <if test="auditDesc != null">
         audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackReason != null">
+        callback_reason = #{callbackReason,jdbcType=VARCHAR},
       </if>
       <if test="flowDirectionType != null">
         flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
@@ -243,6 +306,18 @@
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="buyerId != null">
+        buyer_id = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackMoney != null">
+        callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="timeEnd != null">
+        time_end = #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -250,12 +325,15 @@
     update pay_withdrawals
     set store_id = #{storeId,jdbcType=BIGINT},
       withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      withdrawals_transaction_no = #{withdrawalsTransactionNo,jdbcType=VARCHAR},
       total_fee = #{totalFee,jdbcType=DECIMAL},
       real_fee = #{realFee,jdbcType=DECIMAL},
       cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
       rate = #{rate,jdbcType=DECIMAL},
       audit_status = #{auditStatus,jdbcType=SMALLINT},
       audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      callback_reason = #{callbackReason,jdbcType=VARCHAR},
       flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
       flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
       name = #{name,jdbcType=VARCHAR},
@@ -266,34 +344,36 @@
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP}
+      updated = #{updated,jdbcType=TIMESTAMP},
+      buyer_id = #{buyerId,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
+      callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      time_end = #{timeEnd,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-
-
-    <resultMap id="voResultMap" type="com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO">
-      <id column="id" jdbcType="BIGINT" property="id" />
-      <result column="store_id" jdbcType="BIGINT" property="storeId" />
-      <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
-      <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
-      <result column="real_fee" jdbcType="DECIMAL" property="realFee" />
-      <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
-      <result column="rate" jdbcType="DECIMAL" property="rate" />
-      <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
-      <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
-      <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
-      <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
-      <result column="name" jdbcType="VARCHAR" property="name" />
-      <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-      <result column="payment_account" jdbcType="CHAR" property="paymentAccount" />
-      <result column="created" jdbcType="TIMESTAMP" property="created" />
-      <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-      <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
-      <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-      <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
-      <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-    </resultMap>
+  <resultMap id="voResultMap" type="com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="withdrawals_no" jdbcType="CHAR" property="withdrawalsNo" />
+    <result column="total_fee" jdbcType="DECIMAL" property="totalFee" />
+    <result column="real_fee" jdbcType="DECIMAL" property="realFee" />
+    <result column="cmms_amt" jdbcType="DECIMAL" property="cmmsAmt" />
+    <result column="rate" jdbcType="DECIMAL" property="rate" />
+    <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
+    <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
+    <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
+    <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="payment_account" jdbcType="CHAR" property="paymentAccount" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+  </resultMap>
 
   <!-- 根据门店id查询提现列表信息 -->
   <select id="getPayWithdrawalsByStoreId" parameterType="java.lang.Long" resultMap="voResultMap">
@@ -302,52 +382,52 @@
     from pay_withdrawals
     where store_id = #{storeId}
   </select>
-  
+
   <resultMap id="storeUserinfoVo" type="com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO">
-  	<result column="storeName" property="storeName" />
-  	<result column="storeMobile" property="storeMobile"/>
-  	<result column="storeAddress" property="storeAddress" />
-  	<result column="storeRegionCode" property="storeRegionCode" />
-  	<result column="contactMobile" property="contactMobile" />
-  	<result column="openid" property="openid" />
-  	<result column="storeStatus" property="storeStatus" />
-  	<result column="totalMoney" property="totalMoney" />
-  	<result column="totalFee" property="totalFee" />
-  	<result column="cardNumber" property="cardNumber" />
-  	<result column="flowDirectionType" property="flowDirectionType" />
- 	<result column="flowDirectionName" property="flowDirectionName" />
+    <result column="storeName" property="storeName" />
+    <result column="storeMobile" property="storeMobile"/>
+    <result column="storeAddress" property="storeAddress" />
+    <result column="storeRegionCode" property="storeRegionCode" />
+    <result column="contactMobile" property="contactMobile" />
+    <result column="openid" property="openid" />
+    <result column="storeStatus" property="storeStatus" />
+    <result column="totalMoney" property="totalMoney" />
+    <result column="totalFee" property="totalFee" />
+    <result column="cardNumber" property="cardNumber" />
+    <result column="flowDirectionType" property="flowDirectionType" />
+    <result column="flowDirectionName" property="flowDirectionName" />
   </resultMap>
-    
+
   <sql id="common_storeUser">
-  	sui.store_name as storeName,sui.store_mobile as storeMobile,
-  	sui.store_address as storeAddress,sui.store_region_code as storeRegionCode,
-  	sui.contact_mobile as contactMobile,sui.openid as openid,sui.store_status as storeStatus
+    sui.store_name as storeName,sui.store_mobile as storeMobile,
+    sui.store_address as storeAddress,sui.store_region_code as storeRegionCode,
+    sui.contact_mobile as contactMobile,sui.openid as openid,sui.store_status as storeStatus
   </sql>
-  
+
   <sql id="common_statusBank">
-  	sbc.card_number as cardNumber,sbc.bank_name as flowDirectionName,
+    sbc.card_number as cardNumber,sbc.bank_name as flowDirectionName,
     sbc.mobile as storeMobile
   </sql>
-  
+
   <!--根据门店id查询门店用户的信息以及当前账户的可提现资金  -->
   <select id="getPayStoreUserInfo" parameterType="java.lang.Long" resultMap="storeUserinfoVo">
-   		select
-        <include refid="common_storeUser"/>,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
-        from store_user_info sui left join store_bankroll sbk on sui.store_id = sbk.store_id
-        where sui.id = #{storeId,jdbcType=BIGINT} and sui.store_status = 1
+    select
+    <include refid="common_storeUser"/>,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
+    from store_user_info sui left join store_bankroll sbk on sui.store_id = sbk.store_id
+    where sui.id = #{storeId,jdbcType=BIGINT} and sui.store_status = 1
   </select>
-  
+
   <!--根据门店id查询门店用户绑定的银行账户信息  -->
-	<select id="getStorBankCardInfo" parameterType="java.lang.Long" resultMap="storeUserinfoVo">
-   		select
-        <include refid="common_statusBank"/>,sui.store_name as storeName,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
-        from store_bank_card sbc left join store_bankroll sbk on sbc.store_id = sbk.store_id
-        left join store_user_info sui on sbc.store_id = sui.id
-        where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC
-   </select>
-   
-   
-	<select id="selectPayWithdrawalsListByCondition" resultMap="voResultMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition">
+  <select id="getStorBankCardInfo" parameterType="java.lang.Long" resultMap="storeUserinfoVo">
+    select
+    <include refid="common_statusBank"/>,sui.store_name as storeName,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
+    from store_bank_card sbc left join store_bankroll sbk on sbc.store_id = sbk.store_id
+    left join store_user_info sui on sbc.store_id = sui.id
+    where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC
+  </select>
+
+
+  <select id="selectPayWithdrawalsListByCondition" resultMap="voResultMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsListCondition">
     select
     <include refid="Base_Column_List"/>
     from pay_withdrawals
@@ -376,5 +456,89 @@
     order by 1 desc
   </select>
 
+  <update id="updateByWithdrawalsNoSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayWithdrawals">
+    update pay_withdrawals
+    <set>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="withdrawalsNo != null">
+        withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+      </if>
+      <if test="withdrawalsTransactionNo != null">
+        withdrawals_transaction_no = #{withdrawalsTransactionNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=DECIMAL},
+      </if>
+      <if test="realFee != null">
+        real_fee = #{realFee,jdbcType=DECIMAL},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null">
+        audit_status = #{auditStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="auditDesc != null">
+        audit_desc = #{auditDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackStatus != null">
+        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackReason != null">
+        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      </if>
+      <if test="flowDirectionType != null">
+        flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
+      </if>
+      <if test="flowDirectionName != null">
+        flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentAccount != null">
+        payment_account = #{paymentAccount,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdByName != null">
+        created_by_name = #{createdByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedByName != null">
+        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyerId != null">
+        buyer_id = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackMoney != null">
+        callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="timeEnd != null">
+        time_end = #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where withdrawals_no = #{withdrawalsNo,jdbcType=BIGINT}
+  </update>
 
 </mapper>

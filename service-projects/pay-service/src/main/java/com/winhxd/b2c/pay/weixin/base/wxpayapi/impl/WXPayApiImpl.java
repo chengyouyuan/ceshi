@@ -2,8 +2,7 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
@@ -44,8 +41,12 @@ public class WXPayApiImpl implements WXPayApi {
 	
 	@Override
 	public PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO) {
+        if(config != null) {
+            payPreOrderDTO.setNotifyUrl(config.getPayNotifyUrl());
+        }
 		//填充配置参数
-		payPreOrderDTO = this.fillRequestDTO(payPreOrderDTO);
+		payPreOrderDTO = (PayPreOrderDTO)this.fillRequestDTO(payPreOrderDTO);
+        payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payPreOrderDTO);
         //统一下单，respXml为响应参数
@@ -62,27 +63,51 @@ public class WXPayApiImpl implements WXPayApi {
         
         return PayPreOrderResponseDTO;
     }
+
+    @Override
+    public PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO) {
+
+        if(config != null) {
+            payRefundDTO.setNotifyUrl(config.getRefundNotifyUrl());
+        }
+        //组装公共属性
+        payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
+        payRefundDTO.setSign(this.generateSign(payRefundDTO));
+        //bean转map
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+        //申请退款，respXml为响应参数
+        String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        //响应参数验证，转为map
+        Map<String, String> respData = this.processResponseXml(respXml);
+        PayRefundResponseDTO responseDTO = null;
+        try {
+            responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
+        } catch (Exception e) {
+            logger.error("申请退款时，响应参数解析失败", e);
+            throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+        }
+        return responseDTO;
+    }
 	
 	/**
      * 添加 appid、mch_id、nonce_str、sign_type
      * 该函数适用于商户适用于统一下单、退款等接口，不适用于红包、代金券接口
      *
-     * @param reqData
+     * @param requestBase
      * @return
      * @throws Exception
      */
-	private PayPreOrderDTO fillRequestDTO(PayPreOrderDTO payPreOrderDTO){
-		payPreOrderDTO.setAppid(config.getAppID());
-		payPreOrderDTO.setMchId(config.getMchID());
-		payPreOrderDTO.setNonceStr(WXPayUtil.generateNonceStr());
+	private RequestBase fillRequestDTO(RequestBase requestBase){
+        requestBase.setAppid(config.getAppID());
+        requestBase.setMchId(config.getMchID());
+        requestBase.setNonceStr(WXPayUtil.generateNonceStr());
         if (SignType.MD5.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.MD5);
+            requestBase.setSignType(WXPayConstants.MD5);
         }
         else if (SignType.HMACSHA256.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.HMACSHA256);
+            requestBase.setSignType(WXPayConstants.HMACSHA256);
         }
-        payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
-        return payPreOrderDTO;
+        return requestBase;
     }
 	
 	/**
@@ -103,9 +128,6 @@ public class WXPayApiImpl implements WXPayApi {
         else {
             url = WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
         }
-        if(config != null) {
-            reqData.put("notify_url", config.getPayNotifyUrl());
-        }
         return this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
     }
 	
@@ -117,6 +139,7 @@ public class WXPayApiImpl implements WXPayApi {
 	 * @param obj
 	 * @return
 	 */
+	@Override
 	public String generateSign(Object obj){
 		String sign = null;
 		//bean转map
@@ -240,45 +263,6 @@ public class WXPayApiImpl implements WXPayApi {
 		}
     }
 
-	@Override
-	public PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO) {
-    	//组装公共属性
-		payRefundDTO = this.fillRefundRequestDTO(payRefundDTO);
-		//bean转map
-		Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
-		//申请退款，respXml为响应参数
-		String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
-		//响应参数验证，转为map
-		Map<String, String> respData = this.processResponseXml(respXml);
-		PayRefundResponseDTO responseDTO = null;
-		try {
-			responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
-		} catch (Exception e) {
-			logger.error("申请退款时，响应参数解析失败", e);
-			throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
-		}
-		return responseDTO;
-	}
-
-	/**
-	 * 组装申请退款参数
-	 * @param payRefundDTO
-	 * @return
-	 */
-	private PayRefundDTO fillRefundRequestDTO(PayRefundDTO payRefundDTO){
-		payRefundDTO.setAppid(config.getAppID());
-		payRefundDTO.setMchId(config.getMchID());
-		payRefundDTO.setNonceStr(WXPayUtil.generateNonceStr());
-		if (SignType.MD5.equals(this.signType)) {
-			payRefundDTO.setSingType(WXPayConstants.MD5);
-		}
-		else if (SignType.HMACSHA256.equals(this.signType)) {
-			payRefundDTO.setSingType(WXPayConstants.HMACSHA256);
-		}
-		payRefundDTO.setSign(this.generateSign(payRefundDTO));
-		return payRefundDTO;
-	}
-
 	/**
 	 * 申请退款
 	 * @param reqData
@@ -293,9 +277,6 @@ public class WXPayApiImpl implements WXPayApi {
 		}
 		else {
 			url = WXPayConstants.REFUND_URL_SUFFIX;
-		}
-		if(config != null) {
-			reqData.put("notify_url", config.getRefundNotifyUrl());
 		}
 		return this.requestWithCert(url, reqData, connectTimeoutMs, readTimeoutMs);
 	}

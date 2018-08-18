@@ -9,8 +9,7 @@ import java.io.Serializable;
  * @Description 
  * @version
  */
-public class RequestBase implements Serializable {
-	private static final long serialVersionUID = -5387326139912673648L;
+public class RequestBase {
 	
 	/**
 	 * 小程序ID

@@ -540,5 +540,10 @@
     </set>
     where withdrawals_no = #{withdrawalsNo,jdbcType=BIGINT}
   </update>
-
+  <select id="selectByWithdrawalsNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_withdrawals
+    where withdrawals_no = #{withdrawalsNo}
+  </select>
 </mapper>

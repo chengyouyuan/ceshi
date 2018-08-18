@@ -435,7 +435,7 @@ public final class BusinessCode {
     public static final int CODE_600301 = 600301;
 
     @ApiModelProperty("门店提现  未获取到提现信息")
-    public static final int CODE_600010 = 600010;
+    public static final int CODE_600310 = 600310;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

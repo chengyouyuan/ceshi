@@ -15,8 +15,8 @@ WX:
   # 支付域名
   PAY_DOMIAN: api.mch.weixin.qq.com
   # 支付回调配置
-  PAY_NOTIFY_URL: hxd.com
+  PAY_NOTIFY_URL: ${CALLBACK_DOMAIN_URL}/api-pay/pay/unifiedorder/cooperation/v1/callback
   # 退款回调配置
-  REFUND_NOTIFY_URL: hxd.com
+  REFUND_NOTIFY_URL: ${CALLBACK_DOMAIN_URL}/api-pay/pay/refund/cooperation/v1/callback
   #回调主路径
-  CALLBACK_DOMAIN_URL: http://www.baidu.com
+  CALLBACK_DOMAIN_URL: https://www.baidu.com

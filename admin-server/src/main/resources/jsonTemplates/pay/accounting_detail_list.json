@@ -22,19 +22,25 @@
       {
         "name": "恢复费用核销",
         "event": {
-          "type": "reset"
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/pay/verify/accountingDetailRestore"
         }
       },
       {
         "name": "暂缓",
         "event": {
-          "type": "reset"
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/pay/verify/accountingDetailPause"
         }
       },
       {
         "name": "确认结算",
         "event": {
-          "type": "reset"
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/pay/verify/verifyByDetail"
         }
       }
     ],

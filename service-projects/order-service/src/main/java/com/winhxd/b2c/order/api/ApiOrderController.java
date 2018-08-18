@@ -186,15 +186,7 @@ public class ApiOrderController {
         String logTitle = "=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderRefundCondition);
         ResponseResult<Void> result = new ResponseResult<>();
-        try {
-            this.orderService.orderRefundByCustomer(orderRefundCondition);
-        } catch (BusinessException e) {
-            LOGGER.error(logTitle + "--业务异常" + e.getMessage(), e);
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error(logTitle + "--异常" + e.getMessage(), e);
-            throw e;
-        }
+        this.orderService.orderRefundByCustomer(orderRefundCondition);
         LOGGER.info("{}--结束", logTitle);
         return result;
     }

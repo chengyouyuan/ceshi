@@ -3,6 +3,7 @@ package com.winhxd.b2c.pay.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.*;
@@ -14,6 +15,8 @@ import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +46,16 @@ public class VerifyService {
 
     @Autowired
     private OrderServiceClient orderServiceClient;
+
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    public void orderPaySuccessHandler(String eventId, OrderInfo orderInfo) {
+        saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
+    }
+
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    public void orderFinishHandler(String eventId, OrderInfo orderInfo) {
+        completeAccounting(orderInfo.getOrderNo());
+    }
 
     /**
      * 订单支付成功，保存订单费用明细

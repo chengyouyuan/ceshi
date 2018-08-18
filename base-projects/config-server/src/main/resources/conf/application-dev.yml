@@ -44,3 +44,8 @@ mq:
 eureka:
   instance:
     status-page-url: http://localhost:${server.port}/swagger-ui.html
+
+#cdn服务器地址(暂未使用)
+cdn:
+  dir: D:\\Inetpub\\wwwroot\\file\\
+  uploadUrl: http://cdn.winhxd.com/file/

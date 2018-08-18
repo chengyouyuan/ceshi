@@ -53,8 +53,6 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private OrderQueryService orderQueryService;
 
     @Autowired
     private StoreServiceClient storeServiceClient;
@@ -128,7 +126,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public PayPreOrderVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public String readyOrder(ReadyShopCarCondition condition, Long customerId) {
         logger.info(READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -140,7 +138,6 @@ public class ShopCarServiceImpl implements ShopCarService {
                     logger.error(READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
-
                 logger.info(READY_ORDER + "{}-> 校验购物车商品状态执行...");
                 checkShopCarProdInfo(shopCars);
 
@@ -159,17 +156,10 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
-                PayPreOrderVO orderPayVO = new PayPreOrderVO();
-                if (null != condition.getOrderTotalMoney()) {
-                    CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
-                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo开始...");
-                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
-                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
-                }
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));
                 this.removeShopCar(customerId);
-                return orderPayVO;
+                return orderNo;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }
@@ -180,7 +170,8 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
     }
 
-    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+    @Override
+    public CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
         ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceClient.findCustomerUserByIds(Arrays.asList(customerId));
         if (ret == null || ret.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(ret.getData())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);

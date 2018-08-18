@@ -14,7 +14,7 @@
     <result column="submit_by" jdbcType="VARCHAR" property="submitBy" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="busi_credential_no" jdbcType="VARCHAR" property="busiCredentialNo" />
-    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="bill_date" jdbcType="DATE" property="billDate" />
     <result column="financial_bill_count_id" jdbcType="BIGINT" property="financialBillCountId" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -41,7 +41,7 @@
       #{swiftNo,jdbcType=VARCHAR}, #{busiName,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, 
       #{budget,jdbcType=VARCHAR}, #{budgetAmount,jdbcType=DECIMAL}, #{accountBalance,jdbcType=DECIMAL}, 
       #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
-      #{billDate,jdbcType=TIMESTAMP}, #{financialBillCountId,jdbcType=BIGINT})
+      #{billDate,jdbcType=DATE}, #{financialBillCountId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBill">
     insert into pay_financial_bill
@@ -127,7 +127,7 @@
         #{busiCredentialNo,jdbcType=VARCHAR},
       </if>
       <if test="billDate != null">
-        #{billDate,jdbcType=TIMESTAMP},
+        #{billDate,jdbcType=DATE},
       </if>
       <if test="financialBillCountId != null">
         #{financialBillCountId,jdbcType=BIGINT},
@@ -171,7 +171,7 @@
         busi_credential_no = #{busiCredentialNo,jdbcType=VARCHAR},
       </if>
       <if test="billDate != null">
-        bill_date = #{billDate,jdbcType=TIMESTAMP},
+        bill_date = #{billDate,jdbcType=DATE},
       </if>
       <if test="financialBillCountId != null">
         financial_bill_count_id = #{financialBillCountId,jdbcType=BIGINT},
@@ -192,7 +192,7 @@
       submit_by = #{submitBy,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
       busi_credential_no = #{busiCredentialNo,jdbcType=VARCHAR},
-      bill_date = #{billDate,jdbcType=TIMESTAMP},
+      bill_date = #{billDate,jdbcType=DATE},
       financial_bill_count_id = #{financialBillCountId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

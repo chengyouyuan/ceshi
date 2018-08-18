@@ -1,11 +1,9 @@
 package com.winhxd.b2c.order.api;
 
-import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.winhxd.b2c.common.domain.common.ApiCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
-import com.winhxd.b2c.common.domain.order.vo.*;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,10 +21,19 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPayInfoCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByStoreCondition;
+import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderListForCustomerVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderListItemForCustomerVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.OrderQueryService;
 
@@ -34,9 +41,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author pangjianhua
@@ -227,10 +231,10 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_PAID, message = "订单已经支付")
     })
     @RequestMapping(value = "/4015/v1/getOrderPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OrderPayVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
+    public ResponseResult<PayPreOrderVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
         String logTitle = "/api-order/order/4015/v1/getOrderPayInfo-C端获取支付信息";
         LOGGER.info("{}=--开始--{}", logTitle, condition);
-        ResponseResult<OrderPayVO> result = new ResponseResult<>();
+        ResponseResult<PayPreOrderVO> result = new ResponseResult<>();
         //获取当前登录门店Id
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null || customerUser.getCustomerId() == null || StringUtils.isBlank(customerUser.getOpenid())) {

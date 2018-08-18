@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface MessageNeteaseAccountMapper {
     int deleteByPrimaryKey(Long id);
@@ -21,4 +23,6 @@ public interface MessageNeteaseAccountMapper {
     MessageNeteaseAccount getNeteaseAccountByCustomerId(Long customerId);
 
     int updateByCustomerId(@Param("customerId") Long customerId, @Param("accid") String accid, @Param("token") String token);
+
+    List<MessageNeteaseAccount> selectAll();
 }

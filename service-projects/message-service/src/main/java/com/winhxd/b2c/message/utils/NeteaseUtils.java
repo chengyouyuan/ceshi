@@ -50,6 +50,10 @@ public class NeteaseUtils {
      * 发送普通消息
      */
     private static final String SEND_MSG_URL = "https://api.netease.im/nimserver/msg/sendMsg.action";
+    /**
+     * 批量发送点对点普通消息
+     */
+    private static final String SEND_BATCH_MSG_URL = "https://api.netease.im/nimserver/msg/sendBatchMsg.action";
 
     @Value("${netease.appKey}")
     private String appKey;
@@ -141,7 +145,7 @@ public class NeteaseUtils {
      * @return
      */
     public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition){
-        String bodyMsg = buildBodyJsonMsg(neteaseMsgCondition.getNeteaseMsg());
+        String bodyMsg = buildBodyJsonMsg(neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         //扩展参数
         String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg());
         //组织参数
@@ -157,10 +161,10 @@ public class NeteaseUtils {
         return  sendHttpClientPost(SEND_MSG_URL,nvps);
     }
 
-    private String buildBodyJsonMsg(NeteaseMsg neteaseMsg) {
+    private String buildBodyJsonMsg(String msgContent) {
         JSONObject bodyJson = new JSONObject();
         bodyJson.put("type","txt");
-        bodyJson.put("msg",neteaseMsg.getMsgContent());
+        bodyJson.put("msg",msgContent);
         return bodyJson.toJSONString();
     }
 
@@ -171,6 +175,18 @@ public class NeteaseUtils {
         extJson.put("audiotype", neteaseMsg.getAudioType());
         extJson.put("page", neteaseMsg.getTreeCode());
         return extJson.toJSONString();
+    }
+
+    public Map<String,Object> sendTxtMessage2Batch(String[] accids,String content){
+        String bodyMsg = buildBodyJsonMsg(content);
+        //组织参数
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("fromAccid", NETEASE_PLATFORM_ADMIN));
+        nvps.add(new BasicNameValuePair("toAccids", JsonUtil.toJSONString(accids)));
+        //type:0表示文本消息
+        nvps.add(new BasicNameValuePair("type", "0"));
+        nvps.add(new BasicNameValuePair("body", bodyMsg));
+        return  sendHttpClientPost(SEND_BATCH_MSG_URL,nvps);
     }
 
 }

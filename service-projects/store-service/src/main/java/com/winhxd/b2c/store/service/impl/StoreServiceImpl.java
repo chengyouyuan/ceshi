@@ -113,6 +113,7 @@ public class StoreServiceImpl implements StoreService {
         userInfoList.stream().forEach(storeUserInfo1 -> {
             BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1, storeVO);
+            storeVO.setId(storeUserInfo1.getId());
             codes.add(storeUserInfo1.getStoreRegionCode());
             if (!StringUtils.isEmpty(storeUserInfo1.getPayType())) {
 

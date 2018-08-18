@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -11,8 +12,6 @@ import java.util.List;
  */
 @Data
 public class MiniFormIdCondition {
-    /**
-     * formId集合
-     */
+    @ApiModelProperty("formId集合")
     List<String> formIds;
 }

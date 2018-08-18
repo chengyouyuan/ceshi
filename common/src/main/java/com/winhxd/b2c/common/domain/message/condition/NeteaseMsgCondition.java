@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
-import com.winhxd.b2c.common.domain.common.ApiCondition;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -12,16 +12,12 @@ import java.util.List;
  */
 @Data
 public class NeteaseMsgCondition {
-    /**
-     * 多个B端用户id
-     */
+    @ApiModelProperty("多个B端用户id")
     private List<Long> customerIds;
-    /**
-     * B端用户id
-     */
+
+    @ApiModelProperty("单个B端用户id")
     private Long  customerId;
-    /**
-     * 云信消息
-     */
+
+    @ApiModelProperty("云信消息")
     private NeteaseMsg neteaseMsg;
 }

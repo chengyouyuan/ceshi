@@ -355,8 +355,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private void orderCancel(String orderNo, String cancelReason, Long operatorId, String operatorName) {
         OrderInfo order = getOrderInfo(orderNo);
         if (!order.getCustomerId().equals(operatorId)) {
-            throw new BusinessException(BusinessCode.ORDER_INFO_NOT_MATCH_ERROR, MessageFormat.format("该订单不是登录用户的订单orderNo={0},orderCustomerId={1},customerId={2}", order.getOrderNo(), order
-                    .getCustomerId(), operatorId));
+            throw new BusinessException(BusinessCode.ORDER_INFO_NOT_MATCH_ERROR,
+                    MessageFormat.format("该订单不是登录用户的订单orderNo={0},orderCustomerId={1},customerId={2}", order.getOrderNo(), order.getCustomerId(), operatorId));
         }
         orderCancel(order, cancelReason, operatorId, operatorName, 1);
     }

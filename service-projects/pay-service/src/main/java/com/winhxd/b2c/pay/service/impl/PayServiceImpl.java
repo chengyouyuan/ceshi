@@ -213,9 +213,14 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--金额为空");
 			throw new BusinessException(BusinessCode.CODE_600009);
 		}
+		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<0) {
+			logger.info(log+"--金额有误");
+			throw new BusinessException(BusinessCode.CODE_600010);
+		}
 		logger.info(log+"--参数"+condition.toString());
 		boolean flag=false;
 		Map<String, Object> map=new HashMap<>();
+		map.put("type", condition.getType());
 		StoreBankrollChangeCondition changeCondition=null;
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			// 验证该订单是否已经做过此项操作
@@ -277,7 +282,7 @@ public class PayServiceImpl implements PayService{
 			
 		}
 
-		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode().equals(condition.getType())){
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
 			if (StringUtils.isNotBlank(withdrawalsNo)) {
@@ -289,7 +294,7 @@ public class PayServiceImpl implements PayService{
 			if (CollectionUtils.isNotEmpty(list)) {
 				//说明在订单闭环的时候  已经给用户添加过资金
 				logger.info(log+"--提现申请计算用户资金重复--提现单号"+withdrawalsNo);
-				throw new BusinessException(BusinessCode.CODE_600008);
+				throw new BusinessException(BusinessCode.CODE_600011);
 			}
 			 changeCondition=new StoreBankrollChangeCondition();
 			 changeCondition.setType(condition.getType());
@@ -301,8 +306,56 @@ public class PayServiceImpl implements PayService{
 			 flag=true;
 			
 		}
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_AUDIT_NOT_PASS.getCode().equals(condition.getType())){
+			// 验证该订单是否做过此项操作
+			String withdrawalsNo=condition.getWithdrawalsNo();
+			if (StringUtils.isNotBlank(withdrawalsNo)) {
+				logger.info(log+"--提现审核不通过 提现单号为空");
+				throw new BusinessException(BusinessCode.CODE_600005);
+			}
+			map.put("withdrawalsNo",withdrawalsNo);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明已经做过此操作
+				logger.info(log+"--提现审核不通过计算用户资金重复--提现单号"+withdrawalsNo);
+				throw new BusinessException(BusinessCode.CODE_600012);
+			}
+			changeCondition=new StoreBankrollChangeCondition();
+			changeCondition.setType(condition.getType());
+			changeCondition.setWithdrawalsNo(withdrawalsNo);
+			//可提现金额增加
+			changeCondition.setPresentedMoney(condition.getMoney());
+			//冻结金额减少(因为用户资金变化都是add，这里需要传负数)
+			changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			flag=true;
+			
+		}
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
+			// 验证该订单是否做过此项操作
+			String withdrawalsNo=condition.getWithdrawalsNo();
+			if (StringUtils.isNotBlank(withdrawalsNo)) {
+				logger.info(log+"--提现失败 提现单号为空");
+				throw new BusinessException(BusinessCode.CODE_600005);
+			}
+			map.put("withdrawalsNo",withdrawalsNo);
+			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+			if (CollectionUtils.isNotEmpty(list)) {
+				//说明已经做过此操作
+				logger.info(log+"--提现失败计算用户资金重复--提现单号"+withdrawalsNo);
+				throw new BusinessException(BusinessCode.CODE_600013);
+			}
+			changeCondition=new StoreBankrollChangeCondition();
+			changeCondition.setType(condition.getType());
+			changeCondition.setWithdrawalsNo(withdrawalsNo);
+			//可提现金额增加
+			changeCondition.setPresentedMoney(condition.getMoney());
+			//冻结金额减少(因为用户资金变化都是add，这里需要传负数)
+			changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			flag=true;
+		}
+		
 
-		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode().equals(condition.getType())){
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
 			if (StringUtils.isNotBlank(withdrawalsNo)) {
@@ -312,7 +365,7 @@ public class PayServiceImpl implements PayService{
 			map.put("withdrawalsNo",withdrawalsNo);
 			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
 			if (CollectionUtils.isNotEmpty(list)) {
-				//说明在订单闭环的时候  已经给用户添加过资金
+				//说明在提现审核的时候  已经给用户添加过资金
 				logger.info(log+"--提现审核计算用户资金重复--提现单号"+withdrawalsNo);
 				throw new BusinessException(BusinessCode.CODE_600008);
 			}
@@ -321,6 +374,7 @@ public class PayServiceImpl implements PayService{
 			 changeCondition.setWithdrawalsNo(withdrawalsNo);
 			 //冻结金额减少(因为用户资金变化都是add，这里需要传负数)
 			 changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			 //已提现金额增加
 			 changeCondition.setAlreadyPresentedMoney(condition.getMoney());
 			 flag=true;
 			
@@ -387,12 +441,20 @@ public class PayServiceImpl implements PayService{
 			 remarks = "结算审核：待结算减少"+settlementSettledMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 
-		if(StoreBankRollOpearateEnums.withdrawals_apply.getCode().equals(condition.getType())){
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode().equals(condition.getType())){
 			 remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedFrozenMoney+"元";
 		}
 
-		if(StoreBankRollOpearateEnums.withdrawals_audit.getCode().equals(condition.getType())){
-			 remarks = "提现审核:提现冻结金额减少"+presentedFrozenMoney +"元,已提现金额增加"+alreadyPresentedMoney+"元";
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode().equals(condition.getType())){
+			 remarks = "提现成功:提现冻结金额减少"+presentedFrozenMoney +"元,已提现金额增加"+alreadyPresentedMoney+"元";
+		}
+
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_AUDIT_NOT_PASS.getCode().equals(condition.getType())){
+			remarks = "提现审核不通过:提现冻结金额减少"+presentedFrozenMoney +"元,可提现提现金额增加"+presentedMoney+"元";
+		}
+		
+		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
+			remarks = "提现失败:提现冻结金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());

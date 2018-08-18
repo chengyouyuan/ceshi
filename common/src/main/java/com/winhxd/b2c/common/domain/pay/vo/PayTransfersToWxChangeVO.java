@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @Author yindanqing
  * @Date 2018/8/17 10:27
- * @Description:
+ * @Description: 转账至微信零钱卡返参
  */
 @Setter
 @Getter

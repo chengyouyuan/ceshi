@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class ReadyShopCarCondition extends ApiCondition {
     private String extractAddress;
 
     @ApiModelProperty(value = "自提时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pickupDateTime;
 
     @ApiModelProperty(value = "支付方式(1:微信扫码付款,2微信在线付款)")
@@ -41,7 +43,7 @@ public class ReadyShopCarCondition extends ApiCondition {
     @ApiModelProperty(value = "终端IP")
     private String spbillCreateIp;
 
-    @ApiModelProperty(value = "设备号")
+    @ApiModelProperty(value = "设备号", required = false)
     private String deviceInfo;
 
     @ApiModelProperty(value = "openid")

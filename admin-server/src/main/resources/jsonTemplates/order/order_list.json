@@ -89,13 +89,13 @@
             "event": {
               "type": "router",
               "params": [
-                "id"
+                "orderNo"
               ],
               "static": {
                 "method": "detail"
               },
-              "path": "",
-              "configKey": "/template/module/system/system_user_list_view.json"
+              "path": "/details/index",
+              "configKey": ""
             }
           }
         ]

@@ -118,18 +118,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		payWithdrawal.setTotalFee(condition.getTotalFee());
 		payWithdrawal.setRealFee(condition.getRealFee());
+		System.out.println("当前计算所得实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
 		if(bankType == condition.getWithdrawType()){
-			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getCmmsamt())));
-			System.out.println("当前计算所得银行的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getCmmsamt());
 			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusDesc());
 			payWithdrawal.setFlowDirectionType(bankType);
 		}else if(weixType == condition.getWithdrawType()){
-			payWithdrawal.setRealFee((condition.getTotalFee()).multiply(BigDecimal.valueOf(1d).subtract(payWithDrawalConfig.getRate())));
-			System.out.println("当前计算所得微信的实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
 			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusDesc());
 			payWithdrawal.setFlowDirectionType(weixType);
 		}
-		payWithdrawal.setCmmsAmt(payWithDrawalConfig.getCmmsamt());
+		payWithdrawal.setCmmsAmt(condition.getCmmsAmt());
 		payWithdrawal.setRate(payWithDrawalConfig.getRate());
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);

@@ -23,6 +23,8 @@ public class PayStoreApplyWithDrawCondition extends ApiCondition {
     private BigDecimal totalFee;
     @ApiModelProperty("实际到账金额")
     private BigDecimal realFee;
+    @ApiModelProperty("手续费")
+    private BigDecimal cmmsAmt;
     @ApiModelProperty("流向类型 1微信 2银行卡")
     private short flowDirectionType;
     @ApiModelProperty("流向名称 微信或者各个银行卡名称")

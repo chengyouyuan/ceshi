@@ -5,8 +5,6 @@ eureka:
 
 pay: 
   withdrawal: 
-    #提现的费率
-    cmmsamt: 0.006
     rate: 0.006
     #提现的最大金额
     maxmoney: 20000

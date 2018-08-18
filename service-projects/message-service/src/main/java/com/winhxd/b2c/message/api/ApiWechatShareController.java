@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -39,18 +40,18 @@ public class ApiWechatShareController {
     private StoreServiceClient storeServiceClient;
 
     @ApiOperation(value = "生成分享小程序二维码")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/api-message/message/7001/v1/generateQRCodePic")
     public ResponseResult<QRCodeInfoVO> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
         ResponseResult<QRCodeInfoVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-     /* if (storeUser == null) {
+        if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
-        }*/
+        }
 
         QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(3L);
-        if(qrCodeInfoVO == null || StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())){
+        if (qrCodeInfoVO == null || StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())) {
             throw new BusinessException(BusinessCode.CODE_200018);
         }
         responseResult.setData(qrCodeInfoVO);
@@ -64,15 +65,15 @@ public class ApiWechatShareController {
      * @Description 返回小程序相关配置信息
      */
     @ApiOperation(value = "返回小程序码的配置信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"),@ApiResponse(code = BusinessCode.CODE_OK,message = "操作成功")})
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1002, message = "当前用户登录的凭证无效"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/api-message/message/7002/v1/fetchMiniProgramConfig")
     public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig(ApiCondition condition) {
         ResponseResult<MiniProgramConfigVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-      /* if (storeUser == null) {
+        if (storeUser == null) {
             logger.error("ApiWechatShareController ->fetchMiniProgramConfig当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
-        }*/
+        }
         MiniProgramConfigVO configVO = wechatShareService.getMiniProgramConfigVO(1L);
         responseResult.setData(configVO);
         return responseResult;

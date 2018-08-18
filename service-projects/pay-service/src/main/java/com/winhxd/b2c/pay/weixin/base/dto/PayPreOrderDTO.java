@@ -13,26 +13,26 @@ import java.math.BigDecimal;
 public class PayPreOrderDTO extends RequestBase implements Serializable {
 	private static final long serialVersionUID = -6751906874587493059L;
 	
-	/**
-     * 真实订单号
-     */
-    private String outOrderNo;
-    
     /**
      * 支付流水号
      */
     private String outTradeNo;
     
     /**
-     * 订单总金额，单位为元
+     * 订单总金额，单位为分
      */
-    private BigDecimal totalAmount;
+    private int totalFee;
     
     /**
      * 买家用户标识
      * trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识（openid）
      */
     private String openid;
+    
+    /**
+     * 交易时间
+     */
+    private String timeStart;
     
     /**
      * 商品描述
@@ -64,14 +64,11 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
      * 限制支付类型（微信参数），上传此参数no_credit--可限制用户不能使用信用卡支付
      */
     private String limitPay;
-
-	public String getOutOrderNo() {
-		return outOrderNo;
-	}
-
-	public void setOutOrderNo(String outOrderNo) {
-		this.outOrderNo = outOrderNo;
-	}
+    
+    /**
+     * （非必填）标价币种
+     */
+    private String feeType;
 
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -81,12 +78,12 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
 		this.outTradeNo = outTradeNo;
 	}
 
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
+	public int getTotalFee() {
+		return totalFee;
 	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotalFee(int totalFee) {
+		this.totalFee = totalFee;
 	}
 
 	public String getOpenid() {
@@ -95,6 +92,14 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public String getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(String timeStart) {
+		this.timeStart = timeStart;
 	}
 
 	public String getBody() {
@@ -143,6 +148,14 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
 
 	public void setLimitPay(String limitPay) {
 		this.limitPay = limitPay;
+	}
+
+	public String getFeeType() {
+		return feeType;
+	}
+
+	public void setFeeType(String feeType) {
+		this.feeType = feeType;
 	}
 
 }

@@ -44,8 +44,8 @@ public class WXPayApiImpl implements WXPayApi {
 	public PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO) {
 		//填充配置参数
 		payPreOrderDTO = this.fillRequestDTO(payPreOrderDTO);
-		//生产签名，转入参为map
-		Map<String, String> reqData = this.generateSignature(payPreOrderDTO);
+		//bean转map
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payPreOrderDTO);
         //统一下单，respXml为响应参数
         String respXml = this.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
         //响应参数验证，转为map
@@ -59,6 +59,28 @@ public class WXPayApiImpl implements WXPayApi {
 		}
         
         return PayPreOrderResponseDTO;
+    }
+	
+	/**
+     * 添加 appid、mch_id、nonce_str、sign_type
+     * 该函数适用于商户适用于统一下单、退款等接口，不适用于红包、代金券接口
+     *
+     * @param reqData
+     * @return
+     * @throws Exception
+     */
+	private PayPreOrderDTO fillRequestDTO(PayPreOrderDTO payPreOrderDTO){
+		payPreOrderDTO.setAppid(config.getAppID());
+		payPreOrderDTO.setMchId(config.getMchID());
+		payPreOrderDTO.setNonceStr(WXPayUtil.generateNonceStr());
+        if (SignType.MD5.equals(this.signType)) {
+            payPreOrderDTO.setSignType(WXPayConstants.MD5);
+        }
+        else if (SignType.HMACSHA256.equals(this.signType)) {
+            payPreOrderDTO.setSignType(WXPayConstants.HMACSHA256);
+        }
+        payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
+        return payPreOrderDTO;
     }
 	
 	/**
@@ -86,47 +108,25 @@ public class WXPayApiImpl implements WXPayApi {
     }
 	
 	/**
-     * 添加 appid、mch_id、nonce_str、sign_type
-     * 该函数适用于商户适用于统一下单、退款等接口，不适用于红包、代金券接口
-     *
-     * @param reqData
-     * @return
-     * @throws Exception
-     */
-	private PayPreOrderDTO fillRequestDTO(PayPreOrderDTO payPreOrderDTO){
-		payPreOrderDTO.setAppid(config.getAppID());
-		payPreOrderDTO.setMchId(config.getMchID());
-		payPreOrderDTO.setNonceStr(WXPayUtil.generateNonceStr());
-        if (SignType.MD5.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.MD5);
-        }
-        else if (SignType.HMACSHA256.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.HMACSHA256);
-        }
-        return payPreOrderDTO;
-    }
-	
-	/**
-	 * 生成签名. 注意，若含有sign_type字段，必须和signType参数保持一致。
+	 * 微信统一签名方法
 	 * @author mahongliang
-	 * @date  2018年8月18日 下午3:29:45
+	 * @date  2018年8月18日 下午6:25:02
 	 * @Description 
-	 * @param reqData
+	 * @param obj
 	 * @return
 	 */
-	private Map<String, String> generateSignature(PayPreOrderDTO payPreOrderDTO){
+	public String generateSign(Object obj){
+		String sign = null;
 		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToSortedMap(payPreOrderDTO);
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(obj);
         try {
-        	//签名添加到入参VO
-        	payPreOrderDTO.setSign(WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
         	//签名添加调用微信API入参
-			reqData.put("sign", payPreOrderDTO.getSign());
+        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), this.signType);
 		} catch (Exception e) {
 			logger.error("签名失败", e);
 			throw new BusinessException(3400901, "签名失败");
 		}
-        return reqData;
+        return sign;
     }
 	
 	/**

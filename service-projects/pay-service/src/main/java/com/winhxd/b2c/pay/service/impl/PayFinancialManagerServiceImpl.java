@@ -58,14 +58,28 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 	public PayFinanceAccountDetailVO findStoreFinancialSummary() {
 
 		PayFinancialSummary todayWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("today");
+		if(todayWithdrawals == null){
+			todayWithdrawals.setRealFee(BigDecimal.valueOf(0));
+			todayWithdrawals.setCmmsAmt(BigDecimal.valueOf(0));
+		}
 		BigDecimal todayRealFee = todayWithdrawals.getRealFee();
 		BigDecimal todayCmmsAmt = todayWithdrawals.getCmmsAmt();
 		PayFinancialSummary sumWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("total");
+		if(sumWithdrawals == null){
+			sumWithdrawals.setRealFee(BigDecimal.valueOf(0));
+			sumWithdrawals.setCmmsAmt(BigDecimal.valueOf(0));
+		}
 		BigDecimal sumRealfee = sumWithdrawals.getRealFee();
 		BigDecimal sumCmmsAmt = sumWithdrawals.getCmmsAmt();
 		PayFinancialSummary todayRefund = payFinanceAccountDetailMapper.getRefund("today");
+		if(todayRefund == null){
+			todayRefund.setRefundAmout(BigDecimal.valueOf(0));
+		}
 		BigDecimal todayRefundAmout = todayRefund.getRefundAmout();
 		PayFinancialSummary sumRefund = payFinanceAccountDetailMapper.getRefund("total");
+		if(sumRefund == null){
+			sumRefund.setRefundAmout(BigDecimal.valueOf(0));
+		}
 		BigDecimal sumRefundAmout = sumRefund.getRefundAmout();
 
 		BigDecimal todayOutMoney = todayRealFee.add(todayRefundAmout);
@@ -81,21 +95,37 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		payFinanceAccountDetailVO.setAllCharge(sumCmmsAmt);
 		//总进账
 		BigDecimal todayPreMoney = payFinanceAccountDetailMapper.getIncome("todayPreMoney");
+		if(todayPreMoney == null){
+			todayPreMoney = BigDecimal.valueOf(0);
+		}
 		BigDecimal todayRealMoney = payFinanceAccountDetailMapper.getIncome("todayRealMoney");
+		if(todayRealMoney == null){
+			todayRealMoney = BigDecimal.valueOf(0);
+		}
 		BigDecimal allInMoney = payFinanceAccountDetailMapper.getIncome("allInMoney");
+		if(allInMoney == null){
+			allInMoney = BigDecimal.valueOf(0);
+		}
 		payFinanceAccountDetailVO.setTodayPreMoney(todayPreMoney);
 		payFinanceAccountDetailVO.setTodayRealMoney(todayRealMoney);
 		payFinanceAccountDetailVO.setTodayInMoney(todayPreMoney.add(todayRealMoney));
 		payFinanceAccountDetailVO.setAllInMoney(allInMoney);
 		//优惠券抵用金额
 		BigDecimal useTodayCouponAllMoney = payFinanceAccountDetailMapper.getIncome("useTodayCouponAllMoney");
+		if(useTodayCouponAllMoney == null){
+			useTodayCouponAllMoney = BigDecimal.valueOf(0);
+		}
 		BigDecimal useCouponAllMoney = payFinanceAccountDetailMapper.getIncome("useCouponAllMoney");
+		if(useCouponAllMoney == null){
+			useCouponAllMoney = BigDecimal.valueOf(0);
+		}
 		payFinanceAccountDetailVO.setUseTodayCouponAllMoney(useTodayCouponAllMoney);
 		payFinanceAccountDetailVO.setUseCouponAllMoney(useCouponAllMoney);
 		//公司补充总入账,待定
-
-		//当前余额=总进账金额+公司总入账金额 - 总出账金额
-
+		payFinanceAccountDetailVO.setCompanySupplementInMoney(BigDecimal.valueOf(8888));
+		//当前余额=总进账金额+公司总入账金额 - 总出账金额，curLeftMoney
+		BigDecimal curLeftMoney = allInMoney.add(payFinanceAccountDetailVO.getCompanySupplementInMoney()).subtract(payFinanceAccountDetailVO.getAllOutMoney());
+		payFinanceAccountDetailVO.setCurLeftMoney(curLeftMoney);
 		return payFinanceAccountDetailVO;
 	}
 

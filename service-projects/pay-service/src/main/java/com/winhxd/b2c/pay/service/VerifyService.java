@@ -13,8 +13,10 @@ import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
@@ -27,10 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class VerifyService {
@@ -47,6 +46,9 @@ public class VerifyService {
 
     @Autowired
     private OrderServiceClient orderServiceClient;
+
+    @Autowired
+    private StoreServiceClient storeServiceClient;
 
     @Autowired
     private PayService payService;
@@ -195,7 +197,26 @@ public class VerifyService {
      */
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return accountingDetailMapper.selectVerifyList(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<VerifySummaryVO> page = accountingDetailMapper.selectVerifyList(condition);
+        for (VerifySummaryVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (VerifySummaryVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**

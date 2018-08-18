@@ -110,11 +110,49 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     
     /**
-     * 微信返回的时间格式
+     * 微信入参
      */
-//    2014-11-1016：33：45
+    private static final String BILL_DATE = "bill_date";
+    
+    /**
+     * 微信入参
+     */
+    private static final String BILL_TYPE = "bill_type";
+    
+    /**
+     * 微信入参
+     */
+    private static final String ACCOUNT_TYPE = "account_type";
+    
+    /**
+     * 微信返参
+     */
+    private static final String RETURN_CODE = "return_code";
+    
+    /**
+     * 微信返参
+     */
+    private static final String RETURN_MSG = "return_msg";
+    
+    /**
+     * 微信返参
+     */
+    private static final String RESULT_CODE = "result_code";
+    
+    /**
+     * 微信返参
+     */
+    private static final String ERR_CODE = "err_code";
+    
+    /**
+     * 微信返参
+     */
+    private static final String ERR_CODE_DES = "err_code_des";
+    
+    /**
+     * 微信返回的时间格式，不确定是哪个，例：2014-11-1016：33：45           2018-02-01 04:21:23
+     */
     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-ddHH：mm：ss");
-//    2018-02-01 04:21:23
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     @Autowired
@@ -142,7 +180,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	@Override
 	public String downloadStatement() {
 
-		Map<String, String> reqData = new HashMap<String, String>();
+		Map<String, String> reqData = new HashMap<String, String>(16);
 		Date billDate = DateUtils.addDays(new Date(), -1);
 		reqData.put("bill_date", sdf.format(billDate));
 		reqData.put("bill_type", ALL);
@@ -152,20 +190,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			Map<String, String> billMap = wXPay.downloadBill(reqData);
 			
 			//通信失败，则记录失败原因到记录表
-			if (WXPayConstants.FAIL.equals(billMap.get("return_code"))) {
+			if (WXPayConstants.FAIL.equals(billMap.get(RETURN_CODE))) {
 				
-				this.dealRequestFail(billDate, BillType.STATEMENT.getCode(), billMap.get("return_msg"));
-				this.dealRequestFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get("return_msg"));
-				logger.info("对账单下载失败，返回信息：{}", billMap.get("return_code"));
+				this.dealRequestFail(billDate, BillType.STATEMENT.getCode(), billMap.get(RETURN_MSG));
+				this.dealRequestFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get(RETURN_MSG));
+				logger.info("对账单下载失败，返回信息：{}", billMap.get(RETURN_CODE));
 
 			//通信成功
 			} else {
 				//业务失败，记录失败原因到记录表
-				if (WXPayConstants.FAIL.equals(billMap.get("result_code"))) {
+				if (WXPayConstants.FAIL.equals(billMap.get(RESULT_CODE))) {
 					
-					this.dealBusiFail(billDate, BillType.STATEMENT.getCode(), billMap.get("err_code"), billMap.get("err_code_des"));
-					this.dealBusiFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get("err_code"), billMap.get("err_code_des"));
-					logger.info("对账单下载失败，错误码：{}；错误信息：{}", billMap.get("err_code"), billMap.get("err_code_des"));
+					this.dealBusiFail(billDate, BillType.STATEMENT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					this.dealBusiFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					logger.info("对账单下载失败，错误码：{}；错误信息：{}", billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
 					
 				//成功则开始插入数据
 				}else{
@@ -183,7 +221,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					for (String everyData : dataArray) {
 						//把每一条数据按逗号分割
 						String[] everyDataArray = everyData.split(",");
-						PayStatement statement = this.assemblePayStatement(everyDataArray, reqData.get("bill_type"), billDate);
+						PayStatement statement = this.assemblePayStatement(everyDataArray, reqData.get(BILL_TYPE), billDate);
 						list.add(statement);
 					}
 					//保存数据
@@ -215,7 +253,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			logger.error("内部错误，下载对账单失败");
 			e.printStackTrace();
 		}
-		return null;
+		return "SUCCESS";
 	}
 
 	/**
@@ -378,10 +416,10 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	@Override
 	public String downloadFundFlow() {
 
-		Map<String, String> reqData = new HashMap<String, String>();
+		Map<String, String> reqData = new HashMap<String, String>(16);
 		Date billDate = DateUtils.addDays(new Date(), -1);
-		reqData.put("bill_date", sdf.format(billDate));
-		reqData.put("account_type", BASIC);
+		reqData.put(BILL_DATE, sdf.format(billDate));
+		reqData.put(ACCOUNT_TYPE, BASIC);
 		logger.info(reqData.toString());
 		
 		try {
@@ -389,20 +427,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 
 			logger.info("资金账单下载返回数据：{}", String.valueOf(billMap.toString()));
 			//通信失败，则记录失败原因到记录表
-			if (WXPayConstants.FAIL.equals(billMap.get("return_code"))) {
+			if (WXPayConstants.FAIL.equals(billMap.get(RETURN_CODE))) {
 				
-				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get("return_msg"));
-				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get("return_msg"));
-				logger.info("资金账单下载失败，返回信息：{}", billMap.get("return_code"));
+				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get(RETURN_MSG));
+				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get(RETURN_MSG));
+				logger.info("资金账单下载失败，返回信息：{}", billMap.get(RETURN_CODE));
 
 			//通信成功
 			} else {
 				//业务失败，记录失败原因到记录表
-				if (WXPayConstants.FAIL.equals(billMap.get("result_code"))) {
+				if (WXPayConstants.FAIL.equals(billMap.get(RESULT_CODE))) {
 					
-					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get("err_code"), billMap.get("err_code_des"));
-					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get("err_code"), billMap.get("err_code_des"));
-					logger.info("资金账单下载失败，错误码：{}；错误信息：{}", billMap.get("err_code"), billMap.get("err_code_des"));
+					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					logger.info("资金账单下载失败，错误码：{}；错误信息：{}", billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
 					
 				//成功则开始插入数据
 				}else{
@@ -419,7 +457,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					for (String everyData : dataArray) {
 						//把每一条数据按逗号分割
 						String[] everyDataArray = everyData.split(",");
-						PayFinancialBill payFinancialBill = this.assemblePayFinancialBill(everyDataArray, reqData.get("account_type"), billDate);
+						PayFinancialBill payFinancialBill = this.assemblePayFinancialBill(everyDataArray, reqData.get(ACCOUNT_TYPE), billDate);
 						list.add(payFinancialBill);
 					}
 					//保存数据
@@ -449,7 +487,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e.toString());
 		}
-		return null;
+		return "SUCCESS";
 	}
 
 	private PayFinancialBill assemblePayFinancialBill(String[] everyDataArray,

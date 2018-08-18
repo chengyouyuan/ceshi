@@ -551,7 +551,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
+	public int transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
 		String  log =logLabel + "微信提现至余额transfersToChange";
 		logger.info(log+"--开始");
 		if (toWxBalanceCondition==null) {
@@ -584,7 +584,7 @@ public class PayServiceImpl implements PayService{
         payWithdrawals.setTimeEnd(new Date());
         int transfersResult = this.transfersPublic(payWithdrawals,log);
 
-		return null;
+		return transfersResult;
 	}
 
 	public int transfersPublic(PayWithdrawals payWithdrawals,String log){
@@ -623,7 +623,7 @@ public class PayServiceImpl implements PayService{
     }
 
 	@Override
-	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
+	public int transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
 		String  log =logLabel + "微信提现至银行卡transfersToBank";
 		logger.info(log+"--开始");
 		if (toWxBankCondition==null) {
@@ -654,7 +654,7 @@ public class PayServiceImpl implements PayService{
         payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
         payWithdrawals.setTimeEnd(new Date());
         int transfersResult = this.transfersPublic(payWithdrawals,log);
-		return null;
+		return transfersResult;
 	}
 
 	@Override

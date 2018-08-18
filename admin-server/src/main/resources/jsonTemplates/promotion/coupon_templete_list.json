@@ -59,7 +59,7 @@
               "configKey": ""
             }
           }
-          
+
         ]
       },
       {
@@ -125,7 +125,7 @@
         "isHidden": false
       },
       {
-        "name": "name",
+        "name": "title",
         "inputModel": "input",
         "title": "优惠券标题",
         "value": "",

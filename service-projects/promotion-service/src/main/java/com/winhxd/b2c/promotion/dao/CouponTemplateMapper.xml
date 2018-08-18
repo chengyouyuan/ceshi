@@ -430,13 +430,13 @@
       and a.cal_type = #{condition.calType}
     </if>
     <if test="condition.investorName!=null and condition.investorName!=''">
-      and b.investor_name = #{condition.investorName}
+      and b.name = #{condition.investorName}
     </if>
     <if test="condition.gradeName!=null and condition.gradeName!=''">
-      and c.grade_name = #{condition.gradeName}
+      and c.name = #{condition.gradeName}
     </if>
     <if test="condition.applyRuleName!=null and condition.applyRuleName!=''">
-      and d.apply_rule_name = #{condition.applyRuleName}
+      and d.name = #{condition.applyRuleName}
     </if>
 
     <if test="condition.applyRuleType!=null and condition.applyRuleType!=''">

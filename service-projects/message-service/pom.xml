@@ -11,16 +11,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!--httpclient依赖-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-        </dependency>
-        <dependency>
+       <dependency>
             <groupId>emayclient</groupId>
             <artifactId>emayclient</artifactId>
             <version>4.3.2</version>

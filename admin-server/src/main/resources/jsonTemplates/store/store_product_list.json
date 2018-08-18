@@ -136,12 +136,14 @@
         "name": "prodCode",
         "inputModel": "input",
         "title": "spu编码",
+        "value":"",
         "isHidden": false
       },
       {
         "name": "prodName",
         "inputModel": "input",
         "title": "商品名称",
+        "value":"",
         "isHidden": false
       }
       ,
@@ -149,18 +151,21 @@
         "name": "skuCode",
         "inputModel": "input",
         "title": "sku编码",
+        "value":"",
         "isHidden": false
       },
       {
         "name": "storeMobile",
         "inputModel": "input",
         "title": "门店账户",
+        "value":"",
         "isHidden": false
       },
       {
         "name": "storeName",
         "inputModel": "input",
         "title": "门店名称",
+        "value":"",
         "isHidden": false
       }
     ]

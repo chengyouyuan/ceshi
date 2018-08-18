@@ -3,7 +3,6 @@
  */
 package com.winhxd.b2c.message.sms.process;
 
-import com.alibaba.druid.util.StringUtils;
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
 
 import java.io.UnsupportedEncodingException;
@@ -30,14 +29,14 @@ public class HxrtSmsProcess extends SmsProcess {
         HxrtSmsProcess tt = new HxrtSmsProcess();
         try {
             String ret = tt.sendMsg("", smsSend.getTelephone(), smsSend.getContent() + "【惠下单】");
-            String results[] = ret.split("&");
+            String[] results = ret.split("&");
             if (results != null) {
                 for (int i = 0; i < results.length; i++) {
                     String result = results[i];
                     String[] res = result.split("=");
                     if (i == 0) {
                         if (res != null && res.length == 2) {
-                            return StringUtils.stringToInteger(res[1]);
+                            return Integer.valueOf(res[1]);
                         }
                     }
                 }

@@ -44,11 +44,12 @@ public class ApiWechatShareController {
     public ResponseResult<QRCodeInfoVO> generateQRCodePic(ApiCondition codition, HttpServletResponse response) {
         ResponseResult<QRCodeInfoVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-      if (storeUser == null) {
+     /* if (storeUser == null) {
             logger.error("ApiWechatShareController -> generateQRCodePic当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
-        }
-        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(storeUser.getBusinessId());
+        }*/
+
+        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(3L);
         if(qrCodeInfoVO == null || StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())){
             throw new BusinessException(BusinessCode.CODE_200018);
         }
@@ -68,11 +69,11 @@ public class ApiWechatShareController {
     public ResponseResult<MiniProgramConfigVO> fetchMiniProgramConfig(ApiCondition condition) {
         ResponseResult<MiniProgramConfigVO> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-       if (storeUser == null) {
+      /* if (storeUser == null) {
             logger.error("ApiWechatShareController ->fetchMiniProgramConfig当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
-        }
-        MiniProgramConfigVO configVO = wechatShareService.getMiniProgramConfigVO(storeUser.getBusinessId());
+        }*/
+        MiniProgramConfigVO configVO = wechatShareService.getMiniProgramConfigVO(1L);
         responseResult.setData(configVO);
         return responseResult;
 

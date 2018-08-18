@@ -104,8 +104,6 @@ public final class BusinessCode {
     public static final int CODE_402001 = 402001;
     /** 购物车:自提地址为空*/
     public static final int CODE_402002 = 402002;
-    /** 购物车:自提时间为空*/
-    public static final int CODE_402003 = 402003;
     /** 购物车:商品信息为空*/
     public static final int CODE_402004 = 402004;
     /** 购物车:支付方式*/
@@ -391,7 +389,7 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  参数为空")
     public static final int CODE_600001 = 600001;
     
-    @ApiModelProperty("门店资金变化  参数为空")
+    @ApiModelProperty("门店资金变化  门店id为空")
     public static final int CODE_600002 = 600002;
     
     @ApiModelProperty("门店资金变化  操作类型为空")

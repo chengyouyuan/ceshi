@@ -207,17 +207,17 @@ public class WXPayApiImpl implements WXPayApi {
         boolean success = this.isResponseSignatureValid(respData);
         if(!success) {
         	logger.error("微信支付返回验签失败");
-			throw new BusinessException(3400905, "微信支付返回验签失败");
+			throw new BusinessException(3400905, "微信API返回验签失败");
         }
         if (!respData.containsKey(RETURN_CODE)) {
         	logger.error("No `return_code` in XML: %s", xmlStr);
-			throw new BusinessException(3400904, "微信支付返回值错误");
+			throw new BusinessException(3400904, "微信API返回值错误");
             
         }
         return_code = respData.get(RETURN_CODE);
         if (!return_code.equals(WXPayConstants.FAIL) || !return_code.equals(WXPayConstants.SUCCESS)) {
         	logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
-			throw new BusinessException(3400904, "微信支付返回值错误");
+			throw new BusinessException(3400904, "微信API返回值错误");
         }
 
         return respData;
@@ -246,9 +246,25 @@ public class WXPayApiImpl implements WXPayApi {
 		payRefundDTO = this.fillRefundRequestDTO(payRefundDTO);
 		//bean转map
 		Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
-		return null;
+		//申请退款，respXml为响应参数
+		String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+		//响应参数验证，转为map
+		Map<String, String> respData = this.processResponseXml(respXml);
+		PayRefundResponseDTO responseDTO = null;
+		try {
+			responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
+		} catch (Exception e) {
+			logger.error("申请退款时，响应参数解析失败", e);
+			throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+		}
+		return responseDTO;
 	}
 
+	/**
+	 * 组装申请退款参数
+	 * @param payRefundDTO
+	 * @return
+	 */
 	private PayRefundDTO fillRefundRequestDTO(PayRefundDTO payRefundDTO){
 		payRefundDTO.setAppid(config.getAppID());
 		payRefundDTO.setMchId(config.getMchID());
@@ -261,5 +277,50 @@ public class WXPayApiImpl implements WXPayApi {
 		}
 		payRefundDTO.setSign(this.generateSign(payRefundDTO));
 		return payRefundDTO;
+	}
+
+	/**
+	 * 申请退款
+	 * @param reqData
+	 * @param connectTimeoutMs
+	 * @param readTimeoutMs
+	 * @return
+	 */
+	private String refund(Map<String, String> reqData,  int connectTimeoutMs, int readTimeoutMs) {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_REFUND_URL_SUFFIX;
+		}
+		else {
+			url = WXPayConstants.REFUND_URL_SUFFIX;
+		}
+		if(config != null) {
+			reqData.put("notify_url", config.getPayNotifyUrl());
+		}
+		return this.requestWithCert(url, reqData, connectTimeoutMs, readTimeoutMs);
+	}
+
+	/**
+	 * 需要证书的请求
+	 * @param urlSuffix String
+	 * @param reqData 向wxpay post的请求数据  Map
+	 * @param connectTimeoutMs 超时时间，单位是毫秒
+	 * @param readTimeoutMs 超时时间，单位是毫秒
+	 * @return API返回数据
+	 * @throws Exception
+	 */
+	private String requestWithCert(String urlSuffix, Map<String, String> reqData,
+								  int connectTimeoutMs, int readTimeoutMs){
+		String msgUUID= reqData.get("nonce_str");
+		String reqBody = this.mapToXml(reqData);
+
+		String resp = null;
+		try {
+			resp = this.wxPayRequest.requestWithCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, this.autoReport);
+		} catch (Exception e) {
+			logger.error("请求微信退款", e);
+			throw new BusinessException(3400910, "请求微信退款失败");
+		}
+		return resp;
 	}
 }

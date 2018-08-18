@@ -23,31 +23,31 @@ public class PayConfig extends WXPayConfig {
     /**
      * 商户号的appid或商户号绑定的appid
      */
-    @Value("${WX.mchAppID}")
+    @Value("${WX.MCH_APP_ID}")
     private String mchAppID;
 
     /**
      * 公众账号ID
      */
-    @Value("${WX.appID}")
+    @Value("${WX.APP_ID}")
     private String appID;
 
     /**
      * 商户号
      */
-    @Value("${WX.mchID}")
+    @Value("${WX.MCH_ID}")
     private String mchID;
 
     /**
      * API 密钥
      */
-    @Value("${WX.key}")
+    @Value("${WX.KEY}")
     private String key;
 
     /***
      * 证书路径
      */
-    @Value("${WX.certPath}")
+    @Value("${WX.CERT_PATH}")
     private String certPath;
 
     /***

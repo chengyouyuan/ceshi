@@ -177,13 +177,19 @@ public class OrderQueryAspect {
     private void storeInfoConvert(JoinPoint joinPoint, Object ret) {
         if (ret instanceof Object[]) {
             Object[] objArr = (Object[]) ret;
-            assembleStoreInfo(objArr);
+            if (objArr != null && objArr.length > 0) {
+                assembleStoreInfo(objArr);
+            }
         } else if (ret instanceof List) {
             List objList = (List) ret;
-            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            }
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
-            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            }
         } else {
             assembleStoreInfo(ret);
         }
@@ -230,13 +236,19 @@ public class OrderQueryAspect {
     public void customerInfoConvert(JoinPoint joinPoint, Object ret) {
         if (ret instanceof Object[]) {
             Object[] objArr = (Object[]) ret;
-            assembleCustomerInfos(objArr);
+            if (objArr != null && objArr.length > 0) {
+                assembleCustomerInfos(objArr);
+            }
         } else if (ret instanceof List) {
             List objList = (List) ret;
-            assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            }
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
-            assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            }
         } else {
             assembleCustomerInfos(ret);
         }

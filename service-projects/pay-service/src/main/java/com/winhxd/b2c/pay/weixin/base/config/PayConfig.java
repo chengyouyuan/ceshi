@@ -23,32 +23,44 @@ public class PayConfig extends WXPayConfig {
     /**
      * 商户号的appid或商户号绑定的appid
      */
-    @Value("${WX.mchAppID}")
+    @Value("${WX.MCH_APP_ID}")
     private String mchAppID;
 
     /**
      * 公众账号ID
      */
-    @Value("${WX.appID}")
+    @Value("${WX.APP_ID}")
     private String appID;
 
     /**
      * 商户号
      */
-    @Value("${WX.mchID}")
-    private String mchID = "1467361502";
+    @Value("${WX.MCH_ID}")
+    private String mchID;
 
     /**
      * API 密钥
      */
-    @Value("${WX.key}")
+    @Value("${WX.KEY}")
     private String key;
 
     /***
      * 证书路径
      */
-    @Value("${WX.certPath}")
+    @Value("${WX.CERT_PATH}")
     private String certPath;
+
+    /***
+     * 支付回调配置
+     */
+    @Value("${WX.PAY_NOTIFY_URL}")
+    private String payNotifyUrl;
+
+    /***
+     * 退款回调配置
+     */
+    @Value("${WX.REFUND_NOTIFY_URL}")
+    private String refundNotifyUrl;
 
     @Override
     public String getAppID() {
@@ -119,4 +131,13 @@ public class PayConfig extends WXPayConfig {
     public int getReportBatchSize() {
         return super.getReportBatchSize();
     }
+
+	public String getPayNotifyUrl() {
+		return payNotifyUrl;
+	}
+
+	public String getRefundNotifyUrl() {
+		return refundNotifyUrl;
+	}
+
 }

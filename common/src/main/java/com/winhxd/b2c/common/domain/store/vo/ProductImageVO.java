@@ -2,8 +2,8 @@ package com.winhxd.b2c.common.domain.store.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 /**
  * 上传产品图片VO
@@ -15,9 +15,6 @@ import lombok.Data;
 @ApiModel("上传产品图片VO")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class ProductImageVO {
-	@ApiModelProperty(value = "图片名称", required = true)
-	private String imageName;
-	@ApiModelProperty(value = "图片路径", required = true)
-	private String imageUrl;
+public class ProductImageVO extends BaseImageFile {
+
 }

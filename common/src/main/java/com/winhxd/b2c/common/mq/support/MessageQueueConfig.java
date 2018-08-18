@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MQ普通消息配置类
+ *
  * @author lixiaodong
  */
 @Import(ZipkinRabbitConfig.class)

@@ -75,4 +75,8 @@ public class StoreUserInfoVO {
     @ApiModelProperty("门店小程序码的地址")
     private String miniProgramCodeUrl;
 
+    /**支付方式*/
+    @ApiModelProperty("支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）")
+    private String payType;
+
 }

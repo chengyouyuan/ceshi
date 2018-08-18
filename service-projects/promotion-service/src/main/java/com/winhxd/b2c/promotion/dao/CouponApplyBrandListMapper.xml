@@ -27,11 +27,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
-    insert into coupon_apply_brand_list (id, apply_brand_id, brand_code, 
+    insert into coupon_apply_brand_list (id, apply_brand_id, brand_code,company_code,
       status)
-    values (#{id,jdbcType=BIGINT}, #{applyBrandId,jdbcType=BIGINT}, #{brandCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{applyBrandId,jdbcType=BIGINT}, #{brandCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{status,jdbcType=SMALLINT})
   </insert>
+
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
     insert into coupon_apply_brand_list
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -85,4 +86,5 @@
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
 </mapper>

@@ -202,7 +202,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         
         //发送订单支付事件
-        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, UUID.randomUUID().toString(), orderInfo);
+        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, orderInfo.getOrderNo(), orderInfo);
     }
 
     /**

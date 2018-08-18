@@ -20,15 +20,8 @@
           "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
       	},
-      	{
-      	  "id": "1_2",
-          "menuName": "(临时)商品详情",
-          "path": "/goodsInfo/index",
-          "configKey": "",
-          "permission": ""
-      	},
         {
-          "id": "1_3",
+          "id": "1_2",
           "menuName": "商品提报审核",
           "path": "",
           "configKey": "/template/module/store/store_submitProduct_list.json",
@@ -88,13 +81,6 @@
           "path": "",
           "configKey": "/template/module/order/order_list.json",
           "permission": ""
-        },
-        {
-          "id": "4_2",
-          "menuName": "(临时)订单详情",
-          "path": "/details/index",
-          "configKey": "",
-          "permission": ""
         }
       ]
     },
@@ -105,18 +91,24 @@
       "children": [
         {
           "id": "5_1",
+          "menuName": "财务管理",
+          "path": "/financeManage/index",
+          "configKey": ""
+        },
+        {
+          "id": "5_2",
           "menuName": "待结算金额审核",
           "path": "",
           "configKey": "/template/module/pay/pay_verify_list.json"
         },
         {
-          "id": "5_2",
+          "id": "5_3",
           "menuName": "费用明细",
           "path": "",
           "configKey": "/template/module/pay/accounting_detail_list.json"
         },
         {
-          "id": "5_3",
+          "id": "5_4",
           "menuName": "提款申请",
           "path": "",
           "configKey": "/template/module/pay/withdrawals_list.json"

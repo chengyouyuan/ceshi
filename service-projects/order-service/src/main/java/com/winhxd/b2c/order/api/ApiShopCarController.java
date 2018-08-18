@@ -133,7 +133,11 @@ public class ApiShopCarController {
         if (orderInfo.getValuationType() == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             CustomerUserInfoVO customerUserInfoVO = shopCarService.getCustomerUserInfoVO(customerId);
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
-            orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            try{
+                orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            }catch (Exception e){
+                throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+            }
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
         }
         result.setData(orderPayVO);
@@ -197,10 +201,10 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        /*if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
+        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
             logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
             throw new BusinessException(BusinessCode.CODE_1004);
-        }*/
-        return 20L;
+        }
+        return customerUser.getCustomerId();
     }
 }

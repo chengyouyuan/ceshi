@@ -401,8 +401,7 @@
         coupon_apply a
       LEFT JOIN coupon_apply_product b on a.id = b.apply_id
       LEFT JOIN coupon_apply_product_list c on c.apply_product_id = b.id
-    WHERE
-    where a.id=#{id}
+    WHERE a.id=#{id}
   </select>
 
 

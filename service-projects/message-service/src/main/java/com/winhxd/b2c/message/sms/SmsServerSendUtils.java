@@ -63,7 +63,7 @@ public class SmsServerSendUtils {
 		if (StringUtils.isBlank(type)) {
 			type = "1";
 		}
-		tSmsSendHistory.setSendType(Integer.parseInt(type));
+		tSmsSendHistory.setSendType(Short.parseShort(type));
 		tSmsSendHistory.setSupplyId(type);
 		tSmsSendHistory.setContent(content);
 		tSmsSendHistory.setSendTime(new Date());
@@ -81,12 +81,12 @@ public class SmsServerSendUtils {
 		}
 
 		if (result == SmsReturnStatusEnum.SUCCESS.getStatusCode()) {
-			tSmsSendHistory.setSendStatus(SmsSendStatusEnum.SUCCESS.getCode());
+			tSmsSendHistory.setSendStatus((short)SmsSendStatusEnum.SUCCESS.getCode());
 		} else {
-			tSmsSendHistory.setSendStatus(SmsSendStatusEnum.FAIL.getCode());
+			tSmsSendHistory.setSendStatus((short)SmsSendStatusEnum.FAIL.getCode());
 		}
 
-		tSmsSendHistory.setErrorCode(String.valueOf(result));
+		tSmsSendHistory.setErrorCode((short)result);
 		list.add(tSmsSendHistory);
 		/**
 		 * 保存到数据库中

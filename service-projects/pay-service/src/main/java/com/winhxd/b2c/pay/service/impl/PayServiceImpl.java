@@ -6,14 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.pay.enums.*;
-import com.winhxd.b2c.common.domain.pay.model.*;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
-import com.winhxd.b2c.pay.dao.*;
-import com.winhxd.b2c.pay.service.*;
-import com.winhxd.b2c.pay.weixin.model.PayBill;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,10 +26,36 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
+import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
+import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
+import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
+import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
+import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
+import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
+import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.service.PayStoreCashService;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
@@ -471,7 +489,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+	public PayPreOrderVO unifiedOrder(PayPreOrderCondition condition) {
 		//验证订单支付参数
 		String log=logLabel+"订单支付unifiedOrder";
 		logger.info(log+"--开始");

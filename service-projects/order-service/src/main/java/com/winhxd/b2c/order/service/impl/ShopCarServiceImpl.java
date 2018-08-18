@@ -10,7 +10,7 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -113,6 +113,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO.setAmount(shopCar2.getAmount());
                     BeanUtils.copyProperties(shopCarProdVO, shopCarProdInfoVO);
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
+                    shopCarProdInfoVO.setCompanyCode(shopCarProdVO.getCompanyCode());
                     result.add(shopCarProdInfoVO);
                 }
             }
@@ -127,7 +128,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public OrderPayVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public PayPreOrderVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
         logger.info(READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -158,7 +159,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
                 String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
-                OrderPayVO orderPayVO = new OrderPayVO();
+                PayPreOrderVO orderPayVO = new PayPreOrderVO();
                 if (null != condition.getOrderTotalMoney()) {
                     CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
                     logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo开始...");

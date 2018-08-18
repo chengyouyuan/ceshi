@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.pay.service.PayService;
@@ -36,9 +37,9 @@ public class PayController implements PayServiceClient {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
     })
-	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition){
-		OrderPayVO vo=payService.unifiedOrder(condition);
-		ResponseResult<OrderPayVO> result=new ResponseResult<>();
+	public ResponseResult<PayPreOrderVO> orderPay(@RequestBody PayPreOrderCondition condition){
+		PayPreOrderVO vo = payService.unifiedOrder(condition);
+		ResponseResult<PayPreOrderVO> result=new ResponseResult<>();
 		result.setData(vo);
 		return result;
 	}

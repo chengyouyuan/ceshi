@@ -1,7 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service;
 
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 
 /**
  * 支付网关微信统一下单API
@@ -12,6 +12,6 @@ import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
  */
 public interface WXUnifiedOrderService {
 	
-	OrderPayVO unifiedOrder(PayPreOrderCondition condition);
+	PayPreOrderVO unifiedOrder(PayPreOrderCondition condition);
 
 }

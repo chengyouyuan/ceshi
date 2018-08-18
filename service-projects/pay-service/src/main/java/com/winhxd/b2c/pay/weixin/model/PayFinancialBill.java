@@ -20,7 +20,7 @@ public class PayFinancialBill {
 
     private BigDecimal budgetAmount;
 
-    private Long accountBalance;
+    private BigDecimal accountBalance;
 
     private String submitBy;
 
@@ -96,11 +96,11 @@ public class PayFinancialBill {
         this.budgetAmount = budgetAmount;
     }
 
-    public Long getAccountBalance() {
+    public BigDecimal getAccountBalance() {
         return accountBalance;
     }
 
-    public void setAccountBalance(Long accountBalance) {
+    public void setAccountBalance(BigDecimal accountBalance) {
         this.accountBalance = accountBalance;
     }
 

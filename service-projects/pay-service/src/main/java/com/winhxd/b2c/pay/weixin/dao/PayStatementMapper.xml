@@ -29,7 +29,7 @@
     <result column="mch_data" jdbcType="VARCHAR" property="mchData" />
     <result column="fee" jdbcType="DECIMAL" property="fee" />
     <result column="rate" jdbcType="REAL" property="rate" />
-    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="bill_date" jdbcType="DATE" property="billDate" />
     <result column="statement_count_id" jdbcType="BIGINT" property="statementCountId" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -69,7 +69,7 @@
       #{refundWxOrderNo,jdbcType=VARCHAR}, #{refundOutOrderNo,jdbcType=VARCHAR}, #{refundAmount,jdbcType=DECIMAL}, 
       #{refundDiscountAmount,jdbcType=DECIMAL}, #{refundType,jdbcType=VARCHAR}, #{refundStatus,jdbcType=VARCHAR}, 
       #{prodName,jdbcType=VARCHAR}, #{mchData,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=REAL}, #{billDate,jdbcType=TIMESTAMP}, #{statementCountId,jdbcType=BIGINT}
+      #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{statementCountId,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatement">
@@ -246,7 +246,7 @@
         #{rate,jdbcType=REAL},
       </if>
       <if test="billDate != null">
-        #{billDate,jdbcType=TIMESTAMP},
+        #{billDate,jdbcType=DATE},
       </if>
       <if test="statementCountId != null">
         #{statementCountId,jdbcType=BIGINT},
@@ -335,7 +335,7 @@
         rate = #{rate,jdbcType=REAL},
       </if>
       <if test="billDate != null">
-        bill_date = #{billDate,jdbcType=TIMESTAMP},
+        bill_date = #{billDate,jdbcType=DATE},
       </if>
       <if test="statementCountId != null">
         statement_count_id = #{statementCountId,jdbcType=BIGINT},
@@ -371,7 +371,7 @@
       mch_data = #{mchData,jdbcType=VARCHAR},
       fee = #{fee,jdbcType=DECIMAL},
       rate = #{rate,jdbcType=REAL},
-      bill_date = #{billDate,jdbcType=TIMESTAMP},
+      bill_date = #{billDate,jdbcType=DATE},
       statement_count_id = #{statementCountId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

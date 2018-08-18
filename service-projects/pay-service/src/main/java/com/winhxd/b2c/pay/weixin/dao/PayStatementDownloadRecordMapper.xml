@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="bill_type" jdbcType="INTEGER" property="billType" />
-    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="bill_date" jdbcType="DATE" property="billDate" />
     <result column="return_code" jdbcType="VARCHAR" property="returnCode" />
     <result column="return_msg" jdbcType="VARCHAR" property="returnMsg" />
     <result column="result_code" jdbcType="VARCHAR" property="resultCode" />
@@ -28,7 +28,7 @@
     insert into pay_statement_download_record (id, bill_type, bill_date, 
       return_code, return_msg, result_code, 
       err_code, err_code_des)
-    values (#{id,jdbcType=BIGINT}, #{billType,jdbcType=INTEGER}, #{billDate,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=BIGINT}, #{billType,jdbcType=INTEGER}, #{billDate,jdbcType=DATE}, 
       #{returnCode,jdbcType=VARCHAR}, #{returnMsg,jdbcType=VARCHAR}, #{resultCode,jdbcType=VARCHAR}, 
       #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR})
   </insert>
@@ -68,7 +68,7 @@
         #{billType,jdbcType=INTEGER},
       </if>
       <if test="billDate != null">
-        #{billDate,jdbcType=TIMESTAMP},
+        #{billDate,jdbcType=DATE},
       </if>
       <if test="returnCode != null">
         #{returnCode,jdbcType=VARCHAR},
@@ -94,7 +94,7 @@
         bill_type = #{billType,jdbcType=INTEGER},
       </if>
       <if test="billDate != null">
-        bill_date = #{billDate,jdbcType=TIMESTAMP},
+        bill_date = #{billDate,jdbcType=DATE},
       </if>
       <if test="returnCode != null">
         return_code = #{returnCode,jdbcType=VARCHAR},
@@ -117,7 +117,7 @@
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord">
     update pay_statement_download_record
     set bill_type = #{billType,jdbcType=INTEGER},
-      bill_date = #{billDate,jdbcType=TIMESTAMP},
+      bill_date = #{billDate,jdbcType=DATE},
       return_code = #{returnCode,jdbcType=VARCHAR},
       return_msg = #{returnMsg,jdbcType=VARCHAR},
       result_code = #{resultCode,jdbcType=VARCHAR},

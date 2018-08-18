@@ -3,9 +3,10 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 
 @Component
 public class WXPay {
@@ -643,7 +644,7 @@ public class WXPay {
     	else {
     		url = WXPayConstants.DOWNLOADFUNDFLOW_URL_SUFFIX;
     	}
-    	String respStr = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs).trim();
+    	String respStr = this.requestWithCert(url, this.fillRequestDataWithHMACSHA256(reqData), connectTimeoutMs, readTimeoutMs).trim();
     	Map<String, String> ret;
     	// 出现错误，返回XML数据
     	if (respStr.indexOf("<") == 0) {
@@ -657,6 +658,22 @@ public class WXPay {
     		ret.put("data", respStr);
     	}
     	return ret;
+    }
+
+    /**
+     * 向 Map 中添加 appid、mch_id、nonce_str、sign_type、sign <br>
+     * HMACSHA256加密方式
+     * @param reqData
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> fillRequestDataWithHMACSHA256(Map<String, String> reqData) throws Exception {
+        reqData.put("appid", config.getAppID());
+        reqData.put("mch_id", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", WXPayConstants.HMACSHA256);
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), SignType.HMACSHA256));
+        return reqData;
     }
 
 

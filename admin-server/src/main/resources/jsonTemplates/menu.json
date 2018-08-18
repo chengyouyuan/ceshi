@@ -20,15 +20,8 @@
           "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
       	},
-      	{
-      	  "id": "1_2",
-          "menuName": "(临时)商品详情",
-          "path": "/goodsInfo/index",
-          "configKey": "",
-          "permission": ""
-      	},
         {
-          "id": "1_3",
+          "id": "1_2",
           "menuName": "商品提报审核",
           "path": "",
           "configKey": "/template/module/store/store_submitProduct_list.json",
@@ -87,13 +80,6 @@
           "menuName": "订单管理",
           "path": "",
           "configKey": "/template/module/order/order_list.json",
-          "permission": ""
-        },
-        {
-          "id": "4_2",
-          "menuName": "(临时)订单详情",
-          "path": "/details/index",
-          "configKey": "",
           "permission": ""
         }
       ]

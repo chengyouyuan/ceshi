@@ -851,7 +851,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
         if (StringUtils.isBlank(condition.getPickupCode())
-                || condition.getPickupCode().equals(orderInfo.getPickupCode())) {
+                || !condition.getPickupCode().equals(orderInfo.getPickupCode())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_PICKUP_CODE);
         }
         if (OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {

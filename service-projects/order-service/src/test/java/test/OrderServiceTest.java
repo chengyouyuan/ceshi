@@ -2,6 +2,7 @@ package test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,22 +12,32 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.OrderServiceApplication;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
+import com.winhxd.b2c.order.service.impl.CommonOrderServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OrderServiceApplication.class)
@@ -43,6 +54,10 @@ public class OrderServiceTest {
     private StringMessageSender stringMessageSender;
     @Resource
     private Cache cache;
+    @Autowired
+    private MessageServiceClient messageServiceClient;
+    
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceTest.class);
     
     @Test
     public void testGetStoreOrderSalesSummary() {
@@ -88,13 +103,77 @@ public class OrderServiceTest {
     }
     
     @Test
-    public void testOrderPayNotify() {
-        orderService.orderPaySuccessNotify("C18080417612761795","asdfasdfasd");
+    public void testOrderPayNotify() throws InterruptedException {
+        orderService.orderPaySuccessNotify("C18081809917533139","123123123123");
+        Thread.sleep(1000000L);
     }
+    
+    @Test
+    public void testOrderConfirm4Store() throws InterruptedException {
+        OrderConfirmCondition orderConfirmCondition = new OrderConfirmCondition();
+        orderConfirmCondition.setOrderNo("C18081809917533139");
+        orderConfirmCondition.setStoreId(12L);
+        orderConfirmCondition.setOrderTotal(new BigDecimal("0.1"));
+        orderService.orderConfirm4Store(orderConfirmCondition);
+        Thread.sleep(1000000L);
+    }
+    
+    @Test
+    public void testOrderPickup4Store() throws InterruptedException {
+        OrderPickupCondition orderPickupCondition = new OrderPickupCondition();
+        orderPickupCondition.setOrderNo("C18081809917533139");
+        orderPickupCondition.setStoreId(12L);
+        orderPickupCondition.setPickupCode("6937");
+        orderService.orderPickup4Store(orderPickupCondition);
+        Thread.sleep(1000000L);
+    }
+    
+    
     
     @Test
     public void testStringMessageSender() {
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, "123", 10000);
         System.out.println("finished" + new Date());
+    }
+    
+    @Test
+    public void orderNeedPickupSendMsg2Store(){
+        String last4MobileNums = "3479";
+        Long storeId = 12L;
+        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
+        try {
+            // 发送云信
+            String createdBy= "";
+            int expiration = 0;
+            int msgType = 0;
+            short pageType = 1;
+            int audioType = 0;
+            String treeCode = "treeCode";
+            NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
+                    pageType, audioType, treeCode);
+            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
+                throw new BusinessException(BusinessCode.CODE_1001);
+            }
+        } catch (Exception e) {
+            logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
+            logger.error("订单待提货给门店发送消息失败：", e);
+            throw e;
+        }
+    }
+    
+    @Test
+    public void newOrderSendMsg2Store() throws InterruptedException{
+        Thread a = new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                OrderUtil.newOrderSendMsg2Store(messageServiceClient, 12L);
+                
+            }
+        });
+        a.setDaemon(false);
+        a.start();
+        a.join();
+        Thread.sleep(1000000L);
     }
 }

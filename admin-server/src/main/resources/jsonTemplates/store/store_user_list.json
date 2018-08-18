@@ -27,43 +27,6 @@
     ],
     "columns": [
       {
-        "name": "",
-        "title": "操作",
-        "type": "button",
-        "buttons": [
-          {
-            "name": "查看",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "",
-              "configKey": "/template/module/store/store_user_list_view.json"
-            }
-          },
-          {
-            "name": "编辑",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "update"
-              },
-              "path": "",
-              "configKey": "/template/module/store/store_user_list_edit.json"
-            }
-          }
-        ]
-      },
-      {
         "type": "index",
         "name": "id",
         "title": "序号",
@@ -72,7 +35,7 @@
         "fixed": "left"
       },
       {
-        "name": "storeStatus",
+        "name": "storeStatusDesc",
         "title": "门店状态"
       },
       {
@@ -118,8 +81,44 @@
       {
         "name": "payType",
         "title": "支付方式"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_user_list_view.json"
+            }
+          },
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": "/template/module/store/store_user_list_edit.json"
+            }
+          }
+        ]
       }
-
     ],
     "params": [
 

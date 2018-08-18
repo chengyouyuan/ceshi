@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.login.enums;
+package com.winhxd.b2c.common.domain.store.model;
 
 import java.util.Map;
 import java.util.TreeMap;

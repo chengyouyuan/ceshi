@@ -5,10 +5,11 @@ import com.winhxd.b2c.common.mq.event.support.EnableEventMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class})
 @EnableEventMessage
 @Import(MicroServiceConfig.class)
 public class TaskServiceApplication {

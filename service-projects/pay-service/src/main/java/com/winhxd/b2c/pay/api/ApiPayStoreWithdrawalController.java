@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
@@ -42,16 +43,18 @@ public class ApiPayStoreWithdrawalController {
 		@ApiResponse(code = BusinessCode.CODE_610023, message = "当前没有提现类型")
 	})
 	@PostMapping(value = "/6107/v1/getWithdrawalType", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<List<PayWithdrawalsTypeVO>> getStoreWithdrawalType(@RequestBody PayCondition condition){
-		ResponseResult<List<PayWithdrawalsTypeVO>> result = new ResponseResult<List<PayWithdrawalsTypeVO>>();
+	private ResponseResult<PagedList<PayWithdrawalsTypeVO>> getStoreWithdrawalType(@RequestBody PayCondition condition){
+		ResponseResult<PagedList<PayWithdrawalsTypeVO>> result = new ResponseResult<PagedList<PayWithdrawalsTypeVO>>();
 		ResponseResult<List<PayWithdrawalsType>> allWithdrawalType = payStoreWithdrawalService.getAllWithdrawalType();
+		PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
 		List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>();
 		for(PayWithdrawalsType type:allWithdrawalType.getData()){
 			PayWithdrawalsTypeVO typevo = new PayWithdrawalsTypeVO();
 			BeanUtils.copyProperties(type, typevo);
 			listvo.add(typevo);
+			pagelistvo.setData(listvo);
 		}
-		result.setData(listvo);
+		result.setData(pagelistvo);
 		result.setCode(allWithdrawalType.getCode());
 		return result;
 	}

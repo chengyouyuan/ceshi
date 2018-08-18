@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -14,7 +15,7 @@ import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
-import com.winhxd.b2c.common.domain.system.login.enums.StoreStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -99,7 +100,7 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
-        List<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
+        Page<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
         if (userInfoList.isEmpty()) {
             return pagedList;
         }
@@ -109,13 +110,11 @@ public class StoreServiceImpl implements StoreService {
         List<SysRegion> sysRegions = regionServiceClient.findRegionRangeList(regionCodeList).getData();
 
         List<BackStageStoreVO> storeVOS = new ArrayList<>();
-        Set<String> codes = new HashSet<>();
         userInfoList.stream().forEach(storeUserInfo1 -> {
             BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1, storeVO);
-            codes.add(storeUserInfo1.getStoreRegionCode());
+            changeStatusDesc(storeVO);
             if (!StringUtils.isEmpty(storeUserInfo1.getPayType())) {
-
                 //获取地理区域名称
                 for (SysRegion sysRegion : sysRegions) {
                     if (sysRegion.getRegionCode().equals(storeUserInfo1.getStoreRegionCode())) {
@@ -130,9 +129,25 @@ public class StoreServiceImpl implements StoreService {
             }
             storeVOS.add(storeVO);
         });
-        pagedList.setTotalRows(userInfoList.size());
+        pagedList.setTotalRows(userInfoList.getTotal());
         pagedList.setData(storeVOS);
         return pagedList;
+    }
+
+    private BackStageStoreVO changeStatusDesc(BackStageStoreVO stageStoreVO){
+        if(null == stageStoreVO){
+            return stageStoreVO;
+        }
+        if(StoreStatusEnum.VALID.getStatusCode() == stageStoreVO.getStoreStatus()){
+            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.VALID.getStatusDesc());
+        }else if(StoreStatusEnum.INVALID.getStatusCode() == stageStoreVO.getStoreStatus()){
+            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.INVALID.getStatusDesc());
+        } else if (StoreStatusEnum.UN_OPEN.getStatusCode() == stageStoreVO.getStoreStatus()) {
+            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.UN_OPEN.getStatusDesc());
+        }
+        //支付方式
+
+        return stageStoreVO;
     }
 
     @Override

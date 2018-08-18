@@ -19,7 +19,7 @@
         "name": "查询",
         "icon": null,
         "event": {
-          "type": "router",
+          "type": "submit",
           "ajaxType": "post",
           "path": "/promotion/5024/v1/findCouponApplyPage"
         }

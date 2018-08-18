@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @Author yindanqing
  * @Date 2018/8/17 10:27
- * @Description:
+ * @Description: 转账至微信零钱卡返参
  */
 @Setter
 @Getter
@@ -37,6 +37,9 @@ public class PayTransfersToWxChangeVO {
 
     @ApiModelProperty("处理结果")
     private boolean transfersResult;
+
+    @ApiModelProperty("是否可以继续, 为true表示该申请可以继续使用")
+    private boolean ableContinue;
 
     @ApiModelProperty("错误描述")
     private String errorDesc;

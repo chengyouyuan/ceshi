@@ -9,7 +9,7 @@ import lombok.Data;
 public class UpdateStoreBankRollCondition {
 
 	
-	@ApiModelProperty("类型：1.支付完成,2.结算审核,3.提现申请,4.提现审核")
+	@ApiModelProperty("类型：1.支付完成,2.结算审核,3.提现申请,4.提现成功,5提现审核不通过,6提现失败")
     private Integer type;
 	
 	@ApiModelProperty("费用类型：1.货款审核,2.促销费用")

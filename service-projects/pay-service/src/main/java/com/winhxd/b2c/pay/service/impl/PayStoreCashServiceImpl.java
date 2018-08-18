@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
@@ -110,6 +111,14 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         result.setData(pagedList);
         return result;
     }
+
+
+	@Override
+	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
+		
+		payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+		
+	}
 
 
 }

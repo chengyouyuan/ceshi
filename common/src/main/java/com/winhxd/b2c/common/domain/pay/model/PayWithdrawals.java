@@ -10,6 +10,8 @@ public class PayWithdrawals {
 
     private String withdrawalsNo;
 
+    private String withdrawalsTransactionNo;
+
     private BigDecimal totalFee;
 
     private BigDecimal realFee;
@@ -21,6 +23,10 @@ public class PayWithdrawals {
     private Short auditStatus;
 
     private String auditDesc;
+
+    private Short callbackStatus;
+
+    private String callbackReason;
 
     private Short flowDirectionType;
 
@@ -44,6 +50,14 @@ public class PayWithdrawals {
 
     private Date updated;
 
+    private String buyerId;
+
+    private String transactionId;
+
+    private BigDecimal callbackMoney;
+
+    private Date timeEnd;
+
     public Long getId() {
         return id;
     }
@@ -66,6 +80,14 @@ public class PayWithdrawals {
 
     public void setWithdrawalsNo(String withdrawalsNo) {
         this.withdrawalsNo = withdrawalsNo;
+    }
+
+    public String getWithdrawalsTransactionNo() {
+        return withdrawalsTransactionNo;
+    }
+
+    public void setWithdrawalsTransactionNo(String withdrawalsTransactionNo) {
+        this.withdrawalsTransactionNo = withdrawalsTransactionNo;
     }
 
     public BigDecimal getTotalFee() {
@@ -114,6 +136,22 @@ public class PayWithdrawals {
 
     public void setAuditDesc(String auditDesc) {
         this.auditDesc = auditDesc;
+    }
+
+    public Short getCallbackStatus() {
+        return callbackStatus;
+    }
+
+    public void setCallbackStatus(Short callbackStatus) {
+        this.callbackStatus = callbackStatus;
+    }
+
+    public String getCallbackReason() {
+        return callbackReason;
+    }
+
+    public void setCallbackReason(String callbackReason) {
+        this.callbackReason = callbackReason;
     }
 
     public Short getFlowDirectionType() {
@@ -202,5 +240,37 @@ public class PayWithdrawals {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public BigDecimal getCallbackMoney() {
+        return callbackMoney;
+    }
+
+    public void setCallbackMoney(BigDecimal callbackMoney) {
+        this.callbackMoney = callbackMoney;
+    }
+
+    public Date getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(Date timeEnd) {
+        this.timeEnd = timeEnd;
     }
 }

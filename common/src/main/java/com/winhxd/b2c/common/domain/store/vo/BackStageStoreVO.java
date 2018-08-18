@@ -19,6 +19,9 @@ public class BackStageStoreVO {
     @ApiModelProperty(value = "门店有效状态 1有效 2无效")
     private Short storeStatus;
 
+    @ApiModelProperty(value = "门店状态描述 1有效 2无效")
+    private String storeStatusDesc;
+
     @ApiModelProperty(value = "门店用户编码")
     private Long storeCustomerId;
 
@@ -55,6 +58,12 @@ public class BackStageStoreVO {
     @ApiModelProperty(value = "支付方式（1、微信在线付款2、微信扫码付款）")
     private String payType;
 
+    @ApiModelProperty(value = "支付方式描述（1、微信在线付款2、微信扫码付款）")
+    private String payTypeDesc;
+
     @ApiModelProperty(value = "取货方式列表（1、自提）")
     private String pickupType;
+
+    @ApiModelProperty(value = "取货方式描述（1、自提）")
+    private String pickupTypeDesc;
 }

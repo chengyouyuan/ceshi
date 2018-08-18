@@ -5,11 +5,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class})
 @MapperScan({"com.winhxd.b2c.pay.dao","com.winhxd.b2c.pay.weixin.dao"})
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @Import(MicroServiceConfig.class)

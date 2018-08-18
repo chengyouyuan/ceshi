@@ -400,6 +400,18 @@ public final class BusinessCode {
     
     @ApiModelProperty("门店资金变化 金额为空")
     public static final int CODE_600009 = 600009;
+
+    @ApiModelProperty("门店资金变化 金额有误")
+    public static final int CODE_600010 = 600010;
+    
+    @ApiModelProperty("门店资金变化  提现申请计算用户资金重复")
+    public static final int CODE_600011 = 600011;
+    
+    @ApiModelProperty("门店资金变化  提现审核不通过计算用户资金重复")
+    public static final int CODE_600012 = 600012;
+    
+    @ApiModelProperty("门店资金变化  提现失败计算用户资金重复")
+    public static final int CODE_600013 = 600013;
     
     @ApiModelProperty("门店绑定微信钱包  未获取到门店信息")
     public static final int CODE_600701 = 600701;
@@ -421,6 +433,9 @@ public final class BusinessCode {
 
     @ApiModelProperty("转账必填字段为空, 请检查属性")
     public static final int CODE_600301 = 600301;
+
+    @ApiModelProperty("门店提现  未获取到提现信息")
+    public static final int CODE_600310 = 600310;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

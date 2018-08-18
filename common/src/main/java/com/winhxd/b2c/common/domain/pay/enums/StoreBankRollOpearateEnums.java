@@ -12,14 +12,24 @@ public enum StoreBankRollOpearateEnums {
 	/**
 	 * 提现申请操作
 	 */
-	withdrawals_apply(3,"提现申请"),
+	WITHDRAWALS_APPLY(3,"提现申请"),
+	
 	/**
-	 * 提现审核操作
+	 * 提现成功操作
 	 */
-	withdrawals_audit(4,"提现审核");
+	WITHDRAWALS_SUCCESS(4,"提现成功"),
+	/**
+	 * 提现审核不通过操作
+	 */
+	WITHDRAWALS_AUDIT_NOT_PASS(5,"提现审核不通过"),
+	/**
+	 * 提现失败
+	 */
+	WITHDRAWALS_FAIL(6,"提现失败");
 	
 	private Integer code;
 	private String desc;
+	
 	StoreBankRollOpearateEnums(Integer code, String desc) {
         this.code = code;
         this.desc = desc;

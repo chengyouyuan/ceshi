@@ -9,6 +9,8 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -125,12 +127,13 @@ public class ApiShopCarController {
         ResponseResult result = new ResponseResult<>();
         shopCarParam(condition);
         Long customerId = getCurrentCustomerId();
-        String orderNo = shopCarService.readyOrder(condition, customerId);
+        OrderInfo orderInfo = shopCarService.readyOrder(condition, customerId);
         PayPreOrderVO orderPayVO = new PayPreOrderVO();
-        if (null != condition.getOrderTotalMoney()) {
+
+        if (orderInfo.getValuationType() == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             CustomerUserInfoVO customerUserInfoVO = shopCarService.getCustomerUserInfoVO(customerId);
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
-            orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
         }
         result.setData(orderPayVO);
@@ -194,10 +197,10 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
+        /*if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
             logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
             throw new BusinessException(BusinessCode.CODE_1004);
-        }
-        return customerUser.getCustomerId();
+        }*/
+        return 20L;
     }
 }

@@ -1356,7 +1356,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 logger.error("订单提货完成给用户发送消息失败：", e);
             }
             // 发送mq完成消息
-            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, UUID.randomUUID().toString(), orderInfo);
+            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, orderInfo.getOrderNo(), orderInfo);
         }
     }
 

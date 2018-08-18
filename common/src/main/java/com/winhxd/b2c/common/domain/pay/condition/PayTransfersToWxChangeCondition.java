@@ -66,4 +66,9 @@ public class PayTransfersToWxChangeCondition extends ApiCondition implements Ser
      */
     private String spbillCreateIp;
 
+    /**
+     * 操作人ID
+     */
+    private String operaterID;
+
 }

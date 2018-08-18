@@ -778,6 +778,24 @@ public class WXPay {
     }
 
     /**
+     * 作用：查询企业付款<br>
+     * 场景：查询企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String queryTransferToChange(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
      * 作用：企业付款<br>
      * 场景：企业付款到微信银行卡<br>
      * 其他：需要证书

@@ -131,6 +131,13 @@ public class YxtSmsProcess {
 			if (smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION)) {
 				LOGGER.info("创蓝短信发送失败,使用阅信平台发送：" + smsReturn.getStatus().getStatusCode());
 				smsReturn = yxSmsProcess.sendMessage(smsSend);
+
+				if (!YxtSmsProcess.notRetrans.contains(smsReturn.getStatus().getStatusCode())) {
+					LOGGER.info("阅信发送失败, 改用漫道发送");
+					ManDaoRetailProcess mandao = new ManDaoRetailProcess();
+					int rs = mandao.sendMessage(smsSend);
+					smsReturn = analysisMandaoReturn(rs);
+				}
 			} else {
 				LOGGER.info("创蓝短信发送失败,使用漫道平台发送：" + smsReturn.getStatus().getStatusCode());
 				ManDaoRetailProcess mandao = new ManDaoRetailProcess();
@@ -187,6 +194,7 @@ public class YxtSmsProcess {
 		} else {
 			smsReturn.setStatus(SmsReturnStatusEnum.FAIL_MANDAO);
 		}
+		LOGGER.info("漫道短信发送结果" + JsonUtil.toJSONString(smsReturn));
 		return smsReturn;
 	}
 
@@ -199,13 +207,13 @@ public class YxtSmsProcess {
 		tSMSSend.setContent(content);
 		tSMSSend.setSendTime(new Date());
 		tSMSSend.setTelephone(telephoneNO);
-		tSMSSend.setErrorCode(String.valueOf(errorCode));
-		tSMSSend.setSendStatus(SmsSendStatusEnum.FAIL.getCode());
+		tSMSSend.setErrorCode((short)errorCode);
+		tSMSSend.setSendStatus((short)SmsSendStatusEnum.FAIL.getCode());
 		messageSmsHistoryMapper.insert(tSMSSend);
 	}
 
 	/**
-	 * 带返回 结果信息对象 的短信发送
+	 * 用创蓝发送短信 带返回 结果信息对象 的短信发送
 	 *
 	 * @param mobile  发信发送的目的号码.多个号码之间用半角逗号隔开
 	 * @param content 短信的内容
@@ -232,7 +240,7 @@ public class YxtSmsProcess {
 					smsSupplier = SmsSupplierEnum.verification_cl;
 					LOGGER.info("类型：验证码短信短信。手机号：" + mobile + ",短信内容content：" + content);
 				}
-				LOGGER.info(smsSupplier.getAccount() + "," + smsSupplier.getUrl());
+				LOGGER.info(smsSupplier.getAccount() + "," + smsSupplier.getUrl() + SmsConstant.HTTPBATCH);
 
 				CloseableHttpClient httpClient = httpClientUtil.getHttpClient();
 //				HttpClientUtil.postSend(smsSupplier.getUrl(), "", pair)
@@ -249,7 +257,6 @@ public class YxtSmsProcess {
 
 				HttpResponse response = httpClient.execute(httpPost);
 				String rs = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
-				LOGGER.info("------------------------------rs:==" + rs);
 				smsReturn = analysisReturn(rs);
 				smsReturn.setSmsSupplier(smsSupplier);
 			} else {
@@ -262,7 +269,6 @@ public class YxtSmsProcess {
 			smsReturn.setStatus(SmsReturnStatusEnum.HTTPCLIENTERROR);
 			LOGGER.error("创蓝短信发送异常。", e);
 		}
-		LOGGER.info("创蓝短信发送结果====" + JsonUtil.toJSONString(smsReturn));
 		return smsReturn;
 	}
 
@@ -304,6 +310,7 @@ public class YxtSmsProcess {
 			for (SmsReturnStatusEnum status : SmsReturnStatusEnum.values()) {
 				if (status.getStatusCode() == rsStatus) {
 					smsReturn.setStatus(status);
+					LOGGER.warn("创蓝短信发送结果：" + status.getRemark());
 					break;
 				}
 			}

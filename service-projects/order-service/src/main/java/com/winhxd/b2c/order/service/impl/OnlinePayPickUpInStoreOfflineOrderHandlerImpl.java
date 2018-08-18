@@ -20,6 +20,8 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.mq.event.EventMessageSender;
+import com.winhxd.b2c.common.mq.event.EventType;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -38,6 +40,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -78,6 +81,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
     private Cache cache;
     @Resource
     private MessageServiceClient messageServiceClient;
+    
+    @Autowired
+    private EventMessageSender eventMessageSender;
     
     @Override
     public void orderInfoBeforeCreateProcess(OrderInfo orderInfo) {
@@ -202,6 +208,9 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         OrderUtil.orderNeedPickupSendMsg2Store(messageServiceClient, last4MobileNums, orderInfo.getStoreId());
         // 发送消息给用户
         OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid());
+        
+        //发送订单支付事件
+        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, UUID.randomUUID().toString(), orderInfo);
     }
 
     private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {

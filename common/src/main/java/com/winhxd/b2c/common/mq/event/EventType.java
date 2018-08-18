@@ -13,7 +13,17 @@ public enum EventType {
     /**
      * 事件类型定义
      */
-    EVENT_CUSTOMER_ORDER_CREATED(OrderInfo.class);
+    EVENT_CUSTOMER_ORDER_CREATED(OrderInfo.class),
+    
+    /**
+     * 用户订单支付成功事件
+     */
+    EVENT_CUSTOMER_ORDER_PAY_SUCCESS(OrderInfo.class),
+    
+    /**
+     * 用户订单完成事件
+     */
+    EVENT_CUSTOMER_ORDER_FINISHED(OrderInfo.class);
 
     private Class<?> eventObjectClass;
 

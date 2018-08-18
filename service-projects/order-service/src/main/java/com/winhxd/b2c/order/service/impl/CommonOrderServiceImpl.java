@@ -17,8 +17,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -88,6 +86,8 @@ import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.MQHandler;
 import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.mq.event.EventMessageSender;
+import com.winhxd.b2c.common.mq.event.EventType;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.dao.OrderItemMapper;
@@ -145,6 +145,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private MessageServiceClient messageServiceClient;
     @Autowired
     private StringMessageSender stringMessageSender;
+    @Autowired
+    private EventMessageSender eventMessageSender;
     @Autowired
     private PayServiceClient payServiceClient;
 
@@ -1353,7 +1355,8 @@ public class CommonOrderServiceImpl implements OrderService {
             } catch (Exception e) {
                 logger.error("订单提货完成给用户发送消息失败：", e);
             }
-            //TODO 发送mq完成消息
+            // 发送mq完成消息
+            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, UUID.randomUUID().toString(), orderInfo);
         }
     }
 

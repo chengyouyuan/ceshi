@@ -76,7 +76,6 @@ public class OrderServiceTest {
         OrderItemCondition itemCondition1 = new OrderItemCondition();
         itemCondition1.setAmount(2);
         itemCondition1.setSkuCode("12346496056001");
-        itemCondition1.setPrice(new BigDecimal("20"));
         orderItemConditions.add(itemCondition);
         orderItemConditions.add(itemCondition1);
         OrderCreateCondition createCondition = new OrderCreateCondition();

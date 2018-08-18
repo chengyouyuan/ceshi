@@ -91,18 +91,24 @@
       "children": [
         {
           "id": "5_1",
+          "menuName": "财务管理",
+          "path": "/financeManage/index",
+          "configKey": ""
+        },
+        {
+          "id": "5_2",
           "menuName": "待结算金额审核",
           "path": "",
           "configKey": "/template/module/pay/pay_verify_list.json"
         },
         {
-          "id": "5_2",
+          "id": "5_3",
           "menuName": "费用明细",
           "path": "",
           "configKey": "/template/module/pay/accounting_detail_list.json"
         },
         {
-          "id": "5_3",
+          "id": "5_4",
           "menuName": "提款申请",
           "path": "",
           "configKey": "/template/module/pay/withdrawals_list.json"

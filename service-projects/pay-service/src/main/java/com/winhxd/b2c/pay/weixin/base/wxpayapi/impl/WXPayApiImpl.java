@@ -295,7 +295,7 @@ public class WXPayApiImpl implements WXPayApi {
 			url = WXPayConstants.REFUND_URL_SUFFIX;
 		}
 		if(config != null) {
-			reqData.put("notify_url", config.getPayNotifyUrl());
+			reqData.put("notify_url", config.getRefundNotifyUrl());
 		}
 		return this.requestWithCert(url, reqData, connectTimeoutMs, readTimeoutMs);
 	}

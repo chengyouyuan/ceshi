@@ -53,13 +53,13 @@ public class PayConfig extends WXPayConfig {
     /***
      * 支付回调配置
      */
-    @Value("${WX.PAY_NOTIFY_URL}")
+    @Value("${DOMAIN.CALLBACK_DOMAIN_URL}${WX.PAY_NOTIFY_URL}")
     private String payNotifyUrl;
 
     /***
      * 退款回调配置
      */
-    @Value("${WX.REFUND_NOTIFY_URL}")
+    @Value("${DOMAIN.CALLBACK_DOMAIN_URL}${WX.REFUND_NOTIFY_URL}")
     private String refundNotifyUrl;
 
     @Override

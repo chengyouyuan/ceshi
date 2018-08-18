@@ -31,11 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @Api(tags = "Api CallBack")
-@RequestMapping("${WX.CALLBACK_DOMAIN_URL}")
 public class ApiPayCallbackController {
 	
-	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
-	@PostMapping(value = "/api-pay/pay/unifiedorder/cooperation/v1/callback")
+/*	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
+	@PostMapping(value = "${WX.PAY_NOTIFY_URL}")
 	private void unifiedOrderCallback(HttpServletRequest request,HttpServletResponse response){
 		return ;
 	}
@@ -45,9 +44,9 @@ public class ApiPayCallbackController {
 		@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	@PostMapping(value = "/api-pay/pay/refund/cooperation/v1/callback")
+	@PostMapping(value = "${WX.REFUND_NOTIFY_URL}")
 	private void refundCallback(HttpServletRequest request,HttpServletResponse response){
 		return;
-	}
+	}*/
 
 }

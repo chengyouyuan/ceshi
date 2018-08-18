@@ -1,8 +1,8 @@
 package com.winhxd.b2c.admin.common.context;
 
-import com.winhxd.b2c.admin.module.system.constant.Constant;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SysConstant;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +37,7 @@ public class UserManager implements ApplicationListener<ContextRefreshedEvent> {
         Cookie[] requestCookies = request.getCookies();
         if (null != requestCookies) {
             for (Cookie cookie : requestCookies) {
-                if (cookie.getName().equals(Constant.TOKEN_NAME)) {
+                if (cookie.getName().equals(SysConstant.TOKEN_NAME)) {
                     String token = cookie.getValue();
                     String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 

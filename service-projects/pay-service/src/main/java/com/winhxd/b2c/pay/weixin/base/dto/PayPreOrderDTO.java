@@ -10,34 +10,9 @@ import java.math.BigDecimal;
  * @Description 
  * @version
  */
-public class PayPreOrderDTO implements Serializable {
+public class PayPreOrderDTO extends RequestBase implements Serializable {
 	private static final long serialVersionUID = -6751906874587493059L;
 	
-	/**
-     * 小程序ID
-     */
-    private String appid;
-    
-    /**
-     * 商户号
-     */
-    private String mchId;
-    
-    /**
-     * 随机字符串
-     */
-    private String nonceStr;
-    
-    /**
-     * 签名
-     */
-    private String sign;
-    
-    /**
-     * 签名类型，支持HMAC-SHA256和MD5
-     */
-    private String signType;
-    
 	/**
      * 真实订单号
      */
@@ -89,46 +64,6 @@ public class PayPreOrderDTO implements Serializable {
      * 限制支付类型（微信参数），上传此参数no_credit--可限制用户不能使用信用卡支付
      */
     private String limitPay;
-
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-
-	public String getMchId() {
-		return mchId;
-	}
-
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
-	}
-
-	public String getNonceStr() {
-		return nonceStr;
-	}
-
-	public void setNonceStr(String nonceStr) {
-		this.nonceStr = nonceStr;
-	}
-
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
-	public String getSignType() {
-		return signType;
-	}
-
-	public void setSignType(String signType) {
-		this.signType = signType;
-	}
 
 	public String getOutOrderNo() {
 		return outOrderNo;

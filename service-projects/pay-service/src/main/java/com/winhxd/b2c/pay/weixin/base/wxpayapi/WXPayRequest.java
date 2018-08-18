@@ -1,6 +1,14 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
-import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import java.io.InputStream;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,22 +25,13 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import java.io.InputStream;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.security.KeyStore;
-import java.security.SecureRandom;
 
 @Component
 public class WXPayRequest {
 
     @Autowired
-    private WXPayConfig config = new PayConfig();
+    private WXPayConfig config;
 
     /**
      * 请求，只请求一次，不做重试
@@ -78,8 +77,7 @@ public class WXPayRequest {
                     null,
                     null
             );
-        }
-        else {
+        } else {
             connManager = new BasicHttpClientConnectionManager(
                     RegistryBuilder.<ConnectionSocketFactory>create()
                             .register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -141,8 +139,7 @@ public class WXPayRequest {
                         firstHasReadTimeout);
             }
             return result;
-        }
-        catch (UnknownHostException ex) {  // dns 解析错误，或域名不存在
+        } catch (UnknownHostException ex) {  // dns 解析错误，或域名不存在
             exception = ex;
             firstHasDnsErr = true;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
@@ -158,8 +155,7 @@ public class WXPayRequest {
                     firstHasConnectTimeout,
                     firstHasReadTimeout
             );
-        }
-        catch (ConnectTimeoutException ex) {
+        } catch (ConnectTimeoutException ex) {
             exception = ex;
             firstHasConnectTimeout = true;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;

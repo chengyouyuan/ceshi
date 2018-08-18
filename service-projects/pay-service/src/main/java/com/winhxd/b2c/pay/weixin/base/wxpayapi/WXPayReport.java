@@ -204,26 +204,6 @@ public class WXPayReport {
         }
     }
 
-
-    @Deprecated
-    private void reportSync(final String data) throws Exception {
-        httpRequest(data, DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIMEOUT_MS);
-    }
-
-    @Deprecated
-    private void reportAsync(final String data) throws Exception {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    httpRequest(data, DEFAULT_CONNECT_TIMEOUT_MS, DEFAULT_READ_TIMEOUT_MS);
-                }
-                catch (Exception ex) {
-                    WXPayUtil.getLogger().warn("report fail. reason: {}", ex.getMessage());
-                }
-            }
-        }).start();
-    }
-
     /**
      * http 请求
      * @param data

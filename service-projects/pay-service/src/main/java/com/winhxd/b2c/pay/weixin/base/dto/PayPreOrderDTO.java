@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * 统一下单入参

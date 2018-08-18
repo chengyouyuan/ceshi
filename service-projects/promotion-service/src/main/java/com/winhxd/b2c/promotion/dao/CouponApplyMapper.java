@@ -22,7 +22,7 @@ public interface CouponApplyMapper {
 
     int updateByPrimaryKey(CouponApply record);
 
-    CouponApplyVO viewCouponApplyDetail(@Param("id") long id);
+    CouponApplyVO viewCouponApplyCommonDetail(@Param("id") long id);
 
     int updateCouponGradeValid(@Param("id")long id, @Param("userId")long userId, @Param("userName")String userName);
 
@@ -33,4 +33,9 @@ public interface CouponApplyMapper {
     List<ApplyTempleteCountVO> findApplyTempleteCountPage(@Param("applyId") long applyId);
 
     TempleteRelationCountVO getRelationCouponApplyCount(@Param("id") Long id);
+
+    CouponApplyVO viewCouponApplyBrandDetail(@Param("id")long id);
+
+    CouponApplyVO viewCouponApplyProdDetail(@Param("id") long id);
+
 }

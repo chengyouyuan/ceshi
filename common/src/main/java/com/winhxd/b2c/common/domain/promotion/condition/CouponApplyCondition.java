@@ -29,8 +29,10 @@ public class CouponApplyCondition extends PagedCondition implements Serializable
     @ApiModelProperty(value = "当前操作人名称")
     private String userName;
 
+
     private List<CouponApplyBrandList> couponApplyBrandList;
     private List<CouponApplyProductList> couponApplyProductList;
+
 
     public String getName() {
         return name;

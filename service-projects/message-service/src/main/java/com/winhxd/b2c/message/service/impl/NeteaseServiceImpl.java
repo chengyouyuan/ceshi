@@ -77,7 +77,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		NeteaseAccountVO result = new NeteaseAccountVO();
 		Long customerId = neteaseAccountCondition.getCustomerId();
 		if (customerId == null) {
-			return null;
+			throw new BusinessException(BusinessCode.CODE_701301);
 		}
 		//创建云信用户
 		//从云信获取该用户的信息，判断该用户是否在云信已经存在
@@ -98,7 +98,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，customerId={}", customerId);
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，失败原因={}", tokenMap.get(PARAM_DESC));
-				return null;
+				throw new BusinessException(BusinessCode.CODE_701302);
 			}
 		} else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
 			// 如果云信账号不存在，则创建
@@ -111,7 +111,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败 customerId={}", customerId);
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败，失败原因={}", createMap.get(PARAM_DESC));
-				return null;
+				throw new BusinessException(BusinessCode.CODE_701303);
 			}
 		}
 		return result;
@@ -129,7 +129,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
 		if (account == null) {
 			//云信用户不存在
-			result.setCode(BusinessCode.CODE_1001);
+			result.setCode(BusinessCode.CODE_701403);
 			return result;
 		}
 		Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
@@ -138,6 +138,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
 		} else {
 			LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
+			throw new BusinessException(BusinessCode.CODE_701404);
 		}
 		return result;
 	}
@@ -236,11 +237,11 @@ public class NeteaseServiceImpl implements NeteaseService {
 	private int verifyParamSend(NeteaseMsgCondition netEaseCondition) {
 		if (netEaseCondition.getCustomerId() == null) {
 			LOGGER.info("给B端用户发送云信消息，接口参数getCustomerId为空");
-			return BusinessCode.CODE_1001;
+			return BusinessCode.CODE_701401;
 		}
 		if (netEaseCondition.getNeteaseMsg() == null) {
 			LOGGER.info("给B端用户发送云信消息，,接口参数getEaseMsg为空");
-			return BusinessCode.CODE_1001;
+			return BusinessCode.CODE_701402;
 		}
 		return BusinessCode.CODE_OK;
 	}

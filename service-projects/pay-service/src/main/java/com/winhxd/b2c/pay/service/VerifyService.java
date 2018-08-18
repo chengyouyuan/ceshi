@@ -54,22 +54,22 @@ public class VerifyService {
     /**
      * 订单支付成功事件
      *
-     * @param eventId
+     * @param orderNo
      * @param orderInfo
      */
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
-    public void orderPaySuccessHandler(String eventId, OrderInfo orderInfo) {
+    public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
 
     /**
      * 订单闭环事件
      *
-     * @param eventId
+     * @param orderNo
      * @param orderInfo
      */
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
-    public void orderFinishHandler(String eventId, OrderInfo orderInfo) {
+    public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
     }
 
@@ -234,6 +234,9 @@ public class VerifyService {
                     verifyCode, vo.getStoreId(), vo.getDate());
             updatedCount += count;
         }
+        // 门店资金变动
+        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+        payService.updateStoreBankroll(rollCondition);
         return updatedCount;
     }
 
@@ -257,6 +260,9 @@ public class VerifyService {
         verifyHistory.setOperatedByName(operatedByName);
         accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
+        // 门店资金变动
+        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+        payService.updateStoreBankroll(rollCondition);
         return updatedCount;
     }
 
@@ -335,17 +341,21 @@ public class VerifyService {
         for (Long id : condition.getIds()) {
             PayWithdrawals payWithdrawals = new PayWithdrawals();
             payWithdrawals.setId(id);
-            payWithdrawals.setAuditStatus(auditStatus);
-            payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawals.setUpdated(new Date());
             payWithdrawals.setUpdatedBy(updatedBy);
             payWithdrawals.setUpdatedByName(updatedByName);
             // 更新审核状态
+            payWithdrawals.setAuditStatus(auditStatus);
+            payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
             // 门店资金变动
             UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
             payService.updateStoreBankroll(rollCondition);
             // 更新门店提现状态
+            payWithdrawals.setAuditStatus(null);
+            payWithdrawals.setAuditDesc(null);
+            payWithdrawals.setCallbackStatus(null);
+            payWithdrawals.setCallbackReason(null);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
             count++;
         }

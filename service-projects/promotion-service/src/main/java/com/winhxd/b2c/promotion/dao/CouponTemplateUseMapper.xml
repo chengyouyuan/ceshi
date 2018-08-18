@@ -27,14 +27,14 @@
     select 
     <include refid="Base_Column_List" />
     from coupon_template_use
-    where order_no = #{orderNo} AND status = 1'
+    where order_no = #{orderNo} AND status = 1
   </select>
 
   <select id="selectByOrderNos" parameterType="java.util.List" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from coupon_template_use
-    where order_no IN #{orderNos} AND status = 1'
+    where order_no IN #{orderNos} AND status = 1
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

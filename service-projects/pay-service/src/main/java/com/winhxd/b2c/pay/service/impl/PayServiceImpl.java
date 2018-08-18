@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
+import com.winhxd.b2c.common.domain.pay.model.*;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
+import com.winhxd.b2c.pay.dao.*;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -32,22 +36,10 @@ import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
-import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
-import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
-import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
-import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
-import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
-import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
-import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
@@ -72,6 +64,8 @@ public class PayServiceImpl implements PayService{
 	private PayRefundPaymentMapper payRefundPaymentMapper;
 	@Autowired
 	private PayFinanceAccountDetailMapper payFinanceAccountDetailMapper;
+	@Autowired
+	private PayWithdrawalsMapper payWithdrawalsMapper;
 	@Autowired
 	private WXUnifiedOrderService unifiedOrderService;
 	@Autowired
@@ -496,14 +490,53 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public String transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-		
-		//return transfersService.transfersToChange(toWxBalanceCondition);
+		String  log =logLabel + "微信提现至余额transfersToChange";
+		logger.info(log+"--开始");
+		if (toWxBalanceCondition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
+		if (StringUtils.isBlank(toWxBalanceCondition.getPartnerTradeNo())) {
+			logger.info(log+"--提现流水号号为空");
+			throw new BusinessException(BusinessCode.CODE_600005);
+		}
+		PayTransfersToWxChangeVO payTransfersToWxChangeVO = transfersService.transfersToChange(toWxBalanceCondition);
+
+		if(null == payTransfersToWxChangeVO){
+			logger.info(log+"--transfersService.transfersToChange返回结果为空");
+		}
+		PayWithdrawals payWithdrawals = new PayWithdrawals();
+		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
+//		payWithdrawals.setCallbackStatus();
+		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
+		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
+		payWithdrawals.setTimeEnd(new Date());
+		int i  = payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
 		return null;
 	}
 
 	@Override
 	public String transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-		//return transfersService.transfersToBank(toWxBankCondition);
+		String  log =logLabel + "微信提现至银行卡transfersToBank";
+		logger.info(log+"--开始");
+		if (toWxBankCondition==null) {
+			logger.info(log+"--参数为空");
+			throw new BusinessException(BusinessCode.CODE_600101);
+		}
+		if (StringUtils.isBlank(toWxBankCondition.getPartnerTradeNo())) {
+			logger.info(log+"--提现流水号号为空");
+			throw new BusinessException(BusinessCode.CODE_600005);
+		}
+		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
+
+		PayWithdrawals payWithdrawals = new PayWithdrawals();
+		payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
+		payWithdrawals.setCmmsAmt(payTransfersToWxBankVO.getCmmsAmt());
+//		payWithdrawals.setCallbackStatus();
+		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
+		payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
+		payWithdrawals.setTimeEnd(new Date());
+		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
 		return null;
 	}
 

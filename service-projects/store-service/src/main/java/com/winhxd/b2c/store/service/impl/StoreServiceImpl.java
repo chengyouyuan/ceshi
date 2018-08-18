@@ -134,6 +134,7 @@ public class StoreServiceImpl implements StoreService {
             storeVOS.add(storeVO);
         });
         pagedList.setTotalRows(userInfoList.getTotal());
+        pagedList.setPageNo(storeCondition.getPageNo());
         pagedList.setData(storeVOS);
         return pagedList;
     }

@@ -21,20 +21,20 @@ import feign.hystrix.FallbackFactory;
 
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
 public interface FinancialManagerServiceClient {
-	/**出入帐汇总查询*/
+	/**出入帐汇总查询*//*
 	@PostMapping("/pay/61001/v1/queryStoreFinancialSummary")
 	ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary();
 	
-	/**财务入账明细*/
+	*//**财务入账明细*//*
 	@PostMapping("/pay/61002/v1/queryFinancialInDetail")
 	ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition);
 	
-	/**财务出账明细*/
+	*//**财务出账明细*//*
 	@PostMapping("/pay/61003/v1/queryFinancialOutDetail")
 	ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition);
-	/**公司入账明细*/
+	*//**公司入账明细*//*
 	// 待定
-
+*/
 }
 @Component
 class FinancialManagerServiceClientFallback implements FinancialManagerServiceClient, FallbackFactory<FinancialManagerServiceClient>{
@@ -53,7 +53,7 @@ class FinancialManagerServiceClientFallback implements FinancialManagerServiceCl
 		return new FinancialManagerServiceClientFallback(throwable);
 	}
 
-	@Override
+	/*@Override
 	public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
 		logger.error("FinancialManagerServiceClientFallback -> queryStoreFinancialSummary", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
@@ -69,6 +69,6 @@ class FinancialManagerServiceClientFallback implements FinancialManagerServiceCl
 	public ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition) {
 		logger.error("FinancialManagerServiceClientFallback -> queryFinancialOutDetail", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
-	}
+	}*/
 	
 }

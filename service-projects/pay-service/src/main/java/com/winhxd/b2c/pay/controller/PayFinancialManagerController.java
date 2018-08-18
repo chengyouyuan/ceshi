@@ -38,28 +38,28 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	@Autowired
 	private PayFinancialManagerService payFinancialManagerService;
 	 
-	 @Override
-	 @ApiOperation(value = "出入帐汇总查询", notes = "出入帐汇总查询")
-	 @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员")})
+//	 @Override
+//	 @ApiOperation(value = "出入帐汇总查询", notes = "出入帐汇总查询")
+//	 @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+//            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+//            @ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员")})
 //	 @PostMapping("/pay/6101/v1/queryStoreFinancialSummary")
-	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
-        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
-        ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
-        PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerService.findStoreFinancialSummary();
-        //StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
-        /// 测试数据//////////////
-//        StoreUser currentStoreUser = new StoreUser();
-//        currentStoreUser.setBusinessId(1l);
-        //////////////////////////////
-        //PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerServiceImpl.findFinanceAccountDetail(currentStoreUser.getBusinessId());
-        //result.setData(findFinanceAccountDetail);
-        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
-        return result;
-	 }
+//	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
+//        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
+//        ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
+//        PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerService.findStoreFinancialSummary();
+//        //StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+//        /// 测试数据//////////////
+////        StoreUser currentStoreUser = new StoreUser();
+////        currentStoreUser.setBusinessId(1l);
+//        //////////////////////////////
+//        //PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerServiceImpl.findFinanceAccountDetail(currentStoreUser.getBusinessId());
+//        //result.setData(findFinanceAccountDetail);
+//        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
+//        return result;
+//	 }
 
-	@Override
+	/*@Override
 	@ApiOperation(value = "财务入账明细", notes = "财务入账明细")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 	       @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
@@ -87,7 +87,7 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 		logger.info("/pay/6103/v1/queryFinancialOutDetail 财务出账明细");
 		return result;
 	}
-	 
+	 */
 	 /**公司入账明细*/
 	// TODO 待定
 

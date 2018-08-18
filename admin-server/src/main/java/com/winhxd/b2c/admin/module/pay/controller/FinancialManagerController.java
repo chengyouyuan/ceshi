@@ -22,21 +22,21 @@ public class FinancialManagerController {
 	private FinancialManagerServiceClient managerServiceClient;
 	
 	/**出入帐汇总查询*/
-	@PostMapping("/queryStoreFinancialSummary")
+	/*@PostMapping("/queryStoreFinancialSummary")
 	ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary(){
 		return managerServiceClient.queryStoreFinancialSummary();
 	}
 	
-	/**财务入账明细*/
+	*//**财务入账明细*//*
 	@PostMapping("/queryFinancialInDetail")
 	ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition){
 		return managerServiceClient.queryFinancialInDetail(condition);
 	}
 	
-	/**财务出账明细*/
+	*//**财务出账明细*//*
 	@PostMapping("/queryFinancialOutDetail")
 	ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition){
 		return managerServiceClient.queryFinancialOutDetail(condition);
-	}
+	}*/
 
 }

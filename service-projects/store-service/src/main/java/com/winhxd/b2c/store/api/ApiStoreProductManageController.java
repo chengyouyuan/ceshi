@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.domain.common.model.BaseFile;
+import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -535,7 +537,7 @@ public class ApiStoreProductManageController {
             @ApiResponse(code = BusinessCode.CODE_1020, message = "图片不能为空！") })
     @PostMapping(value = "1049/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles)
-            throws IOException {
+            throws  Exception{
         ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
 
         // 获取当前门店用户
@@ -549,23 +551,46 @@ public class ApiStoreProductManageController {
             responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
             return responseResult;
         }
-
-        List<MultipartFile> multipartFiles = imageFiles.getFiles("file");
-        if (multipartFiles == null || multipartFiles.size() <= 0 || multipartFiles.size() > 3) {
+        List<MultipartFile> multipartFiles=new ArrayList<>();
+        
+        List<MultipartFile> file = imageFiles.getFiles("file");
+        if (file == null || file.size() != 1) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
             return responseResult;
+        }else{
+            multipartFiles.add(file.get(0));
         }
+        
+        List<MultipartFile> file1 = imageFiles.getFiles("file1");
+        if (file1 == null || file1.size() != 1) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            return responseResult;
+        }else{
+            multipartFiles.add(file1.get(0));
+        }
+        
+        List<MultipartFile> file2 = imageFiles.getFiles("file2");
+        if (file2 == null || file2.size() != 1) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            return responseResult;
+        }else{
+            multipartFiles.add(file2.get(0));
+        }
+        
         List<ProductImageVO> imageVOList = new ArrayList<>();
         for (MultipartFile mFile : multipartFiles) {
-            ResponseResult<ProductImageVO> imageVOResult = imageUploadUtil.uploadImage(mFile.getOriginalFilename(),
-                    mFile.getInputStream(), null);
-            if (imageVOResult.getCode() == 0) {
-                imageVOList.add(imageVOResult.getData());
-            } else {
-                responseResult.setCode(imageVOResult.getCode());
-                responseResult.setMessage(imageVOResult.getMessage());
-                responseResult.setData(imageVOList);
+            BaseImageFile baseImageFile =imageUploadUtil.uploadImage(mFile.getOriginalFilename(),mFile.getInputStream(),null);
+            if(baseImageFile!=null){
+                ProductImageVO imageVO=new ProductImageVO();
+                imageVO.setName(baseImageFile.getName());
+                imageVO.setUrl(baseImageFile.getUrl());
+                imageVOList.add(imageVO);
             }
+//			else{   上传失败一个，不能设置错误信息把？
+//				responseResult.setCode(imageVOResult.getCode());
+//				responseResult.setMessage(imageVOResult.getMessage());
+//				responseResult.setData(imageVOList);
+//			}
         }
 
         responseResult.setData(imageVOList);
@@ -575,7 +600,7 @@ public class ApiStoreProductManageController {
 
     /**
      * 功能描述: 获取门店购买过商品sku list
-     * 
+     *
      * @param storeCustomerId
      * @return
      * @auther lvsen

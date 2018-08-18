@@ -9,6 +9,8 @@ public class CouponApplyBrandList {
 
     private Short status;
 
+    private String companyCode;
+
     public Long getId() {
         return id;
     }
@@ -39,5 +41,14 @@ public class CouponApplyBrandList {
 
     public void setStatus(Short status) {
         this.status = status;
+    }
+
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
     }
 }

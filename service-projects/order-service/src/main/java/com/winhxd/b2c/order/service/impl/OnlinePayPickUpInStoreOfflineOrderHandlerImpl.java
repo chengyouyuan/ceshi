@@ -210,7 +210,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid());
         
         //发送订单支付事件
-        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, UUID.randomUUID().toString(), orderInfo);
+        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, orderInfo.getOrderNo(), orderInfo);
     }
 
     private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {

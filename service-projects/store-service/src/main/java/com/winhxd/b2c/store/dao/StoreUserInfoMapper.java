@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
+import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import org.apache.ibatis.annotations.Param;
@@ -24,7 +25,7 @@ public interface StoreUserInfoMapper {
 
     StoreUserInfo selectByStoreUserInfo(StoreUserInfo storeUserInfo);
 
-    List<StoreUserInfo> selectStoreUserInfo(StoreUserInfo storeUserInfo);
+    Page<StoreUserInfo> selectStoreUserInfo(StoreUserInfo storeUserInfo);
 
     /**
      * @param customerUserId 用户id

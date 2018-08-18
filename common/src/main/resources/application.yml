@@ -2,5 +2,7 @@ spring:
   messages:
     encoding: utf-8
     basename: i18n/codes
-picture:
-  basehost: http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson
+
+cdn:
+   #cdn 上传文件服务器路径，文件不覆盖
+   picture: http://upload.winhxd.com:8100/crm/uploadResource2CDNAction.do?method=addRecordNewJson

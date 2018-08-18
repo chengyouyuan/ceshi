@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
@@ -37,9 +38,12 @@ public class ApiPayController {
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
 	@PostMapping(value = "/6005/v1/getBanks", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<List<BanksVO>> getBanks(@RequestBody OrderPayCondition condition){
-		ResponseResult<List<BanksVO>> result=new ResponseResult<>();
-		result.setData(BanksEnums.getValus());
+	private ResponseResult<PagedList<BanksVO>> getBanks(@RequestBody OrderPayCondition condition){
+		ResponseResult<PagedList<BanksVO>> result=new ResponseResult<>();
+		PagedList<BanksVO> pageVo = new PagedList<BanksVO>();
+		List<BanksVO> valus = BanksEnums.getValus();
+		pageVo.setData(valus);
+		result.setData(pageVo);
 		return result;
 	}
 	@ApiOperation(value = "获取转账钱包", notes = "获取转账钱包")

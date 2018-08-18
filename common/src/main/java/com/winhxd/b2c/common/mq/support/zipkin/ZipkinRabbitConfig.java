@@ -9,6 +9,11 @@ import org.springframework.context.annotation.Bean;
 import zipkin2.reporter.Sender;
 import zipkin2.reporter.amqp.RabbitMQSender;
 
+/**
+ * Zipkin配置类
+ *
+ * @author lixiaodong
+ */
 public class ZipkinRabbitConfig {
     @Value("${spring.zipkin.rabbitmq.queue:zipkin}")
     private String queue;

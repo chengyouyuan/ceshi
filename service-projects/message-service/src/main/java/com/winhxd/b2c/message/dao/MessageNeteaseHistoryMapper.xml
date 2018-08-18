@@ -210,4 +210,36 @@
             </foreach>
         </if>
     </update>
+    <insert id="insertHistories" parameterType="java.util.List">
+        insert into message_netease_history (
+            from_accid,
+            to_accid,
+            msg_type,
+            msg_body,
+            msg_attach,
+            ext_json,
+            page_type,
+            tree_code,
+            msg_time,
+            msg_id_server,
+            read_status
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+            #{item.fromAccid,jdbcType=VARCHAR},
+            #{item.toAccid,jdbcType=VARCHAR},
+            #{item.msgType,jdbcType=SMALLINT},
+            #{item.msgBody,jdbcType=VARCHAR},
+            #{item.msgAttach,jdbcType=VARCHAR},
+            #{item.extJson,jdbcType=VARCHAR},
+            #{item.pageType,jdbcType=SMALLINT},
+            #{item.treeCode,jdbcType=VARCHAR},
+            #{item.msgTimeStamp,jdbcType=TIMESTAMP},
+            #{item.msgIdServer,jdbcType=VARCHAR},
+            #{item.readStatus,jdbcType=VARCHAR}
+        )
+
+        </foreach>
+    </insert>
 </mapper>

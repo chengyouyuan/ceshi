@@ -8,9 +8,8 @@
     <result column="refund_no" jdbcType="CHAR" property="refundNo" />
     <result column="refund_transaction_no" jdbcType="VARCHAR" property="refundTransactionNo" />
     <result column="callback_date" jdbcType="TIMESTAMP" property="callbackDate" />
-    <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
     <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
-    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
+    <result column="refund_desc" jdbcType="VARCHAR" property="refundDesc" />
     <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
     <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
     <result column="refund_fee" jdbcType="DECIMAL" property="refundFee" />
@@ -20,11 +19,21 @@
     <result column="rate" jdbcType="DECIMAL" property="rate" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="mch_id" jdbcType="VARCHAR" property="mchId" />
+    <result column="nonce_str" jdbcType="VARCHAR" property="nonceStr" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="callback_error_code" jdbcType="VARCHAR" property="callbackErrorCode" />
+    <result column="callback_error_message" jdbcType="VARCHAR" property="callbackErrorMessage" />
+    <result column="callback_success_time" jdbcType="TIMESTAMP" property="callbackSuccessTime" />
+    <result column="callback_refund_recv_accout" jdbcType="VARCHAR" property="callbackRefundRecvAccout" />
+    <result column="callback_refund_account" jdbcType="VARCHAR" property="callbackRefundAccount" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_no, order_transaction_no, refund_no, refund_transaction_no, callback_date, 
-    time_end, callback_status, callback_reason, buyer_id, transaction_id, refund_fee, 
-    callback_money, pay_type, cmms_amt, rate, created, updated
+    callback_status, refund_desc, buyer_id, transaction_id, refund_fee, callback_money, 
+    pay_type, cmms_amt, rate, created, updated, appid, mch_id, nonce_str, total_amount, 
+    callback_error_code, callback_error_message, callback_success_time, callback_refund_recv_accout, callback_refund_account
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -39,17 +48,23 @@
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefundPayment">
     insert into pay_refund_payment (id, order_no, order_transaction_no, 
       refund_no, refund_transaction_no, callback_date, 
-      time_end, callback_status, callback_reason, 
-      buyer_id, transaction_id, refund_fee, 
-      callback_money, pay_type, cmms_amt, 
-      rate, created, updated
+      callback_status, refund_desc, buyer_id, 
+      transaction_id, refund_fee, callback_money, 
+      pay_type, cmms_amt, rate, 
+      created, updated, appid, 
+      mch_id, nonce_str, total_amount, 
+      callback_error_code, callback_error_message, callback_success_time, 
+      callback_refund_recv_accout, callback_refund_account
       )
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderTransactionNo,jdbcType=VARCHAR}, 
       #{refundNo,jdbcType=CHAR}, #{refundTransactionNo,jdbcType=VARCHAR}, #{callbackDate,jdbcType=TIMESTAMP}, 
-      #{timeEnd,jdbcType=TIMESTAMP}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, 
-      #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{refundFee,jdbcType=DECIMAL}, 
-      #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=DECIMAL}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
+      #{callbackStatus,jdbcType=SMALLINT}, #{refundDesc,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, 
+      #{transactionId,jdbcType=VARCHAR}, #{refundFee,jdbcType=DECIMAL}, #{callbackMoney,jdbcType=DECIMAL}, 
+      #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, 
+      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{appid,jdbcType=VARCHAR}, 
+      #{mchId,jdbcType=VARCHAR}, #{nonceStr,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DECIMAL}, 
+      #{callbackErrorCode,jdbcType=VARCHAR}, #{callbackErrorMessage,jdbcType=VARCHAR}, #{callbackSuccessTime,jdbcType=TIMESTAMP}, 
+      #{callbackRefundRecvAccout,jdbcType=VARCHAR}, #{callbackRefundAccount,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefundPayment">
@@ -73,14 +88,11 @@
       <if test="callbackDate != null">
         callback_date,
       </if>
-      <if test="timeEnd != null">
-        time_end,
-      </if>
       <if test="callbackStatus != null">
         callback_status,
       </if>
-      <if test="callbackReason != null">
-        callback_reason,
+      <if test="refundDesc != null">
+        refund_desc,
       </if>
       <if test="buyerId != null">
         buyer_id,
@@ -109,6 +121,33 @@
       <if test="updated != null">
         updated,
       </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="mchId != null">
+        mch_id,
+      </if>
+      <if test="nonceStr != null">
+        nonce_str,
+      </if>
+      <if test="totalAmount != null">
+        total_amount,
+      </if>
+      <if test="callbackErrorCode != null">
+        callback_error_code,
+      </if>
+      <if test="callbackErrorMessage != null">
+        callback_error_message,
+      </if>
+      <if test="callbackSuccessTime != null">
+        callback_success_time,
+      </if>
+      <if test="callbackRefundRecvAccout != null">
+        callback_refund_recv_accout,
+      </if>
+      <if test="callbackRefundAccount != null">
+        callback_refund_account,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -129,14 +168,11 @@
       <if test="callbackDate != null">
         #{callbackDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeEnd != null">
-        #{timeEnd,jdbcType=TIMESTAMP},
-      </if>
       <if test="callbackStatus != null">
         #{callbackStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        #{callbackReason,jdbcType=VARCHAR},
+      <if test="refundDesc != null">
+        #{refundDesc,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         #{buyerId,jdbcType=VARCHAR},
@@ -165,6 +201,33 @@
       <if test="updated != null">
         #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null">
+        #{totalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackErrorCode != null">
+        #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorMessage != null">
+        #{callbackErrorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackSuccessTime != null">
+        #{callbackSuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackRefundRecvAccout != null">
+        #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackRefundAccount != null">
+        #{callbackRefundAccount,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefundPayment">
@@ -185,14 +248,11 @@
       <if test="callbackDate != null">
         callback_date = #{callbackDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="timeEnd != null">
-        time_end = #{timeEnd,jdbcType=TIMESTAMP},
-      </if>
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      <if test="refundDesc != null">
+        refund_desc = #{refundDesc,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         buyer_id = #{buyerId,jdbcType=VARCHAR},
@@ -221,6 +281,33 @@
       <if test="updated != null">
         updated = #{updated,jdbcType=TIMESTAMP},
       </if>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        mch_id = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null">
+        total_amount = #{totalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackErrorCode != null">
+        callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorMessage != null">
+        callback_error_message = #{callbackErrorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackSuccessTime != null">
+        callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackRefundRecvAccout != null">
+        callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackRefundAccount != null">
+        callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -231,9 +318,8 @@
       refund_no = #{refundNo,jdbcType=CHAR},
       refund_transaction_no = #{refundTransactionNo,jdbcType=VARCHAR},
       callback_date = #{callbackDate,jdbcType=TIMESTAMP},
-      time_end = #{timeEnd,jdbcType=TIMESTAMP},
       callback_status = #{callbackStatus,jdbcType=SMALLINT},
-      callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      refund_desc = #{refundDesc,jdbcType=VARCHAR},
       buyer_id = #{buyerId,jdbcType=VARCHAR},
       transaction_id = #{transactionId,jdbcType=VARCHAR},
       refund_fee = #{refundFee,jdbcType=DECIMAL},
@@ -242,7 +328,83 @@
       cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
       rate = #{rate,jdbcType=DECIMAL},
       created = #{created,jdbcType=TIMESTAMP},
-      updated = #{updated,jdbcType=TIMESTAMP}
+      updated = #{updated,jdbcType=TIMESTAMP},
+      appid = #{appid,jdbcType=VARCHAR},
+      mch_id = #{mchId,jdbcType=VARCHAR},
+      nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      callback_error_message = #{callbackErrorMessage,jdbcType=VARCHAR},
+      callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+      callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+      callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateByRefundTransactionNoSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayRefundPayment">
+    update pay_refund_payment
+    <set>
+      <if test="callbackDate != null">
+        callback_date = #{callbackDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackStatus != null">
+        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="refundDesc != null">
+        refund_desc = #{refundDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="refundFee != null">
+        refund_fee = #{refundFee,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackMoney != null">
+        callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="payType != null">
+        pay_type = #{payType,jdbcType=SMALLINT},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        mch_id = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAmount != null">
+        total_amount = #{totalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackErrorCode != null">
+        callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorMessage != null">
+        callback_error_message = #{callbackErrorMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackSuccessTime != null">
+        callback_success_time = #{callbackSuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackRefundRecvAccout != null">
+        callback_refund_recv_accout = #{callbackRefundRecvAccout,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackRefundAccount != null">
+        callback_refund_account = #{callbackRefundAccount,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where refund_transaction_no = #{refundTransactionNo,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>

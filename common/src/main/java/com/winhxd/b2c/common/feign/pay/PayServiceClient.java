@@ -27,7 +27,7 @@ public interface PayServiceClient {
 	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
 	
 	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PayPreOrderVO> orderPay(@RequestBody PayPreOrderCondition condition);
+	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition);
 	
 	@PostMapping(value = "/6003/v1/transfersToChange", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition);
@@ -59,7 +59,7 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 	}
 
 	@Override
-	public ResponseResult<PayPreOrderVO> orderPay(PayPreOrderCondition condition) {
+	public ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition) {
 		logger.error("PayServiceClientFallback -> orderPay", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}

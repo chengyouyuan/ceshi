@@ -14,4 +14,6 @@ public interface PayRefundPaymentMapper {
     int updateByPrimaryKeySelective(PayRefundPayment record);
 
     int updateByPrimaryKey(PayRefundPayment record);
+
+    int updateByRefundTransactionNoSelective(PayRefundPayment record);
 }

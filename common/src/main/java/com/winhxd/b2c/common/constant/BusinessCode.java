@@ -359,6 +359,12 @@ public final class BusinessCode {
     @ApiModelProperty("订单支付  设备Ip为空")
     public static final int CODE_600105 = 600105;
     
+    @ApiModelProperty("订单支付  支付方式为空")
+    public static final int CODE_600106 = 600106;
+    
+    @ApiModelProperty("订单支付  支付金额为空")
+    public static final int CODE_600107 = 600107;
+    
     @ApiModelProperty("退款  参数为空")
     public static final int CODE_600201 = 600201;
    

@@ -13,8 +13,10 @@ import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
@@ -26,10 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class VerifyService {
@@ -47,13 +47,31 @@ public class VerifyService {
     @Autowired
     private OrderServiceClient orderServiceClient;
 
+    @Autowired
+    private StoreServiceClient storeServiceClient;
+
+    @Autowired
+    private PayService payService;
+
+    /**
+     * 订单支付成功事件
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
-    public void orderPaySuccessHandler(String eventId, OrderInfo orderInfo) {
+    public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
 
+    /**
+     * 订单闭环事件
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
-    public void orderFinishHandler(String eventId, OrderInfo orderInfo) {
+    public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
     }
 
@@ -119,6 +137,7 @@ public class VerifyService {
                         count++;
                     }
                 }
+                log.info(String.format("保存订单[%s]费用明细，共[%d]笔费用", orderNo, count));
             } else {
                 throw new BusinessException(-1, "订单明细为NULL");
             }
@@ -126,7 +145,6 @@ public class VerifyService {
             throw new BusinessException(-1, String.format("订单服务-查询订单详情-返回失败-[%d]-%s",
                     responseResult.getCode(), responseResult.getMessage()));
         }
-        log.info(String.format("保存订单[%s]费用，共[%d]笔费用", orderNo, count));
         return count;
     }
 
@@ -138,6 +156,7 @@ public class VerifyService {
      */
     @Transactional
     public int completeAccounting(String orderNo) {
+        String timeFormat = "yyyy-MM-dd HH:mm:ss,SSS";
         int count;
         // 调用订单服务，获取订单闭环时间
         ResponseResult<OrderInfoDetailVO4Management> responseResult = orderServiceClient.getOrderDetail4Management(orderNo);
@@ -147,6 +166,8 @@ public class VerifyService {
             if (orderInfoDetailVO != null) {
                 count = accountingDetailMapper.updateAccountingDetailCompletedByComplete(
                         orderNo, orderInfoDetailVO.getFinishDateTime());
+                log.info(String.format("订单[%s]费用明细入账，入账时间[%s]，共[%d]笔费用",
+                        orderNo, new SimpleDateFormat(timeFormat).format(orderInfoDetailVO.getFinishDateTime()), count));
             } else {
                 throw new BusinessException(-1, "订单明细为NULL");
             }
@@ -154,7 +175,6 @@ public class VerifyService {
             throw new BusinessException(-1, String.format("订单服务-查询订单详情-返回失败-[%d]-%s",
                     responseResult.getCode(), responseResult.getMessage()));
         }
-        log.info(String.format("订单[%s]费用入账，共[%d]笔费用", orderNo, count));
         return count;
     }
 
@@ -177,7 +197,26 @@ public class VerifyService {
      */
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return accountingDetailMapper.selectVerifyList(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<VerifySummaryVO> page = accountingDetailMapper.selectVerifyList(condition);
+        for (VerifySummaryVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (VerifySummaryVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**
@@ -216,6 +255,9 @@ public class VerifyService {
                     verifyCode, vo.getStoreId(), vo.getDate());
             updatedCount += count;
         }
+        // 门店资金变动
+        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+        payService.updateStoreBankroll(rollCondition);
         return updatedCount;
     }
 
@@ -239,6 +281,9 @@ public class VerifyService {
         verifyHistory.setOperatedByName(operatedByName);
         accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
+        // 门店资金变动
+        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+        payService.updateStoreBankroll(rollCondition);
         return updatedCount;
     }
 
@@ -317,11 +362,21 @@ public class VerifyService {
         for (Long id : condition.getIds()) {
             PayWithdrawals payWithdrawals = new PayWithdrawals();
             payWithdrawals.setId(id);
-            payWithdrawals.setAuditStatus(auditStatus);
-            payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawals.setUpdated(new Date());
             payWithdrawals.setUpdatedBy(updatedBy);
             payWithdrawals.setUpdatedByName(updatedByName);
+            // 更新审核状态
+            payWithdrawals.setAuditStatus(auditStatus);
+            payWithdrawals.setAuditDesc(auditDesc);
+            payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
+            // 门店资金变动
+            UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+            payService.updateStoreBankroll(rollCondition);
+            // 更新门店提现状态
+            payWithdrawals.setAuditStatus(null);
+            payWithdrawals.setAuditDesc(null);
+            payWithdrawals.setCallbackStatus(null);
+            payWithdrawals.setCallbackReason(null);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
             count++;
         }

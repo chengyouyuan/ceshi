@@ -195,14 +195,13 @@
     <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
   </resultMap>
 
-  <select id="viewCouponApplyDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">
+  <select id="viewCouponApplyCommonDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">
      select
      id, name, code, remarks, apply_rule_type, status, created_by, created_by_name, created,
      updated_by, updated_by_name, updated
      from coupon_apply
      where id=#{id}
   </select>
-
 
 
 
@@ -310,6 +309,99 @@
     INNER JOIN coupon_template c ON a.id = c.apply_rule_id
     WHERE
     a.id = #{id}
+  </select>
+
+
+
+  <resultMap id="BaseResultMap3" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="apply_rule_type" jdbcType="SMALLINT" property="applyRuleType" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <collection property="couponApplyBrandList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList" column="apply_brand_id">
+      <result column="brand_code" jdbcType="VARCHAR" property="brandCode" />
+      <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    </collection>
+  </resultMap>
+
+  <select id="viewCouponApplyBrandDetail" parameterType="java.lang.Long" resultMap="BaseResultMap3">
+    SELECT
+    a.id,
+    a.NAME,
+    a.CODE,
+    a.remarks,
+    a.apply_rule_type,
+    a.STATUS,
+    a.created_by,
+    a.created_by_name,
+    a.created,
+    a.updated_by,
+    a.updated_by_name,
+    a.updated,
+    c.brand_code,
+    c.company_code
+    FROM
+    coupon_apply a
+    LEFT JOIN coupon_apply_brand b on a.id = b.apply_id
+    LEFT JOIN coupon_apply_brand_list c on c.apply_brand_id = b.id
+    where a.id=#{id}
+  </select>
+
+
+
+  <resultMap id="BaseResultMap4" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="apply_rule_type" jdbcType="SMALLINT" property="applyRuleType" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <collection property="couponApplyProductList" ofType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList" column="apply_product_id">
+      <result column="apply_product_id" jdbcType="BIGINT" property="applyProductId" />
+      <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="brand_code" jdbcType="VARCHAR" property="brandCode" />
+      <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    </collection>
+  </resultMap>
+
+
+  <select id="viewCouponApplyProdDetail" parameterType="java.lang.Long" resultMap="BaseResultMap4">
+    SELECT
+        a.id,
+        a.NAME,
+        a.CODE,
+        a.remarks,
+        a.apply_rule_type,
+        a.STATUS,
+        a.created_by,
+        a.created_by_name,
+        a.created,
+        a.updated_by,
+        a.updated_by_name,
+        a.updated,
+        c.apply_product_id,
+        c.company_code,
+        c.brand_code,
+        c.sku_code
+    FROM
+        coupon_apply a
+      LEFT JOIN coupon_apply_product b on a.id = b.apply_id
+      LEFT JOIN coupon_apply_product_list c on c.apply_product_id = b.id
+    WHERE a.id=#{id}
   </select>
 
 

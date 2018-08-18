@@ -264,6 +264,10 @@ public final class BusinessCode {
 
     @ApiModelProperty("订单退款失败")
     public static final int ORDER_REFUND_FAIL = 400019;
+    @ApiModelProperty("订单退款已完成")
+    public static final int ORDER_REFUND_FINISHED = 400020;
+    @ApiModelProperty("订单退款失败")
+    public static final int ORDER_REFUND_CLOSED = 400021;
 
     @ApiModelProperty("订单获取支付信息失败")
     public static final int ORDER_GET_PAY_INFO_ERROR = 400018;
@@ -441,4 +445,64 @@ public final class BusinessCode {
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;
+
+    @ApiModelProperty("消息服务 创建云信用户 customerId为空")
+    public static final int CODE_701301 = 701301;
+
+    @ApiModelProperty("消息服务 创建云信用户 云信用户存在，更新token失败（需查询官方错误码）")
+    public static final int CODE_701302 = 701302;
+
+    @ApiModelProperty("消息服务 创建云信用户 云信用户不存在，创建新用户失败（需查询官方错误码）")
+    public static final int CODE_701303 = 701303;
+
+    @ApiModelProperty("消息服务 给B端用户发云信消息 customerId为空")
+    public static final int CODE_701401 = 701401;
+
+    @ApiModelProperty("消息服务 给B端用户发云信消息 接口参数getEaseMsg为空")
+    public static final int CODE_701402 = 701402;
+
+    @ApiModelProperty("消息服务 给B端用户发云信消息 云信用户不存在")
+    public static final int CODE_701403 = 701403;
+
+    @ApiModelProperty("消息服务 给B端用户发云信消息 发送消息失败（需查询官方错误码）")
+    public static final int CODE_701404 = 701404;
+
+    @ApiModelProperty("消息服务 根据code获取openid信息出错（需查询官方错误码）")
+    public static final int CODE_702101 = 702101;
+
+    @ApiModelProperty("消息服务 根据code获取openid信息 code为空")
+    public static final int CODE_702102 = 702102;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 toUser为空")
+    public static final int CODE_702201 = 702201;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 消息为空")
+    public static final int CODE_702202 = 702202;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 模板信息不存在")
+    public static final int CODE_702203 = 702203;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 用户没有可用的formid")
+    public static final int CODE_702204 = 702204;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息后没有返回值")
+    public static final int CODE_702205 = 702205;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息后返回的错误码为空")
+    public static final int CODE_702206 = 702206;
+
+    @ApiModelProperty("消息服务 给C端用户推送小程序模板消息 发送消息错误（需查询官方错误码）")
+    public static final int CODE_702207 = 702207;
+
+    @ApiModelProperty("消息服务 保存formid formid为空")
+    public static final int CODE_702301 = 702301;
+
+    @ApiModelProperty("后台消息管理 手动给门店推送消息 推送配置不存在")
+    public static final int CODE_703501 = 703501;
+
+    @ApiModelProperty("后台消息管理 手动给门店推送消息 云信门店记录不存在")
+    public static final int CODE_703502 = 703502;
+
+    @ApiModelProperty("后台消息管理 手动给门店推送消息 消息推送出错（需查询官方错误码）")
+    public static final int CODE_703503 = 703503;
 }

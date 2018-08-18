@@ -2,7 +2,6 @@ package com.winhxd.b2c.pay.service;
 
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.pay.condition.OrderPayCallbackCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
@@ -10,7 +9,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
@@ -59,7 +58,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	OrderPayVO unifiedOrder(PayPreOrderCondition condition);
+	PayPreOrderVO unifiedOrder(PayPreOrderCondition condition);
 	
 	/**
 	 * 退款

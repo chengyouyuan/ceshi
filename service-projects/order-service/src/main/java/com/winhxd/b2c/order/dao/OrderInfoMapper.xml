@@ -563,6 +563,12 @@
         <if test="condition.orderNo != null">
             and order_no like #{orderNo}
         </if>
+        <if test="condition.useCoupon != null and condition.useCoupon == 1">
+            and coupon_titles is not null
+        </if>
+        <if test="condition.useCoupon != null and condition.useCoupon == 2">
+            and coupon_titles is null
+        </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
             and info.order_no in 
         	<foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">

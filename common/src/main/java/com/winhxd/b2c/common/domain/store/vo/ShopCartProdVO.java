@@ -19,25 +19,28 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class ShopCartProdVO {
-	@ApiModelProperty("商品sku")
-	private String skuCode;
+    @ApiModelProperty("商品sku")
+    private String skuCode;
 
-	@ApiModelProperty("商品图片")
-	private String skuImage;
+    @ApiModelProperty("商品图片")
+    private String skuImage;
 
-	@ApiModelProperty("商品名称")
-	private String prodName;
+    @ApiModelProperty("商品名称")
+    private String prodName;
 
-	@ApiModelProperty("售卖价格")
-	private BigDecimal sellMoney;
+    @ApiModelProperty("售卖价格")
+    private BigDecimal sellMoney;
 
-	@ApiModelProperty("商品状态 0下架1上架2已删除")
-	private Short prodStatus;
+    @ApiModelProperty("商品状态 0下架1上架2已删除")
+    private Short prodStatus;
 
-	@ApiModelProperty("商品规则")
-	private String skuAttributeOption;
-	
-	@ApiModelProperty("品牌code")
-	private String brandCode;
+    @ApiModelProperty("商品规则")
+    private String skuAttributeOption;
+
+    @ApiModelProperty("品牌code")
+    private String brandCode;
+
+    @ApiModelProperty(value = "品牌商编码")
+    private String companyCode;
 
 }

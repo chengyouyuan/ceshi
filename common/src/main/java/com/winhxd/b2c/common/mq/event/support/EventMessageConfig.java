@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 事件消息配置类
+ *
  * @author lixiaodong
  */
 @Import(MessageQueueConfig.class)
@@ -154,7 +156,7 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
                 logger.error("事件消息接收异常: " + e.toString(), e);
                 throw new RuntimeException("事件消息接收异常: " + e.toString(), e);
             }
-            String key = CacheName.EVENT_MESSAGE_HANDLER + eventType.toString() + ":" + transferObject.getEventId();
+            String key = CacheName.EVENT_MESSAGE_HANDLER + eventType.toString() + ":" + transferObject.getEventKey();
             logger.info("事件消息接收同步: {}", key);
             RedisLock redisLock = new RedisLock(cache, key, LOCK_EXPIRES);
             if (!redisLock.tryLock(LOCK_TRY_MS, TimeUnit.MILLISECONDS)) {
@@ -163,7 +165,7 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
             }
             logger.info("事件消息处理开始: {}", key);
             try {
-                method.invoke(bean, transferObject.getEventId(), transferObject.getEventObject());
+                method.invoke(bean, transferObject.getEventKey(), transferObject.getEventObject());
                 logger.info("事件消息处理完成: {}", key);
             } catch (Exception e) {
                 logger.error("事件消息处理异常: " + key + ", " + e.toString(), e);

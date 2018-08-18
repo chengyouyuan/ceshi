@@ -30,26 +30,6 @@ public class PayRefundResponseDTO extends ResponseBase{
     private String errCodeDes;
 
     /**
-     * 公众号ID
-     */
-    private String appid;
-
-    /**
-     * 商户号
-     */
-    private String mchId;
-
-    /**
-     * 随机字符串
-     */
-    private String nonceStr;
-
-    /**
-     * 签名
-     */
-    private String sign;
-
-    /**
      * 微信生成的订单号
      */
     private String transactionId;
@@ -138,5 +118,8 @@ public class PayRefundResponseDTO extends ResponseBase{
      */
     private String refundRequestSource;
 
-    
+    /**
+     * 回调的加密信息
+     */
+    private String reqInfo;
 }

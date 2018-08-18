@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
@@ -114,22 +115,26 @@ public class StoreServiceImpl implements StoreService {
             BackStageStoreVO storeVO = new BackStageStoreVO();
             BeanUtils.copyProperties(storeUserInfo1, storeVO);
             changeStatusDesc(storeVO);
-            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())) {
-                //获取地理区域名称
-                for (SysRegion sysRegion : sysRegions) {
-                    if (sysRegion.getRegionCode().equals(storeUserInfo1.getStoreRegionCode())) {
-                        storeVO.setCity(sysRegion.getCity());
-                        storeVO.setCounty(sysRegion.getCounty());
-                        storeVO.setProvince(sysRegion.getProvince());
-                        storeVO.setTown(sysRegion.getTown());
-                        storeVO.setVillage(sysRegion.getVillage());
-                        break;
-                    }
+            //获取地理区域名称
+            for (SysRegion sysRegion : sysRegions) {
+                if (sysRegion.getRegionCode().equals(storeUserInfo1.getStoreRegionCode())) {
+                    storeVO.setCity(sysRegion.getCity());
+                    storeVO.setCounty(sysRegion.getCounty());
+                    storeVO.setProvince(sysRegion.getProvince());
+                    storeVO.setTown(sysRegion.getTown());
+                    storeVO.setVillage(sysRegion.getVillage());
+                    break;
                 }
+            }
+            if (!StringUtils.isEmpty(storeUserInfo1.getPayType())) {
+                String typeDesc = Arrays.asList(storeUserInfo1.getPayType().split(",")).stream()
+                        .map(s -> PayTypeEnum.getPayTypeEnumByTypeCode(new Short(s)).getTypeDesc()).collect(Collectors.joining(","));
+                storeVO.setPayTypeDesc(typeDesc);
             }
             storeVOS.add(storeVO);
         });
         pagedList.setTotalRows(userInfoList.getTotal());
+        pagedList.setPageNo(storeCondition.getPageNo());
         pagedList.setData(storeVOS);
         return pagedList;
     }

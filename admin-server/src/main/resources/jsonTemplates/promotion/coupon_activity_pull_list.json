@@ -12,7 +12,7 @@
         "icon": null,
         "event": {
           "type": "router",
-          "path": "/promotion/pushvolume",
+          "path": "/couponReceive/index",
           "configKey": "",
           "callBack": {
           }

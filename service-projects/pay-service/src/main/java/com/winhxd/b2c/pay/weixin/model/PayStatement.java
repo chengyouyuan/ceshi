@@ -2,66 +2,157 @@ package com.winhxd.b2c.pay.weixin.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 微信对账单
+ * @author yuluyuan
+ *
+ * 2018年8月18日
+ */
 public class PayStatement {
+	
+	/**
+	 * 主键
+	 */
     private Long id;
 
+	/**
+	 * 交易时间
+	 */
     private Date payTime;
 
+	/**
+	 * 公众号ID
+	 */
     private String appid;
 
+	/**
+	 * 商户号
+	 */
     private String mchId;
 
+	/**
+	 * 子商户号
+	 */
     private String subMchId;
 
+	/**
+	 * 设备号
+	 */
     private String deviceId;
 
+	/**
+	 * 微信订单号
+	 */
     private String wxOrderNo;
 
+	/**
+	 * 商户订单号
+	 */
     private String outOrderNo;
 
+	/**
+	 * 用户标识
+	 */
     private String userIdentity;
 
+	/**
+	 * 交易类型
+	 */
     private String payType;
 
+	/**
+	 * 交易状态
+	 */
     private String payStatus;
 
+	/**
+	 * 付款银行
+	 */
     private String bankType;
 
+	/**
+	 * 货币种类
+	 */
     private String currencyType;
 
+	/**
+	 * 总金额
+	 */
     private BigDecimal totalAmount;
 
+	/**
+	 * 代金券或立减优惠金额
+	 */
     private BigDecimal discountAmount;
 
-    private Date 
+	/**
+	 * 退款申请时间
+	 */
+    private Date refundStartTime;
 
-refundStartTime;
-
+	/**
+	 * 退款成功时间
+	 */
     private Date refundSuccessTime;
 
+	/**
+	 * 微信退款单号
+	 */
     private String refundWxOrderNo;
 
+	/**
+	 * 商户退款单号
+	 */
     private String refundOutOrderNo;
 
+	/**
+	 * 退款金额
+	 */
     private BigDecimal refundAmount;
 
+	/**
+	 * 代金券或立减优惠退款金额
+	 */
     private BigDecimal refundDiscountAmount;
 
+	/**
+	 * 退款类型
+	 */
     private String refundType;
 
+	/**
+	 * 退款状态
+	 */
     private String refundStatus;
 
+	/**
+	 * 商品名称
+	 */
     private String prodName;
 
+	/**
+	 * 商户数据包
+	 */
     private String mchData;
 
+	/**
+	 * 手续费
+	 */
     private BigDecimal fee;
 
+	/**
+	 * 费率
+	 */
     private Float rate;
 
+	/**
+	 * 对账单日期
+	 */
     private Date billDate;
 
+	/**
+	 * 对账单统计表id
+	 */
     private Long statementCountId;
 
     public Long getId() {

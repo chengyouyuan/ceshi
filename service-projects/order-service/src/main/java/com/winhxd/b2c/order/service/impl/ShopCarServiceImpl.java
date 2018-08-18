@@ -1,22 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -24,11 +7,8 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
@@ -42,6 +22,18 @@ import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author: wangbaokuo
@@ -62,8 +54,6 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private OrderQueryService orderQueryService;
 
     @Autowired
     private StoreServiceClient storeServiceClient;
@@ -122,6 +112,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     shopCarProdInfoVO.setAmount(shopCar2.getAmount());
                     BeanUtils.copyProperties(shopCarProdVO, shopCarProdInfoVO);
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
+                    shopCarProdInfoVO.setCompanyCode(shopCarProdVO.getCompanyCode());
                     result.add(shopCarProdInfoVO);
                 }
             }
@@ -136,7 +127,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public PayPreOrderVO readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId) {
         logger.info(READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -148,7 +139,6 @@ public class ShopCarServiceImpl implements ShopCarService {
                     logger.error(READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
-
                 logger.info(READY_ORDER + "{}-> 校验购物车商品状态执行...");
                 checkShopCarProdInfo(shopCars);
 
@@ -165,19 +155,12 @@ public class ShopCarServiceImpl implements ShopCarService {
                 orderCreateCondition.setCustomerId(customerId);
                 orderCreateCondition.setOrderItemConditions(items);
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
-                String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
+                OrderInfo orderInfo = orderService.submitOrder(orderCreateCondition);
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
-                PayPreOrderVO orderPayVO = new PayPreOrderVO();
-                if (null != condition.getOrderTotalMoney()) {
-                    CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
-                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo开始...");
-                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
-                    logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
-                }
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));
                 this.removeShopCar(customerId);
-                return orderPayVO;
+                return orderInfo;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }
@@ -188,7 +171,8 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
     }
 
-    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+    @Override
+    public CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
         ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceClient.findCustomerUserByIds(Arrays.asList(customerId));
         if (ret == null || ret.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(ret.getData())) {
             throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);

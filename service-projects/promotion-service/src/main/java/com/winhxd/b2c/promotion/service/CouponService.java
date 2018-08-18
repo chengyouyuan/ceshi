@@ -106,7 +106,7 @@ public interface CouponService {
      * @param couponCondition
      * @return
      */
-    List<CouponVO> availableCouponListByOrder(CouponPreAmountCondition couponCondition);
+    List<CouponVO> availableCouponListByOrder(OrderAvailableCouponCondition couponCondition);
 
     /**
      * 获取用户可领取门店优惠券种类数
@@ -129,5 +129,5 @@ public interface CouponService {
      * @param couponCondition
      * @return
      */
-    CouponVO findDefaultCouponByOrder(CouponPreAmountCondition couponCondition);
+    CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition);
 }

@@ -1,7 +1,26 @@
 package com.winhxd.b2c.order.api;
 
-import java.util.List;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
+import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.service.ShopCarService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,23 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.common.ApiCondition;
-import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.order.service.ShopCarService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -41,7 +44,8 @@ public class ApiShopCarController {
 
     @Autowired
     private ShopCarService shopCarService;
-
+    @Autowired
+    private OrderQueryService orderQueryService;
     /**
      * 商品加购
      * @author: wangbaokuo
@@ -122,7 +126,20 @@ public class ApiShopCarController {
     public ResponseResult<PayPreOrderVO> readyOrder(@RequestBody ReadyShopCarCondition condition){
         ResponseResult result = new ResponseResult<>();
         shopCarParam(condition);
-        PayPreOrderVO orderPayVO = shopCarService.readyOrder(condition, getCurrentCustomerId());
+        Long customerId = getCurrentCustomerId();
+        OrderInfo orderInfo = shopCarService.readyOrder(condition, customerId);
+        PayPreOrderVO orderPayVO = new PayPreOrderVO();
+
+        if (orderInfo.getValuationType() == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
+            CustomerUserInfoVO customerUserInfoVO = shopCarService.getCustomerUserInfoVO(customerId);
+            logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
+            try{
+                orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            }catch (Exception e){
+                throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+            }
+            logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
+        }
         result.setData(orderPayVO);
         return result;
     }

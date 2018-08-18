@@ -1,5 +1,36 @@
 package com.winhxd.b2c.order.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
@@ -17,8 +48,19 @@ import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
-import com.winhxd.b2c.common.domain.order.condition.*;
-import com.winhxd.b2c.common.domain.order.enums.*;
+import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
@@ -32,6 +74,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -53,28 +96,6 @@ import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author wangbin
@@ -92,7 +113,7 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
-    private static final ThreadLocal<Map<String, ProductSkuVO>> skuInfoMapThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, ProductSkuVO>> SKU_INFO_MAP_THREADLOCAL = new ThreadLocal<>();
 
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
@@ -883,15 +904,6 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
         orderInfo.setCreatedBy(orderCreateCondition.getCustomerId());
-        //计算订单总金额
-        BigDecimal orderTotal = calculateOrderTotal(orderCreateCondition);
-        short valuationType = ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
-        if (orderTotal == null) {
-            //待计价订单
-            valuationType = ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
-        }
-        orderInfo.setOrderTotalMoney(orderTotal);
-        orderInfo.setValuationType(valuationType);
         orderInfo.setCustomerId(orderCreateCondition.getCustomerId());
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
@@ -907,7 +919,15 @@ public class CommonOrderServiceImpl implements OrderService {
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
         //组装订单商品信息
-        aseembleOrderItems(orderCreateCondition, orderInfo);
+        BigDecimal orderTotal = aseembleAndCalculateOrderItems(orderCreateCondition, orderInfo);
+        //计算订单总金额
+        short valuationType = ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
+        if (orderTotal == null) {
+            //待计价订单
+            valuationType = ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
+        }
+        orderInfo.setOrderTotalMoney(orderTotal);
+        orderInfo.setValuationType(valuationType);
         //优惠券相关优惠计算
         calculateDiscounts(orderInfo, orderCreateCondition.getCouponIds());
         return orderInfo;
@@ -1006,7 +1026,7 @@ public class CommonOrderServiceImpl implements OrderService {
             couponProductConditions.add(couponProductCondition);
 
         }
-        Map<String, ProductSkuVO> skuInfoMap = skuInfoMapThreadLocal.get();
+        Map<String, ProductSkuVO> skuInfoMap = SKU_INFO_MAP_THREADLOCAL.get();
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext(); ) {
             CouponProductCondition couponProductCondition = iterator.next();
             if (skuInfoMap != null && skuInfoMap.size() > 0) {
@@ -1015,6 +1035,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);
+        SKU_INFO_MAP_THREADLOCAL.remove();
         return couponPreAmountCondition;
     }
 
@@ -1026,20 +1047,6 @@ public class CommonOrderServiceImpl implements OrderService {
             return onlinePayPickUpInStoreOfflineOrderHandler;
         }
         throw new BusinessException(BusinessCode.CODE_401008);
-    }
-
-    private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
-        BigDecimal orderTotal = BigDecimal.ZERO;
-        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
-            OrderItemCondition detailCondition = iterator.next();
-            BigDecimal price = detailCondition.getPrice();
-            if (price == null) {
-                return null;
-            }
-            orderTotal = orderTotal.add(detailCondition.getPrice().multiply(new BigDecimal(detailCondition.getAmount()))
-                    .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
-        }
-        return orderTotal;
     }
 
     /**
@@ -1081,7 +1088,8 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月3日 上午11:30:53
      */
-    private void aseembleOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
+    private BigDecimal aseembleAndCalculateOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
+        BigDecimal orderTotal = BigDecimal.ZERO;
         List<OrderItem> items = new ArrayList<>();
         int skuQuantity = 0;
         int skuCategoryQuantity = 0;
@@ -1105,7 +1113,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //查询商品相关信息
         Map<String, ProductSkuVO> skuInfoMap = querySkuInfos(orderInfo, skuCodes);
         if (skuInfoMap != null && skuInfoMap.size() > 0) {
-            skuInfoMapThreadLocal.set(skuInfoMap);
+            SKU_INFO_MAP_THREADLOCAL.set(skuInfoMap);
             for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext(); ) {
                 OrderItem orderItem = iterator.next();
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
@@ -1118,6 +1126,27 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
         orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
+        //查询计算商品价格信息
+        Map<String, ShopCartProdVO> storeProdVOMap = queryStoreSkuInfos(orderInfo, skuCodes);
+        if (storeProdVOMap != null && storeProdVOMap.size() > 0) {
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext();) {
+                OrderItem orderItem = iterator.next();
+                ShopCartProdVO cartProdVO = storeProdVOMap.get(orderItem.getSkuCode());
+                if (cartProdVO != null) {
+                    BigDecimal price = cartProdVO.getSellMoney();
+                    if (price == null) {
+                        return null;
+                    }
+                    orderTotal = orderTotal.add(price.multiply(new BigDecimal(orderItem.getAmount()))
+                            .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                } else {
+                    throw new BusinessException(BusinessCode.CODE_401005);
+                }
+            }
+        }else {
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        return orderTotal;
     }
 
 
@@ -1138,6 +1167,22 @@ public class CommonOrderServiceImpl implements OrderService {
             skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO);
         }
         return skuBrandMap;
+    }
+    
+    public Map<String, ShopCartProdVO> queryStoreSkuInfos(OrderInfo orderInfo, List<String> skuCodes) {
+        ResponseResult<List<ShopCartProdVO>> ret = storeServiceClient.findShopCarProd(skuCodes, orderInfo.getStoreId());
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            // 优惠券使用失败
+            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 门店商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
+                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        Map<String, ShopCartProdVO> storeSkuInfoMap = new HashMap<>();
+        for (Iterator<ShopCartProdVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
+            ShopCartProdVO shopCartProdVO = iterator.next();
+            storeSkuInfoMap.put(shopCartProdVO.getSkuCode(), shopCartProdVO);
+        }
+        return storeSkuInfoMap;
     }
 
     /**

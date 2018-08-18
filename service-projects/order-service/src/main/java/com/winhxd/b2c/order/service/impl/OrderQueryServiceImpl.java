@@ -260,7 +260,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
-    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryProductInfo=true, queryStoreInfo=true)
     public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单编号不能为空");

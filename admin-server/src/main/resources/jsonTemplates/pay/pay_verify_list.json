@@ -8,7 +8,7 @@
       {
         "name": "查询",
         "event": {
-          "type": "ajax",
+          "type": "submit",
           "ajaxType": "get",
           "path": "/pay/verify/verifyList"
         }
@@ -18,16 +18,18 @@
         "event": {
           "type": "reset"
         }
+      },
+      {
+        "name": "核销",
+        "event": {
+          "type": "reset"
+        }
       }
     ],
     "columns": [
       {
-        "type": "index",
-        "name": "id",
-        "title": "序号",
-        "align": "center",
-        "width": "50",
-        "fixed": "left"
+        "type": "selection",
+        "name": "id"
       },
       {
         "name": "storeId",
@@ -75,6 +77,12 @@
       }
     ],
     "params": [
+      {
+        "name": "storeId",
+        "inputModel": "inputDia",
+        "title": "门店",
+        "configKey": "/template/module/order/order_store_list_win.json"
+      }
     ]
   }
 }

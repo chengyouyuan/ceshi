@@ -49,6 +49,10 @@ public class PayConfig extends WXPayConfig {
      */
     @Value("${WX.certPath}")
     private String certPath;
+    
+    private String payNotifyUrl;
+    
+    private String refundNotifyUrl;
 
     @Override
     public String getAppID() {
@@ -119,4 +123,13 @@ public class PayConfig extends WXPayConfig {
     public int getReportBatchSize() {
         return super.getReportBatchSize();
     }
+
+	public String getPayNotifyUrl() {
+		return payNotifyUrl;
+	}
+
+	public String getRefundNotifyUrl() {
+		return refundNotifyUrl;
+	}
+
 }

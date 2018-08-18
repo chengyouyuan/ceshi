@@ -41,6 +41,8 @@ public class RedisClusterCacheAutoConfiguration {
         return new RedisClusterCache(parseHostAndPort(jedisClusterNode), timeout, maxAttempts, config);
     }
 
+    private static final Pattern HOST_AND_PORTS_PATTERN = Pattern.compile("^\\s*(\\S+)\\s*:\\s*(\\d{1,5})\\s*$");
+
     private static final Set<HostAndPort> parseHostAndPort(String address) {
         try {
             Set<HostAndPort> hostAndPorts = new HashSet<>();
@@ -48,9 +50,8 @@ public class RedisClusterCacheAutoConfiguration {
                 return null;
             }
             String[] addressList = address.split(",");
-            Pattern hostAndPortsPattern = Pattern.compile("^\\s*(\\S+)\\s*:\\s*(\\d{1,5})\\s*$");
             for (String cluster : addressList) {
-                Matcher matcher = hostAndPortsPattern.matcher(cluster);
+                Matcher matcher = HOST_AND_PORTS_PATTERN.matcher(cluster);
                 boolean isIpPort = matcher.matches();
                 if (!isIpPort) {
                     throw new IllegalArgumentException("ip 或 port 不合法");

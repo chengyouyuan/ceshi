@@ -549,12 +549,32 @@ public class ApiStoreProductManageController {
             responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
             return responseResult;
         }
-
-        List<MultipartFile> multipartFiles = imageFiles.getFiles("file");
-        if (multipartFiles == null || multipartFiles.size() <= 0 || multipartFiles.size() > 3) {
+        List<MultipartFile> multipartFiles=new ArrayList<>();
+        
+        List<MultipartFile> file = imageFiles.getFiles("file");
+        if (file == null || file.size() != 1) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
             return responseResult;
+        }else{
+            multipartFiles.add(file.get(0));
         }
+        
+        List<MultipartFile> file1 = imageFiles.getFiles("file1");
+        if (file1 == null || file1.size() != 1) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            return responseResult;
+        }else{
+            multipartFiles.add(file1.get(0));
+        }
+        
+        List<MultipartFile> file2 = imageFiles.getFiles("file2");
+        if (file2 == null || file2.size() != 1) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            return responseResult;
+        }else{
+            multipartFiles.add(file2.get(0));
+        }
+        
         List<ProductImageVO> imageVOList = new ArrayList<>();
         for (MultipartFile mFile : multipartFiles) {
             ResponseResult<ProductImageVO> imageVOResult = imageUploadUtil.uploadImage(mFile.getOriginalFilename(),

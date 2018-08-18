@@ -12,7 +12,7 @@ public class PayPreOrderVO {
 	@ApiModelProperty("真实订单号")
 	private String outOrderNo;
 	@ApiModelProperty("支付流水号")
-	private String OutTradeNo;
+	private String outTradeNo;
 	@ApiModelProperty("小程序ID")
 	private String appId;
 	@ApiModelProperty("时间戳")

@@ -128,7 +128,7 @@ public class OrderQueryAspect {
         try {
             Set<String> skuSet = new HashSet<>();
             for (Object obj : objArr) {
-                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> ORDER_ITEMVO_LIST.equals(f.getName())).findFirst().orElse(null);
                 if (null != field) {
                     field.setAccessible(true);
                     if (field.get(obj) != null) {
@@ -149,7 +149,7 @@ public class OrderQueryAspect {
                     List<ProductSkuVO> productSkuList = productResponseResultData.getData();
                     Map<String, ProductSkuVO> productListMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuVO::getSkuCode, productSkuVO -> productSkuVO));
                     for (Object obj : objArr) {
-                        Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                        Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> ORDER_ITEMVO_LIST.equals(f.getName())).findFirst().orElse(null);
                         if (null != field) {
                             field.setAccessible(true);
                             if (field.get(obj) != null) {
@@ -193,7 +193,7 @@ public class OrderQueryAspect {
         try {
             Set<Long> storeIds = new HashSet<>();
             for (Object obj : objArr) {
-                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> STORE_ID.equals(f.getName())).findFirst().orElse(null);
                 if (null != field) {
                     field.setAccessible(true);
                     if (field.get(obj) != null) {
@@ -206,7 +206,7 @@ public class OrderQueryAspect {
              if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
                 List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
                 for (Object obj : objArr) {
-                    Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                    Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> STORE_ID.equals(f.getName())).findFirst().orElse(null);
                     if (null != field) {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {

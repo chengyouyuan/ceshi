@@ -12,7 +12,7 @@ public class OrderAvailableCouponCondition extends ApiCondition{
     @ApiModelProperty(value = "支付方式 1扫码支付2线上支付", required=true)
     private String payType;
     @ApiModelProperty(value = "门店id", required=true)
-    private String storeId;
+    private Long storeId;
 
     public String getPayType() {
         return payType;
@@ -22,11 +22,11 @@ public class OrderAvailableCouponCondition extends ApiCondition{
         this.payType = payType;
     }
 
-    public String getStoreId() {
+    public Long getStoreId() {
         return storeId;
     }
 
-    public void setStoreId(String storeId) {
+    public void setStoreId(Long storeId) {
         this.storeId = storeId;
     }
 }

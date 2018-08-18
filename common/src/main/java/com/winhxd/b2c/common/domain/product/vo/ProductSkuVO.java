@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 @Data
 public class ProductSkuVO {
 
+	@ApiModelProperty(value = "品牌商编码")
+	private String companyCode;
+	
 	@ApiModelProperty(value = "品牌编码")
 	private String brandCode;
 	

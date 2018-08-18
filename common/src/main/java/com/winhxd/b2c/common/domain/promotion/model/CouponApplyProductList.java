@@ -13,6 +13,8 @@ public class CouponApplyProductList {
 
     private String prodId;
 
+    private String productName;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +61,14 @@ public class CouponApplyProductList {
 
     public void setProdId(String prodId) {
         this.prodId = prodId;
+    }
+
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

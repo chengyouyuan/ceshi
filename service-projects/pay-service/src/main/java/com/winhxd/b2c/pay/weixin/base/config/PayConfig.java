@@ -36,7 +36,7 @@ public class PayConfig extends WXPayConfig {
      * 商户号
      */
     @Value("${WX.mchID}")
-    private String mchID = "1467361502";
+    private String mchID;
 
     /**
      * API 密钥
@@ -49,9 +49,17 @@ public class PayConfig extends WXPayConfig {
      */
     @Value("${WX.certPath}")
     private String certPath;
-    
+
+    /***
+     * 支付回调配置
+     */
+    @Value("${WX.PAY_NOTIFY_URL}")
     private String payNotifyUrl;
-    
+
+    /***
+     * 退款回调配置
+     */
+    @Value("${WX.REFUND_NOTIFY_URL}")
     private String refundNotifyUrl;
 
     @Override

@@ -120,10 +120,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setRealFee(condition.getRealFee());
 		System.out.println("当前计算所得实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
 		if(bankType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusDesc());
+			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
 		}else if(weixType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusDesc());
+			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 		}
 		payWithdrawal.setCmmsAmt(condition.getCmmsAmt());

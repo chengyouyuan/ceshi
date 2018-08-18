@@ -43,7 +43,7 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	 @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员")})
-	 @PostMapping("/pay/6101/v1/queryStoreFinancialSummary")
+//	 @PostMapping("/pay/6101/v1/queryStoreFinancialSummary")
 	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
         logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
         ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
@@ -63,7 +63,7 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	@ApiOperation(value = "财务入账明细", notes = "财务入账明细")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 	       @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	@PostMapping("/pay/6102/v1/queryFinancialInDetail")
+//	@PostMapping("/pay/6102/v1/queryFinancialInDetail")
 	public ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition) {
 		logger.info("/pay/6102/v1/queryFinancialInDetail 财务入账明细");
 		ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> result = new ResponseResult<PagedList<OrderInfoFinancialInDetailVO>>();
@@ -77,7 +77,7 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	@ApiOperation(value = "财务出账明细", notes = "财务出账明细")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 	       @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	@PostMapping("/pay/6103/v1/queryFinancialOutDetail")
+//	@PostMapping("/pay/6103/v1/queryFinancialOutDetail")
 	public ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> queryFinancialOutDetail(@RequestBody OrderInfoFinancialOutDetailCondition condition) {
 		logger.info("/pay/6103/v1/queryFinancialOutDetail 财务出账明细");
 		ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>> result = new ResponseResult<PagedList<OrderInfoFinancialOutDetailVO>>();

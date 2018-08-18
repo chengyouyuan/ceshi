@@ -128,6 +128,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setMchid(wxPayConfig.getMchID());
         /**
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同
+         * 这里可能需要修改下
          */
         forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
         forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());

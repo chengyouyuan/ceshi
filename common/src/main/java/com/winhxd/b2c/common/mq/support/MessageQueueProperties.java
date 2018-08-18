@@ -1,5 +1,10 @@
 package com.winhxd.b2c.common.mq.support;
 
+/**
+ * MQ配置文件
+ *
+ * @author lixiaodong
+ */
 public class MessageQueueProperties {
     private String address;
     private String username;

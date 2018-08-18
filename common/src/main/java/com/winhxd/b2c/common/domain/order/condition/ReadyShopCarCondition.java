@@ -46,7 +46,4 @@ public class ReadyShopCarCondition extends ApiCondition {
     @ApiModelProperty(value = "设备号", required = false)
     private String deviceInfo;
 
-    @ApiModelProperty(value = "openid", required = true)
-    private String openid;
-
 }

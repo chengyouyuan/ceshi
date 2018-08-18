@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -13,6 +14,7 @@ import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
@@ -56,6 +58,10 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Autowired
     private StoreServiceClient storeServiceClient;
+
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
+
     @Autowired
     private Cache cache;
 
@@ -154,8 +160,9 @@ public class ShopCarServiceImpl implements ShopCarService {
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
                 OrderPayVO orderPayVO = new OrderPayVO();
                 if (null != condition.getOrderTotalMoney()) {
+                    CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
                     logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo开始...");
-                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, condition.getOpenid());
+                    orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
                     logger.info(READY_ORDER + "{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
                 }
                 // 保存成功删除此用户门店的购物车
@@ -170,6 +177,15 @@ public class ShopCarServiceImpl implements ShopCarService {
         } finally {
             lock.unlock();
         }
+    }
+
+    private CustomerUserInfoVO getCustomerUserInfoVO(Long customerId) {
+        ResponseResult<List<CustomerUserInfoVO>> ret = customerServiceClient.findCustomerUserByIds(Arrays.asList(customerId));
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(ret.getData())) {
+            throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
+        }
+        logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
+        return ret.getData().get(0);
     }
 
     @Override

@@ -558,7 +558,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     throw new BusinessException(BusinessCode.CODE_4021002, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
                 }
                 //申请退款时商家没确认就直接退款、退优惠券
-                if (status.equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
+                if (order.getPayStatus().equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
                     //退款流程
                     orderApplyRefund(order, orderRefundCondition.getCancelReason(), customerId, customerUserInfoVO.getNickName());
                 } else {
@@ -591,8 +591,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
                         logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
                     } else {
-                        logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);
-                        throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, "C端申请退款不成功");
+                        throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单取消-C端申请退款不成功 订单号={}", orderNo));
                     }
                 }
             } finally {

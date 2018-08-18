@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.service.impl;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -99,7 +100,7 @@ public class StoreServiceImpl implements StoreService {
         storeUserInfo.setStoreStatus(storeCondition.getStoreStatus());
         storeUserInfo.setStoreName(storeCondition.getStoreName());
         storeUserInfo.setStoreMobile(storeCondition.getStoreMobile());
-        List<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
+        Page<StoreUserInfo> userInfoList = storeUserInfoMapper.selectStoreUserInfo(storeUserInfo);
         if (userInfoList.isEmpty()) {
             return pagedList;
         }
@@ -128,7 +129,7 @@ public class StoreServiceImpl implements StoreService {
             }
             storeVOS.add(storeVO);
         });
-        pagedList.setTotalRows(userInfoList.size());
+        pagedList.setTotalRows(userInfoList.getTotal());
         pagedList.setData(storeVOS);
         return pagedList;
     }

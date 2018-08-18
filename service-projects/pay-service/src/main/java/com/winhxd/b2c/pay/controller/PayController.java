@@ -31,6 +31,7 @@ public class PayController implements PayServiceClient {
 	@Autowired
 	private PayService payService;
 	
+	@Override
 	@ApiOperation(value = "订单支付", notes = "订单支付")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -41,6 +42,7 @@ public class PayController implements PayServiceClient {
 		result.setData(vo);
 		return result;
 	}
+	@Override
 	@ApiOperation(value = "退款", notes = "退款")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
@@ -52,23 +54,25 @@ public class PayController implements PayServiceClient {
 		result.setData(vo);
 		return result;
 	}
+	@Override
 	@ApiOperation(value = "提现到微信钱包", notes = "提现到微信钱包")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
-	public ResponseResult<String> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition){
-		String data=payService.transfersToChange(condition);
-		ResponseResult<String> result=new ResponseResult<>();
+	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition){
+		int data=payService.transfersToChange(condition);
+		ResponseResult<Integer> result=new ResponseResult<>();
 		result.setData(data);
 		return result;
 	}
+	@Override
 	@ApiOperation(value = "提现到微信银行卡", notes = "提现到微信银行卡")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
-	public ResponseResult<String> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition){
-		String data=payService.transfersToBank(condition);
-		ResponseResult<String> result=new ResponseResult<>();
+	public ResponseResult<Integer> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition){
+		int data=payService.transfersToBank(condition);
+		ResponseResult<Integer> result=new ResponseResult<>();
 		result.setData(data);
 		return result;
 	}

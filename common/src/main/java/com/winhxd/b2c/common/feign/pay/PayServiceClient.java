@@ -29,10 +29,10 @@ public interface PayServiceClient {
 	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition);
 	
 	@PostMapping(value = "/6003/v1/transfersToChange", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<String> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition);
+	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition);
 	
 	@PostMapping(value = "/6004/v1/transfersToBank", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<String> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition);
+	public ResponseResult<Integer> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition);
 	
 }
 class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayServiceClient>{
@@ -64,13 +64,13 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 	}
 
 	@Override
-	public ResponseResult<String> transfersToChange(PayTransfersToWxChangeCondition condition) {
+	public ResponseResult<Integer> transfersToChange(PayTransfersToWxChangeCondition condition) {
 		logger.error("PayServiceClientFallback -> transfersToChange", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
 	@Override
-	public ResponseResult<String> transfersToBank(PayTransfersToWxBankCondition condition) {
+	public ResponseResult<Integer> transfersToBank(PayTransfersToWxBankCondition condition) {
 		logger.error("PayServiceClientFallback -> transfersToBank", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}

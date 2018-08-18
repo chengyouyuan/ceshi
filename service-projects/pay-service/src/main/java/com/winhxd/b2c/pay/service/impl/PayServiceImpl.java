@@ -619,6 +619,18 @@ public class PayServiceImpl implements PayService{
 		payStoreTransactionRecord.setCmmsAmt(payWithdrawalsList.get(0).getCmmsAmt());
 		payStoreTransactionRecord.setTransactionDate(payWithdrawalsList.get(0).getCreated());
         payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
+        //step4 门店资金变化
+		UpdateStoreBankRollCondition updateStoreBankRollCondition = new UpdateStoreBankRollCondition();
+		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode());
+		}
+		if(WithdrawalsStatusEnum.REAPPLY.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
+		}
+		updateStoreBankRollCondition.setStoreId(payWithdrawalsList.get(0).getStoreId());
+		updateStoreBankRollCondition.setWithdrawalsNo(payWithdrawalsList.get(0).getWithdrawalsNo());
+		updateStoreBankRollCondition.setMoney(payWithdrawalsList.get(0).getTotalFee());
+		this.updateStoreBankroll(updateStoreBankRollCondition);
 
         return payWithdrawalsResult ;
     }
@@ -633,7 +645,7 @@ public class PayServiceImpl implements PayService{
 		}
 		if (StringUtils.isBlank(toWxBankCondition.getPartnerTradeNo())) {
 			logger.info(log+"--提现流水号号为空");
-			throw new BusinessException(BusinessCode.CODE_600005);
+			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
         if(null == payTransfersToWxBankVO){
@@ -655,6 +667,8 @@ public class PayServiceImpl implements PayService{
         payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
         payWithdrawals.setTimeEnd(new Date());
         int transfersResult = this.transfersPublic(payWithdrawals,log);
+
+
 		return transfersResult;
 	}
 

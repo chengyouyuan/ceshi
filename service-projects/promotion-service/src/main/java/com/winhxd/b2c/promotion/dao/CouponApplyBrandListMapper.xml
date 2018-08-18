@@ -5,10 +5,11 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="apply_brand_id" jdbcType="BIGINT" property="applyBrandId" />
     <result column="brand_code" jdbcType="VARCHAR" property="brandCode" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, apply_brand_id, brand_code, status
+    id, apply_brand_id, brand_code,company_code,status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -45,6 +46,9 @@
       <if test="brandCode != null">
         brand_code,
       </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
       <if test="status != null">
         status,
       </if>
@@ -59,11 +63,15 @@
       <if test="brandCode != null">
         #{brandCode,jdbcType=VARCHAR},
       </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
       <if test="status != null">
         #{status,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList">
     update coupon_apply_brand_list
     <set>
@@ -73,6 +81,10 @@
       <if test="brandCode != null">
         brand_code = #{brandCode,jdbcType=VARCHAR},
       </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+
       <if test="status != null">
         status = #{status,jdbcType=SMALLINT},
       </if>
@@ -83,6 +95,7 @@
     update coupon_apply_brand_list
     set apply_brand_id = #{applyBrandId,jdbcType=BIGINT},
       brand_code = #{brandCode,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
       status = #{status,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

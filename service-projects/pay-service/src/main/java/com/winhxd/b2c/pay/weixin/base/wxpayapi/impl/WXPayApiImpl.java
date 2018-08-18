@@ -2,6 +2,8 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
 import java.util.Map;
 
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -238,4 +240,26 @@ public class WXPayApiImpl implements WXPayApi {
 		}
     }
 
+	@Override
+	public PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO) {
+    	//组装公共属性
+		payRefundDTO = this.fillRefundRequestDTO(payRefundDTO);
+		//bean转map
+		Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+		return null;
+	}
+
+	private PayRefundDTO fillRefundRequestDTO(PayRefundDTO payRefundDTO){
+		payRefundDTO.setAppid(config.getAppID());
+		payRefundDTO.setMchId(config.getMchID());
+		payRefundDTO.setNonceStr(WXPayUtil.generateNonceStr());
+		if (SignType.MD5.equals(this.signType)) {
+			payRefundDTO.setSingType(WXPayConstants.MD5);
+		}
+		else if (SignType.HMACSHA256.equals(this.signType)) {
+			payRefundDTO.setSingType(WXPayConstants.HMACSHA256);
+		}
+		payRefundDTO.setSign(this.generateSign(payRefundDTO));
+		return payRefundDTO;
+	}
 }

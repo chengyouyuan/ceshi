@@ -18,3 +18,5 @@ WX:
   PAY_NOTIFY_URL: hxd.com
   # 退款回调配置
   REFUND_NOTIFY_URL: hxd.com
+  #回调主路径
+  CALLBACK_DOMAIN_URL: http://www.baidu.com

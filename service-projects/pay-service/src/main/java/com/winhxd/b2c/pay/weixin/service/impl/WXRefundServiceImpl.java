@@ -15,6 +15,8 @@ import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.javassist.bytecode.stackmap.BasicBlock;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -31,6 +33,12 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ *
+ * @author lizhonghua
+ * @Description
+ * @Date 2018年8月15日17:15:18
+ */
 @Service
 public class WXRefundServiceImpl implements WXRefundService {
 
@@ -121,6 +129,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         payRefundDTO.setRefundFee(refundFee);
         payRefundDTO.setRefundDesc(refundDesc);
         payRefundDTO.setNotifyUrl("");
+
         //bean转map
         Map<String, String> mapIn = BeanAndXmlUtil.beanToSortedMap(payRefundDTO);
         //调用

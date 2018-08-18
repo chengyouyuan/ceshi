@@ -2,34 +2,82 @@ package com.winhxd.b2c.pay.weixin.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 微信资金账单
+ * @author yuluyuan
+ *
+ * 2018年8月18日
+ */
 public class PayFinancialBill {
+	
+	/**
+	 * 主键
+	 */
     private Long id;
 
+	/**
+	 * 记账时间
+	 */
     private Date accountingTime;
 
+	/**
+	 * 微信支付业务单号
+	 */
     private String wxPayNo;
 
+	/**
+	 * 资金流水单号
+	 */
     private String swiftNo;
 
+	/**
+	 * 业务名称
+	 */
     private String busiName;
 
+	/**
+	 * 业务类型
+	 */
     private String busiType;
 
+	/**
+	 * 收支类型
+	 */
     private String budget;
 
+	/**
+	 * 收支金额（元）
+	 */
     private BigDecimal budgetAmount;
 
+	/**
+	 * 账户结余（元）
+	 */
     private BigDecimal accountBalance;
 
+	/**
+	 * 资金变更提交申请人
+	 */
     private String submitBy;
 
+	/**
+	 * 备注
+	 */
     private String remark;
 
+	/**
+	 * 业务凭证号
+	 */
     private String busiCredentialNo;
 
+	/**
+	 * 资金账单日期
+	 */
     private Date billDate;
 
+	/**
+	 * 资金账单统计表id
+	 */
     private Long financialBillCountId;
 
     public Long getId() {

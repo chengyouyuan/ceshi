@@ -2,20 +2,47 @@ package com.winhxd.b2c.pay.weixin.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 对账单统计表
+ * @author yuluyuan
+ *
+ * 2018年8月18日
+ */
 public class PayStatementCount {
+
+	/**
+	 * 主键
+	 */
     private Long id;
 
+	/**
+	 * 总交易单数
+	 */
     private Integer payNumCount;
 
+	/**
+	 * 总交易额
+	 */
     private BigDecimal payAmountCount;
 
+	/**
+	 * 总退款金额
+	 */
     private BigDecimal refundAmountCount;
 
+	/**
+	 * 总代金券或立减优惠退款金额
+	 */
     private BigDecimal refundDiscountCount;
 
+	/**
+	 * 手续费总金额
+	 */
     private BigDecimal feeCount;
 
+	/**
+	 * 对账单日期
+	 */
     private Date billDate;
 
     public Long getId() {

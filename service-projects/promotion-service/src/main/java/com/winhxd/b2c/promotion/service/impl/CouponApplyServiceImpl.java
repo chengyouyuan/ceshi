@@ -41,10 +41,22 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
 
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id) {
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id,Short type) {
         ResponseResult responseResult = new ResponseResult();
-        CouponApplyVO vo = couponApplyMapper.viewCouponApplyDetail(id);
-        responseResult.setData(vo);
+        CouponApplyVO vo = null;
+        if(type.equals(CouponApplyEnum.COMMON_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyCommonDetail(id);
+            responseResult.setData(vo);
+        }
+        if(type.equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyBrandDetail(id);
+            responseResult.setData(vo);
+        }
+        if(type.equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyProdDetail(id);
+            responseResult.setData(vo);
+        }
+
         return responseResult;
     }
 

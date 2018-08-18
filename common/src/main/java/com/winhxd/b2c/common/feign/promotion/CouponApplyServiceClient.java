@@ -34,7 +34,7 @@ public interface CouponApplyServiceClient {
      *@Date   2018/8/11 14:19
      */
     @RequestMapping(value = "/promotion/5022/v1/viewCouponApplyDetail", method = RequestMethod.POST)
-    ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id);
+    ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type);
 
     /**
      *
@@ -87,7 +87,7 @@ class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
     private Throwable throwable;
 
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(String id) {
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(String id, Short type) {
         logger.error("CouponApplyServiceClient -> viewCouponApplyDetail", throwable);
         return new ResponseResult<CouponApplyVO>(BusinessCode.CODE_1001);
     }

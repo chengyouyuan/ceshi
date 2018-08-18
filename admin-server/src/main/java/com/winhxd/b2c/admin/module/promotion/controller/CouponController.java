@@ -500,7 +500,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 		/**
 		 * 参数校验
 		 */
-		if(condition!=null || condition.getName()==null || condition.getApplyRuleType()==null){
+		if(condition==null || condition.getName()==null || condition.getApplyRuleType()==null){
 			throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
 		}
 		if(condition.getApplyRuleType()!=null){
@@ -538,8 +538,8 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 */
 	@ApiOperation("适用对象类型查看")
 	@PostMapping(value = "/5022/v1/viewCouponApplyDetail")
-	public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id){
-		ResponseResult<CouponApplyVO> responseResult = couponApplyServiceClient.viewCouponApplyDetail(id);
+	public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type){
+		ResponseResult<CouponApplyVO> responseResult = couponApplyServiceClient.viewCouponApplyDetail(id,type);
 		return responseResult;
 	}
 

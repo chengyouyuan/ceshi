@@ -40,8 +40,8 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @ApiOperation(value = "适用对象规则查看", notes = "适用对象规则查看")
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id) {
-        ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id));
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
+        ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
         return responseResult;
     }
 

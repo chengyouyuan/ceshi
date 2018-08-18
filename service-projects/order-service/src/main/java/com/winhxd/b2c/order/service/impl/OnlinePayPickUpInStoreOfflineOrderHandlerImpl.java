@@ -159,8 +159,10 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         logger.info("{},orderNo={} 订单确认后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        //确认 后状态流转到待付款
+        orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), OrderStatusEnum.WAIT_PAY.getStatusCode());
+        String oldOrderJson = JsonUtil.toJSONString(orderInfo);
         orderInfo.setOrderStatus(OrderStatusEnum.ALREADY_VALUATION.getStatusCode());
         //设置订单 接单时间
         Date confirmDate = new Date();
@@ -172,8 +174,6 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
                 OrderStatusEnum.ALREADY_VALUATION.getStatusDes(), MainPointEnum.MAIN);
         orderInfo.setOrderStatus(OrderStatusEnum.WAIT_PAY.getStatusCode());
         String newOrderJson1 = JsonUtil.toJSONString(orderInfo);
-        //确认 后状态流转到待付款
-        orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), OrderStatusEnum.WAIT_PAY.getStatusCode());
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), newOrderJson, newOrderJson1, OrderStatusEnum.ALREADY_VALUATION.getStatusCode(),
                 OrderStatusEnum.WAIT_PAY.getStatusCode(), orderInfo.getStoreId(), null,
                 OrderStatusEnum.WAIT_PAY.getStatusDes(), MainPointEnum.MAIN);

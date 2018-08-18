@@ -125,6 +125,7 @@ public class OrderUtil {
                 throw new BusinessException(BusinessCode.CODE_1001);
             }
         } catch (Exception e) {
+            logger.error("客户下单给门店:storeId={},发送消息：{} 失败", storeId, OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE);
             logger.error("客户下单给门店发送消息失败：", e);
         }
     }
@@ -155,6 +156,7 @@ public class OrderUtil {
                 throw new BusinessException(BusinessCode.CODE_1001);
             }
         } catch (Exception e) {
+            logger.error("提醒用户:openid={},提货发送消息失败", openid);
             logger.error("提醒用户提货发送消息失败：", e);
         }
     }
@@ -168,9 +170,9 @@ public class OrderUtil {
      * @param storeId
      */
     public static void orderNeedPickupSendMsg2Store(MessageServiceClient messageServiceClient, String last4MobileNums, Long storeId){
+        String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             // 发送云信
-            String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
             String createdBy= "";
             int expiration = 0;
             int msgType = 0;
@@ -183,6 +185,7 @@ public class OrderUtil {
                 throw new BusinessException(BusinessCode.CODE_1001);
             }
         } catch (Exception e) {
+            logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
             logger.error("订单待提货给门店发送消息失败：", e);
         }
     }

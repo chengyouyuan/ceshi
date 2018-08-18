@@ -225,10 +225,10 @@
         "isHidden": false
       },
       {
-        "name": "created",
+        "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "创建时间",
-        "value": "",
+        "value":{},
         "placeholder": "",
         "isHidden": false
       }

@@ -401,20 +401,17 @@
     left join coupon_apply d on a.apply_rule_id = d.id
     where 1=1
 
-    <if test="condition.dateInterval!=null and  condition.dateInterval!=''">
-      <if test="condition.dateInterval.start!=null and  condition.dateInterval.start!=''">
-        and a.created <![CDATA[ >= ]]> #{condition.dateInterval.start}
-      </if>
-      <if test="condition.dateInterval.end!=null and  condition.dateInterval.end!=''">
-        and a.created <![CDATA[ <= ]]> #{condition.dateInterval.end}
-      </if>
+    <if test="condition.dateInterval != null and condition.dateInterval.start != null">
+      and a.created &gt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
     </if>
-
+    <if test="condition.dateInterval != null and condition.dateInterval.end != null">
+      and a.created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
+    </if>
 
     <if test="condition.createdByName!=null and  condition.createdByName!=''">
       and a.created_by_name = #{condition.createdByName}
     </if>
-    <if test="condition.status!=null and  condition.status!=''">
+    <if test="condition.status!=null">
       and a.status = #{condition.status}
     </if>
     <if test="condition.code!=null and  condition.code!=''">

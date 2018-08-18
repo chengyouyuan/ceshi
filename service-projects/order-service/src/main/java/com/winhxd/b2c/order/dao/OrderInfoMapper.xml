@@ -700,7 +700,7 @@
        update order_info
        set 
        order_total_money = #{orderTotalMoney,jdbcType=DECIMAL},
-       real_payment_money = #{realPayMoney,jdbcType=DECIMAL},
+       real_payment_money = #{realPayMoney,jdbcType=DECIMAL}
        where id=#{orderId,jdbcType=BIGINT}
     </update>
     <update id="updateOrderStatusForApplyRefund">

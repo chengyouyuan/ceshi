@@ -4,10 +4,10 @@ import com.winhxd.b2c.admin.common.context.MenuManager;
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.admin.common.security.support.MenuNode;
-import com.winhxd.b2c.admin.module.system.constant.Constant;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SysConstant;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserLoginDTO;
@@ -125,13 +125,13 @@ public class LoginController {
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){
             for(Cookie cookie : requestCookies){
-                if(cookie.getName().equals(Constant.TOKEN_NAME)){
+                if(cookie.getName().equals(SysConstant.TOKEN_NAME)){
                     tokenCookie = cookie;
                 }
             }
         }
         if(null == tokenCookie){
-            tokenCookie = new Cookie(Constant.TOKEN_NAME, token);
+            tokenCookie = new Cookie(SysConstant.TOKEN_NAME, token);
         } else {
             tokenCookie.setValue(token);
         }
@@ -163,7 +163,7 @@ public class LoginController {
         Cookie[] requestCookies = request.getCookies();
         if(null != requestCookies){
             for(Cookie cookie : requestCookies){
-                if(cookie.getName().equals(Constant.TOKEN_NAME)){
+                if(cookie.getName().equals(SysConstant.TOKEN_NAME)){
                     String token = cookie.getValue();
                     String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
 

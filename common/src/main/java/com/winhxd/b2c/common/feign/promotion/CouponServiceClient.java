@@ -44,8 +44,8 @@ public interface CouponServiceClient {
     @RequestMapping(value = "/promotion/5042/v1/couponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition);
 
-    @RequestMapping(value = "/promotion/5043/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition);
+//    @RequestMapping(value = "/promotion/5043/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition);
 
     @RequestMapping(value = "/promotion/5044/v1/couponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition);
@@ -104,11 +104,11 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
         return new ResponseResult<String>(BusinessCode.CODE_1001);
     }
 
-    @Override
-    public ResponseResult availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
-        logger.error("CouponServiceClient -> availableCouponListByOrder", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
+//    @Override
+//    public ResponseResult availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
+//        logger.error("CouponServiceClient -> availableCouponListByOrder", throwable);
+//        return new ResponseResult<String>(BusinessCode.CODE_1001);
+//    }
 
     @Override
     public ResponseResult couponDiscountAmount(CouponPreAmountCondition couponCondition) {

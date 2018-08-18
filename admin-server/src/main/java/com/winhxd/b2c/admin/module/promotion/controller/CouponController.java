@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -77,11 +76,11 @@ public class CouponController {
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
 
-	@ApiOperation("优惠券活动导入小店信息")
-	@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
-	public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
-		return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
-	}
+	//@ApiOperation("优惠券活动导入小店信息")
+	//@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
+	//public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+	//	return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
+	//}
 	/**
 	 *
 	 *@Deccription 添加优惠券活动

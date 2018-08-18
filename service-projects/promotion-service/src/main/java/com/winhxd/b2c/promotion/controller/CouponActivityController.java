@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -21,12 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  *
@@ -54,16 +50,16 @@ public class CouponActivityController implements CouponActivityServiceClient {
         return result;
     }
 
-    @ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
-    @Override
-    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile) {
-        ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
-        //List<CouponActivityImportStoreVO> couponActivityImportStoreVOList = couponActivityService.couponActivityStoreImportExcel();
-        //result.setData(couponActivityImportStoreVOList);
-        result.setCode(BusinessCode.CODE_OK);
-        result.setMessage("返回小店导入信息成功");
-        return result;
-    }
+    //@ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
+    //@Override
+    //public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile) {
+    //    ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
+    //    //List<CouponActivityImportStoreVO> couponActivityImportStoreVOList = couponActivityService.couponActivityStoreImportExcel();
+    //    //result.setData(couponActivityImportStoreVOList);
+    //    result.setCode(BusinessCode.CODE_OK);
+    //    result.setMessage("返回小店导入信息成功");
+    //    return result;
+    //}
 
     /**
      *

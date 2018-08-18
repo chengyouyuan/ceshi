@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.controller;
+package com.winhxd.b2c.pay.weixin.api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

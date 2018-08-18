@@ -39,9 +39,7 @@ public class MiniProgramImpl implements MiniProgramService {
     private static final String RETURN_ERR_CODE = "errcode";
     private static final String RETURN_ERR_MSG = "errmsg";
     private static final String SUCCESS_CODE = "0";
-    /**
-     * 错误码，formid不正确，或者过期或已被使用
-     */
+    /**错误码，formid不正确，或者过期或已被使用*/
     private static final String[] ERR_CODE = {"41028","41029"};
     @Autowired
     MiniProgramUtils miniProgramUtils;
@@ -139,6 +137,10 @@ public class MiniProgramImpl implements MiniProgramService {
         return result;
     }
 
+    /**
+     * 保存小程序模板消息发送记录
+     * @param template
+     */
     private void saveMiniMsgHistory(MessageMiniTemplate template) {
         MessageWechatHistory messageWechatHistory = new MessageWechatHistory();
         messageWechatHistory.setToUser(template.getTouser());
@@ -150,6 +152,13 @@ public class MiniProgramImpl implements MiniProgramService {
         messageWechatHistoryMapper.insert(messageWechatHistory);
     }
 
+    /**
+     * 组织发送小程序模板消息参数
+     * @param miniMsgCondition
+     * @param templateId
+     * @param formId
+     * @return
+     */
     private MessageMiniTemplate prepareMiniMsg(MiniMsgCondition miniMsgCondition, String templateId, String formId) {
         MessageMiniTemplate template = new MessageMiniTemplate();
         template.setTouser(miniMsgCondition.getToUser());
@@ -178,6 +187,7 @@ public class MiniProgramImpl implements MiniProgramService {
             LOGGER.error("MiniProgramImpl ->saveFormIds,保存formid出错，formids为空");
             throw new BusinessException(BusinessCode.CODE_702301);
         }
+        //批量保存C端用户formid
         List<MessageCustomerFormIds> list = new ArrayList<>();
         for (String formid:miniFormIdCondition.getFormIds()) {
             MessageCustomerFormIds customerFormIds = new MessageCustomerFormIds();

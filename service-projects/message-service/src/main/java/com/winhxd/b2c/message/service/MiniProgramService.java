@@ -5,8 +5,6 @@ import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 
-import java.util.List;
-
 /**
  * @author jujinbiao
  * @className MiniProgramService 小程序接口
@@ -28,7 +26,7 @@ public interface MiniProgramService {
 
     /**
      * 保存formid
-     * @param formIds
+     * @param miniFormIdCondition
      * @return
      */
     void saveFormIds(MiniFormIdCondition miniFormIdCondition);

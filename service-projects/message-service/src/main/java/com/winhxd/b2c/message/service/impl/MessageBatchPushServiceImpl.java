@@ -114,6 +114,11 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
     }
 
+    /**
+     * 保存云信消息推送记录
+     * @param accids
+     * @param msgContent
+     */
     private void saveNeteaseMsgHistory(List<String> accids, String msgContent) {
         List<MessageNeteaseHistory> list = new ArrayList<>();
         for (String accid: accids) {

@@ -132,10 +132,15 @@ public class NeteaseServiceImpl implements NeteaseService {
 			result.setCode(BusinessCode.CODE_701403);
 			return result;
 		}
+		//发送云信消息
 		Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
 		if (SUCCESS_CODE.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
 			//云信消息发送成功
-			saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
+			int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
+			//在消息盒子中，则保存消息记录
+			if (msgType == 0){
+				saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
+			}
 		} else {
 			LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
 			throw new BusinessException(BusinessCode.CODE_701404);

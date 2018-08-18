@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -11,22 +12,16 @@ import java.util.List;
  */
 @Data
 public class MiniMsgCondition {
-    /**
-     * 消息接受人的openid
-     */
+    @ApiModelProperty("消息接受人的openid")
     private String toUser;
-    /**
-     * 消息模板类型（参照MiniMsgTypeEnum的msgType）
-     */
+
+    @ApiModelProperty("消息模板类型（参照MiniMsgTypeEnum的msgType）")
     private Short msgType;
-    /**
-     * 点击模板卡片后的跳转页面，不填则模板无跳转。
-     */
+
+    @ApiModelProperty("点击模板卡片后的跳转页面，不填则模板无跳转。")
     private String page;
-    /**
-     * 模板内容，不填则下发空模板。
-     * 数组元素的顺序，要求和小程序的模板库中的对应模板的参数顺序一致。
-     */
+    
+    @ApiModelProperty("模板内容，不填则下发空模板。 数组元素的顺序，要求和小程序的模板库中的对应模板的参数顺序一致。")
     private List<MiniTemplateData> data;
 }
 /**

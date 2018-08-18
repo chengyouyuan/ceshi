@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -236,7 +237,7 @@ public class YxtSmsProcess {
 				CloseableHttpClient httpClient = httpClientUtil.getHttpClient();
 //				HttpClientUtil.postSend(smsSupplier.getUrl(), "", pair)
 // 				smsSupplier.getUrl(), false, SmsConstant.HTTPBATCH
-				HttpPost httpPost = new HttpPost(smsSupplier.getUrl());
+				HttpPost httpPost = new HttpPost(new URI(smsSupplier.getUrl() + SmsConstant.HTTPBATCH));
 
 				List<NameValuePair> nvps = new ArrayList<>();
 				nvps.add(new BasicNameValuePair(SmsConstant.KEY_ACCOUNT, smsSupplier.getAccount()));

@@ -14,15 +14,15 @@ import java.math.BigDecimal;
 @ApiModel("加购")
 @Data
 public class ShopCarCondition extends ApiCondition {
-    @ApiModelProperty(value = "门店ID")
+    @ApiModelProperty(value = "门店ID", required = true)
     private Long storeId;
 
-    @ApiModelProperty(value = "商品sku")
+    @ApiModelProperty(value = "商品sku", required = true)
     private String skuCode;
 
-    @ApiModelProperty(value = "商品数量")
+    @ApiModelProperty(value = "商品数量", required = true)
     private Integer amount;
 
-    @ApiModelProperty(value = "商品单价")
+    @ApiModelProperty(value = "商品单价", required = false)
     private BigDecimal price;
 }

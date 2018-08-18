@@ -44,11 +44,12 @@
         "title": "sku编码"
       },
       {
-        "name": "prodName",
+        "name": "prodName", 
         "title": "商品名称"
       },
       {
     	"name": "skuImage",
+    	"type": "image",
     	"title": "商品图片"
   	  },
 	  {

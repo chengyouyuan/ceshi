@@ -43,7 +43,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/17
      */
-    //@RequestMapping(value = "/promotion/5029/v1/queryCouponActivity/", method = RequestMethod.POST)
+    //@RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
     //ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile);
     /**
      *
@@ -145,7 +145,7 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     //@Override
     //public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(MultipartFile inputfile) {
     //    logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
-    //    return new ResponseResult<>(BusinessCode.CODE_1001);
+    //    return new ResponseResult<List<CouponActivityImportStoreVO>>(BusinessCode.CODE_1001);
     //}
 
     @Override

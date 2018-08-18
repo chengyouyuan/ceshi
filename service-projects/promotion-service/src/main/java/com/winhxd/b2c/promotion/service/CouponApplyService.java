@@ -13,7 +13,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
  * @Description
  **/
 public interface CouponApplyService {
-    ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id);
+    ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id,Short type);
 
     int updateCouponApplyToValid(long id, long userId, String userName);
 

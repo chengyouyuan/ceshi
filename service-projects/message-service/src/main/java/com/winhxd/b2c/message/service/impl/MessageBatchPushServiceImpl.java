@@ -36,7 +36,6 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageBatchPushServiceImpl.class);
     private static final String SUCCESS_CODE = "200";
     private static final String PARAM_CODE = "code";
-    private static final String PARAM_DESC = "desc";
 
     @Autowired
     MessageBatchPushMapper messageBatchPushMapper;
@@ -85,39 +84,56 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
 
     @Override
     public void batchPushMessage(Long id) {
+        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
+        //获取推送配置信息
         MessageBatchPush messageBatchPush = messageBatchPushMapper.selectByPrimaryKey(id);
         if (messageBatchPush == null){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给用户推送消息出错，messageBatchPush推送配置不存在。");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，messageBatchPush推送配置不存在。");
+            throw new BusinessException(BusinessCode.CODE_703501);
         }
+        //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
         if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给用户推送消息出错，没有云信用户记录。");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，没有云信门店记录。");
+            throw new BusinessException(BusinessCode.CODE_703502);
         }
         List<String> accids = new ArrayList<>();
         for (MessageNeteaseAccount account: messageNeteaseAccounts) {
             accids.add(account.getAccid());
         }
         String[] accidsArr = accids.toArray(new String[accids.size()]);
+        //给所有门店批量推送云信消息
         Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Batch(accidsArr,messageBatchPush.getMsgContent());
         if (SUCCESS_CODE.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
             //云信消息发送成功
             saveNeteaseMsgHistory(accids, messageBatchPush.getMsgContent());
         } else {
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端用户手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
+            throw new BusinessException(BusinessCode.CODE_703503);
         }
+        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
     }
 
+    /**
+     * 保存云信消息推送记录
+     * @param accids
+     * @param msgContent
+     */
     private void saveNeteaseMsgHistory(List<String> accids, String msgContent) {
         List<MessageNeteaseHistory> list = new ArrayList<>();
         for (String accid: accids) {
             MessageNeteaseHistory history = new MessageNeteaseHistory();
             history.setFromAccid("admin");
             history.setToAccid(accid);
+            //消息类型0：text
             history.setMsgType(Short.valueOf("0"));
             history.setMsgBody(msgContent);
             history.setMsgTimeStamp(new Date());
+            //页面跳转类型1：根据treecode跳转
+            history.setPageType(Short.valueOf("1"));
+            history.setTreeCode("treeCode");
+            //1：未读
+            history.setReadStatus("1");
             list.add(history);
         }
         messageNeteaseHistoryMapper.insertHistories(list);

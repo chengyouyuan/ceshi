@@ -96,6 +96,10 @@ public class ApiStoreProductManageController {
      * 普通商品
      */
     private static final Byte COMMON_PROD_TYPE = 1;
+    /**
+     * 最大上传图片个数
+     */
+    private static final int MAX_UPLOAD_IMAGE_COUNT=3;
 
     @ApiOperation(value = "B端获取可上架商品数据接口", notes = "B端获取可上架商品数据接口")
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -249,11 +253,11 @@ public class ApiStoreProductManageController {
                 List<ProductSkuVO> productList = productResult.getData();
                 // 查询信息一一对应
                 if (productList != null && productList.size() == prodInfo.size()) {
-                    Map<String, ProdOperateInfoCondition> putawayInfo = new HashMap<>();
+                    Map<String, ProdOperateInfoCondition> putawayInfo = new HashMap<>(prodInfo.size());
                     for (ProdOperateInfoCondition p : prodInfo) {
                         putawayInfo.put(p.getSkuCode(), p);
                     }
-                    Map<String, ProductSkuVO> prodSkuInfo = new HashMap<>();
+                    Map<String, ProductSkuVO> prodSkuInfo = new HashMap<>(productList.size());
                     for (ProductSkuVO prod : productList) {
                         prodSkuInfo.put(prod.getSkuCode(), prod);
                     }
@@ -542,41 +546,44 @@ public class ApiStoreProductManageController {
 
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        // if (storeUser == null) {
-        // responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-        // return responseResult;
-        // }
+        if (storeUser == null) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
+            return responseResult;
+        }
         logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
         if (imageFiles == null) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
             return responseResult;
         }
-        List<MultipartFile> multipartFiles=new ArrayList<>();
-        
+        List<MultipartFile> multipartFiles = new ArrayList<>();
+
         List<MultipartFile> file = imageFiles.getFiles("file");
-        if (file == null || file.size() != 1) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
-            return responseResult;
-        }else{
-            multipartFiles.add(file.get(0));
+        if (file != null && file.size() > 0) {
+            for (MultipartFile f : file) {
+                multipartFiles.add(f);
+            }
+
         }
-        
+
         List<MultipartFile> file1 = imageFiles.getFiles("file1");
-        if (file1 == null || file1.size() != 1) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
-            return responseResult;
-        }else{
-            multipartFiles.add(file1.get(0));
+        if (file1 != null && file1.size() > 0) {
+            for (MultipartFile f : file1) {
+                multipartFiles.add(f);
+            }
         }
-        
+
         List<MultipartFile> file2 = imageFiles.getFiles("file2");
-        if (file2 == null || file2.size() != 1) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
-            return responseResult;
-        }else{
-            multipartFiles.add(file2.get(0));
+        if (file2 != null && file2.size() > 0) {
+            for (MultipartFile f : file2) {
+                multipartFiles.add(f);
+            }
         }
-        
+
+        if (multipartFiles.size() > MAX_UPLOAD_IMAGE_COUNT || multipartFiles.size() <= 0) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1017);
+            return responseResult;
+        }
+
         List<ProductImageVO> imageVOList = new ArrayList<>();
         for (MultipartFile mFile : multipartFiles) {
             BaseImageFile baseImageFile =imageUploadUtil.uploadImage(mFile.getOriginalFilename(),mFile.getInputStream(),null);

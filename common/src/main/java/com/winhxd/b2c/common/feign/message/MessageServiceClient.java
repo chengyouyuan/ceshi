@@ -57,7 +57,7 @@ public interface MessageServiceClient {
     ResponseResult<Void> sendSMS(@RequestParam("mobile")String mobile,@RequestParam("content")String content);
 
     /**
-     * @Description: 小程序登录相关，根据code返回openid和
+     * @Description: 小程序登录相关，根据code返回openid和sessionKey
      * @param code
      * @return
      */

@@ -41,15 +41,15 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
-        insert into message_sms_history (content, send_time,
+        insert into message_sms_history (id, content, send_time,
           revice_time, telephone, error_code,
           send_status, supply_id, send_type,
           grp, user_name, scheduled_date,
           store_id, sms_send_groupId, repeat_time
           )
-        values (#{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP},
+        values (#{id,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP},
           #{reviceTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=CHAR}, #{errorCode,jdbcType=SMALLINT},
-          #{sendStatus,jdbcType=SMALLINT}, #{supplyId,jdbcType=SMALLINT}, #{sendType,jdbcType=SMALLINT},
+          #{sendStatus,jdbcType=SMALLINT}, #{supplyId,jdbcType=VARCHAR}, #{sendType,jdbcType=SMALLINT},
           #{grp,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{scheduledDate,jdbcType=TIMESTAMP},
           #{storeId,jdbcType=BIGINT}, #{smsSendGroupid,jdbcType=VARCHAR}, #{repeatTime,jdbcType=LONGVARCHAR}
           )
@@ -57,6 +57,9 @@
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageSmsHistory">
         insert into message_sms_history
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
             <if test="content != null">
                 content,
             </if>
@@ -123,7 +126,7 @@
                 #{sendStatus,jdbcType=SMALLINT},
             </if>
             <if test="supplyId != null">
-                #{supplyId,jdbcType=SMALLINT},
+                #{supplyId,jdbcType=VARCHAR},
             </if>
             <if test="sendType != null">
                 #{sendType,jdbcType=SMALLINT},
@@ -149,17 +152,19 @@
         </trim>
     </insert>
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into redeem_code
-        (content, send_time, revice_time, telephone, error_code, send_status, supply_id,
-        send_type, grp, user_name, scheduled_date, store_id, sms_send_groupId)
+        insert into message_sms_history
+        (id, content, send_time,
+        revice_time, telephone, error_code,
+        send_status, supply_id, send_type,
+        grp, user_name, scheduled_date,
+        store_id, sms_send_groupId, repeat_time)
         values
-        <foreach collection="list" item="messageSmsHistory" index="index" separator=",">
-            (
-            #{content,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP},
-            #{reviceTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=CHAR}, #{errorCode,jdbcType=SMALLINT},
-            #{sendStatus,jdbcType=SMALLINT}, #{supplyId,jdbcType=SMALLINT}, #{sendType,jdbcType=SMALLINT},
-            #{grp,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{scheduledDate,jdbcType=TIMESTAMP},
-            #{storeId,jdbcType=BIGINT}, #{smsSendGroupid,jdbcType=VARCHAR}, #{repeatTime,jdbcType=LONGVARCHAR}
+        <foreach collection="msgSmsHistorys" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.content,jdbcType=VARCHAR}, #{item.sendTime,jdbcType=TIMESTAMP},
+            #{item.reviceTime,jdbcType=TIMESTAMP}, #{item.telephone,jdbcType=CHAR}, #{item.errorCode,jdbcType=SMALLINT},
+            #{item.sendStatus,jdbcType=SMALLINT}, #{item.supplyId,jdbcType=VARCHAR}, #{item.sendType,jdbcType=SMALLINT},
+            #{item.grp,jdbcType=VARCHAR}, #{item.userName,jdbcType=VARCHAR}, #{item.scheduledDate,jdbcType=TIMESTAMP},
+            #{item.storeId,jdbcType=BIGINT}, #{item.smsSendGroupid,jdbcType=VARCHAR}, #{item.repeatTime,jdbcType=LONGVARCHAR}
             )
         </foreach>
     </insert>

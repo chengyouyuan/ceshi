@@ -1,8 +1,11 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList;
+import com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author wl
@@ -38,6 +41,10 @@ public class CouponApplyVO {
     private String relTempleteCount;
     @ApiModelProperty(value = "适用对象类型--转汉字")
     private String applyRuleName;
+
+
+    private List<CouponApplyBrandList> couponApplyBrandList;
+    private List<CouponApplyProductList> couponApplyProductList;
 
 
     public Long getId() {
@@ -150,5 +157,21 @@ public class CouponApplyVO {
 
     public void setApplyRuleName(String applyRuleName) {
         this.applyRuleName = applyRuleName;
+    }
+
+    public List<CouponApplyBrandList> getCouponApplyBrandList() {
+        return couponApplyBrandList;
+    }
+
+    public void setCouponApplyBrandList(List<CouponApplyBrandList> couponApplyBrandList) {
+        this.couponApplyBrandList = couponApplyBrandList;
+    }
+
+    public List<CouponApplyProductList> getCouponApplyProductList() {
+        return couponApplyProductList;
+    }
+
+    public void setCouponApplyProductList(List<CouponApplyProductList> couponApplyProductList) {
+        this.couponApplyProductList = couponApplyProductList;
     }
 }

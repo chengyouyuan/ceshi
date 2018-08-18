@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
@@ -75,12 +74,27 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//微信接口入参
 		PayPreOrderDTO payPreOrderDTO = new PayPreOrderDTO();
 		BeanUtils.copyProperties(condition, payPreOrderDTO);
-		// TODO 生产支付流水号
-		payPreOrderDTO.setOutTradeNo("dsafdsakfjasdkjf");
+		// 生产支付流水号
+		long timeStamp = System.currentTimeMillis();
+		String outTradeNo = condition.getOutOrderNo() + '_' + timeStamp;
+		if(outTradeNo.length() > 32) {
+			outTradeNo = outTradeNo.substring(0, 32);
+		}
+		
+		payPreOrderDTO.setOutTradeNo(outTradeNo);
 		
         //调用微信统一下单API
 		PayPreOrderResponseDTO payPreOrderResponseDTO = wxPayApi.unifiedOrder(payPreOrderDTO);
-		// TODO保存支付流水记录
+		// TODO 保存支付流水记录
+		
+		//初始化反参
+		payPreOrderVO.setAppId(payPreOrderDTO.getAppid());
+		payPreOrderVO.setNonceStr(payPreOrderDTO.getNonceStr());
+		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
+		payPreOrderVO.setOutTradeNo(outTradeNo);
+		payPreOrderVO.setPackageData(PACKAGE + payPreOrderResponseDTO.getPrepayId());
+		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
+		payPreOrderVO.setTimeStamp(String.valueOf(timeStamp));
 		
 		return payPreOrderVO;
 	}

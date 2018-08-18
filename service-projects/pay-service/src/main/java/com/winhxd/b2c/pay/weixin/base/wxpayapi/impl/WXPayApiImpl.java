@@ -118,7 +118,10 @@ public class WXPayApiImpl implements WXPayApi {
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToSortedMap(payPreOrderDTO);
         try {
-			reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
+        	//签名添加到入参VO
+        	payPreOrderDTO.setSign(WXPayUtil.generateSignature(reqData, config.getKey(), this.signType));
+        	//签名添加调用微信API入参
+			reqData.put("sign", payPreOrderDTO.getSign());
 		} catch (Exception e) {
 			logger.error("签名失败", e);
 			throw new BusinessException(3400901, "签名失败");

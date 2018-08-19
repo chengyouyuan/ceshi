@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -376,6 +377,4 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result = couponActivityService.findStoreByActivity(condition);
         return result;
     }
-
-
 }

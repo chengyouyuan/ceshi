@@ -389,7 +389,7 @@ public class WXPayApiImpl implements WXPayApi {
 
 		//填充配置参数
 		this.fillRequestDTOByHMACSHA256(payFinancialBillDTO);
-        payFinancialBillDTO.setSign(this.generateSign(payFinancialBillDTO));
+        payFinancialBillDTO.setSign(this.generateSign(payFinancialBillDTO, SignType.HMACSHA256));
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payFinancialBillDTO);
         

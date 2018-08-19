@@ -1,5 +1,8 @@
 package com.winhxd.b2c.task;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,18 +15,18 @@ import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
 public class DownLoadStatementTask {
     private static final Logger logger = LoggerFactory.getLogger(DownLoadStatementTask.class);
  
-//    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
  
     @Autowired
     DownLoadStatementClient downLoadStatementClient;
     
-//    /**
-//     * 每隔5秒执行, 单位：ms。
-//     */
-//    @Scheduled(fixedRate = 5000)
-//    public void testFixRate() {
-//        System.out.println("我每隔5秒冒泡一次：" + dateFormat.format(new Date()));
-//    }
+    /**
+     * 每隔5秒执行, 单位：ms。
+     */
+    @Scheduled(fixedRate = 5000)
+    public void testFixRate() {
+        System.out.println("我每隔5秒冒泡一次：" + dateFormat.format(new Date()));
+    }
     
     /**
     "0/5 * *  * * ?"   每5秒触发
@@ -40,7 +43,7 @@ public class DownLoadStatementTask {
     "0 15 10 ? * MON-FRI"    每个周一、周二、周三、周四、周五的10：15触发
     */
 //    @Scheduled(cron = "0 0 10 * * ?")    //每天上午10点执行
-    @Scheduled(cron = "0 35 10 * * ?")    //每天上午10点执行
+    @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
     public void downLoadStatement() {
         System.out.println("我每天上午10点开始执行");
         try {

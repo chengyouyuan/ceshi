@@ -98,15 +98,14 @@ public class OrderServiceTest {
         OrderItemCondition itemCondition = new OrderItemCondition();
         itemCondition.setAmount(2);
         itemCondition.setSkuCode("12346496056002");
-        itemCondition.setPrice(new BigDecimal("234"));
         OrderItemCondition itemCondition1 = new OrderItemCondition();
         itemCondition1.setAmount(2);
         itemCondition1.setSkuCode("12346496056001");
         orderItemConditions.add(itemCondition);
         orderItemConditions.add(itemCondition1);
         OrderCreateCondition createCondition = new OrderCreateCondition();
-        createCondition.setCustomerId(1L);
-        createCondition.setStoreId(12L);
+        createCondition.setCustomerId(19L);
+        createCondition.setStoreId(3L);
         createCondition.setPayType(PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode());
         createCondition.setOrderItemConditions(orderItemConditions);
         

@@ -113,7 +113,7 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/6106/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
-		String logTitle = "/api-pay/bankCard/6106/v1/verificationCode-获取短信验证码";
+		String logTitle = "/api-pay/pay/6106/v1/verificationCode-获取短信验证码";
 		LOGGER.info("{}=--开始--{}", logTitle,condition);
 		ResponseResult<String> result = new ResponseResult<String>();
 		

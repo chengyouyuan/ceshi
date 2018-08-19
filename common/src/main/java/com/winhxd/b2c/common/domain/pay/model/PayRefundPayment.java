@@ -1,9 +1,10 @@
 package com.winhxd.b2c.common.domain.pay.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PayRefundPayment {
+public class PayRefundPayment implements Serializable {
     private Long id;
 
     private String orderNo;
@@ -16,11 +17,9 @@ public class PayRefundPayment {
 
     private Date callbackDate;
 
-    private Date timeEnd;
-
     private Short callbackStatus;
 
-    private String callbackReason;
+    private String refundDesc;
 
     private String buyerId;
 
@@ -40,6 +39,26 @@ public class PayRefundPayment {
 
     private Date updated;
 
+    private String appid;
+
+    private String mchId;
+
+    private String nonceStr;
+
+    private BigDecimal totalAmount;
+
+    private String callbackErrorCode;
+
+    private String callbackErrorMessage;
+
+    private Date callbackSuccessTime;
+
+    private String callbackRefundRecvAccout;
+
+    private String callbackRefundAccount;
+
+    private static final long serialVersionUID = 1L;
+
     public Long getId() {
         return id;
     }
@@ -53,7 +72,7 @@ public class PayRefundPayment {
     }
 
     public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+        this.orderNo = orderNo == null ? null : orderNo.trim();
     }
 
     public String getOrderTransactionNo() {
@@ -61,7 +80,7 @@ public class PayRefundPayment {
     }
 
     public void setOrderTransactionNo(String orderTransactionNo) {
-        this.orderTransactionNo = orderTransactionNo;
+        this.orderTransactionNo = orderTransactionNo == null ? null : orderTransactionNo.trim();
     }
 
     public String getRefundNo() {
@@ -69,7 +88,7 @@ public class PayRefundPayment {
     }
 
     public void setRefundNo(String refundNo) {
-        this.refundNo = refundNo;
+        this.refundNo = refundNo == null ? null : refundNo.trim();
     }
 
     public String getRefundTransactionNo() {
@@ -77,7 +96,7 @@ public class PayRefundPayment {
     }
 
     public void setRefundTransactionNo(String refundTransactionNo) {
-        this.refundTransactionNo = refundTransactionNo;
+        this.refundTransactionNo = refundTransactionNo == null ? null : refundTransactionNo.trim();
     }
 
     public Date getCallbackDate() {
@@ -88,14 +107,6 @@ public class PayRefundPayment {
         this.callbackDate = callbackDate;
     }
 
-    public Date getTimeEnd() {
-        return timeEnd;
-    }
-
-    public void setTimeEnd(Date timeEnd) {
-        this.timeEnd = timeEnd;
-    }
-
     public Short getCallbackStatus() {
         return callbackStatus;
     }
@@ -104,12 +115,12 @@ public class PayRefundPayment {
         this.callbackStatus = callbackStatus;
     }
 
-    public String getCallbackReason() {
-        return callbackReason;
+    public String getRefundDesc() {
+        return refundDesc;
     }
 
-    public void setCallbackReason(String callbackReason) {
-        this.callbackReason = callbackReason;
+    public void setRefundDesc(String refundDesc) {
+        this.refundDesc = refundDesc == null ? null : refundDesc.trim();
     }
 
     public String getBuyerId() {
@@ -117,7 +128,7 @@ public class PayRefundPayment {
     }
 
     public void setBuyerId(String buyerId) {
-        this.buyerId = buyerId;
+        this.buyerId = buyerId == null ? null : buyerId.trim();
     }
 
     public String getTransactionId() {
@@ -125,7 +136,7 @@ public class PayRefundPayment {
     }
 
     public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
+        this.transactionId = transactionId == null ? null : transactionId.trim();
     }
 
     public BigDecimal getRefundFee() {
@@ -182,5 +193,77 @@ public class PayRefundPayment {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid == null ? null : appid.trim();
+    }
+
+    public String getMchId() {
+        return mchId;
+    }
+
+    public void setMchId(String mchId) {
+        this.mchId = mchId == null ? null : mchId.trim();
+    }
+
+    public String getNonceStr() {
+        return nonceStr;
+    }
+
+    public void setNonceStr(String nonceStr) {
+        this.nonceStr = nonceStr == null ? null : nonceStr.trim();
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getCallbackErrorCode() {
+        return callbackErrorCode;
+    }
+
+    public void setCallbackErrorCode(String callbackErrorCode) {
+        this.callbackErrorCode = callbackErrorCode == null ? null : callbackErrorCode.trim();
+    }
+
+    public String getCallbackErrorMessage() {
+        return callbackErrorMessage;
+    }
+
+    public void setCallbackErrorMessage(String callbackErrorMessage) {
+        this.callbackErrorMessage = callbackErrorMessage == null ? null : callbackErrorMessage.trim();
+    }
+
+    public Date getCallbackSuccessTime() {
+        return callbackSuccessTime;
+    }
+
+    public void setCallbackSuccessTime(Date callbackSuccessTime) {
+        this.callbackSuccessTime = callbackSuccessTime;
+    }
+
+    public String getCallbackRefundRecvAccout() {
+        return callbackRefundRecvAccout;
+    }
+
+    public void setCallbackRefundRecvAccout(String callbackRefundRecvAccout) {
+        this.callbackRefundRecvAccout = callbackRefundRecvAccout == null ? null : callbackRefundRecvAccout.trim();
+    }
+
+    public String getCallbackRefundAccount() {
+        return callbackRefundAccount;
+    }
+
+    public void setCallbackRefundAccount(String callbackRefundAccount) {
+        this.callbackRefundAccount = callbackRefundAccount == null ? null : callbackRefundAccount.trim();
     }
 }

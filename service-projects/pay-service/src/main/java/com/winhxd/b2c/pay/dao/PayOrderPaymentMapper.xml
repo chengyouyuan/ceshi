@@ -3,14 +3,26 @@
 <mapper namespace="com.winhxd.b2c.pay.dao.PayOrderPaymentMapper">
   <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="appid" jdbcType="VARCHAR" property="appid" />
+    <result column="mch_id" jdbcType="VARCHAR" property="mchId" />
+    <result column="device_info" jdbcType="VARCHAR" property="deviceInfo" />
+    <result column="nonce_str" jdbcType="VARCHAR" property="nonceStr" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="body" jdbcType="VARCHAR" property="body" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="attach" jdbcType="VARCHAR" property="attach" />
     <result column="order_no" jdbcType="CHAR" property="orderNo" />
-    <result column="order_payment_no" jdbcType="VARCHAR" property="orderPaymentNo" />
+    <result column="order_transaction_no" jdbcType="VARCHAR" property="orderTransactionNo" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="callback_date" jdbcType="TIMESTAMP" property="callbackDate" />
-    <result column="time_end" jdbcType="VARCHAR" property="timeEnd" />
+    <result column="time_start" jdbcType="TIMESTAMP" property="timeStart" />
+    <result column="time_expire" jdbcType="TIMESTAMP" property="timeExpire" />
+    <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
     <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
-    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
+    <result column="callback_error_code" jdbcType="VARCHAR" property="callbackErrorCode" />
+    <result column="callback_error_reason" jdbcType="VARCHAR" property="callbackErrorReason" />
+    <result column="prepay_id" jdbcType="VARCHAR" property="prepayId" />
     <result column="buyer_id" jdbcType="VARCHAR" property="buyerId" />
     <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
     <result column="real_payment_money" jdbcType="DECIMAL" property="realPaymentMoney" />
@@ -21,9 +33,10 @@
     <result column="operation_type" jdbcType="SMALLINT" property="operationType" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_no, order_payment_no, created, updated, callback_date, time_end, callback_status, 
-    callback_reason, buyer_id, transaction_id, real_payment_money, callback_money, pay_type, 
-    cmms_amt, rate, operation_type
+    id, appid, mch_id, device_info, nonce_str, product_id, body, detail, attach, order_no, 
+    order_transaction_no, created, updated, callback_date, time_start, time_expire, time_end, 
+    callback_status, callback_error_code, callback_error_reason, prepay_id, buyer_id, 
+    transaction_id, real_payment_money, callback_money, pay_type, cmms_amt, rate, operation_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -36,18 +49,28 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
-    insert into pay_order_payment (id, order_no, order_payment_no, 
-      created, updated, callback_date, 
-      time_end, callback_status, callback_reason, 
-      buyer_id, transaction_id, real_payment_money, 
-      callback_money, pay_type, cmms_amt, 
-      rate, operation_type)
-    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{orderPaymentNo,jdbcType=VARCHAR}, 
-      #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, #{callbackDate,jdbcType=TIMESTAMP}, 
-      #{timeEnd,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, 
-      #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, #{realPaymentMoney,jdbcType=DECIMAL}, 
-      #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, #{cmmsAmt,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=DECIMAL}, #{operationType,jdbcType=SMALLINT})
+    insert into pay_order_payment (id, appid, mch_id, 
+      device_info, nonce_str, product_id, 
+      body, detail, attach, 
+      order_no, order_transaction_no, created, 
+      updated, callback_date, time_start, 
+      time_expire, time_end, callback_status, 
+      callback_error_code, callback_error_reason, 
+      prepay_id, buyer_id, transaction_id, 
+      real_payment_money, callback_money, pay_type, 
+      cmms_amt, rate, operation_type
+      )
+    values (#{id,jdbcType=BIGINT}, #{appid,jdbcType=VARCHAR}, #{mchId,jdbcType=VARCHAR}, 
+      #{deviceInfo,jdbcType=VARCHAR}, #{nonceStr,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
+      #{body,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{attach,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=CHAR}, #{orderTransactionNo,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP}, #{callbackDate,jdbcType=TIMESTAMP}, #{timeStart,jdbcType=TIMESTAMP}, 
+      #{timeExpire,jdbcType=TIMESTAMP}, #{timeEnd,jdbcType=TIMESTAMP}, #{callbackStatus,jdbcType=SMALLINT}, 
+      #{callbackErrorCode,jdbcType=VARCHAR}, #{callbackErrorReason,jdbcType=VARCHAR}, 
+      #{prepayId,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
+      #{realPaymentMoney,jdbcType=DECIMAL}, #{callbackMoney,jdbcType=DECIMAL}, #{payType,jdbcType=SMALLINT}, 
+      #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, #{operationType,jdbcType=SMALLINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     insert into pay_order_payment
@@ -55,11 +78,35 @@
       <if test="id != null">
         id,
       </if>
+      <if test="appid != null">
+        appid,
+      </if>
+      <if test="mchId != null">
+        mch_id,
+      </if>
+      <if test="deviceInfo != null">
+        device_info,
+      </if>
+      <if test="nonceStr != null">
+        nonce_str,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="body != null">
+        body,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="attach != null">
+        attach,
+      </if>
       <if test="orderNo != null">
         order_no,
       </if>
-      <if test="orderPaymentNo != null">
-        order_payment_no,
+      <if test="orderTransactionNo != null">
+        order_transaction_no,
       </if>
       <if test="created != null">
         created,
@@ -70,14 +117,26 @@
       <if test="callbackDate != null">
         callback_date,
       </if>
+      <if test="timeStart != null">
+        time_start,
+      </if>
+      <if test="timeExpire != null">
+        time_expire,
+      </if>
       <if test="timeEnd != null">
         time_end,
       </if>
       <if test="callbackStatus != null">
         callback_status,
       </if>
-      <if test="callbackReason != null">
-        callback_reason,
+      <if test="callbackErrorCode != null">
+        callback_error_code,
+      </if>
+      <if test="callbackErrorReason != null">
+        callback_error_reason,
+      </if>
+      <if test="prepayId != null">
+        prepay_id,
       </if>
       <if test="buyerId != null">
         buyer_id,
@@ -108,11 +167,35 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
+      <if test="appid != null">
+        #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceInfo != null">
+        #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="attach != null">
+        #{attach,jdbcType=VARCHAR},
+      </if>
       <if test="orderNo != null">
         #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="orderPaymentNo != null">
-        #{orderPaymentNo,jdbcType=VARCHAR},
+      <if test="orderTransactionNo != null">
+        #{orderTransactionNo,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=TIMESTAMP},
@@ -123,14 +206,26 @@
       <if test="callbackDate != null">
         #{callbackDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="timeStart != null">
+        #{timeStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeExpire != null">
+        #{timeExpire,jdbcType=TIMESTAMP},
+      </if>
       <if test="timeEnd != null">
-        #{timeEnd,jdbcType=VARCHAR},
+        #{timeEnd,jdbcType=TIMESTAMP},
       </if>
       <if test="callbackStatus != null">
         #{callbackStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        #{callbackReason,jdbcType=VARCHAR},
+      <if test="callbackErrorCode != null">
+        #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorReason != null">
+        #{callbackErrorReason,jdbcType=VARCHAR},
+      </if>
+      <if test="prepayId != null">
+        #{prepayId,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         #{buyerId,jdbcType=VARCHAR},
@@ -161,11 +256,35 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     update pay_order_payment
     <set>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        mch_id = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceInfo != null">
+        device_info = #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="attach != null">
+        attach = #{attach,jdbcType=VARCHAR},
+      </if>
       <if test="orderNo != null">
         order_no = #{orderNo,jdbcType=CHAR},
       </if>
-      <if test="orderPaymentNo != null">
-        order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR},
+      <if test="orderTransactionNo != null">
+        order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         created = #{created,jdbcType=TIMESTAMP},
@@ -176,14 +295,26 @@
       <if test="callbackDate != null">
         callback_date = #{callbackDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="timeStart != null">
+        time_start = #{timeStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeExpire != null">
+        time_expire = #{timeExpire,jdbcType=TIMESTAMP},
+      </if>
       <if test="timeEnd != null">
-        time_end = #{timeEnd,jdbcType=VARCHAR},
+        time_end = #{timeEnd,jdbcType=TIMESTAMP},
       </if>
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      <if test="callbackErrorCode != null">
+        callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorReason != null">
+        callback_error_reason = #{callbackErrorReason,jdbcType=VARCHAR},
+      </if>
+      <if test="prepayId != null">
+        prepay_id = #{prepayId,jdbcType=VARCHAR},
       </if>
       <if test="buyerId != null">
         buyer_id = #{buyerId,jdbcType=VARCHAR},
@@ -214,14 +345,26 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
     update pay_order_payment
-    set order_no = #{orderNo,jdbcType=CHAR},
-      order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR},
+    set appid = #{appid,jdbcType=VARCHAR},
+      mch_id = #{mchId,jdbcType=VARCHAR},
+      device_info = #{deviceInfo,jdbcType=VARCHAR},
+      nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=VARCHAR},
+      body = #{body,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      attach = #{attach,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=CHAR},
+      order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP},
       callback_date = #{callbackDate,jdbcType=TIMESTAMP},
-      time_end = #{timeEnd,jdbcType=VARCHAR},
+      time_start = #{timeStart,jdbcType=TIMESTAMP},
+      time_expire = #{timeExpire,jdbcType=TIMESTAMP},
+      time_end = #{timeEnd,jdbcType=TIMESTAMP},
       callback_status = #{callbackStatus,jdbcType=SMALLINT},
-      callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      callback_error_reason = #{callbackErrorReason,jdbcType=VARCHAR},
+      prepay_id = #{prepayId,jdbcType=VARCHAR},
       buyer_id = #{buyerId,jdbcType=VARCHAR},
       transaction_id = #{transactionId,jdbcType=VARCHAR},
       real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
@@ -236,6 +379,95 @@
     select
     <include refid="Base_Column_List" />
     from pay_order_payment
-    where order_payment_no = #{orderPaymentNo,jdbcType=VARCHAR}
+    where order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR}
   </select>
+   <update id="updateByOrderTransactionNoSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayOrderPayment">
+    update pay_order_payment
+    <set>
+      <if test="appid != null">
+        appid = #{appid,jdbcType=VARCHAR},
+      </if>
+      <if test="mchId != null">
+        mch_id = #{mchId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceInfo != null">
+        device_info = #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="nonceStr != null">
+        nonce_str = #{nonceStr,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null">
+        body = #{body,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="attach != null">
+        attach = #{attach,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=CHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackDate != null">
+        callback_date = #{callbackDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStart != null">
+        time_start = #{timeStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeExpire != null">
+        time_expire = #{timeExpire,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeEnd != null">
+        time_end = #{timeEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="callbackStatus != null">
+        callback_status = #{callbackStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="callbackErrorCode != null">
+        callback_error_code = #{callbackErrorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callbackErrorReason != null">
+        callback_error_reason = #{callbackErrorReason,jdbcType=VARCHAR},
+      </if>
+      <if test="prepayId != null">
+        prepay_id = #{prepayId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null">
+        buyer_id = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="realPaymentMoney != null">
+        real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="callbackMoney != null">
+        callback_money = #{callbackMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="payType != null">
+        pay_type = #{payType,jdbcType=SMALLINT},
+      </if>
+      <if test="cmmsAmt != null">
+        cmms_amt = #{cmmsAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=DECIMAL},
+      </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where  order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR}
+  </update>
+  
+  
 </mapper>

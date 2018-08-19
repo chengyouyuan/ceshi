@@ -15,5 +15,15 @@ public interface WXPayApi {
      * @return
      */
     public PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO);
+    
+    /**
+     * 微信统一签名方法
+     * @author mahongliang
+     * @date  2018年8月18日 下午6:26:47
+     * @Description 
+     * @param obj
+     * @return
+     */
+    public String generateSign(Object obj);
 
 }

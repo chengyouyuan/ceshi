@@ -17,8 +17,6 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.mq.event.EventMessageListener;
-import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import org.apache.logging.log4j.LogManager;
@@ -59,7 +57,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
     public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
@@ -70,7 +68,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
     }
@@ -227,7 +225,26 @@ public class VerifyService {
      */
     public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return accountingDetailMapper.selectAccountingDetailList(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
+        for (VerifyDetailVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (VerifyDetailVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**
@@ -343,7 +360,26 @@ public class VerifyService {
      */
     public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
+        for (PayWithdrawalsVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (PayWithdrawalsVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**

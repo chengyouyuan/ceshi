@@ -104,8 +104,6 @@ public final class BusinessCode {
     public static final int CODE_402001 = 402001;
     /** 购物车:自提地址为空*/
     public static final int CODE_402002 = 402002;
-    /** 购物车:自提时间为空*/
-    public static final int CODE_402003 = 402003;
     /** 购物车:商品信息为空*/
     public static final int CODE_402004 = 402004;
     /** 购物车:支付方式*/
@@ -122,6 +120,8 @@ public final class BusinessCode {
     public static final int CODE_402012 = 402012;
     /** 购物车:用户下单操作频繁*/
     public static final int CODE_402014 = 402014;
+    /** 购物车:获取支付信息失败*/
+    public static final int CODE_402015 = 402015;
 
 
     /** 查询订单参数异常*/
@@ -358,6 +358,12 @@ public final class BusinessCode {
      
     @ApiModelProperty("订单支付  设备Ip为空")
     public static final int CODE_600105 = 600105;
+    
+    @ApiModelProperty("订单支付  支付方式为空")
+    public static final int CODE_600106 = 600106;
+    
+    @ApiModelProperty("订单支付  支付金额为空")
+    public static final int CODE_600107 = 600107;
     
     @ApiModelProperty("退款  参数为空")
     public static final int CODE_600201 = 600201;

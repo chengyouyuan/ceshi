@@ -128,7 +128,7 @@ public class OrderQueryAspect {
         try {
             Set<String> skuSet = new HashSet<>();
             for (Object obj : objArr) {
-                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> ORDER_ITEMVO_LIST.equals(f.getName())).findFirst().orElse(null);
                 if (null != field) {
                     field.setAccessible(true);
                     if (field.get(obj) != null) {
@@ -149,7 +149,7 @@ public class OrderQueryAspect {
                     List<ProductSkuVO> productSkuList = productResponseResultData.getData();
                     Map<String, ProductSkuVO> productListMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuVO::getSkuCode, productSkuVO -> productSkuVO));
                     for (Object obj : objArr) {
-                        Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(ORDER_ITEMVO_LIST)).findFirst().orElse(null);
+                        Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> ORDER_ITEMVO_LIST.equals(f.getName())).findFirst().orElse(null);
                         if (null != field) {
                             field.setAccessible(true);
                             if (field.get(obj) != null) {
@@ -177,13 +177,19 @@ public class OrderQueryAspect {
     private void storeInfoConvert(JoinPoint joinPoint, Object ret) {
         if (ret instanceof Object[]) {
             Object[] objArr = (Object[]) ret;
-            assembleStoreInfo(objArr);
+            if (objArr != null && objArr.length > 0) {
+                assembleStoreInfo(objArr);
+            }
         } else if (ret instanceof List) {
             List objList = (List) ret;
-            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            }
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
-            assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleStoreInfo(objList.toArray(new Object[objList.size()]));
+            }
         } else {
             assembleStoreInfo(ret);
         }
@@ -193,7 +199,7 @@ public class OrderQueryAspect {
         try {
             Set<Long> storeIds = new HashSet<>();
             for (Object obj : objArr) {
-                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> STORE_ID.equals(f.getName())).findFirst().orElse(null);
                 if (null != field) {
                     field.setAccessible(true);
                     if (field.get(obj) != null) {
@@ -206,7 +212,7 @@ public class OrderQueryAspect {
              if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
                 List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
                 for (Object obj : objArr) {
-                    Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> f.getName().equals(STORE_ID)).findFirst().orElse(null);
+                    Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> STORE_ID.equals(f.getName())).findFirst().orElse(null);
                     if (null != field) {
                         field.setAccessible(true);
                         if (field.get(obj) != null) {
@@ -230,13 +236,19 @@ public class OrderQueryAspect {
     public void customerInfoConvert(JoinPoint joinPoint, Object ret) {
         if (ret instanceof Object[]) {
             Object[] objArr = (Object[]) ret;
-            assembleCustomerInfos(objArr);
+            if (objArr != null && objArr.length > 0) {
+                assembleCustomerInfos(objArr);
+            }
         } else if (ret instanceof List) {
             List objList = (List) ret;
-            assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            }
         } else if (ret instanceof PagedList) {
             List objList = ((PagedList) ret).getData();
-            assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            if (CollectionUtils.isNotEmpty(objList)) {
+                assembleCustomerInfos(objList.toArray(new Object[objList.size()]));
+            }
         } else {
             assembleCustomerInfos(ret);
         }

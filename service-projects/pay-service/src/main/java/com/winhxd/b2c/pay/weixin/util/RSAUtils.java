@@ -70,7 +70,7 @@ public class RSAUtils {
      * @param publicKey 密钥字符串（经过base64编码）
      * @throws Exception
      */
-    public static RSAPublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static RSAPublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         //通过X509编码的Key指令获得公钥对象
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.decodeBase64(publicKey));
@@ -83,7 +83,7 @@ public class RSAUtils {
      * @param privateKey 密钥字符串（经过base64编码）
      * @throws Exception
      */
-    public static RSAPrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static RSAPrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         //通过PKCS#8编码的Key指令获得私钥对象
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
         PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey));
@@ -97,7 +97,7 @@ public class RSAUtils {
      * @param publicKey
      * @return
      */
-    public static String publicEncrypt(String data, RSAPublicKey publicKey){
+    private static String publicEncrypt(String data, RSAPublicKey publicKey){
         try{
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
@@ -108,30 +108,22 @@ public class RSAUtils {
     }
 
     /**
-     * 微信公钥加密
-     * @param data 待加密数据
-     * @param publicKey 公钥
-     * @Description: 指定填充模式为 RSA_PKCS1_OAEP_PADDING
-     * @return 密文
-     */
-    public static String publicEncrypt(String data, String publicKeyStr){
-        try{
-            RSAPublicKey publicKey = getPublicKey(publicKeyStr);
-            Cipher cipher = Cipher.getInstance(WX_DEFAULT_PADDING);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
-        }catch(Exception e){
-            throw new RuntimeException("加密字符串[" + data + "]时遇到异常", e);
-        }
-    }
-
-    /**
-     * 公钥解密
+     * 通用公钥加密
      * @param data
      * @param publicKey
      * @return
      */
-    public static String publicDecrypt(String data, RSAPublicKey publicKey){
+    public static String publicEncrypt(String data, String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return publicEncrypt(data, getPublicKey(publicKey));
+    }
+
+    /**
+     * 通用公钥解密
+     * @param data
+     * @param publicKey
+     * @return
+     */
+    private static String publicDecrypt(String data, RSAPublicKey publicKey){
         try{
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
@@ -142,12 +134,22 @@ public class RSAUtils {
     }
 
     /**
-     * 私钥加密
+     * 通用公钥解密
+     * @param data
+     * @param publicKey
+     * @return
+     */
+    public static String publicDecrypt(String data, String publicKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return publicDecrypt(data, getPublicKey(publicKey));
+    }
+
+    /**
+     * 通用私钥加密
      * @param data
      * @param privateKey
      * @return
      */
-    public static String privateEncrypt(String data, RSAPrivateKey privateKey){
+    private static String privateEncrypt(String data, RSAPrivateKey privateKey){
         try{
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
@@ -158,12 +160,22 @@ public class RSAUtils {
     }
 
     /**
-     * 私钥解密
+     * 通用私钥加密
      * @param data
      * @param privateKey
      * @return
      */
-    public static String privateDecrypt(String data, RSAPrivateKey privateKey){
+    public static String privateEncrypt(String data, String privateKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return privateEncrypt(data, getPrivateKey(privateKey));
+    }
+
+    /**
+     * 通用私钥解密
+     * @param data
+     * @param privateKey
+     * @return
+     */
+    private static String privateDecrypt(String data, RSAPrivateKey privateKey){
         try{
             Cipher cipher = Cipher.getInstance(RSA_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -174,7 +186,17 @@ public class RSAUtils {
     }
 
     /**
-     * 基础方法
+     * 通用私钥解密
+     * @param data
+     * @param privateKey
+     * @return
+     */
+    private static String privateDecrypt(String data, String privateKey) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return privateDecrypt(data, getPrivateKey(privateKey));
+    }
+
+    /**
+     * RSA加解密核心
      * @param cipher
      * @param opmode
      * @param datas
@@ -211,14 +233,47 @@ public class RSAUtils {
         return resultDatas;
     }
 
-    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
-        RSAPublicKey publicKey = getPublicKey(publicKeyStr);
-        String encrypt = publicEncrypt("123456", publicKey);
-        System.out.println(encrypt);
-/*        String decrypt = publicDecrypt("123456", publicKey);
-        System.out.println(decrypt);*/
+    /**
+     * 微信公钥加密
+     * @param data 待加密数据
+     * @param publicKey 公钥
+     * @Description: 指定填充模式为 RSA_PKCS1_OAEP_PADDING
+     * @return 密文
+     */
+    public static String wxPublicKeyEncrypt(String data, String publicKeyStr){
+        try{
+            RSAPublicKey publicKey = getPublicKey(publicKeyStr);
+            Cipher cipher = Cipher.getInstance(WX_DEFAULT_PADDING);
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
+        }catch(Exception e){
+            throw new RuntimeException("加密字符串[" + data + "]时遇到异常", e);
+        }
     }
 
+    private static final String PUBLIC_KEY_DEMO = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAInD_UPY5Uy32xT41LwbFlVroqXrzOjgBZXe6yKe3BTsyHwrGARZuyKJi6C9THiMeyqJxti0uIzL92M15YRsNSUCAwEAAQ";
+    private static final String PRIVATE_KEY_DEMO = "MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAicP9Q9jlTLfbFPjUvBsWVWuipevM6OAFld7rIp7cFOzIfCsYBFm7IomLoL1MeIx7KonG2LS4jMv3YzXlhGw1JQIDAQABAkAcGum-P6932UJOovzzaytBPfYul050a8935cReib4oXl6Covp2saWzu0KA-CdaVK4HXBzK48cGPG26G0IEpSr5AiEA9qiPBP5WuiKnwAO1fDTMdoeymiiYX3td1tdPSZJu_3MCIQCO-6z6wDyXbtdzh_6AcwFNvWoR8GWH3SsctO8R5Q-jBwIhANP82DY9dUIyKKQhS-f85MD2LSzKuPJO776Ge9FKdfU7AiBqQz0BdlERsjzJDe7lA5OadQUZo_GxEXvy770lLXl7jQIhAKn0JSRUUmCYVmJ-Z6zrYUxecOsffnc4OFkJJjG1ru_n";
+
+    public static void main(String[] args) throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+        String clearText = "123456";
+        //获得公钥私钥
+        RSAPublicKey publicKey = getPublicKey(PUBLIC_KEY_DEMO);
+        RSAPrivateKey privateKey = getPrivateKey(PRIVATE_KEY_DEMO);
+        //公钥加密, 私钥解密demo
+        String encrypt = publicEncrypt(clearText, publicKey);
+        System.out.println(encrypt);
+        String decrypt = privateDecrypt(encrypt, privateKey);
+        System.out.println(decrypt);
+        //私钥加密, 公钥解密demo
+        String encrypt2 = privateEncrypt(clearText, privateKey);
+        System.out.println(encrypt2);
+        String decrypt2 = publicDecrypt(encrypt2, publicKey);
+        System.out.println(decrypt2);
+    }
+
+    /**
+     * 微信RSA加密公钥(UAT环境)
+     */
     private static final String publicKeyStr = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyNmqAxl/ggCjInh2SsnH\r2RiH7COLppUKZ4Lq6jDctQIgxykETFjcZ6azuiqDBvFJLD9NuHBlko1hfBDIMP78\r8EEkp0IPi+EwWWWutMr4lQOln05JVDyDYNTelA/lLPQa3sevD9/GBrf10lxiWCI6\rqCqstDliZ3BrCuZvKjjUFQ9WW3Lhk0wbs6IngbmUqnSgcb/Gn98XJBHHgH8TgsVb\rXbK2EuLHKVMuOkWp39ZqJ1yJi0rhhoyLQ38kk8GfI+mFUXXeh37kZhlzcp28+Equ\r0iV3lKX/L5kFOAAbQ62Ee+DNRIxw9i6nCkQSB+0BNwRpazNiXCeoRiUCr5gj74zQ\rhQIDAQAB";
 
 }

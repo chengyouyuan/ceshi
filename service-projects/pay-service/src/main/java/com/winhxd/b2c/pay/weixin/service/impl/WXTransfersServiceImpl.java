@@ -335,8 +335,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxBankDTO.setPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
         forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理卡号姓名加密rsa
-        forWxBankDTO.setEncBankNo(RSAUtils.publicEncrypt(toWxBankCondition.getAccount(), wxPayConfig.getRSAPublicKey()));
-        forWxBankDTO.setEncTrueName(RSAUtils.publicEncrypt(toWxBankCondition.getAccountName(), wxPayConfig.getRSAPublicKey()));
+        forWxBankDTO.setEncBankNo(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccount(), wxPayConfig.getRSAPublicKey()));
+        forWxBankDTO.setEncTrueName(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccountName(), wxPayConfig.getRSAPublicKey()));
         forWxBankDTO.setBankCode(String.valueOf(toWxBankCondition.getChannelCode().getCode()));
         forWxBankDTO.setAmount(toWxBankCondition.getTotalAmount().multiply(UNITS).intValue());
         forWxBankDTO.setDesc(toWxBankCondition.getDesc());

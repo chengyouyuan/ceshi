@@ -14,11 +14,11 @@ WX:
   KEY: u29K8cDc48zhF0hKlQ3pd1tiamkZpRoS
   # 证书路径
   CERT_PATH: D:\apiclient_cert.p12
-  # 公钥
-  PUBLIC_KEY: D:\publicKey\public.pem
   # 支付域名
   PAY_DOMIAN: api.mch.weixin.qq.com
   # 支付回调配置
   PAY_NOTIFY_URL: /api-pay/unifiedorder/cooperation/3410/v1/callback
   # 退款回调配置
   REFUND_NOTIFY_URL: /api-pay/refund/cooperation/3420/v1/callback
+  # RSA公钥 java中需转换为PKCS#8格式
+  PUBLIC_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyNmqAxl/ggCjInh2SsnH\r2RiH7COLppUKZ4Lq6jDctQIgxykETFjcZ6azuiqDBvFJLD9NuHBlko1hfBDIMP78\r8EEkp0IPi+EwWWWutMr4lQOln05JVDyDYNTelA/lLPQa3sevD9/GBrf10lxiWCI6\rqCqstDliZ3BrCuZvKjjUFQ9WW3Lhk0wbs6IngbmUqnSgcb/Gn98XJBHHgH8TgsVb\rXbK2EuLHKVMuOkWp39ZqJ1yJi0rhhoyLQ38kk8GfI+mFUXXeh37kZhlzcp28+Equ\r0iV3lKX/L5kFOAAbQ62Ee+DNRIxw9i6nCkQSB+0BNwRpazNiXCeoRiUCr5gj74zQ\rhQIDAQAB

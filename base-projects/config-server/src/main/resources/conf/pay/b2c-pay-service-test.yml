@@ -5,15 +5,15 @@ DOMAIN:
 #微信相关属性
 WX:
   # 商户号的appid或商户号绑定的appid
-  MCH_APP_ID: wxdbbbd5e596ab6f4d
+  MCH_APP_ID: 123456789
   # 公众账号ID
-  APP_ID: wxa7dfbbe7f4263edf
+  APP_ID: 123456789
   # 商户号
   MCH_ID: 1467361502
   # API 密钥
-  KEY: u29K8cDc48zhF0hKlQ3pd1tiamkZpRoS
+  KEY: 123456789
   # 证书路径
-  CERT_PATH: /opt/www/cert/apiclient_cert.p12
+  CERT_PATH: /opt/logs/cert/apiclient_cert.p12
   # 公钥
   PUBLIC_KEY: D:\publicKey\public.pem
   # 支付域名

@@ -1,7 +1,5 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import java.io.Serializable;
-
 /**
  * 统一下单入参
  * @author mahongliang
@@ -26,6 +24,11 @@ public class PayPreOrderDTO extends RequestBase{
      * trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识（openid）
      */
     private String openid;
+    
+    /**
+     * 交易类型，小程序取值如下：JSAPI
+     */
+    private String tradeType;
     
     /**
      * 交易时间
@@ -95,6 +98,14 @@ public class PayPreOrderDTO extends RequestBase{
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public String getTradeType() {
+		return tradeType;
+	}
+
+	public void setTradeType(String tradeType) {
+		this.tradeType = tradeType;
 	}
 
 	public String getTimeStart() {

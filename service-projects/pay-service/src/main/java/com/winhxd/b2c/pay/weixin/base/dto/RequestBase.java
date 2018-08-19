@@ -1,7 +1,5 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import java.io.Serializable;
-
 /**
  * 请求公共参数
  * @author mahongliang
@@ -20,11 +18,6 @@ public class RequestBase {
 	 * 商户号
 	 */
 	private String mchId;
-	
-	/**
-	 * 设备号
-	 */
-	private String deviceInfo;
 	
 	/**
 	 * 随机字符串
@@ -55,14 +48,6 @@ public class RequestBase {
 
 	public void setMchId(String mchId) {
 		this.mchId = mchId;
-	}
-
-	public String getDeviceInfo() {
-		return deviceInfo;
-	}
-
-	public void setDeviceInfo(String deviceInfo) {
-		this.deviceInfo = deviceInfo;
 	}
 
 	public String getNonceStr() {

@@ -1,32 +1,40 @@
 package com.winhxd.b2c.pay.weixin.api;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
-import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
-import com.winhxd.b2c.pay.weixin.model.PayRefund;
-import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
+import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
+import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
+import com.winhxd.b2c.pay.weixin.model.PayRefund;
+import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 微信支付回调
@@ -38,6 +46,12 @@ import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
 @Controller
 @Api(tags = "Api CallBack")
 public class ApiPayCallbackController {
+	private static final Logger logger = LoggerFactory.getLogger(ApiPayCallbackController.class);
+	private static final String SUCCESS_RESPONSE = "<xml>" + "<return_code><!--[CDATA[SUCCESS]]--></return_code>" + "<return_msg><!--[CDATA[OK]]--></return_msg>" + "</xml> ";
+	private static final String FAIL_RESPONSE = "<xml>" + "<return_code><!--[CDATA[FAIL]]--></return_code>" + "<return_msg><!--[CDATA[报文为空]]--></return_msg>" + "</xml> ";
+	
+	@Autowired
+	private WXPayApi wxPayApi;
 
 	private static String password = "aaa";
 
@@ -49,7 +63,25 @@ public class ApiPayCallbackController {
 	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
 	@PostMapping(value = "${WX.PAY_NOTIFY_URL}")
 	private void unifiedOrderCallback(HttpServletRequest request,HttpServletResponse response){
-		return ;
+		//微信回调解析
+		String resqXml = this.wxCallbackParser(request);
+		if(resqXml == null) {
+			this.response(response, FAIL_RESPONSE);
+			return;
+		}
+		try {
+			//Map<String, String> map = WXPayUtil.xmlToMap(respXml);
+			PayPreOrderCallbackDTO payPreOrderCallbackDTO = BeanAndXmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
+			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
+				// TODO 更新流水，通知业务系统
+				this.response(response, SUCCESS_RESPONSE);
+			} else {
+				this.response(response, FAIL_RESPONSE);
+			}
+		} catch (Exception e) {
+			logger.error("微信支付回调转换失败", e);
+			this.response(response, FAIL_RESPONSE);
+		}
 	}
 	
 	@ApiOperation(value = "微信退款回调", notes = "微信退款回调")
@@ -157,5 +189,48 @@ public class ApiPayCallbackController {
 
 	private static final String hexDigits[] = { "0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
+	
+	/**
+	 * 微信回调解析
+	 * @author mahongliang
+	 * @date  2018年8月19日 下午3:23:32
+	 * @Description 
+	 * @param request
+	 * @return
+	 */
+	private String wxCallbackParser(HttpServletRequest request) {
+		String resqXml = null;
+        try(InputStream is = request.getInputStream();){
+    		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    		StringBuilder sb = new StringBuilder();
+        	String line = null;
+        	while ((line = reader.readLine()) != null) {
+        		sb.append(line);
+        	}
+        	resqXml = sb.toString();
+            logger.info("微信支付回调参数：{}", resqXml);
+        } catch (IOException e) {
+        	logger.error("微信支付回调通知失败", e);
+        }
+		return resqXml;
+	}
+	
+	/**
+	 * 微信回调响应
+	 * @author mahongliang
+	 * @date  2018年8月19日 下午4:07:25
+	 * @Description 
+	 * @param response
+	 * @param respXml
+	 */
+	private void response(HttpServletResponse response, String respXml) {
+		try (BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());){
+			out.write(respXml.getBytes());
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			logger.error("微信支付回调响应失败", e);
+		}
+	}
 
 }

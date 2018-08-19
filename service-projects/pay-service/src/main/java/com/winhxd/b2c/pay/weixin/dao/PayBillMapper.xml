@@ -466,4 +466,12 @@
     from pay_bill
     where out_order_no = #{outOrderNo}
   </select>
+  
+  <!-- 查询订单支付状态 -->
+  <select id="selectByOutTradeNo" resultType="com.winhxd.b2c.pay.weixin.model.PayBill" parameterType="java.lang.String" >
+    select 
+	<include refid="Base_Column_List" />
+    from pay_bill
+    where out_trade_no = #{outTradeNo}
+  </select>
 </mapper>

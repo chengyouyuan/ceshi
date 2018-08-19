@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import java.util.Date;
+
 /**
  * 统一下单入参
  * @author mahongliang
@@ -48,7 +50,7 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
     /**
      * 应结订单金额，应结订单金额=订单金额-非充值代金券金额，应结订单金额<=订单金额。
      */
-    private String settlementTotalFee;
+    private Integer settlementTotalFee;
     
     /**
      * 货币种类
@@ -58,7 +60,7 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
     /**
      * 现金支付金额
      */
-    private String cashFee;
+    private Integer cashFee;
     
     /**
      * 现金支付货币类型
@@ -68,12 +70,12 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
     /**
      * 总代金券金额
      */
-    private String couponFee;
+    private Integer couponFee;
     
     /**
      * 代金券使用数量
      */
-    private String couponCount;
+    private Integer couponCount;
     
     /**
      * 微信支付订单号
@@ -83,7 +85,7 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
     /**
      * 支付完成时间
      */
-    private String timeEnd;
+    private Date timeEnd;
     
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -141,11 +143,11 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.bankType = bankType;
 	}
 
-	public String getSettlementTotalFee() {
+	public Integer getSettlementTotalFee() {
 		return settlementTotalFee;
 	}
 
-	public void setSettlementTotalFee(String settlementTotalFee) {
+	public void setSettlementTotalFee(Integer settlementTotalFee) {
 		this.settlementTotalFee = settlementTotalFee;
 	}
 
@@ -157,11 +159,11 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.feeType = feeType;
 	}
 
-	public String getCashFee() {
+	public Integer getCashFee() {
 		return cashFee;
 	}
 
-	public void setCashFee(String cashFee) {
+	public void setCashFee(Integer cashFee) {
 		this.cashFee = cashFee;
 	}
 
@@ -173,19 +175,19 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.cashFeeType = cashFeeType;
 	}
 
-	public String getCouponFee() {
+	public Integer getCouponFee() {
 		return couponFee;
 	}
 
-	public void setCouponFee(String couponFee) {
+	public void setCouponFee(Integer couponFee) {
 		this.couponFee = couponFee;
 	}
 
-	public String getCouponCount() {
+	public Integer getCouponCount() {
 		return couponCount;
 	}
 
-	public void setCouponCount(String couponCount) {
+	public void setCouponCount(Integer couponCount) {
 		this.couponCount = couponCount;
 	}
 
@@ -197,11 +199,11 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.transactionId = transactionId;
 	}
 
-	public String getTimeEnd() {
+	public Date getTimeEnd() {
 		return timeEnd;
 	}
 
-	public void setTimeEnd(String timeEnd) {
+	public void setTimeEnd(Date timeEnd) {
 		this.timeEnd = timeEnd;
 	}
 

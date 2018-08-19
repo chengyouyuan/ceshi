@@ -73,14 +73,24 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	
 	@Override
 	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean callback(PayBill bill) {
-		// TODO Auto-generated method stub
-		return false;
+		String outTradeNo = payPreOrderCallbackDTO.getOutTradeNo();
+		PayBill bill = payBillMapper.selectByOutTradeNo(outTradeNo);
+		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
+		bill.setBankType(payPreOrderCallbackDTO.getBankType());
+		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
+		bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
+		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
+		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
+		bill.setCouponFee(payPreOrderCallbackDTO.getCashFee());
+		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
+		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
+		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
+		bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		
+		payBillMapper.updateByPrimaryKeySelective(bill);
+		
+		return bill;
 	}
 	
 	/**

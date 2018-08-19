@@ -34,14 +34,4 @@ public interface WXUnifiedOrderService {
 	 */
 	PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO);
 	
-	/**
-	 * 回调业务系统
-	 * @author mahongliang
-	 * @date  2018年8月19日 下午4:19:20
-	 * @Description 
-	 * @param bill
-	 * @return
-	 */
-	boolean callback(PayBill bill);
-	
 }

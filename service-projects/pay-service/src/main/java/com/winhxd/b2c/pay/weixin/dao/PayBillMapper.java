@@ -31,6 +31,16 @@ public interface PayBillMapper {
     List<Integer> selectPayBillStatusByOutOrderNo(String outOrderNo);
     
     /**
+     * 根据流水号查询流水
+     * @author mahongliang
+     * @date  2018年8月19日 下午4:41:09
+     * @Description 
+     * @param outTradeNo
+     * @return
+     */
+    PayBill selectByOutTradeNo(String outTradeNo);
+    
+    /**
      * 支付账单通用查询
      * @author mahongliang
      * @date  2018年8月17日 下午4:28:42

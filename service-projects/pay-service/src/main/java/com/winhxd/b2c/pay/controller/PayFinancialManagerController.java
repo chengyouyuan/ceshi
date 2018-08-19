@@ -1,29 +1,24 @@
 package com.winhxd.b2c.pay.controller;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.FinancialManagerCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+import com.winhxd.b2c.common.feign.pay.FinancialManagerServiceClient;
+import com.winhxd.b2c.pay.service.PayFinancialManagerService;
+import com.winhxd.b2c.pay.service.impl.PayFinancialManagerServiceImpl;
+import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
-import com.winhxd.b2c.common.feign.pay.FinancialManagerServiceClient;
-import com.winhxd.b2c.pay.service.PayFinancialManagerService;
-import com.winhxd.b2c.pay.service.impl.PayFinancialManagerServiceImpl;
-import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 
 @RestController
 @Api(tags = "PayFinancialManager")
@@ -38,26 +33,24 @@ public class PayFinancialManagerController implements FinancialManagerServiceCli
 	@Autowired
 	private PayFinancialManagerService payFinancialManagerService;
 	 
-//	 @Override
-//	 @ApiOperation(value = "出入帐汇总查询", notes = "出入帐汇总查询")
-//	 @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-//            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-//            @ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员")})
-//	 @PostMapping("/pay/6101/v1/queryStoreFinancialSummary")
-//	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
-//        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
-//        ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
-//        PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerService.findStoreFinancialSummary();
-//        //StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
-//        /// 测试数据//////////////
-////        StoreUser currentStoreUser = new StoreUser();
-////        currentStoreUser.setBusinessId(1l);
-//        //////////////////////////////
-//        //PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerServiceImpl.findFinanceAccountDetail(currentStoreUser.getBusinessId());
-//        //result.setData(findFinanceAccountDetail);
-//        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
-//        return result;
-//	 }
+	 @Override
+	 @ApiOperation(value = "出入帐汇总查询", notes = "出入帐汇总查询")
+	 @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			 @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
+	 public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary(@RequestBody FinancialManagerCondition condition) {
+        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
+        ResponseResult<PayFinanceAccountDetailVO> result = new ResponseResult<PayFinanceAccountDetailVO>();
+        PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerService.findStoreFinancialSummary();
+        //StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+        /// 测试数据//////////////
+//        StoreUser currentStoreUser = new StoreUser();
+//        currentStoreUser.setBusinessId(1l);
+        //////////////////////////////
+        //PayFinanceAccountDetailVO findFinanceAccountDetail = payFinancialManagerServiceImpl.findFinanceAccountDetail(currentStoreUser.getBusinessId());
+        result.setData(findFinanceAccountDetail);
+        logger.info("/pay/6101/v1/queryStoreFinancialSummary/ 出入帐汇总查询");
+        return result;
+	 }
 
 	/*@Override
 	@ApiOperation(value = "财务入账明细", notes = "财务入账明细")

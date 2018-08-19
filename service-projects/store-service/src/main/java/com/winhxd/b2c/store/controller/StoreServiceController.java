@@ -159,6 +159,7 @@ public class StoreServiceController implements StoreServiceClient {
 				spVO.setProdName(current.getSkuName()==null? "":current.getSkuName());
 				spVO.setBrandCode(current.getBrandCode());
 				spVO.setSkuAttributeOption(current.getSkuAttributeOption());
+				spVO.setCompanyCode(current.getCompanyCode());
 				shopCarProdList.add(spVO);
 			}
 			

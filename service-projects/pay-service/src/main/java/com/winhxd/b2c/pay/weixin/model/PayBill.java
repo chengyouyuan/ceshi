@@ -93,6 +93,16 @@ public class PayBill implements Serializable {
     private BigDecimal totalAmount;
 
     /**
+     * 支付回调金额，单位为分
+     */
+    private Integer callbackTotalFee;
+
+    /**
+     * 支付回调金额，单位为元
+     */
+    private BigDecimal callbackTotalAmount;
+
+    /**
      * 应结订单金额（分）=订单金额-非充值代金券金额，应结订单金额<=订单金额
      */
     private Integer settlementTotalFee;
@@ -340,6 +350,22 @@ public class PayBill implements Serializable {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public Integer getCallbackTotalFee() {
+        return callbackTotalFee;
+    }
+
+    public void setCallbackTotalFee(Integer callbackTotalFee) {
+        this.callbackTotalFee = callbackTotalFee;
+    }
+
+    public BigDecimal getCallbackTotalAmount() {
+        return callbackTotalAmount;
+    }
+
+    public void setCallbackTotalAmount(BigDecimal callbackTotalAmount) {
+        this.callbackTotalAmount = callbackTotalAmount;
     }
 
     public Integer getSettlementTotalFee() {

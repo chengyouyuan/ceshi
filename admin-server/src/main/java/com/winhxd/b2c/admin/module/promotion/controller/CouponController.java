@@ -8,6 +8,8 @@ import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
+import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
+import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -76,11 +79,43 @@ public class CouponController {
 		return couponActivityServiceClient.queryCouponActivity(condition);
 	}
 
-	//@ApiOperation("优惠券活动导入小店信息")
-	//@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
-	//public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
-	//	return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
-	//}
+	@ApiOperation("优惠券活动导入小店信息")
+	@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
+	public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+		ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
+		if (!inputfile.getOriginalFilename().endsWith(".xls")
+				&& !inputfile.getOriginalFilename().endsWith(".xlsx")){
+			result.setMessage("文件扩展名错误！");
+			result.setCode(BusinessCode.CODE_1001);
+			return result;
+		}
+		ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+		List<CouponActivityImportStoreVO> list = importResult.getList();
+		//List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
+		//if (invalidList.isEmpty()) {
+		//	List<CouponActivityImportStoreVO> list = importResult.getList();
+		//	result.setData(list);
+		//}
+		if(list.size()==0){
+			result.setCode(BusinessCode.CODE_1007);
+			result.setMessage("导入数据为空");
+			return result;
+		}
+		result.setData(list);
+		result.setCode(BusinessCode.CODE_OK);
+		result.setMessage("返回小店导入信息成功");
+		return result;
+		//return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
+	}
+	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
+		ImportResult<CouponActivityImportStoreVO> importResult = null;
+		try {
+			importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+		} catch (Exception e) {
+			throw new BusinessException(BusinessCode.CODE_1001, e);
+		}
+		return importResult;
+	}
 	/**
 	 *
 	 *@Deccription 添加优惠券活动

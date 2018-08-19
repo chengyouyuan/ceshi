@@ -19,6 +19,6 @@ WX:
   # 支付域名
   PAY_DOMIAN: api.mch.weixin.qq.com
   # 支付回调配置
-  PAY_NOTIFY_URL: /api-pay/unifiedorder/cooperation/340010/v1/callback
+  PAY_NOTIFY_URL: /api-pay/unifiedorder/cooperation/3410/v1/callback
   # 退款回调配置
-  REFUND_NOTIFY_URL: /api-pay/refund/cooperation/340020/v1/callback
+  REFUND_NOTIFY_URL: /api-pay/refund/cooperation/3420/v1/callback

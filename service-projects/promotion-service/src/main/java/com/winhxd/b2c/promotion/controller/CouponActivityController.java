@@ -7,7 +7,6 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddConditi
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
 import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -58,20 +58,15 @@ public class CouponActivityController implements CouponActivityServiceClient {
 
     @ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
     @Override
-    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody MultipartFile inputfile) {
+    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
         ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
-        if (!inputfile.getOriginalFilename().endsWith(".xls")
-                && !inputfile.getOriginalFilename().endsWith(".xlsx")){
-            result.setMessage("文件扩展名错误！");
-            result.setCode(BusinessCode.CODE_1001);
-            return result;
-        }
-        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
-        List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
-        if (invalidList.isEmpty()) {
-            List<CouponActivityImportStoreVO> list = importResult.getList();
-            result.setData(list);
-        }
+        //list去重
+        HashSet h = new HashSet(list);
+        list.clear();
+        list.addAll(h);
+
+        //调寒宁接口判断数据有效性
+        result.setData(list);
         result.setCode(BusinessCode.CODE_OK);
         result.setMessage("返回小店导入信息成功");
         return result;
@@ -376,6 +371,4 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result = couponActivityService.findStoreByActivity(condition);
         return result;
     }
-
-
 }

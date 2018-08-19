@@ -1,22 +1,23 @@
 package com.winhxd.b2c.common.domain.promotion.util;
 
 
-import cn.afterturn.easypoi.excel.ExcelExportUtil;
-import cn.afterturn.easypoi.excel.ExcelImportUtil;
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.afterturn.easypoi.excel.entity.ImportParams;
-import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.List;
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 
 /**
  * <p>
@@ -158,18 +159,18 @@ public class ExcelUtil {
 		BaseExcelDomain baseExcelDomain;
 		StringBuilder errorMsg = new StringBuilder();
 		int errorCount = 0;// 显示错误的数量
-		//for (int i = 0; i < list.size(); i++) {
-			//baseExcelDomain = (BaseExcelDomain) list.get(i);
-			//if (StringUtils.isNotBlank(baseExcelDomain.getErrorMsg())) {
-			//	errorMsg.append((i + 1)).append("行：").append(baseExcelDomain.getErrorMsg()).append("\n");
-			//	res.setErrorMsg(errorMsg.toString());
-			//	errorCount++;
-			//	if (errorCount == 5) {// 显示错误的数量
-			//		break;
-			//	}
-            //
-			//}
-		//}
+		for (int i = 0; i < list.size(); i++) {
+			baseExcelDomain = (BaseExcelDomain) list.get(i);
+			if (StringUtils.isNotBlank(baseExcelDomain.getErrorMsg())) {
+				errorMsg.append((i + 1)).append("行：").append(baseExcelDomain.getErrorMsg()).append("\n");
+				res.setErrorMsg(errorMsg.toString());
+				errorCount++;
+				if (errorCount == 5) {// 显示错误的数量
+					break;
+				}
+            
+			}
+		}
 		res.setList(list);
 		res.setVerfiyFail(result.isVerfiyFail());
 		res.setWorkbook(result.getWorkbook());

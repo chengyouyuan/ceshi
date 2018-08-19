@@ -114,7 +114,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600004);
 		}
 		//判断支付成功之后更新订单信息
-		if(1 == condition.getStatus()){
+		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
 			orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
 		}
 
@@ -128,6 +128,7 @@ public class PayServiceImpl implements PayService{
 		payOrderPayment.setCallbackErrorCode(condition.getErrorCode());
 		payOrderPayment.setCallbackErrorReason(condition.getErrorMessage());
 		payOrderPayment.setTransactionId(condition.getTransactionId());
+		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
 		payOrderPayment.setAppid(condition.getAppid());
 		payOrderPayment.setAttach(condition.getAttach());
 		payOrderPayment.setBody(condition.getBody());

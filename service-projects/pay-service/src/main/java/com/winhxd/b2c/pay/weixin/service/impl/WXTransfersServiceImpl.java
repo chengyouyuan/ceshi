@@ -18,6 +18,7 @@ import com.winhxd.b2c.pay.weixin.dao.PayTransfersMapper;
 import com.winhxd.b2c.pay.weixin.model.PayTransfers;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import com.winhxd.b2c.pay.weixin.util.RSAUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -331,8 +332,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxBankDTO.setPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
         forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理卡号姓名加密rsa
-        forWxBankDTO.setEncBankNo(toWxBankCondition.getAccount());
-        forWxBankDTO.setEncTrueName(toWxBankCondition.getAccountName());
+        forWxBankDTO.setEncBankNo(RSAUtils.publicEncrypt(toWxBankCondition.getAccount(), wxPayConfig.getRSAPublicKey()));
+        forWxBankDTO.setEncTrueName(RSAUtils.publicEncrypt(toWxBankCondition.getAccountName(), wxPayConfig.getRSAPublicKey()));
         forWxBankDTO.setBankCode(String.valueOf(toWxBankCondition.getChannelCode().getCode()));
         forWxBankDTO.setAmount(toWxBankCondition.getTotalAmount().multiply(UNITS).intValue());
         forWxBankDTO.setDesc(toWxBankCondition.getDesc());

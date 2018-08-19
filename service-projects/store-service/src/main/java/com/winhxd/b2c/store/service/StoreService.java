@@ -1,17 +1,18 @@
 package com.winhxd.b2c.store.service;
 
 
+import java.util.List;
+import java.util.Set;
+
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author chengyy
@@ -127,4 +128,13 @@ public interface StoreService {
      * @Description 保存跟新门店小程序码url
      */
     boolean updateStoreCodeUrl(StoreUserInfoCondition condition);
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月19日 下午3:03:38
+     * @Description 根据条件批量获取门店信息
+     * @param condition
+     * @return
+     */
+    List<StoreUserInfoVO> getStoreListByKeywords(StoreListByKeywordsCondition condition);
 }

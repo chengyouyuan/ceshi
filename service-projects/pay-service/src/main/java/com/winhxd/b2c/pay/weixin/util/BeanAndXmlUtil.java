@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -398,6 +399,8 @@ public class BeanAndXmlUtil {
         } else if(Date.class.getName().equals(fieldTypeClass.getName())) {
             DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             retVal = bf.parse(value.toString());
+        } else if(BigDecimal.class.getName().equals(fieldTypeClass.getName())) {
+            retVal = new BigDecimal(value.toString());
         }
         return retVal;
     }

@@ -1,13 +1,15 @@
 package com.winhxd.b2c.store.dao;
 
-import com.github.pagehelper.Page;
-import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
-import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Set;
+import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreListByKeywordsCondition;
 
 @Repository
 public interface StoreUserInfoMapper {
@@ -68,6 +70,7 @@ public interface StoreUserInfoMapper {
      * @Description 根据条件查询门店信息
      */
     List<StoreUserInfoVO> selectStoreByCondition(StoreUserInfo record);
+    
 
     /**
      * 根据regionCode集合查询门店
@@ -75,4 +78,13 @@ public interface StoreUserInfoMapper {
      * @return
      */
     List<String> selectByRegionCodes(@Param("regionCodeList") List<String> regionCodeList);
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月19日 下午3:07:38
+     * @Description 根据条件批量查询门店信息
+     * @param record
+     * @return
+     */
+    List<StoreUserInfoVO> getStoreListByKeywords(StoreListByKeywordsCondition record);
 }

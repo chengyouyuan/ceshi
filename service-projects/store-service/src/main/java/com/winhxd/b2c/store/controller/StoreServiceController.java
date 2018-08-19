@@ -31,6 +31,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -40,6 +41,8 @@ import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import com.winhxd.b2c.store.service.StoreService;
+
+import io.swagger.annotations.Api;
 
 
 /**
@@ -279,6 +282,15 @@ public class StoreServiceController implements StoreServiceClient {
 		responseResult.setData(result);
 		return responseResult;
 	}
+	@Override
+	public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(@RequestBody StoreListByKeywordsCondition condition) {
+		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
+		List<StoreUserInfoVO> result = storeService.getStoreListByKeywords(condition);
+		responseResult.setData(result);
+		return responseResult;
+	}
+	
+	
 
 
 }

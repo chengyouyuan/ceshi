@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
@@ -151,6 +152,16 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1057/v1/saveStoreCodeUrl", method = RequestMethod.POST)
     ResponseResult<Boolean> saveStoreCodeUrl(@RequestBody StoreUserInfoCondition condition);
+   
+    /**
+     * @author liuhanning
+     * @date  2018年8月19日 下午3:00:58
+     * @Description 根据条件批量查询门店信息
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/store/1066/v1/getStoreListByKeywords", method = RequestMethod.POST)
+    public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(@RequestBody StoreListByKeywordsCondition condition);
 }
 
 /**
@@ -236,6 +247,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
         logger.error("StoreServiceClientFallBack -> saveStoreCodeUrl，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
+
+	@Override
+	public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(StoreListByKeywordsCondition condition) {
+		 logger.error("StoreServiceClientFallBack -> getStoreListByKeywords，错误信息为{}", throwable);
+	        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 
 
 }

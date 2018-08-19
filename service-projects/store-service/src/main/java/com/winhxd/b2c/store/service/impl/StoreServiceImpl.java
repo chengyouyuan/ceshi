@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
@@ -24,6 +25,8 @@ import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -266,4 +269,15 @@ public class StoreServiceImpl implements StoreService {
         int count = storeUserInfoMapper.updateByPrimaryKeySelective(record);
         return count == 1 ? true : false;
     }
+
+	@Override
+	public List<StoreUserInfoVO> getStoreListByKeywords(StoreListByKeywordsCondition condition) {
+		if (condition==null) {
+			return new ArrayList<>();
+		}
+		if (CollectionUtils.isEmpty(condition.getStoreIds())&&CollectionUtils.isEmpty(condition.getStoreMobiles())) {
+			return new ArrayList<>();
+		}
+		return storeUserInfoMapper.getStoreListByKeywords(condition);
+	}
 }

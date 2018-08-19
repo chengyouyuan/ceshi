@@ -37,9 +37,9 @@ public class PayController implements PayServiceClient {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
     })
-	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition){
-		OrderPayVO vo = payService.unifiedOrder(condition);
-		ResponseResult<OrderPayVO> result=new ResponseResult<>();
+	public ResponseResult<PayPreOrderVO> orderPay(@RequestBody PayPreOrderCondition condition){
+		PayPreOrderVO vo = payService.unifiedOrder(condition);
+		ResponseResult<PayPreOrderVO> result=new ResponseResult<>();
 		result.setData(vo);
 		return result;
 	}

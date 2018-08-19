@@ -9,8 +9,7 @@ import java.io.Serializable;
  * @Description 
  * @version
  */
-public class PayPreOrderDTO extends RequestBase implements Serializable {
-	private static final long serialVersionUID = -6751906874587493059L;
+public class PayPreOrderDTO extends RequestBase{
 	
     /**
      * 支付流水号
@@ -68,6 +67,11 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
      * （非必填）标价币种
      */
     private String feeType;
+
+	/**
+	 * 支付结果通知URL
+	 */
+	private String notifyUrl;
 
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -157,4 +161,11 @@ public class PayPreOrderDTO extends RequestBase implements Serializable {
 		this.feeType = feeType;
 	}
 
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
 }

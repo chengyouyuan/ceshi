@@ -7,14 +7,13 @@ import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPay;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.*;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.javassist.bytecode.stackmap.BasicBlock;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -31,11 +30,19 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ *
+ * @author lizhonghua
+ * @Description
+ * @Date 2018年8月15日17:15:18
+ */
 @Service
 public class WXRefundServiceImpl implements WXRefundService {
 
     @Autowired
     WXPay wxPay;
+    @Autowired
+    WXPayApi wxPayApi;
 
     @Autowired
     WXPayRequest wxPayRequest;
@@ -121,13 +128,9 @@ public class WXRefundServiceImpl implements WXRefundService {
         payRefundDTO.setRefundFee(refundFee);
         payRefundDTO.setRefundDesc(refundDesc);
         payRefundDTO.setNotifyUrl("");
-        //bean转map
-        Map<String, String> mapIn = BeanAndXmlUtil.beanToSortedMap(payRefundDTO);
-        //调用
-        Map<String, String> mapOut = wxPay.refund(mapIn);
 
-        //定义返参
-        PayRefundResponseDTO responseDTO = BeanAndXmlUtil.mapToBean(mapOut, PayRefundResponseDTO.class);
+        //调用
+        PayRefundResponseDTO responseDTO = wxPayApi.refundOder(payRefundDTO);
         return responseDTO;
     }
 

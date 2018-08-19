@@ -1,37 +1,14 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import java.io.Serializable;
+
 /**
  * @author lizhonghua
  * @date  2018年8月14日11:09:35
  * @Description 微信退款
  * @version 
  */
-public class PayRefundDTO {
-
-	/**
-	 * 公众号ID/小程序ID
-	 */
-	private String appid;
-
-	/**
-	 * 商户号
-	 */
-	private String mchId;
-
-	/**
-	 * 随机字符串
-	 */
-	private String nonceStr;
-
-	/**
-	 * 签名
-	 */
-	private String sign;
-
-	/**
-	 * (非必填)签名类型
-	 */
-	private String singType;
+public class PayRefundDTO extends RequestBase {
 
 	/**
 	 * 微信生成的订单号
@@ -77,46 +54,6 @@ public class PayRefundDTO {
 	 * 退款结果通知URL
 	 */
 	private String notifyUrl;
-
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-
-	public String getMchId() {
-		return mchId;
-	}
-
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
-	}
-
-	public String getNonceStr() {
-		return nonceStr;
-	}
-
-	public void setNonceStr(String nonceStr) {
-		this.nonceStr = nonceStr;
-	}
-
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
-	public String getSingType() {
-		return singType;
-	}
-
-	public void setSingType(String singType) {
-		this.singType = singType;
-	}
 
 	public String getTransactionId() {
 		return transactionId;

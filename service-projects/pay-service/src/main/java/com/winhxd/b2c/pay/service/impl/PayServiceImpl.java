@@ -493,7 +493,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+	public PayPreOrderVO unifiedOrder(PayPreOrderCondition condition) {
 		//验证订单支付参数
 		String log=logLabel+"订单支付unifiedOrder";
 		logger.info(log+"--开始");
@@ -534,7 +534,6 @@ public class PayServiceImpl implements PayService{
 		}
 		logger.info(log+"--参数"+condition.toString());
 		PayPreOrderVO payPreOrderVO=unifiedOrderService.unifiedOrder(condition);
-		OrderPayVO vo=new OrderPayVO();
 		if (payPreOrderVO!=null) {
 			//插入流水数据
 			PayOrderPayment payOrderPayment=new PayOrderPayment();
@@ -546,15 +545,9 @@ public class PayServiceImpl implements PayService{
 			payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
 			payOrderPaymentMapper.insertSelective(payOrderPayment);
 			
-			//给前端返回数据
-			vo.setNonceStr(payPreOrderVO.getNonceStr());
-			vo.setPackageData(payPreOrderVO.getPackageData());
-			vo.setPaySign(payPreOrderVO.getPaySign());
-			vo.setTimeStamp(payPreOrderVO.getTimeStamp());
-			vo.setSignType(payPreOrderVO.getSignType());
 		}
 		
-		return vo;
+		return payPreOrderVO;
 	}
 
 	@Override

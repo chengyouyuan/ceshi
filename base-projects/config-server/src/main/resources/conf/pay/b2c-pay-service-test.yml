@@ -1,3 +1,7 @@
+# 域名配置
+DOMAIN:
+  #回调主路径
+  CALLBACK_DOMAIN_URL: http://192.168.60.241:${server.port}
 #微信相关属性
 WX:
   # 商户号的appid或商户号绑定的appid
@@ -15,6 +19,6 @@ WX:
   # 支付域名
   PAY_DOMIAN: api.mch.weixin.qq.com
   # 支付回调配置
-  PAY_NOTIFY_URL: hxd.com
+  PAY_NOTIFY_URL: /api-pay/pay/unifiedorder/cooperation/v1/callback
   # 退款回调配置
-  REFUND_NOTIFY_URL: hxd.com
+  REFUND_NOTIFY_URL: /api-pay/pay/refund/cooperation/v1/callback

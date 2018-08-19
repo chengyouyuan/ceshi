@@ -2,6 +2,8 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 
 public interface WXPayApi {
 	
@@ -26,4 +28,13 @@ public interface WXPayApi {
      */
     public String generateSign(Object obj);
 
+
+    /**
+     * 作用：申请退款<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO);
 }

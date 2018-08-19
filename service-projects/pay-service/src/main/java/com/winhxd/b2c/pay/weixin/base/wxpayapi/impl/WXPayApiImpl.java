@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
 import java.util.Map;
 
+import com.winhxd.b2c.pay.weixin.base.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
@@ -42,8 +41,12 @@ public class WXPayApiImpl implements WXPayApi {
 	
 	@Override
 	public PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO) {
+        if(config != null) {
+            payPreOrderDTO.setNotifyUrl(config.getPayNotifyUrl());
+        }
 		//填充配置参数
-		payPreOrderDTO = this.fillRequestDTO(payPreOrderDTO);
+		payPreOrderDTO = (PayPreOrderDTO)this.fillRequestDTO(payPreOrderDTO);
+        payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payPreOrderDTO);
         //统一下单，respXml为响应参数
@@ -60,27 +63,51 @@ public class WXPayApiImpl implements WXPayApi {
         
         return PayPreOrderResponseDTO;
     }
+
+    @Override
+    public PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO) {
+
+        if(config != null) {
+            payRefundDTO.setNotifyUrl(config.getRefundNotifyUrl());
+        }
+        //组装公共属性
+        payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
+        payRefundDTO.setSign(this.generateSign(payRefundDTO));
+        //bean转map
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+        //申请退款，respXml为响应参数
+        String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        //响应参数验证，转为map
+        Map<String, String> respData = this.processResponseXml(respXml);
+        PayRefundResponseDTO responseDTO = null;
+        try {
+            responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
+        } catch (Exception e) {
+            logger.error("申请退款时，响应参数解析失败", e);
+            throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+        }
+        return responseDTO;
+    }
 	
 	/**
      * 添加 appid、mch_id、nonce_str、sign_type
      * 该函数适用于商户适用于统一下单、退款等接口，不适用于红包、代金券接口
      *
-     * @param reqData
+     * @param requestBase
      * @return
      * @throws Exception
      */
-	private PayPreOrderDTO fillRequestDTO(PayPreOrderDTO payPreOrderDTO){
-		payPreOrderDTO.setAppid(config.getAppID());
-		payPreOrderDTO.setMchId(config.getMchID());
-		payPreOrderDTO.setNonceStr(WXPayUtil.generateNonceStr());
+	private RequestBase fillRequestDTO(RequestBase requestBase){
+        requestBase.setAppid(config.getAppID());
+        requestBase.setMchId(config.getMchID());
+        requestBase.setNonceStr(WXPayUtil.generateNonceStr());
         if (SignType.MD5.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.MD5);
+            requestBase.setSignType(WXPayConstants.MD5);
         }
         else if (SignType.HMACSHA256.equals(this.signType)) {
-            payPreOrderDTO.setSignType(WXPayConstants.HMACSHA256);
+            requestBase.setSignType(WXPayConstants.HMACSHA256);
         }
-        payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
-        return payPreOrderDTO;
+        return requestBase;
     }
 	
 	/**
@@ -101,9 +128,6 @@ public class WXPayApiImpl implements WXPayApi {
         else {
             url = WXPayConstants.UNIFIEDORDER_URL_SUFFIX;
         }
-        if(config != null) {
-            reqData.put("notify_url", config.getPayNotifyUrl());
-        }
         return this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
     }
 	
@@ -115,6 +139,7 @@ public class WXPayApiImpl implements WXPayApi {
 	 * @param obj
 	 * @return
 	 */
+	@Override
 	public String generateSign(Object obj){
 		String sign = null;
 		//bean转map
@@ -205,17 +230,17 @@ public class WXPayApiImpl implements WXPayApi {
         boolean success = this.isResponseSignatureValid(respData);
         if(!success) {
         	logger.error("微信支付返回验签失败");
-			throw new BusinessException(3400905, "微信支付返回验签失败");
+			throw new BusinessException(3400905, "微信API返回验签失败");
         }
         if (!respData.containsKey(RETURN_CODE)) {
         	logger.error("No `return_code` in XML: %s", xmlStr);
-			throw new BusinessException(3400904, "微信支付返回值错误");
+			throw new BusinessException(3400904, "微信API返回值错误");
             
         }
         return_code = respData.get(RETURN_CODE);
         if (!return_code.equals(WXPayConstants.FAIL) || !return_code.equals(WXPayConstants.SUCCESS)) {
         	logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
-			throw new BusinessException(3400904, "微信支付返回值错误");
+			throw new BusinessException(3400904, "微信API返回值错误");
         }
 
         return respData;
@@ -238,4 +263,45 @@ public class WXPayApiImpl implements WXPayApi {
 		}
     }
 
+	/**
+	 * 申请退款
+	 * @param reqData
+	 * @param connectTimeoutMs
+	 * @param readTimeoutMs
+	 * @return
+	 */
+	private String refund(Map<String, String> reqData,  int connectTimeoutMs, int readTimeoutMs) {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_REFUND_URL_SUFFIX;
+		}
+		else {
+			url = WXPayConstants.REFUND_URL_SUFFIX;
+		}
+		return this.requestWithCert(url, reqData, connectTimeoutMs, readTimeoutMs);
+	}
+
+	/**
+	 * 需要证书的请求
+	 * @param urlSuffix String
+	 * @param reqData 向wxpay post的请求数据  Map
+	 * @param connectTimeoutMs 超时时间，单位是毫秒
+	 * @param readTimeoutMs 超时时间，单位是毫秒
+	 * @return API返回数据
+	 * @throws Exception
+	 */
+	private String requestWithCert(String urlSuffix, Map<String, String> reqData,
+								  int connectTimeoutMs, int readTimeoutMs){
+		String msgUUID= reqData.get("nonce_str");
+		String reqBody = this.mapToXml(reqData);
+
+		String resp = null;
+		try {
+			resp = this.wxPayRequest.requestWithCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, this.autoReport);
+		} catch (Exception e) {
+			logger.error("请求微信退款", e);
+			throw new BusinessException(3400910, "请求微信退款失败");
+		}
+		return resp;
+	}
 }

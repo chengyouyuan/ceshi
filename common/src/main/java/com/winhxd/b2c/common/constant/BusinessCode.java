@@ -389,7 +389,7 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  参数为空")
     public static final int CODE_600001 = 600001;
     
-    @ApiModelProperty("门店资金变化  参数为空")
+    @ApiModelProperty("门店资金变化  门店id为空")
     public static final int CODE_600002 = 600002;
     
     @ApiModelProperty("门店资金变化  操作类型为空")

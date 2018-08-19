@@ -128,6 +128,7 @@ public class PayServiceImpl implements PayService{
 		payOrderPayment.setCallbackErrorCode(condition.getErrorCode());
 		payOrderPayment.setCallbackErrorReason(condition.getErrorMessage());
 		payOrderPayment.setTransactionId(condition.getTransactionId());
+		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
 		payOrderPayment.setAppid(condition.getAppid());
 		payOrderPayment.setAttach(condition.getAttach());
 		payOrderPayment.setBody(condition.getBody());

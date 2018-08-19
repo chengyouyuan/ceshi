@@ -17,10 +17,12 @@ import lombok.Data;
 public class CouponActivityImportStoreVO extends BaseExcelDomain {
 	protected String errorMsg;
 
+	@Override
 	public String getErrorMsg() {
 		return errorMsg;
 	}
 
+	@Override
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}

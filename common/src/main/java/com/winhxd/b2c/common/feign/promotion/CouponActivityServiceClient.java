@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,13 +41,14 @@ public interface CouponActivityServiceClient {
     /**
      *
      *@Deccription 优惠券活动导入门店信息
-     *@Params  inputfile
+     *@Params  list
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/17
      */
     @RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
-    ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody MultipartFile inputfile);
+    ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
+
     /**
      *
      *@Deccription 添加优惠券活动
@@ -147,7 +147,7 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     }
 
     @Override
-    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(MultipartFile inputfile) {
+    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
         logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
         return new ResponseResult<List<CouponActivityImportStoreVO>>(BusinessCode.CODE_1001);
     }

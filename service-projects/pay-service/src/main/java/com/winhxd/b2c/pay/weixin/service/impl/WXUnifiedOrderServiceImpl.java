@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.constant.TradeType;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
@@ -45,7 +46,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	@Autowired
 	private PayBillMapper payBillMapper;
 	@Autowired
-	WXPayApi wxPayApi;
+	private WXPayApi wxPayApi;
 
 	@Override
 	public PayPreOrderVO unifiedOrder(PayPreOrderCondition condition) {
@@ -70,6 +71,18 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		return payPreOrderVO;
 	}
 	
+	@Override
+	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean callback(PayBill bill) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	/**
 	 * 去支付
 	 * @author mahongliang
@@ -87,6 +100,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		long timeStamp = System.currentTimeMillis();
 		String outTradeNo = generateOutTradeNo(condition.getOutOrderNo(), timeStamp);
 		payPreOrderDTO.setOutTradeNo(outTradeNo);
+		payPreOrderDTO.setTradeType(TradeType.WECHAT_H5.getCode());
 		
         //调用微信统一下单API
 		PayPreOrderResponseDTO payPreOrderResponseDTO = wxPayApi.unifiedOrder(payPreOrderDTO);
@@ -208,7 +222,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setSpbillCreateIp(payPreOrderDTO.getSpbillCreateIp());
 		bill.setTimeStart(DateUtil.toDate(payPreOrderDTO.getTimeStart(), DATE_FORMAT));
 		bill.setTotalFee(payPreOrderDTO.getTotalFee());
-		bill.setTradeType(TradeType.WECHAT_H5.getCode());
+		bill.setTradeType(payPreOrderDTO.getTradeType());
 		bill.setSignType(payPreOrderDTO.getSignType());
 		bill.setSign(payPreOrderDTO.getSign());
 		if(PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getResultCode())) {

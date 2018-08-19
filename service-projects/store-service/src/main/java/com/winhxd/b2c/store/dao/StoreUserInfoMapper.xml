@@ -427,5 +427,24 @@
           store_region_code like '${regionCode}%'
       </foreach>
   </select>
+  <select id="getStoreListByKeywords" resultMap="storeUserInfoVO">
+    select
+      <include refid="Base_Column_List"/>
+    from store_user_info
+    <where>
+	    <if test="storeIds!=null and storeIds.size > 0 ">
+	      and id in
+	      <foreach item="id" collection="storeIds" separator="," open="(" close=")" index="">
+	            '${id}'
+	      </foreach>
+	    </if>
+	    <if test="storeMobiles !=null and storeMobiles.size > 0 ">
+	     and store_mobile in
+	      <foreach item="storeMobile" collection="storeMobiles" separator="," open="(" close=")" index="">
+	            '${storeMobile}'
+	      </foreach>
+	    </if>
+     </where>
+  </select>
 
 </mapper>

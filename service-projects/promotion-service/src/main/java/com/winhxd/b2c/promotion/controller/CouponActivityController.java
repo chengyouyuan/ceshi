@@ -6,6 +6,10 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
+import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
+import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -21,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -50,16 +56,36 @@ public class CouponActivityController implements CouponActivityServiceClient {
         return result;
     }
 
-    //@ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
-    //@Override
-    //public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile) {
-    //    ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
-    //    //List<CouponActivityImportStoreVO> couponActivityImportStoreVOList = couponActivityService.couponActivityStoreImportExcel();
-    //    //result.setData(couponActivityImportStoreVOList);
-    //    result.setCode(BusinessCode.CODE_OK);
-    //    result.setMessage("返回小店导入信息成功");
-    //    return result;
-    //}
+    @ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
+    @Override
+    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody MultipartFile inputfile) {
+        ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
+        if (!inputfile.getOriginalFilename().endsWith(".xls")
+                && !inputfile.getOriginalFilename().endsWith(".xlsx")){
+            result.setMessage("文件扩展名错误！");
+            result.setCode(BusinessCode.CODE_1001);
+            return result;
+        }
+        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+        List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
+        if (invalidList.isEmpty()) {
+            List<CouponActivityImportStoreVO> list = importResult.getList();
+            result.setData(list);
+        }
+        result.setCode(BusinessCode.CODE_OK);
+        result.setMessage("返回小店导入信息成功");
+        return result;
+    }
+
+    private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
+        ImportResult<CouponActivityImportStoreVO> importResult = null;
+        try {
+            importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessCode.CODE_1001, e);
+        }
+        return importResult;
+    }
 
     /**
      *
@@ -119,13 +145,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
             }
         }
         //区域信息验证
-        if(condition.getCouponActivityAreaList() == null){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
-                && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
+        //导入没有区域信息
+        //if(condition.getCouponActivityAreaList() == null){
+        //    throw new BusinessException(BusinessCode.CODE_1007);
+        //}
+        //if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
+        //        && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
+        //    throw new BusinessException(BusinessCode.CODE_1007);
+        //}
 
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.saveCouponActivity(condition);

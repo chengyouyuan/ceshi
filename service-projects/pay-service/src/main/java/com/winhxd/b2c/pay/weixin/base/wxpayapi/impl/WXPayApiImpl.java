@@ -2,7 +2,6 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
@@ -131,22 +135,22 @@ public class WXPayApiImpl implements WXPayApi {
         return this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
     }
 	
-	/**
-	 * 微信统一签名方法
-	 * @author mahongliang
-	 * @date  2018年8月18日 下午6:25:02
-	 * @Description 
-	 * @param obj
-	 * @return
-	 */
 	@Override
 	public String generateSign(Object obj){
+        return this.generateSign(obj, signType);
+    }
+	
+	@Override
+	public String generateSign(Object obj, SignType signType){
+		if(signType == null) {
+			signType = this.signType;
+		}
 		String sign = null;
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToMap(obj);
         try {
         	//签名添加调用微信API入参
-        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), this.signType);
+        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {
 			logger.error("签名失败", e);
 			throw new BusinessException(3400901, "签名失败");

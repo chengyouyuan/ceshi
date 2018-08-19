@@ -44,6 +44,13 @@ public abstract class WXPayConfig {
     public abstract InputStream getCertStream() throws FileNotFoundException;
 
     /**
+     * 获取RSA加密公钥
+     *
+     * @return 加密公钥字符串
+     */
+    public abstract String getRSAPublicKey();
+
+    /**
      * HTTP(S) 连接超时时间，单位毫秒
      *
      * @return

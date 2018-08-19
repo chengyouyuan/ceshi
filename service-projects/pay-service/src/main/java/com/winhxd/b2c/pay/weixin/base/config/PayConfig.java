@@ -62,6 +62,12 @@ public class PayConfig extends WXPayConfig {
     @Value("${DOMAIN.CALLBACK_DOMAIN_URL}${WX.REFUND_NOTIFY_URL}")
     private String refundNotifyUrl;
 
+    /**
+     * RSA加密公钥
+     */
+    @Value("${WX.PUBLIC_KEY}")
+    private String publicKey;
+
     @Override
     public String getAppID() {
         return appID;
@@ -85,6 +91,11 @@ public class PayConfig extends WXPayConfig {
     @Override
     public InputStream getCertStream() throws FileNotFoundException {
         return new FileInputStream(certPath);
+    }
+
+    @Override
+    public String getRSAPublicKey() {
+        return publicKey;
     }
 
     @Override

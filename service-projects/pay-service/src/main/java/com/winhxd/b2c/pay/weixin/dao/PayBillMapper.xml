@@ -18,8 +18,6 @@
     <result column="fee_type" property="feeType" jdbcType="VARCHAR" />
     <result column="total_fee" property="totalFee" jdbcType="INTEGER" />
     <result column="total_amount" property="totalAmount" jdbcType="DECIMAL" />
-    <result column="callback_total_fee" property="callbackTotalFee" jdbcType="INTEGER" />
-    <result column="callback_total_amount" property="callbackTotalAmount" jdbcType="DECIMAL" />
     <result column="settlement_total_fee" property="settlementTotalFee" jdbcType="INTEGER" />
     <result column="settlement_total_amount" property="settlementTotalAmount" jdbcType="DECIMAL" />
     <result column="spbill_create_ip" property="spbillCreateIp" jdbcType="VARCHAR" />
@@ -48,8 +46,8 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, appid, mch_id, device_info, nonce_str, sign, sign_type, body, detail, attach, 
-    out_order_no, out_trade_no, transaction_id, fee_type, total_fee, total_amount, callback_total_fee, 
-    callback_total_amount, settlement_total_fee, settlement_total_amount, spbill_create_ip, 
+    out_order_no, out_trade_no, transaction_id, fee_type, total_fee, total_amount,
+    settlement_total_fee, settlement_total_amount, spbill_create_ip, 
     time_start, time_expire, time_end, goods_tag, notify_url, trade_type, product_id, 
     limit_pay, buyer_id, status, error_code, error_message, prepay_id, code_url, is_subscribe, 
     bank_type, cash_fee, cash_fee_type, coupon_fee, coupon_count, created, updated
@@ -104,12 +102,6 @@
       </if>
       <if test="totalAmount != null" >
         total_amount,
-      </if>
-      <if test="callbackTotalFee != null" >
-        callback_total_fee,
-      </if>
-      <if test="callbackTotalAmount != null" >
-        callback_total_amount,
       </if>
       <if test="settlementTotalFee != null" >
         settlement_total_fee,
@@ -236,12 +228,6 @@
       <if test="totalAmount != null" >
         #{totalAmount,jdbcType=DECIMAL},
       </if>
-      <if test="callbackTotalFee != null" >
-        #{callbackTotalFee,jdbcType=INTEGER},
-      </if>
-      <if test="callbackTotalAmount != null" >
-        #{callbackTotalAmount,jdbcType=DECIMAL},
-      </if>
       <if test="settlementTotalFee != null" >
         #{settlementTotalFee,jdbcType=INTEGER},
       </if>
@@ -366,12 +352,6 @@
       </if>
       <if test="totalAmount != null" >
         total_amount = #{totalAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="callbackTotalFee != null" >
-        callback_total_fee = #{callbackTotalFee,jdbcType=INTEGER},
-      </if>
-      <if test="callbackTotalAmount != null" >
-        callback_total_amount = #{callbackTotalAmount,jdbcType=DECIMAL},
       </if>
       <if test="settlementTotalFee != null" >
         settlement_total_fee = #{settlementTotalFee,jdbcType=INTEGER},

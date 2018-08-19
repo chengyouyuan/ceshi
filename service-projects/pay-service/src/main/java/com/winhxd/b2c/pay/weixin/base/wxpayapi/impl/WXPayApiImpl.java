@@ -155,22 +155,22 @@ public class WXPayApiImpl implements WXPayApi {
         return this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
     }
 	
-	/**
-	 * 微信统一签名方法
-	 * @author mahongliang
-	 * @date  2018年8月18日 下午6:25:02
-	 * @Description 
-	 * @param obj
-	 * @return
-	 */
 	@Override
 	public String generateSign(Object obj){
+        return this.generateSign(obj, signType);
+    }
+	
+	@Override
+	public String generateSign(Object obj, SignType signType){
+		if(signType == null) {
+			signType = this.signType;
+		}
 		String sign = null;
 		//bean转map
         Map<String, String> reqData = BeanAndXmlUtil.beanToMap(obj);
         try {
         	//签名添加调用微信API入参
-        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), this.signType);
+        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {
 			logger.error("签名失败", e);
 			throw new BusinessException(3400901, "签名失败");
@@ -250,12 +250,6 @@ public class WXPayApiImpl implements WXPayApi {
         String RETURN_CODE = "return_code";
         String return_code;
         Map<String, String> respData = this.xmlToMap(xmlStr);
-        //验签一致性校验
-        boolean success = this.isResponseSignatureValid(respData);
-        if(!success) {
-        	logger.error("微信支付返回验签失败");
-			throw new BusinessException(3400905, "微信API返回验签失败");
-        }
         if (!respData.containsKey(RETURN_CODE)) {
         	logger.error("No `return_code` in XML: %s", xmlStr);
 			throw new BusinessException(3400904, "微信API返回值错误");
@@ -265,6 +259,14 @@ public class WXPayApiImpl implements WXPayApi {
         if (!return_code.equals(WXPayConstants.FAIL) || !return_code.equals(WXPayConstants.SUCCESS)) {
         	logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
 			throw new BusinessException(3400904, "微信API返回值错误");
+        }
+        if (return_code.equals(WXPayConstants.SUCCESS)) {
+        	//验签一致性校验
+            boolean success = this.isResponseSignatureValid(respData);
+            if(!success) {
+            	logger.error("微信支付返回验签失败");
+    			throw new BusinessException(3400905, "微信API返回验签失败");
+            }
         }
 
         return respData;

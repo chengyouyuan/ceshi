@@ -4,6 +4,7 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 
 public interface WXPayApi {
 	
@@ -16,7 +17,7 @@ public interface WXPayApi {
      * @param payPreOrderDTO
      * @return
      */
-    public PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO);
+    PayPreOrderResponseDTO unifiedOrder(PayPreOrderDTO payPreOrderDTO);
     
     /**
      * 微信统一签名方法
@@ -26,7 +27,18 @@ public interface WXPayApi {
      * @param obj
      * @return
      */
-    public String generateSign(Object obj);
+    String generateSign(Object obj);
+    
+    /**
+     * 微信统一签名方法
+     * @author mahongliang
+     * @date  2018年8月19日 下午12:24:05
+     * @Description 
+     * @param obj
+     * @param signType
+     * @return
+     */
+    String generateSign(Object obj, SignType signType);
 
 
     /**
@@ -37,4 +49,5 @@ public interface WXPayApi {
      * @throws Exception
      */
     PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO);
+
 }

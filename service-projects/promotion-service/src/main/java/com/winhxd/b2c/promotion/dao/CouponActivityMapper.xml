@@ -24,6 +24,7 @@
     <result column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="activity_status" jdbcType="SMALLINT" property="activityStatus" />
     <result column="citeNum" jdbcType="INTEGER" property="citeNum" />
     <result column="storeNum" jdbcType="INTEGER" property="storeNum" />
     <result column="coupon_num_type" jdbcType="SMALLINT" property="couponNumType" />
@@ -99,6 +100,7 @@
     ca.id,
     ca.`code`,
     ca.`name`,
+    ca.`activity_status`,
     (
     SELECT
     count(DISTINCT template_id)

@@ -127,7 +127,6 @@ public class WXRefundServiceImpl implements WXRefundService {
         payRefundDTO.setTotalFee(totalFee);
         payRefundDTO.setRefundFee(refundFee);
         payRefundDTO.setRefundDesc(refundDesc);
-        payRefundDTO.setNotifyUrl("");
 
         //调用
         PayRefundResponseDTO responseDTO = wxPayApi.refundOder(payRefundDTO);

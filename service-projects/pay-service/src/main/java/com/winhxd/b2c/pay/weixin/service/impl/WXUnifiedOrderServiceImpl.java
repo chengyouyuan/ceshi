@@ -111,6 +111,33 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	}
 	
 	/**
+	 * 支付完成
+	 * @author mahongliang
+	 * @date  2018年8月17日 下午5:35:58
+	 * @Description 
+	 * @param condition
+	 * @return
+	 */
+	private void paid(PayPreOrderCondition condition) {
+		logger.warn("订单{}支付中，请勿重复支付", condition.getOutOrderNo());
+		throw new BusinessException(3400900, "支付中，请勿重复支付");
+	}
+	
+	/**
+	 * 去支付
+	 * @author mahongliang
+	 * @date  2018年8月17日 下午5:35:58
+	 * @Description 
+	 * @param condition
+	 * @return
+	 */
+	private PayPreOrderVO paying(PayPreOrderCondition condition) {
+		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
+		
+		return payPreOrderVO;
+	}
+	
+	/**
 	 * 调用微信api入参
 	 * @author mahongliang
 	 * @date  2018年8月18日 下午6:43:53
@@ -148,33 +175,6 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			outTradeNo = outTradeNo.substring(beginIndex, outTradeNoLength);
 		}
 		return outTradeNo;
-	}
-	
-	/**
-	 * 支付完成
-	 * @author mahongliang
-	 * @date  2018年8月17日 下午5:35:58
-	 * @Description 
-	 * @param condition
-	 * @return
-	 */
-	private void paid(PayPreOrderCondition condition) {
-		logger.warn("订单{}支付中，请勿重复支付", condition.getOutOrderNo());
-		throw new BusinessException(3400900, "支付中，请勿重复支付");
-	}
-	
-	/**
-	 * 去支付
-	 * @author mahongliang
-	 * @date  2018年8月17日 下午5:35:58
-	 * @Description 
-	 * @param condition
-	 * @return
-	 */
-	private PayPreOrderVO paying(PayPreOrderCondition condition) {
-		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
-		
-		return payPreOrderVO;
 	}
 	
 	/**

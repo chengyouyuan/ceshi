@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
+import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
 import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,23 +91,18 @@ public class CouponController {
 			result.setCode(BusinessCode.CODE_1001);
 			return result;
 		}
-		ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
-		List<CouponActivityImportStoreVO> list = importResult.getList();
-		//List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
-		//if (invalidList.isEmpty()) {
-		//	List<CouponActivityImportStoreVO> list = importResult.getList();
-		//	result.setData(list);
-		//}
-		if(list.size()==0){
-			result.setCode(BusinessCode.CODE_1007);
-			result.setMessage("导入数据为空");
-			return result;
-		}
-		result.setData(list);
-		result.setCode(BusinessCode.CODE_OK);
-		result.setMessage("返回小店导入信息成功");
-		return result;
-		//return couponActivityServiceClient.couponActivityStoreImportExcel(inputfile);
+        List<CouponActivityImportStoreVO> list = null;
+        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+        List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
+        if (invalidList.isEmpty()) {
+            list = importResult.getList();
+        }
+        if(CollectionUtils.isEmpty(list)){
+            result.setCode(BusinessCode.CODE_1007);
+            result.setMessage("导入数据为空");
+            return result;
+        }
+		return couponActivityServiceClient.couponActivityStoreImportExcel(list);
 	}
 	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
 		ImportResult<CouponActivityImportStoreVO> importResult = null;

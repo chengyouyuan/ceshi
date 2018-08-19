@@ -45,6 +45,7 @@ public class WXPayConstants {
     public static final String TRANSFER_TO_CHANGE_URL_SUFFIX = "/mmpaymkttransfers/promotion/transfers";
     public static final String QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX = "/mmpaymkttransfers/gettransferinfo";
     public static final String TRANSFER_TO_BANK_URL_SUFFIX = "/mmpaysptrans/pay_bank";
+    public static final String QUERY_TRANSFER_TO_BANK_URL_SUFFIX = "/mmpaysptrans/query_bank";
     public static final String PUBLICKEY_URL_SUFFIX  = "/risk/getpublickey";
 
     // sandbox
@@ -63,6 +64,7 @@ public class WXPayConstants {
     public static final String SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX  = "/sandboxnew/mmpaymkttransfers/promotion/transfers";
     public static final String SANDBOX_QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX = "/sandboxnew/mmpaymkttransfers/gettransferinfo";
     public static final String SANDBOX_TRANSFER_TO_BANK_URL_SUFFIX = "/sandboxnew/mmpaymkttransfers/mmpaysptrans/pay_bank";
+    public static final String SANDBOX_QUERY_TRANSFER_TO_BANK_URL_SUFFIX = "/sandboxnew/mmpaysptrans/query_bank";
     public static final String SANDBOX_PUBLICKEY_URL_SUFFIX  = "/sandboxnew/risk/getpublickey";
 
 }

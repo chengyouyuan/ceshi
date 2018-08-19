@@ -54,8 +54,9 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * 分与元单位转换
      */
     private static final BigDecimal UNITS = new BigDecimal("100");
+
     /**
-     * 分与元单位转换
+     * 默认手续费
      */
     private static final BigDecimal DEFAULT_CMMS = new BigDecimal("0.00");
 
@@ -134,6 +135,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
         forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
         forWxChangeDTO.setPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
+        //这里openID的获取方式待定
         forWxChangeDTO.setOpenid(toWxBalanceCondition.getAccountId());
         forWxChangeDTO.setCheckName(FORCE_CHECK);
         forWxChangeDTO.setReUserName(toWxBalanceCondition.getAccountName());
@@ -225,6 +227,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             queryForWxChangeResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
         }
         if(PayTransfersStatus.PROCESSING.getCode().equals(queryForWxChangeResponseDTO.getStatus())){
+            logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
             queryForWxChangeResponseDTO = getExactResultForWxChange(toWxChangeVO, --queryTimes);
         }
@@ -420,11 +423,12 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         //处理签名
         queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), wxPayConfig.getKey()));
         //返参
-        String resultXml = wxPay.queryTransferToChange(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
+        String resultXml = wxPay.queryTransferToBank(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }
         if(PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())){
+            logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
             queryForWxBankResponseDTO = getExactResultForWxBank(toWxBankVO, --queryTimes);
         }

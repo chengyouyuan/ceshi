@@ -24,11 +24,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
+import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
 
 import io.swagger.annotations.Api;
@@ -49,13 +51,13 @@ public class ApiPayCallbackController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiPayCallbackController.class);
 	private static final String SUCCESS_RESPONSE = "<xml>" + "<return_code><!--[CDATA[SUCCESS]]--></return_code>" + "<return_msg><!--[CDATA[OK]]--></return_msg>" + "</xml> ";
 	private static final String FAIL_RESPONSE = "<xml>" + "<return_code><!--[CDATA[FAIL]]--></return_code>" + "<return_msg><!--[CDATA[报文为空]]--></return_msg>" + "</xml> ";
+	private static String password = "aaa";
+	private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);
 	
 	@Autowired
-	private WXPayApi wxPayApi;
-
-	private static String password = "aaa";
-
-	private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);
+	private WXUnifiedOrderService unifiedOrderService;
+	@Autowired
+	private PayService payService;
 
 	@Autowired
 	PayRefundMapper payRefundMapper;
@@ -73,8 +75,13 @@ public class ApiPayCallbackController {
 			//Map<String, String> map = WXPayUtil.xmlToMap(respXml);
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = BeanAndXmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
-				// TODO 更新流水，通知业务系统
-				this.response(response, SUCCESS_RESPONSE);
+				PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
+				int success = payService.callbackOrderPay(bill);
+				if(success == 0) {
+					this.response(response, SUCCESS_RESPONSE);
+				} else {
+					this.response(response, FAIL_RESPONSE);
+				}
 			} else {
 				this.response(response, FAIL_RESPONSE);
 			}

@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.constant.TradeType;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
@@ -68,6 +69,18 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		}
 		
 		return payPreOrderVO;
+	}
+	
+	@Override
+	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean callback(PayBill bill) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	/**

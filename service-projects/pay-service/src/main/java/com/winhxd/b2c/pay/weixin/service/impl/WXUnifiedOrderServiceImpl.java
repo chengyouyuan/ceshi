@@ -53,19 +53,20 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		PayPreOrderVO payPreOrderVO = null;
 		//真实订单号
 		String outOrderNo = condition.getOutOrderNo();
-		List<Integer> statusList =  payBillMapper.selectPayBillStatusByOutOrderNo(outOrderNo);
-		
+		//支付状态：0.支付中，1.支付完成，2.支付失败
+		List<PayBill> list =  payBillMapper.selectByOutOrderNo(outOrderNo);
+		PayBill bill = null;
 		//去支付
-		if(CollectionUtils.isEmpty(statusList)) {
+		if(CollectionUtils.isEmpty(list)) {
 			payPreOrderVO = toPay(condition);
 			
 		//支付完成	
-		} else if(statusList.contains(BillStatusEnum.PAID.getCode())) {
+		} else if((bill = this.getPayBill(list, BillStatusEnum.PAID.getCode())) != null) {
 			paid(condition);
 			
 		//支付中
-		} else if(statusList.contains(BillStatusEnum.PAYING.getCode())) {
-			payPreOrderVO = paying(condition);
+		} else if((bill = this.getPayBill(list, BillStatusEnum.PAYING.getCode())) != null) {
+			payPreOrderVO = paying(bill);
 		}
 		
 		return payPreOrderVO;
@@ -148,17 +149,49 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	}
 	
 	/**
-	 * 去支付
+	 * 支付中
 	 * @author mahongliang
 	 * @date  2018年8月17日 下午5:35:58
 	 * @Description 
 	 * @param condition
 	 * @return
 	 */
-	private PayPreOrderVO paying(PayPreOrderCondition condition) {
+	private PayPreOrderVO paying(PayBill bill) {
 		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
+		// TODO 主动查询，更新流水
+		// TODO 10分钟未支付，主动关闭订单，重新生产流水
+		
+		//初始化反参
+		payPreOrderVO.setAppId(bill.getAppid());
+		payPreOrderVO.setNonceStr(bill.getNonceStr());
+		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
+		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
+		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
+		payPreOrderVO.setSignType(bill.getSignType());
+		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
 		
 		return payPreOrderVO;
+	}
+	
+	/**
+	 * 根据状态查询订单流水
+	 * @author mahongliang
+	 * @date  2018年8月19日 下午5:22:22
+	 * @Description 
+	 * @param list
+	 * @param status
+	 * @return
+	 */
+	private PayBill getPayBill(List<PayBill> list, int status){
+		PayBill bill = null;
+		for(PayBill pb : list) {
+			if(status == pb.getStatus()){
+				bill = pb;
+				break;
+			}
+		}
+		return bill;
 	}
 	
 	/**

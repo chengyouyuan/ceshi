@@ -177,7 +177,7 @@ public class ApiCustomerLoginController {
 		/**
 		 * 随机生成6位数验证码
 		 */
-		String verificationCode = "888888";// GeneratePwd.generatePwd6Mobile();
+		String verificationCode = GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
 				verificationCode);
 		cache.expire(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
@@ -192,8 +192,7 @@ public class ApiCustomerLoginController {
 		 * 发送模板内容
 		 */
 		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-		// messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),
-		// content);
+		 messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),content);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}

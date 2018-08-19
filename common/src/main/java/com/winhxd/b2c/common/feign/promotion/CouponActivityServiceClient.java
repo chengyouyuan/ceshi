@@ -41,13 +41,14 @@ public interface CouponActivityServiceClient {
     /**
      *
      *@Deccription 优惠券活动导入门店信息
-     *@Params  inputfile
+     *@Params  list
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/17
      */
     @RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
     ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
+
     /**
      *
      *@Deccription 添加优惠券活动

@@ -1,10 +1,18 @@
 package com.winhxd.b2c.pay.weixin.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,15 +23,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class BeanAndXmlUtil {
 
@@ -175,6 +180,35 @@ public class BeanAndXmlUtil {
             e.printStackTrace();
         }
         return sortedMap;
+    }
+    
+    /**
+     * 实体对象转成Map
+     * @author mahongliang
+     * @date  2018年8月18日 下午8:17:10
+     * @Description 
+     * @param obj
+     * @return
+     */
+    public static Map<String, String> beanToMap(Object obj) {
+        Map<String,String> map = new HashMap<String,String>();
+        if (obj == null) {
+            return map;
+        }
+        Class<? extends Object> clazz = obj.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if(null == field.get(obj)){
+                    continue;
+                }
+                map.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
     /**

@@ -63,7 +63,7 @@ public class YxSmsProcess {
 	}
 
 	/**
-	 * 带返回 结果信息对象 的短信发送
+	 * 用阅信发送短信 带返回 结果信息对象 的短信发送
 	 *
 	 * @param mobile  发信发送的目的号码.多个号码之间用半角逗号隔开
 	 * @param content 短信的内容
@@ -141,6 +141,7 @@ public class YxSmsProcess {
 			for (SmsReturnStatusEnum status : SmsReturnStatusEnum.values()) {
 				if (status.getStatusCode() == Integer.parseInt(reqCode)) {
 					smsReturn.setStatus(status);
+					LOGGER.warn("阅信短信发送结果：" + status.getRemark());
 					break;
 				}
 			}

@@ -9,7 +9,17 @@ public enum EventTypeHandler {
     /**
      * 事件类型定义
      */
-    EVENT_CUSTOMER_ORDER_CREATED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CREATED);
+    EVENT_CUSTOMER_ORDER_CREATED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CREATED),
+
+    /**
+     * 订单支付成功，保存费用明细
+     */
+    ACCOUNTING_DETAIL_SAVE_HANDLER(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS),
+
+    /**
+     * 订单闭环，标记费用入账
+     */
+    ACCOUNTING_DETAIL_RECORDED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED);
 
     private EventType eventType;
 

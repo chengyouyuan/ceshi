@@ -21,4 +21,13 @@ public interface PayOrderPaymentMapper {
      * @return
      */
     PayOrderPayment selectByOrderPaymentNo(String orderPaymentNo);
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月18日 下午6:41:43
+     * @Description 根据订单交易号  更新流水信息
+     * @param record
+     * @return
+     */
+    int updateByOrderTransactionNoSelective(PayOrderPayment record);
 }

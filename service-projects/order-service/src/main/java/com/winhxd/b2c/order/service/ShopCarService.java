@@ -1,11 +1,12 @@
 package com.winhxd.b2c.order.service;
 
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: void
      */
-    OrderPayVO readyOrder(ReadyShopCarCondition condition, Long customerId);
+    OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId);
 
     /**
      * 根据门店 用户 sku集合 获取集合信息
@@ -57,4 +58,13 @@ public interface ShopCarService {
      * @return
      */
     List<ShopCar> queryShopCartBySelective(ShopCartProductCondition condition);
+
+    /**
+     *  获取用户信息
+     * @author: wangbaokuo
+     * @date: 2018/8/18 18:02
+     * @param: customerId
+     * @return: CustomerUserInfoVO
+     */
+    CustomerUserInfoVO getCustomerUserInfoVO(Long customerId);
 }

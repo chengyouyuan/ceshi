@@ -74,6 +74,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderUseCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
@@ -111,8 +112,8 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final int ORDER_MONEY_SCALE = 2;
     private static final int ORDER_UPDATE_LOCK_EXPIRES_TIME = 5000;
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
-    
-    private static final ThreadLocal<Map<String, ProductSkuVO>> skuInfoMapThreadLocal = new ThreadLocal<>();
+
+    private static final ThreadLocal<Map<String, ProductSkuVO>> SKU_INFO_MAP_THREADLOCAL = new ThreadLocal<>();
 
     @Autowired
     @Qualifier("OnlinePayPickUpInStoreOrderHandler")
@@ -321,7 +322,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
                     messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
                     //给门店发送消息
-                    orderRefundTimeOutSendMsg(4,order);
+                    orderRefundTimeOutSendMsg(4, order);
                     logger.info("退款回调-发送消息结束-订单号={}", orderNo);
                     callbackResult = true;
                 } else {
@@ -374,6 +375,10 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderCancel(String orderNo, String cancelReason, Long operatorId, String operatorName) {
         OrderInfo order = getOrderInfo(orderNo);
+        if (!order.getCustomerId().equals(operatorId)) {
+            throw new BusinessException(BusinessCode.ORDER_INFO_NOT_MATCH_ERROR,
+                    MessageFormat.format("该订单不是登录用户的订单orderNo={0},orderCustomerId={1},customerId={2}", order.getOrderNo(), order.getCustomerId(), operatorId));
+        }
         orderCancel(order, cancelReason, operatorId, operatorName, 1);
     }
 
@@ -390,8 +395,10 @@ public class CommonOrderServiceImpl implements OrderService {
         String orderNo = order.getOrderNo();
         //判断是否支付成功,支付成功不让取消
         if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
-            logger.info("订单已支付成功不能取消，请走退款接口 订单号={}", orderNo);
-            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, "订单已支付成功不能取消");
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
+        }
+        if (OrderStatusEnum.CANCELED.getStatusCode() == order.getOrderStatus() || OrderStatusEnum.FINISHED.getStatusCode() == order.getOrderStatus()) {
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单状态不匹配，不能取消 订单号={0}", orderNo));
         }
         //设置提货码置为null、取消原因、取消状态等
         int updateRowNum = this.orderInfoMapper.updateOrderStatusForCancel(orderNo, cancelReason);
@@ -401,9 +408,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
             //优惠券一并退回
             orderUntreadCoupon(orderNo, "4");
-            logger.info("取消订单-退优惠券结束-订单号={}", orderNo);
-
-            logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
+            logger.info("取消订单-退优惠券结束-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             Short oldStatus = order.getOrderStatus();
             order.setOrderStatus(OrderStatusEnum.CANCELED.getStatusCode());
@@ -413,7 +418,6 @@ public class CommonOrderServiceImpl implements OrderService {
             orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
                     order.getOrderStatus(), operatorId, operatorName, cancelReason, MainPointEnum.MAIN);
             logger.info("取消订单-添加流转日志结束-订单号={}", orderNo);
-
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
         }
@@ -554,7 +558,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         CustomerUser customer = UserContext.getCurrentCustomerUser();
         if (null == customer) {
-            throw new BusinessException(BusinessCode.CODE_1002, "用户不存在");
+            throw new BusinessException(BusinessCode.CODE_1002, MessageFormat.format("用户不存在orderNo={0}", orderNo));
         }
         Long customerId = customer.getCustomerId();
         CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
@@ -563,19 +567,19 @@ public class CommonOrderServiceImpl implements OrderService {
         if (lock.tryLock()) {
             try {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
-                if (null == order || !order.getStoreId().equals(customer.getCustomerId())) {
-                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, "C端申请退款订单查询失败");
+                if (null == order || !order.getCustomerId().equals(customer.getCustomerId())) {
+                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, MessageFormat.format("C端申请退款订单查询失败orderNo={0}", orderNo));
                 }
                 //判断订单状态是否可以申请退款
                 Short status = order.getOrderStatus();
-                if (status.equals(PayStatusEnum.UNPAID.getStatusCode())
+                if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())
                         || status.equals(OrderStatusEnum.FINISHED.getStatusCode())
                         || status.equals(OrderStatusEnum.CANCELED.getStatusCode())
                         || status.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
-                    throw new BusinessException(BusinessCode.CODE_4021002, "订单状态不允许退款");
+                    throw new BusinessException(BusinessCode.CODE_4021002, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
                 }
                 //申请退款时商家没确认就直接退款、退优惠券
-                if (status.equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
+                if (order.getPayStatus().equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
                     //退款流程
                     orderApplyRefund(order, orderRefundCondition.getCancelReason(), customerId, customerUserInfoVO.getNickName());
                 } else {
@@ -608,8 +612,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
                         logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
                     } else {
-                        logger.info("订单取消-C端申请退款不成功 订单号={}", orderNo);
-                        throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, "C端申请退款不成功");
+                        throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单取消-C端申请退款不成功 订单号={}", orderNo));
                     }
                 }
             } finally {
@@ -665,10 +668,10 @@ public class CommonOrderServiceImpl implements OrderService {
             couponCondition.setStatus("4");
             ResponseResult<Boolean> couponData = couponServiceClient.orderUntreadCoupon(couponCondition);
             if (couponData.getCode() != BusinessCode.CODE_OK || !couponData.getData()) {
-                throw new BusinessException(BusinessCode.CODE_4022006, MessageFormat.format("订单退款-退优惠券返回失败-订单号={0}", orderNo));
+                logger.info(MessageFormat.format("订单退款-退优惠券返回失败-订单号={0}", orderNo));
+                throw new BusinessException(BusinessCode.CODE_4022006);
             }
-            logger.info("订单退款-退优惠券结束-订单号={}", orderNo);
-            logger.info("订单退款-添加流转日志开始-订单号={}", orderNo);
+            logger.info("订单退款-退优惠券结束-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
@@ -679,7 +682,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单退款-添加流转日志结束-订单号={}", orderNo);
         } else {
             logger.info("订单退款用户退款不成功 订单号={}", order.getOrderNo());
-            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单退款不成功-订单号={0}", orderNo));
+            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE);
         }
     }
 
@@ -719,7 +722,7 @@ public class CommonOrderServiceImpl implements OrderService {
         registerProcessAfterTransSuccess(new OrderConfirmSuccessRunnerble(orderInfo), null);
         logger.info("门店确认订单结束：condition={}", condition);
     }
-    
+
     @Override
     public void orderPriceChange4Store(OrderConfirmCondition condition) {
         if (condition == null) {
@@ -901,15 +904,6 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
         orderInfo.setCreatedBy(orderCreateCondition.getCustomerId());
-        //计算订单总金额
-        BigDecimal orderTotal = calculateOrderTotal(orderCreateCondition);
-        short valuationType = ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
-        if (orderTotal == null) {
-            //待计价订单
-            valuationType = ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
-        }
-        orderInfo.setOrderTotalMoney(orderTotal);
-        orderInfo.setValuationType(valuationType);
         orderInfo.setCustomerId(orderCreateCondition.getCustomerId());
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
@@ -925,7 +919,15 @@ public class CommonOrderServiceImpl implements OrderService {
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoByStoreId(orderInfo.getStoreId());
         orderInfo.setRegionCode(storeUserInfoVO.getStoreRegionCode());
         //组装订单商品信息
-        aseembleOrderItems(orderCreateCondition, orderInfo);
+        BigDecimal orderTotal = aseembleAndCalculateOrderItems(orderCreateCondition, orderInfo);
+        //计算订单总金额
+        short valuationType = ValuationTypeEnum.ONLINE_VALUATION.getTypeCode();
+        if (orderTotal == null) {
+            //待计价订单
+            valuationType = ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode();
+        }
+        orderInfo.setOrderTotalMoney(orderTotal);
+        orderInfo.setValuationType(valuationType);
         //优惠券相关优惠计算
         calculateDiscounts(orderInfo, orderCreateCondition.getCouponIds());
         return orderInfo;
@@ -1014,7 +1016,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
     private CouponPreAmountCondition assembleCouponPreAmountCondition(OrderInfo orderInfo) {
         List<CouponProductCondition> couponProductConditions = new ArrayList<>();
-        
+
         for (Iterator<OrderItem> iterator = orderInfo.getOrderItems().iterator(); iterator.hasNext(); ) {
             OrderItem orderItem = iterator.next();
             CouponProductCondition couponProductCondition = new CouponProductCondition();
@@ -1022,9 +1024,9 @@ public class CommonOrderServiceImpl implements OrderService {
             couponProductCondition.setPrice(orderItem.getPrice());
             couponProductCondition.setSkuCode(orderItem.getSkuCode());
             couponProductConditions.add(couponProductCondition);
-            
+
         }
-        Map<String, ProductSkuVO> skuInfoMap = skuInfoMapThreadLocal.get();
+        Map<String, ProductSkuVO> skuInfoMap = SKU_INFO_MAP_THREADLOCAL.get();
         for (Iterator<CouponProductCondition> iterator = couponProductConditions.iterator(); iterator.hasNext(); ) {
             CouponProductCondition couponProductCondition = iterator.next();
             if (skuInfoMap != null && skuInfoMap.size() > 0) {
@@ -1033,6 +1035,7 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         couponPreAmountCondition.setProducts(couponProductConditions);
+        SKU_INFO_MAP_THREADLOCAL.remove();
         return couponPreAmountCondition;
     }
 
@@ -1044,20 +1047,6 @@ public class CommonOrderServiceImpl implements OrderService {
             return onlinePayPickUpInStoreOfflineOrderHandler;
         }
         throw new BusinessException(BusinessCode.CODE_401008);
-    }
-
-    private BigDecimal calculateOrderTotal(OrderCreateCondition orderCreateCondition) {
-        BigDecimal orderTotal = BigDecimal.ZERO;
-        for (Iterator<OrderItemCondition> iterator = orderCreateCondition.getOrderItemConditions().iterator(); iterator.hasNext(); ) {
-            OrderItemCondition detailCondition = iterator.next();
-            BigDecimal price = detailCondition.getPrice();
-            if (price == null) {
-                return null;
-            }
-            orderTotal = orderTotal.add(detailCondition.getPrice().multiply(new BigDecimal(detailCondition.getAmount()))
-                    .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
-        }
-        return orderTotal;
     }
 
     /**
@@ -1099,7 +1088,8 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月3日 上午11:30:53
      */
-    private void aseembleOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
+    private BigDecimal aseembleAndCalculateOrderItems(OrderCreateCondition orderCreateCondition, OrderInfo orderInfo) {
+        BigDecimal orderTotal = BigDecimal.ZERO;
         List<OrderItem> items = new ArrayList<>();
         int skuQuantity = 0;
         int skuCategoryQuantity = 0;
@@ -1123,8 +1113,8 @@ public class CommonOrderServiceImpl implements OrderService {
         //查询商品相关信息
         Map<String, ProductSkuVO> skuInfoMap = querySkuInfos(orderInfo, skuCodes);
         if (skuInfoMap != null && skuInfoMap.size() > 0) {
-            skuInfoMapThreadLocal.set(skuInfoMap);
-            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext();) {
+            SKU_INFO_MAP_THREADLOCAL.set(skuInfoMap);
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext(); ) {
                 OrderItem orderItem = iterator.next();
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
                 if (skuVO != null) {
@@ -1136,6 +1126,27 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setSkuCategoryQuantity(skuCategoryQuantity);
         orderInfo.setSkuQuantity(skuQuantity);
         orderInfo.setOrderItems(items);
+        //查询计算商品价格信息
+        Map<String, ShopCartProdVO> storeProdVOMap = queryStoreSkuInfos(orderInfo, skuCodes);
+        if (storeProdVOMap != null && storeProdVOMap.size() > 0) {
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext();) {
+                OrderItem orderItem = iterator.next();
+                ShopCartProdVO cartProdVO = storeProdVOMap.get(orderItem.getSkuCode());
+                if (cartProdVO != null) {
+                    BigDecimal price = cartProdVO.getSellMoney();
+                    if (price == null) {
+                        return null;
+                    }
+                    orderTotal = orderTotal.add(price.multiply(new BigDecimal(orderItem.getAmount()))
+                            .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                } else {
+                    throw new BusinessException(BusinessCode.CODE_401005);
+                }
+            }
+        }else {
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        return orderTotal;
     }
 
 
@@ -1156,6 +1167,22 @@ public class CommonOrderServiceImpl implements OrderService {
             skuBrandMap.put(productSkuVO.getSkuCode(), productSkuVO);
         }
         return skuBrandMap;
+    }
+    
+    public Map<String, ShopCartProdVO> queryStoreSkuInfos(OrderInfo orderInfo, List<String> skuCodes) {
+        ResponseResult<List<ShopCartProdVO>> ret = storeServiceClient.findShopCarProd(skuCodes, orderInfo.getStoreId());
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            // 优惠券使用失败
+            logger.error("订单：{}商品：skuCodes={}, 返回结果:code={} 门店商品库中不存在，创建订单异常！~", orderInfo.getOrderNo(),
+                    Arrays.toString(skuCodes.toArray(new String[skuCodes.size()])), ret == null ? null : ret.getCode());
+            throw new BusinessException(BusinessCode.CODE_401005);
+        }
+        Map<String, ShopCartProdVO> storeSkuInfoMap = new HashMap<>();
+        for (Iterator<ShopCartProdVO> iterator = ret.getData().iterator(); iterator.hasNext(); ) {
+            ShopCartProdVO shopCartProdVO = iterator.next();
+            storeSkuInfoMap.put(shopCartProdVO.getSkuCode(), shopCartProdVO);
+        }
+        return storeSkuInfoMap;
     }
 
     /**
@@ -1325,7 +1352,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     last4MobileNums = StringUtils.substring(customerUserInfoVO.getCustomerMobile(), 7);
                 }
                 String storeMsg = MessageFormat.format(OrderNotifyMsg.ORDER_COMPLETE_MSG_4_STORE, last4MobileNums);
-                String createdBy= "";
+                String createdBy = "";
                 int expiration = 0;
                 int msgType = 0;
                 short pageType = 1;
@@ -1356,11 +1383,12 @@ public class CommonOrderServiceImpl implements OrderService {
                 logger.error("订单提货完成给用户发送消息失败：", e);
             }
             // 发送mq完成消息
-            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, UUID.randomUUID().toString(), orderInfo);
+            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, orderInfo.getOrderNo(), orderInfo);
         }
     }
 
-    /**s
+    /**
+     * s
      * 订单门店确认完成 处理
      *
      * @author wangbin

@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * 统一下单入参
@@ -10,54 +9,28 @@ import java.math.BigDecimal;
  * @Description 
  * @version
  */
-public class PayPreOrderDTO implements Serializable {
-	private static final long serialVersionUID = -6751906874587493059L;
+public class PayPreOrderDTO extends RequestBase{
 	
-	/**
-     * 小程序ID
-     */
-    private String appid;
-    
-    /**
-     * 商户号
-     */
-    private String mchId;
-    
-    /**
-     * 随机字符串
-     */
-    private String nonceStr;
-    
-    /**
-     * 签名
-     */
-    private String sign;
-    
-    /**
-     * 签名类型，支持HMAC-SHA256和MD5
-     */
-    private String signType;
-    
-	/**
-     * 真实订单号
-     */
-    private String outOrderNo;
-    
     /**
      * 支付流水号
      */
     private String outTradeNo;
     
     /**
-     * 订单总金额，单位为元
+     * 订单总金额，单位为分
      */
-    private BigDecimal totalAmount;
+    private int totalFee;
     
     /**
      * 买家用户标识
      * trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识（openid）
      */
     private String openid;
+    
+    /**
+     * 交易时间
+     */
+    private String timeStart;
     
     /**
      * 商品描述
@@ -89,54 +62,16 @@ public class PayPreOrderDTO implements Serializable {
      * 限制支付类型（微信参数），上传此参数no_credit--可限制用户不能使用信用卡支付
      */
     private String limitPay;
+    
+    /**
+     * （非必填）标价币种
+     */
+    private String feeType;
 
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-
-	public String getMchId() {
-		return mchId;
-	}
-
-	public void setMchId(String mchId) {
-		this.mchId = mchId;
-	}
-
-	public String getNonceStr() {
-		return nonceStr;
-	}
-
-	public void setNonceStr(String nonceStr) {
-		this.nonceStr = nonceStr;
-	}
-
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
-	public String getSignType() {
-		return signType;
-	}
-
-	public void setSignType(String signType) {
-		this.signType = signType;
-	}
-
-	public String getOutOrderNo() {
-		return outOrderNo;
-	}
-
-	public void setOutOrderNo(String outOrderNo) {
-		this.outOrderNo = outOrderNo;
-	}
+	/**
+	 * 支付结果通知URL
+	 */
+	private String notifyUrl;
 
 	public String getOutTradeNo() {
 		return outTradeNo;
@@ -146,12 +81,12 @@ public class PayPreOrderDTO implements Serializable {
 		this.outTradeNo = outTradeNo;
 	}
 
-	public BigDecimal getTotalAmount() {
-		return totalAmount;
+	public int getTotalFee() {
+		return totalFee;
 	}
 
-	public void setTotalAmount(BigDecimal totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotalFee(int totalFee) {
+		this.totalFee = totalFee;
 	}
 
 	public String getOpenid() {
@@ -160,6 +95,14 @@ public class PayPreOrderDTO implements Serializable {
 
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+
+	public String getTimeStart() {
+		return timeStart;
+	}
+
+	public void setTimeStart(String timeStart) {
+		this.timeStart = timeStart;
 	}
 
 	public String getBody() {
@@ -210,4 +153,19 @@ public class PayPreOrderDTO implements Serializable {
 		this.limitPay = limitPay;
 	}
 
+	public String getFeeType() {
+		return feeType;
+	}
+
+	public void setFeeType(String feeType) {
+		this.feeType = feeType;
+	}
+
+	public String getNotifyUrl() {
+		return notifyUrl;
+	}
+
+	public void setNotifyUrl(String notifyUrl) {
+		this.notifyUrl = notifyUrl;
+	}
 }

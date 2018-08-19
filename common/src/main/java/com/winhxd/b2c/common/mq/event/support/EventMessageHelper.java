@@ -26,9 +26,9 @@ public class EventMessageHelper {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    public static <T> String toJson(String eventId, T eventObject) {
+    public static <T> String toJson(String eventKey, T eventObject) {
         try {
-            EventTransferObject<T> eto = new EventTransferObject<>(eventId, eventObject);
+            EventTransferObject<T> eto = new EventTransferObject<>(eventKey, eventObject);
             return objectMapper.writeValueAsString(eto);
         } catch (JsonProcessingException e) {
             logger.error("EventMessageHelper->toJson", e);
@@ -42,23 +42,23 @@ public class EventMessageHelper {
     }
 
     public static class EventTransferObject<T> {
-        private String eventId;
+        private String eventKey;
         private T eventObject;
 
         public EventTransferObject() {
         }
 
-        public EventTransferObject(String eventId, T eventObject) {
-            this.eventId = eventId;
+        public EventTransferObject(String eventKey, T eventObject) {
+            this.eventKey = eventKey;
             this.eventObject = eventObject;
         }
 
-        public String getEventId() {
-            return eventId;
+        public String getEventKey() {
+            return eventKey;
         }
 
-        public void setEventId(String eventId) {
-            this.eventId = eventId;
+        public void setEventKey(String eventKey) {
+            this.eventKey = eventKey;
         }
 
         public T getEventObject() {

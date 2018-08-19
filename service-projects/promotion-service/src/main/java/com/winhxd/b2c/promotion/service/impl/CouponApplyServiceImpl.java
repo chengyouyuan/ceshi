@@ -5,6 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
+import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
+import com.winhxd.b2c.common.domain.product.vo.BrandVO;
+import com.winhxd.b2c.common.domain.product.vo.CompanyInfo;
+import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponApplyCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
@@ -12,12 +17,15 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.company.CompanyServiceClient;
+import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,13 +46,98 @@ public class CouponApplyServiceImpl implements CouponApplyService {
      private CouponApplyProductMapper couponApplyProductMapper;
      @Autowired
      private CouponApplyProductListMapper couponApplyProductListMapper;
+    @Autowired
+    private ProductServiceClient productServiceClient;
+    @Autowired
+    private CompanyServiceClient companyServiceClient;
 
 
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id) {
+    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id,Short type) {
         ResponseResult responseResult = new ResponseResult();
-        CouponApplyVO vo = couponApplyMapper.viewCouponApplyDetail(id);
-        responseResult.setData(vo);
+        CouponApplyVO vo = null;
+        if(type.equals(CouponApplyEnum.COMMON_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyCommonDetail(id);
+            responseResult.setData(vo);
+        }
+        if(type.equals(CouponApplyEnum.BRAND_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyBrandDetail(id);
+
+            List<CouponApplyBrandList> couponApplyBrandLists = vo.getCouponApplyBrandList();
+            if(!couponApplyBrandLists.isEmpty()){
+                //组装请求的参数
+                List<String> brandCodes = new ArrayList<>();
+                List<String> companyCodes = new ArrayList<>();
+                for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
+                    brandCodes.add(couponApplyBrandList.getBrandCode());
+                    companyCodes.add(couponApplyBrandList.getCompanyCode());
+                }
+                //调用获取品牌信息接口
+                ResponseResult<List<BrandVO>> result = productServiceClient.getBrandInfo(brandCodes);
+                if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                    throw new BusinessException(result.getCode());
+                }
+                List<BrandVO> BrandVoList = result.getData();
+                for(int i=0;i<couponApplyBrandLists.size();i++){
+                    CouponApplyBrandList couponApplyBrandList = couponApplyBrandLists.get(i);
+                    for(int j=0;j<BrandVoList.size();j++){
+                        if(couponApplyBrandList.getBrandCode().equals(BrandVoList.get(j).getBrandCode())){
+                            couponApplyBrandList.setBrandName(BrandVoList.get(j).getBrandName());
+                        }
+                    }
+                }
+                //调用获取品牌商信息接口
+                ResponseResult<List<CompanyInfo>> result1 = companyServiceClient.getCompanyInfoByCodes(companyCodes);
+                if (result1 == null || result1.getCode() != BusinessCode.CODE_OK || result1.getData() == null) {
+                    throw new BusinessException(result1.getCode());
+                }
+                List<CompanyInfo> companyInfoList = result1.getData();
+                for(int i=0;i<couponApplyBrandLists.size();i++){
+                    CouponApplyBrandList couponApplyBrandList = couponApplyBrandLists.get(i);
+                    for(int j=0;j<companyInfoList.size();j++){
+                        if(couponApplyBrandList.getCompanyCode().equals(companyInfoList.get(j).getCompanyCode())){
+                            couponApplyBrandList.setCompanyName(companyInfoList.get(j).getCompanyName());
+                        }
+                    }
+                }
+            }
+            responseResult.setData(vo);
+        }
+
+
+
+        if(type.equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
+            vo = couponApplyMapper.viewCouponApplyProdDetail(id);
+            List<CouponApplyProductList> couponApplyProductLists = vo.getCouponApplyProductList();
+            if(!couponApplyProductLists.isEmpty()){
+                //组装请求的参数
+                List<String> productSkus = new ArrayList<>();
+                for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
+                    productSkus.add(couponApplyProductList.getSkuCode());
+                }
+                ProductCondition productCondition = new ProductCondition();
+                productCondition.setProductSkus(productSkus);
+                //调用获取商品信息接口
+                productCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+                ResponseResult<List<ProductSkuVO>> result2 = productServiceClient.getProductSkus(productCondition);
+                if (result2 == null || result2.getCode() != BusinessCode.CODE_OK || result2.getData() == null) {
+                    throw new BusinessException(result2.getCode());
+                }
+                List<ProductSkuVO> productSkuVOList = result2.getData();
+                for(int i=0;i<couponApplyProductLists.size();i++){
+                    CouponApplyProductList couponApplyProductList = couponApplyProductLists.get(i);
+                    for(int j=0;j<productSkuVOList.size();j++){
+                        if(couponApplyProductList.getSkuCode().equals(productSkuVOList.get(j).getSkuCode())){
+                            couponApplyProductList.setProductName(productSkuVOList.get(j).getSkuName());
+                        }
+                    }
+
+                }
+            }
+
+            responseResult.setData(vo);
+        }
+        System.out.print(vo.toString());
         return responseResult;
     }
 

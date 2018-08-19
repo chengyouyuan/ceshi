@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
 import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
@@ -168,9 +169,9 @@ public class WechatShareServiceImpl implements WechatShareService {
                 //将返回的图片数据上传保存到CDN
                 String fileName = UUID.randomUUID().toString().replace("-", "") + ".png";
                 //上传图片
-                ResponseResult<ProductImageVO> responseResult = imageUploadUtil.uploadImage(fileName, response.getEntity().getContent(), null);
-                if (responseResult.getCode() == BusinessCode.CODE_OK) {
-                    String path = responseResult.getData().getImageUrl();
+                BaseImageFile baseImageFile = imageUploadUtil.uploadImage(fileName, response.getEntity().getContent(), null);
+                if (baseImageFile != null) {
+                    String path = baseImageFile.getUrl();
                     if (!StringUtils.isEmpty(path)) {
                         StoreUserInfoCondition condition = new StoreUserInfoCondition();
                         condition.setId(storeUserInfoVO.getId());
@@ -183,7 +184,7 @@ public class WechatShareServiceImpl implements WechatShareService {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

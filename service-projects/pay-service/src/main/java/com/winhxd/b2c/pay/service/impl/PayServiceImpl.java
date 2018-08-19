@@ -6,14 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.pay.enums.*;
-import com.winhxd.b2c.common.domain.pay.model.*;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
-import com.winhxd.b2c.pay.dao.*;
-import com.winhxd.b2c.pay.service.*;
-import com.winhxd.b2c.pay.weixin.model.PayBill;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,10 +26,39 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
+import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
+import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
+import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
+import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
+import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
+import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
+import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
+import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
+import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
+import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
+import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.service.PayStoreCashService;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
@@ -99,27 +120,25 @@ public class PayServiceImpl implements PayService{
 
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
-		payOrderPayment.setOrderNo(condition.getOutOrderNo());
-		payOrderPayment.setOrderPamentNo(condition.getOutTradeNo());
+		payOrderPayment.setOrderTransactionNo(condition.getOutTradeNo());
 		payOrderPayment.setCallbackDate(new Date());
-		payOrderPayment.setCreated(new Date());
+		payOrderPayment.setUpdated(new Date());
 		payOrderPayment.setTimeEnd(condition.getTimeEnd());
 		payOrderPayment.setCallbackStatus(condition.getStatus());
-		payOrderPayment.setCallbackReason(condition.getErrorCode());
-		payOrderPayment.setBuyerId(condition.getBuyerId());
+		payOrderPayment.setCallbackErrorCode(condition.getErrorCode());
+		payOrderPayment.setCallbackErrorReason(condition.getErrorMessage());
 		payOrderPayment.setTransactionId(condition.getTransactionId());
-		payOrderPayment.setRealPaymentMoney(condition.getTotalAmount());
 		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
-		if(condition.getTradeType().equals(TradeTypeEnums.JSAPI.getCode())){
-			payOrderPayment.setPayType((short) 1);
-		}
-		if(condition.getTradeType().equals(TradeTypeEnums.NATIVE.getCode())){
-			payOrderPayment.setPayType((short) 2);
-		}
-		if(condition.getTradeType().equals(TradeTypeEnums.APP.getCode())){
-			payOrderPayment.setPayType((short) 3);
-		}
-		int insertResult=payOrderPaymentMapper.insertSelective(payOrderPayment);
+		payOrderPayment.setAppid(condition.getAppid());
+		payOrderPayment.setAttach(condition.getAttach());
+		payOrderPayment.setBody(condition.getBody());
+		payOrderPayment.setDetail(condition.getDetail());
+		payOrderPayment.setDeviceInfo(condition.getDeviceInfo());
+		payOrderPayment.setMchId(condition.getMchId());
+		payOrderPayment.setNonceStr(condition.getNonceStr());
+		payOrderPayment.setTimeStart(condition.getTimeStart());
+		payOrderPayment.setTimeExpire(condition.getTimeExpire());
+		int insertResult=payOrderPaymentMapper.updateByOrderTransactionNoSelective(payOrderPayment);
 		if (insertResult<1) {
 			//订单更新失败
 			logger.info(log+"--订单支付流更新失败");
@@ -146,22 +165,25 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--参数"+condition.toString());
 		//插入流水数据
 		PayRefundPayment payRefundPayment=new PayRefundPayment();
-		payRefundPayment.setOrderNo(condition.getOrderNo());
-		payRefundPayment.setOrderTransactionNo(condition.getOutTradeNo());
-		payRefundPayment.setRefundNo(condition.getOrderNo());
 		payRefundPayment.setRefundTransactionNo(condition.getOutRefundNo());
 		payRefundPayment.setCallbackDate(new Date());
-		payRefundPayment.setTimeEnd(condition.getCallbackSuccessTime());
 		payRefundPayment.setCallbackStatus(condition.getCallbackRefundStatus());
-		payRefundPayment.setCallbackReason(condition.getRefundDesc());
-		payRefundPayment.setTransactionId(condition.getCallbackRefundId());
-		payRefundPayment.setRefundFee(condition.getRefundAmount());
 		payRefundPayment.setCallbackMoney(condition.getCallbackRefundAmount());
 		payRefundPayment.setPayType(condition.getPayType());
-		payRefundPayment.setCreated(new Date());
-		int insertResult=payRefundPaymentMapper.insertSelective(payRefundPayment);
+		payRefundPayment.setTransactionId(condition.getCallbackRefundId());
+		payRefundPayment.setRefundFee(condition.getRefundAmount());
+		payRefundPayment.setPayType(condition.getPayType());
+		payRefundPayment.setAppid(condition.getAppid());
+		payRefundPayment.setMchId(condition.getMchId());
+		payRefundPayment.setNonceStr(condition.getNonceStr());
+		payRefundPayment.setCallbackErrorCode(condition.getErrorCode());
+		payRefundPayment.setCallbackErrorMessage(condition.getErrorMessage());
+		payRefundPayment.setCallbackSuccessTime(condition.getCallbackSuccessTime());
+		payRefundPayment.setCallbackRefundRecvAccout(condition.getCallbackRefundRecvAccout());
+		payRefundPayment.setCallbackRefundAccount(condition.getCallbackRefundAccount());
+		int insertResult=payRefundPaymentMapper.updateByRefundTransactionNoSelective(payRefundPayment);
 		if (insertResult<1) {
-			logger.info(log+"--订单退款流水插入失败");
+			logger.info(log+"--订单退款流水更新失败");
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 		//根据退款状态  判断是否更新订单状态
@@ -471,7 +493,7 @@ public class PayServiceImpl implements PayService{
 	}
 
 	@Override
-	public OrderPayVO unifiedOrder(PayPreOrderCondition condition) {
+	public PayPreOrderVO unifiedOrder(PayPreOrderCondition condition) {
 		//验证订单支付参数
 		String log=logLabel+"订单支付unifiedOrder";
 		logger.info(log+"--开始");
@@ -483,6 +505,8 @@ public class PayServiceImpl implements PayService{
 		String spbillCreateIp=condition.getSpbillCreateIp();
 		String body=condition.getBody();
 		String openid=condition.getOpenid();
+		String payType=condition.getPayType();
+		BigDecimal totalAmount=condition.getTotalAmount();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600102);
@@ -500,9 +524,30 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--设备ip为空");
 			throw new BusinessException(BusinessCode.CODE_600105);
 		}
+		if (StringUtils.isBlank(payType)) {
+			logger.info(log+"--支付方式为空");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
+		if (StringUtils.isBlank(payType)) {
+			logger.info(log+"--支付金额为空");
+			throw new BusinessException(BusinessCode.CODE_600106);
+		}
 		logger.info(log+"--参数"+condition.toString());
+		PayPreOrderVO payPreOrderVO=unifiedOrderService.unifiedOrder(condition);
+		if (payPreOrderVO!=null) {
+			//插入流水数据
+			PayOrderPayment payOrderPayment=new PayOrderPayment();
+			payOrderPayment.setOrderNo(orderNo);
+			payOrderPayment.setOrderTransactionNo(payPreOrderVO.getOutTradeNo());
+			payOrderPayment.setCreated(new Date());
+			payOrderPayment.setBuyerId(openid);
+			payOrderPayment.setRealPaymentMoney(totalAmount);
+			payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
+			payOrderPaymentMapper.insertSelective(payOrderPayment);
+			
+		}
 		
-		return unifiedOrderService.unifiedOrder(condition);
+		return payPreOrderVO;
 	}
 
 	@Override
@@ -547,8 +592,22 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600207);
 		}
 		logger.info(log+"--参数"+payRefund.toString());
-		
-		return refundService.refundOrder(payRefund);
+		PayRefundVO vo=refundService.refundOrder(payRefund);
+		if (vo!=null) {
+			//插入退款流水信息
+			PayRefundPayment payRefundPayment=new PayRefundPayment();
+			payRefundPayment.setOrderNo(payRefund.getOrderNo());
+			payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
+			payRefundPayment.setRefundNo(payRefund.getOrderNo());
+			payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
+			payRefundPayment.setRefundFee(payRefund.getRefundAmount());
+			payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
+			payRefundPayment.setCreated(new Date());
+			payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
+			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+			payRefundPaymentMapper.insertSelective(payRefundPayment);
+		}
+		return vo;
 	}
 
 	@Override

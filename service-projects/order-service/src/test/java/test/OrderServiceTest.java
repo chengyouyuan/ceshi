@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -28,16 +29,19 @@ import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCon
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.util.OrderUtil;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.mq.event.EventMessageSender;
+import com.winhxd.b2c.common.mq.event.EventType;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.OrderServiceApplication;
+import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
-import com.winhxd.b2c.order.service.impl.CommonOrderServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OrderServiceApplication.class)
@@ -56,6 +60,13 @@ public class OrderServiceTest {
     private Cache cache;
     @Autowired
     private MessageServiceClient messageServiceClient;
+    
+    @Autowired
+    private EventMessageSender eventMessageSender;
+    
+
+    @Autowired
+    private OrderInfoMapper orderInfoMapper;
     
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceTest.class);
     
@@ -87,15 +98,14 @@ public class OrderServiceTest {
         OrderItemCondition itemCondition = new OrderItemCondition();
         itemCondition.setAmount(2);
         itemCondition.setSkuCode("12346496056002");
-        itemCondition.setPrice(new BigDecimal("234"));
         OrderItemCondition itemCondition1 = new OrderItemCondition();
         itemCondition1.setAmount(2);
         itemCondition1.setSkuCode("12346496056001");
         orderItemConditions.add(itemCondition);
         orderItemConditions.add(itemCondition1);
         OrderCreateCondition createCondition = new OrderCreateCondition();
-        createCondition.setCustomerId(1L);
-        createCondition.setStoreId(12L);
+        createCondition.setCustomerId(19L);
+        createCondition.setStoreId(3L);
         createCondition.setPayType(PayTypeEnum.WECHAT_ONLINE_PAYMENT.getTypeCode());
         createCondition.setOrderItemConditions(orderItemConditions);
         
@@ -133,6 +143,13 @@ public class OrderServiceTest {
     @Test
     public void testStringMessageSender() {
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, "123", 10000);
+        System.out.println("finished" + new Date());
+    }
+    
+    @Test
+    public void testEventMessageSender() {
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderNo("C18081621219186610");
+        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, orderInfo.getOrderNo(), orderInfo);
         System.out.println("finished" + new Date());
     }
     

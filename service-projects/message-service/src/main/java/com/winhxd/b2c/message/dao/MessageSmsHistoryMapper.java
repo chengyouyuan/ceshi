@@ -2,6 +2,7 @@ package com.winhxd.b2c.message.dao;
 
 
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface MessageSmsHistoryMapper {
 
     int insertSelective(MessageSmsHistory record);
 
-    int insertBatch(List<MessageSmsHistory> record);
+    int insertBatch(@Param("msgSmsHistorys") List<MessageSmsHistory> record);
 
     MessageSmsHistory selectByPrimaryKey(Long id);
 

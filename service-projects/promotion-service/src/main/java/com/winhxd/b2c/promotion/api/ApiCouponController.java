@@ -6,10 +6,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponInStoreGetedAndUsedCodition;
-import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
-import com.winhxd.b2c.common.domain.promotion.condition.ReceiveCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponKindsVo;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
@@ -155,7 +152,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/5045/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody CouponPreAmountCondition couponCondition){
+    ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody OrderAvailableCouponCondition couponCondition){
         LOGGER.info("=/api-promotion/coupon/5009/v1/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
@@ -197,7 +194,7 @@ public class ApiCouponController{
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @RequestMapping(value = "/5048/v1/findDefaultCouponByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<CouponVO> findDefaultCouponByOrder(@RequestBody CouponPreAmountCondition couponCondition){
+    public ResponseResult<CouponVO> findDefaultCouponByOrder(@RequestBody OrderAvailableCouponCondition couponCondition){
         LOGGER.info("=/api-promotion/coupon//5048/v1/findDefaultCouponByOrder");
 
         ResponseResult<CouponVO> result = new ResponseResult<>();

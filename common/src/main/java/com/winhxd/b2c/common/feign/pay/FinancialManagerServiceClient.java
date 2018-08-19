@@ -1,31 +1,26 @@
 package com.winhxd.b2c.common.feign.pay;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.FinancialManagerCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialInDetailCondition;
-import com.winhxd.b2c.common.domain.pay.condition.OrderInfoFinancialOutDetailCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialInDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderInfoFinancialOutDetailVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayFinanceAccountDetailVO;
-
-import feign.hystrix.FallbackFactory;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
 public interface FinancialManagerServiceClient {
-	/**出入帐汇总查询*//*
-	@PostMapping("/pay/61001/v1/queryStoreFinancialSummary")
-	ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary();
+	/**出入帐汇总查询*/
+	@RequestMapping(value = "/pay/6101/v1/queryStoreFinancialSummary",method = RequestMethod.POST)
+    ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary(@RequestBody FinancialManagerCondition condition);
 	
-	*//**财务入账明细*//*
+	/**财务入账明细*//*
 	@PostMapping("/pay/61002/v1/queryFinancialInDetail")
 	ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition);
 	
@@ -53,12 +48,12 @@ class FinancialManagerServiceClientFallback implements FinancialManagerServiceCl
 		return new FinancialManagerServiceClientFallback(throwable);
 	}
 
-	/*@Override
-	public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary() {
+	@Override
+	public ResponseResult<PayFinanceAccountDetailVO> queryStoreFinancialSummary(FinancialManagerCondition condition) {
 		logger.error("FinancialManagerServiceClientFallback -> queryStoreFinancialSummary", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
-
+/*
 	@Override
 	public ResponseResult<PagedList<OrderInfoFinancialInDetailVO>> queryFinancialInDetail(@RequestBody OrderInfoFinancialInDetailCondition condition) {
 		logger.error("FinancialManagerServiceClientFallback -> queryFinancialDetail", throwable);

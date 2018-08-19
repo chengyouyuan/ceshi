@@ -44,13 +44,14 @@
         "title": "sku编码"
       },
       {
-        "name": "prodName",
+        "name": "prodName", 
         "title": "商品名称"
       },
       {
-        "name": "skuImage",
-        "title": "商品图片"
-      },
+    	"name": "skuImage",
+    	"type": "image",
+    	"title": "商品图片"
+  	  },
 	  {
         "name": "skuAttributeOption",
         "title": "商品规格"
@@ -115,7 +116,7 @@
         "options":[
           {
           	"label":"全部",
-            "value":null
+            "value":""
           },
           {
             "label":"下架",

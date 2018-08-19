@@ -11,6 +11,6 @@ import lombok.Data;
 @ApiModel("查询购物车")
 @Data
 public class ShopCarQueryCondition extends ApiCondition {
-    @ApiModelProperty(value = "门店ID")
+    @ApiModelProperty(value = "门店ID", required = true)
     private Long storeId;
 }

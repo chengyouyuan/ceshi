@@ -3,9 +3,10 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 
 @Component
 public class WXPay {
@@ -643,7 +644,7 @@ public class WXPay {
     	else {
     		url = WXPayConstants.DOWNLOADFUNDFLOW_URL_SUFFIX;
     	}
-    	String respStr = this.requestWithCert(url, this.fillRequestData(reqData), connectTimeoutMs, readTimeoutMs).trim();
+    	String respStr = this.requestWithCert(url, this.fillRequestDataWithHMACSHA256(reqData), connectTimeoutMs, readTimeoutMs).trim();
     	Map<String, String> ret;
     	// 出现错误，返回XML数据
     	if (respStr.indexOf("<") == 0) {
@@ -657,6 +658,22 @@ public class WXPay {
     		ret.put("data", respStr);
     	}
     	return ret;
+    }
+
+    /**
+     * 向 Map 中添加 appid、mch_id、nonce_str、sign_type、sign <br>
+     * HMACSHA256加密方式
+     * @param reqData
+     * @return
+     * @throws Exception
+     */
+    public Map<String, String> fillRequestDataWithHMACSHA256(Map<String, String> reqData) throws Exception {
+        reqData.put("appid", config.getAppID());
+        reqData.put("mch_id", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", WXPayConstants.HMACSHA256);
+        reqData.put("sign", WXPayUtil.generateSignature(reqData, config.getKey(), SignType.HMACSHA256));
+        return reqData;
     }
 
 
@@ -773,6 +790,24 @@ public class WXPay {
             url = WXPayConstants.SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX;
         } else {
             url = WXPayConstants.TRANSFER_TO_CHANGE_URL_SUFFIX;
+        }
+        return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+    }
+
+    /**
+     * 作用：查询企业付款<br>
+     * 场景：查询企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String queryTransferToChange(Map<String, String> reqData) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
+        } else {
+            url = WXPayConstants.QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
         }
         return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
     }

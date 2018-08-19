@@ -70,6 +70,7 @@
     LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
     LEFT JOIN coupon_activity_store_customer casc ON casc.coupon_activity_template_id=cat.id
     LEFT JOIN store_user_info sui ON sui.id=casc.store_id
+    WHERE 1=1
     <if test="condition.id != null">
       AND ca.id = #{condition.id}
     </if>

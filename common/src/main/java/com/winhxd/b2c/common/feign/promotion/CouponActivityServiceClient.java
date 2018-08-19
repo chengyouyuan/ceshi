@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -47,7 +48,7 @@ public interface CouponActivityServiceClient {
      *@Date   2018/8/17
      */
     @RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
-    ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
+    ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
 
     /**
      *
@@ -147,9 +148,9 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
     }
 
     @Override
-    public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
+    public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
         logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
-        return new ResponseResult<List<CouponActivityImportStoreVO>>(BusinessCode.CODE_1001);
+        return new ResponseResult<List<StoreUserInfoVO>>(BusinessCode.CODE_1001);
     }
 
     @Override

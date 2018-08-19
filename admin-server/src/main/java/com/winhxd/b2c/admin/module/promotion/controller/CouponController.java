@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
 import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
 import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
@@ -85,8 +86,8 @@ public class CouponController {
 
 	@ApiOperation("优惠券活动导入小店信息")
 	@PostMapping(value = "/5050/v1/couponActivityStoreImportExcel")
-	public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
-		ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
+	public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+		ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
 		if (!inputfile.getOriginalFilename().endsWith(".xls")
 				&& !inputfile.getOriginalFilename().endsWith(".xlsx")){
 			result.setMessage("文件扩展名错误！");

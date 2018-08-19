@@ -57,4 +57,9 @@ public class PayTransfersToWxBankCondition extends ApiCondition implements Seria
      */
     private String desc;
 
+    /**
+     * 操作人ID
+     */
+    private String operaterID;
+
 }

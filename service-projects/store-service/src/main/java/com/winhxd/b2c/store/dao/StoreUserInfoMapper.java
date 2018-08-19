@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.condition.StoreListByKeywordsCondition;
 
 @Repository
 public interface StoreUserInfoMapper {

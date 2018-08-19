@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.system.login.condition;
+package com.winhxd.b2c.common.domain.store.condition;
 
 import java.util.List;
 

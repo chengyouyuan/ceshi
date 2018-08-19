@@ -203,7 +203,12 @@ public class BeanAndXmlUtil {
                 if(null == field.get(obj)){
                     continue;
                 }
-                map.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
+                if(Date.class.getName().equals(field.getType().getName())) {
+                    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    map.put(humpToUnderline(field.getName()), df.format(field.get(obj)));
+                } else{
+                    map.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,8 +1,8 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
@@ -109,6 +116,23 @@ public class WXPayApiImpl implements WXPayApi {
         }
         return requestBase;
     }
+	
+	
+	/**
+	 * 添加 appid、mch_id、nonce_str、sign_type
+	 * 该函数适用于 签名方式为HMACSHA256 接口
+	 * 
+	 * @param requestBase
+	 * @return
+	 * @throws Exception
+	 */
+	private RequestBase fillRequestDTOByHMACSHA256(RequestBase requestBase){
+		requestBase.setAppid(config.getAppID());
+		requestBase.setMchId(config.getMchID());
+		requestBase.setNonceStr(WXPayUtil.generateNonceStr());
+		requestBase.setSignType(WXPayConstants.HMACSHA256);
+		return requestBase;
+	}
 	
 	/**
 	 * 
@@ -304,4 +328,91 @@ public class WXPayApiImpl implements WXPayApi {
 		}
 		return resp;
 	}
+
+    /**
+     * 作用：对账单下载<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付<br>
+     * 其他：无论是否成功都返回Map。若成功，返回的Map中含有return_code、return_msg、data，
+     *      其中return_code为`SUCCESS`，data为对账单数据。
+     * @param reqData 向wxpay post的请求数据
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return 经过封装的API返回数据
+     * @throws Exception
+     */
+    public Map<String, String> downloadBill(PayStatementDTO payStatementDTO) throws Exception {
+    	
+		//填充配置参数
+		this.fillRequestDTO(payStatementDTO);
+        payStatementDTO.setSign(this.generateSign(payStatementDTO));
+		//bean转map
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payStatementDTO);
+        
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_DOWNLOADBILL_URL_SUFFIX;
+        }
+        else {
+            url = WXPayConstants.DOWNLOADBILL_URL_SUFFIX;
+        }
+        String respStr = this.requestWithoutCert(url, reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs()).trim();
+        
+        Map<String, String> ret;
+        // 出现错误，返回XML数据
+        if (respStr.indexOf("<") == 0) {
+            ret = WXPayUtil.xmlToMap(respStr);
+        }
+        else {
+            // 正常返回csv数据
+            ret = new HashMap<String, String>();
+            ret.put("return_code", WXPayConstants.SUCCESS);
+            ret.put("return_msg", "ok");
+            ret.put("data", respStr);
+        }
+        return ret;
+    }
+    
+    /**
+     * 作用：资金账单下载<br>
+     * 场景：资金账单中的数据反映的是商户微信账户资金变动情况 <br>
+     * 其他：无论是否成功都返回Map。若成功，返回的Map中含有return_code、return_msg、data，
+     *      其中return_code为`SUCCESS`，data为资金账单数据。
+     * @param reqData 向wxpay post的请求数据
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return 经过封装的API返回数据
+     * @throws Exception
+     */
+    public Map<String, String> downloadFundFlow(PayFinancialBillDTO payFinancialBillDTO) throws Exception {
+
+		//填充配置参数
+		this.fillRequestDTOByHMACSHA256(payFinancialBillDTO);
+        payFinancialBillDTO.setSign(this.generateSign(payFinancialBillDTO));
+		//bean转map
+        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payFinancialBillDTO);
+        
+    	String url;
+    	if (this.useSandbox) {
+    		url = WXPayConstants.SANDBOX_DOWNLOADFUNDFLOW_URL_SUFFIX;
+    	}
+    	else {
+    		url = WXPayConstants.DOWNLOADFUNDFLOW_URL_SUFFIX;
+    	}
+    	String respStr = this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs()).trim();
+    	Map<String, String> ret;
+    	// 出现错误，返回XML数据
+    	if (respStr.indexOf("<") == 0) {
+    		ret = WXPayUtil.xmlToMap(respStr);
+    	}
+    	else {
+    		// 正常返回csv数据
+    		ret = new HashMap<String, String>();
+    		ret.put("return_code", WXPayConstants.SUCCESS);
+    		ret.put("return_msg", "ok");
+    		ret.put("data", respStr);
+    	}
+    	return ret;
+    }
+
+    
 }

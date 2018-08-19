@@ -15,13 +15,14 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = DownLoadStatementClientFallback.class)
 public interface DownLoadStatementClient {
 
-	@PostMapping(value = "download/6155/v1/downloadStatement", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6155/v1/downloadStatement", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> downloadStatement();
 	
-	@PostMapping(value = "download/6156/v1/downloadFundFlow", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6156/v1/downloadFundFlow", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> downloadFundFlow();
 	
 }
+
 class DownLoadStatementClientFallback implements DownLoadStatementClient, FallbackFactory<DownLoadStatementClient>{
 	private static final Logger logger = LoggerFactory.getLogger(DownLoadStatementClientFallback.class);
 	

@@ -40,10 +40,11 @@ public class DownLoadStatementTask {
     "0 15 10 ? * MON-FRI"    每个周一、周二、周三、周四、周五的10：15触发
     */
 //    @Scheduled(cron = "0 0 10 * * ?")    //每天上午10点执行
-    @Scheduled(cron = "0 35 20 * * ?")    //每天上午10点执行
+    @Scheduled(cron = "0 35 10 * * ?")    //每天上午10点执行
     public void downLoadStatement() {
         System.out.println("我每天上午10点开始执行");
         try {
+//        	ApiCondition condition = new ApiCondition();
         	String statementResult = downLoadStatementClient.downloadStatement().getData();
         	String fundFlowResult = downLoadStatementClient.downloadFundFlow().getData();
             //定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑

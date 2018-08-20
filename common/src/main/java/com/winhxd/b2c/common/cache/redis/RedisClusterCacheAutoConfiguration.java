@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.cache.redis;
 
+import com.winhxd.b2c.common.cache.Cache;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,7 +37,7 @@ public class RedisClusterCacheAutoConfiguration {
     }
 
     @Bean
-    public RedisClusterCache redisClusterCache() {
+    public Cache redisClusterCache() {
         JedisPoolConfig config = redisClusterCacheJedisPoolConfig();
         return new RedisClusterCache(parseHostAndPort(jedisClusterNode), timeout, maxAttempts, config);
     }

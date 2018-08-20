@@ -1,6 +1,6 @@
 package com.winhxd.b2c.pay.weixin.dao;
 
-import com.winhxd.b2c.pay.weixin.model.PayStatement;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 
 public interface PayStatementMapper {
     int deleteByPrimaryKey(Long id);

@@ -8,10 +8,21 @@ package com.winhxd.b2c.common.mq;
  */
 public enum MQDestination {
     /**
-     *
+     * 云信消息
      */
     NETEASE_MESSAGE,
+    /**
+     * 短信消息
+     */
     SMS_MESSAGE,
+    /**
+     * 小程序模板消息
+     */
+    MINI_TEMPLATE_MESSAGE,
+    /**
+     * 云信延迟消息（后台消息管理中，有定时推送云信消息功能）
+     */
+    NETEASE_MESSAGE_DELAY(true),
     /**
      * 订单超时未接单延时消息
      */

@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(tags = "ApiPay")
-@RequestMapping(value = "/api-pay/withdrawal")
+@RequestMapping(value = "/api-pay/pay")
 public class ApiPayStoreWithdrawalController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreWithdrawalController.class);
 	
@@ -65,7 +65,6 @@ public class ApiPayStoreWithdrawalController {
 		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
 		@ApiResponse(code = BusinessCode.CODE_610025, message = "请先绑定银行卡"),
 		@ApiResponse(code = BusinessCode.CODE_610026, message = "请先绑定微信账号")
-		
 	})
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){

@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -20,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
@@ -30,8 +28,6 @@ import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.util.OrderUtil;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -42,6 +38,7 @@ import com.winhxd.b2c.order.OrderServiceApplication;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
+import com.winhxd.b2c.order.util.OrderUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OrderServiceApplication.class)
@@ -121,8 +118,8 @@ public class OrderServiceTest {
     @Test
     public void testOrderConfirm4Store() throws InterruptedException {
         OrderConfirmCondition orderConfirmCondition = new OrderConfirmCondition();
-        orderConfirmCondition.setOrderNo("C18081809917533139");
-        orderConfirmCondition.setStoreId(12L);
+        orderConfirmCondition.setOrderNo("C18082013436216345");
+        orderConfirmCondition.setStoreId(3L);
         orderConfirmCondition.setOrderTotal(new BigDecimal("0.1"));
         orderService.orderConfirm4Store(orderConfirmCondition);
         Thread.sleep(1000000L);
@@ -168,9 +165,9 @@ public class OrderServiceTest {
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, audioType, treeCode);
-            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
-                throw new BusinessException(BusinessCode.CODE_1001);
-            }
+//            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
+//                throw new BusinessException(BusinessCode.CODE_1001);
+//            }
         } catch (Exception e) {
             logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
             logger.error("订单待提货给门店发送消息失败：", e);
@@ -184,7 +181,7 @@ public class OrderServiceTest {
             
             @Override
             public void run() {
-                OrderUtil.newOrderSendMsg2Store(messageServiceClient, 12L);
+//                OrderUtil.newOrderSendMsg2Store(messageServiceClient, 12L);
                 
             }
         });
@@ -193,4 +190,19 @@ public class OrderServiceTest {
         a.join();
         Thread.sleep(1000000L);
     }
+    
+    @Test
+    public void testgetOrderPayInfo(){
+        orderQueryService.getOrderPayInfo("C18082010588043313", null, null, 24L, "ofTZZ5NwyEgOqgfwkISUhEwrIWT0");
+    }
+    
+    @Test
+    public void testorderPriceChange4Store(){
+        OrderConfirmCondition condition = new OrderConfirmCondition();
+        condition.setOrderNo("C18082013436216345");
+        condition.setOrderTotal(new BigDecimal("33"));
+        condition.setStoreId(3L);
+        orderService.orderPriceChange4Store(condition);
+    }
+    
 }

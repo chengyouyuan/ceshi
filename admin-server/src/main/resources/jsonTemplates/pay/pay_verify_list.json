@@ -22,9 +22,14 @@
       {
         "name": "核销",
         "event": {
-          "type": "patch",
-          "ajaxType": "get",
-          "path": "/pay/verify/verifyBySummary"
+          "type": "batch",
+          "ajaxType": "post",
+          "params": [ "storeId", "lastRecordedTime" ],
+          "path": "/pay/verify/verifyBySummary",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],

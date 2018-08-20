@@ -1,6 +1,21 @@
 package com.winhxd.b2c.store.controller;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -26,20 +41,6 @@ import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import com.winhxd.b2c.store.service.StoreService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -110,7 +111,7 @@ public class StoreServiceController implements StoreServiceClient {
 		//参数检验
 		if(storeId==null||CollectionUtils.isEmpty(skuCodes)){
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
-			 result= new ResponseResult<>(BusinessCode.CODE_1007);
+			 result= new ResponseResult<>(BusinessCode.CODE_103101);
 		}
 		logger.info("StoreServiceClient-->findShopCarProd 入参：skuCodes="+skuCodes+",storeId="+storeId);
 		String []skuCodeArray=new String[skuCodes.size()];
@@ -122,7 +123,7 @@ public class StoreServiceController implements StoreServiceClient {
 		//查询结果不为空
 		if(CollectionUtils.isNotEmpty(storeProds)){
 			if(storeProds.size()!=skuCodes.size()){
-				result= new ResponseResult<>(BusinessCode.CODE_200012);
+				result= new ResponseResult<>(BusinessCode.CODE_103102);
 				return result;
 			}
 			
@@ -138,7 +139,7 @@ public class StoreServiceController implements StoreServiceClient {
 			//调用商品feigin查询商品基本信息
 			List<ProductSkuVO> prodList=prodResult.getData();
 			if(prodList==null||(prodList.size()!=skuCodes.size())){
-			    result= new ResponseResult<>(BusinessCode.CODE_200012);
+			    result= new ResponseResult<>(BusinessCode.CODE_103102);
 				return result;
 			}
 			
@@ -216,7 +217,7 @@ public class StoreServiceController implements StoreServiceClient {
 		ResponseResult<Void> result=new ResponseResult<>();
 		logger.info("StoreServiceClient-->findShopCarProd 入参：conditions="+conditions);
 		if(conditions==null||conditions.size()<=0){
-		    result=new ResponseResult<>(BusinessCode.CODE_1007);
+		    result=new ResponseResult<>(BusinessCode.CODE_102401);
 		    return result;
 		}
 		List<StoreProductStatistics> beanList=new ArrayList<>();
@@ -224,7 +225,7 @@ public class StoreServiceController implements StoreServiceClient {
 		for(StoreProductStatisticsCondition condition:conditions){
 			StoreProductStatistics bean=new StoreProductStatistics();
 			if(condition.getStoreId()==null||StringUtils.isEmpty(condition.getSkuCode())){
-			    result=new ResponseResult<>(BusinessCode.CODE_1007);
+			    result=new ResponseResult<>(BusinessCode.CODE_102401);
 				return result;
 			}
 			BeanUtils.copyProperties(condition, bean);

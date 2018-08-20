@@ -1,8 +1,11 @@
 package com.winhxd.b2c.message.service.impl;
 
-import com.winhxd.b2c.message.service.SMSService;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.sms.SmsServerSendUtils;
-import org.json.simple.JSONObject;
+import com.winhxd.b2c.message.sms.model.SmsSend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +17,23 @@ import org.springframework.stereotype.Service;
  * @description
  */
 @Service
-public class SMSServiceImpl implements SMSService {
+public class SMSServiceImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SMSServiceImpl.class);
 
 	@Autowired
 	private SmsServerSendUtils smsServer;
 
-	@Override
-	public void sendSMS(String mobile, String content) {
+	@StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
+	public void sendSMS(String smsConditionJson) {
+		LOGGER.info("消息服务->发送短信，SMSServiceImpl.sendSMS(),smsConditionJson={}",smsConditionJson);
+		SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
+		String mobile = smsCondition.getMobile();
+		String content = smsCondition.getContent();
 		try {
-			JSONObject value = new JSONObject();
-			value.put("telePhoneNo", mobile);
-			value.put("content", content);
-//            if (StringUtils.isNotBlank(username)) {
-//                value.put("username", username);
-//            }
-//            if (StringUtils.isNotBlank(type)) {
-//                value.put("type", type);
-//            }
-//            if (StringUtils.isNotBlank(grp)) {
-//                value.put("grp", grp);
-//            }"send_sms_message",
-			smsServer.sendSms(value.toJSONString());
+			SmsSend smsSend = new SmsSend();
+			smsSend.setTelePhoneNo(mobile);
+			smsSend.setContent(content);
+			smsServer.sendSms(smsSend);
 		} catch (Exception e) {
 			LOGGER.error("发送短信失败", e);
 		}

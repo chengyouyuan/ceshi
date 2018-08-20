@@ -2,11 +2,11 @@ package com.winhxd.b2c.pay.service;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
@@ -93,10 +93,11 @@ public interface PayService {
     
     /**
      * @author liuhanning
-     * @date  2018年8月17日 上午10:46:26
-     * @Description 门店绑定微信钱包
+     * @date  2018年8月20日 上午11:09:58
+     * @Description 查询订单发起过支付
      * @param condition
+     * @return
      */
-    void storeBindStoreWallet(StoreBindStoreWalletCondition condition);
+    Boolean orderIsPay(OrderIsPayCondition condition);
 	
 }

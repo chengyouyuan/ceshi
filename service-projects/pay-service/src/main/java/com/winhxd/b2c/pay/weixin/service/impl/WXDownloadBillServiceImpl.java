@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -14,22 +13,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
+import com.winhxd.b2c.common.domain.pay.model.PayStatementCount;
+import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
+import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConfig;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.impl.WXPayApiImpl;
-import com.winhxd.b2c.pay.weixin.constant.BillType;
 import com.winhxd.b2c.pay.weixin.dao.PayFinancialBillCountMapper;
 import com.winhxd.b2c.pay.weixin.dao.PayFinancialBillMapper;
 import com.winhxd.b2c.pay.weixin.dao.PayStatementCountMapper;
 import com.winhxd.b2c.pay.weixin.dao.PayStatementDownloadRecordMapper;
 import com.winhxd.b2c.pay.weixin.dao.PayStatementMapper;
-import com.winhxd.b2c.pay.weixin.model.PayFinancialBill;
-import com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount;
-import com.winhxd.b2c.pay.weixin.model.PayStatement;
-import com.winhxd.b2c.pay.weixin.model.PayStatementCount;
-import com.winhxd.b2c.pay.weixin.model.PayStatementDownloadRecord;
 import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 
 /**
@@ -38,15 +36,10 @@ import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
  *
  * 2018年8月15日
  */
-@Service(value = "WXDownloadBillService")
+@Service
 public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 
     private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
-    
-    /**
-     * 通信成功返回信息
-     */
-    private static final String OK = "OK";
     
     /**
      * 微信侧返回数据的分隔符
@@ -74,41 +67,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     
     /**
-     * 微信返参
-     */
-    private static final String RETURN_CODE = "return_code";
-    
-    /**
-     * 微信返参
-     */
-    private static final String RETURN_MSG = "return_msg";
-    
-    /**
-     * 微信返参
-     */
-    private static final String RESULT_CODE = "result_code";
-    
-    /**
-     * 微信返参
-     */
-    private static final String ERR_CODE = "err_code";
-    
-    /**
-     * 微信返参
-     */
-    private static final String ERR_CODE_DES = "err_code_des";
-    
-    /**
      * 微信返回的时间格式，不确定是哪个，例：2014-11-1016：33：45           2018-02-01 04:21:23
      */
     SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-ddHH：mm：ss");
     SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     @Autowired
-    private WXPayApiImpl wXPayApiImpl;
-    
-    @Autowired
-    private WXPayConfig wXPayConfig;
+    private WXPayApi wXPayApi;
     
     @Autowired
     private PayStatementMapper payStatementMapper;
@@ -127,43 +92,46 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	
 	
 	@Override
-	public String downloadStatement() {
-		Date billDate = DateUtils.addDays(new Date(), -1);
+	public String downloadStatement(Date billDate) {
+		if (billDate == null) {
+			billDate = DateUtils.addDays(new Date(), -1);
+		}
 		
 		PayStatementDTO dto = new PayStatementDTO();
 		dto.setBillDate(sdf.format(billDate));
 		dto.setBillType(PayStatementDTO.BillType.ALL.getText());
 		
 		try {
-			Map<String, String> billMap = wXPayApiImpl.downloadBill(dto);
+			PayBillDownloadResponseDTO responseDTO = wXPayApi.downloadBill(dto);
 			
 			//通信失败，则记录失败原因到记录表
-			if (WXPayConstants.FAIL.equals(billMap.get(RETURN_CODE))) {
+			if (WXPayConstants.FAIL.equals(responseDTO.getReturnCode())) {
 				
-				this.dealRequestFail(billDate, BillType.STATEMENT.getCode(), billMap.get(RETURN_MSG));
-				this.dealRequestFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get(RETURN_MSG));
-				logger.info("对账单下载失败，返回信息：{}", billMap.get(RETURN_CODE));
+				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getReturnMsg());
+				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getReturnMsg());
+				logger.info("对账单下载失败，返回信息：{}", responseDTO.getReturnCode());
 
 			//通信成功
 			} else {
 				//业务失败，记录失败原因到记录表
-				if (WXPayConstants.FAIL.equals(billMap.get(RESULT_CODE))) {
+				if (WXPayConstants.FAIL.equals(responseDTO.getResultCode())) {
 					
-					this.dealBusiFail(billDate, BillType.STATEMENT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
-					this.dealBusiFail(billDate, BillType.STATEMENT_COUNT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
-					logger.info("对账单下载失败，错误码：{}；错误信息：{}", billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
+					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
+					logger.info("对账单下载失败，错误码：{}；错误信息：{}", responseDTO.getErrCode(), responseDTO.getErrCodeDes());
 					
 				//成功则开始插入数据
 				}else{
 					//获取微信返回的总数据
-					String data = billMap.get("data");
+					String data = responseDTO.getData();
 					//去掉表头
 					String substring1 = data.substring(data.indexOf(DATA_SEPARATE));
 					//去掉统计数据
 					String substring2 = substring1.substring(0, substring1.indexOf(STATEMENT_REMOVE_TAIL)).replace(DATA_SEPARATE, "");
 					//把数据按条分割
-					substring2 = substring2.replace("\r\n", "\n");
-					String[] dataArray = substring2.split("\n");
+//					substring2 = substring2.replace("\r\n", "\n");
+//					String[] dataArray = substring2.split("\n");
+					String[] dataArray = substring2.split(System.lineSeparator());
 //					String lineSeparator = System.lineSeparator();
 					List<PayStatement> list = new ArrayList<PayStatement>();
 					for (String everyData : dataArray) {
@@ -178,7 +146,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 						payStatementMapper.insertSelective(payStatement);
 					}
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, BillType.STATEMENT.getCode());
+					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode());
 					logger.info("对账单插入成功");
 					
 //					=====================处理统计数据=================================================================================
@@ -190,13 +158,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					payStatementCountMapper.insertSelective(statementCount);
 
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, BillType.STATEMENT_COUNT.getCode());
+					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
 					logger.info("对账单统计数据插入成功");
 					
 				}
 			}
 			
-			logger.info(billMap.toString());
+			logger.info(responseDTO.toString());
 		} catch (Exception e) {
 			logger.error("内部错误，下载对账单失败");
 			e.printStackTrace();
@@ -218,9 +186,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);
 		record.setBillType(billType);
-		record.setReturnCode(WXPayConstants.FAIL);
-		//通信失败时只有return_msg，没有业务结果
-		record.setReturnMsg(returnMsg);
+		record.setErrCode(WXPayConstants.FAIL);
+		record.setErrCodeDes(returnMsg);
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -240,11 +208,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);
 		record.setBillType(billType);
-		record.setReturnCode(WXPayConstants.SUCCESS);
-		record.setReturnMsg(OK);
-		record.setResultCode(WXPayConstants.FAIL);
 		record.setErrCode(errCode);
 		record.setErrCodeDes(errCodeDes);
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -261,9 +227,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record .setBillDate(billDate);
 		record.setBillType(billType);
-		record.setReturnCode(WXPayConstants.SUCCESS);
-		record.setReturnMsg(OK);
-		record.setResultCode(WXPayConstants.SUCCESS);
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -362,45 +326,48 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	}
 	
 	@Override
-	public String downloadFundFlow() {
+	public String downloadFundFlow(Date billDate) {
 
-		Date billDate = DateUtils.addDays(new Date(), -1);
+		if (billDate == null) {
+			billDate = DateUtils.addDays(new Date(), -1);
+		}
 		
 		PayFinancialBillDTO dto = new PayFinancialBillDTO();
 		dto.setBillDate(sdf.format(billDate));
 		dto.setAccountType(PayFinancialBillDTO.SourceType.BASIC.getText());
 		
 		try {
-			Map<String, String> billMap = wXPayApiImpl.downloadFundFlow(dto);
+			PayBillDownloadResponseDTO billMap = wXPayApi.downloadFundFlow(dto);
 
 			logger.info("资金账单下载返回数据：{}", String.valueOf(billMap.toString()));
 			//通信失败，则记录失败原因到记录表
-			if (WXPayConstants.FAIL.equals(billMap.get(RETURN_CODE))) {
+			if (WXPayConstants.FAIL.equals(billMap.getReturnCode())) {
 				
-				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get(RETURN_MSG));
-				this.dealRequestFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get(RETURN_MSG));
-				logger.info("资金账单下载失败，返回信息：{}", billMap.get(RETURN_CODE));
+				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getReturnMsg());
+				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getReturnMsg());
+				logger.info("资金账单下载失败，返回信息：{}", billMap.getReturnCode());
 
 			//通信成功
 			} else {
 				//业务失败，记录失败原因到记录表
-				if (WXPayConstants.FAIL.equals(billMap.get(RESULT_CODE))) {
+				if (WXPayConstants.FAIL.equals(billMap.getResultCode())) {
 					
-					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
-					this.dealBusiFail(billDate, BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
-					logger.info("资金账单下载失败，错误码：{}；错误信息：{}", billMap.get(ERR_CODE), billMap.get(ERR_CODE_DES));
+					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
+					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
+					logger.info("资金账单下载失败，错误码：{}；错误信息：{}", billMap.getErrCode(), billMap.getErrCodeDes());
 					
 				//成功则开始插入数据
 				}else{
 					//获取微信返回的总数据
-					String data = billMap.get("data");
+					String data = billMap.getData();
 					//去掉表头
 					String substring1 = data.substring(data.indexOf(DATA_SEPARATE));
 					//去掉统计数据
 					String substring2 = substring1.substring(0, substring1.indexOf(FINANCIAL_BILL_REMOVE_TAIL)).replace(DATA_SEPARATE, "");
 					//把数据按条分割
-					substring2 = substring2.replace("\r\n", "\n");
-					String[] dataArray = substring2.split("\n");
+//					substring2 = substring2.replace("\r\n", "\n");
+//					String[] dataArray = substring2.split("\n");
+					String[] dataArray = substring2.split(System.lineSeparator());
 					List<PayFinancialBill> list = new ArrayList<PayFinancialBill>();
 					for (String everyData : dataArray) {
 						//把每一条数据按逗号分割
@@ -414,7 +381,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 						payFinancialBillMapper.insertSelective(payFinancialBill);
 					}
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, BillType.FINANCIAL_BILL.getCode());
+					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode());
 					logger.info("资金账单插入成功");
 					
 //					=====================处理统计数据=================================================================================
@@ -426,7 +393,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					payFinancialBillCountMapper.insertSelective(payFinancialBillCount);
 
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, BillType.FINANCIAL_BILL_COUNT.getCode());
+					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
 					logger.info("资金账单统计数据插入成功");
 					
 				}
@@ -475,6 +442,12 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		financialBillCount.setExpenditureAmountCount(new BigDecimal(totalDataArray[4]));
 		financialBillCount.setBillDate(billDate);
 		return financialBillCount;
+	}
+
+	@Override
+	public List<PayStatementDownloadRecord> findDownloadRecord(
+			PayStatementDownloadRecord record) {
+		return payStatementDownloadRecordMapper.selectByModel(record);
 	}
 
 }

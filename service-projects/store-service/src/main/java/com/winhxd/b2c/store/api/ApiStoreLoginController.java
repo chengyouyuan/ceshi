@@ -1,11 +1,24 @@
 package com.winhxd.b2c.store.api;
 
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoSimpleVO;
@@ -18,22 +31,13 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.store.service.StoreLoginService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 /**
  * @author wufuyun
@@ -77,10 +81,11 @@ public class ApiStoreLoginController {
 	@Autowired
 	StoreServiceClient storeServiceClient;
 	@Autowired
-	MessageServiceClient messageServiceClient;
+	MessageSendUtils messageSendUtils;
 	@Autowired
 	StoreHxdServiceClient storeHxdServiceClient;
-
+	@Autowired
+	MessageServiceClient messageServiceClient;
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:11:59
@@ -91,11 +96,11 @@ public class ApiStoreLoginController {
 	@ApiOperation(value = "B端登录验证")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1021, message = "您的账号或者密码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
+			@ApiResponse(code = BusinessCode.CODE_100808, message = "验证码错误"),
+			@ApiResponse(code = BusinessCode.CODE_100821, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_1022, message = "您还不是惠下单用户快去注册吧") })
+			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
+			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧") })
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
@@ -118,7 +123,7 @@ public class ApiStoreLoginController {
 			if (!storeUserInfoCondition.getVerificationCode().equals(
 					cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeUserInfoCondition.getStoreMobile()))) {
 				logger.info("{} - , 验证码错误");
-				throw new BusinessException(BusinessCode.CODE_1008);
+				throw new BusinessException(BusinessCode.CODE_100808);
 			}
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -127,7 +132,7 @@ public class ApiStoreLoginController {
 			 */
 			if (db == null) {
 				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				result = new ResponseResult<>(BusinessCode.CODE_1022);
+				result = new ResponseResult<>(BusinessCode.CODE_100822);
 				return result;
 			} else {
 				
@@ -156,7 +161,7 @@ public class ApiStoreLoginController {
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
 				logger.info("{} - , 您的账号或者密码错误");
-				throw new BusinessException(BusinessCode.CODE_1021);
+				throw new BusinessException(BusinessCode.CODE_100821);
 			} else {
 				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -195,7 +200,7 @@ public class ApiStoreLoginController {
 					 */
 					if (null != db) {
 						logger.info("{} - , 该微信号已绑定过账号");
-						throw new BusinessException(BusinessCode.CODE_1010);
+						throw new BusinessException(BusinessCode.CODE_100810);
 					}
 					/*
 					 * 插入数据库
@@ -228,14 +233,14 @@ public class ApiStoreLoginController {
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
 				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_1022);
+				throw new BusinessException(BusinessCode.CODE_100822);
 			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
 				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_1022);
+				throw new BusinessException(BusinessCode.CODE_100822);
 			}
 			/**
 			 * 调用云信服务获取用户信息
@@ -263,7 +268,7 @@ public class ApiStoreLoginController {
 			if (!storeUserInfoCondition.getVerificationCode().equals(
 					cache.get(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeUserInfoCondition.getStoreMobile()))) {
 				logger.info("{} - , 验证码错误");
-				throw new BusinessException(BusinessCode.CODE_1008);
+				throw new BusinessException(BusinessCode.CODE_100808);
 			}
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -272,7 +277,7 @@ public class ApiStoreLoginController {
 			 */
 			if (db == null) {
 				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_1022);
+				throw new BusinessException(BusinessCode.CODE_100822);
 			} else {
 				/**
 				 * 调用云信服务获取用户信息
@@ -300,7 +305,7 @@ public class ApiStoreLoginController {
 			StoreUserSimpleInfo map = object.getData();
 			if (map == null) {
 				logger.info("{} - , 您的账号或者密码错误");
-				throw new BusinessException(BusinessCode.CODE_1021);
+				throw new BusinessException(BusinessCode.CODE_100821);
 			} else {
 				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
@@ -356,7 +361,7 @@ public class ApiStoreLoginController {
 			netease =  messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
 			if(netease.getCode() != 0){
 				logger.info("{} - , 云信获取用户信息失败");
-				throw new BusinessException(BusinessCode.CODE_1015);
+				throw new BusinessException(BusinessCode.CODE_100815);
 			}
 			accountVO =  netease.getData();
 			vo.setNeteaseAccid(accountVO.getAccid());
@@ -382,9 +387,9 @@ public class ApiStoreLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_1012, message = "验证码请求时长没有超过一分钟"),
-			@ApiResponse(code = BusinessCode.CODE_1022, message = "您还不是惠下单用户快去注册吧"),
-			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过账号") })
+			@ApiResponse(code = BusinessCode.CODE_100912, message = "验证码请求时长没有超过一分钟"),
+			@ApiResponse(code = BusinessCode.CODE_100922, message = "您还不是惠下单用户快去注册吧"),
+			@ApiResponse(code = BusinessCode.CODE_100910, message = "该微信号已绑定过账号") })
 	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
@@ -403,7 +408,7 @@ public class ApiStoreLoginController {
 		StoreUserSimpleInfo map = object.getData();
 		if (map == null) {
 			logger.info("{} - , 您还不是惠下单用户快去注册吧");
-			throw new BusinessException(BusinessCode.CODE_1022);
+			throw new BusinessException(BusinessCode.CODE_100922);
 		} else {
 			/**
 			 * 用惠下单StoreCustomerId查询惠小店数据库是否已经存在
@@ -443,7 +448,7 @@ public class ApiStoreLoginController {
 					 */
 					if (null != db) {
 						logger.info("{} - , 该微信号已绑定过账号");
-						throw new BusinessException(BusinessCode.CODE_1010);
+						throw new BusinessException(BusinessCode.CODE_100910);
 					}
 					/*
 					 * 插入数据库
@@ -510,7 +515,7 @@ public class ApiStoreLoginController {
 		String verificationCode = "";
 		if (cache.exists(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile)) {
 			logger.info("{} - , 请求验证码时长为超过一分钟");
-			throw new BusinessException(BusinessCode.CODE_1012);
+			throw new BusinessException(BusinessCode.CODE_100912);
 		}
 		verificationCode =  GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
@@ -524,7 +529,10 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-		messageServiceClient.sendSMS(storeMobile, content);
+		SMSCondition sMSCondition = new SMSCondition();
+		sMSCondition.setContent(content);
+		sMSCondition.setMobile(storeMobile);
+		messageSendUtils.sendSMS(sMSCondition);
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}

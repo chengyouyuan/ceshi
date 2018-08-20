@@ -11,7 +11,10 @@ spring:
     multipart:
       maxFileSize: 100MB
       maxRequestSize: 100MB
-
+  freemarker:
+    settings:
+      number_format: 0.##
+      
 eureka: 
   client:
     healthcheck: 

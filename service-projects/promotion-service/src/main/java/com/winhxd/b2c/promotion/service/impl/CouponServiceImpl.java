@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
@@ -465,8 +466,11 @@ public class CouponServiceImpl implements CouponService {
         return true;
     }
 
-    @EventMessageListener(value = EventTypeHandler.EVENT_ORDER_UNTREAD_COUPON_HANDLER)
-    public void eventorderUntreadCoupon(String orderNo,OrderUntreadCouponCondition condition) {
+    @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_UNTREAD_COUPON_HANDLER)
+    public void eventOrderUntreadCoupon(String orderNo, OrderInfo order) {
+        OrderUntreadCouponCondition condition = new OrderUntreadCouponCondition();
+        condition.setStatus("4");
+        condition.setOrderNo(order.getOrderNo());
         this.orderUntreadCoupon(condition);
     }
 

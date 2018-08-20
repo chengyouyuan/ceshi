@@ -23,19 +23,18 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
 import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
 import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
@@ -45,7 +44,6 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
@@ -759,39 +757,20 @@ public class PayServiceImpl implements PayService{
 		return payStoreWalletMapper.selectByStoreId(storeUser.getBusinessId());
 	}
 
-
 	@Override
-	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
-		String log=logLabel+"门店绑定storeBindStoreWallet";
+	public Boolean orderIsPay(OrderIsPayCondition condition) {
+		String log=logLabel+"查询订单是否支付过orderIsPay";
 		logger.info(log+"--开始");
-		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser==null||storeUser.getBusinessId()==null) {
-			logger.info("--未获取到门店信息");
-			throw new BusinessException(BusinessCode.CODE_600701);
+		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_601601);
 		}
-		if (condition==null) {
-			logger.info("--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600702);
+		Boolean isPay=false;
+		List<PayOrderPayment> list=payOrderPaymentMapper.selectByOrderNo(condition.getOrderNo());
+		if (CollectionUtils.isNotEmpty(list)) {
+			//已经有过支付流水
+			isPay=true;
 		}
-		if (StringUtils.isBlank(condition.getOpenid())) {
-			logger.info("--openid为空");
-			throw new BusinessException(BusinessCode.CODE_600703);
-		}
-		if (StringUtils.isBlank(condition.getName())) {
-			logger.info("--真实姓名为空");
-			throw new BusinessException(BusinessCode.CODE_600704);
-		}
-		if (StringUtils.isBlank(condition.getNick())) {
-			logger.info("--昵称为空");
-			throw new BusinessException(BusinessCode.CODE_600705);
-		}
-		logger.info("--参数"+condition.toString());
-		PayStoreWallet wallet=new PayStoreWallet();
-		wallet.setStoreId(storeUser.getBusinessId());
-		wallet.setName(condition.getName());
-		wallet.setNick(condition.getNick());
-		wallet.setOpenid(condition.getOpenid());
-		wallet.setStatus((short)1);
-		payStoreWalletMapper.insertSelective(wallet);
+		return isPay;
 	}
 }

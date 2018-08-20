@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -290,7 +291,7 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
-		if(condition==null || condition.getTitle()==null || condition.getInvestorId()==null
+		if(condition==null || StringUtils.isBlank(condition.getTitle()) || condition.getInvestorId()==null
 		   || condition.getGradeId()==null || condition.getApplyRuleId()==null
 		   || condition.getPayType()==null || condition.getCalType()==null	){
            throw new BusinessException(BusinessCode.CODE_500010,"优惠券模板必填参数错误");
@@ -375,8 +376,11 @@ public class CouponController {
 		/**
 		 *  校验参数
 		 */
+		if(detailData==null){
+			throw new BusinessException(BusinessCode.CODE_500010,"参数为空");
+		}
 		 CouponInvestorCondition condition = new CouponInvestorCondition();
-         if(detailData.get("name")==null || detailData.get("listDetail")==null){
+         if(detailData.get("name")==null || "".equals(detailData.get("name"))|| detailData.get("listDetail")==null || "".equals(detailData.get("listDetail"))){
 			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
 		 }
 		 String name = detailData.get("name").toString();
@@ -460,7 +464,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	/**
 	 * 参数校验
 	 */
-	if(couponGradeCondition.getName()==null || couponGradeCondition.getType()==null ||
+	if(StringUtils.isBlank(couponGradeCondition.getName())|| couponGradeCondition.getType()==null ||
 			couponGradeCondition.getReducedAmt()==null || couponGradeCondition.getReducedType()==null){
             throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
 	}
@@ -542,7 +546,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 		/**
 		 * 参数校验
 		 */
-		if(condition==null || condition.getName()==null || condition.getApplyRuleType()==null){
+		if(condition==null || StringUtils.isBlank(condition.getName()) || condition.getApplyRuleType()==null){
 			throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
 		}
 		if(condition.getApplyRuleType()!=null){

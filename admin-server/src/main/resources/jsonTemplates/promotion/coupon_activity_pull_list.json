@@ -23,8 +23,8 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "ajaxType": "get",
-          "path": "/promotion/5029/v1/queryCouponActivity"
+          "ajaxType": "post",
+          "path": "/promotion/5029/v1/queryCouponActivityPull"
         }
       },
       {
@@ -74,7 +74,7 @@
                 "id"
               ],
               "path": "",
-              "configKey": "coupon_activity_cite_view.json"
+              "configKey": "/template/module/promotion/coupon_activity_cite_view.json"
             }
           },
           {
@@ -272,7 +272,7 @@
         "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "创建时间",
-        "value": "",
+        "value":{},
         "placeholder": "",
         "isHidden": false
       }

@@ -120,7 +120,7 @@ public interface CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @RequestMapping(value = "/promotion/5036/v1/queryCouponByActivity/", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5036/v1/queryCouponByActivity", method = RequestMethod.POST)
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition);
     /**
      *

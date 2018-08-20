@@ -222,24 +222,26 @@ public class VerifyService {
      */
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        Set<Long> storeSet = new HashSet<>();
         Page<VerifySummaryVO> page = accountingDetailMapper.selectVerifyList(condition);
-        for (VerifySummaryVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
-        }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (VerifySummaryVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (VerifySummaryVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (VerifySummaryVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }
@@ -251,25 +253,29 @@ public class VerifyService {
      * @return
      */
     public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        Set<Long> storeSet = new HashSet<>();
-        Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
-        for (VerifyDetailVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (VerifyDetailVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (VerifyDetailVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (VerifyDetailVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }

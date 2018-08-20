@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.api;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,12 +16,15 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
+import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,6 +48,9 @@ public class ApiPayStoreBindBankCardController {
 	private MessageServiceClient messageServiceClient;
 	
 	@Autowired
+	private PayStoreWalletServiceImpl payStoreWalletMapperService;
+	
+	@Autowired
 	private Cache cache;
 	
 	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
@@ -54,7 +61,7 @@ public class ApiPayStoreBindBankCardController {
     })
 //    @RequestMapping(value = "/6104/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankCardVO> queryStoreBindBankCard(@RequestBody StoreBankCardCondition condition) {
-        String logTitle = "/api-pay/bankCard/6104/v1/storeBindBankCard-B端获取银行卡信息";
+        String logTitle = "/api-pay/pay/6104/v1/storeBindBankCard-B端获取银行卡信息";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<StoreBankCardVO> result = new ResponseResult<>();
         StoreBankCardVO storeBankCardInfo = new StoreBankCardVO();
@@ -87,7 +94,7 @@ public class ApiPayStoreBindBankCardController {
     })
     @RequestMapping(value = "/6105/v1/bindStoreBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindStoreBankCard(@RequestBody StoreBankCardCondition condition) {
-        String logTitle = "/api-pay/bankCard/6105/v1/bindStoreBankCard-B端绑定银行卡";
+        String logTitle = "/api-pay/pay/6105/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
     	StoreBankCard storeBankCard = new StoreBankCard();
@@ -104,6 +111,32 @@ public class ApiPayStoreBindBankCardController {
         return result;
     }
 	
+	@ApiOperation(value = "B端绑定微信账户", notes = "B端绑定微信账户")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+    		@ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
+    		@ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
+    		@ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
+    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号") 
+    })
+    @RequestMapping(value = "/6110/v1/bindWeixiAccount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Integer> bindWeixiAccount(@RequestBody PayStoreWalletCondition condition) {
+        String logTitle = "/api-pay/pay/6110/v1/bindWeixiAccount-B端绑定微信账户";
+        LOGGER.info("{}=--开始--{}", logTitle,condition);
+        ResponseResult<Integer> result = new ResponseResult<>();
+    	BeanUtils.copyProperties(condition, condition);
+    	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
+    	Integer res = payStoreWalletMapperService.savePayStoreWallet(condition);
+    	result.setCode(res);
+    	LOGGER.info("绑定微信返回值：-------"+res);
+    	if(res > 0){
+    		result.setData(BusinessCode.CODE_610017);
+    		LOGGER.info("B端绑定微信失败；");
+    	} 
+        LOGGER.info("{}=--结束 result={}", logTitle, result);
+        return result;
+    }
+	
 	/**获取短信验证码*/
 	@ApiOperation(value = "获取短信验证码", notes = "获取短信验证码")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -112,7 +145,7 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成")
     })
     @RequestMapping(value = "/6106/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<String> getVerificationCode(@RequestBody StoreBankCardCondition condition) {
+	public ResponseResult<String> getVerificationCode(@RequestBody VerifiCodeCondtion condition) {
 		String logTitle = "/api-pay/pay/6106/v1/verificationCode-获取短信验证码";
 		LOGGER.info("{}=--开始--{}", logTitle,condition);
 		ResponseResult<String> result = new ResponseResult<String>();
@@ -124,20 +157,25 @@ public class ApiPayStoreBindBankCardController {
 		/////////////////////////////////////////////
 //		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		
-		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+businessId);
+		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
-		//生成验证码 TODO-----方便测试，暂时注调
-		/*if(modileVerifyCode != null){
+		//生成验证码
+		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
 			result.setCode(BusinessCode.CODE_610018);
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
-		}*///----------测试完成，放开代码
+		} 
 		// 将验证码存放到redis中
-		cache.set(CacheName.PAY_VERIFICATION_CODE+businessId, modileVerifyCode);
-//TODO	--方便测试，暂不过期 	cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
-		messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
+		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
+		cache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
+		if(StringUtils.isEmpty(condition.getMobile())){
+			result.setCode(BusinessCode.CODE_610015);
+			LOGGER.info("手机号为空");
+		}else{
+			messageServiceClient.sendSMS(condition.getMobile(), "您的手机验证码："+ modileVerifyCode);
+		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
 	}

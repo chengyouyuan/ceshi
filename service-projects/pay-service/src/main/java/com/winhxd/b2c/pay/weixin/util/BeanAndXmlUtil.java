@@ -53,6 +53,10 @@ public class BeanAndXmlUtil {
      * 大小写字母ASCII偏移量
      */
     private static final int OFFSET = 32;
+    /**
+     * 微信接口日期格式
+     */
+    private static final String WX_DATE_FORMAT = "yyyyMMddHHmmss";
 
     public static String bean2Xml(Object obj) throws Exception{
         Document document = newDocument();
@@ -60,7 +64,7 @@ public class BeanAndXmlUtil {
         document.appendChild(root);
 
         Map<String,String> map = new HashMap<String, String>();
-        Class cls = obj.getClass();
+        Class<?> cls = obj.getClass();
         List<Field> fields = new ArrayList<>() ;
         //当父类为null的时候说明到达了最上层的父类(Object类).
         while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
@@ -227,8 +231,7 @@ public class BeanAndXmlUtil {
                     continue;
                 }
                 if(Date.class.getName().equals(field.getType().getName())) {
-                    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                    map.put(humpToUnderline(field.getName()), df.format(field.get(obj)));
+                    map.put(humpToUnderline(field.getName()), DateUtil.format((Date)field.get(obj), WX_DATE_FORMAT));
                 } else{
                     map.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
                 }
@@ -450,7 +453,7 @@ public class BeanAndXmlUtil {
      * @param fieldTypeClass 属性的类型
      * @return 转换后的值
      */
-    private static Object convertValType(Object value, Class fieldTypeClass)
+    private static Object convertValType(Object value, Class<?> fieldTypeClass)
             throws NumberFormatException, ParseException {
         Object retVal = value;
         if(Long.class.getName().equals(fieldTypeClass.getName())

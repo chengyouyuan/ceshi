@@ -54,7 +54,12 @@ public final class BusinessCode {
     public static final int CODE_1019= 1019;
     /**图片不能为空**/
     public static final int CODE_1020= 1020;
-    
+
+
+    /**登录凭证无效，请重新登录！**/
+    public static final int CODE_102701 = 102701;
+    /**业务异常**/
+    public static final int CODE_102702 = 102702;
 
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;

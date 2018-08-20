@@ -25,6 +25,8 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
@@ -55,7 +57,6 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
-import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
@@ -87,8 +88,6 @@ public class PayServiceImpl implements PayService{
 	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
 	@Autowired
 	private PayRefundPaymentMapper payRefundPaymentMapper;
-	@Autowired
-	private PayFinanceAccountDetailMapper payFinanceAccountDetailMapper;
 	@Autowired
 	private PayWithdrawalsMapper payWithdrawalsMapper;
 	@Autowired
@@ -580,14 +579,21 @@ public class PayServiceImpl implements PayService{
      * @return
      */
 	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
-	public PayRefundVO refundOrder(String orderNo, OrderInfo order)  {
+	public void refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
 		String log=logLabel+"订单退款refundOrder--订单号"+orderNo;
 		logger.info(log+"--开始");
-		
-		if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
-            throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, "申请退款状态异常");
+		//查询订单
+		ResponseResult<OrderInfoDetailVO4Management> orderResult=orderServiceClient.getOrderDetail4Management(orderNo);
+		if (orderResult==null||orderResult.getData().getOrderInfoDetailVO()==null) {
+			logger.info(log+"--未获取到订单数据");
+			return;
+		}
+		OrderInfoDetailVO orderVO=orderResult.getData().getOrderInfoDetailVO();
+		if (!orderVO.getPayStatus().equals( PayStatusEnum.PAID.getStatusCode()) || StringUtils.isBlank(order.getPaymentSerialNum())) {
+			logger.info(log+"--订单状态错误");
+			return;
         }
 		BigDecimal totalAmount=order.getRealPaymentMoney();
 		BigDecimal refundAmount=order.getRealPaymentMoney();
@@ -632,7 +638,6 @@ public class PayServiceImpl implements PayService{
 			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
 			payRefundPaymentMapper.insertSelective(payRefundPayment);
 		}
-		return vo;
 	}
 
 	@Override

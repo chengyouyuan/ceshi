@@ -9,8 +9,6 @@ import com.winhxd.b2c.common.domain.common.PagedCondition;
  **/
 public class RuleRealationCountCondition extends PagedCondition{
     private Long id;
-    private Integer pageNo;
-    private Integer pageSize;
 
     public Long getId() {
         return id;

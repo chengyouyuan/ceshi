@@ -138,6 +138,6 @@ public interface WXPayApi {
      * @param payPreOrderVO
      * @return
      */
-	String payPreOrderVOSign(PayPreOrderVO payPreOrderVO);
+	String payPreOrderSign(PayPreOrderVO payPreOrderVO);
 
 }

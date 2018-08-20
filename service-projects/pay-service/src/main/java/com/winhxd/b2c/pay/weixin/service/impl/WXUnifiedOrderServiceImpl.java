@@ -126,7 +126,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
 		payPreOrderVO.setTimeStamp(String.valueOf(timeStamp));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.payPreOrderVOSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
 		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(outTradeNo);
 		payPreOrderVO.setPayStatus(true);
@@ -169,7 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.payPreOrderVOSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
 		payPreOrderVO.setPayStatus(false);
 		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());

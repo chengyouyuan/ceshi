@@ -188,7 +188,7 @@ public class WXPayApiImpl implements WXPayApi {
     }
 	
 	@Override
-	public String payPreOrderVOSign(PayPreOrderVO payPreOrderVO){
+	public String payPreOrderSign(PayPreOrderVO payPreOrderVO){
 		String sign = null;
         try {
             //bean转map

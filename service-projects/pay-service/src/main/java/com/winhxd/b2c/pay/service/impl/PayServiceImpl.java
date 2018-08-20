@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.domain.pay.enums.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,12 +33,6 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
@@ -217,7 +212,7 @@ public class PayServiceImpl implements PayService{
 		PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
 		payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
 		payFinanceAccountDetail.setOutType(PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode());
-		payFinanceAccountDetail.setStatus((short) 1);
+		payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
 		payFinanceAccountDetail.setCreated(new Date());
 		payFinanceAccountDetail.setTradeNo(condition.getOutRefundNo());
         int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
@@ -694,7 +689,7 @@ public class PayServiceImpl implements PayService{
         PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
         payFinanceAccountDetail.setOrderNo(payWithdrawals.getWithdrawalsNo());
         payFinanceAccountDetail.setOutType(PayOutTypeEnum.STORE_WITHDRAW.getStatusCode());
-        payFinanceAccountDetail.setStatus((short) 1);
+        payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
         payFinanceAccountDetail.setCreated(new Date());
         payFinanceAccountDetail.setTradeNo(payWithdrawals.getWithdrawalsNo());
         int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
@@ -705,7 +700,7 @@ public class PayServiceImpl implements PayService{
         PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
 		payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());
 		payStoreTransactionRecord.setType(StoreTransactionStatusEnum.TRANSFERS.getStatusCode());
-		payStoreTransactionRecord.setStatus((short) 1);
+		payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
         payStoreTransactionRecord.setStoreId(payWithdrawalsList.get(0).getStoreId());
 		payStoreTransactionRecord.setMoney(payWithdrawalsList.get(0).getTotalFee());
 		payStoreTransactionRecord.setCmmsAmt(payWithdrawalsList.get(0).getCmmsAmt());

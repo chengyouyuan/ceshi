@@ -573,7 +573,7 @@ public class PayServiceImpl implements PayService{
 			 String signType=payPreOrderVO.getSignType();
 			 String paySign=payPreOrderVO.getPaySign();
 			 String orderTransactionNo=payPreOrderVO.getOutTradeNo();
-			 String appid=payPreOrderVO.getAppid();
+			 String appid=payPreOrderVO.getAppId();
 				 
 			 PayOrderPayment payOrderPayment=payOrderPaymentMapper.selectByOrderPaymentNo(orderTransactionNo);
 			 if (payOrderPayment == null) {

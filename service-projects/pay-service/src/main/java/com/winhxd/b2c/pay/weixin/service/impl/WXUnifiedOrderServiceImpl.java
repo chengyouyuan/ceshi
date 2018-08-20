@@ -1,8 +1,11 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -20,10 +23,14 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
+import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 
 /**
  * 支付网关微信统一下单API实现
@@ -120,7 +127,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		this.savePayBill(condition, payPreOrderDTO, payPreOrderResponseDTO);
 		
 		//初始化反参
-		payPreOrderVO.setAppid(payPreOrderDTO.getAppid());
+		payPreOrderVO.setAppId(payPreOrderDTO.getAppid());
 		payPreOrderVO.setNonceStr(payPreOrderDTO.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + payPreOrderResponseDTO.getPrepayId());
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
@@ -162,7 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		// TODO 10分钟未支付，主动关闭订单，重新生产流水（调用toPay）
 		
 		//初始化反参
-		payPreOrderVO.setAppid(bill.getAppid());
+		payPreOrderVO.setAppId(bill.getAppid());
 		payPreOrderVO.setNonceStr(bill.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());

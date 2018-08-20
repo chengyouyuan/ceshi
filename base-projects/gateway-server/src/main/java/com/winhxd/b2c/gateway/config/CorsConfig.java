@@ -7,11 +7,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Web请求跨域支持
@@ -31,12 +34,18 @@ public class CorsConfig {
         return (ServerWebExchange ctx, WebFilterChain chain) -> {
             ServerHttpRequest request = ctx.getRequest();
             if (CorsUtils.isCorsRequest(request)) {
+                List<String> accessControlRequestHeaders = request.getHeaders().getAccessControlRequestHeaders();
                 ServerHttpResponse response = ctx.getResponse();
                 HttpHeaders headers = response.getHeaders();
                 headers.add("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
                 headers.add("Access-Control-Allow-Methods", ALLOWED_METHODS);
                 headers.add("Access-Control-Max-Age", MAX_AGE);
-                headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+                if (CollectionUtils.isEmpty(accessControlRequestHeaders)) {
+                    headers.add("Access-Control-Allow-Headers", ALLOWED_HEADERS);
+                } else {
+                    headers.add("Access-Control-Allow-Headers",
+                            String.join(",", accessControlRequestHeaders));
+                }
                 headers.add("Access-Control-Expose-Headers", ALLOWED_Expose);
                 headers.add("Access-Control-Allow-Credentials", "true");
                 if (request.getMethod() == HttpMethod.OPTIONS) {

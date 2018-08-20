@@ -56,32 +56,30 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 
 	@Override
 	public PayFinanceAccountDetailVO findStoreFinancialSummary() {
-
+		BigDecimal todayRealFee = BigDecimal.valueOf(0);
+		BigDecimal todayCmmsAmt = BigDecimal.valueOf(0);
+		BigDecimal sumRealfee = BigDecimal.valueOf(0);
+		BigDecimal sumCmmsAmt = BigDecimal.valueOf(0);
+		BigDecimal todayRefundAmout = BigDecimal.valueOf(0);
+		BigDecimal sumRefundAmout = BigDecimal.valueOf(0);
 		PayFinancialSummary todayWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("today");
-		if(todayWithdrawals == null){
-			todayWithdrawals.setRealFee(BigDecimal.valueOf(0));
-			todayWithdrawals.setCmmsAmt(BigDecimal.valueOf(0));
+		if (todayWithdrawals != null){
+			todayRealFee = todayWithdrawals.getRealFee();
+			todayCmmsAmt = todayWithdrawals.getCmmsAmt();
 		}
-		BigDecimal todayRealFee = todayWithdrawals.getRealFee();
-		BigDecimal todayCmmsAmt = todayWithdrawals.getCmmsAmt();
 		PayFinancialSummary sumWithdrawals = payFinanceAccountDetailMapper.getWithdrawals("total");
-		if(sumWithdrawals == null){
-			sumWithdrawals.setRealFee(BigDecimal.valueOf(0));
-			sumWithdrawals.setCmmsAmt(BigDecimal.valueOf(0));
+		if(sumWithdrawals != null){
+			sumRealfee = sumWithdrawals.getRealFee();
+			sumCmmsAmt = sumWithdrawals.getCmmsAmt();
 		}
-		BigDecimal sumRealfee = sumWithdrawals.getRealFee();
-		BigDecimal sumCmmsAmt = sumWithdrawals.getCmmsAmt();
 		PayFinancialSummary todayRefund = payFinanceAccountDetailMapper.getRefund("today");
-		if(todayRefund == null){
-			todayRefund.setRefundAmout(BigDecimal.valueOf(0));
+		if(todayRefund != null){
+			todayRefundAmout = todayRefund.getRefundAmout();
 		}
-		BigDecimal todayRefundAmout = todayRefund.getRefundAmout();
 		PayFinancialSummary sumRefund = payFinanceAccountDetailMapper.getRefund("total");
-		if(sumRefund == null){
-			sumRefund.setRefundAmout(BigDecimal.valueOf(0));
+		if(sumRefund != null){
+			sumRefundAmout = sumRefund.getRefundAmout();
 		}
-		BigDecimal sumRefundAmout = sumRefund.getRefundAmout();
-
 		BigDecimal todayOutMoney = todayRealFee.add(todayRefundAmout);
 		BigDecimal allOutMoney = sumRealfee.add(sumRefundAmout);
 

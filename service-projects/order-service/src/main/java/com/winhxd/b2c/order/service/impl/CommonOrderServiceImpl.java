@@ -65,7 +65,6 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
-import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -246,7 +245,7 @@ public class CommonOrderServiceImpl implements OrderService {
             OrderInfo order = getOrderInfo(orderNo);
             if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
                 orderApplyRefund(order, "申请退款超时3天系统自动退款", order.getCreatedBy(), "sys");
-                orderRefundTimeOutSendMsg(3, order);
+                sendMsgToStore(3, order);
             }
         } finally {
             lock.unlock();
@@ -264,7 +263,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
         OrderInfo order = getOrderInfo(orderNo);
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
-            orderRefundTimeOutSendMsg(2, order);
+            sendMsgToStore(2, order);
         }
     }
 
@@ -279,7 +278,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
         OrderInfo order = getOrderInfo(orderNo);
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
-            orderRefundTimeOutSendMsg(1, order);
+            sendMsgToStore(1, order);
         }
     }
 
@@ -1542,7 +1541,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             try {
                 //给门店发送消息
-                orderRefundTimeOutSendMsg(4, orderInfo);
+                sendMsgToStore(4, orderInfo);
             } catch (Exception e) {
                 logger.error("订单退款完成给门店发送消息失败orderNo={}", orderInfo.getOrderNo());
             }
@@ -1636,7 +1635,7 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param type      类型 1：1小时，2：一天
      * @param orderInfo
      */
-    private void orderRefundTimeOutSendMsg(int type, OrderInfo orderInfo) {
+    private void sendMsgToStore(int type, OrderInfo orderInfo) {
         CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
         String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();

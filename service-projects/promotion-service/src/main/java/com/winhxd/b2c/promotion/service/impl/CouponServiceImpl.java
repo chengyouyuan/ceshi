@@ -145,7 +145,6 @@ public class CouponServiceImpl implements CouponService {
                 couponTemplateSend.setCount(1);
                 couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
                 couponTemplateSend.setCreated(new Date());
-                //TODO 用户名称
                 couponTemplateSend.setCreatedByName("");
 
                 if(activityTemplate.getEffectiveDays()==null){
@@ -347,7 +346,7 @@ public class CouponServiceImpl implements CouponService {
         couponActivityTemplate.setTemplateId(condition.getTemplateId());
         List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
         if(couponActivityTemplates.isEmpty()){
-            logger.error("不存在符合新用户注册的优惠券活动");
+            logger.error("CouponServiceImpl.userReceiveCoupon 不存在的优惠券");
             throw new BusinessException(BusinessCode.CODE_500001);
         }
 
@@ -363,7 +362,6 @@ public class CouponServiceImpl implements CouponService {
         couponTemplateSend.setCount(1);
         couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
         couponTemplateSend.setCreated(new Date());
-        //TODO 用户名称
         couponTemplateSend.setCreatedByName("");
 
         if(couponActivityTemplates.get(0).getEffectiveDays()==null){
@@ -447,6 +445,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         if(null ==condition.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
@@ -466,6 +465,10 @@ public class CouponServiceImpl implements CouponService {
 
     @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_UNTREAD_COUPON_HANDLER)
     public void eventOrderUntreadCoupon(String orderNo, OrderInfo order) {
+        if(null ==order.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         OrderUntreadCouponCondition condition = new OrderUntreadCouponCondition();
         condition.setOrderNo(order.getOrderNo());
         this.orderUntreadCoupon(condition);
@@ -475,6 +478,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
         if(sendIds.isEmpty()){
+            logger.error("CouponServiceImpl.revokeCoupon 优惠券发放id为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         for(int i =0 ;i<sendIds.size();i++){
@@ -494,6 +498,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
         if(null == couponCondition.getOrderNo()){
+            logger.error("CouponServiceImpl.couponCondition-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
@@ -692,6 +697,10 @@ public class CouponServiceImpl implements CouponService {
         ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
+        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
+            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
+            throw new BusinessException(responseResult.getCode());
+        }
         List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
 
         //查询当前用户下的所有优惠券
@@ -870,6 +879,7 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition) {
+        List<CouponProductCondition> productConditions = new ArrayList<>();
         BigDecimal maxDiscountAmount = new BigDecimal(0);
         CouponVO result = new CouponVO();
 
@@ -879,8 +889,12 @@ public class CouponServiceImpl implements CouponService {
         ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
+        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
+            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
+            throw new BusinessException(responseResult.getCode());
+        }
         List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
-        List<CouponProductCondition> productConditions = new ArrayList<>();
+
         for(ShopCarProdInfoVO shopCarProdInfoVO: shopCarProdInfoVOS){
             CouponProductCondition couponProductCondition = new CouponProductCondition();
             couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
@@ -896,13 +910,13 @@ public class CouponServiceImpl implements CouponService {
                 List<Long> sendIds = new ArrayList<>();
                 sendIds.add(couponVO.getSendId());
                 couponPreAmountCondition.setSendIds(sendIds);
+                //计算优惠券优惠金额
                 CouponDiscountVO couponDiscountVO = this.couponDiscountAmount(couponPreAmountCondition);
 
                 if(couponDiscountVO.getDiscountAmount().compareTo(maxDiscountAmount)>0){
                     maxDiscountAmount = couponDiscountVO.getDiscountAmount();
                     result = couponVO;
                 }
-
             }
         }
         return result;

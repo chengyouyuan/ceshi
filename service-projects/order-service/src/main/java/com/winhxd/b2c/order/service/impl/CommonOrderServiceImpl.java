@@ -323,8 +323,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 }
             }
         } catch (Exception e) {
+            //catch掉所有的exception，防止影响其他服务
             callbackResult = false;
-            throw e;
+            logger.error("退款回调异常" + e.getMessage(), e);
         } finally {
             lock.unlock();
         }

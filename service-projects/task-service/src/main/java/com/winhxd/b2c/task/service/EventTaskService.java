@@ -18,6 +18,9 @@ import java.util.Set;
 @Component
 @Slf4j
 public class EventTaskService {
+    /**
+     * 10分钟
+     */
     private static final double EVENT_HISTORY_BEFORE = 600000D;
 
     @Autowired
@@ -28,9 +31,10 @@ public class EventTaskService {
 
     @Scheduled(fixedDelay = 60000)
     public void checkEventSentHistory() {
+        log.info("事件补偿计划任务开始");
         double ms = System.currentTimeMillis() - EVENT_HISTORY_BEFORE;
         for (EventType et : EventType.values()) {
-            log.info("开始检查事件: {}", et);
+            log.info("开始检查事件:{}", et);
             String idKey = CacheName.EVENT_MESSAGE_ID + et;
             String bodyKey = CacheName.EVENT_MESSAGE_BODY + et;
             Set<String> idSet = cache.zrangeByScore(idKey, 0, ms);
@@ -51,7 +55,8 @@ public class EventTaskService {
                     }
                 }
             }
-            log.info("结束检查事件: {}", et);
+            log.info("结束检查事件:{},count={}", et, idSet.size());
         }
+        log.info("事件补偿计划任务结束");
     }
 }

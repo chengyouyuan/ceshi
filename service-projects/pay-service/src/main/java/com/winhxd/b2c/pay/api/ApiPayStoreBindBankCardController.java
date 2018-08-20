@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
@@ -23,6 +24,7 @@ import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
 
@@ -45,10 +47,10 @@ public class ApiPayStoreBindBankCardController {
 	private PayStoreBankCardServiceImpl storeBankCardService;
 	
 	@Autowired
-	private MessageServiceClient messageServiceClient;
+	private PayStoreWalletServiceImpl payStoreWalletMapperService;
 	
 	@Autowired
-	private PayStoreWalletServiceImpl payStoreWalletMapperService;
+	MessageSendUtils messageSendUtils;
 	
 	@Autowired
 	private Cache cache;
@@ -174,7 +176,10 @@ public class ApiPayStoreBindBankCardController {
 			result.setCode(BusinessCode.CODE_610015);
 			LOGGER.info("手机号为空");
 		}else{
-			messageServiceClient.sendSMS(condition.getMobile(), "您的手机验证码："+ modileVerifyCode);
+			SMSCondition sMSCondition = new SMSCondition();
+			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode);
+			sMSCondition.setMobile(condition.getMobile());
+			messageSendUtils.sendSMS(sMSCondition);
 		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;

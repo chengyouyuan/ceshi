@@ -23,8 +23,8 @@
         "icon": null,
         "event": {
           "type": "submit",
-          "ajaxType": "get",
-          "path": "/promotion/5029/v1/queryCouponActivity"
+          "ajaxType": "post",
+          "path": "/promotion/5049/v1/queryCouponActivityPush"
         }
       },
       {
@@ -206,7 +206,7 @@
         "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "创建时间",
-        "value": "",
+        "value":{},
         "placeholder": "",
         "isHidden": false
       }

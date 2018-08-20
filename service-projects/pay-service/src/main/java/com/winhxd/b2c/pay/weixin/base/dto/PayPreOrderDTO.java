@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
+import java.util.Date;
+
 /**
  * 统一下单入参
  * @author mahongliang
@@ -33,7 +35,7 @@ public class PayPreOrderDTO extends RequestBase{
     /**
      * 交易时间
      */
-    private String timeStart;
+    private Date timeStart;
     
     /**
      * 商品描述
@@ -108,11 +110,11 @@ public class PayPreOrderDTO extends RequestBase{
 		this.tradeType = tradeType;
 	}
 
-	public String getTimeStart() {
+	public Date getTimeStart() {
 		return timeStart;
 	}
 
-	public void setTimeStart(String timeStart) {
+	public void setTimeStart(Date timeStart) {
 		this.timeStart = timeStart;
 	}
 

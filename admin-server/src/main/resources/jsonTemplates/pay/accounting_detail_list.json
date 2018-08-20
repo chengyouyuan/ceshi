@@ -23,24 +23,39 @@
         "name": "恢复费用核销",
         "event": {
           "type": "batch",
-          "ajaxType": "get",
-          "path": "/pay/verify/accountingDetailRestore"
+          "ajaxType": "post",
+          "params": [ "id" ],
+          "path": "/pay/verify/accountingDetailRestore",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       },
       {
         "name": "暂缓",
         "event": {
           "type": "batch",
-          "ajaxType": "get",
-          "path": "/pay/verify/accountingDetailPause"
+          "ajaxType": "post",
+          "params": [ "id" ],
+          "path": "/pay/verify/accountingDetailPause",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       },
       {
         "name": "确认结算",
         "event": {
           "type": "batch",
-          "ajaxType": "get",
-          "path": "/pay/verify/verifyByDetail"
+          "ajaxType": "post",
+          "params": [ "id" ],
+          "path": "/pay/verify/verifyByDetail",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],

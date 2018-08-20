@@ -23,8 +23,13 @@
         "name": "核销",
         "event": {
           "type": "batch",
-          "ajaxType": "get",
-          "path": "/pay/verify/verifyBySummary"
+          "ajaxType": "post",
+          "params": [ "storeId", "lastRecordedTime" ],
+          "path": "/pay/verify/verifyBySummary",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],

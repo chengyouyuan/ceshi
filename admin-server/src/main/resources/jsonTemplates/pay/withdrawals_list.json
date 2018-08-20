@@ -23,8 +23,13 @@
         "name": "确认提款",
         "event": {
           "type": "batch",
-          "ajaxType": "get",
-          "path": "/pay/verify/approveStoreWithdraw"
+          "ajaxType": "post",
+          "params": [ "id" ],
+          "path": "/pay/verify/approveStoreWithdraw",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],

@@ -193,4 +193,10 @@ public class OrderServiceTest {
         a.join();
         Thread.sleep(1000000L);
     }
+    
+    @Test
+    public void testgetOrderPayInfo(){
+        orderQueryService.getOrderPayInfo("C18082010588043313", null, null, 24L, "ofTZZ5NwyEgOqgfwkISUhEwrIWT0");
+    }
+    
 }

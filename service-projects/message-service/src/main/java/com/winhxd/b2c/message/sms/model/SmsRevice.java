@@ -10,96 +10,129 @@ import java.util.Date;
  */
 public class SmsRevice implements Serializable {
 
-    private static final long serialVersionUID = -2865748399489988328L;
-    private Long id;
-    private String content;        //接受短信内容
-    private Date reviceTime;        //接受时间
-    private String telephone;    //发送短信号码
-    private Date sendTime;    //发送时间
-    private String channelNumber;    //为止，待测试确定
-    private int customRead;            //客户端是否读取  1为读取  0为未读
-    private String supplyId;        //供应商标识
-    private String serialId;        //关键字  用于处理不同类型的短信  如：xxtx
-    private long storeId;
+	private static final long serialVersionUID = -2865748399489988328L;
+	private Long id;
 
-    public String getSerialId() {
-        return serialId;
-    }
+	/**
+	 * 接受短信内容
+	 */
+	private String content;
 
-    public void setSerialId(String serialId) {
-        this.serialId = serialId;
-    }
+	/**
+	 * 接受时间
+	 */
+	private Date reviceTime;
 
-    public String getSupplyId() {
-        return supplyId;
-    }
+	/**
+	 * 发送短信号码
+	 */
+	private String telephone;
 
-    public void setSupplyId(String supplyId) {
-        this.supplyId = supplyId;
-    }
+	/**
+	 * 发送时间
+	 */
+	private Date sendTime;
 
-    public void setReviceTime(Date reviceTime) {
-        this.reviceTime = reviceTime;
-    }
+	/**
+	 * 为止，待测试确定
+	 */
+	private String channelNumber;
 
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
+	/**
+	 * 客户端是否读取  1为读取  0为未读
+	 */
+	private int customRead;
 
-    public long getStoreId() {
-        return storeId;
-    }
+	/**
+	 * 供应商标识
+	 */
+	private String supplyId;
 
-    public void setStoreId(long storeId) {
-        this.storeId = storeId;
-    }
+	/**
+	 * 关键字  用于处理不同类型的短信  如：xxtx
+	 */
+	private String serialId;
 
-    public Long getId() {
-        return id;
-    }
+	private long storeId;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public String getSerialId() {
+		return serialId;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setSerialId(String serialId) {
+		this.serialId = serialId;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public String getSupplyId() {
+		return supplyId;
+	}
 
-    public String getTelephone() {
-        return telephone;
-    }
+	public void setSupplyId(String supplyId) {
+		this.supplyId = supplyId;
+	}
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
+	public void setReviceTime(Date reviceTime) {
+		this.reviceTime = reviceTime;
+	}
 
-    public Date getReviceTime() {
-        return reviceTime;
-    }
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
 
-    public Date getSendTime() {
-        return sendTime;
-    }
+	public long getStoreId() {
+		return storeId;
+	}
 
-    public String getChannelNumber() {
-        return channelNumber;
-    }
+	public void setStoreId(long storeId) {
+		this.storeId = storeId;
+	}
 
-    public void setChannelNumber(String channelNumber) {
-        this.channelNumber = channelNumber;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public int getCustomRead() {
-        return customRead;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setCustomRead(int customRead) {
-        this.customRead = customRead;
-    }
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public Date getReviceTime() {
+		return reviceTime;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public String getChannelNumber() {
+		return channelNumber;
+	}
+
+	public void setChannelNumber(String channelNumber) {
+		this.channelNumber = channelNumber;
+	}
+
+	public int getCustomRead() {
+		return customRead;
+	}
+
+	public void setCustomRead(int customRead) {
+		this.customRead = customRead;
+	}
 
 }

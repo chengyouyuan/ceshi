@@ -1,11 +1,11 @@
 package com.winhxd.b2c.message.sms;
 
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
-import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.dao.MessageSmsHistoryMapper;
 import com.winhxd.b2c.message.sms.enums.SmsReturnStatusEnum;
 import com.winhxd.b2c.message.sms.enums.SmsSendStatusEnum;
 import com.winhxd.b2c.message.sms.model.SmsReturn;
+import com.winhxd.b2c.message.sms.model.SmsSend;
 import com.winhxd.b2c.message.sms.process.YxtSmsProcess;
 import com.winhxd.b2c.message.sms.security.SecurityCheckService;
 import org.apache.commons.lang.StringUtils;
@@ -15,11 +15,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 发送短信入口
- */
+ * @ClassName: SmsServerSendUtils
+ * @Description: 发送短信工具类
+ * @Author fanzhanzhan
+ * @Date 2018-08-20 10:43
+ **/
 @Component
 public class SmsServerSendUtils {
 
@@ -35,28 +37,8 @@ public class SmsServerSendUtils {
 	 * 发送短信
 	 * @param msg  包含手机号、短信内容、类型、用户名、平台等信息
 	 */
-	public void sendSms(String msg) {
-		Map<String, Object> json = JsonUtil.parseJSONObject(msg);
-		String telePhoneNo = null;
-		String content = null;
+	public void sendSms(SmsSend msg) {
 		String type = null;
-		String username = null;
-		String grp = null;
-		if (json.containsKey("telePhoneNo")) {
-			telePhoneNo = json.get("telePhoneNo").toString();
-		}
-		if (json.containsKey("content")) {
-			content = json.get("content").toString();
-		}
-		if (json.containsKey("type")) {
-			type = json.get("type").toString();
-		}
-		if (json.containsKey("username")) {
-			username = json.get("username").toString();
-		}
-		if (json.containsKey("grp")) {
-			grp = json.get("grp").toString();
-		}
 
 		List<MessageSmsHistory> list = new ArrayList<>();
 		MessageSmsHistory tSmsSendHistory = new MessageSmsHistory();
@@ -65,11 +47,11 @@ public class SmsServerSendUtils {
 		}
 		tSmsSendHistory.setSendType(Short.parseShort(type));
 		tSmsSendHistory.setSupplyId(type);
-		tSmsSendHistory.setContent(content);
+		tSmsSendHistory.setContent(msg.getContent());
 		tSmsSendHistory.setSendTime(new Date());
-		tSmsSendHistory.setTelephone(telePhoneNo);
-		tSmsSendHistory.setUserName(username);
-		tSmsSendHistory.setGrp(grp);
+		tSmsSendHistory.setTelephone(msg.getTelePhoneNo());
+		tSmsSendHistory.setUserName(msg.getUsername());
+		tSmsSendHistory.setGrp(msg.getGrp());
 		int result;
 		boolean security = securityCheckService.securityCheck(tSmsSendHistory.getTelephone());
 		if (security) {

@@ -396,6 +396,9 @@
     <result column="cardNumber" property="cardNumber" />
     <result column="flowDirectionType" property="flowDirectionType" />
     <result column="flowDirectionName" property="flowDirectionName" />
+    <result column="bandBranchName" property="bandBranchName" />
+    <result column="bankName" property="bankName" />
+    <result column="bankUserName" property="bankUserName" />
   </resultMap>
 
   <sql id="common_storeUser">
@@ -405,8 +408,8 @@
   </sql>
 
   <sql id="common_statusBank">
-    sbc.card_number as cardNumber,sbc.bank_name as flowDirectionName,
-    sbc.mobile as storeMobile
+    sbc.card_number as cardNumber,sbc.bank_name as flowDirectionName,sbc.band_branch_name as bandBranchName,
+    sbc.mobile as storeMobile,sbc.bank_name as bankName,sbc.bank_user_name as bankUserName
   </sql>
 
   <!--根据门店id查询门店用户的信息以及当前账户的可提现资金  -->
@@ -423,7 +426,7 @@
     <include refid="common_statusBank"/>,sui.store_name as storeName,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
     from store_bank_card sbc left join store_bankroll sbk on sbc.store_id = sbk.store_id
     left join store_user_info sui on sbc.store_id = sui.id
-    where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC
+    where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC,sbc.updated desc
   </select>
 
 

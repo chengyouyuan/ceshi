@@ -20,10 +20,10 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.USER_SERVICE, fallbackFactory = CompanyServiceFallback.class)
 public interface CompanyServiceClient {
 
-	@RequestMapping(value = "/company/v1/getCompanyInfoByPage/", method = RequestMethod.POST)
+	@RequestMapping(value = "/company/7001/v1/getCompanyInfoByPage", method = RequestMethod.POST)
 	ResponseResult<PagedList<CompanyInfo>> getCompanyInfoByPage(Retail2cCompanyCondition condition);
 	
-	@RequestMapping(value = "/company/v1/getCompanyInfoByCodes/", method = RequestMethod.POST)
+	@RequestMapping(value = "/company/7002/v1/getCompanyInfoByCodes", method = RequestMethod.POST)
 	ResponseResult<List<CompanyInfo>> getCompanyInfoByCodes(List<String> codes);
 }
 

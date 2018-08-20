@@ -1,21 +1,6 @@
 package com.winhxd.b2c.store.controller;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -41,6 +26,20 @@ import com.winhxd.b2c.store.service.StoreProductManageService;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import com.winhxd.b2c.store.service.StoreService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -152,7 +151,12 @@ public class StoreServiceController implements StoreServiceClient {
 				//sku信息
 				ProductSkuVO current=prodList.get(i);
 				//门店与sku关系
-				StoreProductManage spManage=storeProds.get(i);
+				StoreProductManage spManage=null;
+				for(StoreProductManage spm:storeProds){
+				    if(current.getSkuCode().equals(spm.getSkuCode())){
+				        spManage=spm;
+				    }
+				}
 				spVO.setSkuCode(current.getSkuCode());
 				spVO.setSkuImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());

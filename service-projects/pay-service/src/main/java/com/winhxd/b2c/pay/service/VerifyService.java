@@ -251,7 +251,9 @@ public class VerifyService {
      * @return
      */
     public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Set<Long> storeSet = new HashSet<>();
         Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
         for (VerifyDetailVO vo : page.getResult()) {

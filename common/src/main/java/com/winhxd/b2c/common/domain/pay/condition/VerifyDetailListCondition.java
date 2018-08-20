@@ -35,4 +35,7 @@ public class VerifyDetailListCondition extends PagedCondition implements Seriali
 
     @ApiModelProperty("结算时间结束")
     private Date verifyDateEnd;
+
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
 }

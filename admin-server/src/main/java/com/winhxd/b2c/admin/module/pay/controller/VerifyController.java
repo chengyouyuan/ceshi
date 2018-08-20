@@ -1,14 +1,20 @@
 package com.winhxd.b2c.admin.module.pay.controller;
 
+import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Api(tags = "结算")
 @RequestMapping("/pay/verify")
@@ -34,6 +40,18 @@ public class VerifyController {
     @PostMapping("/accountingDetailList")
     public ResponseResult<?> accountingDetailList(VerifyDetailListCondition condition) {
         return verifyServiceClient.accountingDetailList(condition);
+    }
+
+    @ApiOperation(value = "费用明细导出Excel", notes = "按明细显示")
+    @PostMapping(name = "/accountingDetailListExport", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<byte[]> accountingDetailListExport(VerifyDetailListCondition condition) {
+        condition.setIsQueryAll(true);
+        ResponseResult<List<VerifyDetailVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<VerifyDetailVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "费用明细");
+        }
+        return null;
     }
 
     @ApiOperation(value = "费用结算", notes = "按明细结算")

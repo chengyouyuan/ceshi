@@ -114,20 +114,25 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	@Transactional
-	public Integer callbackOrderPay(PayBill condition) {
+	public Boolean callbackOrderPay(PayBill condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600101);
+//			throw new BusinessException(BusinessCode.CODE_600101);
+			return false;
 		}
 		if (StringUtils.isBlank(condition.getOutOrderNo())) {
 			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600004);
+//			throw new BusinessException(BusinessCode.CODE_600004);
+			return false;
 		}
+		log+="--订单号--"+condition.getOutOrderNo();
 		//判断支付成功之后更新订单信息
 		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
 			orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
+			//todo 判断订单是否更新成功
+			
 		}
 
 		// 更新流水号
@@ -157,24 +162,26 @@ public class PayServiceImpl implements PayService{
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
 
-		return insertResult;
+		return true;
 	}
 
 
 	@Override
 	@Transactional
-	public Integer callbackOrderRefund(PayRefund condition) {
+	public Boolean callbackOrderRefund(PayRefund condition) {
 		String log=logLabel+"退款回调callbackOrderRefund";
 		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600101);
+//			throw new BusinessException(BusinessCode.CODE_600101);
+			return false;
 		}
 		if (StringUtils.isBlank(condition.getOrderNo())) {
 			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600004);
+//			throw new BusinessException(BusinessCode.CODE_600004);
+			return false;
 		}
-		logger.info(log+"--参数"+condition.toString());
+        log+="--订单号--"+condition.getOrderNo();
 		//插入流水数据
 		PayRefundPayment payRefundPayment=new PayRefundPayment();
 		payRefundPayment.setRefundTransactionNo(condition.getOutRefundNo());
@@ -208,6 +215,7 @@ public class PayServiceImpl implements PayService{
 				//订单更新失败
 				logger.info(log+"--订单更新失败");
 //				throw new BusinessException(BusinessCode.CODE_600301);
+				return false;
 			}
 		}
 
@@ -223,8 +231,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--订单出账明细表插入失败");
 		}
 
-		logger.info(log+"--结束");
-		return 0;
+		return true;
 	}
 
 	@Override

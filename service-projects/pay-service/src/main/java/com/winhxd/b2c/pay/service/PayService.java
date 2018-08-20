@@ -31,7 +31,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(PayBill condition);
+	Boolean callbackOrderPay(PayBill condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13
@@ -39,7 +39,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderRefund(PayRefund condition);
+	Boolean callbackOrderRefund(PayRefund condition);
 	
 	/**
 	 * @author liuhanning

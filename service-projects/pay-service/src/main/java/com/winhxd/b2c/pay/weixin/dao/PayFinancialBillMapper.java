@@ -1,6 +1,6 @@
 package com.winhxd.b2c.pay.weixin.dao;
 
-import com.winhxd.b2c.pay.weixin.model.PayFinancialBill;
+import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 
 public interface PayFinancialBillMapper {
     int deleteByPrimaryKey(Long id);

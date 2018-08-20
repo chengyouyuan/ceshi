@@ -49,11 +49,19 @@ public interface WXPayApi {
     /**
      * 作用：申请退款<br>
      * 场景：刷卡支付、公共号支付、扫码支付、APP支付
-     * @param reqData 向wxpay post的请求数据
+     * @param payRefundDTO 向wxpay post的请求数据
      * @return API返回数据
      * @throws Exception
      */
     PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO);
+
+    /**
+     * 作用：退款查询<br>
+     * 场景：退款查询
+     * @param payRefundDTO
+     * @return
+     */
+    Map<String, String> refundQuery(PayRefundDTO payRefundDTO);
 
     /**
      * 作用：对账单下载<br>

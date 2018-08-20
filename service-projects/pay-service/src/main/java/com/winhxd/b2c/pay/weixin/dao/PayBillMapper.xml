@@ -33,6 +33,8 @@
     <result column="limit_pay" property="limitPay" jdbcType="VARCHAR" />
     <result column="buyer_id" property="buyerId" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="SMALLINT" />
+    <result column="tradeState" property="trade_state" jdbcType="VARCHAR" />
+    <result column="tradeStateDesc" property="trade_state_desc" jdbcType="VARCHAR" />
     <result column="error_code" property="errorCode" jdbcType="VARCHAR" />
     <result column="error_message" property="errorMessage" jdbcType="VARCHAR" />
     <result column="prepay_id" property="prepayId" jdbcType="VARCHAR" />
@@ -51,7 +53,7 @@
     out_order_no, out_trade_no, transaction_id, fee_type, total_fee, total_amount, callback_total_fee,
     callback_total_amount, settlement_total_fee, settlement_total_amount, spbill_create_ip,
     time_start, time_expire, time_end, goods_tag, notify_url, trade_type, product_id,
-    limit_pay, buyer_id, status, error_code, error_message, prepay_id, code_url, is_subscribe,
+    limit_pay, buyer_id, status, trade_state, trade_state_desc, error_code, error_message, prepay_id, code_url, is_subscribe,
     bank_type, cash_fee, cash_fee_type, coupon_fee, coupon_count, created, updated
   </sql>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayBill" >
@@ -149,6 +151,12 @@
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="tradeState != null" >
+        tradeState,
+      </if>
+      <if test="tradeStateDesc != null" >
+        tradeStateDesc,
       </if>
       <if test="errorCode != null" >
         error_code,
@@ -281,6 +289,12 @@
       <if test="status != null" >
         #{status,jdbcType=SMALLINT},
       </if>
+      <if test="tradeState != null" >
+        #{tradeState,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeStateDesc != null" >
+      #{tradeStateDesc,jdbcType=VARCHAR},
+      </if>
       <if test="errorCode != null" >
         #{errorCode,jdbcType=VARCHAR},
       </if>
@@ -411,6 +425,12 @@
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="tradeState != null" >
+        tradeState = #{tradeState,jdbcType=VARCHAR},
+      </if>
+      <if test="tradeStateDesc != null" >
+		tradeStateDesc = #{tradeStateDesc,jdbcType=VARCHAR},
       </if>
       <if test="errorCode != null" >
         error_code = #{errorCode,jdbcType=VARCHAR},

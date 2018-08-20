@@ -85,13 +85,14 @@ public class TransfersTest {
     /**
      * 转账到微信银行卡
      */
+    @Test
     public void testTransfersToBank(){
         PayTransfersToWxBankCondition toWxBankCondition = new PayTransfersToWxBankCondition();
         toWxBankCondition.setPartnerTradeNo("T18081717643679377");
         toWxBankCondition.setAccount("6217000210004907167");
         toWxBankCondition.setAccountName("李中华");
         toWxBankCondition.setChannelCode(TransfersChannelCodeType.CCB);
-        toWxBankCondition.setTotalAmount(new BigDecimal("3.00"));
+        toWxBankCondition.setTotalAmount(new BigDecimal("1.00"));
         toWxBankCondition.setDesc("研发用户提现demo.");
         toWxBankCondition.setOperaterID("8");
         PayTransfersToWxBankVO toWxBankVO = wxTransfersService.transfersToBank(toWxBankCondition);

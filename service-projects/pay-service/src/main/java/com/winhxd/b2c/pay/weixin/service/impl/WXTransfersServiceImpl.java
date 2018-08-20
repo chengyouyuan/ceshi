@@ -437,7 +437,9 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             toWxBankVO.setErrorDesc(queryForWxBankResponseDTO.getReason());
             toWxBankVO.setAbleContinue(false);
         } else if (PayTransfersStatus.PROCESSING.getCode().equals(transfersStatus)) {
-            toWxBankVO.setErrorDesc(PayTransfersStatus.FAILED.getText());
+            toWxBankVO.setTransfersResult(true);
+            toWxBankVO.setAbleContinue(false);
+            toWxBankVO.setErrorDesc(PayTransfersStatus.PROCESSING.getText());
         } else {
             logger.error("Transfers query result return UNKNOW STATUS, partnerTradeNo : " + toWxBankVO.getPartnerTradeNo());
         }
@@ -451,9 +453,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * @throws Exception
      */
     private PayTransfersQueryForWxBankResponseDTO getExactResultForWxBank(PayTransfersForWxBankDTO wxBankDTO, int queryTimes) throws Exception {
-        if(queryTimes <= 0){
-            return new PayTransfersQueryForWxBankResponseDTO();
-        }
         PayTransfersQueryForWxBankResponseDTO queryForWxBankResponseDTO = new PayTransfersQueryForWxBankResponseDTO();
         //请求查询接口参数
         PayTransfersQueryForWxBankDTO queryForWxBankDTO = new PayTransfersQueryForWxBankDTO();
@@ -467,8 +466,9 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }
-        if(StringUtils.isNotBlank(queryForWxBankResponseDTO.getStatus()) &&
-                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())){
+        if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxBankResponseDTO.getStatus()) &&
+                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())
+                ){
             logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
             queryForWxBankResponseDTO = getExactResultForWxBank(wxBankDTO, --queryTimes);

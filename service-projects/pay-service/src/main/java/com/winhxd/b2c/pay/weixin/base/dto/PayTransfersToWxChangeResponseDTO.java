@@ -8,7 +8,7 @@ import lombok.Setter;
  *
  * @Author yindanqing
  * @Date 2018/8/16 21:06
- * @Description:
+ * @Description: wx转账至零钱返参
  */
 @Setter
 @Getter

@@ -122,12 +122,12 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//初始化反参
 		payPreOrderVO.setAppId(payPreOrderDTO.getAppid());
 		payPreOrderVO.setNonceStr(payPreOrderDTO.getNonceStr());
-		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
-		payPreOrderVO.setOutTradeNo(outTradeNo);
 		payPreOrderVO.setPackageData(PACKAGE + payPreOrderResponseDTO.getPrepayId());
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
 		payPreOrderVO.setTimeStamp(String.valueOf(timeStamp));
 		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
+		payPreOrderVO.setOutTradeNo(outTradeNo);
 		payPreOrderVO.setPayStatus(true);
 		
 		return payPreOrderVO;
@@ -163,14 +163,14 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//初始化反参
 		payPreOrderVO.setAppId(bill.getAppid());
 		payPreOrderVO.setNonceStr(bill.getNonceStr());
-		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
-		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());
 		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
 		payPreOrderVO.setPayStatus(false);
+		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
+		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
 		
 		return payPreOrderVO;
 	}

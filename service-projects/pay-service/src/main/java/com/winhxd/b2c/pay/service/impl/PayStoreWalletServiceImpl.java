@@ -58,9 +58,9 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 		}
 		String verificationCode = condition.getVerificationCode();
     	if(StringUtils.isEmpty(verificationCode)){
-    		LOGGER.info("业务异常："+BusinessCode.CODE_610029);
-    		res = BusinessCode.CODE_610029;
-    		throw new BusinessException(BusinessCode.CODE_610029);
+    		LOGGER.info("业务异常："+BusinessCode.CODE_610016);
+    		res = BusinessCode.CODE_610016;
+    		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+condition.getStoreId());

@@ -3,6 +3,8 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
 
@@ -178,7 +179,7 @@ public class WXPayApiImpl implements WXPayApi {
 		}
         return sign;
     }
-	
+
 	/**
      * 不需要证书的请求
      * @param urlSuffix String
@@ -437,5 +438,48 @@ public class WXPayApiImpl implements WXPayApi {
         
     }
 
-    
+	@Override
+	public String transferToChange(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_TRANSFER_TO_CHANGE_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.TRANSFER_TO_CHANGE_URL_SUFFIX;
+		}
+		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
+	@Override
+	public String queryTransferToChange(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.QUERY_TRANSFER_TO_CHANGE_URL_SUFFIX;
+		}
+		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
+	@Override
+	public String transferToBank(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_TRANSFER_TO_BANK_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.TRANSFER_TO_BANK_URL_SUFFIX;
+		}
+		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
+	@Override
+	public String queryTransferToBank(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_QUERY_TRANSFER_TO_BANK_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.QUERY_TRANSFER_TO_BANK_URL_SUFFIX;
+		}
+		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
 }

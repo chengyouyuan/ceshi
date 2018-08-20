@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.config;
 
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.IWXPayDomain;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConfig;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,7 @@ import java.io.InputStream;
  * @Description: 微信支付配置
  */
 @Component
-public class PayConfig extends WXPayConfig {
+public class PayConfig{
 
     /**
      * 商户号的appid或商户号绑定的appid
@@ -68,47 +67,38 @@ public class PayConfig extends WXPayConfig {
     @Value("${WX.PUBLIC_KEY}")
     private String publicKey;
 
-    @Override
     public String getAppID() {
         return appID;
     }
 
-    @Override
     public String getMchAppID() {
         return mchAppID;
     }
 
-    @Override
     public String getMchID() {
         return mchID;
     }
 
-    @Override
     public String getKey() {
         return key;
     }
 
-    @Override
     public InputStream getCertStream() throws FileNotFoundException {
         return new FileInputStream(certPath);
     }
 
-    @Override
     public String getRSAPublicKey() {
         return publicKey;
     }
 
-    @Override
     public int getHttpConnectTimeoutMs() {
-        return super.getHttpConnectTimeoutMs();
+        return 6*1000;
     }
 
-    @Override
     public int getHttpReadTimeoutMs() {
-        return super.getHttpReadTimeoutMs();
+        return 8*1000;
     }
 
-    @Override
     public IWXPayDomain getWXPayDomain() {
         return new IWXPayDomain(){
 
@@ -117,30 +107,26 @@ public class PayConfig extends WXPayConfig {
             }
 
             @Override
-            public DomainInfo getDomain(WXPayConfig config) {
+            public DomainInfo getDomain(PayConfig config) {
                 return new DomainInfo(WXPayConstants.DOMAIN_API, true);
             }
         };
     }
 
-    @Override
     public boolean shouldAutoReport() {
-        return super.shouldAutoReport();
+        return false;
     }
 
-    @Override
     public int getReportWorkerNum() {
-        return super.getReportWorkerNum();
+        return 6;
     }
 
-    @Override
     public int getReportQueueMaxSize() {
-        return super.getReportQueueMaxSize();
+        return 10000;
     }
 
-    @Override
     public int getReportBatchSize() {
-        return super.getReportBatchSize();
+        return 10;
     }
 
 	public String getPayNotifyUrl() {

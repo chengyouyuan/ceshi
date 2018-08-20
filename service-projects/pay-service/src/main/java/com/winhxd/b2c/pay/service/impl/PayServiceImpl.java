@@ -573,30 +573,28 @@ public class PayServiceImpl implements PayService{
 			 String signType=payPreOrderVO.getSignType();
 			 String paySign=payPreOrderVO.getPaySign();
 			 String orderTransactionNo=payPreOrderVO.getOutTradeNo();
-			 if (payPreOrderVO.getPayStatus()) {
+			 String appid=payPreOrderVO.getAppId();
 				 
-				 PayOrderPayment payOrderPayment=payOrderPaymentMapper.selectByOrderPaymentNo(orderTransactionNo);
-				 if (payOrderPayment == null) {
-					 
-					 payOrderPayment=new PayOrderPayment();
-					 payOrderPayment.setOrderNo(orderNo);
-					 payOrderPayment.setOrderTransactionNo(orderTransactionNo);
-					 payOrderPayment.setCreated(new Date());
-					 payOrderPayment.setBuyerId(openid);
-					 payOrderPayment.setPayType(Short.parseShort(payType));
-					 payOrderPayment.setRealPaymentMoney(totalAmount);
-					 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
-					 payOrderPaymentMapper.insertSelective(payOrderPayment);
-					 
-				}
-				 
+			 PayOrderPayment payOrderPayment=payOrderPaymentMapper.selectByOrderPaymentNo(orderTransactionNo);
+			 if (payOrderPayment == null) {
+				 payOrderPayment=new PayOrderPayment();
+				 payOrderPayment.setOrderNo(orderNo);
+				 payOrderPayment.setOrderTransactionNo(orderTransactionNo);
+				 payOrderPayment.setCreated(new Date());
+				 payOrderPayment.setBuyerId(openid);
+				 payOrderPayment.setPayType(Short.parseShort(payType));
+				 payOrderPayment.setRealPaymentMoney(totalAmount);
+				 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
+				 payOrderPayment.setAppid(appid);
+				 payOrderPaymentMapper.insertSelective(payOrderPayment);
 			}
-			
+			 
 			vo.setNonceStr(nonceStr);
 			vo.setPackageData(packageData);
 			vo.setPaySign(paySign);
 			vo.setSignType(signType);
 			vo.setTimeStamp(timeStamp);
+			vo.setAppid(appid);
 		}
 		
 		return vo;

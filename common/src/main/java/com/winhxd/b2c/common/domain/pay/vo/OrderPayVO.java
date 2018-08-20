@@ -18,4 +18,6 @@ public class OrderPayVO {
 	private String signType;
 	@ApiModelProperty("签名")
 	private String paySign;
+	@ApiModelProperty("appid")
+	private String appid;
 }

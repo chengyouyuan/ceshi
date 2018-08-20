@@ -109,7 +109,7 @@ public class CouponController {
 	}
     @ApiOperation("优惠券活动导出小店信息")
     @GetMapping(value = "/5051/v1/couponActivityExportStoreExcel")
-    public ResponseEntity<byte[]> couponActivityExportStoreExcel(@RequestBody CouponActivityCondition condition){
+    public ResponseEntity<byte[]> couponActivityExportStoreExcel(CouponActivityCondition condition){
         ResponseResult<PagedList<CouponActivityStoreVO>> responseResult = couponActivityServiceClient.queryStoreByActivity(condition);
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
         return ExcelUtils.exp(list, "惠小店信息");

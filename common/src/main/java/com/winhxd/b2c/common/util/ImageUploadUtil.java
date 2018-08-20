@@ -29,9 +29,9 @@ public class ImageUploadUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ImageUploadUtil.class);
 	private static final int SUCCESS_CODE = 200;
 	private static final int NUMBER_1024=1024;
-	private static final String JPG="jpg";
-	private static final String JPEG="jpeg";
-    private static final String PNG="png";
+	private static final String JPG_SUFFIX=".jpg";
+	private static final String JPEG_SUFFIX=".jpeg";
+    private static final String PNG_SUFFIX=".png";
 
 	@Value("${cdn.picture}")
 	private String baseHost="";
@@ -178,8 +178,8 @@ public class ImageUploadUtil {
 
 		postFixIndex = fileName.lastIndexOf(".");
 		postFix = fileName.substring(postFixIndex);
-		if (JPG.equalsIgnoreCase(postFix) || JPEG.equalsIgnoreCase(postFix) 
-		        || PNG.equalsIgnoreCase(postFix)) {
+		if (JPG_SUFFIX.equalsIgnoreCase(postFix) || JPEG_SUFFIX.equalsIgnoreCase(postFix) 
+		        || PNG_SUFFIX.equalsIgnoreCase(postFix)) {
 			// 上传文件
 			//BaseFile baseFile = uploadUtil.UploadFile("ceshi",fileName,inputStream,true);
 			BaseFile baseFile = uploadUtil.httpClientUploadFile(baseHost,fileName, inputStream);

@@ -216,7 +216,7 @@ public class WXPayUtil {
             }
         }
         sb.append("key=").append(key);
-        System.out.println("-----签名数据------"+sb.toString());
+        WXPayUtil.getLogger().warn("-----签名数据------"+sb.toString());
         if (SignType.MD5.equals(signType)) {
             return MD5(sb.toString()).toUpperCase();
         }

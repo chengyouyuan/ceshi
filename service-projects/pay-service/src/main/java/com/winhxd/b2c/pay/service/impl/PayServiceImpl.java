@@ -558,7 +558,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--支付方式为空");
 			throw new BusinessException(BusinessCode.CODE_600106);
 		}
-		if (StringUtils.isBlank(payType)) {
+		if (totalAmount==null) {
 			logger.info(log+"--支付金额为空");
 			throw new BusinessException(BusinessCode.CODE_600106);
 		}

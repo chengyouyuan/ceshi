@@ -9,6 +9,8 @@ import java.util.Date;
  */
 public class PayStatementDownloadRecord {
 	
+	public static final String DOWNLOAD_SUCCESS = "SUCCESS";
+	
 	/**
 	 * 主键
 	 */

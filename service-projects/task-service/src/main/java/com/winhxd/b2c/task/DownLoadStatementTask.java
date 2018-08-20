@@ -11,14 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
 
+/**
+ * 下载对账单、资金账单定时任务
+ * @author yuluyuan
+ *
+ * 2018年8月20日
+ */
 @Component
 public class DownLoadStatementTask {
     private static final Logger logger = LoggerFactory.getLogger(DownLoadStatementTask.class);
  
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
  
     @Autowired
     DownLoadStatementClient downLoadStatementClient;
@@ -28,7 +35,7 @@ public class DownLoadStatementTask {
      */
     @Scheduled(fixedRate = 5000)
     public void testFixRate() {
-        System.out.println("我每隔5秒冒泡一次：" + dateFormat.format(new Date()));
+        System.out.println("我每隔5秒冒泡一次：" + DATE_FORMAT.format(new Date()));
     }
     
     /**
@@ -45,19 +52,19 @@ public class DownLoadStatementTask {
     "0 10,44 14 ? 3 WED"    三月的每周三的14：10和14：44触发
     "0 15 10 ? * MON-FRI"    每个周一、周二、周三、周四、周五的10：15触发
     */
-//    @Scheduled(cron = "0 0 10 * * ?")    //每天上午10点执行
     @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
     public void downLoadStatement() {
         System.out.println("我每天上午10点开始执行");
         try {
+//        	DownloadStatementCondition condition = new DownloadStatementCondition();
         	String statementResult = downLoadStatementClient.downloadStatement(null).getData();
         	String fundFlowResult = downLoadStatementClient.downloadFundFlow(null).getData();
             //定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
-            if ("SUCCESS".equals(statementResult)) {
-                System.out.println("对账单下载完成！");
+            if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(statementResult)) {
+            	logger.info("对账单下载完成！");
             }
-            if ("SUCCESS".equals(fundFlowResult)) {
-            	System.out.println("资金账单下载完成！");
+            if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(fundFlowResult)) {
+            	logger.info("资金账单下载完成！");
             }
 
         } catch (Exception ex) {
@@ -66,7 +73,7 @@ public class DownLoadStatementTask {
     }
     
     @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
-    public void ReDownLoadStatement() {
+    public void reDownLoadStatement() {
     	System.out.println("啥时候下载之前失败过的账单呢");
     	try {
     		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
@@ -75,22 +82,26 @@ public class DownLoadStatementTask {
 			if (CollectionUtils.isNotEmpty(list)) {
 				for (int i = 0; i < list.size(); i++) {
 					Date billDate = list.get(i).getBillDate();
+
+		        	DownloadStatementCondition condition = new DownloadStatementCondition();
+		        	condition.setBillDate(billDate);
+		        	
 					String statementResult = "";
 					String fundFlowResult = "";
 					if (PayStatementDownloadRecord.BillType.STATEMENT.getCode() == list.get(i).getBillType()) {
 						
-						statementResult = downLoadStatementClient.downloadStatement(billDate).getData();
+						statementResult = downLoadStatementClient.downloadStatement(condition).getData();
 						
 					}else if(PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode() == list.get(i).getBillType()){
 						
-						fundFlowResult = downLoadStatementClient.downloadFundFlow(billDate).getData();
+						fundFlowResult = downLoadStatementClient.downloadFundFlow(condition).getData();
 						
 					}
 					//定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
-					if ("SUCCESS".equals(statementResult)) {
+					if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(statementResult)) {
 						logger.info("{}对账单下载完成！", billDate);
 					}
-					if ("SUCCESS".equals(fundFlowResult)) {
+					if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(fundFlowResult)) {
 						logger.info("{}资金账单下载完成！", billDate);
 					}
 					

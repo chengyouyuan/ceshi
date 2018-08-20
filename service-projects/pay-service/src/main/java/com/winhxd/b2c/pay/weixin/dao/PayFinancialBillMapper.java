@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.dao;
 
+import java.util.Date;
+
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 
 public interface PayFinancialBillMapper {
@@ -14,4 +16,6 @@ public interface PayFinancialBillMapper {
     int updateByPrimaryKeySelective(PayFinancialBill record);
 
     int updateByPrimaryKey(PayFinancialBill record);
+    
+    int deleteByBillDate(Date billDate);
 }

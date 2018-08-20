@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount;
 import com.winhxd.b2c.common.domain.pay.model.PayStatement;
@@ -92,14 +93,15 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	
 	
 	@Override
-	public String downloadStatement(Date billDate) {
+	public String downloadStatement(DownloadStatementCondition condition) {
+		Date billDate = condition.getBillDate();
 		if (billDate == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 		
 		PayStatementDTO dto = new PayStatementDTO();
 		dto.setBillDate(sdf.format(billDate));
-		dto.setBillType(PayStatementDTO.BillType.ALL.getText());
+		dto.setBillType(condition.getStatementType());
 		
 		try {
 			PayBillDownloadResponseDTO responseDTO = wXPayApi.downloadBill(dto);
@@ -167,9 +169,11 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			logger.info(responseDTO.toString());
 		} catch (Exception e) {
 			logger.error("内部错误，下载对账单失败");
+			payStatementMapper.deleteByBillDate(billDate);
+			payStatementCountMapper.deleteByBillDate(billDate);
 			e.printStackTrace();
 		}
-		return "SUCCESS";
+		return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 	}
 
 	/**
@@ -260,7 +264,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		
 		statement.setBillDate(billDate);
 		
-		if (PayStatementDTO.BillType.ALL.getText().equals(billType)) {
+		if (PayStatementDTO.StatementType.ALL.getText().equals(billType)) {
 			//微信退款单号,商户退款单号,退款金额,代金券或立减优惠退款金额，退款类型，退款状态,商品名称,商户数据包,手续费,费率
 			statement.setRefundWxOrderNo(everyDataArray[14]);
 			statement.setRefundOutOrderNo(everyDataArray[15]);
@@ -275,7 +279,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			String rate = everyDataArray[23].replace("%", "");
 			statement.setRate(Float.valueOf(rate) / 100);
 			
-		} else if (PayStatementDTO.BillType.SUCCESS.getText().equals(billType)) {
+		} else if (PayStatementDTO.StatementType.SUCCESS.getText().equals(billType)) {
 			//商品名称,商户数据包,手续费,费率
 			statement.setProdName(everyDataArray[14]);
 			statement.setMchData(everyDataArray[15]);
@@ -284,7 +288,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			String rate = everyDataArray[17].replace("%", "");
 			statement.setRate(Float.valueOf(rate) / 100);
 			
-		} else if (PayStatementDTO.BillType.REFUND.getText().equals(billType)) {
+		} else if (PayStatementDTO.StatementType.REFUND.getText().equals(billType)) {
 			//退款申请时间,退款成功时间,微信退款单号,商户退款单号,退款金额,代金券或立减优惠退款金额,退款类型,退款状态,商品名称,商户数据包,手续费,费率
 			statement.setrefundStartTime(sdf1.parse(everyDataArray[14]));
 			statement.setRefundSuccessTime(sdf1.parse(everyDataArray[15]));
@@ -326,20 +330,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	}
 	
 	@Override
-	public String downloadFundFlow(Date billDate) {
-
-		if (billDate == null) {
+	public String downloadFundFlow(DownloadStatementCondition condition) {
+		Date billDate = condition.getBillDate();
+		if (condition.getBillDate() == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 		
 		PayFinancialBillDTO dto = new PayFinancialBillDTO();
 		dto.setBillDate(sdf.format(billDate));
-		dto.setAccountType(PayFinancialBillDTO.SourceType.BASIC.getText());
+		dto.setAccountType(condition.getAccountType());
 		
 		try {
 			PayBillDownloadResponseDTO billMap = wXPayApi.downloadFundFlow(dto);
 
-			logger.info("资金账单下载返回数据：{}", String.valueOf(billMap.toString()));
+			logger.info("资金账单下载返回数据：{}", String.valueOf(billMap));
 			//通信失败，则记录失败原因到记录表
 			if (WXPayConstants.FAIL.equals(billMap.getReturnCode())) {
 				
@@ -401,8 +405,10 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e.toString());
+			payFinancialBillMapper.deleteByBillDate(billDate);
+			payFinancialBillCountMapper.deleteByBillDate(billDate);
 		}
-		return "SUCCESS";
+		return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 	}
 
 	private PayFinancialBill assemblePayFinancialBill(String[] everyDataArray,

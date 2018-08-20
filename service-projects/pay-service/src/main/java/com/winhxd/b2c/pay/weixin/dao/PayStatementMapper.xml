@@ -375,4 +375,11 @@
       statement_count_id = #{statementCountId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <delete id="deleteByBillDate" parameterType="java.util.Date">
+    delete from pay_statement
+    where bill_date = #{billDate,jdbcType=DATE}
+  </delete>
+  
+  
 </mapper>

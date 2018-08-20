@@ -658,7 +658,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //添加订单流转日志
         if (updateResult > 0) {
             logger.info("订单退款-申请退款开始-订单号={}", orderNo);
-            applyRefund(order, operatorId, operatorName, cancelReason);
+//            applyRefund(order, operatorId, operatorName, cancelReason);
             logger.info("订单退款-申请退款结束-订单号={}", orderNo);
             //退优惠券
             logger.info("订单退款-退优惠券开始-订单号={}", orderNo);

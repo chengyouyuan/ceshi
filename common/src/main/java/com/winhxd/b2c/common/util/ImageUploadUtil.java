@@ -2,11 +2,7 @@ package com.winhxd.b2c.common.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-import com.winhxd.b2c.common.domain.common.model.BaseFile;
-import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
-import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.common.model.BaseFile;
+import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
+import com.winhxd.b2c.common.exception.BusinessException;
 
 /**
  * 上传图片工具类
@@ -29,6 +28,10 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 public class ImageUploadUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ImageUploadUtil.class);
 	private static final int SUCCESS_CODE = 200;
+	private static final int NUMBER_1024=1024;
+	private static final String JPG="jpg";
+	private static final String JPEG="jpeg";
+    private static final String PNG="png";
 
 	@Value("${cdn.picture}")
 	private String baseHost="";
@@ -156,7 +159,7 @@ public class ImageUploadUtil {
 		long fileSize = inputStream.available();
 		if (size != null && size > 0) {
 			// 判断图片大小是否超过限制大小，单位KB
-			if (size * 1024 < fileSize) {
+			if (size * NUMBER_1024 < fileSize) {
 				logger.error("上传图片：" + fileName + ",size:" + fileSize + ",图片大小超过" + size + "KB!");
 				throw new BusinessException(BusinessCode.CODE_1018);
 				//result = new ResponseResult<>(BusinessCode.CODE_1018);
@@ -175,9 +178,8 @@ public class ImageUploadUtil {
 
 		postFixIndex = fileName.lastIndexOf(".");
 		postFix = fileName.substring(postFixIndex);
-		if (postFix.equalsIgnoreCase(".jpg") || postFix.equalsIgnoreCase(".JPG") || postFix.equalsIgnoreCase(".jpeg")
-				|| postFix.equalsIgnoreCase(".JPEG") || postFix.equalsIgnoreCase(".png")
-				|| postFix.equalsIgnoreCase(".PNG")) {
+		if (JPG.equalsIgnoreCase(postFix) || JPEG.equalsIgnoreCase(postFix) 
+		        || PNG.equalsIgnoreCase(postFix)) {
 			// 上传文件
 			//BaseFile baseFile = uploadUtil.UploadFile("ceshi",fileName,inputStream,true);
 			BaseFile baseFile = uploadUtil.httpClientUploadFile(baseHost,fileName, inputStream);

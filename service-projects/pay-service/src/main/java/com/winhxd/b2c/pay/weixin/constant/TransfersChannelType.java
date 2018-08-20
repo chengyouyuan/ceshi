@@ -23,11 +23,12 @@ public enum TransfersChannelType {
     private String text;
 
     private TransfersChannelType(int code, String text){
-
+        this.code = code;
+        this.text = text;
     }
 
-    public int getCode() {
-        return code;
+    public short getCode() {
+        return (short)code;
     }
 
     public String getText() {

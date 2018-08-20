@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
 
 /**
  * 订单主表
@@ -93,6 +94,7 @@ public interface OrderInfoMapper {
      * @param orderNo 订单编号
      * @return
      */
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryProductInfo=true, queryStoreInfo=true)
     OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
 
     /**

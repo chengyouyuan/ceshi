@@ -24,7 +24,7 @@ public class PayTransfersToWxBankVO {
     @ApiModelProperty("商户订单号")
     private String partnerTradeNo;
 
-    @ApiModelProperty("处理结果")
+    @ApiModelProperty("处理结果, true为成功")
     private boolean transfersResult;
 
     @ApiModelProperty("是否可以继续, 为true表示该申请可以继续使用")

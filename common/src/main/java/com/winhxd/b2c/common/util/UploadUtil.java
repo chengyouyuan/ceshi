@@ -1,8 +1,10 @@
 package com.winhxd.b2c.common.util;
 
-import com.winhxd.b2c.common.domain.common.model.BaseFile;
-import com.winhxd.b2c.common.exception.BusinessException;
-import org.apache.commons.lang.StringUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Map;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -12,20 +14,10 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import com.winhxd.b2c.common.domain.common.model.BaseFile;
 
 /**
  * @description: 上传文件辅助类
@@ -34,11 +26,11 @@ import java.util.UUID;
  **/
 @Component
 public class UploadUtil {
-    private static final Logger logger = LoggerFactory.getLogger(UploadUtil.class);
     private static final int SUCCESS_CODE = 200;
-    private static final int ErrorCode = 1;
 
-    //文件默认保存地址
+    /**
+     * CND地址
+     */
     @Value("${cdn.picture}")
     private String baseHost = "";
 
@@ -90,7 +82,8 @@ public class UploadUtil {
         HttpEntity entity = builder.build();
 
         httpPost.setEntity(entity);
-        HttpResponse response = null;// 执行提交
+        // 执行提交
+        HttpResponse response = null;
         try {
             response = httpClient.execute(httpPost);
         } catch (IOException e) {

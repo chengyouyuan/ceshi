@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,7 @@ public class VerifyController {
     private VerifyServiceClient verifyServiceClient;
 
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
-    @GetMapping("/verifyList")
+    @PostMapping("/verifyList")
     public ResponseResult<?> verifyList(VerifySummaryListCondition condition) {
         return verifyServiceClient.verifyList(condition);
     }
@@ -32,7 +31,7 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
-    @GetMapping("/accountingDetailList")
+    @PostMapping("/accountingDetailList")
     public ResponseResult<?> accountingDetailList(VerifyDetailListCondition condition) {
         return verifyServiceClient.accountingDetailList(condition);
     }
@@ -56,7 +55,7 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
-    @GetMapping("/storeWithdrawList")
+    @PostMapping("/storeWithdrawList")
     public ResponseResult<?> storeWithdrawList(PayWithdrawalsListCondition condition) {
         return verifyServiceClient.storeWithdrawalsList(condition);
     }

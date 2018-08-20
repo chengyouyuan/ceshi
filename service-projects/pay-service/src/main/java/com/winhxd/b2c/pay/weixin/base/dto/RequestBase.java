@@ -1,7 +1,5 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import java.io.Serializable;
-
 /**
  * 请求公共参数
  * @author mahongliang
@@ -9,8 +7,7 @@ import java.io.Serializable;
  * @Description 
  * @version
  */
-public class RequestBase implements Serializable {
-	private static final long serialVersionUID = -5387326139912673648L;
+public class RequestBase {
 	
 	/**
 	 * 小程序ID
@@ -21,11 +18,6 @@ public class RequestBase implements Serializable {
 	 * 商户号
 	 */
 	private String mchId;
-	
-	/**
-	 * 设备号
-	 */
-	private String deviceInfo;
 	
 	/**
 	 * 随机字符串
@@ -56,14 +48,6 @@ public class RequestBase implements Serializable {
 
 	public void setMchId(String mchId) {
 		this.mchId = mchId;
-	}
-
-	public String getDeviceInfo() {
-		return deviceInfo;
-	}
-
-	public void setDeviceInfo(String deviceInfo) {
-		this.deviceInfo = deviceInfo;
 	}
 
 	public String getNonceStr() {

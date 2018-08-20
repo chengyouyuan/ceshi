@@ -1,7 +1,5 @@
 package com.winhxd.b2c.pay.weixin.base.dto;
 
-import java.io.Serializable;
-
 /**
  * 响应数据成功时，默认返回请求时的公共参数
  * @author mahongliang
@@ -9,9 +7,7 @@ import java.io.Serializable;
  * @Description 
  * @version
  */
-public class ResponseBase extends RequestBase implements Serializable {
-	private static final long serialVersionUID = 2755651634569976638L;
-	
+public class ResponseBase extends RequestBase {
 	public static final String SUCCESS = "SUCCESS";
 	public static final String FAIL = "FAIL";
 	

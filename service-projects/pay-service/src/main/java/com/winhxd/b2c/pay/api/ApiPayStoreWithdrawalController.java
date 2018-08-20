@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(tags = "ApiPay")
-@RequestMapping(value = "/api-pay/withdrawal")
+@RequestMapping(value = "/api-pay/pay")
 public class ApiPayStoreWithdrawalController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreWithdrawalController.class);
 	

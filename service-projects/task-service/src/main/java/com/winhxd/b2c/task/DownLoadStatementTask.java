@@ -100,8 +100,5 @@ public class DownLoadStatementTask {
     		logger.error("对账单下载失败！()", ex.toString());
     	}
     }
-    
-    
-    
-    
+
 }

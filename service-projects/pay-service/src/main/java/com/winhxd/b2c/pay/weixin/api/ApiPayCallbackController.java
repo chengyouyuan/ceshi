@@ -66,8 +66,10 @@ public class ApiPayCallbackController {
 			this.response(response, FAIL_RESPONSE);
 			return;
 		}
+		logger.info("支付回调参数：{}", resqXml);
 		try {
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
+			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", payPreOrderCallbackDTO);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
 				PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
 				Boolean result = payService.callbackOrderPay(bill);
@@ -98,8 +100,10 @@ public class ApiPayCallbackController {
 			this.response(response, FAIL_RESPONSE);
 			return;
 		}
+		logger.info("退款回调参数：{}", resqXml);
 		try {
 			PayRefundResponseDTO refundCallbackDTO = XmlUtil.xml2Bean(resqXml, PayRefundResponseDTO.class);
+			logger.info("退款回调转换参数（PayRefundResponseDTO）：{}", refundCallbackDTO);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密

@@ -443,13 +443,10 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
-        }
         if(null ==condition.getOrderNo()){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
+        logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             couponTemplateUse.setStatus(Short.valueOf(condition.getStatus()));
@@ -460,6 +457,7 @@ public class CouponServiceImpl implements CouponService {
             couponTemplateSend.setStatus(Short.valueOf(condition.getStatus()));
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
+        logger.info("订单退优惠券结束,订单号"+condition.getOrderNo());
         return true;
     }
 

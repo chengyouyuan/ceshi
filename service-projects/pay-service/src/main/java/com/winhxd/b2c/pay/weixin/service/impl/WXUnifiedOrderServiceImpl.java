@@ -1,11 +1,8 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -23,14 +20,10 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
-import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 
 /**
  * 支付网关微信统一下单API实现
@@ -133,7 +126,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
 		payPreOrderVO.setTimeStamp(String.valueOf(timeStamp));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderVOSign(payPreOrderVO));
 		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(outTradeNo);
 		payPreOrderVO.setPayStatus(true);
@@ -176,7 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderVOSign(payPreOrderVO));
 		payPreOrderVO.setPayStatus(false);
 		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());

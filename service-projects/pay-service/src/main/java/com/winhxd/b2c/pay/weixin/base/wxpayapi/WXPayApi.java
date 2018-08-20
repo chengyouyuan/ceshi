@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
@@ -97,7 +98,7 @@ public interface WXPayApi {
      * @return API返回数据
      * @throws Exception
      */
-    public String transferToChange(Map<String, String> reqData) throws Exception;
+    String transferToChange(Map<String, String> reqData) throws Exception;
 
     /**
      * 作用：查询企业付款<br>
@@ -107,7 +108,7 @@ public interface WXPayApi {
      * @return API返回数据
      * @throws Exception
      */
-    public String queryTransferToChange(Map<String, String> reqData) throws Exception;
+    String queryTransferToChange(Map<String, String> reqData) throws Exception;
 
     /**
      * 作用：企业付款<br>
@@ -117,7 +118,7 @@ public interface WXPayApi {
      * @return API返回数据
      * @throws Exception
      */
-    public String transferToBank(Map<String, String> reqData) throws Exception;
+    String transferToBank(Map<String, String> reqData) throws Exception;
 
     /**
      * 作用：查询企业付款<br>
@@ -127,6 +128,16 @@ public interface WXPayApi {
      * @return API返回数据
      * @throws Exception
      */
-    public String queryTransferToBank(Map<String, String> reqData) throws Exception;
+    String queryTransferToBank(Map<String, String> reqData) throws Exception;
+
+    /**
+     * 小程序返回值签名
+     * @author mahongliang
+     * @date  2018年8月21日 上午2:01:54
+     * @Description 
+     * @param payPreOrderVO
+     * @return
+     */
+	String payPreOrderVOSign(PayPreOrderVO payPreOrderVO);
 
 }

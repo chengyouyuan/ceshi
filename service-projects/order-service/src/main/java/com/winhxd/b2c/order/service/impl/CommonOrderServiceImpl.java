@@ -308,9 +308,8 @@ public class CommonOrderServiceImpl implements OrderService {
                     String newOrderJsonString = JsonUtil.toJSONString(order);
                     //添加订单流转日志
                     orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), null, "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
-                    logger.info("退款回调-添加流转日志结束-订单号={}", orderNo);
-                    logger.info("退款回调-发送消息开始-订单号={}", orderNo);
+                            order.getOrderStatus(), order.getCreatedBy(), "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
+                    logger.info("退款回调-添加流转日志结束-发送消息开始-订单号={}", orderNo);
                     // 给C端发送消息 “您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收”
                     NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                     neteaseMsgCondition.setCustomerId(order.getCustomerId());
@@ -404,18 +403,18 @@ public class CommonOrderServiceImpl implements OrderService {
         if (updateRowNum < 1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("取消订单-状态更新不成功-订单号={0}", orderNo));
         } else {
-            logger.info("取消订单-退优惠券发送事件开始-订单号={}", orderNo);
-            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_CANCEL, order.getOrderNo(), order);
-            logger.info("取消订单-退优惠券发送事件结束-添加流转日志开始-订单号={}", orderNo);
+            logger.info("取消订单-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             Short oldStatus = order.getOrderStatus();
             order.setOrderStatus(OrderStatusEnum.CANCELED.getStatusCode());
             order.setCancelReason(cancelReason);
             String newOrderJsonString = JsonUtil.toJSONString(order);
             //添加订单流转日志
-            orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
-                    order.getOrderStatus(), operatorId, operatorName, cancelReason, MainPointEnum.MAIN);
+            orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus, order.getOrderStatus(), operatorId, operatorName, cancelReason, MainPointEnum
+                    .MAIN);
             logger.info("取消订单-添加流转日志结束-订单号={}", orderNo);
+            //发送取消事件
+            sendCancelEvent(order, cancelReason, operatorId, operatorName);
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
         }
@@ -497,7 +496,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
-     * 门店处理用户退款订单
+     * B端门店处理用户退款订单
      *
      * @param condition 入参
      */
@@ -655,13 +654,8 @@ public class CommonOrderServiceImpl implements OrderService {
         int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
         //添加订单流转日志
         if (updateResult > 0) {
-            logger.info("订单退款-申请退款开始-订单号={}", orderNo);
-            applyRefund(order, operatorId, operatorName, cancelReason);
-            logger.info("订单退款-申请退款结束-订单号={}", orderNo);
-            //退优惠券
-            logger.info("订单退款-退优惠券开始-订单号={}", orderNo);
-            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_CANCEL, order.getOrderNo(), order);
-            logger.info("订单退款-退优惠券结束-添加流转日志开始-订单号={}", orderNo);
+//            applyRefund(order, operatorId, operatorName, cancelReason);
+            logger.info("订单退款-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
@@ -670,10 +664,29 @@ public class CommonOrderServiceImpl implements OrderService {
             orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
                     order.getOrderStatus(), operatorId, operatorName, reason, MainPointEnum.MAIN);
             logger.info("订单退款-添加流转日志结束-订单号={}", orderNo);
+            //发送订单取消事件
+            sendCancelEvent(order, reason, operatorId, operatorName);
         } else {
             logger.info("订单退款用户退款不成功 订单号={}", order.getOrderNo());
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE);
         }
+    }
+
+    /**
+     * 发送订单取消事件
+     *
+     * @param order
+     * @param cancelReason
+     * @param operatorId
+     * @param operatorName
+     */
+    private void sendCancelEvent(OrderInfo order, String cancelReason, Long operatorId, String operatorName) {
+        order.setUpdatedBy(operatorId);
+        order.setUpdatedByName(operatorName);
+        order.setCancelReason(cancelReason);
+        logger.info("订单发送取消事件开始-订单号={}", order.getOrderNo());
+        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_CANCEL, order.getOrderNo(), order);
+        logger.info("订单发送取消事件结束-订单号={}", order.getOrderNo());
     }
 
     @Override

@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Import;
  *
  * @author lixiaodong
  */
-@Import(MessageQueueConfig.class)
-public class MicroServiceConfig extends CommonConfig {
+@Import({CommonConfig.class, MessageQueueConfig.class})
+public class MicroServiceConfig {
 
     /**
      * 统一异常处理

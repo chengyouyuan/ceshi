@@ -29,7 +29,7 @@ public class EventTaskService {
     @Autowired
     private EventMessageSender eventMessageSender;
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 60000)
     public void checkEventSentHistory() {
         log.info("事件补偿计划任务开始");
         double ms = System.currentTimeMillis() - EVENT_HISTORY_BEFORE;

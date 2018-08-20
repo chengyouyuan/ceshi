@@ -169,7 +169,7 @@ public class ApiPayStoreBindBankCardController {
 		} 
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
-		cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
+		cache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
 		if(StringUtils.isEmpty(condition.getMobile())){
 			result.setCode(BusinessCode.CODE_610015);
 			LOGGER.info("手机号为空");

@@ -189,6 +189,9 @@ public class VerifyService {
             OrderInfoDetailVO4Management orderInfoDetailVO4Management = responseResult.getData();
             OrderInfoDetailVO orderInfoDetailVO = orderInfoDetailVO4Management.getOrderInfoDetailVO();
             if (orderInfoDetailVO != null) {
+                if (orderInfoDetailVO.getFinishDateTime() == null) {
+                    throw new BusinessException(-1, "订单闭环时间为NULL");
+                }
                 count = accountingDetailMapper.updateAccountingDetailCompletedByComplete(
                         orderNo, orderInfoDetailVO.getFinishDateTime());
                 log.info(String.format("订单[%s]费用明细入账，入账时间[%s]，共[%d]笔费用",

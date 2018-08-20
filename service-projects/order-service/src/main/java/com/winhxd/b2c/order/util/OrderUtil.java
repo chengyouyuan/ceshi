@@ -1,5 +1,6 @@
 package com.winhxd.b2c.order.util;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,18 +25,18 @@ import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 
 public class OrderUtil {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(OrderUtil.class);
-    
-    private OrderUtil(){
-        
+
+    private OrderUtil() {
+
     }
 
     public static final String getStoreOrderSalesSummaryKey(long storeId) {
         String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}";
         return MessageFormat.format(storeSalesSummary, storeId);
     }
-    
+
     public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null) {
             startDateTime = new Date();
@@ -60,13 +62,11 @@ public class OrderUtil {
         }
         return mobileStr;
     }
-    
+
 
     /**
      * 生成云信消息对象
-     * @author wangbin
-     * @date  2018年8月16日 下午5:24:49
-     * @Description 
+     *
      * @param storeId
      * @param storeMsg
      * @param createdBy
@@ -75,9 +75,12 @@ public class OrderUtil {
      * @param pageType
      * @param audioType
      * @return
+     * @author wangbin
+     * @date 2018年8月16日 下午5:24:49
+     * @Description
      */
     public static NeteaseMsgCondition genNeteaseMsgCondition(Long storeId, String storeMsg, String createdBy, int expiration,
-            int msgType, short pageType, int audioType, String treeCode) {
+                                                             int msgType, short pageType, int audioType, String treeCode) {
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
         neteaseMsgCondition.setCustomerId(storeId);
         NeteaseMsg neteaseMsg = new NeteaseMsg();
@@ -91,7 +94,7 @@ public class OrderUtil {
         neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
         return neteaseMsgCondition;
     }
-    
+
     public static MiniMsgCondition genMiniMsgCondition(String openid, String page, short msgType2C, MiniTemplateData... datas) {
         List<MiniTemplateData> temData = Arrays.asList(datas);
         MiniMsgCondition miniMsgCondition = new MiniMsgCondition();
@@ -102,8 +105,20 @@ public class OrderUtil {
         return miniMsgCondition;
     }
 
+    public static String genRealPayMoney(BigDecimal money) {
+        String result = "￥";
+        if (ObjectUtils.allNotNull(money)) {
+            result += money.toString();
+        } else {
+            result += "0";
+
+        }
+        return result;
+    }
+
     /**
      * 获取订单详情的描述信息，用于构造消息发送给微信用户
+     *
      * @param orderItems
      * @return
      */
@@ -117,19 +132,20 @@ public class OrderUtil {
         }
         return result;
     }
-    
+
     /**
      * 新订单门店云信消息发放
-     * @author wangbin
-     * @date  2018年8月16日 下午6:27:59
+     *
      * @param messageServiceClient
      * @param storeId
+     * @author wangbin
+     * @date 2018年8月16日 下午6:27:59
      */
-    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId){
+    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId) {
         try {
             // 发送云信
             String storeMsg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
-            String createdBy= "";
+            String createdBy = "";
             int expiration = 0;
             int msgType = 0;
             short pageType = 1;
@@ -143,17 +159,18 @@ public class OrderUtil {
             logger.error("客户下单给门店发送消息失败：", e);
         }
     }
-    
+
     /**
      * 订单需要提货给用户发信息
-     * @author wangbin
-     * @date  2018年8月16日 下午6:32:26
+     *
      * @param messageServiceClient
      * @param pickupDateTime
      * @param pickupType
      * @param openid
+     * @author wangbin
+     * @date 2018年8月16日 下午6:32:26
      */
-    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal){
+    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal) {
         try {
             pickupDateTime = pickupDateTime == null ? new Date() : pickupDateTime;
             String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
@@ -176,20 +193,21 @@ public class OrderUtil {
             logger.error("提醒用户提货发送消息失败：", e);
         }
     }
-    
+
     /**
      * 订单待提货发信息给门店
-     * @author wangbin
-     * @date  2018年8月16日 下午6:37:26
+     *
      * @param messageServiceClient
      * @param last4MobileNums
      * @param storeId
+     * @author wangbin
+     * @date 2018年8月16日 下午6:37:26
      */
-    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId){
+    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId) {
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             // 发送云信
-            String createdBy= "";
+            String createdBy = "";
             int expiration = 0;
             int msgType = 0;
             short pageType = 1;

@@ -120,7 +120,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		this.savePayBill(condition, payPreOrderDTO, payPreOrderResponseDTO);
 		
 		//初始化反参
-		payPreOrderVO.setAppId(payPreOrderDTO.getAppid());
+		payPreOrderVO.setAppid(payPreOrderDTO.getAppid());
 		payPreOrderVO.setNonceStr(payPreOrderDTO.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + payPreOrderResponseDTO.getPrepayId());
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
@@ -162,7 +162,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		// TODO 10分钟未支付，主动关闭订单，重新生产流水（调用toPay）
 		
 		//初始化反参
-		payPreOrderVO.setAppId(bill.getAppid());
+		payPreOrderVO.setAppid(bill.getAppid());
 		payPreOrderVO.setNonceStr(bill.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());

@@ -14,7 +14,7 @@ public class PayPreOrderVO {
 	@ApiModelProperty("支付流水号")
 	private String outTradeNo;
 	@ApiModelProperty("小程序ID")
-	private String appId;
+	private String appid;
 	@ApiModelProperty("时间戳")
 	private String timeStamp;
 	@ApiModelProperty("随机串")

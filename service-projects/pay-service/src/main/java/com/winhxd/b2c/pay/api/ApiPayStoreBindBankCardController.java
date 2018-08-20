@@ -55,7 +55,7 @@ public class ApiPayStoreBindBankCardController {
 	@Autowired
 	private Cache cache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 2*60;// 验证码有效时间
 
 	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -177,7 +177,7 @@ public class ApiPayStoreBindBankCardController {
 			LOGGER.info("手机号为空");
 		}else{
 			SMSCondition sMSCondition = new SMSCondition();
-			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode);
+			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
 			sMSCondition.setMobile(condition.getMobile());
 			messageSendUtils.sendSMS(sMSCondition);
 		}

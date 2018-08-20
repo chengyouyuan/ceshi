@@ -22,28 +22,12 @@ public final class BusinessCode {
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
-    /** 验证码错误 */
-    public static final int CODE_1008 = 1008;
     /** 未定义的API */
     public static final int CODE_1009 = 1009;
-    /** 该微信号已绑定过账号 */
-    public static final int CODE_1010 = 1010;
-    /** 微信快捷登录绑定账号无效 */
-    public static final int CODE_1011 = 1011;
-    /**
-     * 验证码请求时长没有超过一分钟
-     */
-    public static final int CODE_1012 = 1012;
     /** 该账号已存在 */
     public static final int CODE_1013 = 1013;
     /**token参数为空*/
     public static final int CODE_1014 = 1014;
-    /**请求超时*/
-    public static final int CODE_1015 = 1015;
-    /**您的账号或者密码错误*/
-    public static final int CODE_1021 = 1021;
-    /**您还不是惠下单用户快去注册吧*/
-    public static final int CODE_1022 = 1022;
     /**上传图片格式不正确**/
     public static final int CODE_1016 = 1016;
     /**上传图片是失败**/
@@ -54,13 +38,39 @@ public final class BusinessCode {
     public static final int CODE_1019= 1019;
     /**图片不能为空**/
     public static final int CODE_1020= 1020;
-    
-
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;
     /** 测试门店区域:查询区域失败*/
-    public static final int CODE_103902 = 103902;
-
+    public static final int  CODE_103902 = 103902;
+    /**  验证码错误 */
+    public static final int  CODE_100808 = 100808;
+    /** 该微信号已绑定过其它账号 */
+    public static final int  CODE_100810 = 100810;
+    /**您的账号或者密码错误*/
+    public static final int  CODE_100821 = 100821;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int  CODE_100822 = 100822;
+    /**请求超时*/
+    public static final int  CODE_100815 = 100815;
+    /**验证码请求时长没有超过一分钟*/
+    public static final int  CODE_100912 = 100912;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int  CODE_100922 = 100922;
+    /** 该微信号已绑定过账号 */
+    public static final int  CODE_100910 = 100910;
+    
+    
+    /**验证码错误 */
+    public static final int  CODE_202108 = 202108;
+    /** 该微信号已绑定过其它账号 */
+    public static final int  CODE_202110 = 202110;
+    /**请求超时*/
+    public static final int  CODE_202115 = 202115;
+    /**验证码请求时长没有超过一分钟*/
+    public static final int  CODE_202212 = 202212;
+    /**验证码错误 */
+    public static final int  CODE_202308 = 202308;
+    
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/

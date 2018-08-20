@@ -97,7 +97,20 @@ public class WXPayApiImpl implements WXPayApi {
         }
         return responseDTO;
     }
-	
+
+	@Override
+	public Map<String, String> refundQuery(PayRefundDTO payRefundDTO) {
+		//组装公共属性
+		payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
+		payRefundDTO.setSign(this.generateSign(payRefundDTO));
+		//bean转map
+		Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+		String respXml = this.refundQuery(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+		//响应参数验证，转为map
+		Map<String, String> respData = this.processResponseXml(respXml);
+		return respData;
+	}
+
 	/**
      * 添加 appid、mch_id、nonce_str、sign_type
      * 该函数适用于商户适用于统一下单、退款等接口，不适用于红包、代金券接口
@@ -306,6 +319,26 @@ public class WXPayApiImpl implements WXPayApi {
 			url = WXPayConstants.REFUND_URL_SUFFIX;
 		}
 		return this.requestWithCert(url, reqData, connectTimeoutMs, readTimeoutMs);
+	}
+
+	/**
+	 * 作用：退款查询<br>
+	 * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+	 * @param reqData 向wxpay post的请求数据
+	 * @param connectTimeoutMs 连接超时时间，单位是毫秒
+	 * @param readTimeoutMs 读超时时间，单位是毫秒
+	 * @return API返回数据
+	 * @throws Exception
+	 */
+	private String refundQuery(Map<String, String> reqData, int connectTimeoutMs, int readTimeoutMs){
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_REFUNDQUERY_URL_SUFFIX;
+		}
+		else {
+			url = WXPayConstants.REFUNDQUERY_URL_SUFFIX;
+		}
+		return this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
 	}
 
 	/**

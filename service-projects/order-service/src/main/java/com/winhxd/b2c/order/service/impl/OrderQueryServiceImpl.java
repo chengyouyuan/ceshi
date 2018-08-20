@@ -351,10 +351,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setPayType(orderInfoDetailVO.getPayType());
                 payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
-                logger.info("------------------"+payPreOrderCondition.toString());
                 ResponseResult<OrderPayVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
                 if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
-                    throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+                	logger.info("----------------AAAAAAAAA--");
+                	throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
                 }
                 ret = responseResult.getData();
             }finally {

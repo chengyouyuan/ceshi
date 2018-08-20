@@ -114,7 +114,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
                         || StringUtils.isBlank(toWxBalanceCondition.getAccountId())
                         || StringUtils.isBlank(toWxBalanceCondition.getAccountName())
                         || null == toWxBalanceCondition.getTotalAmount()
-                        && toWxBalanceCondition.getTotalAmount().doubleValue() <= 0d
+                        || toWxBalanceCondition.getTotalAmount().doubleValue() <= 0d
                         || StringUtils.isBlank(toWxBalanceCondition.getDesc())
                         || StringUtils.isBlank(toWxBalanceCondition.getSpbillCreateIp());
         if (res) {
@@ -239,7 +239,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         queryForWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO), payConfig.getKey()));
         //返参
         String resultXml = wxPayApi.queryTransferToChange(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO));
-        System.out.println(resultXml);
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxChangeResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
         }
@@ -312,8 +311,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             PayTransfersForWxBankDTO wxBankDTO = getReqParamForBank(toWxBankCondition);
             //处理微信请求及结果
             String respxml = wxPayApi.transferToBank(BeanAndXmlUtil.beanToSortedMap(wxBankDTO));
-            System.out.println("-------------------------------------------------------------");
-            System.out.println(respxml);
             PayTransfersToWxBankResponseDTO responseDTO = BeanAndXmlUtil.xml2Bean(respxml, PayTransfersToWxBankResponseDTO.class);
             //准备返参
             toWxBankVO = praseResultForBank(responseDTO);
@@ -468,8 +465,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), payConfig.getKey()));
         //返参
         String resultXml = wxPayApi.queryTransferToBank(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
-        System.out.println("-------------------------------------------------------------");
-        System.out.println(resultXml);
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }

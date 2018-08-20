@@ -66,7 +66,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			
 		//支付中
 		} else if((bill = this.getPayBill(list, BillStatusEnum.PAYING.getCode())) != null) {
-			payPreOrderVO = paying(bill);
+			payPreOrderVO = paying(condition, bill);
 		}
 		
 		return payPreOrderVO;
@@ -154,12 +154,13 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @date  2018年8月17日 下午5:35:58
 	 * @Description 
 	 * @param condition
+	 * @param bill
 	 * @return
 	 */
-	private PayPreOrderVO paying(PayBill bill) {
+	private PayPreOrderVO paying(PayPreOrderCondition condition, PayBill bill) {
 		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
 		// TODO 主动查询，更新流水
-		// TODO 10分钟未支付，主动关闭订单，重新生产流水
+		// TODO 10分钟未支付，主动关闭订单，重新生产流水（调用toPay）
 		
 		//初始化反参
 		payPreOrderVO.setAppId(bill.getAppid());
@@ -168,6 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());
+		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
 		

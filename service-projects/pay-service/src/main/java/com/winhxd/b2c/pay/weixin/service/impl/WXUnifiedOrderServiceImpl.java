@@ -24,7 +24,6 @@ import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
-import com.winhxd.b2c.pay.weixin.util.DateUtil;
 
 /**
  * 支付网关微信统一下单API实现
@@ -40,8 +39,6 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	private static final String PACKAGE = "prepay_id=";
 	//支付流水号最大长度
 	private static final int TRADE_NO_MAX_LENGTH = 32;
-	//微信api时间格式
-	private static final String DATE_FORMAT = "yyyyMMddHHmmss";
 	
 	@Autowired
 	private PayBillMapper payBillMapper;
@@ -210,7 +207,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		BeanUtils.copyProperties(condition, payPreOrderDTO);
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
-		payPreOrderDTO.setTimeStart(DateUtil.format(new Date(), DATE_FORMAT));
+		payPreOrderDTO.setTimeStart(new Date());
 		payPreOrderDTO.setFeeType(Currency.CNY.getText());
 		
 		return payPreOrderDTO;
@@ -265,7 +262,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setOutTradeNo(payPreOrderDTO.getOutTradeNo());
 		bill.setProductId(payPreOrderDTO.getProductId());
 		bill.setSpbillCreateIp(payPreOrderDTO.getSpbillCreateIp());
-		bill.setTimeStart(DateUtil.toDate(payPreOrderDTO.getTimeStart(), DATE_FORMAT));
+		bill.setTimeStart(payPreOrderDTO.getTimeStart());
 		bill.setTotalFee(payPreOrderDTO.getTotalFee());
 		bill.setTradeType(payPreOrderDTO.getTradeType());
 		bill.setSignType(payPreOrderDTO.getSignType());

@@ -152,7 +152,12 @@ public class StoreServiceController implements StoreServiceClient {
 				//sku信息
 				ProductSkuVO current=prodList.get(i);
 				//门店与sku关系
-				StoreProductManage spManage=storeProds.get(i);
+				StoreProductManage spManage=null;
+				for(StoreProductManage spm:storeProds){
+				    if(current.getSkuCode().equals(spm.getSkuCode())){
+				        spManage=spm;
+				    }
+				}
 				spVO.setSkuCode(current.getSkuCode());
 				spVO.setSkuImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());

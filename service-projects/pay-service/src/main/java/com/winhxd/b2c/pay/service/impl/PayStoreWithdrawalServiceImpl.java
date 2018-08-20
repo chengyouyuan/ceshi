@@ -1,6 +1,5 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -75,14 +74,22 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			int code = bindBank.getCode();
 			result.setCode(code);
 			if(code == 0){
+				PayStoreUserInfoVO data = bindBank.getData();
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
-				 withdrawalPage.setPresented_money(bindBank.getData().getTotalFee());
+				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 String carnumber = bindBank.getData().getCardNumber();
-				 withdrawalPage.setUserAcountName(bindBank.getData().getStoreName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
+				 String carnumber = data.getCardNumber();
+				 withdrawalPage.setUserAcountName(data.getStoreName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
+				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
+				 withdrawalPage.setBandBranchName(data.getBandBranchName());
+				 withdrawalPage.setBankName(data.getBankName());
+				 withdrawalPage.setBankUserName(data.getBankUserName());
+				 withdrawalPage.setCardNumber(data.getCardNumber());
+				 withdrawalPage.setMobile(data.getStoreMobile());
+//				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
 				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, bindBank.getData().getStoreMobile()+","+ bindBank.getData().getStoreName());
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -90,11 +97,18 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 result.setCode(code);
 			 if(code == 0){
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
-				 withdrawalPage.setPresented_money(bindAccount.getData().getTotalFee());
+				 PayStoreUserInfoVO data = bindAccount.getData();
+				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 withdrawalPage.setUserAcountName(bindAccount.getData().getOpenid());
+				 withdrawalPage.setUserAcountName(data.getOpenid());
+				 withdrawalPage.setMobile(data.getStoreMobile());
+				 withdrawalPage.setNick(data.getNick());
+//				 withdrawalPage.setOpenid(data.getOpenid());
+				 withdrawalPage.setUserAcountName(data.getName());
+				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
+				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, bindAccount.getData().getStoreMobile()+","+ bindAccount.getData().getStoreName());
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
 			 }
 		}
 		return result;
@@ -157,6 +171,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			storeUserinfo.setOpenid(payStoreWallet.get(0).getOpenid());
 			storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
 			storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
+			storeUserinfo.setNick(payStoreWallet.get(0).getNick());
+			storeUserinfo.setName(payStoreWallet.get(0).getName());
 			res.setCode(0);
 		}else{
 			res.setCode(BusinessCode.CODE_610027);
@@ -175,6 +191,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public ResponseResult<PayStoreUserInfoVO> validStoreBindBank(Long businessId){
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
+		LOGGER.info("当前用户绑定银行卡列表：----"+selectStorBankCardInfo);
 		if(selectStorBankCardInfo == null){
 			res.setCode(BusinessCode.CODE_610025);
 			LOGGER.info("当前用户没有绑定银行卡");

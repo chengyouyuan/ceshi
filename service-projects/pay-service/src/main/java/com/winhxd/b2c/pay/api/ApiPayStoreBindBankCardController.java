@@ -126,17 +126,17 @@ public class ApiPayStoreBindBankCardController {
 		
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
-		//生成验证码
-		if(modileVerifyCode != null){
+		//生成验证码 TODO-----方便测试，暂时注调
+		/*if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
 			result.setCode(BusinessCode.CODE_610018);
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
-		}
+		}*///----------测试完成，放开代码
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+businessId, modileVerifyCode);
-		cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
+//TODO	--方便测试，暂不过期 	cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
 		messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;

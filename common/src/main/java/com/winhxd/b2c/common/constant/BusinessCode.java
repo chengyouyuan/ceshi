@@ -341,6 +341,10 @@ public final class BusinessCode {
     public static final int CODE_610026 = 610026;
     @ApiModelProperty("门店当前没有可提现的记录")
     public static final int CODE_610027 = 610027;
+    @ApiModelProperty("请输入身份证号")
+    public static final int CODE_610028 = 610028;
+    @ApiModelProperty("请输入银行swiftcode")
+    public static final int CODE_610029 = 610029;
     
     
     

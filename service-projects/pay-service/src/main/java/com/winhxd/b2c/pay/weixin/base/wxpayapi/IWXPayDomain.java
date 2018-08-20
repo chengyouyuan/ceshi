@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+
 /**
  * 域名管理，实现主备域名自动切换
  */
@@ -20,7 +22,7 @@ public abstract interface IWXPayDomain {
      * @param config 配置
      * @return 域名
      */
-    abstract DomainInfo getDomain(final WXPayConfig config);
+    abstract DomainInfo getDomain(final PayConfig config);
 
     static class DomainInfo{
         public String domain;       //域名

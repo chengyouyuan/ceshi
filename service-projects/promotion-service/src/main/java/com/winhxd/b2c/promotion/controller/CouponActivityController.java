@@ -352,7 +352,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition) {
         if(condition == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }

@@ -18,6 +18,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,8 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                 for(int i=0;i<deatils.size();i++){
                     CouponInvestorDetail detail = new CouponInvestorDetail();
                     LinkedHashMap<String,Object> map =  (LinkedHashMap)deatils.get(i);
-                    if(map.get("brandCode")!=null){
-                        detail.setIds(map.get("brandCode").toString());
+                    if(map.get("companyCode")!=null){
+                        detail.setIds(map.get("companyCode").toString());
                     }
                     detail.setInvestorId(couponInvestor.getId());
                     detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));

@@ -39,7 +39,7 @@
     "columns": [
       {
         "name": "areaName",
-        "title": "配送范围区域"
+        "title": "测试区域名称"
       },
       {
         "name": "level",
@@ -67,6 +67,10 @@
               "params": [
                 "id"
               ],
+              "confirm":{
+                "title": "确认提示",
+                "message":"确定删除吗?"
+              },
               "path": "/store/1038/v1/removeStoreRegion/{id}"
             }
           }
@@ -77,7 +81,7 @@
       {
         "name": "areaName",
         "inputModel": "input",
-        "title": "查询条件",
+        "title": "测试区域名称",
         "value": "",
         "placeholder": "配送范围区域",
         "isHidden": false

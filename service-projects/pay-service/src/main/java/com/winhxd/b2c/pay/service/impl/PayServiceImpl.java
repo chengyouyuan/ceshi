@@ -23,6 +23,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
@@ -766,26 +767,26 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--开始");
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
 		if (storeUser==null||storeUser.getBusinessId()==null) {
-			logger.info("--未获取到门店信息");
+			logger.info(log+"--未获取到门店信息");
 			throw new BusinessException(BusinessCode.CODE_600701);
 		}
 		if (condition==null) {
-			logger.info("--参数为空");
+			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600702);
 		}
 		if (StringUtils.isBlank(condition.getOpenid())) {
-			logger.info("--openid为空");
+			logger.info(log+"--openid为空");
 			throw new BusinessException(BusinessCode.CODE_600703);
 		}
 		if (StringUtils.isBlank(condition.getName())) {
-			logger.info("--真实姓名为空");
+			logger.info(log+"--真实姓名为空");
 			throw new BusinessException(BusinessCode.CODE_600704);
 		}
 		if (StringUtils.isBlank(condition.getNick())) {
 			logger.info("--昵称为空");
 			throw new BusinessException(BusinessCode.CODE_600705);
 		}
-		logger.info("--参数"+condition.toString());
+		logger.info(log+"--参数"+condition.toString());
 		PayStoreWallet wallet=new PayStoreWallet();
 		wallet.setStoreId(storeUser.getBusinessId());
 		wallet.setName(condition.getName());
@@ -793,5 +794,23 @@ public class PayServiceImpl implements PayService{
 		wallet.setOpenid(condition.getOpenid());
 		wallet.setStatus((short)1);
 		payStoreWalletMapper.insertSelective(wallet);
+	}
+
+
+	@Override
+	public Boolean orderIsPay(OrderIsPayCondition condition) {
+		String log=logLabel+"查询订单是否支付过orderIsPay";
+		logger.info(log+"--开始");
+		if (condition==null||StringUtils.isBlank(condition.getOrderNo())) {
+			logger.info(log+"--订单号为空");
+			throw new BusinessException(BusinessCode.CODE_601601);
+		}
+		Boolean isPay=false;
+		List<PayOrderPayment> list=payOrderPaymentMapper.selectByOrderNo(condition.getOrderNo());
+		if (CollectionUtils.isNotEmpty(list)) {
+			//已经有过支付流水
+			isPay=true;
+		}
+		return isPay;
 	}
 }

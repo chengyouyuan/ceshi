@@ -5,18 +5,35 @@ import com.winhxd.b2c.message.sms.enums.SmsReturnStatusEnum;
 import com.winhxd.b2c.message.sms.enums.SmsSupplierEnum;
 
 /**
- * 短信发送返回结果dto
- * */
+ * @ClassName: SmsReturn
+ * @Description: 返回短信的实体
+ * @Author fanzhanzhan
+ * @Date 2018-08-20 10:43
+ **/
 public class SmsReturn {
 
-    private SmsReturnStatusEnum status;//返回状态,详情参见SmsStatusEnum
-    private InternationalStatusEnum internationalstatus;//返回状态,详情参见SmsStatusEnum
-    
-    private String finishTime;// 短信发送完成时间
+	/**
+	 * 返回状态,详情参见SmsStatusEnum
+	 */
+	private SmsReturnStatusEnum status;
+	/**
+	 * 返回状态,详情参见SmsStatusEnum
+	 */
+	private InternationalStatusEnum internationalstatus;
+	/**
+	 * 短信发送完成时间
+	 */
+	private String finishTime;
 
-    private String msgid;// 状态报告id(发送失败时为null)
-    
-    private SmsSupplierEnum smsSupplier;// 短信供应商
+	/**
+	 * 状态报告id(发送失败时为null)
+	 */
+	private String msgid;
+
+	/**
+	 * 短信供应商
+	 */
+	private SmsSupplierEnum smsSupplier;
 
 	public SmsReturnStatusEnum getStatus() {
 		return status;
@@ -34,28 +51,28 @@ public class SmsReturn {
 		this.finishTime = finishTime;
 	}
 
-    public String getMsgid() {
-        return msgid;
-    }
+	public String getMsgid() {
+		return msgid;
+	}
 
-    public void setMsgid(String msgid) {
-        this.msgid = msgid;
-    }
+	public void setMsgid(String msgid) {
+		this.msgid = msgid;
+	}
 
-    public SmsSupplierEnum getSmsSupplier() {
-        return smsSupplier;
-    }
+	public SmsSupplierEnum getSmsSupplier() {
+		return smsSupplier;
+	}
 
-    public void setSmsSupplier(SmsSupplierEnum smsSupplier) {
-        this.smsSupplier = smsSupplier;
-    }
+	public void setSmsSupplier(SmsSupplierEnum smsSupplier) {
+		this.smsSupplier = smsSupplier;
+	}
 
-    public InternationalStatusEnum getInternationalstatus() {
-        return internationalstatus;
-    }
+	public InternationalStatusEnum getInternationalstatus() {
+		return internationalstatus;
+	}
 
-    public void setInternationalstatus(InternationalStatusEnum internationalstatus) {
-        this.internationalstatus = internationalstatus;
-    }
-    
+	public void setInternationalstatus(InternationalStatusEnum internationalstatus) {
+		this.internationalstatus = internationalstatus;
+	}
+
 }

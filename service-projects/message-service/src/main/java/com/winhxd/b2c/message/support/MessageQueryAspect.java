@@ -1,7 +1,7 @@
 package com.winhxd.b2c.message.support;
 
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.message.enums.PageTypeEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,8 +28,8 @@ public class MessageQueryAspect {
 	public void orderEnumConvert(NeteaseMsgVO neteaseMsgVO) {
 		logger.debug("对NeteaseMsgVO使用orderEnumConvert进行转换");
 		if (null != neteaseMsgVO) {
-			neteaseMsgVO.setPageTypeDesc(PageTypeEnum.getDescByCode(neteaseMsgVO.getPageType()));
-			neteaseMsgVO.setPageTypeSummary(PageTypeEnum.getSummaryByCode(neteaseMsgVO.getPageType()));
+			neteaseMsgVO.setMsgCategoryDesc(MsgCategoryEnum.getDescByCode(neteaseMsgVO.getMsgCategory()));
+			neteaseMsgVO.setMsgCategorySummary(MsgCategoryEnum.getSummaryByCode(neteaseMsgVO.getMsgCategory()));
 		}
 	}
 

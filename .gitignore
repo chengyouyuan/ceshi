@@ -9,6 +9,7 @@ build/
 .project
 /target/
 classes/
+/sdklog/
 dist
 .gitignore
 service-projects/mybatis-generator/src/main/java/**

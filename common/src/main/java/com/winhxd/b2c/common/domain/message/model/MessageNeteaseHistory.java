@@ -43,6 +43,10 @@ public class MessageNeteaseHistory {
      */
     private Short pageType;
     /**
+     * 消息类别 1-新订单 2-已完成 3-已退款 4-已取消 5-申请退款 10-提现申请 11-提现成功 12-提现失败 13 惠小店通知
+     */
+    private Short msgCategory;
+    /**
      * treecode
      */
     private String treeCode;

@@ -26,8 +26,8 @@ public class CorsConfig {
     private static final String ALLOWED_HEADERS = "*";
     private static final String ALLOWED_METHODS = "*";
     private static final String ALLOWED_ORIGIN = "*";
-    private static final String ALLOWED_Expose = "*";
-    private static final String MAX_AGE = "18000L";
+    private static final String ALLOWED_EXPOSE = "*";
+    private static final String MAX_AGE = "864000";
 
     @Bean
     public WebFilter corsFilter() {
@@ -46,7 +46,7 @@ public class CorsConfig {
                     headers.add("Access-Control-Allow-Headers",
                             String.join(",", accessControlRequestHeaders));
                 }
-                headers.add("Access-Control-Expose-Headers", ALLOWED_Expose);
+                headers.add("Access-Control-Expose-Headers", ALLOWED_EXPOSE);
                 headers.add("Access-Control-Allow-Credentials", "true");
                 if (request.getMethod() == HttpMethod.OPTIONS) {
                     response.setStatusCode(HttpStatus.OK);
@@ -56,17 +56,4 @@ public class CorsConfig {
             return chain.filter(ctx);
         };
     }
-
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        final CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*");
-//        config.addAllowedHeader("*");
-//        config.setMaxAge(18000L);
-//        config.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", config);
-//        return new CorsFilter(source);
-//    }
 }

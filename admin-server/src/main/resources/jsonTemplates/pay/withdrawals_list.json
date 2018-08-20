@@ -22,7 +22,9 @@
       {
         "name": "确认提款",
         "event": {
-          "type": "reset"
+          "type": "patch",
+          "ajaxType": "get",
+          "path": "/pay/verify/approveStoreWithdraw"
         }
       }
     ],

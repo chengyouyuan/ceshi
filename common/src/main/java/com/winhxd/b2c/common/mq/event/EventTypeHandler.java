@@ -19,7 +19,11 @@ public enum EventTypeHandler {
     /**
      * 订单闭环，标记费用入账
      */
-    ACCOUNTING_DETAIL_RECORDED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED);
+    ACCOUNTING_DETAIL_RECORDED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
+    /**
+     * 订单退优惠券
+     */
+    EVENT_ORDER_UNTREAD_COUPON_HANDLER(EventType.EVENT_ORDER_UNTREAD_COUPON);
 
     private EventType eventType;
 

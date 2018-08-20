@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -97,6 +101,11 @@ public class PayServiceImpl implements PayService{
 	PayStoreCashService payStoreCashService;
 	@Autowired
 	PayFinanceAccountDetailService payFinanceAccountDetailService;
+	
+	@Autowired
+    private Cache cache;
+    private static final int BACKROLL_LOCK_EXPIRES_TIME = 3000;
+
 	
 	private static final String logLabel="PayServiceImpl--";
 
@@ -408,41 +417,48 @@ public class PayServiceImpl implements PayService{
 	}
 	
 	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
-		//todo 加锁
-		StoreBankroll storeBankroll=storeBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
-		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
-		BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
-		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
-		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
-		
-		BigDecimal totalMoney=settlementSettledMoney;
-		if (storeBankroll==null) {
-			storeBankroll=new StoreBankroll();
-			storeBankroll.setTotalMoeny(totalMoney);
-			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-			storeBankroll.setPresentedMoney(presentedMoney);;
-			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
-			storeBankrollMapper.insertSelective(storeBankroll);
-		}else {
-			totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
-			presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
-			presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
-			alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
-			settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
+		String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + condition.getStoreId();
+		Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
+		try{
+			lock.lock();
+			StoreBankroll storeBankroll=storeBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
+			BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
+			BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
+			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
+			BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
 			
-			totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
-			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
-			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
-			alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
-			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
-			
-			storeBankroll.setTotalMoeny(totalMoney);
-			storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-			storeBankroll.setPresentedMoney(presentedMoney);
-			storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
-			storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
-			storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
+			BigDecimal totalMoney=settlementSettledMoney;
+			if (storeBankroll==null) {
+				storeBankroll=new StoreBankroll();
+				storeBankroll.setTotalMoeny(totalMoney);
+				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+				storeBankroll.setPresentedMoney(presentedMoney);;
+				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				storeBankrollMapper.insertSelective(storeBankroll);
+			}else {
+				totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
+				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
+				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
+				settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
+				
+				totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
+				presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
+				alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
+				settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
+				
+				storeBankroll.setTotalMoeny(totalMoney);
+				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+				storeBankroll.setPresentedMoney(presentedMoney);
+				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
+				storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
+			}
+		}finally{
+			lock.unlock();
 		}
+		
 		//加入资金流转日志
 		saveStoreBankRollLog(condition);
 		

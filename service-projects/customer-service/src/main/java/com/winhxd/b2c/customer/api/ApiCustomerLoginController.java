@@ -65,10 +65,9 @@ public class ApiCustomerLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误"),
-			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1010, message = "该微信号已绑定过其它账号"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_1010, message = "网络请求超时") })
+			@ApiResponse(code = BusinessCode.CODE_1015, message = "网络请求超时") })
 
 	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
@@ -208,6 +207,7 @@ public class ApiCustomerLoginController {
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@RequestMapping(value = "customer/2023/v1/customerChangeMobile", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> customerChangeMobile(

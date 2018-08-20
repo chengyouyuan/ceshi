@@ -194,6 +194,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
             //bean转map
 		    Map<String, String> reqData = XmlUtil.bean2MapUnderline2Hump(obj);
+		    WXPayUtil.getLogger().warn("-----签名数据AAA------"+reqData);
         	//签名添加调用微信API入参
         	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {

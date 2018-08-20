@@ -303,11 +303,13 @@ public class CommonOrderServiceImpl implements OrderService {
             OrderInfo order = getOrderInfo(orderNo);
             //状态是待退款和已付款的订单才能把状态置为已退款
             if (order.getOrderStatus() != OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getPayStatus() != PayStatusEnum.PAID.getStatusCode()) {
-                throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
+                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
+                callbackResult = false;
             } else {
                 int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
                 if (result != 1) {
-                    throw new BusinessException(BusinessCode.ORDER_REFUND_FAIL, MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
+                    logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
+                    callbackResult = false;
                 } else {
                     logger.info("退款回调-添加流转日志开始-订单号={}", orderNo);
                     Short oldStatus = order.getOrderStatus();
@@ -322,10 +324,6 @@ public class CommonOrderServiceImpl implements OrderService {
                     registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                 }
             }
-        } catch (Exception e) {
-            //catch掉所有的exception，防止影响其他服务
-            callbackResult = false;
-            logger.error("退款回调异常" + e.getMessage(), e);
         } finally {
             lock.unlock();
         }

@@ -213,7 +213,9 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         } else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
             toWxChangeVO.setErrorDesc(queryForWxChangeResponseDTO.getReason());
         } else if (PayTransfersStatus.PROCESSING.getCode().equals(transfersStatus)) {
-            toWxChangeVO.setErrorDesc(PayTransfersStatus.FAILED.getText());
+            toWxChangeVO.setTransfersResult(true);
+            toWxChangeVO.setAbleContinue(false);
+            toWxChangeVO.setErrorDesc(PayTransfersStatus.PROCESSING.getText());
         } else {
             logger.error("Transfers query result return UNKNOW STATUS, partnerTradeNo : " + toWxChangeVO.getPartnerTradeNo());
         }
@@ -435,7 +437,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             toWxBankVO.setErrorDesc(null);
         } else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
             toWxBankVO.setErrorDesc(queryForWxBankResponseDTO.getReason());
-            toWxBankVO.setAbleContinue(false);
         } else if (PayTransfersStatus.PROCESSING.getCode().equals(transfersStatus)) {
             toWxBankVO.setTransfersResult(true);
             toWxBankVO.setAbleContinue(false);

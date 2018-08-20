@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -98,6 +100,22 @@ public class OrderUtil {
         miniMsgCondition.setMsgType(msgType2C);
         miniMsgCondition.setData(temData);
         return miniMsgCondition;
+    }
+
+    /**
+     * 获取订单详情的描述信息，用于构造消息发送给微信用户
+     * @param orderItems
+     * @return
+     */
+    public static String genOrderItemDesc(List<OrderItem> orderItems) {
+        String result = "";
+        if (CollectionUtils.isNotEmpty(orderItems)) {
+            result = orderItems.get(0).getSkuDesc();
+            if (orderItems.size() > 1) {
+                result += "...";
+            }
+        }
+        return result;
     }
     
     /**

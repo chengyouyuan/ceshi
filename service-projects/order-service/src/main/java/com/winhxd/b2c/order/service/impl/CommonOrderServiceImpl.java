@@ -290,8 +290,9 @@ public class CommonOrderServiceImpl implements OrderService {
      * @return true 更新成功 false 更新失败
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean updateOrderRefundCallback(OrderRefundCallbackCondition condition) {
-        boolean callbackResult;
+        boolean callbackResult = true;
         String orderNo = condition.getOrderNo();
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
@@ -302,9 +303,13 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
             //状态是待退款和已付款的订单才能把状态置为已退款
-            if (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() && order.getPayStatus() == PayStatusEnum.PAID.getStatusCode()) {
+            if (order.getOrderStatus() != OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getPayStatus() != PayStatusEnum.PAID.getStatusCode()) {
+                throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
+            } else {
                 int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
-                if (result > 0) {
+                if (result != 1) {
+                    throw new BusinessException(BusinessCode.ORDER_REFUND_FAIL, MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
+                } else {
                     logger.info("退款回调-添加流转日志开始-订单号={}", orderNo);
                     Short oldStatus = order.getOrderStatus();
                     String oldOrderJsonString = JsonUtil.toJSONString(order);
@@ -314,26 +319,9 @@ public class CommonOrderServiceImpl implements OrderService {
                     orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
                             order.getOrderStatus(), order.getCreatedBy(), "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
                     logger.info("退款回调-添加流转日志结束-发送消息开始-订单号={}", orderNo);
-                    // 给C端发送消息 “您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收”
-                    NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
-                    neteaseMsgCondition.setCustomerId(order.getCustomerId());
-                    String storeMsgContent = "您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收";
-                    NeteaseMsg neteaseMsg = new NeteaseMsg();
-                    neteaseMsg.setMsgContent(storeMsgContent);
-                    neteaseMsg.setAudioType(0);
-                    neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
-                    messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
-                    //给门店发送消息
-                    orderRefundTimeOutSendMsg(4, order);
-                    logger.info("退款回调-发送消息结束-订单号={}", orderNo);
-                    callbackResult = true;
-                } else {
-                    logger.info("退款回调-订单设置状态为已退款失败-订单号={}", orderNo);
-                    callbackResult = false;
+                    //订单退款成功事务提交后相关事件
+                    registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                 }
-            } else {
-                callbackResult = false;
-                logger.info("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={}", orderNo);
             }
         } finally {
             lock.unlock();
@@ -1375,7 +1363,8 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
-                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
+                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
+                        "...";
                 String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
@@ -1441,7 +1430,8 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 String customerMsg = OrderNotifyMsg.ORDER_RECEIVE_TIMEOUT_MSG_4_CUSTOMER;
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
-                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
+                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
+                        "...";
                 String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
@@ -1490,7 +1480,8 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             try {
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
-                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
+                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
+                        "...";
                 String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
@@ -1505,6 +1496,55 @@ public class CommonOrderServiceImpl implements OrderService {
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单未提货超时给用户发送消息失败：", e);
+            }
+        }
+    }
+
+    /**
+     * 订单退款成功事务提交成功后 处理
+     *
+     * @author pangjianhua
+     * @date 2018年8月11日 下午3:16:17
+     */
+    private class OrderRefundCompleteProcessRunnable implements Runnable {
+
+        private OrderInfo orderInfo;
+        private int type;
+
+        public OrderRefundCompleteProcessRunnable(OrderInfo orderInfo, int type) {
+            super();
+            this.orderInfo = orderInfo;
+            this.type = type;
+        }
+
+        @Override
+        public void run() {
+            // 给C端发送微信消息
+            try {
+                String storeMsgContent = "您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收";
+                CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
+                //构造商品信息
+                String itemDesc = OrderUtil.genOrderItemDesc(orderItemMapper.selectByOrderNo(Arrays.asList(orderInfo.getOrderNo())));
+                MiniTemplateData key1 = new MiniTemplateData();
+                key1.setKeyName("keyword1");
+                key1.setValue(itemDesc);
+                MiniTemplateData key2 = new MiniTemplateData();
+                key1.setKeyName("keyword2");
+                String keyWord2Value = "￥" + orderInfo.getRealPaymentMoney().toString();
+                key1.setValue(keyWord2Value);
+                MiniTemplateData key3 = new MiniTemplateData();
+                key1.setKeyName("keyword3");
+                key1.setValue(storeMsgContent);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
+            } catch (Exception e) {
+                logger.error("订单退款完成给用户发送微信消息失败orderNo={}", orderInfo.getOrderNo());
+            }
+            try {
+                //给门店发送消息
+                orderRefundTimeOutSendMsg(4, orderInfo);
+            } catch (Exception e) {
+                logger.error("订单退款完成给门店发送消息失败orderNo={}", orderInfo.getOrderNo());
             }
         }
     }

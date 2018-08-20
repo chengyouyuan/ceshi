@@ -7,7 +7,6 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
@@ -69,7 +68,7 @@ public interface PayService {
 	 * @param payRefund
 	 * @return
 	 */
-	PayRefundVO refundOrder(PayRefundCondition payRefund);
+//	PayRefundVO refundOrder(PayRefundCondition payRefund);
 	
 	/**
      * 微信提现至余额入口
@@ -91,14 +90,6 @@ public interface PayService {
      * @return
      */
     List<PayStoreWallet> selectPayStoreWalletByStoreId();
-    
-    /**
-     * @author liuhanning
-     * @date  2018年8月17日 上午10:46:26
-     * @Description 门店绑定微信钱包
-     * @param condition
-     */
-    void storeBindStoreWallet(StoreBindStoreWalletCondition condition);
     
     /**
      * @author liuhanning

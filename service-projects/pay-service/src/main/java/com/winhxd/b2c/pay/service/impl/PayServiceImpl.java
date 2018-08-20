@@ -23,13 +23,13 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
 import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
@@ -53,6 +53,8 @@ import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
@@ -566,32 +568,41 @@ public class PayServiceImpl implements PayService{
 		
 		return payPreOrderVO;
 	}
-
-	@Override
-	public PayRefundVO refundOrder(PayRefundCondition payRefund) {
+    /**
+     * 
+     * @author liuhanning
+     * @date  2018年8月20日 下午4:37:38
+     * @Description 采用监听事件的方式  处理退款
+     * @param orderNo
+     * @param order
+     * @return
+     */
+	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
+	public PayRefundVO refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
 		String log=logLabel+"订单退款refundOrder";
 		logger.info(log+"--开始");
-		if (payRefund==null){
+		if (order==null){
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600201);
 		}
-		String orderNo=payRefund.getOutTradeNo();
-		//String appid=payRefund.getAppid();
-		BigDecimal totalAmount=payRefund.getTotalAmount();
-		BigDecimal refundAmount=payRefund.getRefundAmount();
-		Long createdBy=payRefund.getCreatedBy();
-		String createdByName=payRefund.getCreatedByName();
-//		String refundDesc=payRefund.getRefundDesc();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600202);
 		}
-		/*if (StringUtils.isBlank(appid)) {
-			logger.info(log+"--appid为空");
-			throw new BusinessException(BusinessCode.CODE_600203);
-		}*/
+		PayRefundCondition payRefund=new PayRefundCondition();
+		
+		
+		
+		
+		
+		
+		
+		BigDecimal totalAmount=payRefund.getTotalAmount();
+		BigDecimal refundAmount=payRefund.getRefundAmount();
+		Long createdBy=payRefund.getCreatedBy();
+		String createdByName=payRefund.getCreatedByName();
 		if (totalAmount==null) {
 			logger.info(log+"--订单金额为空");
 			throw new BusinessException(BusinessCode.CODE_600204);
@@ -759,43 +770,6 @@ public class PayServiceImpl implements PayService{
 		}
 		return payStoreWalletMapper.selectByStoreId(storeUser.getBusinessId());
 	}
-
-
-	@Override
-	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
-		String log=logLabel+"门店绑定storeBindStoreWallet";
-		logger.info(log+"--开始");
-		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser==null||storeUser.getBusinessId()==null) {
-			logger.info(log+"--未获取到门店信息");
-			throw new BusinessException(BusinessCode.CODE_600701);
-		}
-		if (condition==null) {
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600702);
-		}
-		if (StringUtils.isBlank(condition.getOpenid())) {
-			logger.info(log+"--openid为空");
-			throw new BusinessException(BusinessCode.CODE_600703);
-		}
-		if (StringUtils.isBlank(condition.getName())) {
-			logger.info(log+"--真实姓名为空");
-			throw new BusinessException(BusinessCode.CODE_600704);
-		}
-		if (StringUtils.isBlank(condition.getNick())) {
-			logger.info("--昵称为空");
-			throw new BusinessException(BusinessCode.CODE_600705);
-		}
-		logger.info(log+"--参数"+condition.toString());
-		PayStoreWallet wallet=new PayStoreWallet();
-		wallet.setStoreId(storeUser.getBusinessId());
-		wallet.setName(condition.getName());
-		wallet.setNick(condition.getNick());
-		wallet.setOpenid(condition.getOpenid());
-		wallet.setStatus((short)1);
-		payStoreWalletMapper.insertSelective(wallet);
-	}
-
 
 	@Override
 	public Boolean orderIsPay(OrderIsPayCondition condition) {

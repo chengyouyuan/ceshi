@@ -205,14 +205,12 @@ public class PayServiceImpl implements PayService{
 		//根据退款状态  判断是否更新订单状态
 		if(1 == condition.getCallbackRefundStatus()){
 			//更新订单状态
-			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
-			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
-			ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
-			if (callbackResult.getCode()!=0&&!callbackResult.getData()) {
-				//订单更新失败
-				logger.info(log+"--订单更新失败");
-				throw new BusinessException(BusinessCode.CODE_600301);
-			}
+//			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
+//			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
+//			ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
+			logger.info(log+"发送更新订单事件开始-订单号={}", condition.getOrderNo());
+	        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER, condition.getOrderNo(), null);
+	        logger.info(log+"发送更新订单事件结束-订单号={}", condition.getOrderNo());
 		}
 
 		//出账明细表 pay_finance_account_detail
@@ -641,12 +639,6 @@ public class PayServiceImpl implements PayService{
 			payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
 			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
 			payRefundPaymentMapper.insertSelective(payRefundPayment);
-			if (vo.isStatus()) {
-				//todo 更新订单事件
-				logger.info("订单退款发送更新订单事件开始-订单号={}", order.getOrderNo());
-		        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER, order.getOrderNo(), order);
-		        logger.info("订单退款发送更新订单事件结束-订单号={}", order.getOrderNo());
-			}
 		}
 		return vo;
 	}

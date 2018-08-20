@@ -20,6 +20,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoSimpleVO;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerChangeMobileCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.CustomerSendVerificationCodeCondition;
@@ -28,6 +29,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
 
 import io.swagger.annotations.Api;
@@ -53,6 +55,8 @@ public class ApiCustomerLoginController {
 	private Cache cache;
 	@Autowired
 	MessageServiceClient messageServiceClient;
+	@Autowired
+	MessageSendUtils messageSendUtils;
 
 	/**
 	 * @author wufuyun
@@ -191,7 +195,10 @@ public class ApiCustomerLoginController {
 		 * 发送模板内容
 		 */
 		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
-		 messageServiceClient.sendSMS(customerUserInfoCondition.getCustomerMobile(),content);
+		SMSCondition sMSCondition = new SMSCondition();
+		sMSCondition.setContent(content);
+		sMSCondition.setMobile(customerUserInfoCondition.getCustomerMobile());
+		messageSendUtils.sendSMS(sMSCondition);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}
@@ -232,7 +239,7 @@ public class ApiCustomerLoginController {
 		customerUserInfo = customerLoginService.getCustomerUserInfoByModel(customerUserInfo);
 		if (null == customerUserInfo) {
 			logger.info("{} - ");
-//			throw new BusinessException(BusinessCode.CODE_1004);
+			throw new BusinessException(BusinessCode.CODE_1002);
 		}
 		if (!customerChangeMobileCondition.getVerificationCode().equals(
 				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerChangeMobileCondition.getCustomerMobile()))) {

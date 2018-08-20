@@ -118,8 +118,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "门店提现申请导出Excel")
-    @RequestMapping(name = "/storeWithdrawalsListExport")
-    public ResponseEntity<byte[]> storeWithdrawalsListExport(@RequestBody PayWithdrawalsListCondition condition) {
+    @RequestMapping("/storeWithdrawalsListExport")
+    public ResponseEntity<byte[]> storeWithdrawalsListExport(PayWithdrawalsListCondition condition) {
         condition.setIsQueryAll(true);
         ResponseResult<List<PayWithdrawalsVO>> responseResult = verifyServiceClient.storeWithdrawalsListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {

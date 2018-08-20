@@ -5,7 +5,7 @@
     "type": "report",
     "id": "customer_list",
     "code": "customer_list",
-    "title": "客户管理",
+    "title": "顾客管理",
     "buttons": [
       {
         "name": "查询",

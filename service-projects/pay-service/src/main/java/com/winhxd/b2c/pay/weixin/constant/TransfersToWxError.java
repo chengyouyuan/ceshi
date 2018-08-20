@@ -9,8 +9,6 @@ package com.winhxd.b2c.pay.weixin.constant;
  */
 public enum TransfersToWxError {
 
-    INSTANCE,
-
     /**
      * 自定义错误类型
      */

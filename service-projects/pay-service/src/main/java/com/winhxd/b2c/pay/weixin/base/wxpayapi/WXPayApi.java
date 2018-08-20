@@ -129,4 +129,14 @@ public interface WXPayApi {
      */
     public String queryTransferToBank(Map<String, String> reqData) throws Exception;
 
+    /**
+     * 作用：获取证书<br>
+     * 场景：获取证书<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String publicKey(Map<String, String> reqData) throws Exception;
+
 }

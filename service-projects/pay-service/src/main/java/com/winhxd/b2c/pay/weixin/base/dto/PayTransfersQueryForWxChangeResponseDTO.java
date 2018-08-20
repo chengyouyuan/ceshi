@@ -92,5 +92,9 @@ public class PayTransfersQueryForWxChangeResponseDTO {
      */
     private String desc;
 
+    /**
+     * 付款描述
+     */
+    private String appid;
 
 }

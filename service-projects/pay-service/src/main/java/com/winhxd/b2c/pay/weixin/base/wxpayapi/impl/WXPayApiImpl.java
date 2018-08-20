@@ -539,4 +539,15 @@ public class WXPayApiImpl implements WXPayApi {
 		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
 	}
 
+	@Override
+	public String publicKey(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.PUBLICKEY_URL_SUFFIX ;
+		}
+		return this.requestWithCert(url, reqData, 6*1000, 8*1000);
+	}
+
 }

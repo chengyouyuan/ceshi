@@ -322,6 +322,9 @@ public class CommonOrderServiceImpl implements OrderService {
                     registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                 }
             }
+        } catch (Exception e) {
+            callbackResult = false;
+            throw e;
         } finally {
             lock.unlock();
         }
@@ -1650,6 +1653,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
                 break;
             case 3:
+                //3天
                 msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
                 break;
             case 4:

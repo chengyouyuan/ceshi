@@ -52,7 +52,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
 
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
-        //Long storeId = 1L;
+        //Long storeId = 4L;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
             vo.setId(storeBankroll.getId());
@@ -60,6 +60,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
             vo.setTotalMoeny(storeBankroll.getTotalMoeny());
             vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney());
             vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney());
+            vo.setPresentedMoney(storeBankroll.getPresentedMoney());
         }
         result.setData(vo);
         return result;

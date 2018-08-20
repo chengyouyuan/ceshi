@@ -211,6 +211,7 @@ public class VerifyService {
      */
     @Transactional
     public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
         return accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
     }
 

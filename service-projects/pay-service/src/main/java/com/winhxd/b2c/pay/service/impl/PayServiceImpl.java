@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.pay.enums.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -55,8 +54,6 @@ import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
-import com.winhxd.b2c.common.mq.event.EventMessageSender;
-import com.winhxd.b2c.common.mq.event.EventType;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
@@ -534,6 +531,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600102);
 		}
+		log+="订单号--"+orderNo;
 		if (StringUtils.isBlank(body)) {
 			logger.info(log+"--商品描述为空");
 			throw new BusinessException(BusinessCode.CODE_600103);
@@ -585,16 +583,8 @@ public class PayServiceImpl implements PayService{
 	public PayRefundVO refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
-		String log=logLabel+"订单退款refundOrder";
+		String log=logLabel+"订单退款refundOrder--订单号"+orderNo;
 		logger.info(log+"--开始");
-		if (order==null){
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600201);
-		}
-		if (StringUtils.isBlank(orderNo)) {
-			logger.info(log+"--订单号为空");
-			throw new BusinessException(BusinessCode.CODE_600202);
-		}
 		
 		if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
             throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, "申请退款状态异常");

@@ -135,7 +135,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
         forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
         forWxChangeDTO.setPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
-        //这里openID的获取方式待定
+        //openID在这里不需要主动获取
         forWxChangeDTO.setOpenid(toWxBalanceCondition.getAccountId());
         forWxChangeDTO.setCheckName(FORCE_CHECK);
         forWxChangeDTO.setReUserName(toWxBalanceCondition.getAccountName());

@@ -51,8 +51,8 @@ public class ApiPayCallbackController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiPayCallbackController.class);
 	private static final String SUCCESS_RESPONSE = "<xml>" + "<return_code><!--[CDATA[SUCCESS]]--></return_code>" + "<return_msg><!--[CDATA[OK]]--></return_msg>" + "</xml> ";
 	private static final String FAIL_RESPONSE = "<xml>" + "<return_code><!--[CDATA[FAIL]]--></return_code>" + "<return_msg><!--[CDATA[报文为空]]--></return_msg>" + "</xml> ";
-	private static String password = "aaa";
-	private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);
+/*	private static String password = "aaa";
+	private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);*/
 	
 	@Autowired
 	private WXUnifiedOrderService unifiedOrderService;
@@ -170,10 +170,8 @@ public class ApiPayCallbackController {
 	private String decodeReqInfo(String reqInfo) throws Exception{
 		byte[] b = Base64.decodeBase64(reqInfo);
 		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-		cipher.init(Cipher.DECRYPT_MODE, key);
+		//cipher.init(Cipher.DECRYPT_MODE, key);
 		return new String(cipher.doFinal(b),"UTF-8");
-
-
 	}
 
 	private static String byteArrayToHexString(byte b[]) {

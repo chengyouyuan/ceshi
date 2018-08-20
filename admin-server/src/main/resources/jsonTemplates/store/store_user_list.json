@@ -130,10 +130,6 @@
         "placeholder": "请选择状态",
         "options":[
           {
-            "label":"未开店",
-            "value":0
-          },
-          {
             "label":"有效",
             "value":1
           },

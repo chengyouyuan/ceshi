@@ -472,20 +472,6 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  提现失败计算用户资金重复")
     public static final int CODE_600013 = 600013;
     
-    @ApiModelProperty("门店绑定微信钱包  未获取到门店信息")
-    public static final int CODE_600701 = 600701;
-    
-    @ApiModelProperty("门店绑定微信钱包  参数为空")
-    public static final int CODE_600702 = 600702;
-    
-    @ApiModelProperty("门店绑定微信钱包 openid为空")
-    public static final int CODE_600703 = 600703;
-    
-    @ApiModelProperty("门店绑定微信钱包  真实姓名为空")
-    public static final int CODE_600704 = 600704;
-
-    @ApiModelProperty("门店绑定微信钱包  昵称为空")
-    public static final int CODE_600705 = 600706;
     
     @ApiModelProperty("获取门店绑定钱包  未获取到门店信息")
     public static final int CODE_600601 = 600601;

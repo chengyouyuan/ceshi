@@ -143,11 +143,19 @@
     where order_no = #{orderNo}
   </update>
 
+  <update id="updateAccountingDetailServiceFeeByThirdParty">
+    update pay_accounting_detail set
+      detail_money = {detailMoney}
+    where detail_type = 2
+    and order_no = #{orderNo}
+  </update>
+
   <update id="updateAccountingDetailVerifiedByThirdParty">
     update pay_accounting_detail set
       third_party_verify_status = 1,
       third_party_verify_time = now()
-    where order_no = #{orderNo}
+    where third_party_verify_status = 0
+    and order_no = #{orderNo}
   </update>
 
   <insert id="insertVerifyHistory" useGeneratedKeys="true" keyProperty="id">

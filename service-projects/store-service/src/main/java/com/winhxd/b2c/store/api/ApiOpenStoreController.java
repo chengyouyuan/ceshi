@@ -7,11 +7,11 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
+import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.*;
@@ -250,7 +250,7 @@ public class ApiOpenStoreController {
         BeanUtils.copyProperties(storeUserInfo, storeBusinessInfoVO);
         //判断取货方式是否是该小店的配置
         List<StoreEnumObject> pickupTypeList = new ArrayList<>();
-        for (PickUpTypeEnum pickupType : PickUpTypeEnum.values()) {
+        for (PickupTypeEnum pickupType : PickupTypeEnum.values()) {
             StoreEnumObject storeEnumObject = new StoreEnumObject();
             storeEnumObject.setCode(pickupType.getTypeCode());
             storeEnumObject.setName(pickupType.getTypeDesc());

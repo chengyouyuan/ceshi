@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date 2018/8/9 12:10
  * @Description
  **/
-@Api(tags = "CouponApply")
 @RestController
 public class CouponApplyController implements CouponApplyServiceClient {
     @Autowired
@@ -38,7 +37,6 @@ public class CouponApplyController implements CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:34
      */
-    @ApiOperation(value = "适用对象规则查看", notes = "适用对象规则查看")
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
         ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
@@ -54,7 +52,6 @@ public class CouponApplyController implements CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:35
      */
-    @ApiOperation(value = "适用对象规则设置无效", notes = "适用对象规则设置无效")
     @Override
     public ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
@@ -77,7 +74,6 @@ public class CouponApplyController implements CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:36
      */
-    @ApiOperation(value = "适用对象规则分页查询", notes = "适用对象规则分页查询")
     @Override
     public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition) {
         ResponseResult<PagedList<CouponApplyVO>> result = couponApplyService.findCouponApplyPage(condition);
@@ -92,7 +88,6 @@ public class CouponApplyController implements CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:38
      */
-    @ApiOperation(value = "适用对象规则添加", notes = "适用对象规则添加")
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
@@ -113,7 +108,6 @@ public class CouponApplyController implements CouponApplyServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:38
      */
-    @ApiOperation(value = "适用对象规则关联模板分页查询", notes = "适用对象规则关联模板分页查询")
     @Override
     public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
         ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(condition);

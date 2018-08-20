@@ -32,7 +32,7 @@ public class MiniMsgCondition {
  *         //消息模板类型（参照MiniMsgTypeEnum的msgType）
  *         condition.setMsgType((short)1);
  *         //点击模板卡片后的跳转页面，不填则模板无跳转。
- *         condition.setPage("index");
+ *         condition.setPage("xxxx");
  *         //模板内容，不填则下发空模板。
  *         //数组元素的顺序，要求和小程序的模板库中的对应模板的参数顺序一致。
  *         List<MiniTemplateData> templateData = new ArrayList<>();

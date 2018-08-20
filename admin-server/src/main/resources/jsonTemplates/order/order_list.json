@@ -39,7 +39,7 @@
         "title": "用户电话"
       },
       {
-        "name": "permissions",
+        "name": "storeName",
         "title": "下单商铺"
       },
       {
@@ -132,9 +132,10 @@
         "name": "regionCode",
         "inputModel": "inputDia",
         "title": "所在区域",
+        "value":[],
         "placeholder": "请选择下单区域",
         "path": "",
-        "configKey": "/template/module/system/system_region_list_radio_win.json",
+        "configKey": "/template/module/system/system_region_list_selection_win.json",
         "isHidden": false
       },
       {
@@ -151,6 +152,7 @@
         "value":{},
         "title": "下单金额",
         "placeholder": "",
+        "step": 0.01,
         "isHidden": false
       },
       {

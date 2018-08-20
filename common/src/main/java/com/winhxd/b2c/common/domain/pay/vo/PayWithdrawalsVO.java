@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.pay.vo;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,32 +18,45 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("主键")
     private Long id;
     @ApiModelProperty("门店id")
+    @Excel(name = "门店ID", width = 30)
     private Long storeId;
     @ApiModelProperty("门店名称")
+    @Excel(name = "门店名称", width = 30)
     private String storeName;
     @ApiModelProperty("提现订单号")
+    @Excel(name = "提现订单号", width = 30)
     private String withdrawalsNo;
     @ApiModelProperty("提现金额")
+    @Excel(name = "提现金额", width = 30)
     private BigDecimal totalFee;
     @ApiModelProperty("实际到账金额")
+    @Excel(name = "实际到账金额", width = 30)
     private BigDecimal realFee;
     @ApiModelProperty("手续费")
+    @Excel(name = "手续费", width = 30)
     private BigDecimal cmmsAmt;
     @ApiModelProperty("费率")
     private BigDecimal rate;
     @ApiModelProperty("状态 0未审核 1审核通过 2审核不通过")
     private Short auditStatus;
+    @Excel(name = "审核状态", width = 30)
+    private String auditStatusName;
     @ApiModelProperty("原因")
+    @Excel(name = "原因", width = 30)
     private String auditDesc;
     @ApiModelProperty("流向类型 1微信 2银行卡")
     private Short flowDirectionType;
     @ApiModelProperty("流向名称 微信或者各个银行卡名称")
+    @Excel(name = "流向", width = 30)
     private String flowDirectionName;
     @ApiModelProperty("提款人")
+    @Excel(name = "提款人", width = 30)
     private String name;
     @ApiModelProperty("手机号")
+    @Excel(name = "手机号", width = 30)
     private String mobile;
     @ApiModelProperty("流向账户")
+    @Excel(name = "付款账户", width = 30)
     private String paymentAccount;
     @ApiModelProperty("创建时间")
     private Date created;
@@ -53,8 +67,10 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("修改人id")
     private Long updatedBy;
     @ApiModelProperty("修改人名称")
+    @Excel(name = "审核人", width = 30)
     private String updatedByName;
     @ApiModelProperty("修改时间")
+    @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date updated;
 
     public Long getId() {
@@ -223,5 +239,18 @@ public class PayWithdrawalsVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getAuditStatusName() {
+        if (Short.valueOf("0").compareTo(auditStatus) == 0) {
+            auditStatusName = "未审核";
+        }
+        if (Short.valueOf("1").compareTo(auditStatus) == 0) {
+            auditStatusName = "审核通过";
+        }
+        if (Short.valueOf("2").compareTo(auditStatus) == 0) {
+            auditStatusName = "审核不通过";
+        }
+        return auditStatusName;
     }
 }

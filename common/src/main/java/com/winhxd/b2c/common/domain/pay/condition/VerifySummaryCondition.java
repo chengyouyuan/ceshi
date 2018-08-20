@@ -18,7 +18,9 @@ public class VerifySummaryCondition implements Serializable {
 
         private Long storeId;
 
-        private Date date;
+        private Date lastRecordedTime;
+
+        private Integer verifyStatus;
     }
 
     @ApiModelProperty("门店列表")

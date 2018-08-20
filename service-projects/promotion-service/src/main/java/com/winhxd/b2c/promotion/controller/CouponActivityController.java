@@ -6,8 +6,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
-import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
@@ -27,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,16 +81,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result.setCode(BusinessCode.CODE_OK);
         result.setMessage("返回小店导入信息成功");
         return result;
-    }
-
-    private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
-        ImportResult<CouponActivityImportStoreVO> importResult = null;
-        try {
-            importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
-        } catch (Exception e) {
-            throw new BusinessException(BusinessCode.CODE_1001, e);
-        }
-        return importResult;
     }
 
     /**

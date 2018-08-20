@@ -540,9 +540,9 @@ public class ApiStoreProductManageController {
             @ApiResponse(code = BusinessCode.CODE_100019, message = "图片名称不能为空！"),
             @ApiResponse(code = BusinessCode.CODE_100020, message = "图片不能为空！") })
     @PostMapping(value = "1049/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles)
+    public ResponseResult<PagedList<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles)
             throws  Exception{
-        ResponseResult<List<ProductImageVO>> responseResult = new ResponseResult<>();
+        ResponseResult<PagedList<ProductImageVO>> responseResult = new ResponseResult<>();
 
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
@@ -593,14 +593,11 @@ public class ApiStoreProductManageController {
                 imageVO.setUrl(baseImageFile.getUrl());
                 imageVOList.add(imageVO);
             }
-//			else{   上传失败一个，不能设置错误信息把？
-//				responseResult.setCode(imageVOResult.getCode());
-//				responseResult.setMessage(imageVOResult.getMessage());
-//				responseResult.setData(imageVOList);
-//			}
-        }
 
-        responseResult.setData(imageVOList);
+        }
+        PagedList<ProductImageVO> pagedList=new PagedList<>();
+        pagedList.setData(imageVOList);
+        responseResult.setData(pagedList);
         logger.info("提报商品图片上传接口接口返参为：{}", responseResult);
         return responseResult;
     }

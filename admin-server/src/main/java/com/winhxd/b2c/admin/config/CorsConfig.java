@@ -20,8 +20,9 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
-        config.setMaxAge(18000L);
         config.addAllowedMethod("*");
+        config.addExposedHeader("*");
+        config.setMaxAge(864000L);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

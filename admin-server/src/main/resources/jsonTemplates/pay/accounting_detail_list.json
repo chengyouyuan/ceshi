@@ -1,5 +1,6 @@
 {
   "meta": {
+    "code": "accountingDetailList",
     "ajaxType": "get",
     "path": "/pay/verify/accountingDetailList",
     "type": "report",
@@ -50,7 +51,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "id" ],
+          "params": [ "id", "verifyStatus" ],
           "path": "/pay/verify/verifyByDetail",
           "confirm": {
             "title": "提示",
@@ -65,7 +66,7 @@
         "name": "id"
       },
       {
-        "name": "verifyStatus",
+        "name": "verifyStatusName",
         "title": "结算状态"
       },
       {

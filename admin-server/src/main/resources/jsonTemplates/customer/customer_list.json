@@ -1,11 +1,11 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/customer/user/findCustomerPageInfo",
+    "path": "/customer/user/1059/v1/findCustomerPageInfo",
     "type": "report",
     "id": "customer_list",
     "code": "customer_list",
-    "title": "客户管理",
+    "title": "顾客管理",
     "buttons": [
       {
         "name": "查询",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "get",
-          "path": "/customer/user/findCustomerPageInfo"
+          "path": "/customer/user/1059/v1/findCustomerPageInfo"
         }
       },
       {
@@ -28,9 +28,9 @@
         "name": "导出",
         "icon": null,
         "event": {
-          "type": "dowload",
+          "type": "export",
           "ajaxType": "get",
-          "path": "/customer/user/customerExport"
+          "path": "/customer/user/1060/v1/customerExport"
         }
       }
     ],
@@ -90,7 +90,7 @@
             "event":{
               "type":"ajax",
               "ajaxType": "post",
-              "path":"customer/user/addBlackList",
+              "path":"customer/user/1061/v1/addBlackList",
               "confirm":{
                 "title": "确认提示",
                 "message":"确定要添加黑名单吗?"
@@ -106,7 +106,7 @@
             "event":{
               "type":"ajax",
               "ajaxType": "post",
-              "path":"customer/user/removeBlackList",
+              "path":"customer/user/1062/v1/removeBlackList",
               "confirm":{
                 "title": "确认提示",
                 "message":"确定要添加黑名单吗?"

@@ -211,6 +211,7 @@ public class VerifyService {
      */
     @Transactional
     public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
         return accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
     }
 
@@ -302,7 +303,7 @@ public class VerifyService {
         int updatedCount = 0;
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
-                    verifyCode, vo.getStoreId(), vo.getDate());
+                    verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
         // 门店资金变动
@@ -392,7 +393,9 @@ public class VerifyService {
      * @return
      */
     public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Set<Long> storeSet = new HashSet<>();
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
         for (PayWithdrawalsVO vo : page.getResult()) {
@@ -428,8 +431,9 @@ public class VerifyService {
         String auditDesc = condition.getAuditDesc();
         Long updatedBy = condition.getUpdatedBy();
         String updatedByName = condition.getUpdatedByName();
-        for (Long id : condition.getIds()) {
+        for (int i = 0; i < condition.getIds().size(); i++) {
             PayWithdrawals payWithdrawals = new PayWithdrawals();
+            Long id = condition.getIds().get(i);
             payWithdrawals.setId(id);
             payWithdrawals.setUpdated(new Date());
             payWithdrawals.setUpdatedBy(updatedBy);

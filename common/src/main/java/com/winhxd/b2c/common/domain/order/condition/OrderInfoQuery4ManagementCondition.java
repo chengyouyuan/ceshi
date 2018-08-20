@@ -45,7 +45,7 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
     private Short useCoupon;
     
     @ApiModelProperty(value = "地理区域编码")
-    private String regionCode;
+    private String[] regionCode;
     
 
     public Long getStoreId() {
@@ -112,11 +112,11 @@ public class OrderInfoQuery4ManagementCondition extends PagedCondition {
         this.orderStatus = orderStatus;
     }
 
-    public String getRegionCode() {
+    public String[] getRegionCode() {
         return regionCode;
     }
 
-    public void setRegionCode(String regionCode) {
+    public void setRegionCode(String[] regionCode) {
         this.regionCode = regionCode;
     }
 

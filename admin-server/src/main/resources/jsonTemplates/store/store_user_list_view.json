@@ -66,7 +66,7 @@
       },
       {
         "name": "storeAddress",
-        "title": "地址",
+        "title": "提货地址",
         "inputModel": "input",
         "value": "",
         "isHidden": false
@@ -79,31 +79,32 @@
         "isHidden": false
       },
       {
-        "name": "payType",
-        "title": "支付方式",
+        "name": "contactMobile",
+        "title": "联系方式",
         "inputModel": "input",
         "value": "",
         "isHidden": false
       },
       {
-        "name": "storeStatus",
+        "name": "payTypeDesc",
+        "title": "支付方式",
+        "inputModel": "text",
+        "value": "",
+        "isHidden": false
+      },
+      {
+        "name": "pickupTypeDesc",
+        "title": "提货方式",
+        "inputModel": "text",
+        "value": "",
+        "isHidden": false
+      },
+      {
+        "name": "storeStatusDesc",
         "inputModel": "select",
         "title": "门店状态",
         "placeholder": "",
-        "isHidden": false,
-        "options": [{
-          "value": "0",
-          "label": "未开店"
-        },
-          {
-            "value": "1",
-            "label": "有效"
-          },
-          {
-            "label":"无效",
-            "value":2
-          }
-        ]
+        "isHidden": false
       }
     ]
   }

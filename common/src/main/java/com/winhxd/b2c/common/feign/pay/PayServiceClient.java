@@ -23,15 +23,15 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
 public interface PayServiceClient {
 	
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月20日 下午1:19:20
-	 * @Description 退款
-	 * @param condition
-	 * @return
-	 */
-	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
+//	/**
+//	 * @author liuhanning
+//	 * @date  2018年8月20日 下午1:19:20
+//	 * @Description 退款
+//	 * @param condition
+//	 * @return
+//	 */
+//	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
 	
 	/**
 	 * @author liuhanning
@@ -76,11 +76,11 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 		return new PayServiceClientFallback(throwable);
 	}
 
-	@Override
-	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
-		logger.error("PayServiceClientFallback -> orderRefund{}", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-	}
+//	@Override
+//	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
+//		logger.error("PayServiceClientFallback -> orderRefund{}", throwable);
+//        return new ResponseResult<>(BusinessCode.CODE_1001);
+//	}
 
 	@Override
 	public ResponseResult<PayPreOrderVO> orderPay(PayPreOrderCondition condition) {

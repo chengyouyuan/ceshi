@@ -2,6 +2,8 @@ package com.winhxd.b2c.admin.module.promotion.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
+import com.winhxd.b2c.admin.utils.ExcelVerifyResult;
+import com.winhxd.b2c.admin.utils.ImportResult;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -9,9 +11,6 @@ import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
-import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -118,7 +117,7 @@ public class CouponController {
 	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
 		ImportResult<CouponActivityImportStoreVO> importResult = null;
 		try {
-			importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
 		} catch (Exception e) {
 			throw new BusinessException(BusinessCode.CODE_1001, e);
 		}

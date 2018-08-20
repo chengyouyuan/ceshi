@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.domain.pay.enums.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,21 +24,15 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBindStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.TradeTypeEnums;
-import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
@@ -46,13 +41,16 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventMessageSender;
+import com.winhxd.b2c.common.mq.event.EventType;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
@@ -99,9 +97,12 @@ public class PayServiceImpl implements PayService{
 	@Autowired
 	private PayStoreWalletMapper payStoreWalletMapper;
 	@Autowired
-	PayStoreCashService payStoreCashService;
+	private PayStoreCashService payStoreCashService;
 	@Autowired
-	PayFinanceAccountDetailService payFinanceAccountDetailService;
+	private PayFinanceAccountDetailService payFinanceAccountDetailService;
+	
+	 @Autowired
+    private EventMessageSender eventMessageSender;
 	
 	@Autowired
     private Cache cache;
@@ -199,21 +200,19 @@ public class PayServiceImpl implements PayService{
 		//根据退款状态  判断是否更新订单状态
 		if(1 == condition.getCallbackRefundStatus()){
 			//更新订单状态
-			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
-			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
-			ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
-			if (callbackResult.getCode()!=0&&!callbackResult.getData()) {
-				//订单更新失败
-				logger.info(log+"--订单更新失败");
-				throw new BusinessException(BusinessCode.CODE_600301);
-			}
+//			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
+//			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
+//			ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
+			logger.info(log+"发送更新订单事件开始-订单号={}", condition.getOrderNo());
+	        eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER, condition.getOrderNo(), null);
+	        logger.info(log+"发送更新订单事件结束-订单号={}", condition.getOrderNo());
 		}
 
 		//出账明细表 pay_finance_account_detail
 		PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
 		payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
 		payFinanceAccountDetail.setOutType(PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode());
-		payFinanceAccountDetail.setStatus((short) 1);
+		payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
 		payFinanceAccountDetail.setCreated(new Date());
 		payFinanceAccountDetail.setTradeNo(condition.getOutRefundNo());
         int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
@@ -566,32 +565,37 @@ public class PayServiceImpl implements PayService{
 		
 		return payPreOrderVO;
 	}
-
-	@Override
-	public PayRefundVO refundOrder(PayRefundCondition payRefund) {
+    /**
+     * 
+     * @author liuhanning
+     * @date  2018年8月20日 下午4:37:38
+     * @Description 采用监听事件的方式  处理退款
+     * @param orderNo
+     * @param order
+     * @return
+     */
+	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
+	public PayRefundVO refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
 		String log=logLabel+"订单退款refundOrder";
 		logger.info(log+"--开始");
-		if (payRefund==null){
+		if (order==null){
 			logger.info(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600201);
 		}
-		String orderNo=payRefund.getOutTradeNo();
-		//String appid=payRefund.getAppid();
-		BigDecimal totalAmount=payRefund.getTotalAmount();
-		BigDecimal refundAmount=payRefund.getRefundAmount();
-		Long createdBy=payRefund.getCreatedBy();
-		String createdByName=payRefund.getCreatedByName();
-//		String refundDesc=payRefund.getRefundDesc();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
 			throw new BusinessException(BusinessCode.CODE_600202);
 		}
-		/*if (StringUtils.isBlank(appid)) {
-			logger.info(log+"--appid为空");
-			throw new BusinessException(BusinessCode.CODE_600203);
-		}*/
+		
+		if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || !StringUtils.isNotBlank(order.getPaymentSerialNum())) {
+            throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, "申请退款状态异常");
+        }
+		BigDecimal totalAmount=order.getRealPaymentMoney();
+		BigDecimal refundAmount=order.getRealPaymentMoney();
+		Long createdBy=order.getUpdatedBy();
+		String createdByName=order.getUpdatedByName();
 		if (totalAmount==null) {
 			logger.info(log+"--订单金额为空");
 			throw new BusinessException(BusinessCode.CODE_600204);
@@ -608,7 +612,14 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--创建人姓名为空");
 			throw new BusinessException(BusinessCode.CODE_600207);
 		}
-		logger.info(log+"--参数"+payRefund.toString());
+		logger.info(log+"--参数"+order.toString());
+		PayRefundCondition payRefund = new PayRefundCondition();
+		payRefund.setOutTradeNo(order.getPaymentSerialNum());
+		payRefund.setTotalAmount(order.getRealPaymentMoney());
+		payRefund.setRefundAmount(order.getRealPaymentMoney());
+		payRefund.setCreatedBy(order.getUpdatedBy());
+		payRefund.setCreatedByName(order.getUpdatedByName());
+		payRefund.setRefundDesc(order.getCancelReason());
 		PayRefundVO vo=refundService.refundOrder(payRefund);
 		if (vo!=null) {
 			//插入退款流水信息
@@ -678,7 +689,7 @@ public class PayServiceImpl implements PayService{
         PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
         payFinanceAccountDetail.setOrderNo(payWithdrawals.getWithdrawalsNo());
         payFinanceAccountDetail.setOutType(PayOutTypeEnum.STORE_WITHDRAW.getStatusCode());
-        payFinanceAccountDetail.setStatus((short) 1);
+        payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
         payFinanceAccountDetail.setCreated(new Date());
         payFinanceAccountDetail.setTradeNo(payWithdrawals.getWithdrawalsNo());
         int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
@@ -689,7 +700,7 @@ public class PayServiceImpl implements PayService{
         PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
 		payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());
 		payStoreTransactionRecord.setType(StoreTransactionStatusEnum.TRANSFERS.getStatusCode());
-		payStoreTransactionRecord.setStatus((short) 1);
+		payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
         payStoreTransactionRecord.setStoreId(payWithdrawalsList.get(0).getStoreId());
 		payStoreTransactionRecord.setMoney(payWithdrawalsList.get(0).getTotalFee());
 		payStoreTransactionRecord.setCmmsAmt(payWithdrawalsList.get(0).getCmmsAmt());
@@ -759,43 +770,6 @@ public class PayServiceImpl implements PayService{
 		}
 		return payStoreWalletMapper.selectByStoreId(storeUser.getBusinessId());
 	}
-
-
-	@Override
-	public void storeBindStoreWallet(StoreBindStoreWalletCondition condition) {
-		String log=logLabel+"门店绑定storeBindStoreWallet";
-		logger.info(log+"--开始");
-		StoreUser storeUser=UserContext.getCurrentStoreUser();
-		if (storeUser==null||storeUser.getBusinessId()==null) {
-			logger.info(log+"--未获取到门店信息");
-			throw new BusinessException(BusinessCode.CODE_600701);
-		}
-		if (condition==null) {
-			logger.info(log+"--参数为空");
-			throw new BusinessException(BusinessCode.CODE_600702);
-		}
-		if (StringUtils.isBlank(condition.getOpenid())) {
-			logger.info(log+"--openid为空");
-			throw new BusinessException(BusinessCode.CODE_600703);
-		}
-		if (StringUtils.isBlank(condition.getName())) {
-			logger.info(log+"--真实姓名为空");
-			throw new BusinessException(BusinessCode.CODE_600704);
-		}
-		if (StringUtils.isBlank(condition.getNick())) {
-			logger.info("--昵称为空");
-			throw new BusinessException(BusinessCode.CODE_600705);
-		}
-		logger.info(log+"--参数"+condition.toString());
-		PayStoreWallet wallet=new PayStoreWallet();
-		wallet.setStoreId(storeUser.getBusinessId());
-		wallet.setName(condition.getName());
-		wallet.setNick(condition.getNick());
-		wallet.setOpenid(condition.getOpenid());
-		wallet.setStatus((short)1);
-		payStoreWalletMapper.insertSelective(wallet);
-	}
-
 
 	@Override
 	public Boolean orderIsPay(OrderIsPayCondition condition) {

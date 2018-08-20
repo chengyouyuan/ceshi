@@ -51,14 +51,14 @@ public class CustomerUserController {
 
     @ApiOperation(value = "根据条件查询用户的分页数据信息", notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @PostMapping(value = "/findCustomerPageInfo")
+    @PostMapping(value = "/1059/v1/findCustomerPageInfo")
     public ResponseResult<PagedList<CustomerUserInfoVO>> findCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.queryCustomerPageInfo(condition);
         return responseResult;
     }
 
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
-    @GetMapping(value = "/customerExport")
+    @GetMapping(value = "/1060/v1/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> result = customerServiceClient.queryCustomerPageInfo(condition);
         List<CustomerUserInfoVO> list = result.getData().getData();
@@ -71,7 +71,7 @@ public class CustomerUserController {
 
     @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
-    @PostMapping(value = "/addBlackList")
+    @PostMapping(value = "/1061/v1/addBlackList")
     public ResponseResult<Void> addBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
@@ -83,7 +83,7 @@ public class CustomerUserController {
 
     @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
-    @PostMapping(value = "/removeBlackList")
+    @PostMapping(value = "/1062/v1/removeBlackList")
     public ResponseResult<Void> removeBlackList(@RequestBody BackStageCustomerInfoCondition condition) {
         if (condition.getCustomerId() == null) {
             logger.error("CustomerUserController ->updateStatus方法参数customerId为空");
@@ -95,7 +95,7 @@ public class CustomerUserController {
 
     @ApiOperation(value = "根据用户id查询当前用户的信息以及订单信息", notes = "点击用户详情页查询用户已经订单详情列表信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
-    @GetMapping(value = "/queryCustomerUserInfoDeatil")
+    @GetMapping(value = "/1063/v1/queryCustomerUserInfoDeatil")
     public ResponseResult<CustomerOrderInfoVO> queryCustomerUserInfoDeatil(@RequestParam("customerUserId") Long customerUserId,
                                                                            @RequestParam(value = "pageNo", defaultValue = "1") Integer pageNo, @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         ResponseResult<CustomerOrderInfoVO> responseResult = new ResponseResult<>();
@@ -129,7 +129,7 @@ public class CustomerUserController {
     }
 
     @ApiOperation(value = "查询订单详情信息", notes = "根据订单查询订单详情已经订单状态信息")
-    @GetMapping(value = "/queryOderInfoDetail/{orderNum}")
+    @GetMapping(value = "/1064/v1/queryOderInfoDetail/{orderNum}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"), @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})
     public ResponseResult<OrderInfoDetailVO4Management> queryOderInfoDetail(@PathVariable("orderNum") String orderNum) {
         if (StringUtils.isEmpty(orderNum)) {

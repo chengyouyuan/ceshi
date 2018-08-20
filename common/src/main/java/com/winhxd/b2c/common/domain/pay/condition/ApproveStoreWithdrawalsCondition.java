@@ -14,6 +14,9 @@ public class ApproveStoreWithdrawalsCondition {
     @ApiModelProperty("提现申请ID列表")
     private List<Long> ids = new ArrayList<>();
 
+    @ApiModelProperty("提现申请门店ID列表")
+    private List<Long> storeIds = new ArrayList<>();
+
     @ApiModelProperty("审核状态")
     private Short auditStatus;
 

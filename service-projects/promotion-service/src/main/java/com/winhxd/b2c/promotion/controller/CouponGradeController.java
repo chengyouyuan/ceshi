@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date 2018/8/8 18:24
  * @Description
  **/
-@Api(tags = "CouponGrade")
 @RestController
 public class CouponGradeController implements CouponGradeServiceClient {
      @Autowired
@@ -37,7 +36,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:40
      */
-    @ApiOperation(value = "坎级规则添加", notes = "坎级规则添加")
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
@@ -60,7 +58,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:41
      */
-    @ApiOperation(value = "坎级规则详情查看", notes = "坎级规则详情查看")
     @Override
     public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
         ResponseResult<CouponGradeVO> responseResult = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
@@ -75,7 +72,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:42
      */
-    @ApiOperation(value = "坎级规则设为无效/逻辑删除", notes = "坎级规则设为无效/逻辑删除")
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
@@ -97,7 +93,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:44
      */
-    @ApiOperation(value = "坎级规则分页查询", notes = "坎级规则分页查询")
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition) {
         ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);
@@ -112,7 +107,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:44
      */
-    @ApiOperation(value = "坎级规则关联模板分页查询", notes = "坎级规则关联模板分页查询")
     @Override
     public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
         ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(condition);

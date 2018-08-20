@@ -3,7 +3,9 @@ package com.winhxd.b2c.message.controller;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.*;
+import com.winhxd.b2c.common.domain.message.condition.MessageBatchPushCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.message.vo.MessageBatchPushVO;
@@ -12,13 +14,14 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.message.service.MessageBatchPushService;
 import com.winhxd.b2c.message.service.MiniProgramService;
 import com.winhxd.b2c.message.service.NeteaseService;
-import com.winhxd.b2c.message.service.SMSService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author jujinbiao
@@ -32,9 +35,6 @@ public class MessageServiceController implements MessageServiceClient {
 
 	@Autowired
 	NeteaseService neteaseService;
-
-	@Autowired
-	SMSService smsService;
 
 	@Autowired
 	MiniProgramService miniProgramService;
@@ -77,25 +77,6 @@ public class MessageServiceController implements MessageServiceClient {
 	}
 
 	@Override
-	public ResponseResult<Void> sendNeteaseMsg(@RequestBody NeteaseMsgCondition neteaseMsgCondition) {
-		ResponseResult<Void> result = new ResponseResult<>();
-		try {
-			neteaseService.sendNeteaseMsg(neteaseMsgCondition);
-		} catch (Exception e) {
-			LOGGER.error("/message/7014/v1/sendNeteaseMsg,给B端用户发云信消息出错，异常信息为={}", e);
-		}
-		return result;
-	}
-
-	@Override
-	@ApiOperation(value = "内部接口发送短信", notes = "内部接口发送短信")
-	public ResponseResult<Void> sendSMS(@RequestParam("mobile") String mobile, @RequestParam("content") String content) {
-		ResponseResult<Void> result = new ResponseResult<>();
-		smsService.sendSMS(mobile, content);
-		return result;
-	}
-
-	@Override
 	public ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code") String code) {
 		ResponseResult<MiniOpenId> result = new ResponseResult<>();
 		try {
@@ -106,18 +87,6 @@ public class MessageServiceController implements MessageServiceClient {
 		}
 		return result;
 	}
-
-    @Override
-    public ResponseResult<Void> sendMiniMsg(@RequestBody MiniMsgCondition miniMsgCondition) {
-        ResponseResult<Void> result = new ResponseResult<>();
-        try {
-            result = miniProgramService.sendMiniMsg(miniMsgCondition);
-        } catch (Exception e) {
-            LOGGER.error("/message/7022/v1/sendMiniMsg,给C端用户推送小程序模板消息出错，异常信息为={}", e);
-            result.setCode(BusinessCode.CODE_1001);
-        }
-        return result;
-    }
 
     @Override
     public ResponseResult<Void> saveFormIds(@RequestBody MiniFormIdCondition miniFormIdCondition) {

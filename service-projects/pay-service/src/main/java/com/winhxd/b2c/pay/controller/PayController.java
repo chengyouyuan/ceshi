@@ -35,20 +35,20 @@ public class PayController implements PayServiceClient {
 		result.setData(vo);
 		return result;
 	}
-	/**
-	 * @author liuhanning
-	 * @date  2018年8月20日 上午11:32:47
-	 * @Description 退款
-	 * @param condition
-	 * @return
-	 */
-	@Override
-	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition){
-		PayRefundVO vo=payService.refundOrder(condition);
-		ResponseResult<PayRefundVO> result=new ResponseResult<>();
-		result.setData(vo);
-		return result;
-	}
+//	/**
+//	 * @author liuhanning
+//	 * @date  2018年8月20日 上午11:32:47
+//	 * @Description 退款
+//	 * @param condition
+//	 * @return
+//	 */
+//	@Override
+//	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition){
+//		PayRefundVO vo=payService.refundOrder(condition);
+//		ResponseResult<PayRefundVO> result=new ResponseResult<>();
+//		result.setData(vo);
+//		return result;
+//	}
 	@Override
 	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition){
 		int data=payService.transfersToChange(condition);

@@ -1,7 +1,9 @@
 package com.winhxd.b2c.message.service.impl;
 
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.util.JsonUtil;
-import com.winhxd.b2c.message.service.SMSService;
 import com.winhxd.b2c.message.sms.SmsServerSendUtils;
 import com.winhxd.b2c.message.sms.model.SmsSend;
 import org.slf4j.Logger;
@@ -15,14 +17,18 @@ import org.springframework.stereotype.Service;
  * @description
  */
 @Service
-public class SMSServiceImpl implements SMSService {
+public class SMSServiceImpl {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SMSServiceImpl.class);
 
 	@Autowired
 	private SmsServerSendUtils smsServer;
 
-	@Override
-	public void sendSMS(String mobile, String content) {
+	@StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
+	public void sendSMS(String smsConditionJson) {
+		LOGGER.info("消息服务->发送短信，SMSServiceImpl.sendSMS(),smsConditionJson={}",smsConditionJson);
+		SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
+		String mobile = smsCondition.getMobile();
+		String content = smsCondition.getContent();
 		try {
 			SmsSend smsSend = new SmsSend();
 			smsSend.setTelePhoneNo(mobile);

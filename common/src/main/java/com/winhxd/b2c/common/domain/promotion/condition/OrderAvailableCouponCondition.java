@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @Description
  */
 public class OrderAvailableCouponCondition extends ApiCondition{
-    @ApiModelProperty(value = "支付方式 1扫码支付2线上支付", required=true)
+    @ApiModelProperty(value = "支付方式 1为微信在线支付;2为微信扫码付款", required=true)
     private String payType;
     @ApiModelProperty(value = "门店id", required=true)
     private Long storeId;

@@ -523,7 +523,7 @@
         <include refid="order_info_list_orderBy"></include>
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
-        <if test="condition.orderNo != null">
+        <if test="condition.orderNo != null and condition.orderNo !=''">
             <bind name="orderNo" value="condition.orderNo + '%'" />
         </if>
         select
@@ -557,10 +557,13 @@
         <if test="condition.orderStatus != null">
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
         </if>
-        <if test="condition.regionCode != null">
-            and region_code = #{condition.regionCode,jdbcType=VARCHAR}
+        <if test="condition.regionCode != null and condition.regionCode.length > 0">
+            and region_code in 
+            <foreach item="item" index="index" collection="condition.regionCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
-        <if test="condition.orderNo != null">
+        <if test="condition.orderNo != null and condition.orderNo !=''">
             and order_no like #{orderNo}
         </if>
         <if test="condition.useCoupon != null and condition.useCoupon == 1">
@@ -725,6 +728,7 @@
         set pickup_code=null, 
         order_status=#{newOrderStatus,jdbcType=SMALLINT}, 
         updated = now()
+        finish_datetime = now()
         where id=#{orderId,jdbcType=BIGINT}
         and pickup_code=#{pickupCode,jdbcType=VARCHAR}
         and order_status=#{expectOrderStatus,jdbcType=SMALLINT}

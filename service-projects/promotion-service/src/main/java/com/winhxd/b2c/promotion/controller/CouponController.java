@@ -149,7 +149,7 @@ public class CouponController implements CouponServiceClient{
 	}
 
 	@Override
-	@ApiOperation(value = "根据订单获取优惠券费用承担信息", notes = "根据订单获取优惠券费用承担信息")
+	@ApiOperation(value = "根据订单获取优惠券出资方费用承担信息", notes = "根据订单获取优惠券出资方费用承担信息")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})

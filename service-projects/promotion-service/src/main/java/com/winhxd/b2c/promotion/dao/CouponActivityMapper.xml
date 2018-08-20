@@ -84,16 +84,19 @@
     ct.`code` AS couponCode,
     ca.`name` AS activityName,
     ca.`code` AS activityCode,
-    ct.`status` ,
+    ct.`status`,
     cts.updated
     FROM
     coupon_activity ca
     LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
     LEFT JOIN coupon_template ct ON ct.id = cat.template_id
     LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id
-    AND cts.`status` = '1'
     WHERE
     1 = 1
+    AND ca.`status` = 1
+    AND cat.`status` = 1
+    AND ct.`status` = 1
+    AND cts.`status` = 1
     <if test="condition.id != null">
       AND ca.id = #{condition.id}
     </if>
@@ -174,39 +177,40 @@
     <if test="condition.type == 2">
       AND ca.`type` = '2'
     </if>
-    <if test="condition.code != null">
+    <if test="condition.code != null and condition.code != ''">
       AND ca.`code` = #{condition.code}
     </if>
-    <if test="condition.name != null">
+    <if test="condition.name != null and condition.name != ''">
       AND ca.`name` = #{condition.name}
     </if>
-    <if test="condition.templateCode != null">
+    <if test="condition.templateCode != null and condition.templateCode != ''">
       AND ct.`code` = #{condition.templateCode}
     </if>
-    <if test="condition.storeId != null">
+    <if test="condition.storeId != null and condition.storeId != ''">
       AND casc.store_id = #{condition.storeId}
     </if>
-    <if test="condition.customerMobile != null">
+    <if test="condition.customerMobile != null and condition.customerMobile != ''">
       AND cui.customer_mobile = #{condition.customerMobile}
     </if>
-    <if test="condition.storeName != null">
+    <if test="condition.storeName != null and condition.storeName != ''">
       AND sui.store_name = #{condition.storeName}
     </if>
-    <if test="condition.couponNumType != null">
+    <if test="condition.couponNumType != null and condition.couponNumType != ''">
       AND cat.coupon_num_type = #{condition.couponNumType}
     </if>
-    <if test="condition.customerVoucherLimitType != null">
+    <if test="condition.customerVoucherLimitType != null and condition.customerVoucherLimitType != ''">
       AND cat.customer_voucher_limit_type = #{condition.customerVoucherLimitType}
     </if>
-    <if test="condition.createdByName != null">
+    <if test="condition.createdByName != null and condition.createdByName != ''">
       AND ca.created_by_name = #{condition.createdByName}
     </if>
-    <if test="condition.createdStart != null">
-      AND ca.created &lt; #{condition.createdStart}
+    <if test="condition.dateInterval != null and condition.dateInterval.start != null">
+      AND ca.created &lt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
     </if>
-    <if test="condition.createdEnd != null">
-      AND ca.created &gt; #{condition.createdEnd}
+    <if test="condition.dateInterval != null and condition.dateInterval.end != null">
+      AND ca.created &gt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
     </if>
+    ORDER BY ca.created DESC
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

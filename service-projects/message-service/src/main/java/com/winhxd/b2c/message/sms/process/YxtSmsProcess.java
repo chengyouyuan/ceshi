@@ -32,12 +32,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 创蓝发送短信
+ *
+ * @author fanzhanzhan
  */
 @Component
 public class YxtSmsProcess {
-	private final Logger LOGGER = LoggerFactory.getLogger(YxtSmsProcess.class);
+
+	private final Logger logger = LoggerFactory.getLogger(YxtSmsProcess.class);
 	private static AtomicInteger counter = new AtomicInteger(1);
-	//private static Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+	/**
+	 * 轮询因子
+	 */
+	private static final int POLL_FACTOR = 2;
+	/**
+	 * 国际短信判断
+	 */
+	private static final String INTERNATIONAL_MESSAGE = "r=";
+
 	/**
 	 * 不需补发的短信状态
 	 */
@@ -102,7 +113,7 @@ public class YxtSmsProcess {
 		/**
 		 * 营销短信使用创蓝平台，验证码短信在创蓝和阅信轮询
 		 */
-		if (index % 2 == 0 || !smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION) || smsSend.getSendType() == SmsTypeEnum.INTERNATIONAL.getType()) {
+		if (index % POLL_FACTOR == 0 || !smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION) || smsSend.getSendType() == SmsTypeEnum.INTERNATIONAL.getType()) {
 			smsReturn = clSend(smsSend);
 		} else {
 			smsReturn = yxSmsProcess.sendMessage(smsSend);
@@ -129,23 +140,23 @@ public class YxtSmsProcess {
 			saveSend(smsReturn.getSmsSupplier().getAccount(), smsSend.getContent(), smsSend.getTelephone(), smsReturn.getStatus().getStatusCode());
 
 			if (smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION)) {
-				LOGGER.info("创蓝短信发送失败,使用阅信平台发送：" + smsReturn.getStatus().getStatusCode());
+				logger.info("创蓝短信发送失败,使用阅信平台发送：" + smsReturn.getStatus().getStatusCode());
 				smsReturn = yxSmsProcess.sendMessage(smsSend);
 
 				if (!YxtSmsProcess.notRetrans.contains(smsReturn.getStatus().getStatusCode())) {
-					LOGGER.info("阅信发送失败, 改用漫道发送");
+					logger.info("阅信发送失败, 改用漫道发送");
 					ManDaoRetailProcess mandao = new ManDaoRetailProcess();
 					int rs = mandao.sendMessage(smsSend);
 					smsReturn = analysisMandaoReturn(rs);
 				}
 			} else {
-				LOGGER.info("创蓝短信发送失败,使用漫道平台发送：" + smsReturn.getStatus().getStatusCode());
+				logger.info("创蓝短信发送失败,使用漫道平台发送：" + smsReturn.getStatus().getStatusCode());
 				ManDaoRetailProcess mandao = new ManDaoRetailProcess();
 				int rs = mandao.sendMessage(smsSend);
 				smsReturn = analysisMandaoReturn(rs);
 			}
 		}
-		LOGGER.info("创蓝短信发送====" + JsonUtil.toJSONString(smsReturn));
+		logger.info("创蓝短信发送====" + JsonUtil.toJSONString(smsReturn));
 		return smsReturn;
 	}
 
@@ -153,21 +164,20 @@ public class YxtSmsProcess {
 	 * 发送国际短信
 	 */
 	public SmsReturn sendInternationalMessage(MessageSmsHistory smsSend) {
-		SmsReturn smsReturn = null;
+		SmsReturn smsReturn;
 		SmsSupplierEnum smsSupplier = SmsSupplierEnum.international_cl;
 		try {
-			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-			nvps.add(new BasicNameValuePair("un", smsSupplier.getAccount()));
-			nvps.add(new BasicNameValuePair("pw", smsSupplier.getPwd()));
-			nvps.add(new BasicNameValuePair("da", smsSend.getTelephone()));
-			nvps.add(new BasicNameValuePair("dc", "15"));
-			nvps.add(new BasicNameValuePair("rf", "1"));
-			nvps.add(new BasicNameValuePair("tf", "3"));
-			nvps.add(new BasicNameValuePair("sm", smsSend.getContent()));
+			List<NameValuePair> naps = new ArrayList<NameValuePair>();
+			naps.add(new BasicNameValuePair("un", smsSupplier.getAccount()));
+			naps.add(new BasicNameValuePair("pw", smsSupplier.getPwd()));
+			naps.add(new BasicNameValuePair("da", smsSend.getTelephone()));
+			naps.add(new BasicNameValuePair("dc", "15"));
+			naps.add(new BasicNameValuePair("rf", "1"));
+			naps.add(new BasicNameValuePair("tf", "3"));
+			naps.add(new BasicNameValuePair("sm", smsSend.getContent()));
 
-			//String rs = HttpClientUtil.getSend(smsSupplier.getUrl(), "mt", nvps);
 			CloseableHttpClient httpClient = httpClientUtil.getHttpClient();
-			HttpPost httpPost = new HttpPost(smsSupplier.getUrl());
+			HttpPost httpPost = new HttpPost(smsSupplier.getUrl() + "mt");
 			HttpResponse response = httpClient.execute(httpPost);
 			String rs = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
 			smsReturn = analysisInternationalReturn(rs);
@@ -176,9 +186,9 @@ public class YxtSmsProcess {
 			smsReturn = new SmsReturn();
 			smsReturn.setSmsSupplier(smsSupplier);
 			smsReturn.setStatus(SmsReturnStatusEnum.HTTPCLIENTERROR);
-			LOGGER.error("国际短信异常", e);
+			logger.error("国际短信异常", e);
 		}
-		LOGGER.info("创蓝国际短信发送====" + JsonUtil.toJSONString(smsReturn));
+		logger.info("创蓝国际短信发送====" + JsonUtil.toJSONString(smsReturn));
 		return smsReturn;
 	}
 
@@ -194,7 +204,7 @@ public class YxtSmsProcess {
 		} else {
 			smsReturn.setStatus(SmsReturnStatusEnum.FAIL_MANDAO);
 		}
-		LOGGER.info("漫道短信发送结果" + JsonUtil.toJSONString(smsReturn));
+		logger.info("漫道短信发送结果" + JsonUtil.toJSONString(smsReturn));
 		return smsReturn;
 	}
 
@@ -207,8 +217,8 @@ public class YxtSmsProcess {
 		tSMSSend.setContent(content);
 		tSMSSend.setSendTime(new Date());
 		tSMSSend.setTelephone(telephoneNO);
-		tSMSSend.setErrorCode((short)errorCode);
-		tSMSSend.setSendStatus((short)SmsSendStatusEnum.FAIL.getCode());
+		tSMSSend.setErrorCode((short) errorCode);
+		tSMSSend.setSendStatus((short) SmsSendStatusEnum.FAIL.getCode());
 		messageSmsHistoryMapper.insert(tSMSSend);
 	}
 
@@ -229,22 +239,20 @@ public class YxtSmsProcess {
 				// 非验证码短信 使用营销账号
 				if (content.indexOf(SmsConstant.SUFFIX_MARKETING) > -1) {
 					smsSupplier = SmsSupplierEnum.marketing_cl;
-					LOGGER.info("类型：营销短信。手机号：" + mobile + ",短信内容content： " + content);
+					logger.info("类型：营销短信。手机号：" + mobile + ",短信内容content： " + content);
 				} else if (content.indexOf(SmsConstant.FLAG_VERIFICATION) == -1) {
 					smsSupplier = SmsSupplierEnum.mixed_cl;
-					LOGGER.info("类型：通知短信。手机号：" + mobile + ",短信内容content： " + content);
+					logger.info("类型：通知短信。手机号：" + mobile + ",短信内容content： " + content);
 				} else if (String.valueOf(SmsTypeEnum.VOICE.getType()).equals(type)) {
 					smsSupplier = SmsSupplierEnum.voice_cl;
-					LOGGER.info("类型：语音短信。手机号：" + mobile + ",短信内容content： " + content);
+					logger.info("类型：语音短信。手机号：" + mobile + ",短信内容content： " + content);
 				} else {
 					smsSupplier = SmsSupplierEnum.verification_cl;
-					LOGGER.info("类型：验证码短信短信。手机号：" + mobile + ",短信内容content：" + content);
+					logger.info("类型：验证码短信短信。手机号：" + mobile + ",短信内容content：" + content);
 				}
-				LOGGER.info(smsSupplier.getAccount() + "," + smsSupplier.getUrl() + SmsConstant.HTTPBATCH);
+				logger.info(smsSupplier.getAccount() + "," + smsSupplier.getUrl() + SmsConstant.HTTPBATCH);
 
 				CloseableHttpClient httpClient = httpClientUtil.getHttpClient();
-//				HttpClientUtil.postSend(smsSupplier.getUrl(), "", pair)
-// 				smsSupplier.getUrl(), false, SmsConstant.HTTPBATCH
 				HttpPost httpPost = new HttpPost(new URI(smsSupplier.getUrl() + SmsConstant.HTTPBATCH));
 
 				List<NameValuePair> nvps = new ArrayList<>();
@@ -267,7 +275,7 @@ public class YxtSmsProcess {
 			smsReturn = new SmsReturn();
 			smsReturn.setSmsSupplier(smsSupplier);
 			smsReturn.setStatus(SmsReturnStatusEnum.HTTPCLIENTERROR);
-			LOGGER.error("创蓝短信发送异常。", e);
+			logger.error("创蓝短信发送异常。", e);
 		}
 		return smsReturn;
 	}
@@ -275,8 +283,8 @@ public class YxtSmsProcess {
 	public SmsReturn analysisInternationalReturn(String rs) {
 		SmsReturn smsReturn = new SmsReturn();
 		String[] arrayRS;
-		if (rs.indexOf("r=") > -1) {
-			arrayRS = rs.split("r=");
+		if (rs.indexOf(INTERNATIONAL_MESSAGE) > -1) {
+			arrayRS = rs.split(INTERNATIONAL_MESSAGE);
 			int rsStatus = Integer.parseInt(arrayRS[1]);
 			for (InternationalStatusEnum status : InternationalStatusEnum.values()) {
 				if (status.getStatusCode() == rsStatus) {
@@ -284,7 +292,7 @@ public class YxtSmsProcess {
 					break;
 				}
 			}
-			LOGGER.info("国际短信发送失败：" + rs);
+			logger.info("国际短信发送失败：" + rs);
 		} else {
 			smsReturn.setInternationalstatus(InternationalStatusEnum.SUCCESS);
 		}
@@ -310,7 +318,7 @@ public class YxtSmsProcess {
 			for (SmsReturnStatusEnum status : SmsReturnStatusEnum.values()) {
 				if (status.getStatusCode() == rsStatus) {
 					smsReturn.setStatus(status);
-					LOGGER.warn("创蓝短信发送结果：" + status.getRemark());
+					logger.warn("创蓝短信发送结果：" + status.getRemark());
 					break;
 				}
 			}

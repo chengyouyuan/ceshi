@@ -8,14 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.winhxd.b2c.common.config.MicroServiceConfig;
 import com.winhxd.b2c.common.mq.event.support.EnableEventMessage;
 
+@EnableAsync
 @SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class})
 @EnableEventMessage
-@EnableScheduling        //启用定时任务
+@EnableScheduling
 @ComponentScan(basePackages = "com.winhxd.b2c")
 @EnableFeignClients(basePackages = "com.winhxd.b2c.common.feign")
 @Import(MicroServiceConfig.class)

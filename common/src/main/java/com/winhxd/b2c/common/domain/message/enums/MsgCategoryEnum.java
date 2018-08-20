@@ -6,10 +6,10 @@ import java.util.TreeMap;
 /**
  * @Author: FanZhanzhan
  * @Date: 2018-08-14 17:09
- * @Description 消息跳转类型
+ * @Description 消息类别枚举
  * @Version
  */
-public enum PageTypeEnum {
+public enum MsgCategoryEnum {
 
 	/**
 	 * 新订单
@@ -52,7 +52,7 @@ public enum PageTypeEnum {
 	private String typeSummary;
 	private String typeDesc;
 
-	PageTypeEnum(short typeCode, String typeSummary, String typeDesc) {
+	MsgCategoryEnum(short typeCode, String typeSummary, String typeDesc) {
 		this.typeCode = typeCode;
 		this.typeSummary = typeSummary;
 		this.typeDesc = typeDesc;
@@ -72,7 +72,7 @@ public enum PageTypeEnum {
 
 	public static String getDescByCode(Short code) {
 		if (null != code) {
-			for (PageTypeEnum typeEnum : PageTypeEnum.values()) {
+			for (MsgCategoryEnum typeEnum : MsgCategoryEnum.values()) {
 				if (typeEnum.getTypeCode() == code) {
 					return typeEnum.getTypeDesc();
 				}
@@ -83,7 +83,7 @@ public enum PageTypeEnum {
 
 	public static String getSummaryByCode(Short code) {
 		if (null != code) {
-			for (PageTypeEnum typeEnum : PageTypeEnum.values()) {
+			for (MsgCategoryEnum typeEnum : MsgCategoryEnum.values()) {
 				if (typeEnum.getTypeCode() == code) {
 					return typeEnum.getTypeSummary();
 				}
@@ -94,7 +94,7 @@ public enum PageTypeEnum {
 
 	public static Map<Short, Map<String, String>> getDescMap() {
 		Map<Short, Map<String, String>> map = new TreeMap<>();
-		for (PageTypeEnum msgTypeEnum : values()) {
+		for (MsgCategoryEnum msgTypeEnum : values()) {
 			Map<String, String> descMap = new TreeMap<>();
 			descMap.put(msgTypeEnum.getTypeSummary(), msgTypeEnum.getTypeDesc());
 			map.put(msgTypeEnum.getTypeCode(), descMap);

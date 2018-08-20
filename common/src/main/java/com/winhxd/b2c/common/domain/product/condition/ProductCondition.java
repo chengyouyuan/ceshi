@@ -43,4 +43,9 @@ public class ProductCondition {
     @ApiModelProperty(value = "商品名称")
     private String productName;
     
+    @ApiModelProperty(value = "商品编码")
+    private String productCode;
+    
+    @ApiModelProperty(value = "商品编码")
+    private List<String> productCodes;
 }

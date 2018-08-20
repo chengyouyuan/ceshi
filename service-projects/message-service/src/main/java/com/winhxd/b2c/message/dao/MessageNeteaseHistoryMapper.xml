@@ -14,6 +14,7 @@
         <result column="msg_time" jdbcType="TIMESTAMP" property="msgTimeStamp"/>
         <result column="msg_id_server" jdbcType="VARCHAR" property="msgIdServer"/>
         <result column="read_status" jdbcType="SMALLINT" property="readStatus"/>
+        <result column="msg_category" jdbcType="SMALLINT" property="msgCategory"/>
     </resultMap>
     <resultMap id="NeteaseMsgVOResultMap" type="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">
         <result column="to_accid" jdbcType="VARCHAR" property="accid"/>
@@ -24,13 +25,14 @@
         <result column="msg_time" jdbcType="TIMESTAMP" property="alertTime"/>
         <result column="msg_id_server" jdbcType="VARCHAR" property="msgId"/>
         <result column="read_status" jdbcType="SMALLINT" property="readStatus"/>
+        <result column="msg_category" jdbcType="SMALLINT" property="msgCategory"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, from_accid, to_accid, msg_type, msg_body, msg_attach, ext_json, page_type, tree_code, 
-    msg_time, msg_id_server
+    msg_time, msg_id_server, msg_category
   </sql>
     <sql id="Message_List">
-    msg_id_server,msg_type,msg_body,page_type,tree_code,msg_time,read_status
+    msg_id_server,msg_type,msg_body,page_type,tree_code,msg_time,read_status, msg_category
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -64,14 +66,15 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
-    insert into message_netease_history (id, from_accid, to_accid, 
+    insert into message_netease_history (from_accid, to_accid,
       msg_type, msg_body, msg_attach, 
       ext_json, page_type, tree_code, 
-      msg_time, msg_id_server)
-    values (#{id,jdbcType=BIGINT}, #{fromAccid,jdbcType=VARCHAR}, #{toAccid,jdbcType=VARCHAR}, 
+      msg_time, msg_id_server,read_status, msg_category)
+    values (#{fromAccid,jdbcType=VARCHAR}, #{toAccid,jdbcType=VARCHAR},
       #{msgType,jdbcType=SMALLINT}, #{msgBody,jdbcType=VARCHAR}, #{msgAttach,jdbcType=VARCHAR}, 
       #{extJson,jdbcType=VARCHAR}, #{pageType,jdbcType=SMALLINT}, #{treeCode,jdbcType=VARCHAR}, 
-      #{msgTimeStamp,jdbcType=TIMESTAMP}, #{msgIdServer,jdbcType=VARCHAR})
+      #{msgTimeStamp,jdbcType=TIMESTAMP}, #{msgIdServer,jdbcType=VARCHAR}, #{readStatus,jdbcType=SMALLINT},
+      #{msgCategory,jdbcType=SMALLINT})
   </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
         insert into message_netease_history
@@ -109,6 +112,12 @@
             <if test="msgIdServer != null">
                 msg_id_server,
             </if>
+            <if test="readStatus != null">
+                read_status,
+            </if>
+            <if test="msgCategory != null">
+                msg_category,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -143,6 +152,12 @@
             </if>
             <if test="msgIdServer != null">
                 #{msgIdServer,jdbcType=VARCHAR},
+            </if>
+            <if test="readStatus != null">
+                #{readStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="msgCategory != null">
+                #{msgCategory,jdbcType=SMALLINT},
             </if>
         </trim>
     </insert>
@@ -180,6 +195,12 @@
             <if test="msgIdServer != null">
                 msg_id_server = #{msgIdServer,jdbcType=VARCHAR},
             </if>
+            <if test="readStatus != null">
+                read_status = #{readStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="msgCategory != null">
+                msg_category = #{msgCategory,jdbcType=SMALLINT},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -194,7 +215,9 @@
       page_type = #{pageType,jdbcType=SMALLINT},
       tree_code = #{treeCode,jdbcType=VARCHAR},
       msg_time = #{msgTimeStamp,jdbcType=TIMESTAMP},
-      msg_id_server = #{msgIdServer,jdbcType=VARCHAR}
+      msg_id_server = #{msgIdServer,jdbcType=VARCHAR},
+      read_status = #{readStatus,jdbcType=SMALLINT},
+      msg_category = #{msgCategory,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateReadStatusByCondition"
@@ -222,7 +245,8 @@
             tree_code,
             msg_time,
             msg_id_server,
-            read_status
+            read_status,
+            msg_category
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
@@ -237,9 +261,9 @@
             #{item.treeCode,jdbcType=VARCHAR},
             #{item.msgTimeStamp,jdbcType=TIMESTAMP},
             #{item.msgIdServer,jdbcType=VARCHAR},
-            #{item.readStatus,jdbcType=VARCHAR}
+            #{item.readStatus,jdbcType=VARCHAR},
+            #{item.msgCategory,jdbcType=SMALLINT}
         )
-
         </foreach>
     </insert>
 </mapper>

@@ -92,6 +92,7 @@ public class MessageBatchPushController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,新增手动推送消息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @GetMapping(value = "/removeBatchPush/{id}")
     public ResponseResult removeBatchPush(@PathVariable("id") Long id) {
+        logger.info("{} - 删除手动推送消息, 参数：id={}", MODULE_NAME, id);
         return messageServiceClient.removeBatchPush(id);
     }
 
@@ -99,6 +100,7 @@ public class MessageBatchPushController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,手动推送消息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @GetMapping(value = "/batchPushMessage/{id}")
     public ResponseResult batchPushMessage(@PathVariable("id") Long id) {
+        logger.info("{} - 手动推送消息, 参数：id={}", MODULE_NAME, id);
         return messageServiceClient.batchPushMessage(id);
     }
 

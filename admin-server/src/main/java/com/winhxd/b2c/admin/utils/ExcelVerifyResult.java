@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.promotion.util;
+package com.winhxd.b2c.admin.utils;
 
 import java.io.Serializable;
 

@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class WXPayRequest {
 
     @Autowired
-    private WXPayConfig config;
+    private PayConfig payConfig;
 
     /**
      * 请求，只请求一次，不做重试
@@ -49,8 +50,8 @@ public class WXPayRequest {
         BasicHttpClientConnectionManager connManager;
         if (useCert) {
             // 证书
-            char[] password = config.getMchID().toCharArray();
-            InputStream certStream = config.getCertStream();
+            char[] password = payConfig.getMchID().toCharArray();
+            InputStream certStream = payConfig.getCertStream();
             KeyStore ks = KeyStore.getInstance("PKCS12");
             ks.load(certStream, password);
 
@@ -101,7 +102,7 @@ public class WXPayRequest {
 
         StringEntity postEntity = new StringEntity(data, "UTF-8");
         httpPost.addHeader("Content-Type", "text/xml");
-        httpPost.addHeader("User-Agent", WXPayConstants.USER_AGENT + " " + config.getMchID());
+        httpPost.addHeader("User-Agent", WXPayConstants.USER_AGENT + " " + payConfig.getMchID());
         httpPost.setEntity(postEntity);
 
         HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -118,7 +119,7 @@ public class WXPayRequest {
         boolean firstHasDnsErr = false;
         boolean firstHasConnectTimeout = false;
         boolean firstHasReadTimeout = false;
-        IWXPayDomain.DomainInfo domainInfo = config.getWXPayDomain().getDomain(config);
+        IWXPayDomain.DomainInfo domainInfo = payConfig.getWXPayDomain().getDomain(payConfig);
         if(domainInfo == null){
             throw new Exception("PayConfig.getWXPayDomain().getDomain() is empty or null");
         }
@@ -126,8 +127,8 @@ public class WXPayRequest {
             String result = requestOnce(domainInfo.domain, urlSuffix, uuid, data, connectTimeoutMs, readTimeoutMs, useCert);
             if(autoReport){
                 elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
-                config.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, null);
-                WXPayReport.getInstance(config).report(
+                payConfig.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, null);
+                WXPayReport.getInstance(payConfig).report(
                         uuid,
                         elapsedTimeMillis,
                         domainInfo.domain,
@@ -144,7 +145,7 @@ public class WXPayRequest {
             firstHasDnsErr = true;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
             WXPayUtil.getLogger().warn("UnknownHostException for domainInfo {}", domainInfo);
-            WXPayReport.getInstance(config).report(
+            WXPayReport.getInstance(payConfig).report(
                     uuid,
                     elapsedTimeMillis,
                     domainInfo.domain,
@@ -160,7 +161,7 @@ public class WXPayRequest {
             firstHasConnectTimeout = true;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
             WXPayUtil.getLogger().warn("connect timeout happened for domainInfo {}", domainInfo);
-            WXPayReport.getInstance(config).report(
+            WXPayReport.getInstance(payConfig).report(
                     uuid,
                     elapsedTimeMillis,
                     domainInfo.domain,
@@ -177,7 +178,7 @@ public class WXPayRequest {
             firstHasReadTimeout = true;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
             WXPayUtil.getLogger().warn("timeout happened for domainInfo {}", domainInfo);
-            WXPayReport.getInstance(config).report(
+            WXPayReport.getInstance(payConfig).report(
                     uuid,
                     elapsedTimeMillis,
                     domainInfo.domain,
@@ -191,7 +192,7 @@ public class WXPayRequest {
         catch (Exception ex) {
             exception = ex;
             elapsedTimeMillis = WXPayUtil.getCurrentTimestampMs()-startTimestampMs;
-            WXPayReport.getInstance(config).report(
+            WXPayReport.getInstance(payConfig).report(
                     uuid,
                     elapsedTimeMillis,
                     domainInfo.domain,
@@ -202,7 +203,7 @@ public class WXPayRequest {
                     firstHasConnectTimeout,
                     firstHasReadTimeout);
         }
-        config.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, exception);
+        payConfig.getWXPayDomain().report(domainInfo.domain, elapsedTimeMillis, exception);
         throw exception;
     }
 
@@ -215,7 +216,7 @@ public class WXPayRequest {
      * @return
      */
     public String requestWithoutCert(String urlSuffix, String uuid, String data, boolean autoReport) throws Exception {
-        return this.request(urlSuffix, uuid, data, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs(), false, autoReport);
+        return this.request(urlSuffix, uuid, data, payConfig.getHttpConnectTimeoutMs(), payConfig.getHttpReadTimeoutMs(), false, autoReport);
     }
 
     /**
@@ -239,7 +240,7 @@ public class WXPayRequest {
      * @return
      */
     public String requestWithCert(String urlSuffix, String uuid, String data, boolean autoReport) throws Exception {
-        return this.request(urlSuffix, uuid, data, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs(), true, autoReport);
+        return this.request(urlSuffix, uuid, data, payConfig.getHttpConnectTimeoutMs(), payConfig.getHttpReadTimeoutMs(), true, autoReport);
     }
 
     /**

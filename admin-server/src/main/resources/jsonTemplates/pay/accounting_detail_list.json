@@ -1,5 +1,6 @@
 {
   "meta": {
+    "code": "accountingDetailList",
     "ajaxType": "get",
     "path": "/pay/verify/accountingDetailList",
     "type": "report",
@@ -23,27 +24,39 @@
         "name": "恢复费用核销",
         "event": {
           "type": "batch",
+          "ajaxType": "post",
           "params": [ "id" ],
-          "ajaxType": "get",
-          "path": "/pay/verify/accountingDetailRestore"
+          "path": "/pay/verify/accountingDetailRestore",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       },
       {
         "name": "暂缓",
         "event": {
           "type": "batch",
+          "ajaxType": "post",
           "params": [ "id" ],
-          "ajaxType": "get",
-          "path": "/pay/verify/accountingDetailPause"
+          "path": "/pay/verify/accountingDetailPause",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       },
       {
         "name": "确认结算",
         "event": {
           "type": "batch",
-          "params": [ "id" ],
-          "ajaxType": "get",
-          "path": "/pay/verify/verifyByDetail"
+          "ajaxType": "post",
+          "params": [ "id", "verifyStatus" ],
+          "path": "/pay/verify/verifyByDetail",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],
@@ -53,7 +66,7 @@
         "name": "id"
       },
       {
-        "name": "verifyStatus",
+        "name": "verifyStatusName",
         "title": "结算状态"
       },
       {

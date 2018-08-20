@@ -189,6 +189,9 @@ public class VerifyService {
             OrderInfoDetailVO4Management orderInfoDetailVO4Management = responseResult.getData();
             OrderInfoDetailVO orderInfoDetailVO = orderInfoDetailVO4Management.getOrderInfoDetailVO();
             if (orderInfoDetailVO != null) {
+                if (orderInfoDetailVO.getFinishDateTime() == null) {
+                    throw new BusinessException(-1, "订单闭环时间为NULL");
+                }
                 count = accountingDetailMapper.updateAccountingDetailCompletedByComplete(
                         orderNo, orderInfoDetailVO.getFinishDateTime());
                 log.info(String.format("订单[%s]费用明细入账，入账时间[%s]，共[%d]笔费用",
@@ -211,6 +214,7 @@ public class VerifyService {
      */
     @Transactional
     public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
         return accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
     }
 
@@ -222,24 +226,26 @@ public class VerifyService {
      */
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        Set<Long> storeSet = new HashSet<>();
         Page<VerifySummaryVO> page = accountingDetailMapper.selectVerifyList(condition);
-        for (VerifySummaryVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
-        }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (VerifySummaryVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (VerifySummaryVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (VerifySummaryVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }
@@ -254,24 +260,26 @@ public class VerifyService {
         if (!condition.getIsQueryAll()) {
             PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
-        Set<Long> storeSet = new HashSet<>();
         Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
-        for (VerifyDetailVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
-        }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (VerifyDetailVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (VerifyDetailVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (VerifyDetailVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }
@@ -298,7 +306,7 @@ public class VerifyService {
         int updatedCount = 0;
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
-                    verifyCode, vo.getStoreId(), vo.getDate());
+                    verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
         // 门店资金变动
@@ -388,7 +396,9 @@ public class VerifyService {
      * @return
      */
     public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Set<Long> storeSet = new HashSet<>();
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
         for (PayWithdrawalsVO vo : page.getResult()) {
@@ -424,8 +434,9 @@ public class VerifyService {
         String auditDesc = condition.getAuditDesc();
         Long updatedBy = condition.getUpdatedBy();
         String updatedByName = condition.getUpdatedByName();
-        for (Long id : condition.getIds()) {
+        for (int i = 0; i < condition.getIds().size(); i++) {
             PayWithdrawals payWithdrawals = new PayWithdrawals();
+            Long id = condition.getIds().get(i);
             payWithdrawals.setId(id);
             payWithdrawals.setUpdated(new Date());
             payWithdrawals.setUpdatedBy(updatedBy);

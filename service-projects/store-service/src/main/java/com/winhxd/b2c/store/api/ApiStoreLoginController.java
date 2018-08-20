@@ -1,11 +1,24 @@
 package com.winhxd.b2c.store.api;
 
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoSimpleVO;
@@ -18,22 +31,13 @@ import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.store.service.StoreLoginService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 /**
  * @author wufuyun
@@ -77,10 +81,11 @@ public class ApiStoreLoginController {
 	@Autowired
 	StoreServiceClient storeServiceClient;
 	@Autowired
-	MessageServiceClient messageServiceClient;
+	MessageSendUtils messageSendUtils;
 	@Autowired
 	StoreHxdServiceClient storeHxdServiceClient;
-
+	@Autowired
+	MessageServiceClient messageServiceClient;
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:11:59
@@ -524,7 +529,10 @@ public class ApiStoreLoginController {
 		 * 发送模板内容
 		 */
 		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
-		messageServiceClient.sendSMS(storeMobile, content);
+		SMSCondition sMSCondition = new SMSCondition();
+		sMSCondition.setContent(content);
+		sMSCondition.setMobile(storeMobile);
+		messageSendUtils.sendSMS(sMSCondition);
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
+import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +25,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
@@ -146,19 +148,61 @@ public class StoreServiceImpl implements StoreService {
         return pagedList;
     }
 
+    /**
+     * 处理字典类型字段回显
+     * @param stageStoreVO
+     * @return
+     */
     private BackStageStoreVO changeStatusDesc(BackStageStoreVO stageStoreVO){
         if(null == stageStoreVO){
-            return stageStoreVO;
+            return null;
         }
-        if(StoreStatusEnum.VALID.getStatusCode() == stageStoreVO.getStoreStatus()){
-            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.VALID.getStatusDesc());
-        }else if(StoreStatusEnum.INVALID.getStatusCode() == stageStoreVO.getStoreStatus()){
-            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.INVALID.getStatusDesc());
-        } else if (StoreStatusEnum.UN_OPEN.getStatusCode() == stageStoreVO.getStoreStatus()) {
-            stageStoreVO.setStoreStatusDesc(StoreStatusEnum.UN_OPEN.getStatusDesc());
+        // 状态
+        if (stageStoreVO.getStoreStatus() != null) {
+            if (StoreStatusEnum.VALID.getStatusCode() == stageStoreVO.getStoreStatus()) {
+                stageStoreVO.setStoreStatusDesc(StoreStatusEnum.VALID.getStatusDesc());
+            } else if (StoreStatusEnum.INVALID.getStatusCode() == stageStoreVO.getStoreStatus()) {
+                stageStoreVO.setStoreStatusDesc(StoreStatusEnum.INVALID.getStatusDesc());
+            } else if (StoreStatusEnum.UN_OPEN.getStatusCode() == stageStoreVO.getStoreStatus()) {
+                stageStoreVO.setStoreStatusDesc(StoreStatusEnum.UN_OPEN.getStatusDesc());
+            }
+        }
+        //取货方式
+        if (StringUtils.isNotBlank(stageStoreVO.getPickupType())) {
+            String[] pickupTypeArray = stageStoreVO.getPickupType().split(",");
+            if (pickupTypeArray.length > 0) {
+                StringBuilder pickupTypeDesc = new StringBuilder();
+                for (String storeType : pickupTypeArray) {
+                    for (PickupTypeEnum pickupType : PickupTypeEnum.values()) {
+                        if (Short.parseShort(storeType) == pickupType.getTypeCode()) {
+                            pickupTypeDesc.append(pickupType.getTypeDesc()).append(" ");
+                            break;
+                        }
+                    }
+                    //一期先写死，只传第一个
+                    break;
+                }
+                stageStoreVO.setPickupTypeDesc(pickupTypeDesc.toString());
+            }
         }
         //支付方式
-
+        if (StringUtils.isNotBlank(stageStoreVO.getPayType())) {
+            String[] payTypeArray = stageStoreVO.getPayType().split(",");
+            if (payTypeArray.length > 0) {
+                StringBuilder payTypeDesc = new StringBuilder();
+                for (String storeType : payTypeArray) {
+                    for (PayTypeEnum payType : PayTypeEnum.values()) {
+                        if (Short.parseShort(storeType) == payType.getTypeCode()) {
+                            payTypeDesc.append(payType.getTypeDesc()).append(" ");
+                            break;
+                        }
+                    }
+                    //一期先写死，只传第一个
+                    break;
+                }
+                stageStoreVO.setPayTypeDesc(payTypeDesc.toString());
+            }
+        }
         return stageStoreVO;
     }
 
@@ -208,6 +252,7 @@ public class StoreServiceImpl implements StoreService {
         } else {
             logger.error("门店详细信息查询，未查询到该门店的行政区域！区域编码为：{}", storeUserInfo.getStoreRegionCode());
         }
+        this.changeStatusDesc(backStageStoreVO);
         return backStageStoreVO;
     }
 

@@ -94,6 +94,15 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  
+  <update id="updateBatchStatus">
+  	update pay_store_wallet
+	    <set>
+	        status = 0
+	    </set>
+    where status = 1
+  </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
     update pay_store_wallet
     set store_id = #{storeId,jdbcType=BIGINT},

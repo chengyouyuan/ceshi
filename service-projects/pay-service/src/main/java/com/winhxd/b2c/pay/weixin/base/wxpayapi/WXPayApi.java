@@ -9,6 +9,8 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 
+import java.util.Map;
+
 public interface WXPayApi {
 	
     /**
@@ -47,11 +49,19 @@ public interface WXPayApi {
     /**
      * 作用：申请退款<br>
      * 场景：刷卡支付、公共号支付、扫码支付、APP支付
-     * @param reqData 向wxpay post的请求数据
+     * @param payRefundDTO 向wxpay post的请求数据
      * @return API返回数据
      * @throws Exception
      */
     PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO);
+
+    /**
+     * 作用：退款查询<br>
+     * 场景：退款查询
+     * @param payRefundDTO
+     * @return
+     */
+    Map<String, String> refundQuery(PayRefundDTO payRefundDTO);
 
     /**
      * 作用：对账单下载<br>
@@ -78,5 +88,45 @@ public interface WXPayApi {
      * @throws Exception
      */
 	PayBillDownloadResponseDTO downloadFundFlow(PayFinancialBillDTO payFinancialBillDTO);
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToChange(Map<String, String> reqData) throws Exception;
+
+    /**
+     * 作用：查询企业付款<br>
+     * 场景：查询企业付款到微信零钱<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String queryTransferToChange(Map<String, String> reqData) throws Exception;
+
+    /**
+     * 作用：企业付款<br>
+     * 场景：企业付款到微信银行卡<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String transferToBank(Map<String, String> reqData) throws Exception;
+
+    /**
+     * 作用：查询企业付款<br>
+     * 场景：查询企业付款到微信银行卡<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String queryTransferToBank(Map<String, String> reqData) throws Exception;
 
 }

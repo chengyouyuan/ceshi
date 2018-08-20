@@ -7,9 +7,9 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeConditio
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import com.winhxd.b2c.pay.weixin.base.dto.*;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPay;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConfig;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import com.winhxd.b2c.pay.weixin.constant.TransfersChannelType;
@@ -66,10 +66,10 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
-    private WXPay wxPay;
+    private WXPayApi wxPayApi;
 
     @Autowired
-    private WXPayConfig wxPayConfig;
+    private PayConfig payConfig;
 
     @Autowired
     private PayTransfersMapper payTransfersMapper;
@@ -83,7 +83,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             //准备wx侧请求参数
             PayTransfersForWxChangeDTO wxChangeDTO = getReqParamForChange(toWxBalanceCondition);
             //处理微信请求及结果
-            String respxml = wxPay.transferToChange(BeanAndXmlUtil.beanToSortedMap(wxChangeDTO));
+            String respxml = wxPayApi.transferToChange(BeanAndXmlUtil.beanToSortedMap(wxChangeDTO));
             PayTransfersToWxChangeResponseDTO responseDTO = BeanAndXmlUtil.xml2Bean(respxml, PayTransfersToWxChangeResponseDTO.class);
             //准备返参
             toWxChangeVO = praseResultForChange(responseDTO);
@@ -126,8 +126,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      */
     private PayTransfersForWxChangeDTO getReqParamForChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception {
         PayTransfersForWxChangeDTO forWxChangeDTO = new PayTransfersForWxChangeDTO();
-        forWxChangeDTO.setMchAppid(wxPayConfig.getMchAppID());
-        forWxChangeDTO.setMchid(wxPayConfig.getMchID());
+        forWxChangeDTO.setMchAppid(payConfig.getMchAppID());
+        forWxChangeDTO.setMchid(payConfig.getMchID());
         /**
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同
          */
@@ -149,7 +149,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setDesc(toWxBalanceCondition.getDesc());
         forWxChangeDTO.setSpbillCreateIp(toWxBalanceCondition.getSpbillCreateIp());
         //处理签名
-        forWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(forWxChangeDTO), wxPayConfig.getKey()));
+        forWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(forWxChangeDTO), payConfig.getKey()));
         return forWxChangeDTO;
     }
 
@@ -221,14 +221,14 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         PayTransfersQueryForWxChangeResponseDTO queryForWxChangeResponseDTO = new PayTransfersQueryForWxChangeResponseDTO();
         //请求查询接口参数
         PayTransfersQueryForWxChangeDTO queryForWxChangeDTO = new PayTransfersQueryForWxChangeDTO();
-        queryForWxChangeDTO.setMchId(wxPayConfig.getMchID());
-        queryForWxChangeDTO.setAppid(wxPayConfig.getAppID());
+        queryForWxChangeDTO.setMchId(payConfig.getMchID());
+        queryForWxChangeDTO.setAppid(payConfig.getAppID());
         queryForWxChangeDTO.setPartnerTradeNo(toWxChangeVO.getPartnerTradeNo());
         queryForWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理签名
-        queryForWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO), wxPayConfig.getKey()));
+        queryForWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO), payConfig.getKey()));
         //返参
-        String resultXml = wxPay.queryTransferToChange(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO));
+        String resultXml = wxPayApi.queryTransferToChange(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO));
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxChangeResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
         }
@@ -295,7 +295,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             //准备wx侧请求参数
             PayTransfersForWxBankDTO wxBankDTO = getReqParamForBank(toWxBankCondition);
             //处理微信请求及结果
-            String respxml = wxPay.transferToBank(BeanAndXmlUtil.beanToSortedMap(wxBankDTO));
+            String respxml = wxPayApi.transferToBank(BeanAndXmlUtil.beanToSortedMap(wxBankDTO));
             PayTransfersToWxBankResponseDTO responseDTO = BeanAndXmlUtil.xml2Bean(respxml, PayTransfersToWxBankResponseDTO.class);
             //准备返参
             toWxBankVO = praseResultForBank(responseDTO);
@@ -337,7 +337,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      */
     private PayTransfersForWxBankDTO getReqParamForBank(PayTransfersToWxBankCondition toWxBankCondition) throws Exception {
         PayTransfersForWxBankDTO forWxBankDTO = new PayTransfersForWxBankDTO();
-        forWxBankDTO.setMchid(wxPayConfig.getMchID());
+        forWxBankDTO.setMchid(payConfig.getMchID());
         forWxBankDTO.setPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
         /**
          * NonceStr, 如果不是第一次进行请求,则须和前一次相同
@@ -350,13 +350,13 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             forWxBankDTO.setNonceStr(records.getNonceStr());
         }
         //处理卡号姓名加密rsa
-        forWxBankDTO.setEncBankNo(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccount(), wxPayConfig.getRSAPublicKey()));
-        forWxBankDTO.setEncTrueName(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccountName(), wxPayConfig.getRSAPublicKey()));
+        forWxBankDTO.setEncBankNo(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccount(), payConfig.getRSAPublicKey()));
+        forWxBankDTO.setEncTrueName(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccountName(), payConfig.getRSAPublicKey()));
         forWxBankDTO.setBankCode(String.valueOf(toWxBankCondition.getChannelCode().getCode()));
         forWxBankDTO.setAmount(toWxBankCondition.getTotalAmount().multiply(UNITS).intValue());
         forWxBankDTO.setDesc(toWxBankCondition.getDesc());
         //处理签名
-        forWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(toWxBankCondition), wxPayConfig.getKey()));
+        forWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(toWxBankCondition), payConfig.getKey()));
         return forWxBankDTO;
     }
 
@@ -432,13 +432,13 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         PayTransfersQueryForWxBankResponseDTO queryForWxBankResponseDTO = new PayTransfersQueryForWxBankResponseDTO();
         //请求查询接口参数
         PayTransfersQueryForWxBankDTO queryForWxBankDTO = new PayTransfersQueryForWxBankDTO();
-        queryForWxBankDTO.setMchId(wxPayConfig.getMchID());
+        queryForWxBankDTO.setMchId(payConfig.getMchID());
         queryForWxBankDTO.setPartnerTradeNo(toWxBankVO.getPartnerTradeNo());
         queryForWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理签名
-        queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), wxPayConfig.getKey()));
+        queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), payConfig.getKey()));
         //返参
-        String resultXml = wxPay.queryTransferToBank(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
+        String resultXml = wxPayApi.queryTransferToBank(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }

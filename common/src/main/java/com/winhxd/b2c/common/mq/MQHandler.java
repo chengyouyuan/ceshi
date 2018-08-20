@@ -8,11 +8,22 @@ package com.winhxd.b2c.common.mq;
  */
 public enum MQHandler {
     /**
-     *
+     * 云信消息
      */
     NETEASE_MESSAGE_HANDLER(MQDestination.NETEASE_MESSAGE),
 
+    /**
+     * 短信
+     */
     SMS_MESSAGE_HANDLER(MQDestination.SMS_MESSAGE),
+    /**
+     * 小程序模板消息
+     */
+    MINI_TEMPLATE_MESSAGE_HANDLER(MQDestination.MINI_TEMPLATE_MESSAGE),
+    /**
+     * 云信延迟消息（后台消息管理中，有定时推送云信消息功能）
+     */
+    NETEASE_MESSAGE_DELAY_HANDLER(MQDestination.NETEASE_MESSAGE_DELAY),
     /**
      * 订单超时未接单延时消息
      */

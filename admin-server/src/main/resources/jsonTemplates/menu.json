@@ -19,14 +19,7 @@
           "path": "",
           "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
-      	},
-        {
-          "id": "1_2",
-          "menuName": "商品提报审核",
-          "path": "",
-          "configKey": "/template/module/store/store_submitProduct_list.json",
-          "permission": ""
-        }
+      	}
       ]
     },
     {
@@ -167,65 +160,43 @@
       "children": [
         {
           "id": "9_1",
-          "menuName": "优惠券坎级管理",
+          "menuName": "出资方规则管理",
           "path": "",
+          "configKey": "",
           "permission": "",
           "children": [
             {
               "id": "9_1_1",
-              "menuName": "坎级规则添加",
-              "path": "/promotion/candyruleAdd",
+              "menuName": "出资方规则添加",
+              "path": "/contributiveRule/index",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_1_2",
-              "menuName": "坎级规则列表",
+              "menuName": "出资方规则列表",
               "path": "",
-              "configKey": "/template/module/promotion/coupon_grade_list.json",
+              "configKey": "/template/module/promotion/coupon_investor_list.json",
               "permission": ""
             }
           ]
         },
         {
           "id": "9_2",
-          "menuName": "优惠券模板管理",
-          "path": "",
-          "permission": "",
-          "children": [
-            {
-              "id": "9_2_1",
-              "menuName": "模版列表",
-              "path": "",
-              "configKey": "/template/module/promotion/coupon_templete_list.json",
-              "permission": ""
-            },
-            {
-              "id": "9_2_2",
-              "menuName": "模版新增",
-              "path": "/promotion/addtemplate",
-              "configKey":"",
-              "permission": ""
-            }
-
-          ]
-        },
-        {
-          "id": "9_3",
           "menuName": "适用对象规则管理",
           "path": "",
           "configKey": "",
           "permission": "",
           "children": [
             {
-              "id": "9_3_1",
-              "menuName": "适用对象规则新增",
+              "id": "9_2_1",
+              "menuName": "适用对象规则添加",
               "path": "/appliyObjectRule/index",
               "configKey":"",
               "permission": ""
             },
             {
-              "id": "9_3_2",
+              "id": "9_2_2",
               "menuName": "适用对象规则列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_apply_list.json",
@@ -234,26 +205,48 @@
           ]
         },
         {
-          "id": "9_4",
-          "menuName": "出资方规则管理",
+          "id": "9_3",
+          "menuName": "优惠券坎级管理",
           "path": "",
-          "configKey": "",
           "permission": "",
           "children": [
             {
-              "id": "9_4_1",
-              "menuName": "出资方规则添加",
-              "path": "/contributiveRule/index",
+              "id": "9_3_1",
+              "menuName": "坎级规则添加",
+              "path": "/promotion/candyruleAdd",
               "configKey":"",
               "permission": ""
             },
             {
-              "id": "9_4_2",
-              "menuName": "出资方规则列表",
+              "id": "9_3_2",
+              "menuName": "坎级规则列表",
               "path": "",
-              "configKey": "/template/module/promotion/coupon_investor_list.json",
+              "configKey": "/template/module/promotion/coupon_grade_list.json",
               "permission": ""
             }
+          ]
+        },
+        {
+          "id": "9_4",
+          "menuName": "优惠券模板管理",
+          "path": "",
+          "permission": "",
+          "children": [
+            {
+              "id": "9_4_1",
+              "menuName": "模版列表",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_templete_list.json",
+              "permission": ""
+            },
+            {
+              "id": "9_4_2",
+              "menuName": "模版新增",
+              "path": "/promotion/addtemplate",
+              "configKey":"",
+              "permission": ""
+            }
+
           ]
         },
         {

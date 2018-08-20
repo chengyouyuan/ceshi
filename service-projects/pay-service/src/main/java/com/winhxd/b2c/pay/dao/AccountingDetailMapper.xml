@@ -143,11 +143,19 @@
     where order_no = #{orderNo}
   </update>
 
+  <update id="updateAccountingDetailServiceFeeByThirdParty">
+    update pay_accounting_detail set
+      detail_money = {detailMoney}
+    where detail_type = 2
+    and order_no = #{orderNo}
+  </update>
+
   <update id="updateAccountingDetailVerifiedByThirdParty">
     update pay_accounting_detail set
       third_party_verify_status = 1,
       third_party_verify_time = now()
-    where order_no = #{orderNo}
+    where third_party_verify_status = 0
+    and order_no = #{orderNo}
   </update>
 
   <insert id="insertVerifyHistory" useGeneratedKeys="true" keyProperty="id">
@@ -159,14 +167,13 @@
   </insert>
 
   <update id="updateAccountingDetailVerifyStatusBySummary">
-    update d set
+    update pay_accounting_detail d, pay_verify_history h set
       d.verify_status = h.verify_status,
       d.verify_code = h.verify_code,
       d.verify_time = (case when h.verify_status = 1 then h.operated_time else null end),
       d.operated_time = h.operated_time,
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
-    from pay_accounting_detail d, pay_verify_history h
     where d.verify_status &lt;&gt; 1
     and d.third_party_verify_status = 1
     and d.order_complete_status = 1
@@ -176,14 +183,13 @@
   </update>
 
   <update id="updateAccountingDetailVerifyStatusByDetailId">
-    update d set
+    update pay_accounting_detail d, pay_verify_history h set
       d.verify_status = h.verify_status,
       d.verify_code = h.verify_code,
       d.verify_time = h.operated_time,
       d.operated_time = h.operated_time,
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
-    from pay_accounting_detail d, pay_verify_history h
     where d.verify_status &lt;&gt; 1
     and d.third_party_verify_status = 1
     and d.order_complete_status = 1

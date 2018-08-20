@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface AccountingDetailMapper {
      * @param accountingDetail
      * @return
      */
-    AccountingDetail insertAccountingDetail(AccountingDetail accountingDetail);
+    int insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
      * 按指定ID查询的费用明细
@@ -72,6 +73,15 @@ public interface AccountingDetailMapper {
     int updateAccountingDetailCompletedByComplete(@Param("orderNo") String orderNo, @Param("recordedTime") Date recordedTime);
 
     /**
+     * 按订单更新与第三方平台订单服务费
+     *
+     * @param orderNo
+     * @param detailMoney
+     * @return
+     */
+    int updateAccountingDetailServiceFeeByThirdParty(@Param("orderNo") String orderNo, @Param("detailMoney") BigDecimal detailMoney);
+
+    /**
      * 按订单更新费用明细与第三方平台结算状态为已结算
      *
      * @param orderNo
@@ -85,7 +95,7 @@ public interface AccountingDetailMapper {
      * @param verifyHistory
      * @return
      */
-    VerifyHistory insertVerifyHistory(VerifyHistory verifyHistory);
+    int insertVerifyHistory(VerifyHistory verifyHistory);
 
     /**
      * 按门店结算汇总更新费用明细状态

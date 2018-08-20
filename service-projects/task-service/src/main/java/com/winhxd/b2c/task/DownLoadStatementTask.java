@@ -2,13 +2,16 @@ package com.winhxd.b2c.task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
 
 @Component
@@ -47,9 +50,8 @@ public class DownLoadStatementTask {
     public void downLoadStatement() {
         System.out.println("我每天上午10点开始执行");
         try {
-//        	ApiCondition condition = new ApiCondition();
-        	String statementResult = downLoadStatementClient.downloadStatement().getData();
-        	String fundFlowResult = downLoadStatementClient.downloadFundFlow().getData();
+        	String statementResult = downLoadStatementClient.downloadStatement(null).getData();
+        	String fundFlowResult = downLoadStatementClient.downloadFundFlow(null).getData();
             //定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
             if ("SUCCESS".equals(statementResult)) {
                 System.out.println("对账单下载完成！");
@@ -63,7 +65,40 @@ public class DownLoadStatementTask {
         }
     }
     
-    
-    
-    
+    @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
+    public void ReDownLoadStatement() {
+    	System.out.println("啥时候下载之前失败过的账单呢");
+    	try {
+    		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+    		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+			List<PayStatementDownloadRecord> list = downLoadStatementClient.findDownloadRecord(record).getData();
+			if (CollectionUtils.isNotEmpty(list)) {
+				for (int i = 0; i < list.size(); i++) {
+					Date billDate = list.get(i).getBillDate();
+					String statementResult = "";
+					String fundFlowResult = "";
+					if (PayStatementDownloadRecord.BillType.STATEMENT.getCode() == list.get(i).getBillType()) {
+						
+						statementResult = downLoadStatementClient.downloadStatement(billDate).getData();
+						
+					}else if(PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode() == list.get(i).getBillType()){
+						
+						fundFlowResult = downLoadStatementClient.downloadFundFlow(billDate).getData();
+						
+					}
+					//定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
+					if ("SUCCESS".equals(statementResult)) {
+						logger.info("{}对账单下载完成！", billDate);
+					}
+					if ("SUCCESS".equals(fundFlowResult)) {
+						logger.info("{}资金账单下载完成！", billDate);
+					}
+					
+				}
+			}
+    	} catch (Exception ex) {
+    		logger.error("对账单下载失败！()", ex.toString());
+    	}
+    }
+
 }

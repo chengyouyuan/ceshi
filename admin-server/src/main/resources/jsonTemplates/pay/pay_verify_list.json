@@ -1,5 +1,6 @@
 {
   "meta": {
+    "code": "verifyList",
     "ajaxType": "get",
     "path": "/pay/verify/verifyList",
     "type": "report",
@@ -23,9 +24,13 @@
         "name": "核销",
         "event": {
           "type": "batch",
-          "params": [ "storeId", "lastRecordedTime" ],
-          "ajaxType": "get",
-          "path": "/pay/verify/verifyBySummary"
+          "ajaxType": "post",
+          "params": [ "storeId", "lastRecordedTime", "verifyStatus" ],
+          "path": "/pay/verify/verifyBySummary",
+          "confirm": {
+            "title": "提示",
+            "message": "确认继续操作吗"
+          }
         }
       }
     ],
@@ -43,7 +48,7 @@
         "title": "门店名称"
       },
       {
-        "name": "verifyStatus",
+        "name": "verifyStatusName",
         "title": "结算状态"
       },
       {

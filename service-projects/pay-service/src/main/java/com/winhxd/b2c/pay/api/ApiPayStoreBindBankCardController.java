@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.api;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,12 +16,15 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
 
@@ -43,15 +47,15 @@ public class ApiPayStoreBindBankCardController {
 	private PayStoreBankCardServiceImpl storeBankCardService;
 	
 	@Autowired
-	private MessageServiceClient messageServiceClient;
+	private PayStoreWalletServiceImpl payStoreWalletMapperService;
 	
 	@Autowired
-	private PayStoreWalletServiceImpl payStoreWalletMapperService;
+	MessageSendUtils messageSendUtils;
 	
 	@Autowired
 	private Cache cache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 2*60;// 验证码有效时间
 
 	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -111,7 +115,11 @@ public class ApiPayStoreBindBankCardController {
 	
 	@ApiOperation(value = "B端绑定微信账户", notes = "B端绑定微信账户")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+    		@ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
+    		@ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
+    		@ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
+    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号") 
     })
     @RequestMapping(value = "/6110/v1/bindWeixiAccount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindWeixiAccount(@RequestBody PayStoreWalletCondition condition) {
@@ -153,18 +161,26 @@ public class ApiPayStoreBindBankCardController {
 		
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
-		//生成验证码 TODO-----方便测试，暂时注调
-		/*if(modileVerifyCode != null){
+		//生成验证码
+		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
 			result.setCode(BusinessCode.CODE_610018);
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
-		}*///----------测试完成，放开代码
+		} 
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
-//TODO	--方便测试，暂不过期 	cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
-		messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
+		cache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
+		if(StringUtils.isEmpty(condition.getMobile())){
+			result.setCode(BusinessCode.CODE_610015);
+			LOGGER.info("手机号为空");
+		}else{
+			SMSCondition sMSCondition = new SMSCondition();
+			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
+			sMSCondition.setMobile(condition.getMobile());
+			messageSendUtils.sendSMS(sMSCondition);
+		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
 	}

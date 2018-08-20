@@ -2,6 +2,8 @@ package com.winhxd.b2c.admin.module.promotion.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
+import com.winhxd.b2c.admin.utils.ExcelVerifyResult;
+import com.winhxd.b2c.admin.utils.ImportResult;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -9,9 +11,6 @@ import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelVerifyResult;
-import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -19,6 +18,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +117,7 @@ public class CouponController {
 	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
 		ImportResult<CouponActivityImportStoreVO> importResult = null;
 		try {
-			importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
 		} catch (Exception e) {
 			throw new BusinessException(BusinessCode.CODE_1001, e);
 		}
@@ -290,7 +290,7 @@ public class CouponController {
 		/**
 		 * 参数校验还未完善
 		 */
-		if(condition==null || condition.getTitle()==null || condition.getInvestorId()==null
+		if(condition==null || StringUtils.isBlank(condition.getTitle()) || condition.getInvestorId()==null
 		   || condition.getGradeId()==null || condition.getApplyRuleId()==null
 		   || condition.getPayType()==null || condition.getCalType()==null	){
            throw new BusinessException(BusinessCode.CODE_500010,"优惠券模板必填参数错误");
@@ -375,8 +375,11 @@ public class CouponController {
 		/**
 		 *  校验参数
 		 */
+		if(detailData==null){
+			throw new BusinessException(BusinessCode.CODE_500010,"参数为空");
+		}
 		 CouponInvestorCondition condition = new CouponInvestorCondition();
-         if(detailData.get("name")==null || detailData.get("listDetail")==null){
+         if(detailData.get("name")==null || "".equals(detailData.get("name"))|| detailData.get("listDetail")==null || "".equals(detailData.get("listDetail"))){
 			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
 		 }
 		 String name = detailData.get("name").toString();
@@ -460,7 +463,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	/**
 	 * 参数校验
 	 */
-	if(couponGradeCondition.getName()==null || couponGradeCondition.getType()==null ||
+	if(StringUtils.isBlank(couponGradeCondition.getName())|| couponGradeCondition.getType()==null ||
 			couponGradeCondition.getReducedAmt()==null || couponGradeCondition.getReducedType()==null){
             throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
 	}
@@ -542,7 +545,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 		/**
 		 * 参数校验
 		 */
-		if(condition==null || condition.getName()==null || condition.getApplyRuleType()==null){
+		if(condition==null || StringUtils.isBlank(condition.getName()) || condition.getApplyRuleType()==null){
 			throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
 		}
 		if(condition.getApplyRuleType()!=null){

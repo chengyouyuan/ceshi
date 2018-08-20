@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -114,12 +115,12 @@ public class WXPayReport {
     private static final int DEFAULT_READ_TIMEOUT_MS = 8*1000;
 
     private LinkedBlockingQueue<String> reportMsgQueue = null;
-    private WXPayConfig config;
+    private PayConfig config;
     private ExecutorService executorService;
 
     private volatile static WXPayReport INSTANCE;
 
-    private WXPayReport(final WXPayConfig config) {
+    private WXPayReport(final PayConfig config) {
         this.config = config;
         reportMsgQueue = new LinkedBlockingQueue<String>(config.getReportQueueMaxSize());
 
@@ -181,7 +182,7 @@ public class WXPayReport {
      * @param config
      * @return
      */
-    public static WXPayReport getInstance(WXPayConfig config) {
+    public static WXPayReport getInstance(PayConfig config) {
         if (INSTANCE == null) {
             synchronized (WXPayReport.class) {
                 if (INSTANCE == null) {

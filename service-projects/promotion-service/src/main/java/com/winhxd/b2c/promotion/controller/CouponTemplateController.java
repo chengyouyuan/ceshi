@@ -32,7 +32,6 @@ import java.util.List;
  * @Description
  **/
 @RestController
-@Api(tags = "CouponTemplateService")
 public class CouponTemplateController implements CouponTemplateServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(CouponTemplateController.class);
      @Autowired
@@ -46,7 +45,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 10:45
      */
-    @ApiOperation(value = "优惠换模板添加", notes = "优惠换模板添加")
     @Override
     public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         /**
@@ -73,7 +71,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 17:53
      */
-    @ApiOperation(value = "优惠券模板列表多条件分页查询", notes = "优惠券模板列表多条件分页查询")
     @Override
     public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:" + JsonUtil.toJSONString(couponTemplateCondition));
@@ -89,7 +86,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 20:39
      */
-    @ApiOperation(value = "优惠券模板设为无效", notes = "优惠券模板设为无效")
     @Override
     public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult responseResult = new ResponseResult();
@@ -111,7 +107,6 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      *@User  wl
      *@Date   2018/8/6 20:45
      */
-    @ApiOperation(value = "优惠券模板详情查看", notes = "优惠券模板详情查看")
     @Override
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id) {
         ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);

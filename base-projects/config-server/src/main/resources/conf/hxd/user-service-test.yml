@@ -5,6 +5,7 @@ spring:
 #    serviceId: zipkin-server
 
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://192.168.60.3:1433;DatabaseName=CRM_RETAIL_UAT
     username: Retail_Uat

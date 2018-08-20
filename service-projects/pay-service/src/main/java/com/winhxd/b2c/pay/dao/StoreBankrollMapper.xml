@@ -17,7 +17,9 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, total_moeny, presented_money, presented_frozen_money, settlement_settled_money, already_presented_money,
+     id, store_id,
+     if(isnull(total_moeny),0.00,total_moeny) as total_moeny,
+     presented_money, presented_frozen_money, settlement_settled_money, already_presented_money,
     created_by, created_by_name, created, updated_by, updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

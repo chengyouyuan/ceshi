@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 
@@ -23,9 +23,23 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
 public interface PayServiceClient {
 	
-	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
+//	/**
+//	 * @author liuhanning
+//	 * @date  2018年8月20日 下午1:19:20
+//	 * @Description 退款
+//	 * @param condition
+//	 * @return
+//	 */
+//	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
 	
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月20日 下午1:19:26
+	 * @Description 支付
+	 * @param condition
+	 * @return
+	 */
 	@PostMapping(value = "/pay/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PayPreOrderVO> orderPay(@RequestBody PayPreOrderCondition condition);
 	
@@ -34,6 +48,16 @@ public interface PayServiceClient {
 	
 	@PostMapping(value = "/pay/6004/v1/transfersToBank", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Integer> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition);
+	
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月20日 下午1:19:39
+	 * @Description 订单是否支付过
+	 * @param condition
+	 * @return
+	 */
+	@PostMapping(value = "/pay/6016/v1/orderIsPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<Boolean> orderIsPay(@RequestBody OrderIsPayCondition condition);
 	
 }
 class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayServiceClient>{
@@ -52,27 +76,33 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 		return new PayServiceClientFallback(throwable);
 	}
 
-	@Override
-	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
-		logger.error("PayServiceClientFallback -> orderRefund", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-	}
+//	@Override
+//	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
+//		logger.error("PayServiceClientFallback -> orderRefund{}", throwable);
+//        return new ResponseResult<>(BusinessCode.CODE_1001);
+//	}
 
 	@Override
 	public ResponseResult<PayPreOrderVO> orderPay(PayPreOrderCondition condition) {
-		logger.error("PayServiceClientFallback -> orderPay", throwable);
+		logger.error("PayServiceClientFallback -> orderPay{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
 	@Override
 	public ResponseResult<Integer> transfersToChange(PayTransfersToWxChangeCondition condition) {
-		logger.error("PayServiceClientFallback -> transfersToChange", throwable);
+		logger.error("PayServiceClientFallback -> transfersToChange{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 
 	@Override
 	public ResponseResult<Integer> transfersToBank(PayTransfersToWxBankCondition condition) {
-		logger.error("PayServiceClientFallback -> transfersToBank", throwable);
+		logger.error("PayServiceClientFallback -> transfersToBank{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<Boolean> orderIsPay(OrderIsPayCondition condition) {
+		logger.error("PayServiceClientFallback -> orderIsPay{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 

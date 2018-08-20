@@ -78,7 +78,7 @@
         "title": "居委会/村"
       }
     ],
-    "returnDisplay": "province",
+    "returnDisplay": "fullName",
     "returnValue": "regionCode"
   }
 }

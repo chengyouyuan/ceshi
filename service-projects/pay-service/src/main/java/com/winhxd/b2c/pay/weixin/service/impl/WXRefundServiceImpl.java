@@ -7,14 +7,13 @@ import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.*;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
-import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.ibatis.javassist.bytecode.stackmap.BasicBlock;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -39,8 +38,6 @@ import java.util.TreeMap;
 @Service
 public class WXRefundServiceImpl implements WXRefundService {
 
-    @Autowired
-    WXPay wxPay;
     @Autowired
     WXPayApi wxPayApi;
 
@@ -204,7 +201,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         model.setSign(dto.getSign());
         model.setSignType(WXPayConstants.MD5);
         model.setTransactionId(dto.getTransactionId());
-        model.setOutTradeNo(dto.getOutTradeNo());
+        model.setOutTradeNo(condition.getOutTradeNo());
         model.setOutRefundNo(dto.getOutRefundNo());
         model.setTotalFee(dto.getTotalFee());
         model.setTotalAmount(condition.getTotalAmount());
@@ -292,9 +289,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         PayRefundDTO payRefundDTO = new PayRefundDTO();
         payRefundDTO.setOutRefundNo(payRefund.getOutRefundNo());
 
-        //bean转map
-        Map<String, String> mapIn = BeanAndXmlUtil.beanToSortedMap(payRefundDTO);
-        Map<String, String> mapOut = wxPay.refundQuery(mapIn);
+        Map<String, String> mapOut = wxPayApi.refundQuery(payRefundDTO);
 
         //获取查询到的信息
         String returnCode = mapOut.get("return_code");

@@ -5,11 +5,16 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.MessageBatchPushCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgDelayCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
 import com.winhxd.b2c.common.domain.message.vo.MessageBatchPushVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.message.dao.MessageBatchPushMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
@@ -48,6 +53,9 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
 
     @Autowired
     NeteaseUtils neteaseUtils;
+
+    @Autowired
+    MessageSendUtils messageSendUtils;
 
     @Override
     public PagedList<MessageBatchPushVO> findMessageBatchPushPageInfo(MessageBatchPushCondition condition) {
@@ -101,17 +109,37 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         for (MessageNeteaseAccount account: messageNeteaseAccounts) {
             accids.add(account.getAccid());
         }
+        //发送延迟消息
+        Date timingPush = messageBatchPush.getTimingPush();
+        int delayMilli = 0;
+        if (timingPush.compareTo(new Date()) > 0){
+            delayMilli = (int)(timingPush.getTime() - System.currentTimeMillis());
+        }
+        NeteaseMsgDelayCondition neteaseMsgDelayCondition = new NeteaseMsgDelayCondition();
+        neteaseMsgDelayCondition.setAccids(accids);
+        neteaseMsgDelayCondition.setMsgContent(messageBatchPush.getMsgContent());
+        messageSendUtils.sendNeteaseMsgDelay(neteaseMsgDelayCondition,delayMilli);
+        messageBatchPush.setLastPushTime(new Date());
+        messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
+        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
+    }
+
+    @StringMessageListener(MQHandler.NETEASE_MESSAGE_DELAY_HANDLER)
+    public void batchSendNeteaseMsg(String neteaseMsgDelayConditionJson){
+        LOGGER.info("消息服务->批量发送云信消息，MessageBatchPushServiceImpl.batchSendNeteaseMsg(),neteaseMsgDelayConditionJson={}",neteaseMsgDelayConditionJson);
+        NeteaseMsgDelayCondition neteaseMsgDelayCondition = JsonUtil.parseJSONObject(neteaseMsgDelayConditionJson,NeteaseMsgDelayCondition.class);
+        List<String> accids = neteaseMsgDelayCondition.getAccids();
+        String msgContent = neteaseMsgDelayCondition.getMsgContent();
         String[] accidsArr = accids.toArray(new String[accids.size()]);
         //给所有门店批量推送云信消息
-        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Batch(accidsArr,messageBatchPush.getMsgContent());
+        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Batch(accidsArr,msgContent);
         if (SUCCESS_CODE.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
             //云信消息发送成功
-            saveNeteaseMsgHistory(accids, messageBatchPush.getMsgContent());
+            saveNeteaseMsgHistory(accids, msgContent);
         } else {
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
             throw new BusinessException(BusinessCode.CODE_703503);
         }
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
     }
 
     /**
@@ -138,5 +166,4 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         }
         messageNeteaseHistoryMapper.insertHistories(list);
     }
-
 }

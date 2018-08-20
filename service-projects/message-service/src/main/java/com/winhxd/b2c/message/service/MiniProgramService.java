@@ -2,7 +2,6 @@ package com.winhxd.b2c.message.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
-import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 
 /**
@@ -17,12 +16,6 @@ public interface MiniProgramService {
      * @return
      */
     ResponseResult<MiniOpenId> getMiniOpenId(String code);
-
-    /**
-     * 给C端用户推送小程序模板消息
-     * @param miniMsgCondition
-     */
-    ResponseResult<Void> sendMiniMsg(MiniMsgCondition miniMsgCondition);
 
     /**
      * 保存formid

@@ -57,6 +57,7 @@ public class WXPayApiImpl implements WXPayApi {
 		}
         //统一下单，respXml为响应参数
         String respXml = this.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        logger.info("预支付时，响应参数：{}", respXml);
         //响应参数验证，转为map
         Map<String, String> respData = this.processResponseXml(respXml);
         PayPreOrderResponseDTO payPreOrderResponseDTO = null;
@@ -194,6 +195,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
             //bean转map
 		    Map<String, String> reqData = XmlUtil.bean2MapUnderline2Hump(obj);
+		    WXPayUtil.getLogger().warn("-----签名数据AAA------"+reqData);
         	//签名添加调用微信API入参
         	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {

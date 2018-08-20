@@ -97,6 +97,9 @@ public class XmlUtil {
     		fieldName = underlineToHump(fieldName);
     		String fieldValue = entry.getValue();
     		Field field = getField(c, fieldName);
+    		if(field == null) {
+    			continue;
+    		}
     		Class<?> fieldTypeClass = field.getType();
     		//类型转换
     		Object value = convertValType(fieldValue, fieldTypeClass);

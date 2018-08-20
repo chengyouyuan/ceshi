@@ -557,8 +557,11 @@
         <if test="condition.orderStatus != null">
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
         </if>
-        <if test="condition.regionCode != null and condition.regionCode !=''">
-            and region_code = #{condition.regionCode,jdbcType=VARCHAR}
+        <if test="condition.regionCode != null and condition.regionCode.length > 0">
+            and region_code in 
+            <foreach item="item" index="index" collection="condition.regionCode" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="condition.orderNo != null and condition.orderNo !=''">
             and order_no like #{orderNo}

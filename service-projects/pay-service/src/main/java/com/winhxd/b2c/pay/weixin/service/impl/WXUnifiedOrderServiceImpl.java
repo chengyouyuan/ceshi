@@ -176,8 +176,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getResultCode())) {
 			logger.error("上次支付{}失败，再次发起支付", bill.getOutTradeNo());
 			//更新上次支付失败记录
-			bill.setStatus(BillStatusEnum.PAID.getCode());
-			payBillMapper.updateByPrimaryKeySelective(bill);
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
 			//重新发起支付
 			return this.toPay(condition);
 		}

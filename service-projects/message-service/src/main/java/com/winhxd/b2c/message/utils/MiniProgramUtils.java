@@ -146,8 +146,8 @@ public class MiniProgramUtils {
         } catch (IOException e) {
             LOGGER.error("MiniProgramUtils ->getAccessToken,小程序获取AccessToken出错，异常信息为={}",e);
         } finally {
-            return token;
         }
+        return token;
     }
 
     public String sendMiniMsg(String msgJson) throws IOException{
@@ -177,8 +177,8 @@ public class MiniProgramUtils {
             if (response != null) {
                 response.close();
             }
-            return content;
         }
+        return content;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.winhxd.b2c.common.domain.order.util;
+package com.winhxd.b2c.order.util;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
@@ -19,8 +18,7 @@ import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.message.MessageServiceClient;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 
 public class OrderUtil {
     
@@ -109,7 +107,7 @@ public class OrderUtil {
      * @param messageServiceClient
      * @param storeId
      */
-    public static void newOrderSendMsg2Store(MessageServiceClient messageServiceClient, Long storeId){
+    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId){
         try {
             // 发送云信
             String storeMsg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
@@ -121,9 +119,7 @@ public class OrderUtil {
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, audioType, treeCode);
-            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
-                throw new BusinessException(BusinessCode.CODE_1001);
-            }
+            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("客户下单给门店:storeId={},发送消息：{} 失败", storeId, OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE);
             logger.error("客户下单给门店发送消息失败：", e);
@@ -139,7 +135,7 @@ public class OrderUtil {
      * @param pickupType
      * @param openid
      */
-    public static void orderNeedPickupSendMsg2Customer(MessageServiceClient messageServiceClient, Date pickupDateTime, short pickupType, String openid){
+    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal){
         try {
             pickupDateTime = pickupDateTime == null ? new Date() : pickupDateTime;
             String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
@@ -149,12 +145,14 @@ public class OrderUtil {
             String page = null;
             MiniTemplateData data = new MiniTemplateData();
             data.setKeyName("keyword1");
+            data.setValue(prodTitles);
+            data.setKeyName("keyword2");
+            data.setValue(orderTotal);
+            data.setKeyName("keyword3");
             data.setValue(customerMsg);
             short msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
             MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
-            if (messageServiceClient.sendMiniMsg(miniMsgCondition).getCode() != BusinessCode.CODE_OK) {
-                throw new BusinessException(BusinessCode.CODE_1001);
-            }
+            messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},提货发送消息失败", openid);
             logger.error("提醒用户提货发送消息失败：", e);
@@ -169,7 +167,7 @@ public class OrderUtil {
      * @param last4MobileNums
      * @param storeId
      */
-    public static void orderNeedPickupSendMsg2Store(MessageServiceClient messageServiceClient, String last4MobileNums, Long storeId){
+    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId){
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             // 发送云信
@@ -181,9 +179,7 @@ public class OrderUtil {
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, audioType, treeCode);
-            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
-                throw new BusinessException(BusinessCode.CODE_1001);
-            }
+            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
             logger.error("订单待提货给门店发送消息失败：", e);

@@ -94,7 +94,7 @@ public interface OrderInfoMapper {
      * @param orderNo 订单编号
      * @return
      */
-    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryProductInfo=true, queryStoreInfo=true)
+    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
     OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
 
     /**

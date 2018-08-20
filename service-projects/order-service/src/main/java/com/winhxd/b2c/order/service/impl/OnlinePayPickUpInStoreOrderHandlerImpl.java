@@ -4,12 +4,10 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,31 +16,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.constant.OrderOperateTime;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
-import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
-import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.util.OrderUtil;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
-import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.event.EventMessageSender;
 import com.winhxd.b2c.common.mq.event.EventType;
 import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderQueryService;
+import com.winhxd.b2c.order.util.OrderUtil;
 
 /**
  * 在线支付自提订单处理接口
@@ -79,7 +73,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
     private Cache cache;
     
     @Resource
-    private MessageServiceClient messageServiceClient;
+    private MessageSendUtils messageServiceClient;
     
     @Autowired
     private EventMessageSender eventMessageSender;
@@ -182,7 +176,10 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_PICKUP_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
         // 发送消息给用户
-        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid());
+        OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
+        String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
+        String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal);
     }
     
 

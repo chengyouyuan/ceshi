@@ -793,10 +793,10 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             if (orderInfo.getPayStatus() == PayStatusEnum.PAID.getStatusCode()) {
                 //退款
-                orderApplyRefund(orderInfo, "超时未接单退款", null, "sys");
+                orderApplyRefund(orderInfo, "超时未接单退款", orderInfo.getCreatedBy(), "sys");
             } else {
                 //取消
-                orderCancel(orderInfo, "超时未接单取消", null, "sys", 5);
+                orderCancel(orderInfo, "超时未接单取消", orderInfo.getCreatedBy(), "sys", 5);
             }
 
             registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnerable(orderInfo), null);

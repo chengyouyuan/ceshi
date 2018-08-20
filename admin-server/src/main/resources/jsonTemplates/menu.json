@@ -116,168 +116,6 @@
       ]
     },
     {
-      "id": "6",
-      "menuName": "促销管理",
-      "path": "",
-      "configKey": "",
-      "permission": "",
-      "children": [
-        {
-          "id": "6_1",
-          "menuName": "优惠券坎级管理",
-          "path": "",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_1_1",
-              "menuName": "坎级规则添加",
-              "path": "/promotion/candyruleAdd",
-              "configKey": ""
-            },
-            {
-              "id": "6_1_2",
-              "menuName": "坎级规则列表",
-              "path": "",
-              "configKey": ""
-            }
-          ]
-        },{
-          "id": "6_2",
-          "menuName": "优惠券模板管理",
-          "path": "",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_2_1",
-              "menuName": "新建模版",
-              "path": "/promotion/addtemplate",
-              "configKey": ""
-            },
-            {
-              "id": "6_2_2",
-              "menuName": "模板列表",
-              "path": "/config/%2Freport%2Fmeta%2Ftemplate_management",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_3",
-          "menuName": "适用对象规则管理",
-          "path": "",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_3_1",
-              "menuName": "适用对象规则新增",
-              "path": "/appliyObjectRule/index",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_4",
-          "menuName": "优惠券出资方规则",
-          "path": "",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_4_1",
-              "menuName": "出资方规则添加",
-              "path": "/contributiveRule/index",
-              "configKey": ""
-            },
-            {
-              "id": "6_4_2",
-              "menuName": "出资方规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_5",
-          "menuName": "优惠券优惠方式规则",
-          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_5_1",
-              "menuName": "【优惠券】优惠方式规则",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            },
-            {
-              "id": "6_5_2",
-              "menuName": "【优惠券】优惠方式规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_6",
-          "menuName": "优惠券领券管理",
-          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_6_1",
-              "menuName": "领券管理",
-              "path": "/couponReceive/index",
-              "configKey": ""
-            },
-            {
-              "id": "6_6_2",
-              "menuName": "领券管理列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_7",
-          "menuName": "优惠券推券管理",
-          "path": "/config/%2Freport%2Fmeta%2Fordertime_setting",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_7_1",
-              "menuName": "推券管理",
-              "path": "/promotion/pushvolume",
-              "configKey": ""
-            },
-            {
-              "id": "6_7_2",
-              "menuName": "推券管理列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            }
-          ]
-        },
-        {
-          "id": "6_8",
-          "menuName": "优惠券类型规则",
-          "path": "/config/%2Freport%2Fmeta%2Fmodify_password",
-          "configKey": "",
-          "children": [
-            {
-              "id": "6_8_1",
-              "menuName": "【优惠券】类型规则",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            },
-            {
-              "id": "6_8_2",
-              "menuName": "【优惠券】类型规则列表",
-              "path": "/config/%2Freport%2Fmeta%2Fauthority_management",
-              "configKey": ""
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "7",
       "menuName": "消息管理",
       "path": "",
@@ -323,26 +161,26 @@
     },
     {
       "id": "9",
-      "menuName": "促销管理(new)",
+      "menuName": "促销管理",
       "path": "",
       "permission": "",
       "children": [
         {
           "id": "9_1",
-          "menuName": "优惠券坎级管理(new)",
+          "menuName": "优惠券坎级管理",
           "path": "",
           "permission": "",
           "children": [
             {
               "id": "9_1_1",
-              "menuName": "坎级规则添加(new)",
+              "menuName": "坎级规则添加",
               "path": "/promotion/candyruleAdd",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_1_2",
-              "menuName": "坎级规则列表(new)",
+              "menuName": "坎级规则列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_grade_list.json",
               "permission": ""
@@ -351,20 +189,20 @@
         },
         {
           "id": "9_2",
-          "menuName": "优惠券模板管理(new)",
+          "menuName": "优惠券模板管理",
           "path": "",
           "permission": "",
           "children": [
             {
               "id": "9_2_1",
-              "menuName": "模版列表(new)",
+              "menuName": "模版列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_templete_list.json",
               "permission": ""
             },
             {
               "id": "9_2_2",
-              "menuName": "模版新增(new)",
+              "menuName": "模版新增",
               "path": "/promotion/addtemplate",
               "configKey":"",
               "permission": ""
@@ -374,21 +212,21 @@
         },
         {
           "id": "9_3",
-          "menuName": "适用对象规则管理(new)",
+          "menuName": "适用对象规则管理",
           "path": "",
           "configKey": "",
           "permission": "",
           "children": [
             {
               "id": "9_3_1",
-              "menuName": "适用对象规则新增(new)",
+              "menuName": "适用对象规则新增",
               "path": "appliyObjectRule/index",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_3_2",
-              "menuName": "适用对象规则列表(new)",
+              "menuName": "适用对象规则列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_apply_list.json",
               "permission": ""
@@ -397,21 +235,21 @@
         },
         {
           "id": "9_4",
-          "menuName": "出资方规则管理(new)",
+          "menuName": "出资方规则管理",
           "path": "",
           "configKey": "",
           "permission": "",
           "children": [
             {
               "id": "9_4_1",
-              "menuName": "出资方规则添加(new)",
+              "menuName": "出资方规则添加",
               "path": "/contributiveRule/index",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_4_2",
-              "menuName": "出资方规则列表(new)",
+              "menuName": "出资方规则列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_investor_list.json",
               "permission": ""
@@ -420,21 +258,21 @@
         },
         {
           "id": "9_5",
-          "menuName": "优惠券领券管理(new)",
+          "menuName": "优惠券领券管理",
           "path": "",
           "configKey": "",
           "permission": "",
           "children": [
             {
               "id": "9_5_1",
-              "menuName": "优惠券领券管理(new)",
+              "menuName": "优惠券领券管理",
               "path": "/couponReceive/index",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_5_2",
-              "menuName": "领券管理列表(new)",
+              "menuName": "领券管理列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_activity_pull_list.json",
               "permission": ""
@@ -443,21 +281,21 @@
         },
         {
           "id": "9_6",
-          "menuName": "优惠券推券管理(new)",
+          "menuName": "优惠券推券管理",
           "path": "",
           "configKey": "",
           "permission": "",
           "children": [
             {
               "id": "9_6_1",
-              "menuName": "优惠券推券管理(new)",
+              "menuName": "优惠券推券管理",
               "path": "/promotion/pushvolume",
               "configKey":"",
               "permission": ""
             },
             {
               "id": "9_6_2",
-              "menuName": "推券管理列表(new)",
+              "menuName": "推券管理列表",
               "path": "",
               "configKey": "/template/module/promotion/coupon_activity_push_list.json",
               "permission": ""

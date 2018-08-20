@@ -65,7 +65,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor=BusinessException.class)
 	public void batchPutawayStoreProductManage(Long storeId, Map<String, ProdOperateInfoCondition> putawayInfo,
 											   Map<String, ProductSkuVO> prodSkuInfo) {
 		if (storeId != null && putawayInfo != null && prodSkuInfo != null) {
@@ -134,7 +134,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor=BusinessException.class)
 	public void removeStoreProductManage(Long storeId, String... skuCodes) {
 		if(storeId!=null&&skuCodes!=null&&skuCodes.length>0){
 			//查询门店用户信息

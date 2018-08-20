@@ -52,6 +52,17 @@ public class CouponController {
 	@Autowired
 	private CouponApplyServiceClient couponApplyServiceClient;
 
+	Calendar cal = Calendar.getInstance();
+	String timw = cal.get(Calendar.YEAR)+""
+			+cal.get(Calendar.MONTH+1)+""
+			+cal.get(Calendar.DATE)+""
+			+cal.get(Calendar.HOUR_OF_DAY)+""
+			+cal.get(Calendar.SECOND)+"";
+
+	private   String SYDX_RULE_CODE = "WS_SYDX"+timw+"_"+(int)((Math.random()*9+1)*10000);
+	private   String KJGZ_RULE_CODE = "WS_KJGZ"+timw+"_"+(int)((Math.random()*9+1)*10000);
+	private   String CZF_RULE_CODE = "WS_CZF"+timw+"_"+(int)((Math.random()*9+1)*10000);
+
 	//=====================================优惠券活动开始=============================================================
 	/**
 	 *
@@ -109,7 +120,7 @@ public class CouponController {
 	}
     @ApiOperation("优惠券活动导出小店信息")
     @GetMapping(value = "/5051/v1/couponActivityExportStoreExcel")
-    public ResponseEntity<byte[]> couponActivityExportStoreExcel(@RequestBody CouponActivityCondition condition){
+    public ResponseEntity<byte[]> couponActivityExportStoreExcel(CouponActivityCondition condition){
         ResponseResult<PagedList<CouponActivityStoreVO>> responseResult = couponActivityServiceClient.queryStoreByActivity(condition);
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
         return ExcelUtils.exp(list, "惠小店信息");
@@ -390,8 +401,7 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		String code = getUUID();
-
+		String code = this.CZF_RULE_CODE;
 		condition.setCode(code);
 		condition.setName(name);
 		condition.setUserId(userId);
@@ -486,7 +496,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	 UserInfo userInfo = UserManager.getCurrentUser();
 	 String userId = userInfo.getId()+"";
 	 String userName = userInfo.getUsername();
-	 String code = getUUID();
+	 String code = this.KJGZ_RULE_CODE;
 	 couponGradeCondition.setCode(code);
 	 couponGradeCondition.setUserId(userId);
 	 couponGradeCondition.setUserName(userName);
@@ -564,7 +574,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		String code = getUUID();
+		String code = this.SYDX_RULE_CODE;
 		condition.setCode(code);
 		condition.setUserId(userId);
 		condition.setUserName(userName);

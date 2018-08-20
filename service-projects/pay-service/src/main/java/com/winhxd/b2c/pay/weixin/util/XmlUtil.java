@@ -84,10 +84,17 @@ public class XmlUtil {
     	if(strXML == null) {
     		return null;
     	}
-    	T bean = c.newInstance();
     	Map<String, String> map = xml2MapUnderline2Hump(strXML);
+    	
+		return map2Bean(map, c);
+    }
+    
+    public static <T> T map2Bean(Map<String, String> map,Class<T> c) throws Exception{
+    	T bean = c.newInstance();
     	for (Map.Entry<String, String> entry : map.entrySet()) {
     		String fieldName = entry.getKey();
+    		//下划线转驼峰
+    		fieldName = underlineToHump(fieldName);
     		String fieldValue = entry.getValue();
     		Field field = getField(c, fieldName);
     		Class<?> fieldTypeClass = field.getType();
@@ -351,11 +358,11 @@ public class XmlUtil {
             sb.append(fieldName.substring(0, 1).toUpperCase());
             sb.append(fieldName.substring(1));
             method = c.getMethod(sb.toString(), parameterType);
-            //找父类set方法
-            if(method == null && c.getSuperclass() != null && !c.getSuperclass().getName().equalsIgnoreCase(Object.class.getName())) {
-            	method = getSetMethod(c.getSuperclass(), fieldName);
-            }
 		} catch (NoSuchFieldException | SecurityException | NoSuchMethodException e) {}
+        //找父类set方法
+        if(method == null && c.getSuperclass() != null && !c.getSuperclass().getName().equalsIgnoreCase(Object.class.getName())) {
+            method = getSetMethod(c.getSuperclass(), fieldName);
+        }
         return method;
     }
     

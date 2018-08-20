@@ -72,6 +72,10 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("修改时间")
     @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date updated;
+    @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败")
+    private Short callbackStatus;
+    @ApiModelProperty("原因")
+    private String callbackReason;
 
     public Long getId() {
         return id;
@@ -252,5 +256,21 @@ public class PayWithdrawalsVO {
             auditStatusName = "审核不通过";
         }
         return auditStatusName;
+    }
+
+    public Short getCallbackStatus() {
+        return callbackStatus;
+    }
+
+    public void setCallbackStatus(Short callbackStatus) {
+        this.callbackStatus = callbackStatus;
+    }
+
+    public String getCallbackReason() {
+        return callbackReason;
+    }
+
+    public void setCallbackReason(String callbackReason) {
+        this.callbackReason = callbackReason;
     }
 }

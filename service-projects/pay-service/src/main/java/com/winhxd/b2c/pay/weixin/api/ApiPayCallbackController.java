@@ -70,8 +70,8 @@ public class ApiPayCallbackController {
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
 				PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
-				int success = payService.callbackOrderPay(bill);
-				if(success == 0) {
+				Boolean result = payService.callbackOrderPay(bill);
+				if(result) {
 					this.response(response, SUCCESS_RESPONSE);
 				} else {
 					this.response(response, FAIL_RESPONSE);
@@ -107,8 +107,8 @@ public class ApiPayCallbackController {
 				refundCallbackDTO = BeanAndXmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
 
 				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(refundCallbackDTO);
-				int success = payService.callbackOrderRefund(payRefund);
-				if(success == 0) {
+				Boolean result = payService.callbackOrderRefund(payRefund);
+				if(result) {
 					this.response(response, SUCCESS_RESPONSE);
 				} else {
 					this.response(response, FAIL_RESPONSE);

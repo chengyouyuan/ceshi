@@ -1527,15 +1527,14 @@ public class CommonOrderServiceImpl implements OrderService {
                 //构造商品信息
                 String itemDesc = OrderUtil.genOrderItemDesc(orderItemMapper.selectByOrderNo(Arrays.asList(orderInfo.getOrderNo())));
                 MiniTemplateData key1 = new MiniTemplateData();
-                key1.setKeyName("keyword1");
+                key1.setKeyName(KEYWORD1);
                 key1.setValue(itemDesc);
                 MiniTemplateData key2 = new MiniTemplateData();
-                key1.setKeyName("keyword2");
-                String keyWord2Value = "￥" + orderInfo.getRealPaymentMoney().toString();
-                key1.setValue(keyWord2Value);
+                key2.setKeyName(KEYWORD2);
+                key2.setValue(OrderUtil.genRealPayMoney(orderInfo.getRealPaymentMoney()));
                 MiniTemplateData key3 = new MiniTemplateData();
-                key1.setKeyName("keyword3");
-                key1.setValue(storeMsgContent);
+                key3.setKeyName(KEYWORD3);
+                key3.setValue(storeMsgContent);
                 MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
@@ -1569,10 +1568,10 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
+            CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
             switch (type) {
                 case 1:
                     // 给门店【已取消】手机尾号8513张先生已取消订单
-                    CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
                     String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
                     NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                     neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
@@ -1583,24 +1582,36 @@ public class CommonOrderServiceImpl implements OrderService {
                     neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
                     messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
 
-                    //给申请用户 “您的订单已取消”。
-                    NeteaseMsgCondition customerNeteaseMsgCondition = new NeteaseMsgCondition();
-                    customerNeteaseMsgCondition.setCustomerId(orderInfo.getCustomerId());
-                    String customerMsgContent = "您的订单已取消";
-                    NeteaseMsg customerNeteaseMsg = new NeteaseMsg();
-                    neteaseMsg.setMsgContent(customerMsgContent);
-                    neteaseMsg.setAudioType(0);
-                    customerNeteaseMsgCondition.setNeteaseMsg(customerNeteaseMsg);
+                    //给订单C端用户发送微信消息。
+                    //构造商品信息
+                    String itemDesc = OrderUtil.genOrderItemDesc(orderItemMapper.selectByOrderNo(Arrays.asList(orderInfo.getOrderNo())));
+                    MiniTemplateData key1 = new MiniTemplateData();
+                    key1.setKeyName(KEYWORD1);
+                    key1.setValue(itemDesc);
+                    MiniTemplateData key2 = new MiniTemplateData();
+                    key2.setKeyName(KEYWORD2);
+                    key2.setValue(OrderUtil.genRealPayMoney(orderInfo.getRealPaymentMoney()));
+                    MiniTemplateData key3 = new MiniTemplateData();
+                    key3.setKeyName(KEYWORD3);
+                    key3.setValue("您的订单已取消");
+                    MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                    messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
                     break;
                 case 2:
                     // 发送云信给订单用户 小店因为{取消原因}取消了订单，请再看看其他的商品吧
-                    NeteaseMsgCondition customerNeteaseMsgConditionType2 = new NeteaseMsgCondition();
-                    customerNeteaseMsgConditionType2.setCustomerId(orderInfo.getCustomerId());
                     String customerMsgContentType2 = "小店因为{" + orderInfo.getCancelReason() + "}取消了订单，请再看看其他的商品吧";
-                    NeteaseMsg customerNeteaseMsgType2 = new NeteaseMsg();
-                    customerNeteaseMsgType2.setMsgContent(customerMsgContentType2);
-                    customerNeteaseMsgType2.setAudioType(0);
-                    customerNeteaseMsgConditionType2.setNeteaseMsg(customerNeteaseMsgType2);
+                    String itemDesc2 = OrderUtil.genOrderItemDesc(orderItemMapper.selectByOrderNo(Arrays.asList(orderInfo.getOrderNo())));
+                    MiniTemplateData key21 = new MiniTemplateData();
+                    key21.setKeyName(KEYWORD1);
+                    key21.setValue(itemDesc2);
+                    MiniTemplateData key22 = new MiniTemplateData();
+                    key22.setKeyName(KEYWORD2);
+                    key22.setValue(OrderUtil.genRealPayMoney(orderInfo.getRealPaymentMoney()));
+                    MiniTemplateData key23 = new MiniTemplateData();
+                    key23.setKeyName(KEYWORD3);
+                    key23.setValue(customerMsgContentType2);
+                    MiniMsgCondition miniMsgCondition2 = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key21, key22, key23);
+                    messageServiceClient.sendMiniTemplateMsg(miniMsgCondition2);
                     break;
                 default:
             }

@@ -231,10 +231,10 @@ public class ApiOrderQueryController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_PAID, message = "订单已经支付")
     })
     @RequestMapping(value = "/4015/v1/getOrderPayInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<PayPreOrderVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
+    public ResponseResult<OrderPayVO> getOrderPayInfo(@RequestBody OrderPayInfoCondition condition) {
         String logTitle = "/api-order/order/4015/v1/getOrderPayInfo-C端获取支付信息";
         LOGGER.info("{}=--开始--{}", logTitle, condition);
-        ResponseResult<PayPreOrderVO> result = new ResponseResult<>();
+        ResponseResult<OrderPayVO> result = new ResponseResult<>();
         //获取当前登录门店Id
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null || customerUser.getCustomerId() == null || StringUtils.isBlank(customerUser.getOpenid())) {

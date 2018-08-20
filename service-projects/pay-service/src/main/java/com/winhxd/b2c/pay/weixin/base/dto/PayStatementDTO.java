@@ -49,7 +49,7 @@ public class PayStatementDTO extends RequestBase{
 		this.tarType = tarType;
 	}
 
-	public enum BillType {
+	public enum StatementType {
 
 		/**
 		 * 返回当日所有订单信息，默认值
@@ -74,7 +74,7 @@ public class PayStatementDTO extends RequestBase{
 		private String text;
 		private String desc;
 
-		private BillType(String text, String desc) {
+		private StatementType(String text, String desc) {
 			this.text = text;
 			this.desc = desc;
 		}

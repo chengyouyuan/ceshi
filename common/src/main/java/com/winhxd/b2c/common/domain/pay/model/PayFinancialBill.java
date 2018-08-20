@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.model;
+package com.winhxd.b2c.common.domain.pay.model;
 
 import java.math.BigDecimal;
 import java.util.Date;

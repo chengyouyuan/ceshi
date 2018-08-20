@@ -572,16 +572,24 @@ public class PayServiceImpl implements PayService{
 			 String packageData=payPreOrderVO.getPackageData();
 			 String signType=payPreOrderVO.getSignType();
 			 String paySign=payPreOrderVO.getPaySign();
+			 String orderTransactionNo=payPreOrderVO.getOutTradeNo();
 			 if (payPreOrderVO.getPayStatus()) {
-				 PayOrderPayment payOrderPayment=new PayOrderPayment();
-				 payOrderPayment.setOrderNo(orderNo);
-				 payOrderPayment.setOrderTransactionNo(payPreOrderVO.getOutTradeNo());
-				 payOrderPayment.setCreated(new Date());
-				 payOrderPayment.setBuyerId(openid);
-				 payOrderPayment.setPayType(Short.parseShort(payType));
-				 payOrderPayment.setRealPaymentMoney(totalAmount);
-				 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
-				 payOrderPaymentMapper.insertSelective(payOrderPayment);
+				 
+				 PayOrderPayment payOrderPayment=payOrderPaymentMapper.selectByOrderPaymentNo(orderTransactionNo);
+				 if (payOrderPayment == null) {
+					 
+					 payOrderPayment=new PayOrderPayment();
+					 payOrderPayment.setOrderNo(orderNo);
+					 payOrderPayment.setOrderTransactionNo(orderTransactionNo);
+					 payOrderPayment.setCreated(new Date());
+					 payOrderPayment.setBuyerId(openid);
+					 payOrderPayment.setPayType(Short.parseShort(payType));
+					 payOrderPayment.setRealPaymentMoney(totalAmount);
+					 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
+					 payOrderPaymentMapper.insertSelective(payOrderPayment);
+					 
+				}
+				 
 			}
 			
 			vo.setNonceStr(nonceStr);

@@ -162,7 +162,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					//业务成功，记录到记录表
 					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
 					logger.info("对账单统计数据插入成功");
-					
+
+					return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 				}
 			}
 			
@@ -173,7 +174,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			payStatementCountMapper.deleteByBillDate(billDate);
 			e.printStackTrace();
 		}
-		return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
+		return "";
 	}
 
 	/**
@@ -399,7 +400,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					//业务成功，记录到记录表
 					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
 					logger.info("资金账单统计数据插入成功");
-					
+
+					return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 				}
 			}
 			
@@ -408,7 +410,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			payFinancialBillMapper.deleteByBillDate(billDate);
 			payFinancialBillCountMapper.deleteByBillDate(billDate);
 		}
-		return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
+		return "";
 	}
 
 	private PayFinancialBill assemblePayFinancialBill(String[] everyDataArray,

@@ -30,7 +30,7 @@ public class CouponTemplateCondition extends PagedCondition implements Serializa
     private String couponLabel;
     @ApiModelProperty(value = "优惠券金额计算方式  1订单金额 2商品金额")
     private Short calType;
-    @ApiModelProperty(value = "支付方式 1扫码支付 2线上支付")
+    @ApiModelProperty(value = "1为微信在线支付;2为微信扫码付款;")
     private Short payType;
 
     @ApiModelProperty(value = "优惠券类型")

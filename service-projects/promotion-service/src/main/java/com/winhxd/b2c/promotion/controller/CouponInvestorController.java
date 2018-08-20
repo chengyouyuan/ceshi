@@ -32,7 +32,6 @@ import java.util.List;
  * @Date 2018/8/4 19:19
  * @Description 出资方相关接口入口
  **/
-@Api(tags = "CouponInvestor")
 @RestController
 public class CouponInvestorController implements CouponInvestorServiceClient {
       @Autowired
@@ -46,7 +45,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
        *@User  wl
        *@Date   2018/8/8 12:30
        */
-      @ApiOperation(value = "出资方添加", notes = "出资方添加")
       @Override
       public ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
             ResponseResult<Integer> responseResult = new ResponseResult();
@@ -71,7 +69,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       *@User  wl
       *@Date   2018/8/8 14:06
       */
-    @ApiOperation(value = "出资方详情查看", notes = "出资方详情查看")
     @Override
     public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id) {
         ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
@@ -87,7 +84,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:58
      */
-    @ApiOperation(value = "出资方设置无效", notes = "出资方设置无效")
     @Override
     public ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult();
@@ -110,7 +106,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/11 14:59
      */
-    @ApiOperation(value = "出资方列表多条件分页查询", notes = "出资方列表多条件分页查询")
     @Override
     public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition) {
         ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
@@ -125,7 +120,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      *@User  wl
      *@Date   2018/8/11 15:00
      */
-    @ApiOperation(value = "出资方关联模板分页列表", notes = "出资方关联模板分页列表")
     @Override
     public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
         ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult =  couponInvestorService.findInvertorTempleteCountPage(condition);

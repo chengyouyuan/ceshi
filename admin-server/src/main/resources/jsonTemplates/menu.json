@@ -19,14 +19,7 @@
           "path": "",
           "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
-      	},
-        {
-          "id": "1_2",
-          "menuName": "商品提报审核",
-          "path": "",
-          "configKey": "/template/module/store/store_submitProduct_list.json",
-          "permission": ""
-        }
+      	}
       ]
     },
     {

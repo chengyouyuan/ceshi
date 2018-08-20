@@ -512,10 +512,7 @@ public class ApiStoreLoginController {
 			logger.info("{} - , 请求验证码时长为超过一分钟");
 			throw new BusinessException(BusinessCode.CODE_1012);
 		}
-		/**
-		 * 随机生成6位数验证码
-		 */
-		verificationCode =  GeneratePwd.generatePwd6Mobile();//"888888";
+		verificationCode =  GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
 		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, 5 * 60);
 		/**

@@ -62,8 +62,8 @@ public class HttpClientUtil implements ApplicationContextAware {
             if (response != null) {
                 response.close();
             }
-            return content;
         }
+        return content;
     }
 
     public String doGet(String url) throws IOException, URISyntaxException {
@@ -111,8 +111,8 @@ public class HttpClientUtil implements ApplicationContextAware {
             if (response != null) {
                 response.close();
             }
-            return content;
         }
+        return content;
     }
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -6,8 +6,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
-import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;

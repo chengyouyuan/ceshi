@@ -667,8 +667,7 @@ public class CommonOrderServiceImpl implements OrderService {
             //发送订单取消事件
             sendCancelEvent(order, reason, operatorId, operatorName);
         } else {
-            logger.info("订单退款用户退款不成功 订单号={}", order.getOrderNo());
-            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE);
+            throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单退款用户退款不成功 订单号={0}", orderNo));
         }
     }
 

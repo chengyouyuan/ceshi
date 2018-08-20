@@ -29,15 +29,15 @@ public final class BusinessCode {
     /**token参数为空*/
     public static final int CODE_1014 = 1014;
     /**上传图片格式不正确**/
-    public static final int CODE_1016 = 1016;
+    public static final int CODE_100016 = 100016;
     /**上传图片是失败**/
-    public static final int CODE_1017 = 1017;
+    public static final int CODE_100017 = 100017;
     /**图片大小超过限制**/
-    public static final int CODE_1018= 1018;
+    public static final int CODE_100018= 100018;
     /**图片名称不能为空**/
-    public static final int CODE_1019= 1019;
+    public static final int CODE_100019= 100019;
     /**图片不能为空**/
-    public static final int CODE_1020= 1020;
+    public static final int CODE_100020= 100020;
     /**登录凭证无效，请重新登录！**/
     public static final int CODE_102701 = 102701;
     /**业务异常**/
@@ -63,6 +63,35 @@ public final class BusinessCode {
     /** 该微信号已绑定过账号 */
     public static final int  CODE_100910 = 100910;
     
+    /**1012接口参数无效*/
+    public static final int CODE_101201 = 101201;
+    /**账号未启用*/
+    public static final int CODE_101202 = 101202;
+    
+    /**1013接口参数无效*/
+    public static final int CODE_101301 = 101301;
+    /**门店商品skuCode无效*/
+    public static final int CODE_101302 = 101302;
+    
+    /**1014接口参数无效*/
+    public static final int CODE_101401 = 101401;
+    
+    /**1015接口参数无效*/
+    public static final int CODE_101501 = 101501;
+    
+    /**1024接口参数无效*/
+    public static final int CODE_102401 = 102401;
+    
+    /**1028接口参数无效*/
+    public static final int CODE_102801 = 102801;
+    
+    /**1031接口参数无效*/
+    public static final int CODE_103101 = 103101;
+    /**门店商品skuCode无效*/
+    public static final int CODE_103102 = 103102;
+    
+    /**1049接口参数无效*/
+    public static final int CODE_104901 = 104901;
     
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
@@ -97,10 +126,6 @@ public final class BusinessCode {
     public static final int CODE_200010 = 200010;
     /**当前用户和门店已经存在绑定关系*/
     public static final int CODE_200011 = 200011;
-    /**门店商品skuCode无效*/
-    public static final int CODE_200012 = 200012;
-    /**sku已上架**/
-    public static final int CODE_200013 = 200013;
     /**门店小程序码url参数为空*/
     public static final int CODE_200017 = 200017;
     /**门店小程序码图片生成失败*/
@@ -365,6 +390,7 @@ public final class BusinessCode {
     public static final int CODE_610031 = 610031;
     
     
+    
     @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;
      
@@ -469,9 +495,6 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店提现  未获取到提现信息")
     public static final int CODE_600310 = 600310;
-    
-    @ApiModelProperty("判断订单是否支付  订单号为空")
-    public static final int CODE_601601 = 601601;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

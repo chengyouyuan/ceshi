@@ -2,8 +2,8 @@
   "meta": {
     "path": "/store/1021/v1/getStoreInfoById/{id}",
     "type": "base-form",
-    "id": "store_user_list_view",
-    "code": "store_user_list_view",
+    "id": "store_user_list_edit",
+    "code": "store_user_list_edit",
     "title": "门店编辑",
     "buttons": [
       {
@@ -34,7 +34,6 @@
         "inputModel": "input",
         "title": "门店编码",
         "value": "",
-        "placeholder": "请填写门店编码",
         "isHidden": false
       },
       {
@@ -42,7 +41,6 @@
         "title": "门店账号",
         "inputModel": "input",
         "value": "",
-        "placeholder": "请填写门店账号",
         "isHidden": false
       },
       {
@@ -90,10 +88,10 @@
       },
       {
         "name": "storeAddress",
-        "title": "地址",
+        "title": "提货地址",
         "inputModel": "input",
         "value": "",
-        "placeholder": "请填写地址",
+        "placeholder": "请填写提货地址",
         "isHidden": false
       },
       {
@@ -101,15 +99,40 @@
         "title": "联系人",
         "inputModel": "input",
         "value": "",
+        "placeholder": "请填写联系人",
+        "isHidden": false
+      },
+      {
+        "name": "contactMobile",
+        "title": "联系方式",
+        "inputModel": "input",
+        "value": "",
+        "placeholder": "请填写联系方式",
         "isHidden": false
       },
       {
         "name": "payType",
         "title": "支付方式",
-        "inputModel": "input",
+        "inputModel": "select",
         "value": "",
-        "placeholder": "请选择支付方式",
-        "isHidden": false
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "微信在线付款"
+        }
+        ]
+      },
+      {
+        "name": "pickupType",
+        "title": "提货方式",
+        "inputModel": "select",
+        "value": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "自提"
+        }
+        ]
       },
       {
         "name": "storeStatus",
@@ -117,10 +140,7 @@
         "title": "门店状态",
         "placeholder": "",
         "isHidden": false,
-        "options": [{
-          "value": "0",
-          "label": "未开店"
-        },
+        "options": [
           {
             "value": "1",
             "label": "有效"

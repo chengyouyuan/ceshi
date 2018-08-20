@@ -78,12 +78,13 @@ public class BackStageStoreController {
                 StringUtils.isBlank(condition.getStoreAddress()) || StringUtils.isBlank(condition.getShopkeeper()) ||
                 StringUtils.isBlank(condition.getContactMobile())) {
             logger.error("编辑门店保存接口，参数错误");
-            throw new BusinessException(BusinessCode.CODE_1007);
+            throw new BusinessException(BusinessCode.CODE_1007, "参数无效");
         }
-        ResponseResult<Integer> responseResult = new ResponseResult<>();
+        condition.setStoreCustomerId(null);
+        condition.setStoreRegionCode(null);
         logger.info("编辑门店保存接口入参为：{}", condition.toString());
         backStageStoreServiceClient.modifyStoreInfo(condition);
-        return responseResult;
+        return new ResponseResult<>();
     }
 
     @ApiOperation(value = "获取地域列表", notes = "获取地域列表")

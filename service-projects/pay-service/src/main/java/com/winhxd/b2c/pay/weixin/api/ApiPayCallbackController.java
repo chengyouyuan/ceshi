@@ -1,24 +1,14 @@
 package com.winhxd.b2c.pay.weixin.api;
 
-import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.winhxd.b2c.pay.weixin.service.WXRefundService;
-import com.winhxd.b2c.pay.weixin.util.DecipherUtil;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +22,10 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
+import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import com.winhxd.b2c.pay.weixin.util.DecipherUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,8 +45,6 @@ public class ApiPayCallbackController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiPayCallbackController.class);
 	private static final String SUCCESS_RESPONSE = "<xml>" + "<return_code><!--[CDATA[SUCCESS]]--></return_code>" + "<return_msg><!--[CDATA[OK]]--></return_msg>" + "</xml> ";
 	private static final String FAIL_RESPONSE = "<xml>" + "<return_code><!--[CDATA[FAIL]]--></return_code>" + "<return_msg><!--[CDATA[报文为空]]--></return_msg>" + "</xml> ";
-/*	private static String password = "aaa";
-	private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);*/
 	
 	@Autowired
 	private WXUnifiedOrderService unifiedOrderService;

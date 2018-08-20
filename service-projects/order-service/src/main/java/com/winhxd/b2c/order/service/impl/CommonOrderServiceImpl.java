@@ -404,10 +404,9 @@ public class CommonOrderServiceImpl implements OrderService {
         if (updateRowNum < 1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("取消订单-状态更新不成功-订单号={0}", orderNo));
         } else {
-            logger.info("取消订单-退优惠券开始-订单号={}", orderNo);
-            //优惠券一并退回
-            orderUntreadCoupon(orderNo, "4");
-            logger.info("取消订单-退优惠券结束-添加流转日志开始-订单号={}", orderNo);
+            logger.info("取消订单-退优惠券发送事件开始-订单号={}", orderNo);
+            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_CANCEL, order.getOrderNo(), order);
+            logger.info("取消订单-退优惠券发送事件结束-添加流转日志开始-订单号={}", orderNo);
             String oldOrderJsonString = JsonUtil.toJSONString(order);
             Short oldStatus = order.getOrderStatus();
             order.setOrderStatus(OrderStatusEnum.CANCELED.getStatusCode());
@@ -445,7 +444,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
         StoreUserInfoVO storeVO = storeData.getData();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
-        Lock lock = new RedisLock(cache, lockKey, 1000);
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         if (lock.tryLock()) {
             try {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
@@ -661,7 +660,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单退款-申请退款结束-订单号={}", orderNo);
             //退优惠券
             logger.info("订单退款-退优惠券开始-订单号={}", orderNo);
-            orderUntreadCoupon(orderNo, "4");
+            eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_CANCEL, order.getOrderNo(), order);
             logger.info("订单退款-退优惠券结束-添加流转日志开始-订单号={}", orderNo);
             Short oldStatus = order.getOrderStatus();
             String oldOrderJsonString = JsonUtil.toJSONString(order);
@@ -1545,19 +1544,6 @@ public class CommonOrderServiceImpl implements OrderService {
         }
         logger.info("根据customerId={} 获取用户信息成功，用户信息：{}", ret.getData().get(0));
         return ret.getData().get(0);
-    }
-
-    /**
-     * 退优惠券 发送事件
-     *
-     * @param orderNo 订单号
-     * @param status  优惠券状态 1-已使用,4-退回
-     */
-    private void orderUntreadCoupon(String orderNo, String status) {
-        OrderUntreadCouponCondition couponCondition = new OrderUntreadCouponCondition();
-        couponCondition.setOrderNo(orderNo);
-        couponCondition.setStatus(status);
-        eventMessageSender.send(EventType.EVENT_ORDER_UNTREAD_COUPON, couponCondition.getOrderNo(), couponCondition);
     }
 
     /**

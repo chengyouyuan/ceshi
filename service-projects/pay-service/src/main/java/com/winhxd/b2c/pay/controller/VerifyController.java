@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Api(tags = "结算")
 @RestController
 public class VerifyController {
@@ -116,5 +118,12 @@ public class VerifyController {
     public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
         int count = verifyService.approveWithdrawals(condition);
         return new ResponseResult<>(count);
+    }
+
+    @ApiOperation(value = "费用明细导出查询", notes = "按明细显示")
+    @PostMapping("/pay/6099/v1/accountingDetailListExport")
+    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
+        List<VerifyDetailVO> list = verifyService.findAccountingDetailList(condition);
+        return new ResponseResult<>(list);
     }
 }

@@ -151,6 +151,7 @@
         "value":{},
         "title": "下单金额",
         "placeholder": "",
+        "step": 0.01,
         "isHidden": false
       },
       {

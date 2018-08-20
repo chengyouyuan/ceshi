@@ -5,7 +5,7 @@
     "type": "report",
     "id": "customer_list",
     "code": "customer_list",
-    "title": "订单管理",
+    "title": "客户管理",
     "buttons": [
       {
         "name": "查询",
@@ -22,6 +22,15 @@
         "event": {
           "type": "reset",
           "path": ""
+        }
+      },
+      {
+        "name": "导出",
+        "icon": null,
+        "event": {
+          "type": "dowload",
+          "ajaxType": "get",
+          "path": "/customer/user/customerExport"
         }
       }
     ],
@@ -52,8 +61,8 @@
       },
       {
         "name": "status",
-        "title": "状态",
-        "formatter": "function(row, column, cellValue, index) { if(row.status == 1)return '白名单';return '黑名单';}"
+        "title": "黑名单",
+        "formatter": "function(row, column, cellValue, index) { if(row.status == 1)return '否';return '是';}"
       },
       {
         "name": "",
@@ -143,11 +152,11 @@
         "isHidden": false,
         "options": [{
           "value": "0",
-          "label": "黑名单"
+          "label": "是"
         },
           {
             "value": "1",
-            "label": "白名单"
+            "label": "否"
           }]
       }
     ]

@@ -36,7 +36,6 @@ public class VerifyService {
 
     private final Logger log = LogManager.getLogger(this.getClass());
 
-    private static final BigDecimal FEE_RATE_OF_WX = BigDecimal.valueOf(0.006);
 
     @Autowired
     private AccountingDetailMapper accountingDetailMapper;
@@ -52,6 +51,9 @@ public class VerifyService {
 
     @Autowired
     private PayService payService;
+    
+    @Autowired
+    private PayStoreCashService payStoreCashService;
 
     /**
      * 订单支付成功事件
@@ -59,7 +61,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
     public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
@@ -70,9 +72,29 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
+        //计算门店资金
+        //手续费
+        BigDecimal cmmsAmt=orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
+        //门店应得金额（订单总额-手续费）
+        BigDecimal money=orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
+        UpdateStoreBankRollCondition condition=new UpdateStoreBankRollCondition();
+        condition.setOrderNo(orderNo);
+        condition.setStoreId(orderInfo.getStoreId());
+        condition.setMoney(money);
+        condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
+        payService.updateStoreBankroll(condition);
+        //添加交易记录
+        PayStoreTransactionRecord payStoreTransactionRecord=new PayStoreTransactionRecord();
+        payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
+        payStoreTransactionRecord.setOrderNo(orderNo);
+        payStoreTransactionRecord.setType(StoreTransactionStatusEnum.ORDER_ENTRY.getStatusCode());
+        payStoreTransactionRecord.setMoney(money);
+        payStoreTransactionRecord.setRate(WXCalculation.FEE_RATE_OF_WX);
+        payStoreTransactionRecord.setCmmsAmt(cmmsAmt);
+        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
     }
 
     /**
@@ -111,7 +133,7 @@ public class VerifyService {
                     AccountingDetail thirdPartyfee = new AccountingDetail();
                     thirdPartyfee.setOrderNo(orderNo);
                     thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
-                    thirdPartyfee.setDetailMoney(FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney()));
+                    thirdPartyfee.setDetailMoney(WXCalculation.FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney()));
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
                     accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                     count++;
@@ -227,7 +249,26 @@ public class VerifyService {
      */
     public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return accountingDetailMapper.selectAccountingDetailList(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
+        for (VerifyDetailVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (VerifyDetailVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**
@@ -343,7 +384,26 @@ public class VerifyService {
      */
     public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
-        return payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
+        Set<Long> storeSet = new HashSet<>();
+        Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
+        for (PayWithdrawalsVO vo : page.getResult()) {
+            if (!storeSet.contains(vo.getStoreId())) {
+                storeSet.add(vo.getStoreId());
+            }
+        }
+        Map<Long, String> storeMap = new HashMap<>();
+        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            if (responseResult.getData() != null) {
+                for (StoreUserInfoVO vo : responseResult.getData()) {
+                    storeMap.put(vo.getId(), vo.getStoreName());
+                }
+            }
+        }
+        for (PayWithdrawalsVO vo : page.getResult()) {
+            vo.setStoreName(storeMap.get(vo.getStoreId()));
+        }
+        return page;
     }
 
     /**
@@ -382,4 +442,7 @@ public class VerifyService {
         }
         return count;
     }
+    public static void main(String[] args) {
+		System.out.println(BigDecimal.valueOf(9.8767).setScale(2, BigDecimal.ROUND_HALF_UP));
+	}
 }

@@ -1,9 +1,12 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 
 public interface WXPayApi {
@@ -49,5 +52,31 @@ public interface WXPayApi {
      * @throws Exception
      */
     PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO);
+
+    /**
+     * 作用：对账单下载<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付<br>
+     * 其他：无论是否成功都返回Map。若成功，返回的Map中含有return_code、return_msg、data，
+     *      其中return_code为`SUCCESS`，data为对账单数据。
+     * @param reqData 向wxpay post的请求数据
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return 经过封装的API返回数据
+     * @throws Exception
+     */
+	PayBillDownloadResponseDTO downloadBill(PayStatementDTO payStatementDTO);
+
+    /**
+     * 作用：资金账单下载<br>
+     * 场景：资金账单中的数据反映的是商户微信账户资金变动情况 <br>
+     * 其他：无论是否成功都返回Map。若成功，返回的Map中含有return_code、return_msg、data，
+     *      其中return_code为`SUCCESS`，data为资金账单数据。
+     * @param reqData 向wxpay post的请求数据
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return 经过封装的API返回数据
+     * @throws Exception
+     */
+	PayBillDownloadResponseDTO downloadFundFlow(PayFinancialBillDTO payFinancialBillDTO);
 
 }

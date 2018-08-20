@@ -23,21 +23,21 @@ public class PayStatementDownloadRecord {
 	 * 账单日期
 	 */
     private Date billDate;
-
-	/**
-	 * 状态码：SUCCESS/FAIL
-	 */
-    private String returnCode;
-
-	/**
-	 * 返回信息   例如:签名失败；参数格式校验错误
-	 */
-    private String returnMsg;
-
-	/**
-	 * 业务结果  FAIL：此字段是业务标识，表示业务是否成功。目前只在失败时返回这个字段，所以只会出现FAIL值
-	 */
-    private String resultCode;
+//
+//	/**
+//	 * 状态码：SUCCESS/FAIL
+//	 */
+//    private String returnCode;
+//
+//	/**
+//	 * 返回信息   例如:签名失败；参数格式校验错误
+//	 */
+//    private String returnMsg;
+//
+//	/**
+//	 * 业务结果  FAIL：此字段是业务标识，表示业务是否成功。目前只在失败时返回这个字段，所以只会出现FAIL值
+//	 */
+//    private String resultCode;
 
 	/**
 	 * 错误代码
@@ -48,6 +48,11 @@ public class PayStatementDownloadRecord {
 	 * 错误代码描述
 	 */
     private String errCodeDes;
+    
+	/**
+	 * 账单状态：0，失败；1成功
+	 */
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -73,29 +78,29 @@ public class PayStatementDownloadRecord {
         this.billDate = billDate;
     }
 
-    public String getReturnCode() {
-        return returnCode;
-    }
-
-    public void setReturnCode(String returnCode) {
-        this.returnCode = returnCode;
-    }
-
-    public String getReturnMsg() {
-        return returnMsg;
-    }
-
-    public void setReturnMsg(String returnMsg) {
-        this.returnMsg = returnMsg;
-    }
-
-    public String getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
-    }
+//    public String getReturnCode() {
+//        return returnCode;
+//    }
+//
+//    public void setReturnCode(String returnCode) {
+//        this.returnCode = returnCode;
+//    }
+//
+//    public String getReturnMsg() {
+//        return returnMsg;
+//    }
+//
+//    public void setReturnMsg(String returnMsg) {
+//        this.returnMsg = returnMsg;
+//    }
+//
+//    public String getResultCode() {
+//        return resultCode;
+//    }
+//
+//    public void setResultCode(String resultCode) {
+//        this.resultCode = resultCode;
+//    }
 
     public String getErrCode() {
         return errCode;
@@ -112,4 +117,34 @@ public class PayStatementDownloadRecord {
     public void setErrCodeDes(String errCodeDes) {
         this.errCodeDes = errCodeDes;
     }
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public enum RecordStatus {
+
+		FAIL(0, "失败"), SUCCESS(1, "成功");
+		
+		int code;
+		String desc;
+		
+		private RecordStatus(int code, String desc) {
+			this.code = code;
+			this.desc = desc;
+		}
+
+		public int getCode() {
+			return code;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
 }

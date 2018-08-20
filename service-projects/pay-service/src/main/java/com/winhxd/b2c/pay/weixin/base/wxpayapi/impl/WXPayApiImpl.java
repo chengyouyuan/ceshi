@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
@@ -342,7 +343,8 @@ public class WXPayApiImpl implements WXPayApi {
      * @return 经过封装的API返回数据
      * @throws Exception
      */
-    public Map<String, String> downloadBill(PayStatementDTO payStatementDTO) throws Exception {
+    @Override
+    public PayBillDownloadResponseDTO downloadBill(PayStatementDTO payStatementDTO) {
     	
 		//填充配置参数
 		this.fillRequestDTO(payStatementDTO);
@@ -359,19 +361,27 @@ public class WXPayApiImpl implements WXPayApi {
         }
         String respStr = this.requestWithoutCert(url, reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs()).trim();
         
+        PayBillDownloadResponseDTO responseDTO = new PayBillDownloadResponseDTO();
+        
         Map<String, String> ret;
-        // 出现错误，返回XML数据
-        if (respStr.indexOf("<") == 0) {
-            ret = WXPayUtil.xmlToMap(respStr);
-        }
-        else {
-            // 正常返回csv数据
-            ret = new HashMap<String, String>();
-            ret.put("return_code", WXPayConstants.SUCCESS);
-            ret.put("return_msg", "ok");
-            ret.put("data", respStr);
-        }
-        return ret;
+        try {
+        	// 出现错误，返回XML数据
+	        if (respStr.indexOf("<") == 0) {
+	            ret = WXPayUtil.xmlToMap(respStr);
+	        }
+	        else {
+	            // 正常返回csv数据
+	            ret = new HashMap<String, String>();
+	            ret.put("return_code", WXPayConstants.SUCCESS);
+	            ret.put("return_msg", "ok");
+	            ret.put("data", respStr);
+	        }
+	        responseDTO = BeanAndXmlUtil.mapToBean(ret, PayBillDownloadResponseDTO.class);
+	    } catch (Exception e) {
+	        logger.error("下载对账单时，响应参数解析失败", e);
+	        throw new BusinessException(3400911, "下载对账单时，响应参数解析失败");
+	    }
+        return responseDTO;
     }
     
     /**
@@ -385,7 +395,8 @@ public class WXPayApiImpl implements WXPayApi {
      * @return 经过封装的API返回数据
      * @throws Exception
      */
-    public Map<String, String> downloadFundFlow(PayFinancialBillDTO payFinancialBillDTO) throws Exception {
+    @Override
+    public PayBillDownloadResponseDTO downloadFundFlow(PayFinancialBillDTO payFinancialBillDTO) {
 
 		//填充配置参数
 		this.fillRequestDTOByHMACSHA256(payFinancialBillDTO);
@@ -401,19 +412,30 @@ public class WXPayApiImpl implements WXPayApi {
     		url = WXPayConstants.DOWNLOADFUNDFLOW_URL_SUFFIX;
     	}
     	String respStr = this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs()).trim();
-    	Map<String, String> ret;
-    	// 出现错误，返回XML数据
-    	if (respStr.indexOf("<") == 0) {
-    		ret = WXPayUtil.xmlToMap(respStr);
-    	}
-    	else {
-    		// 正常返回csv数据
-    		ret = new HashMap<String, String>();
-    		ret.put("return_code", WXPayConstants.SUCCESS);
-    		ret.put("return_msg", "ok");
-    		ret.put("data", respStr);
-    	}
-    	return ret;
+
+        PayBillDownloadResponseDTO responseDTO = new PayBillDownloadResponseDTO();
+        
+        Map<String, String> ret;
+
+        try {
+	        // 出现错误，返回XML数据
+	        if (respStr.indexOf("<") == 0) {
+	            ret = WXPayUtil.xmlToMap(respStr);
+	        }
+	        else {
+	            // 正常返回csv数据
+	            ret = new HashMap<String, String>();
+	            ret.put("return_code", WXPayConstants.SUCCESS);
+	            ret.put("return_msg", "ok");
+	            ret.put("data", respStr);
+	        }
+	        responseDTO = BeanAndXmlUtil.mapToBean(ret, PayBillDownloadResponseDTO.class);
+        } catch (Exception e) {
+            logger.error("下载资金账单时，响应参数解析失败", e);
+            throw new BusinessException(3400912, "下载资金账单时，响应参数解析失败");
+        }
+        return responseDTO;
+        
     }
 
     

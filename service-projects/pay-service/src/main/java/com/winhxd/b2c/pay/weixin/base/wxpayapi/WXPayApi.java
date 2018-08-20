@@ -1,16 +1,18 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi;
 
+import java.util.Map;
+
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayOrderQueryDTO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
-
-import java.util.Map;
 
 public interface WXPayApi {
 	
@@ -139,5 +141,26 @@ public interface WXPayApi {
      * @return
      */
 	String payPreOrderSign(PayPreOrderVO payPreOrderVO);
+
+    /**
+     * 作用：获取证书<br>
+     * 场景：获取证书<br>
+     * 其他：需要证书
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    public String publicKey(Map<String, String> reqData) throws Exception;
+    
+    /**
+	 * 主动查询订单
+	 * @author mahongliang
+	 * @date  2018年8月21日 上午2:35:39
+	 * @Description 
+	 * @param payOrderQueryDTO
+	 * @return
+	 * @throws Exception
+	 */
+	PayPreOrderCallbackDTO orderQuery(PayOrderQueryDTO payOrderQueryDTO);
 
 }

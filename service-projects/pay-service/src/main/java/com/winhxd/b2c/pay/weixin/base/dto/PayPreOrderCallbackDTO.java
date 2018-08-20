@@ -11,6 +11,21 @@ import java.util.Date;
  */
 public class PayPreOrderCallbackDTO extends ResponseBase{
 	
+	/**
+	 * 业务结果
+	 */
+	private String resultCode;
+	
+	/**
+	 * 错误代码
+	 */
+	private String errCode;
+	
+	/**
+	 * 错误代码描述
+	 */
+	private String errCodeDes;
+	
     /**
      * 支付流水号（商户订单号）
      */
@@ -104,6 +119,30 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
      */
     private String tradeStateDesc;
     
+	public String getResultCode() {
+		return resultCode;
+	}
+
+	public void setResultCode(String resultCode) {
+		this.resultCode = resultCode;
+	}
+
+	public String getErrCode() {
+		return errCode;
+	}
+
+	public void setErrCode(String errCode) {
+		this.errCode = errCode;
+	}
+
+	public String getErrCodeDes() {
+		return errCodeDes;
+	}
+
+	public void setErrCodeDes(String errCodeDes) {
+		this.errCodeDes = errCodeDes;
+	}
+
 	public String getOutTradeNo() {
 		return outTradeNo;
 	}

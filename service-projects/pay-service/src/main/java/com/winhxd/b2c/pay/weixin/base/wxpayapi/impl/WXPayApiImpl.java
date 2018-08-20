@@ -103,6 +103,82 @@ public class WXPayApiImpl implements WXPayApi {
         }
         return responseDTO;
     }
+    
+    /**
+     * 判断支付结果通知中的sign是否有效
+     *
+     * @param reqData 向wxpay post的请求数据
+     * @return 签名是否有效
+     * @throws Exception
+     */
+    public boolean isPayResultNotifySignatureValid(Map<String, String> reqData) throws Exception {
+        String signTypeInData = reqData.get(WXPayConstants.FIELD_SIGN_TYPE);
+        SignType signType;
+        if (signTypeInData == null) {
+            signType = SignType.MD5;
+        }
+        else {
+            signTypeInData = signTypeInData.trim();
+            if (signTypeInData.length() == 0) {
+                signType = SignType.MD5;
+            }
+            else if (WXPayConstants.MD5.equals(signTypeInData)) {
+                signType = SignType.MD5;
+            }
+            else if (WXPayConstants.HMACSHA256.equals(signTypeInData)) {
+                signType = SignType.HMACSHA256;
+            }
+            else {
+                throw new Exception(String.format("Unsupported sign_type: %s", signTypeInData));
+            }
+        }
+        return WXPayUtil.isSignatureValid(reqData, this.config.getKey(), signType);
+    }
+    
+    /**
+     * 作用：查询订单<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    @Override
+    public PayPreOrderCallbackDTO orderQuery(PayOrderQueryDTO payOrderQueryDTO) {
+    	payOrderQueryDTO = (PayOrderQueryDTO) this.fillRequestDTO(payOrderQueryDTO);
+    	PayPreOrderCallbackDTO payPreOrderCallbackDTO = null;
+    	try {
+    		//请求参数
+        	Map<String, String> resqData = XmlUtil.bean2MapUnderline2Hump(payOrderQueryDTO);
+        	//返回参数
+        	Map<String, String> respData = this.orderQuery(resqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        	
+        	payPreOrderCallbackDTO = XmlUtil.map2Bean(respData, PayPreOrderCallbackDTO.class);
+    	} catch(Exception e) {
+    		
+    	}
+    	return payPreOrderCallbackDTO;
+    }
+
+    /**
+     * 作用：查询订单<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+     * @param reqData 向wxpay post的请求数据 int
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return API返回数据
+     * @throws Exception
+     */
+    private Map<String, String> orderQuery(Map<String, String> reqData, int connectTimeoutMs, int readTimeoutMs) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_ORDERQUERY_URL_SUFFIX;
+        }
+        else {
+            url = WXPayConstants.ORDERQUERY_URL_SUFFIX;
+        }
+        String respXml = this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
+        return this.processResponseXml(respXml);
+    }
 
 	@Override
 	public Map<String, String> refundQuery(PayRefundDTO payRefundDTO) {
@@ -554,6 +630,17 @@ public class WXPayApiImpl implements WXPayApi {
 			url = WXPayConstants.QUERY_TRANSFER_TO_BANK_URL_SUFFIX;
 		}
 		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
+	@Override
+	public String publicKey(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.PUBLICKEY_URL_SUFFIX ;
+		}
+		return this.requestWithCert(url, reqData, 6*1000, 8*1000);
 	}
 
 }

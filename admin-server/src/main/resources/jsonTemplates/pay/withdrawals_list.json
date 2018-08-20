@@ -36,7 +36,7 @@
       {
         "name": "导出Excel",
         "event": {
-          "type": "dowload",
+          "type": "export",
           "ajaxType": "get",
           "path": "/pay/verify/storeWithdrawalsListExport"
         }

@@ -11,6 +11,16 @@ spring:
   sleuth:
     sampler:
       probability: 0.0
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 30
+      idle-timeout: 180000
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: select 1
 
 management:
   endpoints:
@@ -22,3 +32,11 @@ management:
   endpoint:
     shutdown:
       enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 10
+    lease-renewal-interval-in-seconds: 5
+  client:
+    registry-fetch-interval-seconds: 5

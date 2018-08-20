@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.mq.MQHandler;
 import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import com.winhxd.b2c.common.mq.support.zipkin.ZipkinRabbitConfig;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,6 +87,11 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Bean
     public StringMessageSender stringMessageSender() {
         return new StringMessageSender();
+    }
+
+    @Bean
+    public MessageSendUtils messageSendUtils() {
+        return new MessageSendUtils();
     }
 
     @Bean

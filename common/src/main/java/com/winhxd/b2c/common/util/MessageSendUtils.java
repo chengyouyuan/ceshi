@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @className MessageSendUtils
  * @description 发送消息工具类（云信/短信/小程序模板）
  */
-@Component
 public class MessageSendUtils {
     @Autowired
     private StringMessageSender sender;

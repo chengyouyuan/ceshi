@@ -21,6 +21,8 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import org.apache.logging.log4j.LogManager;
@@ -63,7 +65,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
     public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
@@ -74,7 +76,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
         //计算门店资金

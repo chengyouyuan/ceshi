@@ -247,7 +247,7 @@
       <if test="condition.applyRuleType!=null and  condition.applyRuleType!=''">
         and a.apply_rule_type = #{condition.applyRuleType}
       </if>
-
+     ORDER BY a.created desc
 
   </select>
 

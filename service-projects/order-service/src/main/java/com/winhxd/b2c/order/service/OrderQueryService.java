@@ -13,7 +13,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
 /**
  * 订单查询接口,提供订单查询方法
@@ -136,6 +136,6 @@ public interface OrderQueryService {
      * @param openid
      * @return
      */
-    PayPreOrderVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId,
+    OrderPayVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId,
             String openid);
 }

@@ -220,7 +220,7 @@
             {
               "id": "9_3_1",
               "menuName": "适用对象规则新增",
-              "path": "appliyObjectRule/index",
+              "path": "/appliyObjectRule/index",
               "configKey":"",
               "permission": ""
             },

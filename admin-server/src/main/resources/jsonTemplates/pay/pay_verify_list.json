@@ -22,7 +22,8 @@
       {
         "name": "核销",
         "event": {
-          "type": "patch",
+          "type": "batch",
+          "params": [ "storeId", "lastRecordedTime" ],
           "ajaxType": "get",
           "path": "/pay/verify/verifyBySummary"
         }

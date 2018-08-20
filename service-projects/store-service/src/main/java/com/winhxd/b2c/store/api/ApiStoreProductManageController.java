@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winhxd.b2c.common.domain.common.model.BaseFile;
-import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +30,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductConditionByPage;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -105,8 +104,8 @@ public class ApiStoreProductManageController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-            @ApiResponse(code = BusinessCode.CODE_1006, message = "账号未启用！"),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！") })
+            @ApiResponse(code = BusinessCode.CODE_101202, message = "账号未启用！"),
+            @ApiResponse(code = BusinessCode.CODE_101201, message = "参数无效！") })
     @PostMapping(value = "1012/v1/allowPutawayProdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ProductMsgVO> allowPutawayProdList(@RequestBody AllowPutawayProdCondition condition) {
         ResponseResult<ProductMsgVO> responseResult = new ResponseResult<>();
@@ -114,7 +113,7 @@ public class ApiStoreProductManageController {
         logger.info("B端获取可上架商品数据接口入参为：{}", condition);
         // 参数校验
         if (!checkParam(condition)) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_101201);
             return responseResult;
         }
         // 账号信息校验
@@ -151,7 +150,7 @@ public class ApiStoreProductManageController {
                 prodConditionByPage.setHxdProductSkus(hxdBuyedProdSkuList);
             } else {
                 // 没有下过单
-                responseResult= new ResponseResult<>(BusinessCode.CODE_1006);
+                responseResult= new ResponseResult<>(BusinessCode.CODE_101202);
                 return responseResult;
             }
         }
@@ -208,9 +207,8 @@ public class ApiStoreProductManageController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效！"),
-            @ApiResponse(code = BusinessCode.CODE_200012, message = "部分skuCode无效！"),
-            @ApiResponse(code = BusinessCode.CODE_200013, message = "部分商品已上架！") })
+            @ApiResponse(code = BusinessCode.CODE_101301, message = "参数无效！"),
+            @ApiResponse(code = BusinessCode.CODE_101302, message = "部分skuCode无效！") })
     @PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
         ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -223,7 +221,7 @@ public class ApiStoreProductManageController {
         logger.info("B端商品操作接口入参为：{}", condition);
         // 参数校验
         if (!checkParam(condition)) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_101301);
             return responseResult;
         }
         // 操作类型
@@ -264,11 +262,11 @@ public class ApiStoreProductManageController {
                     // 商品上架
                     this.storeProductManageService.batchPutawayStoreProductManage(storeId, putawayInfo, prodSkuInfo);
                 } else {
-                    responseResult = new ResponseResult<>(BusinessCode.CODE_200012);
+                    responseResult = new ResponseResult<>(BusinessCode.CODE_101302);
                     return responseResult;
                 }
             } else {
-                responseResult = new ResponseResult<>(BusinessCode.CODE_200012);
+                responseResult = new ResponseResult<>(BusinessCode.CODE_101302);
                 return responseResult;
             }
 
@@ -288,7 +286,8 @@ public class ApiStoreProductManageController {
     @ApiOperation(value = "B端添加门店提报商品接口", notes = "B端添加门店提报商品接口")
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+            @ApiResponse(code = BusinessCode.CODE_101401, message = "参数无效！")})
     @PostMapping(value = "1014/v1/saveStoreSubmitProduct", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> saveStoreSubmitProduct(@RequestBody StoreSubmitProductCondition condition)
             throws IOException {
@@ -296,7 +295,7 @@ public class ApiStoreProductManageController {
 
         logger.info("B端添加门店提报商品接口入参为：{}", condition);
         if (condition == null || StringUtils.isEmpty(condition.getProdImage1())) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_101401);
             return responseResult;
         }
         // 获取当前门店用户
@@ -319,7 +318,8 @@ public class ApiStoreProductManageController {
     @ApiOperation(value = "B端门店提报商品列表接口", notes = "B端门店提报商品列表接口")
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+            @ApiResponse(code = BusinessCode.CODE_101501, message = "参数无效")})
     @PostMapping(value = "1015/v1/findStoreSubmitProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<StoreSubmitProductVO>> findStoreSubmitProductList(
             @RequestBody StoreSubmitProductCondition condition) {
@@ -334,7 +334,7 @@ public class ApiStoreProductManageController {
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_101501);
             return responseResult;
         }
         Long storeId = storeUser.getBusinessId();
@@ -419,7 +419,8 @@ public class ApiStoreProductManageController {
     @ApiOperation(value = "B端我的商品管理接口", notes = "B端我的商品管理接口")
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
+            @ApiResponse(code = BusinessCode.CODE_102801, message = "参数无效")})
     @PostMapping(value = "1028/v1/myStoreProdManage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<StoreProdSimpleVO>> myStoreProdManage(
             @RequestBody StoreProductManageCondition condition) {
@@ -428,7 +429,7 @@ public class ApiStoreProductManageController {
         logger.info("B端我的商品管理接口入参为：{}", condition);
         // 参数校验
         if (!checkParam(condition)) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_102801);
             return responseResult;
         }
         // 获取当前门店用户
@@ -532,11 +533,12 @@ public class ApiStoreProductManageController {
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-            @ApiResponse(code = BusinessCode.CODE_1016, message = "图片格式不正确！"),
-            @ApiResponse(code = BusinessCode.CODE_1017, message = "图片上传失败！"),
-            @ApiResponse(code = BusinessCode.CODE_1018, message = "图片大小超过300KB！"),
-            @ApiResponse(code = BusinessCode.CODE_1019, message = "图片名称不能为空！"),
-            @ApiResponse(code = BusinessCode.CODE_1020, message = "图片不能为空！") })
+            @ApiResponse(code = BusinessCode.CODE_104901, message = "参数无效"),
+            @ApiResponse(code = BusinessCode.CODE_100016, message = "图片格式不正确！"),
+            @ApiResponse(code = BusinessCode.CODE_100017, message = "图片上传失败！"),
+            @ApiResponse(code = BusinessCode.CODE_100018, message = "图片大小超过300KB！"),
+            @ApiResponse(code = BusinessCode.CODE_100019, message = "图片名称不能为空！"),
+            @ApiResponse(code = BusinessCode.CODE_100020, message = "图片不能为空！") })
     @PostMapping(value = "1049/v1/uploadSubmitProductImg", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<ProductImageVO>> uploadSubmitProductImg(MultipartHttpServletRequest imageFiles)
             throws  Exception{
@@ -550,7 +552,7 @@ public class ApiStoreProductManageController {
         }
         logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
         if (imageFiles == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_104901);
             return responseResult;
         }
         List<MultipartFile> multipartFiles = new ArrayList<>();
@@ -578,7 +580,7 @@ public class ApiStoreProductManageController {
         }
 
         if (multipartFiles.size() > MAX_UPLOAD_IMAGE_COUNT || multipartFiles.size() <= 0) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1017);
+            responseResult = new ResponseResult<>(BusinessCode.CODE_100017);
             return responseResult;
         }
 

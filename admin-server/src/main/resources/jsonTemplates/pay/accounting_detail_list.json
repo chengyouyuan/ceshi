@@ -22,7 +22,8 @@
       {
         "name": "恢复费用核销",
         "event": {
-          "type": "patch",
+          "type": "batch",
+          "params": [ "id" ],
           "ajaxType": "get",
           "path": "/pay/verify/accountingDetailRestore"
         }
@@ -30,7 +31,8 @@
       {
         "name": "暂缓",
         "event": {
-          "type": "patch",
+          "type": "batch",
+          "params": [ "id" ],
           "ajaxType": "get",
           "path": "/pay/verify/accountingDetailPause"
         }
@@ -38,7 +40,8 @@
       {
         "name": "确认结算",
         "event": {
-          "type": "patch",
+          "type": "batch",
+          "params": [ "id" ],
           "ajaxType": "get",
           "path": "/pay/verify/verifyByDetail"
         }

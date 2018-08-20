@@ -22,45 +22,88 @@ public final class BusinessCode {
     public static final int CODE_1006 = 1006;
     /** 参数无效 */
     public static final int CODE_1007 = 1007;
-    /** 验证码错误 */
-    public static final int CODE_1008 = 1008;
     /** 未定义的API */
     public static final int CODE_1009 = 1009;
-    /** 该微信号已绑定过账号 */
-    public static final int CODE_1010 = 1010;
-    /** 微信快捷登录绑定账号无效 */
-    public static final int CODE_1011 = 1011;
-    /**
-     * 验证码请求时长没有超过一分钟
-     */
-    public static final int CODE_1012 = 1012;
     /** 该账号已存在 */
     public static final int CODE_1013 = 1013;
     /**token参数为空*/
     public static final int CODE_1014 = 1014;
-    /**请求超时*/
-    public static final int CODE_1015 = 1015;
-    /**您的账号或者密码错误*/
-    public static final int CODE_1021 = 1021;
-    /**您还不是惠下单用户快去注册吧*/
-    public static final int CODE_1022 = 1022;
     /**上传图片格式不正确**/
-    public static final int CODE_1016 = 1016;
+    public static final int CODE_100016 = 100016;
     /**上传图片是失败**/
-    public static final int CODE_1017 = 1017;
+    public static final int CODE_100017 = 100017;
     /**图片大小超过限制**/
-    public static final int CODE_1018= 1018;
+    public static final int CODE_100018= 100018;
     /**图片名称不能为空**/
-    public static final int CODE_1019= 1019;
+    public static final int CODE_100019= 100019;
     /**图片不能为空**/
-    public static final int CODE_1020= 1020;
-    
-
+    public static final int CODE_100020= 100020;
+    /**登录凭证无效，请重新登录！**/
+    public static final int CODE_102701 = 102701;
+    /**业务异常**/
+    public static final int CODE_102702 = 102702;
     /** 测试门店区域:区域重复*/
     public static final int CODE_103901 = 103901;
     /** 测试门店区域:查询区域失败*/
-    public static final int CODE_103902 = 103902;
-
+    public static final int  CODE_103902 = 103902;
+    /**  验证码错误 */
+    public static final int  CODE_100808 = 100808;
+    /** 该微信号已绑定过其它账号 */
+    public static final int  CODE_100810 = 100810;
+    /**您的账号或者密码错误*/
+    public static final int  CODE_100821 = 100821;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int  CODE_100822 = 100822;
+    /**请求超时*/
+    public static final int  CODE_100815 = 100815;
+    /**验证码请求时长没有超过一分钟*/
+    public static final int  CODE_100912 = 100912;
+    /**您还不是惠下单用户快去注册吧*/
+    public static final int  CODE_100922 = 100922;
+    /** 该微信号已绑定过账号 */
+    public static final int  CODE_100910 = 100910;
+    
+    /**1012接口参数无效*/
+    public static final int CODE_101201 = 101201;
+    /**账号未启用*/
+    public static final int CODE_101202 = 101202;
+    
+    /**1013接口参数无效*/
+    public static final int CODE_101301 = 101301;
+    /**门店商品skuCode无效*/
+    public static final int CODE_101302 = 101302;
+    
+    /**1014接口参数无效*/
+    public static final int CODE_101401 = 101401;
+    
+    /**1015接口参数无效*/
+    public static final int CODE_101501 = 101501;
+    
+    /**1024接口参数无效*/
+    public static final int CODE_102401 = 102401;
+    
+    /**1028接口参数无效*/
+    public static final int CODE_102801 = 102801;
+    
+    /**1031接口参数无效*/
+    public static final int CODE_103101 = 103101;
+    /**门店商品skuCode无效*/
+    public static final int CODE_103102 = 103102;
+    
+    /**1049接口参数无效*/
+    public static final int CODE_104901 = 104901;
+    
+    /**验证码错误 */
+    public static final int  CODE_202108 = 202108;
+    /** 该微信号已绑定过其它账号 */
+    public static final int  CODE_202110 = 202110;
+    /**请求超时*/
+    public static final int  CODE_202115 = 202115;
+    /**验证码请求时长没有超过一分钟*/
+    public static final int  CODE_202212 = 202212;
+    /**验证码错误 */
+    public static final int  CODE_202308 = 202308;
+    
     /**用户id参数为空*/
     public static final int CODE_200001 = 200001;
     /**门店id参数为空*/
@@ -83,10 +126,6 @@ public final class BusinessCode {
     public static final int CODE_200010 = 200010;
     /**当前用户和门店已经存在绑定关系*/
     public static final int CODE_200011 = 200011;
-    /**门店商品skuCode无效*/
-    public static final int CODE_200012 = 200012;
-    /**sku已上架**/
-    public static final int CODE_200013 = 200013;
     /**门店小程序码url参数为空*/
     public static final int CODE_200017 = 200017;
     /**门店小程序码图片生成失败*/
@@ -345,6 +384,10 @@ public final class BusinessCode {
     public static final int CODE_610028 = 610028;
     @ApiModelProperty("请输入银行swiftcode")
     public static final int CODE_610029 = 610029;
+    @ApiModelProperty("参数为空")
+    public static final int CODE_610030 = 610030;
+    @ApiModelProperty("请输入微信账号")
+    public static final int CODE_610031 = 610031;
     
     
     

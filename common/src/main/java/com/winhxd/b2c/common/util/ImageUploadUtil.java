@@ -62,7 +62,7 @@ public class ImageUploadUtil {
 		String postFix;
 		if (imageFile == null) {
 			logger.error("上传图片：图片不能为空！");
-			throw   new BusinessException(BusinessCode.CODE_1020);
+			throw   new BusinessException(BusinessCode.CODE_100020);
 			//result = new ResponseResult<>();
 			//return result;
 		}
@@ -144,7 +144,7 @@ public class ImageUploadUtil {
 
 		if (StringUtils.isEmpty(fileName)) {
 			logger.error("上传图片：图片名称不能为空！");
-			throw new BusinessException(BusinessCode.CODE_1019);
+			throw new BusinessException(BusinessCode.CODE_100019);
 			//logger.error("上传图片：图片名称不能为空！");
 			//result = new ResponseResult<>(BusinessCode.CODE_1019);
 			//result.setData(imageVo);
@@ -152,7 +152,7 @@ public class ImageUploadUtil {
 		}
 		if (inputStream == null) {
 			logger.error("上传图片：图片不能为空！");
-			throw new BusinessException(BusinessCode.CODE_1020);
+			throw new BusinessException(BusinessCode.CODE_100020);
 			//result.setData(imageVo);
 			//return result;
 		}
@@ -161,7 +161,7 @@ public class ImageUploadUtil {
 			// 判断图片大小是否超过限制大小，单位KB
 			if (size * NUMBER_1024 < fileSize) {
 				logger.error("上传图片：" + fileName + ",size:" + fileSize + ",图片大小超过" + size + "KB!");
-				throw new BusinessException(BusinessCode.CODE_1018);
+				throw new BusinessException(BusinessCode.CODE_100018);
 				//result = new ResponseResult<>(BusinessCode.CODE_1018);
 				//return result;
 			}
@@ -169,7 +169,7 @@ public class ImageUploadUtil {
 			// 判断图片大小是否超过300KB
 			if (KB_300 < fileSize) {
 				logger.error("上传图片：" + fileName + ",size:" + fileSize + ",图片大小超过300KB!");
-				throw new BusinessException(BusinessCode.CODE_1018);
+				throw new BusinessException(BusinessCode.CODE_100018);
 				//result = new ResponseResult<>(BusinessCode.CODE_1018);
 				//return result;
 			}
@@ -185,7 +185,7 @@ public class ImageUploadUtil {
 			BaseFile baseFile = uploadUtil.httpClientUploadFile(baseHost,fileName, inputStream);
 			if (baseFile == null) {
 				logger.error("上传图片：" + fileName + ",size:" + fileSize + ",图片上传失败!");
-				throw new BusinessException(BusinessCode.CODE_1017);
+				throw new BusinessException(BusinessCode.CODE_100017);
 				//result = new ResponseResult<>(BusinessCode.CODE_1017);
 				//return result;
 			}else{
@@ -196,7 +196,7 @@ public class ImageUploadUtil {
 
 		} else {
 			logger.error("上传图片：" + fileName + ",size:" + fileSize + ",图片格式不正确!");
-			throw new BusinessException(BusinessCode.CODE_1016);
+			throw new BusinessException(BusinessCode.CODE_100016);
 			//result = new ResponseResult<>(BusinessCode.CODE_1016);
 			//return result;
 		}

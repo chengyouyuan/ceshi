@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = VerifyServiceClientFallback.class)
 public interface VerifyServiceClient {
 
@@ -119,6 +121,15 @@ public interface VerifyServiceClient {
      */
     @RequestMapping(value = "/pay/6098/v1/approveStoreWithdrawals", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition);
+
+    /**
+     * 费用明细导出查询
+     *
+     * @param condition
+     * @return
+     */
+    @RequestMapping(value = "/pay/6099/v1/accountingDetailListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition);
 }
 
 @Component
@@ -202,6 +213,12 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
 
     @Override
     public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

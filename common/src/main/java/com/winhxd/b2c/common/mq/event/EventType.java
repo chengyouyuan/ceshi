@@ -27,9 +27,9 @@ public enum EventType {
     EVENT_CUSTOMER_ORDER_FINISHED(OrderInfo.class),
 
     /**
-     * 订单退优惠券事件
+     * 订单取消事件
      */
-    EVENT_ORDER_UNTREAD_COUPON(OrderUntreadCouponCondition.class);
+    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class);
 
     private Class<?> eventObjectClass;
 

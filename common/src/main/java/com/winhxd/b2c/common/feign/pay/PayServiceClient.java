@@ -23,16 +23,16 @@ import feign.hystrix.FallbackFactory;
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
 public interface PayServiceClient {
 	
-	@PostMapping(value = "/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
 	
-	@PostMapping(value = "/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6001/v1/orderPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PayPreOrderVO> orderPay(@RequestBody PayPreOrderCondition condition);
 	
-	@PostMapping(value = "/6003/v1/transfersToChange", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6003/v1/transfersToChange", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition);
 	
-	@PostMapping(value = "/6004/v1/transfersToBank", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/pay/6004/v1/transfersToBank", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Integer> transfersToBank(@RequestBody PayTransfersToWxBankCondition condition);
 	
 }

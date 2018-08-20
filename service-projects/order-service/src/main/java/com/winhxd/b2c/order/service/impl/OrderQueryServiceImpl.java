@@ -334,6 +334,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setOutOrderNo(orderNo);
                 payPreOrderCondition.setDeviceInfo(deviceInfo);
                 payPreOrderCondition.setOpenid(openid);
+                payPreOrderCondition.setPayType(orderInfoDetailVO.getPayTypeDesc());
                 payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
                 ResponseResult<PayPreOrderVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);

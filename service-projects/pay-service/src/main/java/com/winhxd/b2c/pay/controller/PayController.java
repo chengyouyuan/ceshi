@@ -26,7 +26,6 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @Api(tags = "ApiPay")
-@RequestMapping(value = "/pay")
 public class PayController implements PayServiceClient {
 	
 	@Autowired
@@ -48,7 +47,6 @@ public class PayController implements PayServiceClient {
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 	})
-	@PostMapping(value = "/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition){
 		PayRefundVO vo=payService.refundOrder(condition);
 		ResponseResult<PayRefundVO> result=new ResponseResult<>();

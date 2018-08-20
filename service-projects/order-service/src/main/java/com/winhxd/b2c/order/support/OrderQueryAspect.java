@@ -209,8 +209,12 @@ public class OrderQueryAspect {
             }
 
             ResponseResult<List<StoreUserInfoVO>> storeResponseResultData = this.storeServiceClient.findStoreUserInfoList(storeIds);
-             if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
+            if (null != storeResponseResultData && BusinessCode.CODE_OK == storeResponseResultData.getCode()) {
                 List<StoreUserInfoVO> storeInfoList = storeResponseResultData.getData();
+                if (CollectionUtils.isEmpty(storeResponseResultData.getData())) {
+                    logger.info("订单门店信息封装-获取门店信息为空");
+                    return;
+                }
                 for (Object obj : objArr) {
                     Field field = Arrays.stream(obj.getClass().getDeclaredFields()).filter(f -> STORE_ID.equals(f.getName())).findFirst().orElse(null);
                     if (null != field) {
@@ -271,6 +275,10 @@ public class OrderQueryAspect {
             ResponseResult<List<CustomerUserInfoVO>> result = customerServiceclient.findCustomerUserByIds(new ArrayList<>(customerIds));
             if (result != null && result.getCode() == BusinessCode.CODE_OK) {
                 List<CustomerUserInfoVO> customerUserInfoVO1s = result.getData();
+                if (CollectionUtils.isEmpty(customerUserInfoVO1s)) {
+                    logger.info("订单用户信息封装-获取用户信息为空");
+                    return;
+                }
                 Map<Long, CustomerUserInfoVO> customerUserInfoVOMap = new HashMap<>();
                 for (Iterator iterator = customerUserInfoVO1s.iterator(); iterator.hasNext(); ) {
                     CustomerUserInfoVO customerUserInfoVO1 = (CustomerUserInfoVO) iterator.next();

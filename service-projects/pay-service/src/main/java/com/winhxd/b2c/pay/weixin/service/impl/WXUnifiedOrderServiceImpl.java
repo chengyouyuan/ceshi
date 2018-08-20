@@ -169,6 +169,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setPayStatus(BillStatusEnum.PAYING.getCode());
 		
 		return payPreOrderVO;
 	}
@@ -182,10 +183,10 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @param status
 	 * @return
 	 */
-	private PayBill getPayBill(List<PayBill> list, int status){
+	private PayBill getPayBill(List<PayBill> list, Short status){
 		PayBill bill = null;
 		for(PayBill pb : list) {
-			if(status == pb.getStatus()){
+			if(status.equals(pb.getStatus())){
 				bill = pb;
 				break;
 			}

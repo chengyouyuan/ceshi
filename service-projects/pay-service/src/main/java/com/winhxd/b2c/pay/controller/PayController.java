@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.pay.service.PayService;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "ApiPay")
 @RestController
 public class PayController implements PayServiceClient {
 	

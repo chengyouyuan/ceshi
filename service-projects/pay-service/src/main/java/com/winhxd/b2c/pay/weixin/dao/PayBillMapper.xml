@@ -481,15 +481,16 @@
   </select>
 
   <!-- 根据真实订单号查询流水 -->
-  <select id="selectByOutOrderNo" resultType="com.winhxd.b2c.pay.weixin.model.PayBill" parameterType="java.lang.String" >
-    select status
+  <select id="selectByOutOrderNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+	<include refid="Base_Column_List" />
     from pay_bill
     where out_order_no = #{outOrderNo}
     order by created desc
   </select>
   
   <!-- 根据支付流水号查询流水 -->
-  <select id="selectByOutTradeNo" resultType="com.winhxd.b2c.pay.weixin.model.PayBill" parameterType="java.lang.String" >
+  <select id="selectByOutTradeNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
 	<include refid="Base_Column_List" />
     from pay_bill

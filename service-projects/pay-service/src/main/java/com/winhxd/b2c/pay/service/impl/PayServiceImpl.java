@@ -595,6 +595,7 @@ public class PayServiceImpl implements PayService{
 			vo.setSignType(signType);
 			vo.setTimeStamp(timeStamp);
 			vo.setAppid(appid);
+			logger.info("------payvo----"+vo.toString());
 		}
 		
 		return vo;

@@ -166,7 +166,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
 		// 主动查询，更新流水
 		PayOrderQueryDTO payOrderQueryDTO = new PayOrderQueryDTO();
-		payOrderQueryDTO.setOutRradeNo(bill.getOutTradeNo());
+		payOrderQueryDTO.setOutTradeNo(bill.getOutTradeNo());
 		PayPreOrderCallbackDTO payPreOrderCallbackDTO = wxPayApi.orderQuery(payOrderQueryDTO);
 		if(payPreOrderCallbackDTO == null || 
 				PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {

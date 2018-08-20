@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.api;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -168,7 +169,12 @@ public class ApiPayStoreBindBankCardController {
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
 //TODO	--方便测试，暂不过期 	cache.expire(CacheName.PAY_VERIFICATION_CODE+businessId, MOBILEVERIFICATIONCODE);
-		messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
+		if(StringUtils.isEmpty(condition.getMobile())){
+			result.setCode(BusinessCode.CODE_610015);
+			LOGGER.info("手机号为空");
+		}else{
+			messageServiceClient.sendSMS(condition.getMobile(), "绑定银行卡提示文案:手机验证码："+ modileVerifyCode);
+		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
 	}

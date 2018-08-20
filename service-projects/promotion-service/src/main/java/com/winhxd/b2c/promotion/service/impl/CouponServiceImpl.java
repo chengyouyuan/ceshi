@@ -106,7 +106,7 @@ public class CouponServiceImpl implements CouponService {
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setCouponType((short)1);
-        couponActivity.setStatus((short)1);
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
         couponActivity.setActivityStatus((short)1);
         couponActivity.setType((short)2);
         List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
@@ -452,12 +452,12 @@ public class CouponServiceImpl implements CouponService {
         logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
-            couponTemplateUse.setStatus(Short.valueOf(condition.getStatus()));
+            couponTemplateUse.setStatus(CouponActivityEnum.UNTREAD.getCode());
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
 
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(couponTemplateUse.getSendId());
-            couponTemplateSend.setStatus(Short.valueOf(condition.getStatus()));
+            couponTemplateSend.setStatus(CouponActivityEnum.UNTREAD.getCode());
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
         logger.info("订单退优惠券结束,订单号"+condition.getOrderNo());
@@ -467,7 +467,6 @@ public class CouponServiceImpl implements CouponService {
     @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_UNTREAD_COUPON_HANDLER)
     public void eventOrderUntreadCoupon(String orderNo, OrderInfo order) {
         OrderUntreadCouponCondition condition = new OrderUntreadCouponCondition();
-        condition.setStatus("4");
         condition.setOrderNo(order.getOrderNo());
         this.orderUntreadCoupon(condition);
     }

@@ -534,7 +534,7 @@ public class PayServiceImpl implements PayService{
 		String spbillCreateIp=condition.getSpbillCreateIp();
 		String body=condition.getBody();
 		String openid=condition.getOpenid();
-		String payType=condition.getPayType();
+		Short payType=condition.getPayType();
 		BigDecimal totalAmount=condition.getTotalAmount();
 		if (StringUtils.isBlank(orderNo)) {
 			logger.info(log+"--订单号为空");
@@ -554,7 +554,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--设备ip为空");
 			throw new BusinessException(BusinessCode.CODE_600105);
 		}
-		if (StringUtils.isBlank(payType)) {
+		if (payType==null) {
 			logger.info(log+"--支付方式为空");
 			throw new BusinessException(BusinessCode.CODE_600106);
 		}
@@ -582,7 +582,7 @@ public class PayServiceImpl implements PayService{
 				 payOrderPayment.setOrderTransactionNo(orderTransactionNo);
 				 payOrderPayment.setCreated(new Date());
 				 payOrderPayment.setBuyerId(openid);
-				 payOrderPayment.setPayType(Short.parseShort(payType));
+				 payOrderPayment.setPayType(payType);
 				 payOrderPayment.setRealPaymentMoney(totalAmount);
 				 payOrderPayment.setCallbackStatus(PayStatusEnums.PAYING.getCode());
 				 payOrderPayment.setAppid(appid);

@@ -3,8 +3,6 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
 import com.winhxd.b2c.pay.weixin.util.XmlUtil;

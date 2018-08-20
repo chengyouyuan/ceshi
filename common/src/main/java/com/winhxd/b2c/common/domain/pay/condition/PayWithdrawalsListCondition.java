@@ -32,4 +32,7 @@ public class PayWithdrawalsListCondition extends PagedCondition {
 
     @ApiModelProperty("提现金额结束")
     private BigDecimal totalFeeEnd;
+
+    @ApiModelProperty("是否查询全部数据")
+    private Boolean isQueryAll = false;
 }

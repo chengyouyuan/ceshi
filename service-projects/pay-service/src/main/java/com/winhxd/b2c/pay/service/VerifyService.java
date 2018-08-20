@@ -392,7 +392,9 @@ public class VerifyService {
      * @return
      */
     public Page<PayWithdrawalsVO> findPayWithdrawalsList(PayWithdrawalsListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Set<Long> storeSet = new HashSet<>();
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
         for (PayWithdrawalsVO vo : page.getResult()) {

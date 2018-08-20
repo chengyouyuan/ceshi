@@ -137,10 +137,10 @@ public class VerifyController {
         return new ResponseResult<>(count);
     }
 
-    @ApiOperation(value = "费用明细导出查询", notes = "按明细显示")
-    @PostMapping("/pay/6099/v1/accountingDetailListExport")
-    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
-        List<VerifyDetailVO> list = verifyService.findAccountingDetailList(condition);
+    @ApiOperation(value = "门店提现申请导出查询")
+    @PostMapping("/pay/6099/v1/storeWithdrawalsListExport")
+    public ResponseResult<List<PayWithdrawalsVO>> storeWithdrawalsListExport(@RequestBody PayWithdrawalsListCondition condition) {
+        List<PayWithdrawalsVO> list = verifyService.findPayWithdrawalsList(condition);
         return new ResponseResult<>(list);
     }
 }

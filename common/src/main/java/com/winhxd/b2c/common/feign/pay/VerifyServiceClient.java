@@ -123,13 +123,13 @@ public interface VerifyServiceClient {
     ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition);
 
     /**
-     * 费用明细导出查询
+     * 门店提现申请导出查询
      *
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/pay/6099/v1/accountingDetailListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition);
+    @RequestMapping(value = "/pay/6099/v1/storeWithdrawalsListExport", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<PayWithdrawalsVO>> storeWithdrawalsListExport(PayWithdrawalsListCondition condition);
 }
 
 @Component
@@ -218,7 +218,7 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
     }
 
     @Override
-    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
+    public ResponseResult<List<PayWithdrawalsVO>> storeWithdrawalsListExport(PayWithdrawalsListCondition condition) {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

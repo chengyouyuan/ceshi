@@ -3,7 +3,7 @@ package com.winhxd.b2c.admin.module.pay.controller;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
-import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
@@ -55,18 +55,6 @@ public class VerifyController {
     @ResponseBody
     public ResponseResult<?> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
         return verifyServiceClient.accountingDetailList(condition);
-    }
-
-    @ApiOperation(value = "费用明细导出Excel", notes = "按明细显示")
-    @RequestMapping(name = "/accountingDetailListExport")
-    public ResponseEntity<byte[]> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
-        condition.setIsQueryAll(true);
-        ResponseResult<List<VerifyDetailVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            List<VerifyDetailVO> list = responseResult.getData();
-            return ExcelUtils.exp(list, "费用明细");
-        }
-        return null;
     }
 
     @ApiOperation(value = "费用明细结算", notes = "按明细结算")
@@ -127,6 +115,18 @@ public class VerifyController {
     @ResponseBody
     public ResponseResult<?> storeWithdrawList(@RequestBody PayWithdrawalsListCondition condition) {
         return verifyServiceClient.storeWithdrawalsList(condition);
+    }
+
+    @ApiOperation(value = "门店提现申请导出Excel")
+    @RequestMapping(name = "/storeWithdrawalsListExport")
+    public ResponseEntity<byte[]> storeWithdrawalsListExport(@RequestBody PayWithdrawalsListCondition condition) {
+        condition.setIsQueryAll(true);
+        ResponseResult<List<PayWithdrawalsVO>> responseResult = verifyServiceClient.storeWithdrawalsListExport(condition);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            List<PayWithdrawalsVO> list = responseResult.getData();
+            return ExcelUtils.exp(list, "门店提现申请");
+        }
+        return null;
     }
 
     @ApiOperation(value = "批准门店提现申请")

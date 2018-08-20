@@ -5,10 +5,13 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -40,6 +43,9 @@ public class BackStageStoreController {
 
     @Autowired
     private RegionServiceClient regionServiceClient;
+
+    @Autowired
+    private StoreServiceClient storeServiceClient;
 
     @ApiOperation("门店账户列表")
     @ApiResponses({
@@ -131,5 +137,11 @@ public class BackStageStoreController {
         return responseResult;
     }
 
-
+    @ApiOperation(value = "根据条件查询门店的分页数据信息", notes = "根据条件查询门店的分页数据信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @PostMapping(value = "/1058/v1/findStorePageInfo")
+    public ResponseResult<PagedList<StoreUserInfoVO>> findStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
+        ResponseResult<PagedList<StoreUserInfoVO>> responseResult = storeServiceClient.queryStorePageInfo(condition);
+        return responseResult;
+    }
 }

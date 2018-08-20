@@ -22,7 +22,9 @@
       {
         "name": "核销",
         "event": {
-          "type": "reset"
+          "type": "patch",
+          "ajaxType": "get",
+          "path": "/pay/verify/verifyBySummary"
         }
       }
     ],

@@ -22,7 +22,7 @@
       {
         "name": "恢复费用核销",
         "event": {
-          "type": "submit",
+          "type": "patch",
           "ajaxType": "get",
           "path": "/pay/verify/accountingDetailRestore"
         }
@@ -30,7 +30,7 @@
       {
         "name": "暂缓",
         "event": {
-          "type": "submit",
+          "type": "patch",
           "ajaxType": "get",
           "path": "/pay/verify/accountingDetailPause"
         }
@@ -38,7 +38,7 @@
       {
         "name": "确认结算",
         "event": {
-          "type": "submit",
+          "type": "patch",
           "ajaxType": "get",
           "path": "/pay/verify/verifyByDetail"
         }

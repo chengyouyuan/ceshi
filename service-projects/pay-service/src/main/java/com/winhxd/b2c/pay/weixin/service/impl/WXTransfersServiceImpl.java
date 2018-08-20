@@ -129,7 +129,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      */
     private PayTransfersForWxChangeDTO getReqParamForChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception {
         PayTransfersForWxChangeDTO forWxChangeDTO = new PayTransfersForWxChangeDTO();
-        forWxChangeDTO.setMchAppid(payConfig.getMchAppID());
+        //这里好像不对, 但又只能这样写
+        forWxChangeDTO.setMchAppid(payConfig.getAppID());
         forWxChangeDTO.setMchid(payConfig.getMchID());
         /**
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同
@@ -225,9 +226,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * @throws Exception
      */
     private PayTransfersQueryForWxChangeResponseDTO getExactResultForWxChange(PayTransfersForWxChangeDTO wxChangeDTO, int queryTimes) throws Exception {
-        if(queryTimes <= 0){
-            return new PayTransfersQueryForWxChangeResponseDTO();
-        }
         PayTransfersQueryForWxChangeResponseDTO queryForWxChangeResponseDTO = new PayTransfersQueryForWxChangeResponseDTO();
         //请求查询接口参数
         PayTransfersQueryForWxChangeDTO queryForWxChangeDTO = new PayTransfersQueryForWxChangeDTO();
@@ -242,7 +240,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxChangeResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
         }
-        if(PayTransfersStatus.PROCESSING.getCode().equals(queryForWxChangeResponseDTO.getStatus())){
+        if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxChangeResponseDTO.getStatus()) &&
+                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxChangeResponseDTO.getStatus())){
             logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
             queryForWxChangeResponseDTO = getExactResultForWxChange(wxChangeDTO, --queryTimes);
@@ -468,8 +467,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }
         if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxBankResponseDTO.getStatus()) &&
-                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())
-                ){
+                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())){
             logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
             queryForWxBankResponseDTO = getExactResultForWxBank(wxBankDTO, --queryTimes);

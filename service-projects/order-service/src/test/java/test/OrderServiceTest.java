@@ -111,14 +111,14 @@ public class OrderServiceTest {
     
     @Test
     public void testOrderPayNotify() throws InterruptedException {
-        orderService.orderPaySuccessNotify("C18081809917533139","123123123123");
+        orderService.orderPaySuccessNotify("C18082013625541074","123123123123");
         Thread.sleep(1000000L);
     }
     
     @Test
     public void testOrderConfirm4Store() throws InterruptedException {
         OrderConfirmCondition orderConfirmCondition = new OrderConfirmCondition();
-        orderConfirmCondition.setOrderNo("C18082013436216345");
+        orderConfirmCondition.setOrderNo("C18081819851948172");
         orderConfirmCondition.setStoreId(3L);
         orderConfirmCondition.setOrderTotal(new BigDecimal("0.1"));
         orderService.orderConfirm4Store(orderConfirmCondition);
@@ -128,9 +128,9 @@ public class OrderServiceTest {
     @Test
     public void testOrderPickup4Store() throws InterruptedException {
         OrderPickupCondition orderPickupCondition = new OrderPickupCondition();
-        orderPickupCondition.setOrderNo("C18081809917533139");
-        orderPickupCondition.setStoreId(12L);
-        orderPickupCondition.setPickupCode("6937");
+        orderPickupCondition.setOrderNo("C18082013436216345");
+        orderPickupCondition.setStoreId(3L);
+        orderPickupCondition.setPickupCode("3309");
         orderService.orderPickup4Store(orderPickupCondition);
         Thread.sleep(1000000L);
     }

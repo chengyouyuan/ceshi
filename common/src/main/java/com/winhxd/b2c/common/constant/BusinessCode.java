@@ -309,9 +309,9 @@ public final class BusinessCode {
     public static final int ORDER_REFUND_CLOSED = 400021;
 
     @ApiModelProperty("订单获取支付信息失败")
-    public static final int ORDER_GET_PAY_INFO_ERROR = 400018;
+    public static final int ORDER_GET_PAY_INFO_ERROR = 400022;
     @ApiModelProperty("订单号和用户不匹配")
-    public static final int ORDER_INFO_NOT_MATCH_ERROR = 400020;
+    public static final int ORDER_INFO_NOT_MATCH_ERROR = 400023;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;

@@ -84,10 +84,17 @@ public class XmlUtil {
     	if(strXML == null) {
     		return null;
     	}
-    	T bean = c.newInstance();
     	Map<String, String> map = xml2MapUnderline2Hump(strXML);
+    	
+		return map2Bean(map, c);
+    }
+    
+    public static <T> T map2Bean(Map<String, String> map,Class<T> c) throws Exception{
+    	T bean = c.newInstance();
     	for (Map.Entry<String, String> entry : map.entrySet()) {
     		String fieldName = entry.getKey();
+    		//下划线转驼峰
+    		fieldName = underlineToHump(fieldName);
     		String fieldValue = entry.getValue();
     		Field field = getField(c, fieldName);
     		Class<?> fieldTypeClass = field.getType();

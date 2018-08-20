@@ -330,6 +330,10 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(condition.getId() == null && condition.getActivityStatus() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
+        //一期只有停止活动
+        if(condition.getActivityStatus()==CouponActivityEnum.ACTIVITY_OPEN.getCode()){
+            condition.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
+        }
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.updateCouponActivityStatus(condition);
         responseResult.setCode(BusinessCode.CODE_OK);

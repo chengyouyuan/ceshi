@@ -46,6 +46,7 @@
     <result column="couponName" jdbcType="VARCHAR" property="couponName" />
     <result column="couponCode" jdbcType="VARCHAR" property="couponCode" />
     <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="store_id" jdbcType="VARCHAR" property="storeId" />
     <result column="store_mobile" jdbcType="VARCHAR" property="storeMobile" />
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
     <result column="activityCode" jdbcType="VARCHAR" property="activityCode" />
@@ -60,6 +61,7 @@
   <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
+    sui.id AS store_id,
     sui.`store_name`,
     sui.`store_mobile`,
     ca.`name` AS activityName,

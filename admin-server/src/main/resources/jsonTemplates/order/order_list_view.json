@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/customer/user/findCustomerPageInfo",
+    "path": "/customer/user/1059/v1/findCustomerPageInfo",
     "type": "report",
     "id": "order_list_win",
     "code": "order_list_win",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/customer/user/findCustomerPageInfo"
+          "path": "/customer/user/1059/v1/findCustomerPageInfo"
         }
       },
       {

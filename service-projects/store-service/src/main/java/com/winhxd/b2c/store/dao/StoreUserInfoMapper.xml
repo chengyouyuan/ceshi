@@ -93,7 +93,7 @@
                 AND id = #{id}
             </if>
             <if test="contactMobile != null and contactMobile != ''">
-                AND contact_mobile = #{contactMobile}
+                AND contact_mobile LIKE '%${contactMobile}%'
             </if>
             <if test="storeName != null and storeName != ''">
                 AND store_name LIKE '%${storeName}%'

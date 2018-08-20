@@ -360,10 +360,10 @@ public class CommonOrderServiceImpl implements OrderService {
         payRefundCondition.setCreatedBy(operatorId);
         payRefundCondition.setCreatedByName(operator);
         payRefundCondition.setRefundDesc(reason);
-        PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
-        if (!payRefundVO.isStatus()) {
-            throw new BusinessException(BusinessCode.ORDER_REFUND_FAIL, "申请退款申请异常");
-        }
+//        PayRefundVO payRefundVO = payServiceClient.orderRefund(payRefundCondition).getData();
+//        if (!payRefundVO.isStatus()) {
+//            throw new BusinessException(BusinessCode.ORDER_REFUND_FAIL, "申请退款申请异常");
+//        }
     }
 
 

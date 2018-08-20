@@ -29,7 +29,11 @@ public enum EventTypeHandler {
     /**
      * 订单取消退款
      */
-    EVENT_CUSTOMER_ORDER_REFUND_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL);
+    EVENT_CUSTOMER_ORDER_REFUND_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
+	/**
+	 * 订单退款 完成事件
+	 */
+	EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER_HANDLER(EventType.EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER);
 
     private EventType eventType;
 

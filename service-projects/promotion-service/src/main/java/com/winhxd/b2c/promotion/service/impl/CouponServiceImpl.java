@@ -445,6 +445,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         if(null ==condition.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
@@ -464,6 +465,10 @@ public class CouponServiceImpl implements CouponService {
 
     @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_UNTREAD_COUPON_HANDLER)
     public void eventOrderUntreadCoupon(String orderNo, OrderInfo order) {
+        if(null ==order.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         OrderUntreadCouponCondition condition = new OrderUntreadCouponCondition();
         condition.setOrderNo(order.getOrderNo());
         this.orderUntreadCoupon(condition);
@@ -473,6 +478,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
         if(sendIds.isEmpty()){
+            logger.error("CouponServiceImpl.revokeCoupon 优惠券发放id为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         for(int i =0 ;i<sendIds.size();i++){
@@ -492,6 +498,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
         if(null == couponCondition.getOrderNo()){
+            logger.error("CouponServiceImpl.couponCondition-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());

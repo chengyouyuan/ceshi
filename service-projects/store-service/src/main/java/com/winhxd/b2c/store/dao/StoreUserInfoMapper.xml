@@ -107,6 +107,7 @@
         FROM
         store_user_info
         <where>
+            and store_status != 0
             <if test="storeMobile != null and storeMobile != ''">
                 AND store_mobile LIKE '%${storeMobile}%'
             </if>

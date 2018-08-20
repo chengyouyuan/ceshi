@@ -1,5 +1,6 @@
-package com.winhxd.b2c.common.domain.promotion.util;
+package com.winhxd.b2c.admin.utils;
 
+import com.winhxd.b2c.common.domain.promotion.util.BaseExcelDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 

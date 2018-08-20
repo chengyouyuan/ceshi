@@ -1137,6 +1137,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     if (price == null) {
                         return null;
                     }
+                    orderItem.setPrice(price);
                     orderTotal = orderTotal.add(price.multiply(new BigDecimal(orderItem.getAmount()))
                             .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                 } else {

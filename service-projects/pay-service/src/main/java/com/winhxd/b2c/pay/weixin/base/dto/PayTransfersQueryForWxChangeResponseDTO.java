@@ -88,6 +88,11 @@ public class PayTransfersQueryForWxChangeResponseDTO {
     private String transferTime;
 
     /**
+     * 微信支付成功时间
+     */
+    private String paymentTime;
+
+    /**
      * 付款描述
      */
     private String desc;

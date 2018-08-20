@@ -27,7 +27,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * ValueTest
+ * TransfersTest
  *
  * @Author yindanqing
  * @Date 2018/8/18 14:47
@@ -35,7 +35,7 @@ import java.util.TreeMap;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ValueTest {
+public class TransfersTest {
 
     @Autowired
     private PayConfig payConfig;
@@ -57,7 +57,7 @@ public class ValueTest {
         changeCondition.setPartnerTradeNo("T18082010527374800");
         changeCondition.setAccountId(openID);
         changeCondition.setAccountName("武富赟");
-        changeCondition.setTotalAmount(new BigDecimal("0.30"));
+        changeCondition.setTotalAmount(new BigDecimal("1.00"));
         changeCondition.setDesc("研发用户提现demo.");
         changeCondition.setSpbillCreateIp("106.38.97.194");
         changeCondition.setOperaterID("8");

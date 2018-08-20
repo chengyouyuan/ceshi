@@ -1,7 +1,12 @@
 package com.winhxd.b2c.admin.utils;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import com.winhxd.b2c.common.domain.promotion.util.BaseExcelDomain;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
@@ -136,4 +142,45 @@ public class ExcelUtils {
         params.setSheetName(sheetName);
         return ExcelExportUtil.exportExcel(params, pojoClass, dataSet);
     }
+
+
+    /**
+     *
+     * @author yxb
+     * @date  2017年4月13日 下午8:20:48
+     * @Description 导入excel 返回校验结果对象
+     * @param inputStream
+     * @param pojoClass
+     * @return
+     * @throws Exception
+     */
+    public static <T> ImportResult<T> importExcelVerify(InputStream inputStream, Class<?> pojoClass) throws Exception {
+        ImportParams params = new ImportParams();
+        params.setNeedVerfiy(true);
+        ExcelImportResult<T> result = ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
+
+        ImportResult<T> res = new ImportResult<>();
+        List<T> list = result.getList();
+        BaseExcelDomain baseExcelDomain;
+        StringBuilder errorMsg = new StringBuilder();
+        int errorCount = 0;// 显示错误的数量
+        for (int i = 0; i < list.size(); i++) {
+            baseExcelDomain = (BaseExcelDomain) list.get(i);
+            if (StringUtils.isNotBlank(baseExcelDomain.getErrorMsg())) {
+                errorMsg.append((i + 1)).append("行：").append(baseExcelDomain.getErrorMsg()).append("\n");
+                res.setErrorMsg(errorMsg.toString());
+                errorCount++;
+                if (errorCount == 5) {// 显示错误的数量
+                    break;
+                }
+
+            }
+        }
+        res.setList(list);
+        res.setVerfiyFail(result.isVerfiyFail());
+        res.setWorkbook(result.getWorkbook());
+        return res;
+    }
+
+
 }

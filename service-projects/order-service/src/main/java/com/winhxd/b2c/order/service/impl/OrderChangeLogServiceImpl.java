@@ -20,6 +20,8 @@ public class OrderChangeLogServiceImpl implements OrderChangeLogService {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderChangeLogServiceImpl.class);
 
+    private static final Long SYSTEM_ID = 0L;
+
     @Autowired
     private OrderChangeLogMapper orderChangeLogMapper;
 
@@ -36,7 +38,7 @@ public class OrderChangeLogServiceImpl implements OrderChangeLogService {
             throw new NullPointerException("变化后订单状态不能为空");
         }
         if (createdBy == null) {
-            throw new NullPointerException("操作人不能为空");
+            createdBy = SYSTEM_ID;
         }
         if (pointType == null) {
             pointType = MainPointEnum.NOT_MAIN;

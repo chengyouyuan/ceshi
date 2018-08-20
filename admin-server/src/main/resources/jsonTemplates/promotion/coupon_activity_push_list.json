@@ -66,22 +66,19 @@
             }
           },
           {
-            "name": "编辑",
+            "name": "引用优惠券信息",
             "icon": null,
             "event": {
               "type": "router",
               "params": [
-                "id","edit"
+                "id"
               ],
-              "static": {
-                "method": "update"
-              },
-              "path": "/promotion/pushvolume",
-              "configKey": ""
+              "path": "",
+              "configKey": "coupon_activity_cite_view.json"
             }
           },
           {
-            "name": "开启/停止",
+            "name": "停止活动",
             "icon": null,
             "event": {
               "ajaxType": "delete",
@@ -206,7 +203,7 @@
         "isHidden": false
       },
       {
-        "name": "created",
+        "name": "dateInterval",
         "inputModel": "double-date-picker",
         "title": "创建时间",
         "value": "",

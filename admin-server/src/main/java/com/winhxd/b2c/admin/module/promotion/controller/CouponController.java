@@ -108,7 +108,7 @@ public class CouponController {
 		return couponActivityServiceClient.couponActivityStoreImportExcel(list);
 	}
     @ApiOperation("优惠券活动导出小店信息")
-    @PostMapping(value = "/5051/v1/couponActivityExportStoreExcel")
+    @GetMapping(value = "/5051/v1/couponActivityExportStoreExcel")
     public ResponseEntity<byte[]> couponActivityExportStoreExcel(@RequestBody CouponActivityCondition condition){
         ResponseResult<PagedList<CouponActivityStoreVO>> responseResult = couponActivityServiceClient.queryStoreByActivity(condition);
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
@@ -632,12 +632,6 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 @ApiOperation("点出资方列表上模板引用数量表分页")
 @PostMapping(value = "/5025/v1/findInvertorTempleteCountPage")
 public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
-    if(condition.getPageNo()!=null){
-		condition.setPageNo(1);
-	}
-	if(condition.getPageSize()==null){
-		condition.setPageSize(10);
-	}
 	ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = couponInvestorServiceClient.findInvertorTempleteCountPage(condition);
    return responseResult;
 }
@@ -653,12 +647,6 @@ public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCo
 @ApiOperation("点坎级列表上模板引用数量表分页")
 @PostMapping(value = "/5026/v1/findGradeTempleteCountPage")
 public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
-	if(condition.getPageNo()!=null){
-		condition.setPageNo(1);
-	}
-	if(condition.getPageSize()==null){
-		condition.setPageSize(10);
-	}
 	ResponseResult<PagedList<GradeTempleteCountVO>> responseResult = couponGradeServiceClient.findGradeTempleteCountPage(condition);
 	return responseResult;
 }
@@ -676,12 +664,6 @@ public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPag
 @ApiOperation("点适用对象列表上模板引用数量表分页")
 @PostMapping(value = "/5027/v1/findApplyTempleteCountPage")
 public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
-	if(condition.getPageNo()!=null){
-		condition.setPageNo(1);
-	}
-	if(condition.getPageSize()==null){
-		condition.setPageSize(10);
-	}
 	ResponseResult<PagedList<ApplyTempleteCountVO>> responseResult = couponApplyServiceClient.findApplyTempleteCountPage(condition);
 	return responseResult;
 }

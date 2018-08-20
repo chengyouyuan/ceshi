@@ -22,7 +22,10 @@
       {
         "name": "核销",
         "event": {
-          "type": "reset"
+          "type": "batch",
+          "params": [ "storeId", "lastRecordedTime" ],
+          "ajaxType": "get",
+          "path": "/pay/verify/verifyBySummary"
         }
       }
     ],

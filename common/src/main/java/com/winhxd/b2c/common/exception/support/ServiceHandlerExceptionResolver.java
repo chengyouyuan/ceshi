@@ -31,17 +31,19 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         int code;
         String message;
+        Span currentSpan = tracer.currentSpan();
         BusinessException businessException = findBusinessException(ex);
         if (businessException != null) {
             code = businessException.getErrorCode();
             message = MessageHelper.getInstance().getMessage(String.valueOf(code), StringUtils.EMPTY);
+            currentSpan.error(businessException);
+            currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(businessException.getErrorCode()));
             if (StringUtils.isBlank(message)) {
                 message = businessException.getMessage();
             }
             log.warn(getBusinessExceptionInfo(businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
-            Span currentSpan = tracer.currentSpan();
             currentSpan.error(ex);
             currentSpan.tag(ContextHelper.TRACER_API_ERROR, stackTrace);
             log.error("Controller未知异常,traceId=" + currentSpan.context().traceIdString() + ",message=" + ex.getMessage(), ex);

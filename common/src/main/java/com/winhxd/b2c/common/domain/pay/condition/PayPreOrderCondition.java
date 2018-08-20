@@ -95,7 +95,6 @@ public class PayPreOrderCondition extends ApiCondition implements Serializable {
 	}
 
 	public String getDeviceInfo() {
-		deviceInfo = this.getMobileInfo().getImei();
 		return deviceInfo;
 	}
 

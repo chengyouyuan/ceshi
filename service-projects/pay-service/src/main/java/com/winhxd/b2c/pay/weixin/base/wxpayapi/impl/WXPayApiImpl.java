@@ -87,7 +87,7 @@ public class WXPayApiImpl implements WXPayApi {
         String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
         //响应参数验证，转为map
         Map<String, String> respData = this.processResponseXml(respXml);
-        PayRefundResponseDTO responseDTO = null;
+        PayRefundResponseDTO responseDTO = new PayRefundResponseDTO();
         try {
             responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
         } catch (Exception e) {
@@ -254,23 +254,22 @@ public class WXPayApiImpl implements WXPayApi {
         if (!respData.containsKey(RETURN_CODE)) {
         	logger.error("No `return_code` in XML: %s", xmlStr);
 			throw new BusinessException(3400904, "微信API返回值错误");
-            
         }
         return_code = respData.get(RETURN_CODE);
-        if (!return_code.equals(WXPayConstants.FAIL) || !return_code.equals(WXPayConstants.SUCCESS)) {
-        	logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
+		if (return_code.equals(WXPayConstants.FAIL)) {
+			return respData;
+		} else if (return_code.equals(WXPayConstants.SUCCESS)) {
+			//验签一致性校验
+			boolean success = this.isResponseSignatureValid(respData);
+			if(!success) {
+				logger.error("微信支付返回验签失败");
+				throw new BusinessException(3400905, "微信API返回验签失败");
+			}
+			return respData;
+		} else{
+			logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
 			throw new BusinessException(3400904, "微信API返回值错误");
-        }
-        if (return_code.equals(WXPayConstants.SUCCESS)) {
-        	//验签一致性校验
-            boolean success = this.isResponseSignatureValid(respData);
-            if(!success) {
-            	logger.error("微信支付返回验签失败");
-    			throw new BusinessException(3400905, "微信API返回验签失败");
-            }
-        }
-
-        return respData;
+		}
     }
     
     /**

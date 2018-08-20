@@ -104,6 +104,39 @@ public class WXRefundServiceImpl implements WXRefundService {
         return payRefundVO;
     }
 
+    @Override
+    public PayRefund updatePayRefundByOutTradeNo(PayRefundResponseDTO payRefundResponseDTO) throws Exception{
+
+        String reqInfo = payRefundResponseDTO.getReqInfo();
+        PayRefund payRefund = payRefundMapper.selectByOutRefundNo(payRefundResponseDTO.getOutTradeNo());
+        if (payRefund.getCallbackRefundStatus() != 1){
+            payRefund.setCallbackRefundId(payRefundResponseDTO.getRefundId());
+            payRefund.setOutRefundNo(payRefundResponseDTO.getOutRefundNo());
+            payRefund.setCallbackTotalFee(payRefundResponseDTO.getTotalFee());
+            payRefund.setCallbackSettlementTotalFee(payRefundResponseDTO.getSettlementTotalFee());
+            payRefund.setCallbackRefundFee(payRefundResponseDTO.getRefundFee());
+            payRefund.setCallbackSettlementRefundFee(payRefundResponseDTO.getSettlementRefundFee());
+
+            DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            payRefund.setCallbackSuccessTime(bf.parse(payRefundResponseDTO.getSuccessTime()));
+            payRefund.setCallbackRefundRecvAccout(payRefundResponseDTO.getRefundRecvAccout());
+            payRefund.setCallbackRefundAccount(payRefundResponseDTO.getRefundAccount());
+            payRefund.setCallbackRefundRequestSource(payRefundResponseDTO.getRefundRequestSource());
+            String refundStatus = payRefundResponseDTO.getRefundStatus();
+            if("SUCCESS".equals(refundStatus)){
+                payRefund.setCallbackRefundStatus((short)1);
+            }else if("REFUNDCLOSE".equals(refundStatus)){
+                payRefund.setCallbackRefundStatus((short)2);
+            }else if("CHANGE".equals(refundStatus)){
+                payRefund.setCallbackRefundStatus((short)3);
+            }
+            payRefund.setCallbackReqInfo(reqInfo);
+            payRefundMapper.updateByPrimaryKeySelective(payRefund);
+        }
+        
+        return payRefund;
+    }
+
     /**
      * 调用微信退款API接口
      * @param condition

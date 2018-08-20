@@ -24,7 +24,6 @@ import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
-import com.winhxd.b2c.pay.weixin.util.DateUtil;
 
 /**
  * 支付网关微信统一下单API实现
@@ -40,8 +39,6 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	private static final String PACKAGE = "prepay_id=";
 	//支付流水号最大长度
 	private static final int TRADE_NO_MAX_LENGTH = 32;
-	//微信api时间格式
-	private static final String DATE_FORMAT = "yyyyMMddHHmmss";
 	
 	@Autowired
 	private PayBillMapper payBillMapper;
@@ -66,7 +63,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			
 		//支付中
 		} else if((bill = this.getPayBill(list, BillStatusEnum.PAYING.getCode())) != null) {
-			payPreOrderVO = paying(bill);
+			payPreOrderVO = paying(condition, bill);
 		}
 		
 		return payPreOrderVO;
@@ -154,12 +151,13 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @date  2018年8月17日 下午5:35:58
 	 * @Description 
 	 * @param condition
+	 * @param bill
 	 * @return
 	 */
-	private PayPreOrderVO paying(PayBill bill) {
+	private PayPreOrderVO paying(PayPreOrderCondition condition, PayBill bill) {
 		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
 		// TODO 主动查询，更新流水
-		// TODO 10分钟未支付，主动关闭订单，重新生产流水
+		// TODO 10分钟未支付，主动关闭订单，重新生产流水（调用toPay）
 		
 		//初始化反参
 		payPreOrderVO.setAppId(bill.getAppid());
@@ -168,6 +166,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());
+		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
 		
@@ -208,7 +207,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		BeanUtils.copyProperties(condition, payPreOrderDTO);
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
-		payPreOrderDTO.setTimeStart(DateUtil.format(new Date(), DATE_FORMAT));
+		payPreOrderDTO.setTimeStart(new Date());
 		payPreOrderDTO.setFeeType(Currency.CNY.getText());
 		
 		return payPreOrderDTO;
@@ -263,7 +262,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setOutTradeNo(payPreOrderDTO.getOutTradeNo());
 		bill.setProductId(payPreOrderDTO.getProductId());
 		bill.setSpbillCreateIp(payPreOrderDTO.getSpbillCreateIp());
-		bill.setTimeStart(DateUtil.toDate(payPreOrderDTO.getTimeStart(), DATE_FORMAT));
+		bill.setTimeStart(payPreOrderDTO.getTimeStart());
 		bill.setTotalFee(payPreOrderDTO.getTotalFee());
 		bill.setTradeType(payPreOrderDTO.getTradeType());
 		bill.setSignType(payPreOrderDTO.getSignType());

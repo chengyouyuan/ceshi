@@ -102,10 +102,10 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){
-    		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
+    		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
     		System.out.print("验证码是否存在-----------"+exists);
     		if(exists){
-    			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+ currentStoreUser.getBusinessId());
+    			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
     			if(!verificationCode.equals(code)){
     				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
     				res = BusinessCode.CODE_610019;

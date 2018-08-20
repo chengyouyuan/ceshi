@@ -108,7 +108,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
 			 }
 		}
 		return result;
@@ -136,6 +136,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
+			payWithdrawal.setMobile(user[0]);
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
@@ -145,7 +146,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setName(user[1]);
-		payWithdrawal.setMobile(user[0]);
 		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		payWithdrawal.setCreated(new Date());
 		payWithdrawal.setCreatedByName(user[1]);

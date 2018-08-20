@@ -233,16 +233,16 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param orderNo 订单号
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut3DaysUnconfirmed(String orderNo) {
-        //TODO 待定（使用计划任务）
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
             if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
-                orderApplyRefund(order, "申请退款超时3天系统自动退款", null, "sys");
+                orderApplyRefund(order, "申请退款超时3天系统自动退款", order.getCreatedBy(), "sys");
                 orderRefundTimeOutSendMsg(3, order);
             }
         } finally {

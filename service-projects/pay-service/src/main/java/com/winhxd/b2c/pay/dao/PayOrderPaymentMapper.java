@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 
 public interface PayOrderPaymentMapper {
@@ -30,4 +32,13 @@ public interface PayOrderPaymentMapper {
      * @return
      */
     int updateByOrderTransactionNoSelective(PayOrderPayment record);
+    
+    /**
+     * @author liuhanning
+     * @date  2018年8月20日 上午11:20:17
+     * @Description 根据订单号获取支付流水
+     * @param orderNo
+     * @return
+     */
+    List<PayOrderPayment> selectByOrderNo(String orderNo);
 }

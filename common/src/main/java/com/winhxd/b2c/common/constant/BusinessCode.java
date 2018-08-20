@@ -359,7 +359,10 @@ public final class BusinessCode {
     public static final int CODE_610028 = 610028;
     @ApiModelProperty("请输入银行swiftcode")
     public static final int CODE_610029 = 610029;
-    
+    @ApiModelProperty("参数为空")
+    public static final int CODE_610030 = 610030;
+    @ApiModelProperty("请输入微信账号")
+    public static final int CODE_610031 = 610031;
     
     
     @ApiModelProperty("订单支付  参数为空")
@@ -466,6 +469,9 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店提现  未获取到提现信息")
     public static final int CODE_600310 = 600310;
+    
+    @ApiModelProperty("判断订单是否支付  订单号为空")
+    public static final int CODE_601601 = 601601;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

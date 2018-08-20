@@ -469,5 +469,12 @@
     where  order_transaction_no = #{orderTransactionNo,jdbcType=VARCHAR}
   </update>
   
+  <select id="selectByOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_order_payment
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  
   
 </mapper>

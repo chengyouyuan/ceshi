@@ -32,6 +32,7 @@ public class PayWithdrawalsVO {
     private BigDecimal rate;
     @ApiModelProperty("状态 0未审核 1审核通过 2审核不通过")
     private Short auditStatus;
+    private String auditStatusName;
     @ApiModelProperty("原因")
     private String auditDesc;
     @ApiModelProperty("流向类型 1微信 2银行卡")
@@ -223,5 +224,18 @@ public class PayWithdrawalsVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getAuditStatusName() {
+        if (Short.valueOf("0").compareTo(auditStatus) == 0) {
+            auditStatusName = "未审核";
+        }
+        if (Short.valueOf("1").compareTo(auditStatus) == 0) {
+            auditStatusName = "审核通过";
+        }
+        if (Short.valueOf("2").compareTo(auditStatus) == 0) {
+            auditStatusName = "审核不通过";
+        }
+        return auditStatusName;
     }
 }

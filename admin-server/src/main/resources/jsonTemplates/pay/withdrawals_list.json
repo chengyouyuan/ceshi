@@ -1,5 +1,6 @@
 {
   "meta": {
+    "code": "storeWithdrawList",
     "ajaxType": "get",
     "path": "/pay/verify/storeWithdrawList",
     "type": "report",
@@ -47,7 +48,7 @@
         "title": "提款金额"
       },
       {
-        "name": "flowDirectionType",
+        "name": "flowDirectionName",
         "title": "流向"
       },
       {
@@ -75,11 +76,11 @@
         "title": "提款时间"
       },
       {
-        "name": "auditStatus",
+        "name": "auditStatusName",
         "title": "审核状态"
       },
       {
-        "name": "callbackStatus",
+        "name": "callbackStatusName",
         "title": "提款状态"
       },
       {

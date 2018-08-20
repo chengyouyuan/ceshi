@@ -7,11 +7,13 @@ import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.service.VerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,14 +42,14 @@ public class VerifyController {
 
     @ApiOperation(value = "订单费用与支付平台结算", notes = "支付平台结算后，更新费用明细与支付平台为结算完成")
     @PostMapping("/pay/6083/v1/thirdPartyVerifyAccounting")
-    public ResponseResult<Integer> thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
+    public ResponseResult<Integer> thirdPartyVerifyAccounting(@RequestBody ThirdPartyVerifyAccountingCondition condition) {
         int count = verifyService.thirdPartyVerifyAccounting(condition);
         return new ResponseResult(count);
     }
 
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
     @PostMapping("/pay/6091/v1/verifyList")
-    public ResponseResult<PagedList<VerifySummaryVO>> verifyList(VerifySummaryListCondition condition) {
+    public ResponseResult<PagedList<VerifySummaryVO>> verifyList(@RequestBody VerifySummaryListCondition condition) {
         Page<VerifySummaryVO> page = verifyService.findVerifyList(condition);
         PagedList<VerifySummaryVO> pagedList = new PagedList<>();
         pagedList.setData(page.getResult());
@@ -59,7 +61,10 @@ public class VerifyController {
 
     @ApiOperation(value = "账单结算", notes = "按汇总结算")
     @PostMapping("/pay/6092/v1/verifyBySummary")
-    public ResponseResult<Integer> verifyBySummary(VerifySummaryCondition condition) {
+    public ResponseResult<Integer> verifyBySummary(@RequestBody VerifySummaryCondition condition) {
+        if (condition.getList().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         int count = verifyService.verifyByStoreSummary(
                 condition.getList(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);
@@ -67,7 +72,7 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
     @PostMapping("/pay/6093/v1/accountingDetailList")
-    public ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(VerifyDetailListCondition condition) {
+    public ResponseResult<PagedList<VerifyDetailVO>> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
         Page<VerifyDetailVO> page = verifyService.findAccountingDetailList(condition);
         PagedList<VerifyDetailVO> pagedList = new PagedList<>();
         pagedList.setData(page.getResult());
@@ -79,7 +84,10 @@ public class VerifyController {
 
     @ApiOperation(value = "费用结算", notes = "按明细结算")
     @PostMapping("/pay/6094/v1/verifyByDetail")
-    public ResponseResult<Integer> verifyByDetail(VerifyDetailCondition condition) {
+    public ResponseResult<Integer> verifyByDetail(@RequestBody VerifyDetailCondition condition) {
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         int count = verifyService.verifyByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);
@@ -87,7 +95,10 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
     @PostMapping("/pay/6095/v1/accountingDetailPause")
-    public ResponseResult<Integer> accountingDetailPause(VerifyDetailCondition condition) {
+    public ResponseResult<Integer> accountingDetailPause(@RequestBody VerifyDetailCondition condition) {
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         int count = verifyService.pauseByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);
@@ -95,7 +106,10 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
     @PostMapping("/pay/6096/v1/accountingDetailRestore")
-    public ResponseResult<Integer> accountingDetailRestore(VerifyDetailCondition condition) {
+    public ResponseResult<Integer> accountingDetailRestore(@RequestBody VerifyDetailCondition condition) {
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         int count = verifyService.restoreByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(count);
@@ -103,7 +117,7 @@ public class VerifyController {
 
     @ApiOperation(value = "门店提现申请列表查询")
     @PostMapping("/pay/6097/v1/storeWithdrawalsList")
-    public ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(PayWithdrawalsListCondition condition) {
+    public ResponseResult<PagedList<PayWithdrawalsVO>> storeWithdrawalsList(@RequestBody PayWithdrawalsListCondition condition) {
         Page<PayWithdrawalsVO> page = verifyService.findPayWithdrawalsList(condition);
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
         pagedList.setData(page.getResult());
@@ -115,14 +129,17 @@ public class VerifyController {
 
     @ApiOperation(value = "批准门店提现申请")
     @PostMapping("/pay/6098/v1/approveStoreWithdrawals")
-    public ResponseResult<Integer> approveStoreWithdrawals(ApproveStoreWithdrawalsCondition condition) {
+    public ResponseResult<Integer> approveStoreWithdrawals(@RequestBody ApproveStoreWithdrawalsCondition condition) {
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         int count = verifyService.approveWithdrawals(condition);
         return new ResponseResult<>(count);
     }
 
     @ApiOperation(value = "费用明细导出查询", notes = "按明细显示")
     @PostMapping("/pay/6099/v1/accountingDetailListExport")
-    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(VerifyDetailListCondition condition) {
+    public ResponseResult<List<VerifyDetailVO>> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
         List<VerifyDetailVO> list = verifyService.findAccountingDetailList(condition);
         return new ResponseResult<>(list);
     }

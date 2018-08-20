@@ -4,6 +4,7 @@ import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public class VerifyController {
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
     @RequestMapping("/verifyList")
     @ResponseBody
-    public ResponseResult<?> verifyList(VerifySummaryListCondition condition) {
+    public ResponseResult<?> verifyList(@RequestBody VerifySummaryListCondition condition) {
         return verifyServiceClient.verifyList(condition);
     }
 
@@ -42,19 +44,22 @@ public class VerifyController {
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             condition.getList().add(vo);
         }
+        if (condition.getList().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         return verifyServiceClient.verifyBySummary(condition);
     }
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
     @RequestMapping("/accountingDetailList")
     @ResponseBody
-    public ResponseResult<?> accountingDetailList(VerifyDetailListCondition condition) {
+    public ResponseResult<?> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
         return verifyServiceClient.accountingDetailList(condition);
     }
 
     @ApiOperation(value = "费用明细导出Excel", notes = "按明细显示")
     @RequestMapping(name = "/accountingDetailListExport")
-    public ResponseEntity<byte[]> accountingDetailListExport(VerifyDetailListCondition condition) {
+    public ResponseEntity<byte[]> accountingDetailListExport(@RequestBody VerifyDetailListCondition condition) {
         condition.setIsQueryAll(true);
         ResponseResult<List<VerifyDetailVO>> responseResult = verifyServiceClient.accountingDetailListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {
@@ -64,7 +69,7 @@ public class VerifyController {
         return null;
     }
 
-    @ApiOperation(value = "费用结算", notes = "按明细结算")
+    @ApiOperation(value = "费用明细结算", notes = "按明细结算")
     @RequestMapping("/verifyByDetail")
     @ResponseBody
     public ResponseResult<?> verifyByDetail(@RequestBody List<Map<String, Object>> list) {
@@ -74,6 +79,9 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+        }
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
         }
         return verifyServiceClient.verifyByDetail(condition);
     }
@@ -89,6 +97,9 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
         }
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
+        }
         return verifyServiceClient.accountingDetailPause(condition);
     }
 
@@ -97,11 +108,16 @@ public class VerifyController {
     @ResponseBody
     public ResponseResult<?> accountingDetailRestore(@RequestBody List<Map<String, Object>> list) {
         VerifyDetailCondition condition = new VerifyDetailCondition();
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", 2);
         for (Map<String, Object> map : list) {
             Object id = map.get("id");
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+        }
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
         }
         return verifyServiceClient.accountingDetailRestore(condition);
     }
@@ -109,7 +125,7 @@ public class VerifyController {
     @ApiOperation(value = "门店提现申请列表查询")
     @RequestMapping("/storeWithdrawList")
     @ResponseBody
-    public ResponseResult<?> storeWithdrawList(PayWithdrawalsListCondition condition) {
+    public ResponseResult<?> storeWithdrawList(@RequestBody PayWithdrawalsListCondition condition) {
         return verifyServiceClient.storeWithdrawalsList(condition);
     }
 
@@ -120,9 +136,15 @@ public class VerifyController {
         ApproveStoreWithdrawalsCondition condition = new ApproveStoreWithdrawalsCondition();
         for (Map<String, Object> map : list) {
             Object id = map.get("id");
-            if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
+            Object storeId = map.get("id");
+            if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))
+                    && storeId != null && NumberUtils.isCreatable(ObjectUtils.toString(storeId))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
+                condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
             }
+        }
+        if (condition.getIds().size() == 0) {
+            throw new BusinessException(-1, "请至少选择一条记录");
         }
         return verifyServiceClient.approveStoreWithdrawals(condition);
     }

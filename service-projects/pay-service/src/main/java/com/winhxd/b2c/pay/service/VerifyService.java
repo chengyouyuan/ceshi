@@ -302,7 +302,7 @@ public class VerifyService {
         int updatedCount = 0;
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
             int count = accountingDetailMapper.updateAccountingDetailVerifyStatusBySummary(
-                    verifyCode, vo.getStoreId(), vo.getDate());
+                    verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
         // 门店资金变动
@@ -428,8 +428,9 @@ public class VerifyService {
         String auditDesc = condition.getAuditDesc();
         Long updatedBy = condition.getUpdatedBy();
         String updatedByName = condition.getUpdatedByName();
-        for (Long id : condition.getIds()) {
+        for (int i = 0; i < condition.getIds().size(); i++) {
             PayWithdrawals payWithdrawals = new PayWithdrawals();
+            Long id = condition.getIds().get(i);
             payWithdrawals.setId(id);
             payWithdrawals.setUpdated(new Date());
             payWithdrawals.setUpdatedBy(updatedBy);

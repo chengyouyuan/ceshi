@@ -20,7 +20,7 @@ public interface AccountingDetailMapper {
      * @param accountingDetail
      * @return
      */
-    AccountingDetail insertAccountingDetail(AccountingDetail accountingDetail);
+    int insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
      * 按指定ID查询的费用明细
@@ -85,7 +85,7 @@ public interface AccountingDetailMapper {
      * @param verifyHistory
      * @return
      */
-    VerifyHistory insertVerifyHistory(VerifyHistory verifyHistory);
+    int insertVerifyHistory(VerifyHistory verifyHistory);
 
     /**
      * 按门店结算汇总更新费用明细状态

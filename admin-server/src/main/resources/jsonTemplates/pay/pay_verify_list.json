@@ -1,5 +1,6 @@
 {
   "meta": {
+    "code": "verifyList",
     "ajaxType": "get",
     "path": "/pay/verify/verifyList",
     "type": "report",
@@ -24,7 +25,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "storeId", "lastRecordedTime" ],
+          "params": [ "storeId", "lastRecordedTime", "verifyStatus" ],
           "path": "/pay/verify/verifyBySummary",
           "confirm": {
             "title": "提示",
@@ -47,7 +48,7 @@
         "title": "门店名称"
       },
       {
-        "name": "verifyStatus",
+        "name": "verifyStatusName",
         "title": "结算状态"
       },
       {

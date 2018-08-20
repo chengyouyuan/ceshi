@@ -135,9 +135,7 @@ public class ApiShopCarController {
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
             try{
                 orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
-                logger.info("------payvo----"+orderPayVO.toString());
             }catch (Exception e){
-            	e.printStackTrace();
                 throw new BusinessException(BusinessCode.CODE_402015);
             }
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));

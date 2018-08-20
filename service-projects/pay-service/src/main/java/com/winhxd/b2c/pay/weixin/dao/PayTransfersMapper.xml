@@ -351,4 +351,11 @@
       created_by_name = #{createdByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectTOP1TransfersByPartnerTradeNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT TOP 1
+      <include refid="Base_Column_List" />
+    FROM pay_transfers
+    WHERE partner_trade_no = #{partnerTradeNo,jdbcType=VARCHAR}
+    ORDER BY created DESC
+  </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import com.winhxd.b2c.pay.weixin.base.dto.*;
@@ -185,6 +186,22 @@ public class WXPayApiImpl implements WXPayApi {
 	public String generateSign(Object obj){
         return this.generateSign(obj, signType);
     }
+	
+	@Override
+	public String payPreOrderSign(PayPreOrderVO payPreOrderVO){
+		String sign = null;
+        try {
+            //bean转map
+		    Map<String, String> reqData = XmlUtil.bean2Map(payPreOrderVO);
+		    WXPayUtil.getLogger().warn("-----签名数据AAA------"+reqData);
+        	//签名添加调用微信API入参
+        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
+		} catch (Exception e) {
+			logger.error("签名失败", e);
+			throw new BusinessException(3400901, "签名失败");
+		}
+        return sign;
+	}
 	
 	@Override
 	public String generateSign(Object obj, SignType signType){

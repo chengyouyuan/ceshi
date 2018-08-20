@@ -120,13 +120,13 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		this.savePayBill(condition, payPreOrderDTO, payPreOrderResponseDTO);
 		
 		//初始化反参
-		payPreOrderVO.setAppid(payPreOrderDTO.getAppid());
+		payPreOrderVO.setAppId(payPreOrderDTO.getAppid());
 		payPreOrderVO.setNonceStr(payPreOrderDTO.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + payPreOrderResponseDTO.getPrepayId());
 		payPreOrderVO.setSignType(payPreOrderDTO.getSignType());
 		payPreOrderVO.setTimeStamp(String.valueOf(timeStamp));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
 		payPreOrderVO.setOutOrderNo(condition.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(outTradeNo);
 		payPreOrderVO.setPayStatus(true);
@@ -162,14 +162,14 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		// TODO 10分钟未支付，主动关闭订单，重新生产流水（调用toPay）
 		
 		//初始化反参
-		payPreOrderVO.setAppid(bill.getAppid());
+		payPreOrderVO.setAppId(bill.getAppid());
 		payPreOrderVO.setNonceStr(bill.getNonceStr());
 		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
 		payPreOrderVO.setSignType(bill.getSignType());
 		//TODO 此处随机数和上一次不同，是否正确需要试一下
 		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
 		//只对前5个参数签名，对package做特殊处理
-		payPreOrderVO.setPaySign(wxPayApi.generateSign(payPreOrderVO));
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
 		payPreOrderVO.setPayStatus(false);
 		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
 		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());

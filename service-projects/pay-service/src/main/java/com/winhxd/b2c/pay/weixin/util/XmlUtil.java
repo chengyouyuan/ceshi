@@ -145,6 +145,41 @@ public class XmlUtil {
     }
     
     /**
+     * bean转换为Map格式的字符串
+     * @author mahongliang
+     * @date  2018年8月21日 上午1:48:58
+     * @Description 
+     * @param o
+     * @return
+     * @throws Exception
+     */
+    public static Map<String, String> bean2Map(Object o) throws Exception {
+    	Class<?> c = o.getClass();
+    	Class<?> clazzTemp = c;
+        Map<String, String> map = new HashMap<>();
+      //当父类为Object的时候说明到达了最上层的父类.
+        while (clazzTemp != null && !clazzTemp.getName().equalsIgnoreCase(Object.class.getName())) {
+            Field[] fields = clazzTemp.getDeclaredFields();
+            for (Field field : fields) {
+            	field.setAccessible(true);
+            	boolean isStatic = Modifier.isStatic(field.getModifiers());
+            	boolean isFinal = Modifier.isFinal(field.getModifiers());
+                if(!isStatic && !isFinal) {
+                	if(field.get(o) != null) {
+                		String value = convertString(field.get(o));
+                    	//驼峰转下划线
+                    	map.put(field.getName(), value);
+                	}
+                }
+            }
+            //得到父类,然后赋给自己
+            clazzTemp = clazzTemp.getSuperclass();
+        }
+        
+        return map;
+    }
+    
+    /**
      * XML格式字符串转换为Map，下划线转驼峰
      * @author mahongliang
      * @date  2018年8月20日 下午3:48:31

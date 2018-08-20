@@ -18,4 +18,6 @@ public interface PayStoreWalletMapper {
     int updateByPrimaryKey(PayStoreWallet record);
     
     List<PayStoreWallet> selectByStoreId(Long storeId);
+    /**批量更新微信钱包的状态 置为0*/
+	void updateBatchStatus();
 }

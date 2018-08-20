@@ -13,6 +13,8 @@ import com.winhxd.b2c.common.domain.message.model.MessageMiniTemplate;
 import com.winhxd.b2c.common.domain.message.model.MessageWechatHistory;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.dao.MessageCustomerFormIdsMapper;
 import com.winhxd.b2c.message.dao.MessageWechatHistoryMapper;
@@ -68,27 +70,25 @@ public class MiniProgramImpl implements MiniProgramService {
         return result;
     }
 
-    @Override
-    public ResponseResult<Void> sendMiniMsg(MiniMsgCondition miniMsgCondition) {
-        ResponseResult<Void> result = new ResponseResult<>();
+    @StringMessageListener(MQHandler.MINI_TEMPLATE_MESSAGE_HANDLER)
+    public void sendMiniMsg(String miniMsgConditionJson) {
+        LOGGER.info("消息服务->发送小程序模板消息，MiniProgramImpl.sendMiniMsg(),miniMsgConditionJson={}",miniMsgConditionJson);
+        MiniMsgCondition miniMsgCondition = JsonUtil.parseJSONObject(miniMsgConditionJson,MiniMsgCondition.class);
         if(StringUtils.isEmpty(miniMsgCondition.getToUser())){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，toUser为空");
-            result.setCode(BusinessCode.CODE_702201);
-            return result;
+            throw new BusinessException(BusinessCode.CODE_702201);
         }
         List<MiniTemplateData> params = miniMsgCondition.getData();
         if (CollectionUtils.isEmpty(params)){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，消息内容为空");
-            result.setCode(BusinessCode.CODE_702202);
-            return result;
+            throw new BusinessException(BusinessCode.CODE_702202);
         }
         //根据小程序模板，给C端用户发消息
         //根据消息类型获取模板id，模板内容
         MiniMsgTypeEnum msgTypeEnum = MiniMsgTypeEnum.getMiniMsgTypeEnumByMsgType(miniMsgCondition.getMsgType());
         if (msgTypeEnum == null){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，msgTypeEnum不存在，msgType={}",miniMsgCondition.getMsgType());
-            result.setCode(BusinessCode.CODE_702203);
-            return result;
+            throw new BusinessException(BusinessCode.CODE_702203);
         }
         //消息模板id
         String templateId = msgTypeEnum.getTemplateId();
@@ -96,8 +96,7 @@ public class MiniProgramImpl implements MiniProgramService {
         MessageCustomerFormIds formIdByOpenid = customerFormIdsMapper.getProd(miniMsgCondition.getToUser());
         if (formIdByOpenid == null){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，不存在可用的formid，toUser={}",miniMsgCondition.getToUser());
-            result.setCode(BusinessCode.CODE_702204);
-            return result;
+            throw new BusinessException(BusinessCode.CODE_702204);
         }
         String formId = formIdByOpenid.getFormid();
         //组织参数，发送消息
@@ -106,14 +105,12 @@ public class MiniProgramImpl implements MiniProgramService {
             String returnStr = miniProgramUtils.sendMiniMsg(JsonUtil.toJSONString(template));
             if (StringUtils.isEmpty(returnStr)){
                 LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息出错,发送后没有返回returnStr。");
-                result.setCode(BusinessCode.CODE_702205);
-                return result;
+                throw new BusinessException(BusinessCode.CODE_702205);
             }
             Map<String, Object> stringObjectMap = JsonUtil.parseJSONObject(returnStr);
             if(stringObjectMap.get(RETURN_ERR_CODE) == null){
                 LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，发送消息出错,没有返回错误码。");
-                result.setCode(BusinessCode.CODE_702206);
-                return result;
+                throw new BusinessException(BusinessCode.CODE_702206);
             }
             String errCode = String.valueOf(stringObjectMap.get(RETURN_ERR_CODE));
             String errMsg = String.valueOf(stringObjectMap.get(RETURN_ERR_MSG));
@@ -127,14 +124,12 @@ public class MiniProgramImpl implements MiniProgramService {
                 customerFormIdsMapper.deleteByPrimaryKey(formIdByOpenid.getId());
             }else{
                 LOGGER.error("MiniProgramImpl -> ,给C端用户推送小程序模板消息，发送消息出错,错误信息为={}",errMsg);
-                result.setCode(BusinessCode.CODE_702207);
+                throw new BusinessException(BusinessCode.CODE_702207);
             }
         } catch (Exception e) {
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，发送消息出错",e);
-            result.setCode(BusinessCode.CODE_702207);
-            return result;
+            throw new BusinessException(BusinessCode.CODE_702207);
         }
-        return result;
     }
 
     /**

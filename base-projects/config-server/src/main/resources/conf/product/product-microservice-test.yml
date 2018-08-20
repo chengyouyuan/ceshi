@@ -11,7 +11,9 @@ redis:
   testOnBorrow: true
   expire: 3600
   
- 
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
 # product jdbc config
 product:
    datasource:

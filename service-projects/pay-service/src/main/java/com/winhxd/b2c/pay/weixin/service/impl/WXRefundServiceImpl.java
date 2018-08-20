@@ -201,7 +201,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         model.setSign(dto.getSign());
         model.setSignType(WXPayConstants.MD5);
         model.setTransactionId(dto.getTransactionId());
-        model.setOutTradeNo(dto.getOutTradeNo());
+        model.setOutTradeNo(condition.getOutTradeNo());
         model.setOutRefundNo(dto.getOutRefundNo());
         model.setTotalFee(dto.getTotalFee());
         model.setTotalAmount(condition.getTotalAmount());

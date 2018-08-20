@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.weixin.dao.PayFinancialBillCountMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="financial_swift_num_count" jdbcType="DECIMAL" property="financialSwiftNumCount" />
     <result column="income_num_count" jdbcType="DECIMAL" property="incomeNumCount" />
@@ -24,7 +24,7 @@
     delete from pay_financial_bill_count
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount">
     insert into pay_financial_bill_count (id, financial_swift_num_count, income_num_count, 
       income_amount_count, expenditure_num_count, 
       expenditure_amount_count, bill_date)
@@ -32,7 +32,7 @@
       #{incomeAmountCount,jdbcType=DECIMAL}, #{expenditureNumCount,jdbcType=DECIMAL}, 
       #{expenditureAmountCount,jdbcType=DECIMAL}, #{billDate,jdbcType=DATE})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount">
     insert into pay_financial_bill_count
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -81,7 +81,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount">
     update pay_financial_bill_count
     <set>
       <if test="financialSwiftNumCount != null">
@@ -105,7 +105,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.pay.weixin.model.PayFinancialBillCount">
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount">
     update pay_financial_bill_count
     set financial_swift_num_count = #{financialSwiftNumCount,jdbcType=DECIMAL},
       income_num_count = #{incomeNumCount,jdbcType=DECIMAL},

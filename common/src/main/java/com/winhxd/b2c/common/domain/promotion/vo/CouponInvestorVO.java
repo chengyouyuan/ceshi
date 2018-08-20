@@ -163,4 +163,5 @@ public class CouponInvestorVO {
     public void setInvestorPercents(String investorPercents) {
         this.investorPercents = investorPercents;
     }
+
 }

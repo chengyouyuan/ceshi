@@ -130,12 +130,18 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setMchid(wxPayConfig.getMchID());
         /**
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同
-         * 这里可能需要修改下
          */
-        forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
-        forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
+        PayTransfers records =
+                payTransfersMapper.selectTOP1TransfersByPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
+        if(null == records){
+            forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
+            forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
+        }else{
+            forWxChangeDTO.setDeviceInfo(records.getDeviceInfo());
+            forWxChangeDTO.setNonceStr(records.getNonceStr());
+        }
         forWxChangeDTO.setPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
-        //这里openID的获取方式待定
+        //openID在这里不需要主动获取
         forWxChangeDTO.setOpenid(toWxBalanceCondition.getAccountId());
         forWxChangeDTO.setCheckName(FORCE_CHECK);
         forWxChangeDTO.setReUserName(toWxBalanceCondition.getAccountName());
@@ -333,7 +339,16 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         PayTransfersForWxBankDTO forWxBankDTO = new PayTransfersForWxBankDTO();
         forWxBankDTO.setMchid(wxPayConfig.getMchID());
         forWxBankDTO.setPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
-        forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
+        /**
+         * NonceStr, 如果不是第一次进行请求,则须和前一次相同
+         */
+        PayTransfers records =
+                payTransfersMapper.selectTOP1TransfersByPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
+        if(null == records){
+            forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
+        } else {
+            forWxBankDTO.setNonceStr(records.getNonceStr());
+        }
         //处理卡号姓名加密rsa
         forWxBankDTO.setEncBankNo(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccount(), wxPayConfig.getRSAPublicKey()));
         forWxBankDTO.setEncTrueName(RSAUtils.wxPublicKeyEncrypt(toWxBankCondition.getAccountName(), wxPayConfig.getRSAPublicKey()));

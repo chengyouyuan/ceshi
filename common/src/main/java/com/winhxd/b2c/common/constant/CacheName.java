@@ -94,4 +94,9 @@ public class CacheName {
      * 门店提现模块的门店信息
      */
     public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
+    
+    /**
+     * 门店资金流转
+     */
+    public static final String BACKROLL_STORE = "BACKROLL:STORE";
 }

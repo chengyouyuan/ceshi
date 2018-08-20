@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.mq.event;
 
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
 
 import java.util.Objects;
 
@@ -23,7 +24,12 @@ public enum EventType {
     /**
      * 用户订单完成事件
      */
-    EVENT_CUSTOMER_ORDER_FINISHED(OrderInfo.class);
+    EVENT_CUSTOMER_ORDER_FINISHED(OrderInfo.class),
+
+    /**
+     * 订单取消事件
+     */
+    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class);
 
     private Class<?> eventObjectClass;
 

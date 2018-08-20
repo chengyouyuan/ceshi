@@ -19,16 +19,70 @@ import com.winhxd.b2c.common.domain.store.vo.StoreProdSimpleVO;
  */
 @Repository
 public interface StoreProductManageMapper {
+    /**
+     * 物理删除
+    * @Title: deleteByPrimaryKey 
+    * @Description: TODO 
+    * @param id
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:05:22
+     */
     int deleteByPrimaryKey(Long id);
 
+    /**
+     * 插入一条数据
+    * @Title: insert 
+    * @Description: TODO 
+    * @param record
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:05:31
+     */
     int insert(StoreProductManage record);
 
+    /**
+     * 插入一条数据
+    * @Title: insertSelective 
+    * @Description: TODO 
+    * @param record
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:05:49
+     */
     int insertSelective(StoreProductManage record);
 
+    /**
+     * 根据id查询StoreProductManage
+    * @Title: selectByPrimaryKey 
+    * @Description: TODO 
+    * @param id
+    * @return StoreProductManage
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:06:01
+     */
     StoreProductManage selectByPrimaryKey(Long id);
 
+    /**
+     * 更新数据
+    * @Title: updateByPrimaryKeySelective 
+    * @Description: TODO 
+    * @param record
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:06:15
+     */
     int updateByPrimaryKeySelective(StoreProductManage record);
 
+    /**
+     * 更新数据
+    * @Title: updateByPrimaryKey 
+    * @Description: TODO 
+    * @param record
+    * @return int
+    * @author wuyuanbao
+    * @date 2018年8月20日上午10:06:23
+     */
     int updateByPrimaryKey(StoreProductManage record);
 
     /**

@@ -35,6 +35,7 @@ import com.winhxd.b2c.store.service.StoreSubmitProductService;
 
 /**
  * Created by caiyulong on 2018/8/6.
+ * @author caiyulong
  */
 @RestController
 public class BackStageStoreServiceController implements BackStageStoreServiceClient {

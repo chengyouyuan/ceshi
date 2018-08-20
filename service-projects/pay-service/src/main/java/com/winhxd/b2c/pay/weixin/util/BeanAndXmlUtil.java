@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -367,16 +368,63 @@ public class BeanAndXmlUtil {
      * @param value 值
      */
     private static void invokeSet(Object o, String fieldName, Object value) {
-        Method method = getSetMethod(o.getClass(), fieldName);
+
+        Class tempClass = o.getClass();
+        List<Field> fieldList = new ArrayList<>() ;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (tempClass != null) {
+            Field[] fields = tempClass.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++) {
+                boolean isStatic = Modifier.isStatic(fields[i].getModifiers());
+                if(!isStatic) {
+                    fieldList.add(fields[i]);
+                }
+            }
+            //得到父类,然后赋给自己
+            tempClass = tempClass.getSuperclass();
+        }
+        Class methodClass = o.getClass();
+        Method method = getSetMethod(methodClass, fieldName);
+        while (methodClass != null && method == null){
+            methodClass = methodClass.getSuperclass();
+            method = getSetMethod(methodClass, fieldName);
+        }
         try {
             //根据反射将字段类型转译出来，并格式化value值
-            Field field = o.getClass().getDeclaredField(fieldName);
+            Field field = getFieldOrSuper(fieldList, fieldName);
             Class fieldTypeClass = field.getType();
             value = convertValType(value, fieldTypeClass);
             method.invoke(o, new Object[] { value });
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Field> listAddAllExStatic(Class c){
+        List<Field> fieldList = new ArrayList<>() ;
+        Field[] fields = c.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            boolean isStatic = Modifier.isStatic(fields[i].getModifiers());
+            if(!isStatic) {
+                fieldList.add(fields[i]);
+            }
+        }
+        return fieldList;
+    }
+
+    /**
+     * 递归获得父类属性
+     * @param fieldList
+     * @param fieldName
+     * @return
+     */
+    private static Field getFieldOrSuper(List<Field> fieldList, String fieldName) throws NoSuchFieldException{
+        for (Field f : fieldList) {
+            if (fieldName.equals(f.getName())){
+                return f;
+            }
+        }
+        throw new NoSuchFieldException("找不到该字段");
     }
 
     /**

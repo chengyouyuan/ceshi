@@ -40,6 +40,12 @@
     where order_no = #{orderNo}
   </select>
 
+  <select id="selectAccountingDetailListByVerifyCode" resultMap="VerifyDetailVOMap">
+    select *
+    from pay_accounting_detail d
+    where verify_code = #{verifyCode}
+  </select>
+
   <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition">
     select *
     from pay_accounting_detail d

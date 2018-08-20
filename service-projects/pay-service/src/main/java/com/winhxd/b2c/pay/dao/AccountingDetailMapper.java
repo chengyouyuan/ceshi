@@ -39,6 +39,14 @@ public interface AccountingDetailMapper {
     List<AccountingDetail> selectAccountingDetailListByOrderNo(@Param("orderNo") String orderNo);
 
     /**
+     * 按核销批次查询的费用明细
+     *
+     * @param verifyCode
+     * @return
+     */
+    List<AccountingDetail> selectAccountingDetailListByVerifyCode(@Param("verifyCode") String verifyCode);
+
+    /**
      * 查询费用明细
      *
      * @param condition

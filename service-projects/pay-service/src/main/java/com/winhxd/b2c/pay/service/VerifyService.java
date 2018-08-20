@@ -21,6 +21,8 @@ import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +40,6 @@ public class VerifyService {
 
     private final Logger log = LogManager.getLogger(this.getClass());
 
-
     @Autowired
     private AccountingDetailMapper accountingDetailMapper;
 
@@ -53,7 +54,7 @@ public class VerifyService {
 
     @Autowired
     private PayService payService;
-    
+
     @Autowired
     private PayStoreCashService payStoreCashService;
 
@@ -63,7 +64,7 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
     public void orderPaySuccessHandler(String orderNo, OrderInfo orderInfo) {
         saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
     }
@@ -74,22 +75,22 @@ public class VerifyService {
      * @param orderNo
      * @param orderInfo
      */
-    //@EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
         //计算门店资金
         //手续费
-        BigDecimal cmmsAmt=orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
+        BigDecimal cmmsAmt = orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
         //门店应得金额（订单总额-手续费）
-        BigDecimal money=orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
-        UpdateStoreBankRollCondition condition=new UpdateStoreBankRollCondition();
+        BigDecimal money = orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
+        UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
         condition.setOrderNo(orderNo);
         condition.setStoreId(orderInfo.getStoreId());
         condition.setMoney(money);
         condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
         payService.updateStoreBankroll(condition);
         //添加交易记录
-        PayStoreTransactionRecord payStoreTransactionRecord=new PayStoreTransactionRecord();
+        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
         payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
         payStoreTransactionRecord.setOrderNo(orderNo);
         payStoreTransactionRecord.setType(StoreTransactionStatusEnum.ORDER_ENTRY.getStatusCode());
@@ -130,7 +131,7 @@ public class VerifyService {
                         isHasDiscount = true;
                     }
                 }
-                if (isHasThirdPartyfee) {
+                if (!isHasThirdPartyfee) {
                     // 插入微信支付手续费，按0.6%计算，如果有变更，另行调整
                     AccountingDetail thirdPartyfee = new AccountingDetail();
                     thirdPartyfee.setOrderNo(orderNo);
@@ -140,7 +141,7 @@ public class VerifyService {
                     accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                     count++;
                 }
-                if (isHasRealPay) {
+                if (!isHasRealPay) {
                     AccountingDetail realPay = new AccountingDetail();
                     realPay.setOrderNo(orderNo);
                     realPay.setDetailType(AccountingDetail.DetailTypeEnum.REAL_PAY.getCode());
@@ -149,7 +150,7 @@ public class VerifyService {
                     accountingDetailMapper.insertAccountingDetail(realPay);
                     count++;
                 }
-                if (isHasDiscount) {
+                if (!isHasDiscount) {
                     if (orderInfoDetailVO.getDiscountMoney() != null
                             && orderInfoDetailVO.getDiscountMoney().compareTo(BigDecimal.ZERO) != 0) {
                         AccountingDetail discount = new AccountingDetail();
@@ -250,7 +251,9 @@ public class VerifyService {
      * @return
      */
     public Page<VerifyDetailVO> findAccountingDetailList(VerifyDetailListCondition condition) {
-        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        if (!condition.getIsQueryAll()) {
+            PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        }
         Set<Long> storeSet = new HashSet<>();
         Page<VerifyDetailVO> page = accountingDetailMapper.selectAccountingDetailList(condition);
         for (VerifyDetailVO vo : page.getResult()) {
@@ -444,7 +447,4 @@ public class VerifyService {
         }
         return count;
     }
-    public static void main(String[] args) {
-		System.out.println(BigDecimal.valueOf(9.8767).setScale(2, BigDecimal.ROUND_HALF_UP));
-	}
 }

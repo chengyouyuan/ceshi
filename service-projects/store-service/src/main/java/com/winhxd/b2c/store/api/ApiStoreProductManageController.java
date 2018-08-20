@@ -353,9 +353,8 @@ public class ApiStoreProductManageController {
 
     @ApiOperation(value = "B端搜索商品接口", notes = "B端搜索商品接口")
     @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数异常！") })
+            @ApiResponse(code = BusinessCode.CODE_102701, message = "登录凭证无效，请重新登录！"),
+            @ApiResponse(code = BusinessCode.CODE_102702, message = "业务异常！") })
     @PostMapping(value = "1027/v1/searchProductByKey", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductVO>> searchProductByKey(
             @RequestBody StorePutawayProdSearchCondition condition) {
@@ -363,12 +362,12 @@ public class ApiStoreProductManageController {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
             logger.error("B端搜索商品接口:登录凭证为空");
-            responseResult.setCode(BusinessCode.CODE_1002);
-            return new ResponseResult<>(BusinessCode.CODE_1002);
+            responseResult.setCode(BusinessCode.CODE_102701);
+            return new ResponseResult<>(BusinessCode.CODE_102701);
         }
         if (!verifyParam(condition)) {
-            responseResult.setCode(BusinessCode.CODE_1007);
-            return new ResponseResult<>(BusinessCode.CODE_1007);
+            responseResult.setCode(BusinessCode.CODE_102702);
+            return new ResponseResult<>(BusinessCode.CODE_102702);
         }
         Long storeCustomerId = storeUser.getStoreCustomerId();
         Long businessId = storeUser.getBusinessId();
@@ -393,7 +392,6 @@ public class ApiStoreProductManageController {
         }
         ResponseResult<PagedList<ProductVO>> productVo = productServiceClient.getProductsByPage(productCondition);
         responseResult.setData(productVo.getData());
-
         return responseResult;
     }
 
@@ -631,7 +629,6 @@ public class ApiStoreProductManageController {
         }
         cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
         cache.expire(hxdSkuKey, 60 * 60 * 2);
-
         return skuData;
     }
 

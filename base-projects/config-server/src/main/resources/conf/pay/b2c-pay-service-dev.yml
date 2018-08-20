@@ -5,9 +5,9 @@ DOMAIN:
 #微信相关属性
 WX:
   # 商户号的appid或商户号绑定的appid
-  MCH_APP_ID: wxdbbbd5e596ab6f4d
+  MCH_APP_ID: wxca545de0c88cc479
   # 公众账号ID
-  APP_ID: wxca545de0c88cc479
+  APP_ID: wxdbbbd5e596ab6f4d
   # 商户号
   MCH_ID: 1467361502
   # API 密钥

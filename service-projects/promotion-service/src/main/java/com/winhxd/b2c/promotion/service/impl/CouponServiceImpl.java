@@ -27,6 +27,10 @@ import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
+import com.winhxd.b2c.common.mq.MQHandler;
+import com.winhxd.b2c.common.mq.StringMessageListener;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.slf4j.Logger;
@@ -461,6 +465,11 @@ public class CouponServiceImpl implements CouponService {
         return true;
     }
 
+    @EventMessageListener(value = EventTypeHandler.EVENT_ORDER_UNTREAD_COUPON_HANDLER)
+    public void eventorderUntreadCoupon(String orderNo,OrderUntreadCouponCondition condition) {
+        this.orderUntreadCoupon(condition);
+    }
+
     @Override
     public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
@@ -637,7 +646,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 优惠券已领完
-                    continue;
+                    couponVO.setReceiveStatus("0");
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
@@ -652,7 +661,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 当前门店优惠券已领完
-                    continue;
+                    couponVO.setReceiveStatus("0");
                 }
             }
             results.add(couponVO);

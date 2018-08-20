@@ -68,8 +68,6 @@ public class StoreServiceController implements StoreServiceClient {
     private StoreRegionService storeRegionService;
 
     private Logger logger = LoggerFactory.getLogger(StoreService.class);
-//    @Autowired
-//    private ProductServiceClient productServiceClient;
 
     @Override
     public ResponseResult<Integer> bindCustomer(@RequestParam("customerId") Long customerId, @RequestParam("storeUserId") Long storeUserId) {
@@ -115,7 +113,7 @@ public class StoreServiceController implements StoreServiceClient {
 			 result= new ResponseResult<>(BusinessCode.CODE_1007);
 		}
 		logger.info("StoreServiceClient-->findShopCarProd 入参：skuCodes="+skuCodes+",storeId="+storeId);
-		String skuCodeArray[]=new String[skuCodes.size()];
+		String []skuCodeArray=new String[skuCodes.size()];
 		skuCodeArray=skuCodes.toArray(skuCodeArray);
 		//查询门店下商品信息集合--判断数据权限
 		//查询该用户sku是否上架

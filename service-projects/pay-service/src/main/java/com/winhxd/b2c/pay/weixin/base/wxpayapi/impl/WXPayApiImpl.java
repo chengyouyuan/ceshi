@@ -3,8 +3,6 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,10 @@ import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 
 /**
  * 对接微信支付API
@@ -57,7 +57,13 @@ public class WXPayApiImpl implements WXPayApi {
 		payPreOrderDTO = (PayPreOrderDTO)this.fillRequestDTO(payPreOrderDTO);
         payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
 		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payPreOrderDTO);
+        Map<String, String> reqData = null;
+		try {
+			reqData = XmlUtil.bean2MapUnderline2Hump(payPreOrderDTO);
+		} catch (Exception e) {
+			logger.error("预支付时，请求参数解析失败", e);
+			throw new BusinessException(3400906, "预支付时，响应参数解析失败");
+		}
         //统一下单，respXml为响应参数
         String respXml = this.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
         //响应参数验证，转为map
@@ -228,7 +234,7 @@ public class WXPayApiImpl implements WXPayApi {
     private String mapToXml(Map<String, String> reqData) {
     	String reqBody = null;
     	try {
-			reqBody = WXPayUtil.mapToXml(reqData);
+			reqBody = XmlUtil.mapToXml(reqData);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
 			throw new BusinessException(3400902, "微信支付参数异常");
@@ -246,7 +252,7 @@ public class WXPayApiImpl implements WXPayApi {
     private Map<String, String> xmlToMap(String xmlStr) {
     	Map<String, String> respData = null;
 		try {
-			respData = WXPayUtil.xmlToMap(xmlStr);
+			respData = XmlUtil.xmlToMap(xmlStr);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
 			throw new BusinessException(3400903, "微信返回参数解析异常");
@@ -400,7 +406,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
         	// 出现错误，返回XML数据
 	        if (respStr.indexOf("<") == 0) {
-	            ret = WXPayUtil.xmlToMap(respStr);
+	            ret = XmlUtil.xmlToMap(respStr);
 	        }
 	        else {
 	            // 正常返回csv数据
@@ -453,7 +459,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
 	        // 出现错误，返回XML数据
 	        if (respStr.indexOf("<") == 0) {
-	            ret = WXPayUtil.xmlToMap(respStr);
+	            ret = XmlUtil.xmlToMap(respStr);
 	        }
 	        else {
 	            // 正常返回csv数据

@@ -1,6 +1,9 @@
 package test;
 
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.OrderServiceApplication;
 import org.json.simple.JSONObject;
@@ -31,6 +34,8 @@ public class ApiOrderQueryTest {
 
     @Autowired
     private WebApplicationContext wac;
+    @Autowired
+    private OrderServiceClient serviceClient;
 
     @Before
     public void setup() {
@@ -51,5 +56,13 @@ public class ApiOrderQueryTest {
 
         System.out.println(mvcResult.getResponse().getContentAsString());
         Assert.assertEquals("请求错误", 200, status);
+    }
+
+    @Test
+    public void testRefundCallback() {
+        OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
+        condition.setOrderNo("C18082009607365289");
+        ResponseResult<Boolean> result = this.serviceClient.updateOrderRefundCallback(condition);
+        System.out.println(result.getData());
     }
 }

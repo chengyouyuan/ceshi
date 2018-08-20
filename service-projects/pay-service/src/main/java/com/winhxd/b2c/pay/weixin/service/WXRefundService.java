@@ -15,8 +15,5 @@ public interface WXRefundService {
      */
     PayRefundVO refundOrder(PayRefundCondition payRefund);
 
-
-    PayRefundDTO refundQuery(PayRefundCondition payRefund);
-
     PayRefund updatePayRefundByOutTradeNo(PayRefundResponseDTO payRefundResponseDTO) throws Exception;
 }

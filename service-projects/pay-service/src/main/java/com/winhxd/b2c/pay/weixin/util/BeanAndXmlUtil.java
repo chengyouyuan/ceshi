@@ -469,7 +469,7 @@ public class BeanAndXmlUtil {
                 || double.class.getName().equals(fieldTypeClass.getName())) {
             retVal = Double.parseDouble(value.toString());
         } else if(Date.class.getName().equals(fieldTypeClass.getName())) {
-            DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat bf = new SimpleDateFormat(WX_DATE_FORMAT);
             retVal = bf.parse(value.toString());
         } else if(BigDecimal.class.getName().equals(fieldTypeClass.getName())) {
             retVal = new BigDecimal(value.toString());

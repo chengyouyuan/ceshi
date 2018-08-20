@@ -358,11 +358,11 @@ public class XmlUtil {
             sb.append(fieldName.substring(0, 1).toUpperCase());
             sb.append(fieldName.substring(1));
             method = c.getMethod(sb.toString(), parameterType);
-            //找父类set方法
-            if(method == null && c.getSuperclass() != null && !c.getSuperclass().getName().equalsIgnoreCase(Object.class.getName())) {
-            	method = getSetMethod(c.getSuperclass(), fieldName);
-            }
 		} catch (NoSuchFieldException | SecurityException | NoSuchMethodException e) {}
+        //找父类set方法
+        if(method == null && c.getSuperclass() != null && !c.getSuperclass().getName().equalsIgnoreCase(Object.class.getName())) {
+            method = getSetMethod(c.getSuperclass(), fieldName);
+        }
         return method;
     }
     

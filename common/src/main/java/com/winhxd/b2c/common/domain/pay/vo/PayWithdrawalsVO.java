@@ -18,6 +18,8 @@ public class PayWithdrawalsVO {
     private Long id;
     @ApiModelProperty("门店id")
     private Long storeId;
+    @ApiModelProperty("门店名称")
+    private String storeName;
     @ApiModelProperty("提现订单号")
     private String withdrawalsNo;
     @ApiModelProperty("提现金额")
@@ -69,6 +71,14 @@ public class PayWithdrawalsVO {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 
     public String getWithdrawalsNo() {

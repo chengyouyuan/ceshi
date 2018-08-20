@@ -6,8 +6,10 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  *
@@ -38,13 +42,14 @@ public interface CouponActivityServiceClient {
     /**
      *
      *@Deccription 优惠券活动导入门店信息
-     *@Params  inputfile
+     *@Params  list
      *@Return  ResponseResult
      *@User  sjx
      *@Date   2018/8/17
      */
-    //@RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
-    //ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile);
+    @RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
+    ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
+
     /**
      *
      *@Deccription 添加优惠券活动
@@ -142,11 +147,11 @@ class CouponActivityServiceFallback implements CouponActivityServiceClient {
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 
-    //@Override
-    //public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(MultipartFile inputfile) {
-    //    logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
-    //    return new ResponseResult<List<CouponActivityImportStoreVO>>(BusinessCode.CODE_1001);
-    //}
+    @Override
+    public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
+        logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
+        return new ResponseResult<List<StoreUserInfoVO>>(BusinessCode.CODE_1001);
+    }
 
     @Override
     public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {

@@ -5,12 +5,17 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
+import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,7 +44,8 @@ public class ApiShopCarController {
 
     @Autowired
     private ShopCarService shopCarService;
-
+    @Autowired
+    private OrderQueryService orderQueryService;
     /**
      * 商品加购
      * @author: wangbaokuo
@@ -55,7 +61,6 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
@@ -112,15 +117,27 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
     @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<OrderPayVO> readyOrder(@RequestBody ReadyShopCarCondition condition){
+    public ResponseResult<PayPreOrderVO> readyOrder(@RequestBody ReadyShopCarCondition condition){
         ResponseResult result = new ResponseResult<>();
         shopCarParam(condition);
-        OrderPayVO orderPayVO = shopCarService.readyOrder(condition, getCurrentCustomerId());
+        Long customerId = getCurrentCustomerId();
+        OrderInfo orderInfo = shopCarService.readyOrder(condition, customerId);
+        PayPreOrderVO orderPayVO = new PayPreOrderVO();
+
+        if (orderInfo.getValuationType() == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
+            CustomerUserInfoVO customerUserInfoVO = shopCarService.getCustomerUserInfoVO(customerId);
+            logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
+            try{
+                orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            }catch (Exception e){
+                throw new BusinessException(BusinessCode.CODE_402015);
+            }
+            logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
+        }
         result.setData(orderPayVO);
         return result;
     }
@@ -164,10 +181,6 @@ public class ApiShopCarController {
         if (null == condition.getExtractAddress()){
             logger.error("商品加购异常{}  参数extractAddress为空");
             throw new BusinessException(BusinessCode.CODE_402002);
-        }
-        if (null == condition.getPickupDateTime()){
-            logger.error("商品加购异常{}  参数pickupDateTime为空");
-            throw new BusinessException(BusinessCode.CODE_402003);
         }
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");

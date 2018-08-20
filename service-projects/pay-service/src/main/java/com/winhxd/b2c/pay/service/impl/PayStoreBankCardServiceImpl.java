@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -16,7 +17,9 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
+import com.winhxd.b2c.common.domain.pay.enums.BanksEnums;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
+import com.winhxd.b2c.common.domain.pay.vo.BanksVO;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.api.ApiPayStoreBindBankCardController;
@@ -80,6 +83,18 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		res = BusinessCode.CODE_610016;
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
+    	/*String personId = condition.getPersonId();
+    	if(StringUtils.isEmpty(personId)){
+    		LOGGER.info("业务异常："+BusinessCode.CODE_610028);
+    		res = BusinessCode.CODE_610028;
+    		throw new BusinessException(BusinessCode.CODE_610028);
+    	}*/
+    	String swiftcode = condition.getSwiftCode();
+    	if(StringUtils.isEmpty(swiftcode)){
+    		LOGGER.info("业务异常："+BusinessCode.CODE_610029);
+    		res = BusinessCode.CODE_610029;
+    		throw new BusinessException(BusinessCode.CODE_610029);
+    	}
 //    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
     	StoreUser currentStoreUser = new StoreUser();
@@ -101,6 +116,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     			res = BusinessCode.CODE_610020;
     			throw new BusinessException(BusinessCode.CODE_610020);
     		} 
+    		condition.setStoreId(currentStoreUser.getBusinessId());
     		condition.setStatus((short)1); 
     		condition.setCreated(new Date());
     		condition.setUpdated(new Date());

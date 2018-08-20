@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
+import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
@@ -19,6 +20,7 @@ import com.winhxd.b2c.pay.service.PayStoreCashService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,8 +117,11 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
 
 	@Override
 	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
-		
-		payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+		if (payStoreTransactionRecord!=null) {
+			payStoreTransactionRecord.setCreated(new Date());
+			payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
+			payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+		}
 		
 	}
 

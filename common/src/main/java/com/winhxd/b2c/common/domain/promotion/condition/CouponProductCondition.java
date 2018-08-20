@@ -12,12 +12,15 @@ import java.math.BigDecimal;
 public class CouponProductCondition {
     @ApiModelProperty(value = "品牌编码")
     private String brandCode;
+    @ApiModelProperty(value = "品牌商编码")
+    private String brandBusinessCode;
     @ApiModelProperty(value = "sku编码")
     private String skuCode;
     @ApiModelProperty(value = "商品价格")
     private BigDecimal price;
     @ApiModelProperty(value = "商品数量")
     private Integer skuNum;
+
 
     public String getBrandCode() {
         return brandCode;
@@ -49,5 +52,13 @@ public class CouponProductCondition {
 
     public void setSkuNum(Integer skuNum) {
         this.skuNum = skuNum;
+    }
+
+    public String getBrandBusinessCode() {
+        return brandBusinessCode;
+    }
+
+    public void setBrandBusinessCode(String brandBusinessCode) {
+        this.brandBusinessCode = brandBusinessCode;
     }
 }

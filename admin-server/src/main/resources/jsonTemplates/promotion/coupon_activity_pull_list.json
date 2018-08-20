@@ -84,7 +84,7 @@
             "name": "开启/停止",
             "icon": null,
             "event": {
-              "ajaxType": "delete",
+              "ajaxType": "post",
               "type": "ajax",
               "params": [
                 "id",
@@ -114,6 +114,10 @@
       {
         "name": "name",
         "title": "领券活动名称"
+      },
+      {
+        "name": "activityStatus",
+        "title": "活动状态"
       },
       {
         "name": "citeNum",

@@ -1,12 +1,12 @@
 package com.winhxd.b2c.common.domain.pay.vo;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel("出入账明细")
 @Data
@@ -78,4 +78,6 @@ public class PayFinanceAccountDetailVO {
 	private BigDecimal allCharge;
 	@ApiModelProperty("今日手续费")
 	private BigDecimal todayCharge;
+	@ApiModelProperty("公司补充总入账")
+	private BigDecimal companySupplementInMoney;
 }

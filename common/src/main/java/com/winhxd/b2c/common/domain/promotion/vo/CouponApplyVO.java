@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyBrandList;
 import com.winhxd.b2c.common.domain.promotion.model.CouponApplyProductList;
 import io.swagger.annotations.ApiModelProperty;
@@ -12,7 +13,8 @@ import java.util.List;
  * @Date 2018/8/9 12:16
  * @Description CouponApplyVO  适用对象页面用于页面显示
  **/
-public class CouponApplyVO {
+
+public class CouponApplyVO extends ApiCondition{
     @ApiModelProperty(value = "主键")
     private Long id;
     @ApiModelProperty(value = "规则名称")

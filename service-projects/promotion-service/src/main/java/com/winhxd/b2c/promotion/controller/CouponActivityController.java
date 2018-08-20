@@ -6,10 +6,16 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
+import com.winhxd.b2c.common.domain.promotion.util.ExcelUtil;
+import com.winhxd.b2c.common.domain.promotion.util.ImportResult;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,8 +27,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -37,6 +47,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(CouponActivityController.class);
     @Autowired
     private CouponActivityService couponActivityService;
+    @Autowired
+    private StoreServiceClient storeServiceClient;
 
     @Override
     @ApiOperation(value = "领券推券活动列表接口", notes = "领券推券活动列表接口")
@@ -50,16 +62,39 @@ public class CouponActivityController implements CouponActivityServiceClient {
         return result;
     }
 
-    //@ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
-    //@Override
-    //public ResponseResult<List<CouponActivityImportStoreVO>> couponActivityStoreImportExcel(@RequestParam("inputfile") MultipartFile inputfile) {
-    //    ResponseResult<List<CouponActivityImportStoreVO>> result = new ResponseResult<List<CouponActivityImportStoreVO>>();
-    //    //List<CouponActivityImportStoreVO> couponActivityImportStoreVOList = couponActivityService.couponActivityStoreImportExcel();
-    //    //result.setData(couponActivityImportStoreVOList);
-    //    result.setCode(BusinessCode.CODE_OK);
-    //    result.setMessage("返回小店导入信息成功");
-    //    return result;
-    //}
+    @ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
+    @Override
+    public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
+        ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
+        List<Long> storeIdList = new ArrayList();
+        for (int j=0;j<list.size();j++){
+            storeIdList.add(Long.valueOf(list.get(j).getStoreId()));
+        }
+        //list去重
+        HashSet h = new HashSet(storeIdList);
+        storeIdList.clear();
+        storeIdList.addAll(h);
+        //调寒宁接口判断数据有效性
+        ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
+        StoreListByKeywordsCondition storeListByKeywordsCondition = new StoreListByKeywordsCondition();
+        storeListByKeywordsCondition.setStoreIds(storeIdList);
+        responseResult =  storeServiceClient.getStoreListByKeywords(storeListByKeywordsCondition);
+        List<StoreUserInfoVO> storeUserInfoVOList= responseResult.getData();
+        result.setData(storeUserInfoVOList);
+        result.setCode(BusinessCode.CODE_OK);
+        result.setMessage("返回小店导入信息成功");
+        return result;
+    }
+
+    private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
+        ImportResult<CouponActivityImportStoreVO> importResult = null;
+        try {
+            importResult = ExcelUtil.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessCode.CODE_1001, e);
+        }
+        return importResult;
+    }
 
     /**
      *
@@ -119,13 +154,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
             }
         }
         //区域信息验证
-        if(condition.getCouponActivityAreaList() == null){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
-                && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
+        //导入没有区域信息
+        //if(condition.getCouponActivityAreaList() == null){
+        //    throw new BusinessException(BusinessCode.CODE_1007);
+        //}
+        //if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
+        //        && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
+        //    throw new BusinessException(BusinessCode.CODE_1007);
+        //}
 
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.saveCouponActivity(condition);
@@ -337,7 +373,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
+    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition) {
         if(condition == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -349,6 +385,4 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result = couponActivityService.findStoreByActivity(condition);
         return result;
     }
-
-
 }

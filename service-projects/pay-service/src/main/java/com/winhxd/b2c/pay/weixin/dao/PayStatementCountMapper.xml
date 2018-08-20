@@ -8,7 +8,7 @@
     <result column="refund_amount_count" jdbcType="DECIMAL" property="refundAmountCount" />
     <result column="refund_discount_count" jdbcType="DECIMAL" property="refundDiscountCount" />
     <result column="fee_count" jdbcType="DECIMAL" property="feeCount" />
-    <result column="bill_date" jdbcType="TIMESTAMP" property="billDate" />
+    <result column="bill_date" jdbcType="DATE" property="billDate" />
   </resultMap>
   <sql id="Base_Column_List">
     id, pay_num_count, pay_amount_count, refund_amount_count, refund_discount_count, 
@@ -30,7 +30,7 @@
       fee_count, bill_date)
     values (#{id,jdbcType=BIGINT}, #{payNumCount,jdbcType=INTEGER}, #{payAmountCount,jdbcType=DECIMAL}, 
       #{refundAmountCount,jdbcType=DECIMAL}, #{refundDiscountCount,jdbcType=DECIMAL}, 
-      #{feeCount,jdbcType=DECIMAL}, #{billDate,jdbcType=TIMESTAMP})
+      #{feeCount,jdbcType=DECIMAL}, #{billDate,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayStatementCount">
     insert into pay_statement_count
@@ -77,7 +77,7 @@
         #{feeCount,jdbcType=DECIMAL},
       </if>
       <if test="billDate != null">
-        #{billDate,jdbcType=TIMESTAMP},
+        #{billDate,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -100,7 +100,7 @@
         fee_count = #{feeCount,jdbcType=DECIMAL},
       </if>
       <if test="billDate != null">
-        bill_date = #{billDate,jdbcType=TIMESTAMP},
+        bill_date = #{billDate,jdbcType=DATE},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -112,7 +112,7 @@
       refund_amount_count = #{refundAmountCount,jdbcType=DECIMAL},
       refund_discount_count = #{refundDiscountCount,jdbcType=DECIMAL},
       fee_count = #{feeCount,jdbcType=DECIMAL},
-      bill_date = #{billDate,jdbcType=TIMESTAMP}
+      bill_date = #{billDate,jdbcType=DATE}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

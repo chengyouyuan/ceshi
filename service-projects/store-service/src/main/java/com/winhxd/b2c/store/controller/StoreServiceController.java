@@ -24,6 +24,7 @@ import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
@@ -284,6 +285,15 @@ public class StoreServiceController implements StoreServiceClient {
 		responseResult.setData(result);
 		return responseResult;
 	}
+	@Override
+	public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(@RequestBody StoreListByKeywordsCondition condition) {
+		ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
+		List<StoreUserInfoVO> result = storeService.getStoreListByKeywords(condition);
+		responseResult.setData(result);
+		return responseResult;
+	}
+	
+	
 
 
 }

@@ -1,10 +1,22 @@
 package com.winhxd.b2c.pay.weixin.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,15 +27,12 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class BeanAndXmlUtil {
 
@@ -51,9 +60,15 @@ public class BeanAndXmlUtil {
 
         Map<String,String> map = new HashMap<String, String>();
         Class cls = obj.getClass();
-        Field[] fields = cls.getDeclaredFields();
-        for(int i=0; i<fields.length; i++){
-            Field f = fields[i];
+        List<Field> fields = new ArrayList<>() ;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
+        	fields.addAll(Arrays.asList(cls .getDeclaredFields()));
+        	//得到父类,然后赋给自己
+        	cls = cls.getSuperclass(); 
+        }
+        for(int i=0; i<fields.size(); i++){
+            Field f = fields.get(i);
 
             f.setAccessible(true);
             System.out.println("属性名:" + f.getName() + " 属性值:" + f.get(obj));
@@ -162,7 +177,13 @@ public class BeanAndXmlUtil {
             return sortedMap;
         }
         Class clazz = obj.getClass();
-        Field[] fields = clazz.getDeclaredFields();
+        List<Field> fields = new ArrayList<>() ;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (clazz != null && !clazz.getName().toLowerCase().equals("java.lang.object")) {
+        	fields.addAll(Arrays.asList(clazz .getDeclaredFields()));
+        	//得到父类,然后赋给自己
+        	clazz = clazz.getSuperclass(); 
+        }
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
@@ -175,6 +196,46 @@ public class BeanAndXmlUtil {
             e.printStackTrace();
         }
         return sortedMap;
+    }
+    
+    /**
+     * 实体对象转成Map
+     * @author mahongliang
+     * @date  2018年8月18日 下午8:17:10
+     * @Description 
+     * @param obj
+     * @return
+     */
+    public static Map<String, String> beanToMap(Object obj) {
+        Map<String,String> map = new HashMap<String,String>();
+        if (obj == null) {
+            return map;
+        }
+        Class<? extends Object> clazz = obj.getClass();
+        List<Field> fields = new ArrayList<>() ;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (clazz != null && !clazz.getName().toLowerCase().equals("java.lang.object")) {
+        	fields.addAll(Arrays.asList(clazz .getDeclaredFields()));
+        	//得到父类,然后赋给自己
+        	clazz = clazz.getSuperclass(); 
+        }
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if(null == field.get(obj)){
+                    continue;
+                }
+                if(Date.class.getName().equals(field.getType().getName())) {
+                    DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    map.put(humpToUnderline(field.getName()), df.format(field.get(obj)));
+                } else{
+                    map.put(humpToUnderline(field.getName()), String.valueOf(field.get(obj)));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
     /**
@@ -359,6 +420,8 @@ public class BeanAndXmlUtil {
         } else if(Date.class.getName().equals(fieldTypeClass.getName())) {
             DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             retVal = bf.parse(value.toString());
+        } else if(BigDecimal.class.getName().equals(fieldTypeClass.getName())) {
+            retVal = new BigDecimal(value.toString());
         }
         return retVal;
     }

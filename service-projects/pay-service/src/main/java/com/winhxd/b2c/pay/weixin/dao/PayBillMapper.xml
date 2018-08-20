@@ -47,11 +47,11 @@
     <result column="updated" property="updated" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, appid, mch_id, device_info, nonce_str, sign, sign_type, body, detail, attach, 
-    out_order_no, out_trade_no, transaction_id, fee_type, total_fee, total_amount, callback_total_fee, 
-    callback_total_amount, settlement_total_fee, settlement_total_amount, spbill_create_ip, 
-    time_start, time_expire, time_end, goods_tag, notify_url, trade_type, product_id, 
-    limit_pay, buyer_id, status, error_code, error_message, prepay_id, code_url, is_subscribe, 
+    id, appid, mch_id, device_info, nonce_str, sign, sign_type, body, detail, attach,
+    out_order_no, out_trade_no, transaction_id, fee_type, total_fee, total_amount, callback_total_fee,
+    callback_total_amount, settlement_total_fee, settlement_total_amount, spbill_create_ip,
+    time_start, time_expire, time_end, goods_tag, notify_url, trade_type, product_id,
+    limit_pay, buyer_id, status, error_code, error_message, prepay_id, code_url, is_subscribe,
     bank_type, cash_fee, cash_fee_type, coupon_fee, coupon_count, created, updated
   </sql>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.pay.weixin.model.PayBill" >
@@ -459,11 +459,20 @@
     where out_order_no = #{outOrderNo}
     and status=1
   </select>
-  
-  <!-- 查询订单支付状态 -->
-  <select id="selectPayBillStatusByOutOrderNo" resultType="java.lang.Integer" parameterType="java.lang.String" >
+
+  <!-- 根据真实订单号查询流水 -->
+  <select id="selectByOutOrderNo" resultType="com.winhxd.b2c.pay.weixin.model.PayBill" parameterType="java.lang.String" >
     select status
     from pay_bill
     where out_order_no = #{outOrderNo}
+    order by created desc
+  </select>
+  
+  <!-- 根据支付流水号查询流水 -->
+  <select id="selectByOutTradeNo" resultType="com.winhxd.b2c.pay.weixin.model.PayBill" parameterType="java.lang.String" >
+    select 
+	<include refid="Base_Column_List" />
+    from pay_bill
+    where out_trade_no = #{outTradeNo}
   </select>
 </mapper>

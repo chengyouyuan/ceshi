@@ -9,6 +9,8 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -59,7 +61,6 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
@@ -116,7 +117,6 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402008, message = "参数错误"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
-            @ApiResponse(code = BusinessCode.CODE_402003, message = "自提为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
@@ -125,12 +125,17 @@ public class ApiShopCarController {
         ResponseResult result = new ResponseResult<>();
         shopCarParam(condition);
         Long customerId = getCurrentCustomerId();
-        String orderNo = shopCarService.readyOrder(condition, customerId);
+        OrderInfo orderInfo = shopCarService.readyOrder(condition, customerId);
         PayPreOrderVO orderPayVO = new PayPreOrderVO();
-        if (null != condition.getOrderTotalMoney()) {
+
+        if (orderInfo.getValuationType() == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
             CustomerUserInfoVO customerUserInfoVO = shopCarService.getCustomerUserInfoVO(customerId);
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo开始...");
-            orderPayVO = orderQueryService.getOrderPayInfo(orderNo, condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            try{
+                orderPayVO = orderQueryService.getOrderPayInfo(orderInfo.getOrderNo(), condition.getSpbillCreateIp(),condition.getDeviceInfo(), customerId, customerUserInfoVO.getOpenid());
+            }catch (Exception e){
+                throw new BusinessException(BusinessCode.CODE_402015);
+            }
             logger.info("预订单接口readyOrder{}-> 统一下单接口getOrderPayInfo结束...OrderPayVO：" + JsonUtil.toJSONString(orderPayVO));
         }
         result.setData(orderPayVO);
@@ -177,10 +182,6 @@ public class ApiShopCarController {
             logger.error("商品加购异常{}  参数extractAddress为空");
             throw new BusinessException(BusinessCode.CODE_402002);
         }
-        if (null == condition.getPickupDateTime()){
-            logger.error("商品加购异常{}  参数pickupDateTime为空");
-            throw new BusinessException(BusinessCode.CODE_402003);
-        }
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");
             throw new BusinessException(BusinessCode.CODE_402006);
@@ -194,10 +195,10 @@ public class ApiShopCarController {
      */
     private Long getCurrentCustomerId(){
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        /*if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
+        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
             logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
             throw new BusinessException(BusinessCode.CODE_1004);
-        }*/
-        return 20L;
+        }
+        return customerUser.getCustomerId();
     }
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
  *
  * @Author yindanqing
  * @Date 2018/8/18 11:45
- * @Description: 查询微信转账至银行卡详情条件
+ * @Description: 查询微信转账至零钱详情条件
  */
 @Setter
 @Getter

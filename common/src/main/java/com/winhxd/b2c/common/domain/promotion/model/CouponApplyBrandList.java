@@ -1,6 +1,8 @@
 package com.winhxd.b2c.common.domain.promotion.model;
 
-public class CouponApplyBrandList {
+import io.swagger.annotations.ApiModelProperty;
+
+public class CouponApplyBrandList  {
     private Long id;
 
     private Long applyBrandId;
@@ -8,8 +10,9 @@ public class CouponApplyBrandList {
     private String brandCode;
 
     private Short status;
-
     private String companyCode;
+    private String companyName;
+    private String brandName;
 
     public Long getId() {
         return id;
@@ -50,5 +53,21 @@ public class CouponApplyBrandList {
 
     public void setCompanyCode(String companyCode) {
         this.companyCode = companyCode;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 }

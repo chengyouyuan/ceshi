@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
@@ -126,7 +127,7 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public String readyOrder(ReadyShopCarCondition condition, Long customerId) {
+    public OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId) {
         logger.info(READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
@@ -154,12 +155,12 @@ public class ShopCarServiceImpl implements ShopCarService {
                 orderCreateCondition.setCustomerId(customerId);
                 orderCreateCondition.setOrderItemConditions(items);
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
-                String orderNo  = orderService.submitOrder(orderCreateCondition).getOrderNo();
+                OrderInfo orderInfo = orderService.submitOrder(orderCreateCondition);
                 logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));
                 this.removeShopCar(customerId);
-                return orderNo;
+                return orderInfo;
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }

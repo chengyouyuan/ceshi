@@ -350,11 +350,13 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setOpenid(openid);
                 payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
-                ResponseResult<PayPreOrderVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
-                if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
-                    throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
-                }
-                ret = responseResult.getData();
+                // TODO 调支付统一下单
+//                ResponseResult<PayPreOrderVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
+//                if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
+//                    throw new BusinessException(BusinessCode.ORDER_GET_PAY_INFO_ERROR);
+//                }
+//                ret = responseResult.getData();
+                ret = new PayPreOrderVO();
             }finally {
                 lock.unlock();
             }

@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 
@@ -49,7 +50,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: void
      */
-    String readyOrder(ReadyShopCarCondition condition, Long customerId);
+    OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId);
 
     /**
      * 根据门店 用户 sku集合 获取集合信息

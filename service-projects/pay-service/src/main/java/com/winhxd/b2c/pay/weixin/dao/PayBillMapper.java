@@ -21,14 +21,24 @@ public interface PayBillMapper {
     Long selectPaidByOutOrderNo(String outOrderNo);
     
     /**
-     * 查询订单支付状态
+     * 根据真实订单号查询流水
      * @author mahongliang
      * @date  2018年8月17日 下午5:15:30
      * @Description 
      * @param outOrderNo
      * @return
      */
-    List<Integer> selectPayBillStatusByOutOrderNo(String outOrderNo);
+    List<PayBill> selectByOutOrderNo(String outOrderNo);
+    
+    /**
+     * 根据流水号查询流水
+     * @author mahongliang
+     * @date  2018年8月19日 下午4:41:09
+     * @Description 
+     * @param outTradeNo
+     * @return
+     */
+    PayBill selectByOutTradeNo(String outTradeNo);
     
     /**
      * 支付账单通用查询

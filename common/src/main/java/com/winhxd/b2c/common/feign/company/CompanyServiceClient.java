@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.feign.company;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -21,6 +23,8 @@ public interface CompanyServiceClient {
 	@RequestMapping(value = "/company/v1/getCompanyInfoByPage/", method = RequestMethod.POST)
 	ResponseResult<PagedList<CompanyInfo>> getCompanyInfoByPage(Retail2cCompanyCondition condition);
 	
+	@RequestMapping(value = "/company/v1/getCompanyInfoByCodes/", method = RequestMethod.POST)
+	ResponseResult<List<CompanyInfo>> getCompanyInfoByCodes(List<String> codes);
 }
 
 class CompanyServiceFallback implements CompanyServiceClient, FallbackFactory<CompanyServiceClient> {
@@ -43,6 +47,12 @@ class CompanyServiceFallback implements CompanyServiceClient, FallbackFactory<Co
 	@Override
 	public ResponseResult<PagedList<CompanyInfo>> getCompanyInfoByPage(Retail2cCompanyCondition condition) {
 		logger.error("ProductServiceClient -> getCompanyInfoByPage", throwable);
+		return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+	
+	@Override
+	public ResponseResult<List<CompanyInfo>> getCompanyInfoByCodes(List<String> codes) {
+		logger.error("ProductServiceClient -> getCompanyInfoByCodes", throwable);
 		return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 

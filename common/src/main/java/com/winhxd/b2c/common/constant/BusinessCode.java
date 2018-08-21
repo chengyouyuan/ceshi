@@ -502,6 +502,18 @@ public final class BusinessCode {
     
     @ApiModelProperty("判断订单是否支付  订单号为空")
     public static final int CODE_601601 = 601601;
+    
+    @ApiModelProperty("提现计算手续费 参数为空")
+    public static final int CODE_611101 = 611101;
+    
+    @ApiModelProperty("提现计算手续费 提现类型为空")
+    public static final int CODE_611102 = 611102;
+    
+    @ApiModelProperty("提现计算手续费 金额为空")
+    public static final int CODE_611103 = 611103;
+    
+    @ApiModelProperty("提现计算手续费 提现金额大于可提现金额")
+    public static final int CODE_611104 = 611104;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

@@ -361,7 +361,6 @@ public class ApiStoreLoginController {
 		ResponseResult<NeteaseAccountVO> netease;
 		NeteaseAccountVO accountVO;
 		NeteaseAccountCondition neteaseAccountCondition = new NeteaseAccountCondition();
-		if (HXD_STATUS1.equals(db.getStoreStatus())) {
 			neteaseAccountCondition.setCustomerId(db.getId());
 			netease = messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
 			if (netease.getCode() != 0) {
@@ -371,7 +370,6 @@ public class ApiStoreLoginController {
 			accountVO = netease.getData();
 			vo.setNeteaseAccid(accountVO.getAccid());
 			vo.setNeteaseToken(accountVO.getToken());
-		}
 	}
 
 	private void getStoreUserInfoToken(StoreUserInfo db, StoreUser user) {

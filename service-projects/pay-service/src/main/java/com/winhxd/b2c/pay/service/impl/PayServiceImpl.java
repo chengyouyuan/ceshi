@@ -269,7 +269,7 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			// 验证该订单是否已经做过此项操作
 			String orderNo=condition.getOrderNo();
-			if (StringUtils.isNotBlank(orderNo)) {
+			if (StringUtils.isBlank(orderNo)) {
 				logger.info(log+"--订单闭环订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
@@ -295,7 +295,7 @@ public class PayServiceImpl implements PayService{
           //验证订单信息
 			String orderNo=condition.getOrderNo();
 			Short moneyType=condition.getMoneyType();
-			if (StringUtils.isNotBlank(orderNo)) {
+			if (StringUtils.isBlank(orderNo)) {
 				logger.info(log+"--结算审核订单号为空");
 				throw new BusinessException(BusinessCode.CODE_600004);
 			}
@@ -329,7 +329,7 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode().equals(condition.getType())){
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isNotBlank(withdrawalsNo)) {
+			if (StringUtils.isBlank(withdrawalsNo)) {
 				logger.info(log+"--提现申请提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}
@@ -353,7 +353,7 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_AUDIT_NOT_PASS.getCode().equals(condition.getType())){
 			// 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isNotBlank(withdrawalsNo)) {
+			if (StringUtils.isBlank(withdrawalsNo)) {
 				logger.info(log+"--提现审核不通过 提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}
@@ -377,7 +377,7 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
 			// 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isNotBlank(withdrawalsNo)) {
+			if (StringUtils.isBlank(withdrawalsNo)) {
 				logger.info(log+"--提现失败 提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}
@@ -402,7 +402,7 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode().equals(condition.getType())){
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isNotBlank(withdrawalsNo)) {
+			if (StringUtils.isBlank(withdrawalsNo)) {
 				logger.info(log+"--提现单号为空");
 				throw new BusinessException(BusinessCode.CODE_600005);
 			}

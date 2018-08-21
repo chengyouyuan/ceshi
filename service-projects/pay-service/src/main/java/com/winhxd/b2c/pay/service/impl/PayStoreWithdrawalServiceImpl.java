@@ -174,6 +174,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(StringUtils.isEmpty(name)){
 			res = BusinessCode.CODE_610034;
 		}
+		short withdrawType = condition.getWithdrawType();
+		if(withdrawType == 1){
+			String openId = condition.getBuyerId();
+			if(StringUtils.isEmpty(openId)){
+				res = BusinessCode.CODE_610031;
+			}
+		}
+		String paymentAccount = condition.getPaymentAccount();
+		if(StringUtils.isEmpty(paymentAccount)){
+			res = BusinessCode.CODE_610012;
+		}
+		String swiftCode = condition.getSwiftCode();
+		if(StringUtils.isEmpty(swiftCode)){
+			res = BusinessCode.CODE_610029;
+		}
 		return res;
 	}
 
@@ -342,6 +357,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
 			payWithdrawal.setRealFee(realFee);
 			payWithdrawal.setRate(rate);
+			payWithdrawal.setPaymentAccount(condition.getPaymentAccount());
+			payWithdrawal.setSwiftCode(condition.getSwiftCode());
 			
 			payStoreApplyWithdraw.setCmmsAmt(cmms);
 			payStoreApplyWithdraw.setRealFee(realFee);
@@ -350,6 +367,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
+			payWithdrawal.setBuyerId(condition.getBuyerId());
 		}
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);

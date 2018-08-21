@@ -7,7 +7,7 @@ package com.winhxd.b2c.common.constant;
  * @Date 2018/8/14 18:04
  * @Description:
  */
-public enum BankType {
+public enum BankTypeEnum {
 
     ICBC_DEBIT("ICBC_DEBIT","工商银行(借记卡)"),
     ICBC_CREDIT("ICBC_CREDIT","工商银行(信用卡)"),
@@ -240,7 +240,7 @@ public enum BankType {
     VISA_CREDIT("VISA_CREDIT","VISA(信用卡)"),
     LQT("LQT","零钱通");
 
-    private BankType(String code, String name){
+    private BankTypeEnum(String code, String name){
         this.code = code;
         this.name = name;
     }

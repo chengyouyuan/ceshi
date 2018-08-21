@@ -104,6 +104,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_100821, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
+			@ApiResponse(code = BusinessCode.CODE_100819, message = "您还没有绑定惠下单账号"),
 			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧") })
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(

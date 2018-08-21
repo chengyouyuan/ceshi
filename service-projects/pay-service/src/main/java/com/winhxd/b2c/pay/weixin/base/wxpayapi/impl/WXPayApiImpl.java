@@ -3,6 +3,7 @@ package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
 import com.winhxd.b2c.pay.weixin.base.dto.*;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
@@ -77,29 +78,34 @@ public class WXPayApiImpl implements WXPayApi {
 
     @Override
     public PayRefundResponseDTO refundOder(PayRefundDTO payRefundDTO) {
-
+		logger.info("开始转换入参：");
         if(config != null) {
             payRefundDTO.setNotifyUrl(config.getRefundNotifyUrl());
         }
         //组装公共属性
         payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
-        payRefundDTO.setSign(this.generateSign(payRefundDTO));
+		logger.info("开始转换入参dto："+JsonUtil.toJSONString(payRefundDTO));
+		payRefundDTO.setSign(this.generateSign(payRefundDTO));
         //bean转map
 		Map<String, String> reqData = null;
 		try {
 			reqData = XmlUtil.bean2MapUnderline2Hump(payRefundDTO);
+			logger.info("开始转换入参map："+JsonUtil.toJSONString(reqData));
 		} catch (Exception e) {
 			logger.error("申请退款时，请求参数解析失败", e);
-			//TODO 错误码
 			throw new BusinessException(BusinessCode.CODE_3400906, "申请退款时，响应参数解析失败");
 		}
         //申请退款，respXml为响应参数
         String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+		logger.info("退款返回数据是："+ respXml);
         //响应参数验证，转为map
+		logger.info("开始转换返参：");
         Map<String, String> respData = this.processResponseXml(respXml);
+        logger.info("返参转换成map结束"+ JsonUtil.toJSONString(respData));
         PayRefundResponseDTO responseDTO = new PayRefundResponseDTO();
         try {
             responseDTO = XmlUtil.map2Bean(respData, PayRefundResponseDTO.class);
+            logger.info("返参转换成dto结束："+JsonUtil.toJSONString(responseDTO));
         } catch (Exception e) {
             logger.error("申请退款时，响应参数解析失败", e);
             throw new BusinessException(BusinessCode.CODE_3400906, "申请退款时，响应参数解析失败");

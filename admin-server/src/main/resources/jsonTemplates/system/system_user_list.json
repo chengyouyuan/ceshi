@@ -141,7 +141,7 @@
         "isHidden": false
       },
       {
-        "name": "roleName",
+        "name": "roleId",
         "inputModel": "inputDia",
         "title": "权限组",
         "placeholder": "请输入成员权限组",

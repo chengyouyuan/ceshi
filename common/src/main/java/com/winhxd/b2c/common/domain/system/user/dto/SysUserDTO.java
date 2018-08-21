@@ -4,9 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
 @ApiModel("系统管理用户编辑传输对象")
 @Data
 public class SysUserDTO {
@@ -31,5 +28,8 @@ public class SysUserDTO {
 
     @ApiModelProperty(value = "角色编号")
     private Long roleId;
+
+    @ApiModelProperty(value = "区域编码")
+    private String regionCode;
 
 }

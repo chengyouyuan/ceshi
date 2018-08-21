@@ -30,6 +30,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 
@@ -57,7 +59,6 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         if (!matcher.matches()) {
             return error(response, BusinessCode.CODE_1009);
         }
-        MediaType contentType = request.getHeaders().getContentType();
         String pathTag = matcher.group(2);
         String apiCode = matcher.group(3);
 
@@ -103,33 +104,36 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         }
 
         ServerHttpRequestDecorator requestDecorator = new ServerHttpRequestDecorator(requestBuilder == null ? request : requestBuilder.build()) {
+            private ByteArrayOutputStream stream = new ByteArrayOutputStream(0);
+
             @Override
             public Flux<DataBuffer> getBody() {
-                return super.getBody().flatMap(dataBuffer -> {
-                    if (MediaType.APPLICATION_JSON.includes(contentType)
-                            || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
-                        byte[] bs = new byte[dataBuffer.readableByteCount()];
-                        dataBuffer.read(bs);
-                        String req = new String(bs, StandardCharsets.UTF_8);
-                        currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
-                        logger.debug("Gateway请求数据-{}: {}", currentSpan.context().traceIdString(), req);
-                        dataBuffer.readPosition(0);
-                    }
-                    return Flux.just(dataBuffer);
-                });
+                return super.getBody()
+                        .doOnNext(buffer -> recordBytes(stream, buffer))
+                        .doOnComplete(() -> {
+                            if (stream.size() > 0) {
+                                String req = new String(stream.toByteArray(), StandardCharsets.UTF_8);
+                                stream = null;
+                                currentSpan.tag(ContextHelper.TRACER_API_REQUEST, req);
+                                logger.debug("Gateway请求数据-{}: {}", currentSpan.context().traceIdString(), req);
+                            }
+                        });
             }
+
         };
 
         ServerHttpResponseDecorator responseDecorator = new ServerHttpResponseDecorator(exchange.getResponse()) {
+            private ByteArrayOutputStream stream = new ByteArrayOutputStream(0);
+
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                Flux<DataBuffer> flux = Flux.from(body).flatMap(
-                        dataBuffer -> {
-                            if (MediaType.APPLICATION_JSON.includes(contentType)
-                                    || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
-                                byte[] bs = new byte[dataBuffer.readableByteCount()];
-                                dataBuffer.read(bs);
-                                String repJson = new String(bs, StandardCharsets.UTF_8);
+                getHeaders().set(ContextHelper.TRACER_API_TRACE_ID, currentSpan.context().traceIdString());
+                Flux<? extends DataBuffer> flux = Flux.from(body)
+                        .doOnNext(buffer -> recordBytes(stream, buffer))
+                        .doOnComplete(() -> {
+                            if (stream.size() > 0) {
+                                String repJson = new String(stream.toByteArray(), StandardCharsets.UTF_8);
+                                stream = null;
                                 currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
                                 if (!ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
                                     ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
@@ -138,17 +142,29 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                                     }
                                 }
                                 logger.debug("Gateway响应数据-{}: {}", currentSpan.context().traceIdString(), repJson);
-                                dataBuffer.readPosition(0);
                             }
-                            return Flux.just(dataBuffer);
-                        }
-                );
-                getHeaders().set(ContextHelper.TRACER_API_TRACE_ID, currentSpan.context().traceIdString());
+                        });
                 return super.writeWith(flux);
+            }
+
+            @Override
+            public Mono<Void> setComplete() {
+                return super.setComplete();
             }
         };
 
         return chain.filter(exchange.mutate().request(requestDecorator).response(responseDecorator).build());
+    }
+
+    private static void recordBytes(ByteArrayOutputStream stream, DataBuffer buffer) {
+        byte[] bs = new byte[buffer.readableByteCount()];
+        buffer.read(bs);
+        try {
+            stream.write(bs);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        buffer.readPosition(0);
     }
 
     @Override

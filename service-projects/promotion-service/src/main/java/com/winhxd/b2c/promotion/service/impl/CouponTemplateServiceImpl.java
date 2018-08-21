@@ -53,7 +53,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         couponTemplate.setApplyRuleId(couponTemplateCondition.getApplyRuleId());
         couponTemplate.setCouponLabel(couponTemplateCondition.getCouponLabel());
         couponTemplate.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
-        couponTemplate.setCalType(couponTemplateCondition.getCalType());
         couponTemplate.setPayType(couponTemplateCondition.getPayType());
         couponTemplate.setCode(couponTemplateCondition.getCode());
         couponTemplate.setCorner(couponTemplateCondition.getCorner());
@@ -83,7 +82,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         if(couponTemplate!=null){
            vo.setApplyRuleId(couponTemplate.getApplyRuleId());
            vo.setApplyRuleName(couponTemplate.getApplyRuleName());
-           vo.setCalType(couponTemplate.getCalType());
            vo.setPayType(couponTemplate.getPayType());
            vo.setCouponLabel(couponTemplate.getCouponLabel());
            vo.setId(couponTemplate.getId());
@@ -129,7 +127,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         if(couponTemplate!=null){
             vo.setApplyRuleId(couponTemplate.getApplyRuleId());
             vo.setApplyRuleName(couponTemplate.getApplyRuleName());
-            vo.setCalType(couponTemplate.getCalType());
             vo.setPayType(couponTemplate.getPayType());
             vo.setCouponLabel(couponTemplate.getCouponLabel());
             vo.setId(couponTemplate.getId());
@@ -150,7 +147,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
     /**
      *
-     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
+     *@Deccription  设为无效
      *@Params  ids  多个页面勾选的ID 用逗号","隔开
      *@Return  ResponseResult 删除是否成功
      *@User  wl

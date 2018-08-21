@@ -59,4 +59,10 @@ public class SysUser {
     @ApiModelProperty(value = "用户身份(1:超级管理员)")
     private Integer identity;
 
+    @ApiModelProperty(value = "区域编码")
+    private String regionCode;
+
+    @ApiModelProperty(value = "区域名称")
+    private String regionName;
+
 }

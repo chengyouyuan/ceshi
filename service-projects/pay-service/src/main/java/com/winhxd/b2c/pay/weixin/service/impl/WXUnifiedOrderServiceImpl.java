@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CurrencyEnum;
 import com.winhxd.b2c.common.constant.TradeTypeEnum;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
@@ -71,10 +72,10 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	}
 	
 	@Override
-	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO) {
+	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO, Short status) {
 		String outTradeNo = payPreOrderCallbackDTO.getOutTradeNo();
 		PayBill bill = payBillMapper.selectByOutTradeNo(outTradeNo);
-		bill.setStatus(BillStatusEnum.PAID.getCode());
+		bill.setStatus(status);
 		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
 		bill.setBankType(payPreOrderCallbackDTO.getBankType());
 		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
@@ -116,11 +117,15 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		
         //调用微信统一下单API
 		PayPreOrderResponseDTO payPreOrderResponseDTO = wxPayApi.unifiedOrder(payPreOrderDTO);
-		if(payPreOrderResponseDTO == null || 
-				PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getReturnCode()) ||
+		if(payPreOrderResponseDTO == null) {
+			logger.error("获取支付凭证响应为空，内部错误");
+			throw new BusinessException(BusinessCode.CODE_1001);
+		}
+		
+		if(PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getReturnCode()) ||
 				PayPreOrderResponseDTO.FAIL.equals(payPreOrderResponseDTO.getResultCode())) {
 			logger.error(payPreOrderResponseDTO.getReturnMsg());
-			throw new BusinessException(3400910, payPreOrderResponseDTO.getReturnMsg());
+			throw new BusinessException(BusinessCode.CODE_3400910, payPreOrderResponseDTO.getReturnMsg());
 		}
 		// 保存支付流水记录
 		this.savePayBill(condition, payPreOrderDTO, payPreOrderResponseDTO);
@@ -149,8 +154,8 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @return
 	 */
 	private void paid(PayPreOrderCondition condition) {
-		logger.warn("订单{}支付中，请勿重复支付", condition.getOutOrderNo());
-		throw new BusinessException(3400900, "支付中，请勿重复支付");
+		logger.warn("订单{}支付完成，请勿重复支付", condition.getOutOrderNo());
+		throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
 	}
 	
 	/**
@@ -166,40 +171,51 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
 		// 主动查询，更新流水
 		PayOrderQueryDTO payOrderQueryDTO = new PayOrderQueryDTO();
-		payOrderQueryDTO.setOutTradeNo(bill.getOutTradeNo());
+		String outTradeNo = bill.getOutTradeNo();
+		payOrderQueryDTO.setOutTradeNo(outTradeNo);
 		PayPreOrderCallbackDTO payPreOrderCallbackDTO = wxPayApi.orderQuery(payOrderQueryDTO);
+		//查询响应错误
 		if(payPreOrderCallbackDTO == null || 
 				PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
-			logger.error("主动查询{}返回错误：{}", bill.getOutTradeNo(), payPreOrderCallbackDTO.getReturnMsg());
-			throw new BusinessException(3400910, payPreOrderCallbackDTO.getReturnMsg());
+			logger.error("主动查询{}返回错误：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			throw new BusinessException(BusinessCode.CODE_3400910, payPreOrderCallbackDTO.getReturnMsg());
 		}
+		//查询支付失败
 		if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getResultCode())) {
-			logger.error("上次支付{}失败，再次发起支付", bill.getOutTradeNo());
+			logger.error("上次支付{}失败，再次发起支付", outTradeNo);
 			//更新上次支付失败记录
-			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//重新发起支付
 			return this.toPay(condition);
 		}
-		if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.error("主动查询{}交易状态成功：{}", bill.getOutTradeNo(), payPreOrderCallbackDTO.getReturnMsg());
-			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
+		
+		PayBill currentBill = payBillMapper.selectByOutTradeNo(outTradeNo);
+		if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.error("主动查询{}交易状态成功：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			if(!BillStatusEnum.PAID.getCode().equals(currentBill.getStatus())) {
+				this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
+				throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
+			}
+		} else if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
 			
-			//初始化反参
-			payPreOrderVO.setAppId(bill.getAppid());
-			payPreOrderVO.setNonceStr(bill.getNonceStr());
-			payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
-			payPreOrderVO.setSignType(bill.getSignType());
-			//TODO 此处随机数和上一次不同，是否正确需要试一下
-			payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
-			//只对前5个参数签名，对package做特殊处理
-			payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
-			payPreOrderVO.setPayStatus(false);
-			payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
-			payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
-		} else {
-			//等待回调
-			paid(condition);
 		}
+		
+		
+		//TODO 处理 NOTPAY—未支付，USERPAYING--用户支付中，PAYERROR--支付失败(其他原因，如银行返回失败)
+		
+		//初始化反参
+		payPreOrderVO.setAppId(bill.getAppid());
+		payPreOrderVO.setNonceStr(bill.getNonceStr());
+		payPreOrderVO.setPackageData(PACKAGE + bill.getPrepayId());
+		payPreOrderVO.setSignType(bill.getSignType());
+		//TODO 此处随机数和上一次不同，是否正确需要试一下
+		payPreOrderVO.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+		//只对前5个参数签名，对package做特殊处理
+		payPreOrderVO.setPaySign(wxPayApi.payPreOrderSign(payPreOrderVO));
+		payPreOrderVO.setPayStatus(false);
+		payPreOrderVO.setOutOrderNo(bill.getOutOrderNo());
+		payPreOrderVO.setOutTradeNo(bill.getOutTradeNo());
+		
 		return payPreOrderVO;
 	}
 	

@@ -29,15 +29,15 @@ spring:
       - uri: lb://b2c-promotion-service
         predicates:
         - Path=/api-promotion/**
-      - uri: lb://b2c-system-service
-        predicates:
-        - Path=/api-system/**
-      - uri: lb://product-microservice
-        predicates:
-        - Path=/api-product/**
-      - uri: lb://b2c-task-service
-        predicates:
-        - Path=/api-task/**
+#      - uri: lb://b2c-system-service
+#        predicates:
+#        - Path=/api-system/**
+#      - uri: lb://product-microservice
+#        predicates:
+#        - Path=/api-product/**
+#      - uri: lb://b2c-task-service
+#        predicates:
+#        - Path=/api-task/**
 
 #zuul:
 #  routes:

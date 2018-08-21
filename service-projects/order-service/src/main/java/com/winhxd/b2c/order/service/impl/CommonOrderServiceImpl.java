@@ -104,6 +104,7 @@ import com.winhxd.b2c.order.util.OrderUtil;
 @Service
 public class CommonOrderServiceImpl implements OrderService {
 
+    private static final int MAX_ORDER_POSTFIX = 999999999;
     private static final String ORDER_BEING_MODIFIED = "订单正在修改中";
     private static final String ORDER_NO_CANNOT_NULL = "订单号不能为空";
     private static final int QUEUE_CAPACITY = 1000;
@@ -1223,7 +1224,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 // 有可能是负数
                 hashCodeV = -hashCodeV;
             }
-            while (hashCodeV > 999999999) {
+            while (hashCodeV > MAX_ORDER_POSTFIX) {
                 hashCodeV = hashCodeV >> 1;
             }
             String orderNoDateTimeFormatter = "yyMMddHH";

@@ -26,6 +26,10 @@ import com.winhxd.b2c.common.util.MessageSendUtils;
 
 public class OrderUtil {
 
+    /**
+     * 手机号截取长度
+     */
+    private static final int MOBILE_SUB_LENGTH = 4;
     private static final Logger logger = LoggerFactory.getLogger(OrderUtil.class);
 
     private OrderUtil() {
@@ -51,13 +55,15 @@ public class OrderUtil {
 
     /**
      * 获取手机号后四位，如果未空或者小于4位，返回空字符串
-     *
+     * @author wangbin
+     * @date  2018年8月21日 下午3:41:04
+     * @Description 
      * @param mobile
      * @return
      */
     public static String getLast4Mobile(String mobile) {
         String mobileStr = "";
-        if (StringUtils.isNotBlank(mobile) && mobile.length() > 4) {
+        if (StringUtils.isNotBlank(mobile) && mobile.length() > MOBILE_SUB_LENGTH) {
             mobileStr = mobile.substring(mobile.length() - 4, mobile.length());
         }
         return mobileStr;

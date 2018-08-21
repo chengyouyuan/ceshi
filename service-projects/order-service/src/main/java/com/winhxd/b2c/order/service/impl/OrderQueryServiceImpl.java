@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -265,6 +266,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new NullPointerException("订单编号不能为空");
         }
         OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
+        String orderVal = cache.hget(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, orderNo);
+        if (StringUtils.isNotBlank(orderVal)) {
+            logger.info("订单 orderNo={} OrderInfoDetailVO4Management订单信息缓存中存在，直接返回", orderNo);
+            orderInfoDetailVO4Management = JsonUtil.parseJSONObject(orderVal, OrderInfoDetailVO4Management.class);
+            return orderInfoDetailVO4Management;
+        }
         OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
         if (orderInfoDetailVO == null) {
             logger.info("订单 orderNo={} 未找到相关订单信息", orderNo);
@@ -274,6 +281,14 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         List<OrderChangeVO> orderChangeVoList = orderChangeLogService.listOrderChanges(orderNo);
         orderInfoDetailVO4Management.setOrderInfoDetailVO(orderInfoDetailVO);
         orderInfoDetailVO4Management.setOrderChangeVoList(orderChangeVoList);
+        if (Arrays.binarySearch(OrderStatusEnum.finalStatus(), orderInfoDetailVO.getOrderStatus().shortValue()) > -1) {
+            //如果订单流转已结束，直接缓存
+            cache.hset(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, orderNo, JsonUtil.toJSONString(orderInfoDetailVO4Management));
+            //获取当天最后一秒
+            long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
+            //当天有效
+            cache.expire(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        }
         logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
         return orderInfoDetailVO4Management;
     }

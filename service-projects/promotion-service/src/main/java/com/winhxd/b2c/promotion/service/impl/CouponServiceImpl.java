@@ -492,6 +492,7 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         for(int i =0 ;i<sendIds.size();i++){
+            logger.info("=撤回优惠券,优惠券发放表ID{}", condition.getSendIds());
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(sendIds.get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.INVALYD.getCode());

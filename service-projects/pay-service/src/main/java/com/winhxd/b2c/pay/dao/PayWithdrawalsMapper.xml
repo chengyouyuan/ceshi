@@ -476,10 +476,10 @@
       and time_end &lt; date_add(date_format(#{withdrawalsDateEnd}, '%Y-%m-%d'), interval 1 day)
     </if>
     <if test="totalFeeStart != null">
-      and total_fee &gt;= totalFeeStart
+      and total_fee &gt;= #{totalFeeStart}
     </if>
     <if test="totalFeeEnd != null">
-      and total_fee &lt; totalFeeEnd
+      and total_fee &lt;= #{totalFeeEnd}
     </if>
     order by 1 desc
   </select>

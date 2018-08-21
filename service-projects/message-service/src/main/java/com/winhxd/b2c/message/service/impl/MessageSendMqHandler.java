@@ -11,6 +11,8 @@ import com.winhxd.b2c.message.dao.MessageCustomerFormIdsMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.dao.MessageWechatHistoryMapper;
+import com.winhxd.b2c.message.sms.SmsServerSendUtils;
+import com.winhxd.b2c.message.sms.model.SmsSend;
 import com.winhxd.b2c.message.utils.MiniProgramUtils;
 import com.winhxd.b2c.message.utils.NeteaseUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -55,6 +57,9 @@ public class MessageSendMqHandler {
 
     @Autowired
     MessageNeteaseAccountMapper neteaseAccountMapper;
+
+    @Autowired
+    private SmsServerSendUtils smsServer;
 
     /**
      * 小程序消息MQ消费
@@ -285,5 +290,26 @@ public class MessageSendMqHandler {
             return BusinessCode.CODE_701402;
         }
         return BusinessCode.CODE_OK;
+    }
+
+    /**
+     * 发送短信MQ消费
+     * @param smsConditionJson
+     */
+    @StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
+    public void sendSms(String smsConditionJson) {
+        LOGGER.info("消息服务->发送短信，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
+        SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
+        String mobile = smsCondition.getMobile();
+        String content = smsCondition.getContent();
+        try {
+            SmsSend smsSend = new SmsSend();
+            smsSend.setTelePhoneNo(mobile);
+            smsSend.setContent(content);
+            smsServer.sendSms(smsSend);
+        } catch (Exception e) {
+            LOGGER.error("消息服务->发送短信失败，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
+            LOGGER.error("发送短信失败", e);
+        }
     }
 }

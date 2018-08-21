@@ -390,7 +390,12 @@ public final class BusinessCode {
     public static final int CODE_610030 = 610030;
     @ApiModelProperty("请输入微信账号")
     public static final int CODE_610031 = 610031;
-    
+    @ApiModelProperty("请输入提现金额")
+    public static final int CODE_610032 = 610032;
+    @ApiModelProperty("请输入流向类型")
+    public static final int CODE_610033 = 610033;
+    @ApiModelProperty("请输入流向名称")
+    public static final int CODE_610034 = 610034;
     
     
     @ApiModelProperty("订单支付  参数为空")

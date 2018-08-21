@@ -124,7 +124,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		Long businessId = 1l;
 		//////////////////结束/////////////////////////
 		// 验证入参是否传入正确
-//		int res = valiApplyWithDrawCondition(condition);
+		int res = valiApplyWithDrawCondition(condition);
+		if(res > 0){
+			result.setCode(res);
+			return result;
+		}
 		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
 		String[] user = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
@@ -161,11 +165,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	} 
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
+		int res = 0;
 		BigDecimal totalFee = condition.getTotalFee();
-		/*if(){
-			
-		}*/
-		return 0;
+		if(BigDecimal.ZERO.equals(totalFee) || totalFee == null){
+			res = BusinessCode.CODE_610032;
+		}
+		short type = condition.getFlowDirectionType();
+		if(type == 0){
+			res = BusinessCode.CODE_610033;
+		}
+		
+		String name = condition.getFlowDirectionName();
+		if(StringUtils.isEmpty(name)){
+			res = BusinessCode.CODE_610034;
+		}
+		return res;
 	}
 
 	/** 验证当前用户是否绑定了微信账户；  验证方式暂时是查询当前用户是否拥有微信的唯一标识*/

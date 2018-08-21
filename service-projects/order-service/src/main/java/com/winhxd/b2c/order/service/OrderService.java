@@ -81,6 +81,15 @@ public interface OrderService {
      * @date 2018年8月2日 下午5:51:46
      */
     void orderPickupTimeOut(String orderNo);
+    
+    /**
+     * 订单超时未付款接口
+     * @author wangbin
+     * @date  2018年8月21日 下午1:43:52
+     * @Description 
+     * @param orderNo
+     */
+    void orderPayTimeOut(String orderNo);
 
     /**
      * 订单提货

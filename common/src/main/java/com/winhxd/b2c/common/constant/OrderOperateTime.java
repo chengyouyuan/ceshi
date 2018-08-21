@@ -11,4 +11,9 @@ public class OrderOperateTime {
      * 客户自提 时间范围：36小时
      */
     public static final int ORDER_NEED_PICKUP_TIME_BY_MILLISECONDS = 36 * 60 * 60 * 1000;
+    
+    /**
+     * 客户自提 时间范围：36小时
+     */
+    public static final int ORDER_NEED_PAY_TIME_BY_MILLISECONDS = 24 * 60 * 60 * 1000;
 }

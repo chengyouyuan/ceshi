@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
-
 /**
  * DecipherUtil
  *
@@ -18,40 +16,34 @@ import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
  */
 public class DecipherUtil {
 
+
+    /**
+     * 密钥算法
+     */
+    private static final String ALGORITHM = "AES";
+    /**
+     * 加解密算法/工作模式/填充方式
+     */
+    private static final String ALGORITHM_MODE_PADDING = "AES/ECB/PKCS5Padding";
+
     /**
      * API 密钥
      */
     @Value("${WX.KEY}")
     private static String password;
-    private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);
 
+    private static SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(password).toLowerCase().getBytes(), ALGORITHM);
+
+    /**
+     * AES解密
+     *
+     * @param reqInfo 加密串
+     * @return
+     * @throws Exception
+     */
     public static String decodeReqInfo(String reqInfo) throws Exception{
-        byte[] b = Base64.decodeBase64(reqInfo);
-        Cipher cipher = Cipher.getInstance("PKCS5Padding");
+        Cipher cipher = Cipher.getInstance(ALGORITHM_MODE_PADDING);
         cipher.init(Cipher.DECRYPT_MODE, key);
-        return new String(cipher.doFinal(b),"UTF-8");
-
-
+        return new String(cipher.doFinal(Base64.decodeBase64(reqInfo)),"UTF-8");
     }
-
-    public static String byteArrayToHexString(byte b[]) {
-        StringBuffer resultSb = new StringBuffer();
-        for (int i = 0; i < b.length; i++) {
-            resultSb.append(byteToHexString(b[i]));
-        }
-        return resultSb.toString();
-    }
-
-    private static String byteToHexString(byte b) {
-        int n = b;
-        if (n < 0) {
-            n += 256;
-        }
-        int d1 = n / 16;
-        int d2 = n % 16;
-        return hexDigits[d1] + hexDigits[d2];
-    }
-
-    private static final String hexDigits[] = { "0", "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
 }

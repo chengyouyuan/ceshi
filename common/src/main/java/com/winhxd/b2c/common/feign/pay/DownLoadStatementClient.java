@@ -8,11 +8,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 
 import feign.hystrix.FallbackFactory;
@@ -28,6 +30,9 @@ public interface DownLoadStatementClient {
 	
 	@PostMapping(value = "/pay/6157/v1/findDownloadRecord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseResult<List<PayStatementDownloadRecord>> findDownloadRecord(@RequestBody PayStatementDownloadRecord record);
+	
+	@PostMapping(value = "/pay/6158/v1/getPayStatementByOutOrderNo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	ResponseResult<PayStatement> getPayStatementByOutOrderNo(@RequestParam("outOrderNo") String outOrderNo);
 	
 }
 
@@ -64,6 +69,12 @@ class DownLoadStatementClientFallback implements DownLoadStatementClient, Fallba
 	public ResponseResult<List<PayStatementDownloadRecord>> findDownloadRecord(
 			PayStatementDownloadRecord record) {
 		logger.error("DownLoadStatementClient -> findDownloadRecord", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<PayStatement> getPayStatementByOutOrderNo(String record) {
+		logger.error("DownLoadStatementClient -> getPayStatementByOutOrderNo", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 

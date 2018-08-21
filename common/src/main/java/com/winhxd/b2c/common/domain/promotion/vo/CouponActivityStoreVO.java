@@ -28,6 +28,9 @@ public class CouponActivityStoreVO {
     @ApiModelProperty(value = "状态")
     private Short status;
 
+    @ApiModelProperty(value = "状态")
+    private String statusName;
+
     @ApiModelProperty(value = "优惠券标题")
     private String couponName;
 
@@ -48,84 +51,4 @@ public class CouponActivityStoreVO {
     @ApiModelProperty(value = "修改时间")
     private Date updated;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getActivityCode() {
-        return activityCode;
-    }
-
-    public void setActivityCode(String activityCode) {
-        this.activityCode = activityCode;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public void setActivityName(String activityName) {
-        this.activityName = activityName;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public String getCouponName() {
-        return couponName;
-    }
-
-    public void setCouponName(String couponName) {
-        this.couponName = couponName;
-    }
-
-    public String getCouponCode() {
-        return couponCode;
-    }
-
-    public void setCouponCode(String couponCode) {
-        this.couponCode = couponCode;
-    }
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
-    public String getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(String storeId) {
-        this.storeId = storeId;
-    }
-
-    public String getStoreMobile() {
-        return storeMobile;
-    }
-
-    public void setStoreMobile(String storeMobile) {
-        this.storeMobile = storeMobile;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
 }

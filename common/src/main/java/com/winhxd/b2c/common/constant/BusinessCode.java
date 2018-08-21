@@ -54,6 +54,8 @@ public final class BusinessCode {
     public static final int  CODE_100821 = 100821;
     /**您还不是惠下单用户快去注册吧*/
     public static final int  CODE_100822 = 100822;
+    /**您还没有绑定惠下单账号*/
+    public static final int  CODE_100819 = 100819;
     /**请求超时*/
     public static final int  CODE_100815 = 100815;
     /**验证码请求时长没有超过一分钟*/

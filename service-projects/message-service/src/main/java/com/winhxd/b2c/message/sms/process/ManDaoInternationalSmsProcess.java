@@ -69,7 +69,7 @@ public class ManDaoInternationalSmsProcess extends BaseSmsProcess {
 
 		public int sendMessage(String telephone, String smsContent) {
 			HttpClient httpclient = new DefaultHttpClient();
-			serviceURL = serviceURL + "?sn=" + sn + "&pwd=" + pwd + "&mobile=" + telephone + "&content=" + smsContent + "[惠下单]&ext=1&stime=&rrid=";
+			serviceURL = serviceURL + "?sn=" + sn + "&pwd=" + pwd + "&mobile=" + telephone + "&content=" + smsContent + "&ext=1&stime=&rrid=";
 			HttpGet httpPost = new HttpGet(serviceURL);
 			httpPost.getParams().setParameter("http.protocol.content-charset", ContextHelper.UTF_8);
 			try {

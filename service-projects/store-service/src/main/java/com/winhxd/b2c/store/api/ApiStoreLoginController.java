@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
@@ -50,6 +51,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
+	
 	/**
 	 * 惠小店状态 1有效
 	 */
@@ -232,8 +234,8 @@ public class ApiStoreLoginController {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_100822);
+				logger.info("{} - , 您还没有绑定惠下单账号");
+				throw new BusinessException(BusinessCode.CODE_100819);
 			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
@@ -528,7 +530,7 @@ public class ApiStoreLoginController {
 		/**
 		 * 发送模板内容
 		 */
-		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
+		content = String.format(SendSMSTemplate.SMSCONTENT,verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);

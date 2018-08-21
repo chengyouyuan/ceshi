@@ -2,11 +2,7 @@ package com.winhxd.b2c.pay.service;
 
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
@@ -79,6 +75,12 @@ public interface PayService {
      * @return
      */
     int transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+
+	/**
+	 * 微信提现公共接口
+	 * @return
+	 */
+	int transfersPatrent(PayWithdrawalsCondition toWxBankCondition);
     
     /**
      * @author liuhanning

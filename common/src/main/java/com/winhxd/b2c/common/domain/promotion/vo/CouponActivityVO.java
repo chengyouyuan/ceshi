@@ -43,7 +43,7 @@ public class CouponActivityVO {
     private Short activityStatus;
 
     @ApiModelProperty(value = "活动状态名称1开启2停止")
-    private Short activityStatusName;
+    private String activityStatusName;
 
     @ApiModelProperty(value = "引用数量")
     private Integer citeNum;
@@ -55,7 +55,7 @@ public class CouponActivityVO {
     private Short couponNumType;
 
     @ApiModelProperty(value = "优惠券数量的限制方式名称")
-    private Short couponNumTypeName;
+    private String couponNumTypeName;
 
     @ApiModelProperty(value = "优惠券数量的限制数量")
     private Integer couponNum;

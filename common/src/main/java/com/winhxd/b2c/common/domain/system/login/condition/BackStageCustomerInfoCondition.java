@@ -34,4 +34,7 @@ public class BackStageCustomerInfoCondition extends PagedCondition {
     @ApiModelProperty("用户状态,默认有效1，无效(黑名单)0,默认是有效")
     private Integer status;
 
+    @ApiModelProperty("是否绑定门店，1是，0否")
+    private Integer bindStatus;
+
 }

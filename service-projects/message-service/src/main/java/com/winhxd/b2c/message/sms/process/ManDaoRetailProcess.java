@@ -27,7 +27,7 @@ public class ManDaoRetailProcess extends BaseSmsProcess {
 	public int sendMessage(MessageSmsHistory smsSend) {
 		try {
 			Client client = new Client();
-			String resultMt = client.mt(smsSend.getTelephone(), smsSend.getContent() + "[惠下单]", "", "", "");
+			String resultMt = client.mt(smsSend.getTelephone(), smsSend.getContent(), "", "", "");
 			/**
 			 * 发送短信，如果是以负号开头就是发送失败。
 			 */

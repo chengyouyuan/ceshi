@@ -3,6 +3,7 @@ package com.winhxd.b2c.customer.api;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -165,6 +166,7 @@ public class ApiCustomerLoginController {
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
+		String content = "";
 		if (null == customerUserInfoCondition) {
 			logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
 					JsonUtil.toJSONString(customerUserInfoCondition));
@@ -192,7 +194,7 @@ public class ApiCustomerLoginController {
 		/**
 		 * 发送模板内容
 		 */
-		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
+		content = String.format(SendSMSTemplate.SMSCONTENT,verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(customerUserInfoCondition.getCustomerMobile());

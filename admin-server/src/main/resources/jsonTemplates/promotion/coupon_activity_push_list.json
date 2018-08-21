@@ -81,7 +81,7 @@
             "name": "停止活动",
             "icon": null,
             "event": {
-              "ajaxType": "delete",
+              "ajaxType": "post",
               "type": "ajax",
               "params": [
                 "id",

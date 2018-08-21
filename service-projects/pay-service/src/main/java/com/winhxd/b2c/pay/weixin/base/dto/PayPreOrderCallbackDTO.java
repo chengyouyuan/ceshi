@@ -34,7 +34,7 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
     /**
      * 订单总金额，单位为分
      */
-    private int totalFee;
+    private Integer totalFee;
     
     /**
      * 买家用户标识
@@ -151,11 +151,11 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.outTradeNo = outTradeNo;
 	}
 
-	public int getTotalFee() {
+	public Integer getTotalFee() {
 		return totalFee;
 	}
 
-	public void setTotalFee(int totalFee) {
+	public void setTotalFee(Integer totalFee) {
 		this.totalFee = totalFee;
 	}
 

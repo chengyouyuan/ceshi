@@ -79,7 +79,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
 		bill.setBankType(payPreOrderCallbackDTO.getBankType());
 		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
-		bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getSettlementTotalFee() != null) {
+			bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
 		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
 		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
@@ -87,7 +89,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
 		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
 		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
-		bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getTotalFee() != null) {
+			bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
 		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
 		
@@ -196,8 +200,16 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 				this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 				throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
 			}
-		} else if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
+		} else if("REFUND".equals(payPreOrderCallbackDTO.getTradeState())) {
 			
+		} else if("NOTPAY".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("CLOSED".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("REVOKED".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("USERPAYING".equals(payPreOrderCallbackDTO.getTradeState())) {
+				
 		}
 		
 		
@@ -254,7 +266,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
 		payPreOrderDTO.setTimeStart(new Date());
-		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getText());
+		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getCode());
 		
 		return payPreOrderDTO;
 	}

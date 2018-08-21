@@ -28,4 +28,10 @@ public class PayStoreApplyWithDrawCondition extends ApiCondition {
     private short flowDirectionType;
     @ApiModelProperty("流向名称 微信或者各个银行卡名称")
     private String flowDirectionName;
+    @ApiModelProperty("流向账户(微信账号或者银行卡卡号)")
+    private String paymentAccount;
+    @ApiModelProperty("银行swiftCode")
+    private String swiftCode;
+    @ApiModelProperty("微信账号openid")
+    private String buyerId;
 }

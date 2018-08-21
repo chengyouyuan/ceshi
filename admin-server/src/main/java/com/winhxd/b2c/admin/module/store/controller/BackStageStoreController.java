@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.RegexConstant;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
@@ -16,7 +17,6 @@ import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import io.swagger.annotations.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,18 +77,32 @@ public class BackStageStoreController {
     @ApiOperation(value = "编辑门店保存接口", notes = "编辑门店保存接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数错误！")})
+            @ApiResponse(code = BusinessCode.CODE_102201, message = "参数无效！")})
     @PostMapping(value = "/1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
-        if (condition.getId() == null || StringUtils.isBlank(condition.getStoreName()) ||
-                StringUtils.isBlank(condition.getStoreAddress()) || StringUtils.isBlank(condition.getShopkeeper()) ||
-                StringUtils.isBlank(condition.getContactMobile())) {
+        logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(condition.toString()));
+        if (condition.getId() == null) {
             logger.error("编辑门店保存接口，参数错误");
-            throw new BusinessException(BusinessCode.CODE_1007, "参数无效");
+            throw new BusinessException(BusinessCode.CODE_102201, "参数无效");
+        }
+        boolean storeNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(condition.getStoreName()).matches();
+        if (!storeNameMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102201, "店铺名称不能有特殊字符且长度不能超过15");
+        }
+        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(condition.getStoreAddress()).matches();
+        if (!storeAddressMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102201, "提货地址不能有特殊字符且长度不能超过30");
+        }
+        boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(condition.getShopkeeper()).matches();
+        if (!shopkeeperMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102201, "联系人不能有特殊字符且长度不能超过10");
+        }
+        boolean contactMobileMatcher = RegexConstant.CONTACT_MOBILE_PATTERN.matcher(condition.getContactMobile()).matches();
+        if (!contactMobileMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102201, "联系方式格式不正确");
         }
         condition.setStoreCustomerId(null);
         condition.setStoreRegionCode(null);
-        logger.info("编辑门店保存接口入参为：{}", condition.toString());
         backStageStoreServiceClient.modifyStoreInfo(condition);
         return new ResponseResult<>();
     }

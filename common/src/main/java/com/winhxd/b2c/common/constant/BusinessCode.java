@@ -96,6 +96,9 @@ public final class BusinessCode {
     
     /**1049接口参数无效*/
     public static final int CODE_104901 = 104901;
+
+    /**1022接口参数无效*/
+    public static final int CODE_102201 = 102201;
     
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;

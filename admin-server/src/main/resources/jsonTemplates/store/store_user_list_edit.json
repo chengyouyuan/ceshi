@@ -111,7 +111,7 @@
         "isHidden": false
       },
       {
-        "name": "payType",
+        "name": "payTypeDesc",
         "title": "支付方式",
         "inputModel": "select",
         "value": "",
@@ -123,7 +123,7 @@
         ]
       },
       {
-        "name": "pickupType",
+        "name": "pickupTypeDesc",
         "title": "提货方式",
         "inputModel": "select",
         "value": "",
@@ -135,7 +135,7 @@
         ]
       },
       {
-        "name": "storeStatus",
+        "name": "storeStatusDesc",
         "inputModel": "select",
         "title": "门店状态",
         "placeholder": "",

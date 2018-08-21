@@ -20,9 +20,14 @@ public enum PayTransfersStatus {
     FAILED("FAILED", "转账失败"),
 
     /**
-     * 转账失败
+     * 处理中
      */
-    PROCESSING("PROCESSING", "处理中");
+    PROCESSING("PROCESSING", "处理中"),
+
+    /**
+     * 失败(用于判断resultCode状态)
+     */
+    FAIL("FAIL","转账失败");
 
     private String code;
     private String text;

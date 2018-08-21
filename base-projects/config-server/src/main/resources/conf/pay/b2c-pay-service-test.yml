@@ -1,7 +1,7 @@
 # 域名配置
 DOMAIN:
   #回调主路径
-  CALLBACK_DOMAIN_URL: http://192.168.60.241:${server.port}
+  CALLBACK_DOMAIN_URL: https://uathuistoreapi.winhxd.com
 #微信相关属性
 WX:
   # 商户号的appid或商户号绑定的appid

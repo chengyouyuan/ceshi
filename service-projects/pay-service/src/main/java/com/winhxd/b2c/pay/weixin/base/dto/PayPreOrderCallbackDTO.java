@@ -11,6 +11,21 @@ import java.util.Date;
  */
 public class PayPreOrderCallbackDTO extends ResponseBase{
 	
+	/**
+	 * 业务结果
+	 */
+	private String resultCode;
+	
+	/**
+	 * 错误代码
+	 */
+	private String errCode;
+	
+	/**
+	 * 错误代码描述
+	 */
+	private String errCodeDes;
+	
     /**
      * 支付流水号（商户订单号）
      */
@@ -87,6 +102,47 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
      */
     private Date timeEnd;
     
+    /**
+     * 主动查询返回的交易状态：
+     * SUCCESS—支付成功
+     * REFUND.转入退款
+     * NOTPAY—未支付
+     * CLOSED—已关闭
+     * REVOKED—已撤销（刷卡支付）
+     * USERPAYING--用户支付中
+     * PAYERROR--支付失败(其他原因，如银行返回失败)
+     */
+    private String tradeState;
+    
+    /**
+     * 交易状态描述
+     */
+    private String tradeStateDesc;
+    
+	public String getResultCode() {
+		return resultCode;
+	}
+
+	public void setResultCode(String resultCode) {
+		this.resultCode = resultCode;
+	}
+
+	public String getErrCode() {
+		return errCode;
+	}
+
+	public void setErrCode(String errCode) {
+		this.errCode = errCode;
+	}
+
+	public String getErrCodeDes() {
+		return errCodeDes;
+	}
+
+	public void setErrCodeDes(String errCodeDes) {
+		this.errCodeDes = errCodeDes;
+	}
+
 	public String getOutTradeNo() {
 		return outTradeNo;
 	}
@@ -205,6 +261,22 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 
 	public void setTimeEnd(Date timeEnd) {
 		this.timeEnd = timeEnd;
+	}
+
+	public String getTradeState() {
+		return tradeState;
+	}
+
+	public void setTradeState(String tradeState) {
+		this.tradeState = tradeState;
+	}
+
+	public String getTradeStateDesc() {
+		return tradeStateDesc;
+	}
+
+	public void setTradeStateDesc(String tradeStateDesc) {
+		this.tradeStateDesc = tradeStateDesc;
 	}
 
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
  *
  * @Author yindanqing
  * @Date 2018/8/16 21:38
- * @Description:
+ * @Description: wx转账至银行卡返参
  */
 @Setter
 @Getter
@@ -52,7 +52,7 @@ public class PayTransfersToWxBankResponseDTO {
     /**
      * 代付金额
      */
-    private int amount;
+    private Integer amount;
 
     /**
      * 随机字符串
@@ -72,6 +72,6 @@ public class PayTransfersToWxBankResponseDTO {
     /**
      * 手续费金额
      */
-    private int cmmsAmt;
+    private Integer cmmsAmt;
 
 }

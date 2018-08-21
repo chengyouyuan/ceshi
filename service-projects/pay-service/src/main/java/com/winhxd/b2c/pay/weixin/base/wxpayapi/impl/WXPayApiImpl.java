@@ -1,30 +1,22 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.base.dto.*;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
-import org.apache.ibatis.annotations.Param;
+import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
+import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
-import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.RequestBase;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants.SignType;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
-import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 对接微信支付API
@@ -57,20 +49,27 @@ public class WXPayApiImpl implements WXPayApi {
 		payPreOrderDTO = (PayPreOrderDTO)this.fillRequestDTO(payPreOrderDTO);
         payPreOrderDTO.setSign(this.generateSign(payPreOrderDTO));
 		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payPreOrderDTO);
+        Map<String, String> reqData = null;
+		try {
+			reqData = XmlUtil.bean2MapUnderline2Hump(payPreOrderDTO);
+		} catch (Exception e) {
+			logger.error("预支付时，请求参数解析失败", e);
+			throw new BusinessException(3400906, "预支付时，响应参数解析失败");
+		}
         //统一下单，respXml为响应参数
         String respXml = this.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        logger.info("预支付时，响应参数：{}", respXml);
         //响应参数验证，转为map
         Map<String, String> respData = this.processResponseXml(respXml);
-        PayPreOrderResponseDTO PayPreOrderResponseDTO = null;
+        PayPreOrderResponseDTO payPreOrderResponseDTO = null;
 		try {
-			PayPreOrderResponseDTO = BeanAndXmlUtil.mapToBean(respData, PayPreOrderResponseDTO.class);
+			payPreOrderResponseDTO = XmlUtil.map2Bean(respData, PayPreOrderResponseDTO.class);
 		} catch (Exception e) {
 			logger.error("预支付时，响应参数解析失败", e);
 			throw new BusinessException(3400906, "预支付时，响应参数解析失败");
 		}
         
-        return PayPreOrderResponseDTO;
+        return payPreOrderResponseDTO;
     }
 
     @Override
@@ -83,19 +82,102 @@ public class WXPayApiImpl implements WXPayApi {
         payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
         payRefundDTO.setSign(this.generateSign(payRefundDTO));
         //bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+		Map<String, String> reqData = null;
+		try {
+			reqData = XmlUtil.bean2MapUnderline2Hump(payRefundDTO);
+		} catch (Exception e) {
+			logger.error("申请退款时，请求参数解析失败", e);
+			//TODO 错误码
+			throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+		}
         //申请退款，respXml为响应参数
         String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
         //响应参数验证，转为map
         Map<String, String> respData = this.processResponseXml(respXml);
         PayRefundResponseDTO responseDTO = new PayRefundResponseDTO();
         try {
-            responseDTO = BeanAndXmlUtil.mapToBean(respData, PayRefundResponseDTO.class);
+            responseDTO = XmlUtil.map2Bean(respData, PayRefundResponseDTO.class);
         } catch (Exception e) {
             logger.error("申请退款时，响应参数解析失败", e);
             throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
         }
         return responseDTO;
+    }
+    
+    /**
+     * 判断支付结果通知中的sign是否有效
+     *
+     * @param reqData 向wxpay post的请求数据
+     * @return 签名是否有效
+     * @throws Exception
+     */
+    public boolean isPayResultNotifySignatureValid(Map<String, String> reqData) throws Exception {
+        String signTypeInData = reqData.get(WXPayConstants.FIELD_SIGN_TYPE);
+        SignType signType;
+        if (signTypeInData == null) {
+            signType = SignType.MD5;
+        }
+        else {
+            signTypeInData = signTypeInData.trim();
+            if (signTypeInData.length() == 0) {
+                signType = SignType.MD5;
+            }
+            else if (WXPayConstants.MD5.equals(signTypeInData)) {
+                signType = SignType.MD5;
+            }
+            else if (WXPayConstants.HMACSHA256.equals(signTypeInData)) {
+                signType = SignType.HMACSHA256;
+            }
+            else {
+                throw new Exception(String.format("Unsupported sign_type: %s", signTypeInData));
+            }
+        }
+        return WXPayUtil.isSignatureValid(reqData, this.config.getKey(), signType);
+    }
+    
+    /**
+     * 作用：查询订单<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+     * @param reqData 向wxpay post的请求数据
+     * @return API返回数据
+     * @throws Exception
+     */
+    @Override
+    public PayPreOrderCallbackDTO orderQuery(PayOrderQueryDTO payOrderQueryDTO) {
+    	payOrderQueryDTO = (PayOrderQueryDTO) this.fillRequestDTO(payOrderQueryDTO);
+    	PayPreOrderCallbackDTO payPreOrderCallbackDTO = null;
+    	try {
+    		//请求参数
+        	Map<String, String> resqData = XmlUtil.bean2MapUnderline2Hump(payOrderQueryDTO);
+        	//返回参数
+        	Map<String, String> respData = this.orderQuery(resqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
+        	
+        	payPreOrderCallbackDTO = XmlUtil.map2Bean(respData, PayPreOrderCallbackDTO.class);
+    	} catch(Exception e) {
+    		
+    	}
+    	return payPreOrderCallbackDTO;
+    }
+
+    /**
+     * 作用：查询订单<br>
+     * 场景：刷卡支付、公共号支付、扫码支付、APP支付
+     * @param reqData 向wxpay post的请求数据 int
+     * @param connectTimeoutMs 连接超时时间，单位是毫秒
+     * @param readTimeoutMs 读超时时间，单位是毫秒
+     * @return API返回数据
+     * @throws Exception
+     */
+    private Map<String, String> orderQuery(Map<String, String> reqData, int connectTimeoutMs, int readTimeoutMs) throws Exception {
+        String url;
+        if (this.useSandbox) {
+            url = WXPayConstants.SANDBOX_ORDERQUERY_URL_SUFFIX;
+        }
+        else {
+            url = WXPayConstants.ORDERQUERY_URL_SUFFIX;
+        }
+        String respXml = this.requestWithoutCert(url, reqData, connectTimeoutMs, readTimeoutMs);
+        return this.processResponseXml(respXml);
     }
 
 	@Override
@@ -104,7 +186,13 @@ public class WXPayApiImpl implements WXPayApi {
 		payRefundDTO = (PayRefundDTO)this.fillRequestDTO(payRefundDTO);
 		payRefundDTO.setSign(this.generateSign(payRefundDTO));
 		//bean转map
-		Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payRefundDTO);
+		Map<String, String> reqData = null;
+		try {
+			reqData = XmlUtil.bean2MapUnderline2Hump(payRefundDTO);
+		} catch (Exception e) {
+			logger.error("查询退款时，请求参数解析失败", e);
+			throw new BusinessException(3400906, "查询退款时，请求参数解析失败");
+		}
 		String respXml = this.refundQuery(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
 		//响应参数验证，转为map
 		Map<String, String> respData = this.processResponseXml(respXml);
@@ -176,14 +264,31 @@ public class WXPayApiImpl implements WXPayApi {
     }
 	
 	@Override
+	public String payPreOrderSign(PayPreOrderVO payPreOrderVO){
+		String sign = null;
+        try {
+            //bean转map
+		    Map<String, String> reqData = XmlUtil.bean2Map(payPreOrderVO);
+		    WXPayUtil.getLogger().warn("-----签名数据AAA------"+reqData);
+        	//签名添加调用微信API入参
+        	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
+		} catch (Exception e) {
+			logger.error("签名失败", e);
+			throw new BusinessException(3400901, "签名失败");
+		}
+        return sign;
+	}
+	
+	@Override
 	public String generateSign(Object obj, SignType signType){
 		if(signType == null) {
 			signType = this.signType;
 		}
 		String sign = null;
-		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(obj);
         try {
+            //bean转map
+		    Map<String, String> reqData = XmlUtil.bean2MapUnderline2Hump(obj);
+		    WXPayUtil.getLogger().warn("-----签名数据AAA------"+reqData);
         	//签名添加调用微信API入参
         	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {
@@ -228,7 +333,7 @@ public class WXPayApiImpl implements WXPayApi {
     private String mapToXml(Map<String, String> reqData) {
     	String reqBody = null;
     	try {
-			reqBody = WXPayUtil.mapToXml(reqData);
+			reqBody = XmlUtil.mapToXml(reqData);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
 			throw new BusinessException(3400902, "微信支付参数异常");
@@ -246,7 +351,7 @@ public class WXPayApiImpl implements WXPayApi {
     private Map<String, String> xmlToMap(String xmlStr) {
     	Map<String, String> respData = null;
 		try {
-			respData = WXPayUtil.xmlToMap(xmlStr);
+			respData = XmlUtil.xmlToMap(xmlStr);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
 			throw new BusinessException(3400903, "微信返回参数解析异常");
@@ -383,8 +488,14 @@ public class WXPayApiImpl implements WXPayApi {
 		this.fillRequestDTO(payStatementDTO);
         payStatementDTO.setSign(this.generateSign(payStatementDTO));
 		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payStatementDTO);
-        
+        Map<String, String> reqData = null;
+        try {
+            reqData = XmlUtil.bean2MapUnderline2Hump(payStatementDTO);
+        } catch (Exception e) {
+            logger.error("下载对账单时，请求参数解析失败", e);
+            throw new BusinessException(3400906, "下载对账单时，请求参数解析失败");
+        }
+
         String url;
         if (this.useSandbox) {
             url = WXPayConstants.SANDBOX_DOWNLOADBILL_URL_SUFFIX;
@@ -400,7 +511,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
         	// 出现错误，返回XML数据
 	        if (respStr.indexOf("<") == 0) {
-	            ret = WXPayUtil.xmlToMap(respStr);
+	            ret = XmlUtil.xmlToMap(respStr);
 	        }
 	        else {
 	            // 正常返回csv数据
@@ -409,7 +520,7 @@ public class WXPayApiImpl implements WXPayApi {
 	            ret.put("return_msg", "ok");
 	            ret.put("data", respStr);
 	        }
-	        responseDTO = BeanAndXmlUtil.mapToBean(ret, PayBillDownloadResponseDTO.class);
+	        responseDTO = XmlUtil.map2Bean(ret, PayBillDownloadResponseDTO.class);
 	    } catch (Exception e) {
 	        logger.error("下载对账单时，响应参数解析失败", e);
 	        throw new BusinessException(3400911, "下载对账单时，响应参数解析失败");
@@ -435,9 +546,15 @@ public class WXPayApiImpl implements WXPayApi {
 		this.fillRequestDTOByHMACSHA256(payFinancialBillDTO);
         payFinancialBillDTO.setSign(this.generateSign(payFinancialBillDTO, SignType.HMACSHA256));
 		//bean转map
-        Map<String, String> reqData = BeanAndXmlUtil.beanToMap(payFinancialBillDTO);
-        
-    	String url;
+        Map<String, String> reqData = null;
+        try {
+            reqData = XmlUtil.bean2MapUnderline2Hump(payFinancialBillDTO);
+        } catch (Exception e) {
+            logger.error("下载资金对账单时，请求参数解析失败", e);
+            throw new BusinessException(3400906, "下载资金对账单时，请求参数解析失败");
+        }
+
+        String url;
     	if (this.useSandbox) {
     		url = WXPayConstants.SANDBOX_DOWNLOADFUNDFLOW_URL_SUFFIX;
     	}
@@ -453,7 +570,7 @@ public class WXPayApiImpl implements WXPayApi {
         try {
 	        // 出现错误，返回XML数据
 	        if (respStr.indexOf("<") == 0) {
-	            ret = WXPayUtil.xmlToMap(respStr);
+	            ret = XmlUtil.xmlToMap(respStr);
 	        }
 	        else {
 	            // 正常返回csv数据
@@ -462,7 +579,7 @@ public class WXPayApiImpl implements WXPayApi {
 	            ret.put("return_msg", "ok");
 	            ret.put("data", respStr);
 	        }
-	        responseDTO = BeanAndXmlUtil.mapToBean(ret, PayBillDownloadResponseDTO.class);
+	        responseDTO = XmlUtil.map2Bean(ret, PayBillDownloadResponseDTO.class);
         } catch (Exception e) {
             logger.error("下载资金账单时，响应参数解析失败", e);
             throw new BusinessException(3400912, "下载资金账单时，响应参数解析失败");
@@ -513,6 +630,17 @@ public class WXPayApiImpl implements WXPayApi {
 			url = WXPayConstants.QUERY_TRANSFER_TO_BANK_URL_SUFFIX;
 		}
 		return this.requestWithCert(url, reqData, config.getHttpConnectTimeoutMs(), config.getHttpReadTimeoutMs());
+	}
+
+	@Override
+	public String publicKey(Map<String, String> reqData) throws Exception {
+		String url;
+		if (this.useSandbox) {
+			url = WXPayConstants.SANDBOX_PUBLICKEY_URL_SUFFIX;
+		} else {
+			url = WXPayConstants.PUBLICKEY_URL_SUFFIX ;
+		}
+		return this.requestWithCert(url, reqData, 6*1000, 8*1000);
 	}
 
 }

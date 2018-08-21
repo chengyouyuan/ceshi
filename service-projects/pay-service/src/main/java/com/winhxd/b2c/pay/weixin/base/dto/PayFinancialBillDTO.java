@@ -52,17 +52,17 @@ public class PayFinancialBillDTO extends RequestBase {
 		/**
 		 * 对账单
 		 */
-		BASIC("BASIC", "基本账户"),
+		BASIC("Basic", "基本账户"),
 
 		/**
 		 * 对账单统计
 		 */
-		OPERATION("OPERATION", "运营账户"),
+		OPERATION("Operation", "运营账户"),
 
 		/**
 		 * 资金账单
 		 */
-		FEES("FEES", "手续费账户");
+		FEES("Fees", "手续费账户");
 
 		private String text;
 		private String desc;

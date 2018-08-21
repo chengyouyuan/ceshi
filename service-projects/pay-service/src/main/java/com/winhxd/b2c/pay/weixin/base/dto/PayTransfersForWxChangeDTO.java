@@ -62,7 +62,7 @@ public class PayTransfersForWxChangeDTO {
     /**
      * 提现金额,单位分
      */
-    private Integer amount;
+    private int amount;
 
     /**
      * 付款说明

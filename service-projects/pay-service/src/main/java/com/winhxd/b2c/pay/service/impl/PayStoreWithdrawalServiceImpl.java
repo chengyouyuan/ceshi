@@ -59,6 +59,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	@Resource
 	private PayWithdrawalConfig payWithDrawalConfig;
+	
+	private static final String ACCOUNT_NAME = "微信钱包";
+	
+	private static final int EXPIRE_TIME = 60*60*24;
 
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
@@ -92,6 +96,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 result.setData(withdrawalPage);
 				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
+				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -102,15 +107,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 PayStoreUserInfoVO data = bindAccount.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 withdrawalPage.setUserAcountName(data.getOpenid());
+				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
 				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setNick(data.getNick());
-//				 withdrawalPage.setOpenid(data.getOpenid());
-				 withdrawalPage.setUserAcountName(data.getName());
+				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
+				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 }
 		}
 		return result;

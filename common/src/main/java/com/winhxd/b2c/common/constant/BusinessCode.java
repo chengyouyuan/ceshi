@@ -497,6 +497,8 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店提现  未获取到提现信息")
     public static final int CODE_600310 = 600310;
+    @ApiModelProperty("门店提现 审核失败 请重新发起申请")
+    public static final int CODE_600311 = 600311;
     
     @ApiModelProperty("判断订单是否支付  订单号为空")
     public static final int CODE_601601 = 601601;

@@ -1602,7 +1602,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 MiniTemplateData key3 = new MiniTemplateData();
                 key3.setKeyName(KEYWORD3);
                 key3.setValue(storeMsgContent);
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.REFUND_SUCCESS.getMsgType(), key1, key2, key3);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单退款完成给用户发送微信消息失败orderNo={}", orderInfo.getOrderNo());
@@ -1716,7 +1716,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     MiniTemplateData key3 = new MiniTemplateData();
                     key3.setKeyName(KEYWORD3);
                     key3.setValue("您的订单已取消");
-                    MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                    MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.REFUND_SUCCESS.getMsgType(), key1, key2, key3);
                     messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
                     break;
                 case 2:
@@ -1732,7 +1732,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     MiniTemplateData key23 = new MiniTemplateData();
                     key23.setKeyName(KEYWORD3);
                     key23.setValue(customerMsgContentType2);
-                    MiniMsgCondition miniMsgCondition2 = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key21, key22, key23);
+                    MiniMsgCondition miniMsgCondition2 = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.REFUND_SUCCESS.getMsgType(), key21, key22, key23);
                     messageServiceClient.sendMiniTemplateMsg(miniMsgCondition2);
                     break;
                 default:

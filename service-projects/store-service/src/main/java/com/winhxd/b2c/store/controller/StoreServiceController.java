@@ -246,7 +246,7 @@ public class StoreServiceController implements StoreServiceClient {
 
 	@Override
 	public ResponseResult<Void> removeStoreRegion(@RequestParam("id") Long id) {
-		if (null != id) {
+		if (null == id) {
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		storeRegionService.removeStoreRegion(id);

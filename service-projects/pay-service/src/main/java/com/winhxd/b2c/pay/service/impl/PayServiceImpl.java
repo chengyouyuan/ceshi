@@ -265,6 +265,7 @@ public class PayServiceImpl implements PayService{
 		boolean flag=false;
 		Map<String, Object> map=new HashMap<>();
 		map.put("type", condition.getType());
+		map.put("storeId", storeId);
 		StoreBankrollChangeCondition changeCondition=null;
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			// 验证该订单是否已经做过此项操作

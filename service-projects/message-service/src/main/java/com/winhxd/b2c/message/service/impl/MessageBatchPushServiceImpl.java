@@ -65,12 +65,45 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
 
     @Override
     public int addBatchPush(MessageBatchPush messageBatchPush) {
-       return messageBatchPushMapper.insertSelective(messageBatchPush);
+        int id = messageBatchPushMapper.insertSelective(messageBatchPush);
+        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
+        //获取所有门店云信账号
+        List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
+        if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，没有云信门店记录。");
+            throw new BusinessException(BusinessCode.CODE_703502);
+        }
+        List<String> accids = new ArrayList<>();
+        for (MessageNeteaseAccount account: messageNeteaseAccounts) {
+            accids.add(account.getAccid());
+        }
+        //发送消息参数
+        NeteaseMsgDelayCondition neteaseMsgDelayCondition = new NeteaseMsgDelayCondition();
+        neteaseMsgDelayCondition.setAccids(accids);
+        neteaseMsgDelayCondition.setMsgContent(messageBatchPush.getMsgContent());
+        //发送延迟消息
+        Date timingPush = messageBatchPush.getTimingPush();
+        if(timingPush == null){
+            //立即发送
+            messageSendUtils.sendNeteaseMsgBatch(neteaseMsgDelayCondition);
+        }else{
+            //延迟发送
+            int delayMilli = 0;
+            if (timingPush.compareTo(new Date()) > 0){
+                delayMilli = (int)(timingPush.getTime() - System.currentTimeMillis());
+            }
+            messageSendUtils.sendNeteaseMsgDelay(neteaseMsgDelayCondition,delayMilli);
+        }
+        messageBatchPush.setLastPushTime(new Date());
+        messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
+        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
+        return id;
     }
 
     @Override
     public int modifyBatchPush(MessageBatchPush messageBatchPush) {
-        return messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
+        //编辑方法一期暂时移除
+        return 0;
     }
 
     @Override
@@ -85,36 +118,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
 
     @Override
     public void batchPushMessage(Long id) {
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
-        //获取推送配置信息
-        MessageBatchPush messageBatchPush = messageBatchPushMapper.selectByPrimaryKey(id);
-        if (messageBatchPush == null){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，messageBatchPush推送配置不存在。");
-            throw new BusinessException(BusinessCode.CODE_703501);
-        }
-        //获取所有门店云信账号
-        List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
-        if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，没有云信门店记录。");
-            throw new BusinessException(BusinessCode.CODE_703502);
-        }
-        List<String> accids = new ArrayList<>();
-        for (MessageNeteaseAccount account: messageNeteaseAccounts) {
-            accids.add(account.getAccid());
-        }
-        //发送延迟消息
-        Date timingPush = messageBatchPush.getTimingPush();
-        int delayMilli = 0;
-        if (timingPush.compareTo(new Date()) > 0){
-            delayMilli = (int)(timingPush.getTime() - System.currentTimeMillis());
-        }
-        NeteaseMsgDelayCondition neteaseMsgDelayCondition = new NeteaseMsgDelayCondition();
-        neteaseMsgDelayCondition.setAccids(accids);
-        neteaseMsgDelayCondition.setMsgContent(messageBatchPush.getMsgContent());
-        messageSendUtils.sendNeteaseMsgDelay(neteaseMsgDelayCondition,delayMilli);
-        messageBatchPush.setLastPushTime(new Date());
-        messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
+
     }
 
 }

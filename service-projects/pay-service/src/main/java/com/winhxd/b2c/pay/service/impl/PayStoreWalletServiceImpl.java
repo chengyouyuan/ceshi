@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -66,10 +67,16 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
-		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+condition.getStoreId());
+//    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    ///////////////////测试假数据///////////////////////
+    	StoreUser currentStoreUser = new StoreUser();
+    	currentStoreUser.setBusinessId(1l);
+   ////////////////////////////////////////////////////
+    	
+		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		System.out.print("微信验证码是否存在-----------"+exists);
 		if(exists){
-			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+condition.getStoreId());
+			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 			if(!verificationCode.equals(code)){
 				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
 				res = BusinessCode.CODE_610019;

@@ -90,15 +90,12 @@
     cts.updated
     FROM
     coupon_activity ca
-    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
-    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
-    LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id
+    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id AND cat.`status` = 1
+    LEFT JOIN coupon_template ct ON ct.id = cat.template_id AND ct.`status` = 1
+    LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id AND cts.`status` = 1
     WHERE
     1 = 1
     AND ca.`status` = 1
-    AND cat.`status` = 1
-    AND ct.`status` = 1
-    AND cts.`status` = 1
     <if test="condition.id != null">
       AND ca.id = #{condition.id}
     </if>

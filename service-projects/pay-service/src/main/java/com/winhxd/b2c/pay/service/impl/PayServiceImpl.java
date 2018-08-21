@@ -806,24 +806,29 @@ public class PayServiceImpl implements PayService{
 		String  log =logLabel + "微信提现公共接口transfersPatrent";
 		logger.info(log+"--开始");
 		if (condition==null) {
-			logger.info(log+"--参数为空");
+			logger.error(log+"--参数为空");
 			throw new BusinessException(BusinessCode.CODE_600101);
 		}
 		if (condition.getWithdrawalsId()==null) {
-			logger.info(log+"--提现申请id为空");
+			logger.error(log+"--提现申请id为空");
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsMapper.selectByPrimaryKey(condition.getWithdrawalsId());
 		if(payWithdrawals == null){
-			logger.info(log+"--提现申请不存在");
+			logger.error(log+"--提现申请不存在");
 			throw new BusinessException(BusinessCode.CODE_600310);
+		}
+		//无效需要用户重新发起申请
+		if(payWithdrawals.getCallbackStatus()!=null && payWithdrawals.getCallbackStatus() == WithdrawalsStatusEnum.REAPPLY.getStatusCode()){
+			logger.error(log+"流水号{}审核失败,请重新发起申请",payWithdrawals.getWithdrawalsNo());
+			throw new BusinessException(BusinessCode.CODE_600311);
 		}
 
 		if(payWithdrawals.getFlowDirectionType()== PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
 			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsTransactionNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
-			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getTotalFee());
+			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getRealFee());
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
 			payTransfersToWxBankCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			payTransfersToWxBankCondition.setOperaterID(condition.getOperaterID());
@@ -840,7 +845,7 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
-			toWxBalanceCondition.setTotalAmount(payWithdrawals.getTotalFee());
+			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
 			return this.transfersToChange(toWxBalanceCondition);
 		}

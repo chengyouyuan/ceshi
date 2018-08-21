@@ -586,21 +586,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
                                 order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                         logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
-                        //发送云信--手机尾号8513顾客申请退款
-                        String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
-                        String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
-                        //发送MQ延时消息
-                        logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                        //获取两天后的时间
-                        Calendar time2DaysAfter = Calendar.getInstance();
-                        time2DaysAfter.add(Calendar.DATE, 2);
-                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
-                        //获取3天后-1小时
-                        Calendar time1HourAfter = Calendar.getInstance();
-                        time1HourAfter.add(Calendar.DATE, 3);
-                        long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
-                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
-                        logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
+                        registerProcessAfterTransSuccess(new CustomerApplyRefundSuccessRunnable(order, customerUserInfoVO), null);
                     } else {
                         throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单取消-C端申请退款不成功 订单号={}", orderNo));
                     }
@@ -1203,9 +1189,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 hashCodeV = hashCodeV >> 1;
             }
             String orderNoDateTimeFormatter = "yyMMddHH";
-            // 0 代表前面补充0       
-            // 9 代表长度为4       
-            // d 代表参数为正数型 
+            // 0 代表前面补充0
+            // 9 代表长度为4
+            // d 代表参数为正数型
             String randomFormat = "%09d";
             orderNo = "C" + DateFormatUtils.format(date, orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
         } while (!checkOrderNoAvailable(orderNo, date));
@@ -1545,6 +1531,61 @@ public class CommonOrderServiceImpl implements OrderService {
                 sendMsgToStore(4, orderInfo);
             } catch (Exception e) {
                 logger.error("订单退款完成给门店发送消息失败orderNo={}", orderInfo.getOrderNo());
+            }
+        }
+    }
+
+    /**
+     * C端用户申请退款事务提交成功后 处理
+     *
+     * @author pangjianhua
+     * @date 2018年8月21日 下午3:16:17
+     */
+    private class CustomerApplyRefundSuccessRunnable implements Runnable {
+
+        private OrderInfo orderInfo;
+        private CustomerUserInfoVO customerUserInfoVO;
+
+        public CustomerApplyRefundSuccessRunnable(OrderInfo orderInfo, CustomerUserInfoVO customerUserInfoVO) {
+            super();
+            this.orderInfo = orderInfo;
+            this.customerUserInfoVO = customerUserInfoVO;
+        }
+
+        @Override
+        public void run() {
+            String orderNo = orderInfo.getOrderNo();
+            try {
+                //发送云信--手机尾号8513顾客申请退款
+                String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
+                String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
+                NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
+                neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
+                NeteaseMsg neteaseMsg = new NeteaseMsg();
+                neteaseMsg.setMsgContent(msgContent);
+                neteaseMsg.setAudioType(1);
+                neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
+                messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+            } catch (Exception e) {
+                logger.error("C端申请退款发送云信失败orderNo=" + orderNo, e);
+            }
+            try {
+                //发送MQ延时消息
+                logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
+                //获取两天后的时间
+                Calendar time2DaysAfter = Calendar.getInstance();
+                time2DaysAfter.add(Calendar.DATE, 2);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
+                //获取3天后-1小时
+                Calendar time1HourAfter = Calendar.getInstance();
+                time1HourAfter.add(Calendar.DATE, 3);
+                long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
+                //发送3天后超时消息
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, (int) time1HourAfter.getTimeInMillis());
+                logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
+            } catch (Exception e) {
+                logger.error("C端申请退款发送消息失败orderNo={}", orderInfo.getOrderNo());
             }
         }
     }

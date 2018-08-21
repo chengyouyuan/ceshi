@@ -23,6 +23,9 @@ public class MiniMsgCondition {
     
     @ApiModelProperty("模板内容，不填则下发空模板。 数组元素的顺序，要求和小程序的模板库中的对应模板的参数顺序一致。")
     private List<MiniTemplateData> data;
+
+    @ApiModelProperty("模板需要放大的关键词，不填则默认无放大")
+    private String emphasisKeyword;
 }
 /**
  * 代码示例：
@@ -49,5 +52,6 @@ public class MiniMsgCondition {
  *         data3.setValue("333");
  *         templateData.add(data3);
  *         condition.setData(templateData);
+ *         condition.setEmphasis_keyword("keyword3.DATA");
  *         System.out.println(JsonUtil.toJSONString(condition));
  */

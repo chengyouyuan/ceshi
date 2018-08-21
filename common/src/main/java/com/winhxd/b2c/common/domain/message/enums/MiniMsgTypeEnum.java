@@ -12,41 +12,25 @@ public enum MiniMsgTypeEnum {
     /**
      * 门店确认订单
      */
-    STORE_CONFIRM_ORDER((short) 1, "门店确认订单", "9P9K-qlU8TQPuSDjuYLlNjhd6djZFP8J0uoBQfkAfNs"),
+    STORE_CONFIRM_ORDER((short) 1, "门店确认订单", "-uMG1WQxIOflPKaCGyRjsWWPP5RwxlKeFzeOGQtP-fg"),
 
     /**
-     * 用户取消订单
+     * 订单完成
      */
-    USER_CANCEL_ORDER((short) 2, "用户取消订单", ""),
+    ORDER_FINISH((short) 2, "订单完成", "9mbk7J8MxY9nyRSf7r3MtmjsNugjbil8aiqUaN5ntRA"),
     /**
-     * 门店确认退款
+     * 订单取消
      */
-    STORE_CONFIRM_REFUND((short) 3, "门店确认退款", ""),
+    ORDER_CANCELED((short) 3, "订单取消", "ywS5OMp09yV12g2qXCm_fYFYD7p9OndeYnzrgy6fm4I"),
 
     /**
-     * 门店超时未确认
+     * 支付完成
      */
-    STORE_NOT_CONFIRM_TIMEOUT((short) 4, "门店超时未确认", ""),
+    PAY_SUCCESS((short) 4, "支付完成", "aoFbgtDYcSTubZDwJgaFmpdSx9XJnWG_k7OTUY2xvlQ"),
     /**
-     * 门店取消订单
+     * 退款成功
      */
-    STORE_CANCEL_ORDER((short) 5, "门店取消订单", ""),
-    /**
-     * 用户超时未取货且未付款
-     */
-    USER_TIMEOUT_NO_GOODS_NO_PAYMENT((short) 6, "用户超时未取货且未付款", ""),
-    /**
-     * 用户超时未取货但已付款
-     */
-    USER_TIMEOUT_NO_GOODS_PAID((short) 7, "用户超时未取货但已付款", ""),
-    /**
-     * 用户取货完成
-     */
-    USER_PICK_UP_GOODS((short) 8, "用户取货完成", ""),
-    /**
-     * 待自提订单还有一小时失效
-     */
-    ORDER_INVALID_ONE_HOUR((short) 9, "待自提订单还有一小时失效", "");
+    REFUND_SUCCESS((short) 5, "退款成功", "TdCW9xGUtkhr1kKeAVe2Q5bbs5bcAPeZ6rSaGCq-OOU");
 
     private short msgType;
     private String msgDesc;

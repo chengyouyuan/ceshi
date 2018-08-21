@@ -252,6 +252,9 @@ public class MessageSendMqHandler {
             data.put(templateData.getKeyName(),value);
         }
         template.setData(data);
+        if(StringUtils.isNotEmpty(miniMsgCondition.getEmphasisKeyword())){
+            template.setEmphasis_keyword(miniMsgCondition.getEmphasisKeyword());
+        }
         return template;
     }
     /**

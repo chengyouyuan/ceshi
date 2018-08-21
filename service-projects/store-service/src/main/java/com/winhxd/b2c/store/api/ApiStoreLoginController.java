@@ -50,6 +50,11 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
+	
+	/**
+	 * 短信发送模板
+	 */
+	static final String  content = "【惠下单】%s（惠小店验证码，5分钟有效，请勿泄漏给他人）";
 	/**
 	 * 惠小店状态 1有效
 	 */
@@ -232,8 +237,8 @@ public class ApiStoreLoginController {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_100822);
+				logger.info("{} - , 您还没有绑定惠下单账号");
+				throw new BusinessException(BusinessCode.CODE_100819);
 			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
@@ -528,7 +533,7 @@ public class ApiStoreLoginController {
 		/**
 		 * 发送模板内容
 		 */
-		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
+		content = String.format(content,verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);

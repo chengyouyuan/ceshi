@@ -685,7 +685,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
-        if (OrderStatusEnum.UNRECEIVED.getStatusCode() != orderInfo.getOrderStatus()) {
+        if (OrderStatusEnum.UNRECEIVED.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
         }
         if (orderInfo.getValuationType() == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
@@ -721,7 +721,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (orderInfo == null || orderInfo.getStoreId() != condition.getStoreId().longValue()) {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
         }
-        if (OrderStatusEnum.WAIT_PAY.getStatusCode() != orderInfo.getOrderStatus()) {
+        if (OrderStatusEnum.WAIT_PAY.getStatusCode() != orderInfo.getOrderStatus().shortValue()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS);
         }
         if (orderInfo.getValuationType() != ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {

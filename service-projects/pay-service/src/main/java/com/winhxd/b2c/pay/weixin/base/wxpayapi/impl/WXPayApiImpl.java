@@ -54,6 +54,7 @@ public class WXPayApiImpl implements WXPayApi {
         Map<String, String> reqData = null;
 		try {
 			reqData = XmlUtil.bean2MapUnderline2Hump(payPreOrderDTO);
+			logger.info("预支付时，请求参数：{}", reqData);
 		} catch (Exception e) {
 			logger.error("预支付时，请求参数解析失败", e);
 			throw new BusinessException(BusinessCode.CODE_3400906, "预支付时，请求参数解析失败");

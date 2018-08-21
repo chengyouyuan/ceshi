@@ -59,6 +59,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         if (!matcher.matches()) {
             return error(response, BusinessCode.CODE_1009);
         }
+        MediaType contentType = request.getHeaders().getContentType();
         String pathTag = matcher.group(2);
         String apiCode = matcher.group(3);
 
@@ -108,6 +109,9 @@ public class GatewayFilter implements GlobalFilter, Ordered {
 
             @Override
             public Flux<DataBuffer> getBody() {
+                if (!MediaType.APPLICATION_JSON.includes(contentType) && !MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+                    return super.getBody();
+                }
                 return super.getBody()
                         .doOnNext(buffer -> recordBytes(stream, buffer))
                         .doOnComplete(() -> {
@@ -119,7 +123,6 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                             }
                         });
             }
-
         };
 
         ServerHttpResponseDecorator responseDecorator = new ServerHttpResponseDecorator(exchange.getResponse()) {
@@ -145,11 +148,6 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                             }
                         });
                 return super.writeWith(flux);
-            }
-
-            @Override
-            public Mono<Void> setComplete() {
-                return super.setComplete();
             }
         };
 

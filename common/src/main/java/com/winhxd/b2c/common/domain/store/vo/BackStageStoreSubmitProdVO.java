@@ -36,8 +36,10 @@ public class BackStageStoreSubmitProdVO {
 	private String prodImage3;
 	@ApiModelProperty("商品规则")
 	private String skuAttributeOption;
-	@ApiModelProperty("商品状态（0 待审核 ，1 审核不通过 ，2 审核通过，3 已添加）")
+	@ApiModelProperty("商品状态（0 待审核 ，1 审核通过 ，2 审核不通过，3 已添加）")
 	private Short prodStatus;
+	@ApiModelProperty("商品状态字符串")
+	private String prodStatusStr;
 	@ApiModelProperty("审核备注")
 	private String auditRemark;
 	@ApiModelProperty("商品信息（语音）")

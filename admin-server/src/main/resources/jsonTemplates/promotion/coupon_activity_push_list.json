@@ -113,6 +113,10 @@
         "title": "推券活动名称"
       },
       {
+        "name": "activityStatusName",
+        "title": "活动状态"
+      },
+      {
         "name": "citeNum",
         "title": "引用数量"
       },

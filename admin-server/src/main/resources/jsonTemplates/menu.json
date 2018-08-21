@@ -116,7 +116,7 @@
       "children": [
         {
           "id": "9_1",
-          "menuName": "出资方规则管理",
+          "menuName": "出资方规则",
           "path": "",
           "configKey": "",
           "permission": "",
@@ -184,22 +184,22 @@
         },
         {
           "id": "9_4",
-          "menuName": "优惠券模板",
+          "menuName": "优惠券模板管理",
           "path": "",
           "permission": "",
           "children": [
             {
               "id": "9_4_1",
-              "menuName": "模版列表",
-              "path": "",
-              "configKey": "/template/module/promotion/coupon_templete_list.json",
+              "menuName": "模版新增",
+              "path": "/promotion/addtemplate",
+              "configKey":"",
               "permission": ""
             },
             {
               "id": "9_4_2",
-              "menuName": "模版新增",
-              "path": "/promotion/addtemplate",
-              "configKey":"",
+              "menuName": "模版列表",
+              "path": "",
+              "configKey": "/template/module/promotion/coupon_templete_list.json",
               "permission": ""
             }
 

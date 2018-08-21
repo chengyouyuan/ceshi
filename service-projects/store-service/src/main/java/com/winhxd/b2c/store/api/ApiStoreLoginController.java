@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
@@ -51,10 +52,6 @@ import io.swagger.annotations.ApiResponses;
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 	
-	/**
-	 * 短信发送模板
-	 */
-	static final String  content = "【惠下单】%s（惠小店验证码，5分钟有效，请勿泄漏给他人）";
 	/**
 	 * 惠小店状态 1有效
 	 */
@@ -533,7 +530,7 @@ public class ApiStoreLoginController {
 		/**
 		 * 发送模板内容
 		 */
-		content = String.format(content,verificationCode);
+		content = String.format(SendSMSTemplate.SMSCONTENT,verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);

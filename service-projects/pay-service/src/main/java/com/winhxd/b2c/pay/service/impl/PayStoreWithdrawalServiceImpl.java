@@ -151,8 +151,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			BigDecimal realFee = totalFee.multiply(BigDecimal.valueOf(1).subtract(rate));
 			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
 			payWithdrawal.setRealFee(realFee);
-			// 计算手续费
-			BigDecimal cmms = totalFee.multiply(rate);
+			BigDecimal cmms = countCmms(rate,totalFee);
 			LOGGER.info("当前计算所得的手续费为："+cmms);
 			payWithdrawal.setCmmsAmt(cmms);
 			payWithdrawal.setRate(rate);
@@ -173,6 +172,23 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	} 
+	
+	// 计算手续费率
+	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
+		BigDecimal cmms = totalFee.multiply(rate);
+		// 计算手续费
+		BigDecimal mix = new BigDecimal(1);
+	    BigDecimal max = new BigDecimal(25);
+		int a = cmms.compareTo(mix);
+		int b = cmms.compareTo(max);
+		if(a == -1){
+			cmms = mix;
+		}
+		if(b == 1){
+			cmms = max;
+		}
+		return cmms;
+	}
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;

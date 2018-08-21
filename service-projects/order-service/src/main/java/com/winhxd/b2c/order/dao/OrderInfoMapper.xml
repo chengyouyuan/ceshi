@@ -727,7 +727,7 @@
         update order_info
         set pickup_code=null, 
         order_status=#{newOrderStatus,jdbcType=SMALLINT}, 
-        updated = now()
+        updated = now(),
         finish_datetime = now()
         where id=#{orderId,jdbcType=BIGINT}
         and pickup_code=#{pickupCode,jdbcType=VARCHAR}

@@ -577,6 +577,8 @@ public final class BusinessCode {
     public static final int CODE_3400906 = 3400906;
     @ApiModelProperty("下载对账单时，响应参数解析失败")
     public static final int CODE_3400907 = 3400907;
+    @ApiModelProperty("支付完成，请勿重复支付")
+    public static final int CODE_3400908 = 3400908;
     @ApiModelProperty("微信无证书请求失败")
     public static final int CODE_3400910 = 3400910;
     @ApiModelProperty("微信有证书请求失败")

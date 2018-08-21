@@ -88,7 +88,7 @@ public class ApiPayCallbackController {
 				this.response(response, FAIL_RESPONSE);
 			}
 		} catch (Exception e) {
-			logger.error("微信支付回调转换失败", e);
+			logger.error("微信支付回调失败", e);
 			this.response(response, FAIL_RESPONSE);
 		}
 	}

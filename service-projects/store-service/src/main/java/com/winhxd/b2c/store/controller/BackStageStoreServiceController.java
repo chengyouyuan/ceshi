@@ -219,7 +219,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 
 	@Override
 	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
-			BackStageStoreSubmitProdCondition condition) {
+	        @RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> responseResult = null;
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 
@@ -229,6 +229,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 		}
 		if (condition != null) {
 			responseResult = new ResponseResult<>();
+			PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 			PagedList<BackStageStoreSubmitProdVO> list = this.storeSubmitProductService
 					.findBackStageVOByCondition(condition);
 			responseResult.setData(list);
@@ -239,7 +240,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	}
 
 	@Override
-	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(BackStageStoreSubmitProdCondition condition) {
+	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<BackStageStoreSubmitProdVO> responseResult = null;
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
 

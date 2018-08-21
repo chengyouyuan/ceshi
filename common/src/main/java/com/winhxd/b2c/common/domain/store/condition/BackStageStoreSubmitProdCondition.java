@@ -28,7 +28,7 @@ public class BackStageStoreSubmitProdCondition extends PagedCondition{
 	private String prodName;
 	@ApiModelProperty("商品code")
 	private String prodCode;
-	@ApiModelProperty("商品状态（0 待审核 ，1 审核不通过 ，2 审核通过，3 已添加）")
+	@ApiModelProperty("商品状态（0 待审核 ，1 审核通过 ，2 审核不通过，3 已添加）")
 	private Short prodStatus;
 	@ApiModelProperty("sku编码")
 	private String skuCode;

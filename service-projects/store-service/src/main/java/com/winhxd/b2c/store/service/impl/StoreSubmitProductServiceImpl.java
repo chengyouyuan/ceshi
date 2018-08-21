@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
@@ -105,6 +106,20 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 		if(condition!=null){
 	
 			Page<BackStageStoreSubmitProdVO> page=storeSubmitProductMapper.selectBackStageVOByCondition(condition);
+			if(page.getResult()!=null){
+			    for(BackStageStoreSubmitProdVO p:page.getResult()){
+			        short status=p.getProdStatus();
+			        if(StoreSubmitProductStatusEnum.CREATE.getStatusCode()==status){
+			            p.setProdStatusStr(StoreSubmitProductStatusEnum.CREATE.getStatusDes());
+			        }else if(StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
+			            p.setProdStatusStr(StoreSubmitProductStatusEnum.PASS.getStatusDes());
+                    }else if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status){
+                        p.setProdStatusStr(StoreSubmitProductStatusEnum.NOTPASS.getStatusDes());
+                    }else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
+                        p.setProdStatusStr(StoreSubmitProductStatusEnum.ADDPROD.getStatusDes());
+                    }
+			    }
+			}
 			list=new PagedList<>();
 			list.setPageNo(condition.getPageNo());
 			list.setPageSize(condition.getPageSize());

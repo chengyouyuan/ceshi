@@ -12,6 +12,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class BrandCondition {
 	
+	@ApiModelProperty(value = "品牌商编码")
+	private String companyCode;
+	
     @ApiModelProperty(value = "品牌编码")
     private String brandCode;
     
@@ -24,6 +27,14 @@ public class BrandCondition {
 	@ApiModelProperty(value = "页号" ,required = true)
     private Integer pageNo;
     
+	public String getCompanyCode() {
+		return companyCode;
+	}
+
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
+	}
+
 	public String getBrandCode() {
 		return brandCode;
 	}

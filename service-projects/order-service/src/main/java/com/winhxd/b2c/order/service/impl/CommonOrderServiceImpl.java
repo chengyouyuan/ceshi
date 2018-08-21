@@ -1401,8 +1401,8 @@ public class CommonOrderServiceImpl implements OrderService {
                 data.setValue(orderTotal);
                 data.setKeyName(KEYWORD3);
                 data.setValue(customerMsg);
-                short msgType2C = MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType();
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                short msgType2C = MiniMsgTypeEnum.ORDER_FINISH.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单提货完成给用户发送消息失败：", e);
@@ -1468,8 +1468,8 @@ public class CommonOrderServiceImpl implements OrderService {
                 data.setValue(orderTotal);
                 data.setKeyName(KEYWORD3);
                 data.setValue(customerMsg);
-                short msgType2C = MiniMsgTypeEnum.STORE_CANCEL_ORDER.getMsgType();
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                short msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单未接单超时给用户发送消息失败：", e);
@@ -1510,8 +1510,8 @@ public class CommonOrderServiceImpl implements OrderService {
                 data.setValue(orderTotal);
                 data.setKeyName(KEYWORD3);
                 data.setValue(customerMsg);
-                short msgType2C = MiniMsgTypeEnum.STORE_NOT_CONFIRM_TIMEOUT.getMsgType();
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                short msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单未接单超时给用户发送消息失败：", e);
@@ -1541,10 +1541,10 @@ public class CommonOrderServiceImpl implements OrderService {
             short msgType2C;
             if (orderInfo.getPayStatus().shortValue() == PayStatusEnum.PAID.getStatusCode()) {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
-                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_PAID.getMsgType();
+                msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
             } else {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER;
-                msgType2C = MiniMsgTypeEnum.USER_TIMEOUT_NO_GOODS_NO_PAYMENT.getMsgType();
+                msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
             }
             try {
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
@@ -1560,7 +1560,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 data.setValue(orderTotal);
                 data.setKeyName(KEYWORD3);
                 data.setValue(customerMsg);
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单未提货超时给用户发送消息失败：", e);
@@ -1602,7 +1602,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 MiniTemplateData key3 = new MiniTemplateData();
                 key3.setKeyName(KEYWORD3);
                 key3.setValue(storeMsgContent);
-                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.REFUND_SUCCESS.getMsgType(), null, key1, key2, key3);
                 messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
             } catch (Exception e) {
                 logger.error("订单退款完成给用户发送微信消息失败orderNo={}", orderInfo.getOrderNo());
@@ -1716,7 +1716,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     MiniTemplateData key3 = new MiniTemplateData();
                     key3.setKeyName(KEYWORD3);
                     key3.setValue("您的订单已取消");
-                    MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key1, key2, key3);
+                    MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.ORDER_CANCELED.getMsgType(), null, key1, key2, key3);
                     messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
                     break;
                 case 2:
@@ -1732,7 +1732,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     MiniTemplateData key23 = new MiniTemplateData();
                     key23.setKeyName(KEYWORD3);
                     key23.setValue(customerMsgContentType2);
-                    MiniMsgCondition miniMsgCondition2 = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.USER_PICK_UP_GOODS.getMsgType(), key21, key22, key23);
+                    MiniMsgCondition miniMsgCondition2 = OrderUtil.genMiniMsgCondition(customer.getOpenid(), null, MiniMsgTypeEnum.ORDER_CANCELED.getMsgType(), null, key21, key22, key23);
                     messageServiceClient.sendMiniTemplateMsg(miniMsgCondition2);
                     break;
                 default:

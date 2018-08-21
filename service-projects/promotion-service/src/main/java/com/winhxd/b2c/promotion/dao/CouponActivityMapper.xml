@@ -312,7 +312,7 @@
     <if test="type != null">
       AND type = #{type,jdbcType=SMALLINT}
     </if>
-
+    AND NOW() BETWEEN activity_start AND activity_end
   </select>
   <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT

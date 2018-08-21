@@ -141,8 +141,10 @@ public class ApiPayStoreBindBankCardController {
 	@ApiOperation(value = "获取短信验证码", notes = "获取短信验证码")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
-            @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成")
+            @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成"),
+            @ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型")
     })
     @RequestMapping(value = "/6106/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody VerifiCodeCondtion condition) {

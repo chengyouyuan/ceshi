@@ -89,7 +89,7 @@ public class ApiPayStoreWithdrawalController {
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 		if(condition.getWithdrawType() != 0){
-			payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
+			result = payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
 		}else{
 			result.setCode(BusinessCode.CODE_610022);
 			LOGGER.info("请传入提现类型");

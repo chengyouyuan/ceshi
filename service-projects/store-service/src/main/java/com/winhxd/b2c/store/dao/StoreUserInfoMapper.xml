@@ -88,18 +88,16 @@
         <include refid="Base_Column_List"/>
         FROM
         store_user_info
-        <where>
-            <if test="id != null">
-                AND id = #{id}
-            </if>
-            <if test="contactMobile != null and contactMobile != ''">
-                AND contact_mobile LIKE '%${contactMobile}%'
-            </if>
-            <if test="storeName != null and storeName != ''">
-                AND store_name LIKE '%${storeName}%'
-            </if>
-        </where>
-
+        where store_status &lt;&gt; 0
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="contactMobile != null and contactMobile != ''">
+            AND contact_mobile LIKE '%${contactMobile}%'
+        </if>
+        <if test="storeName != null and storeName != ''">
+            AND store_name LIKE '%${storeName}%'
+        </if>
     </select>
     <select id="selectStoreUserInfo" resultMap="BaseResultMap">
         SELECT
@@ -413,39 +411,39 @@
     update store_user_info set store_region_code = #{storeRegionCode} where store_customer_id = #{storeCustomerId}
   </update>
 
-  <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select
-    <include refid="Base_Column_List" />
-    from store_user_info
-    where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
-  </select>
-  <select id="selectByRegionCodes" resultType="java.lang.String">
-    select
-      id
-    from store_user_info
-    where
-      <foreach collection="regionCodeList" item="regionCode" open="(" close=")" separator="or">
-          store_region_code like '${regionCode}%'
-      </foreach>
-  </select>
-  <select id="getStoreListByKeywords" resultMap="storeUserInfoVO">
-    select
-      <include refid="Base_Column_List"/>
-    from store_user_info
-    <where>
-	    <if test="storeIds!=null and storeIds.size > 0 ">
-	      and id in
-	      <foreach item="id" collection="storeIds" separator="," open="(" close=")" index="">
-	            '${id}'
-	      </foreach>
-	    </if>
-	    <if test="storeMobiles !=null and storeMobiles.size > 0 ">
-	     and store_mobile in
-	      <foreach item="storeMobile" collection="storeMobiles" separator="," open="(" close=")" index="">
-	            '${storeMobile}'
-	      </foreach>
-	    </if>
-     </where>
-  </select>
+    <select id="selectByStoreCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from store_user_info
+        where store_customer_id = #{storeCustomerId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByRegionCodes" resultType="java.lang.String">
+        select
+        id
+        from store_user_info
+        where
+        <foreach collection="regionCodeList" item="regionCode" open="(" close=")" separator="or">
+            store_region_code like '${regionCode}%'
+        </foreach>
+    </select>
+    <select id="getStoreListByKeywords" resultMap="storeUserInfoVO">
+        select
+        <include refid="Base_Column_List"/>
+        from store_user_info
+        <where>
+            <if test="storeIds!=null and storeIds.size > 0 ">
+                and id in
+                <foreach item="id" collection="storeIds" separator="," open="(" close=")" index="">
+                    '${id}'
+                </foreach>
+            </if>
+            <if test="storeMobiles !=null and storeMobiles.size > 0 ">
+                and store_mobile in
+                <foreach item="storeMobile" collection="storeMobiles" separator="," open="(" close=")" index="">
+                    '${storeMobile}'
+                </foreach>
+            </if>
+        </where>
+    </select>
 
 </mapper>

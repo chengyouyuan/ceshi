@@ -72,6 +72,8 @@ public final class BusinessCode {
     public static final int CODE_101301 = 101301;
     /**门店商品skuCode无效*/
     public static final int CODE_101302 = 101302;
+    /**价格无效*/
+    public static final int CODE_101303 = 101303;
     
     /**1014接口参数无效*/
     public static final int CODE_101401 = 101401;

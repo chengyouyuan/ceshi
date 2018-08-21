@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -78,8 +79,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
+				 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
 				 String carnumber = data.getCardNumber();
-				 withdrawalPage.setUserAcountName(data.getStoreName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
+				 withdrawalPage.setUserAcountName(data.getBankName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 withdrawalPage.setBandBranchName(data.getBandBranchName());
 				 withdrawalPage.setBankName(data.getBankName());
@@ -121,7 +123,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		///////////////测试数据//////////////////////////
 		Long businessId = 1l;
 		//////////////////结束/////////////////////////
-		
+		// 验证入参是否传入正确
+//		int res = valiApplyWithDrawCondition(condition);
 		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
 		String[] user = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
@@ -157,6 +160,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return result;
 	} 
 	
+	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
+		BigDecimal totalFee = condition.getTotalFee();
+		/*if(){
+			
+		}*/
+		return 0;
+	}
+
 	/** 验证当前用户是否绑定了微信账户；  验证方式暂时是查询当前用户是否拥有微信的唯一标识*/
 	public ResponseResult<PayStoreUserInfoVO> validStoreBindAccount(Long businessId){
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();

@@ -597,15 +597,32 @@ public class CouponServiceImpl implements CouponService {
         CouponGradeDetail couponGradeDetail = couponGradeDetails.get(0);
         //优惠类型 1.金额2，折扣
         if(couponGradeDetail.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode())){
-            //订单金额大于等于满减金额,取优惠金额
+
+            //满减金额等于0 代表无门槛券
+            if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
+                //总额大于等于满减金额,返回满减金额否则返回总额
+                return amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0 ? couponGradeDetail.getReducedAmt():amountPrice;
+            }
+
+            //总额大于等于满减金额
             if(amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0){
                 return couponGradeDetail.getDiscountedAmt();
             }
         }else{
+            //计算优惠金额
             BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted());
+
+            //满减金额等于0 代表无门槛券
+            if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
+                //总额大于等于满减金额,返回满减金额否则返回总额
+                // 折扣券不存在优惠金额大于总额
+            }
+
             //优惠金额大于等于优惠最大限额,取优惠最大限额
             if(discountAmount.compareTo(couponGradeDetail.getDiscountedMaxAmt())>=0){
                 return couponGradeDetail.getDiscountedMaxAmt();
+            }else{
+                return discountAmount;
             }
         }
         return new BigDecimal(0);

@@ -161,7 +161,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
-		accid = "13_102_uat";//neteaseAccount.getAccid();
+		accid = neteaseAccount.getAccid();
 		PagedList<NeteaseMsgVO> pagedList = new PagedList<>();
 		condition.setAccid(accid);
 		Date currentDate = new Date();
@@ -188,7 +188,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
-		accid = "13_102_uat";//neteaseAccount.getAccid();
+		accid = neteaseAccount.getAccid();
 		condition.setAccid(accid);
 		int updateCount = neteaseHistoryMapper.updateReadStatusByCondition(condition);
 		if (updateCount > 0) {

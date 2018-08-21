@@ -41,7 +41,7 @@ public enum SmsReturnStatusEnum {
 	
 	private String remark;// 描述
 	
-	private SmsReturnStatusEnum( int statusCode,String remark) {
+	SmsReturnStatusEnum(int statusCode, String remark) {
         this.statusCode = statusCode;
         this.remark = remark;
     }

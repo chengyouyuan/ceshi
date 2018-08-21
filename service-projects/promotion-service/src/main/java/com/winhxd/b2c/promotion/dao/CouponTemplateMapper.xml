@@ -423,9 +423,7 @@
     <if test="condition.couponLabel!=null and  condition.couponLabel!=''">
       and a.coupon_label = #{condition.couponLabel}
     </if>
-    <if test="condition.calType!=null and condition.calType!=''">
-      and a.cal_type = #{condition.calType}
-    </if>
+
     <if test="condition.investorName!=null and condition.investorName!=''">
       and b.name = #{condition.investorName}
     </if>

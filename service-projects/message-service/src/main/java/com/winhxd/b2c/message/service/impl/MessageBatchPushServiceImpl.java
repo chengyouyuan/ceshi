@@ -137,8 +137,9 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
             //云信消息发送成功
             saveNeteaseMsgHistory(accids, msgContent);
         } else {
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，neteaseMsgDelayConditionJson={}", neteaseMsgDelayConditionJson);
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
-            throw new BusinessException(BusinessCode.CODE_703503);
+            //throw new BusinessException(BusinessCode.CODE_703503);
         }
     }
 

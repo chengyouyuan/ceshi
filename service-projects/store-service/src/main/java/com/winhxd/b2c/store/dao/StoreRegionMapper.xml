@@ -174,4 +174,22 @@
     and area_code like #{prefixCode}
     limit 1
   </select>
+
+
+  <select id="selectFatherRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region where status = 1 and area_code in
+      <foreach collection="regionCodes" item="regionCode" open="(" close=")" separator=",">
+        #{regionCode}
+      </foreach>
+  </select>
+  <select id="selectSonRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region where status = 1
+    <if test="areaCode != null and areaCode != ''">
+      <bind name="pattern" value="areaCode + '%'" />
+      and area_code like #{pattern}
+    </if>
+    <if test="level != null and level != 0">
+      and level &gt; #{level}
+    </if>
+  </select>
 </mapper>

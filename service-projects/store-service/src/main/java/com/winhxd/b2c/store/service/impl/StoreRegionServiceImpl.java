@@ -17,6 +17,7 @@ import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.StoreRegionMapper;
 import com.winhxd.b2c.store.service.StoreRegionService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -24,9 +25,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: wangbaokuo
@@ -36,6 +40,8 @@ import java.util.Objects;
 public class StoreRegionServiceImpl implements StoreRegionService{
 
     private static final Logger logger = LoggerFactory.getLogger(StoreRegionServiceImpl.class);
+
+    private static final String REGULAR_ZERO = "0+$";
 
     @Resource
     StoreRegionMapper storeRegionMapper;
@@ -72,18 +78,36 @@ public class StoreRegionServiceImpl implements StoreRegionService{
     @Override
     public int saveStoreRegion(StoreRegionCondition condition) {
         checkCurrentAdminUser();
-        String areaCode = condition.getAreaCode().substring(0, 3);
-        List<StoreRegion> repeat = storeRegionMapper.selectRepeatStoreRegion(areaCode);
-        if (CollectionUtils.isNotEmpty(repeat)) {
+        String areaCode = condition.getAreaCode();
+        SysRegion sr = getSysRegion(areaCode);
+        List<String> regionCodes = new ArrayList<>();
+        if (StringUtils.isNotBlank(sr.getProvinceCode())) {
+            regionCodes.add(sr.getProvinceCode());
+        }
+        if (StringUtils.isNotBlank(sr.getCityCode())) {
+            regionCodes.add(sr.getCityCode());
+        }
+        if (StringUtils.isNotBlank(sr.getCountyCode())) {
+            regionCodes.add(sr.getCountyCode());
+        }
+        if (StringUtils.isNotBlank(sr.getTownCode())) {
+            regionCodes.add(sr.getTownCode());
+        }
+        if (StringUtils.isNotBlank(sr.getVillageCode())) {
+            regionCodes.add(sr.getVillageCode());
+        }
+        List<StoreRegionVO> fatherVO = storeRegionMapper.selectFatherRegion(regionCodes);
+        Matcher slashMatcher = Pattern.compile(REGULAR_ZERO).matcher(areaCode);
+        String code = areaCode;
+        if(slashMatcher.find()){
+            code = areaCode.substring(0, slashMatcher.start());
+        }
+        List<StoreRegionVO> sonVO = storeRegionMapper.selectSonRegion(code, sr.getLevel());
+        if (CollectionUtils.isNotEmpty(sonVO) || CollectionUtils.isNotEmpty(fatherVO)) {
             logger.error("保存测试门店区域异常{} -> 销售区域重复");
             throw new BusinessException(BusinessCode.CODE_103901);
         }
-        ResponseResult<SysRegion> result = regionServiceClient.getRegionByCode(condition.getAreaCode());
-        if (null == result || null == result.getData()) {
-            logger.error("保存测试门店区域异常{} -> 查询SysRegion失败 regionCode:"+condition.getAreaCode());
-            throw new BusinessException(BusinessCode.CODE_103902);
-        }
-        SysRegion sysRegion = result.getData();
+        SysRegion sysRegion = getSysRegion(areaCode);
         StringBuffer sb = new StringBuffer();
         if (!sysRegion.getProvince().equals(sysRegion.getCity())) {
             sb.append(sysRegion.getProvince()).append(Objects.toString(sysRegion.getCity(), ""))
@@ -108,6 +132,15 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setUpdatedBy(account);
         storeRegion.setStatus(StoreRegionEnum.EFFICTIVE.getCode());
         return storeRegionMapper.insertSelective(storeRegion);
+    }
+
+    private SysRegion getSysRegion(String areaCode){
+        ResponseResult<SysRegion> result = regionServiceClient.getRegionByCode(areaCode);
+        if (null == result || result.getCode() != BusinessCode.CODE_OK || null == result.getData()) {
+            logger.error("保存测试门店区域异常{} -> 查询SysRegion失败 regionCode:"+areaCode);
+            throw new BusinessException(BusinessCode.CODE_103902);
+        }
+        return result.getData();
     }
 
     /**

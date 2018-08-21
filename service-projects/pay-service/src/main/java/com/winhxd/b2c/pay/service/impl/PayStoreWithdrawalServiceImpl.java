@@ -94,6 +94,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setBankUserName(data.getBankUserName());
 				 withdrawalPage.setCardNumber(data.getCardNumber());
 				 withdrawalPage.setMobile(data.getStoreMobile());
+				 withdrawalPage.setSwiftCode(data.getSwiftCode());
 //				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
 				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称,实际账户总额

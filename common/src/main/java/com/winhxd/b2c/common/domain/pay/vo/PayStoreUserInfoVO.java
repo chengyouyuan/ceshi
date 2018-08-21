@@ -52,4 +52,6 @@ public class PayStoreUserInfoVO implements Serializable {
     private String bankName;
     @ApiModelProperty("开户人姓名")
     private String bankUserName;
+    @ApiModelProperty("银行swiftCode")
+	private String swiftCode;
 }

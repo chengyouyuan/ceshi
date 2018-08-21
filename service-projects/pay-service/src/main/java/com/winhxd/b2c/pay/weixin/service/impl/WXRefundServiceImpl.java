@@ -262,7 +262,9 @@ public class WXRefundServiceImpl implements WXRefundService {
             model.setCallbackRefundFee(dto.getRefundFee());
             model.setCallbackRefundAmount(new BigDecimal(dto.getRefundFee()).divide(UNITS));
             model.setCallbackSettlementRefundFee(dto.getSettlementRefundFee());
-            model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            if (dto.getSettlementRefundFee() != null){
+                model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            }
             model.setCallbackTotalFee(dto.getTotalFee());
             model.setCallbackSettlementTotalFee(dto.getSettlementTotalFee());
             model.setCallbackFeeType(dto.getFeeType());

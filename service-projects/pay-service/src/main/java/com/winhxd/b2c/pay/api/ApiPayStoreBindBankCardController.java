@@ -174,6 +174,7 @@ public class ApiPayStoreBindBankCardController {
 		if(res > 0){
 			result.setCode(res);
 		}else{
+			result.setData("验证码："+modileVerifyCode);
 			SMSCondition sMSCondition = new SMSCondition();
 			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
 			sMSCondition.setMobile(condition.getMobile());

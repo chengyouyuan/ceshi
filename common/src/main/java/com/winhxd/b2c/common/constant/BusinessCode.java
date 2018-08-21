@@ -504,11 +504,14 @@ public final class BusinessCode {
     @ApiModelProperty("消息服务 创建云信用户 customerId为空")
     public static final int CODE_701301 = 701301;
 
-    @ApiModelProperty("消息服务 创建云信用户 云信用户存在，更新token失败（需查询官方错误码）")
+    @ApiModelProperty("消息服务 修改云信用户 云信用户存在，更新token失败（需查询官方错误码）")
     public static final int CODE_701302 = 701302;
 
-    @ApiModelProperty("消息服务 创建云信用户 云信用户不存在，创建新用户失败（需查询官方错误码）")
+    @ApiModelProperty("消息服务 修改云信用户 云信用户不存在，创建新用户失败（需查询官方错误码）")
     public static final int CODE_701303 = 701303;
+
+    @ApiModelProperty("消息服务 修改云信用户信息 云信用户不存在")
+    public static final int CODE_701304 = 701304;
 
     @ApiModelProperty("消息服务 给B端用户发云信消息 customerId为空")
     public static final int CODE_701401 = 701401;

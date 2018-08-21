@@ -119,6 +119,10 @@ public class NeteaseServiceImpl implements NeteaseService {
 			throw new BusinessException(BusinessCode.CODE_701301);
 		}
 		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		if(account == null){
+			LOGGER.error("消息服务 ->更新云信账号信息异常，NeteaseServiceImpl.updateNeteaseAccount(),云信用户不存在，customerId={}",customerId);
+			throw new BusinessException(BusinessCode.CODE_701304);
+		}
 		//更新云信账户信息
 		Map<String, Object> infoMap = neteaseUtils.updateUserInfo(account.getAccid(), account.getName(),account.getIcon());
 		String codeMes = String.valueOf(infoMap.get(PARAM_CODE));

@@ -207,9 +207,8 @@
         <bind name="mobile" value="'%' + mobile + '%'" />
         and mobile like #{mobile,jdbcType=CHAR}
       </if>
-      <if test="roleName != null and roleName != ''">
-        <bind name="roleName" value="'%' + roleName + '%'" />
-        and role_name like #{roleName,jdbcType=VARCHAR}
+      <if test="roleId != null and roleId != ''">
+        and role_id = #{roleId}
       </if>
     </where>
   </select>

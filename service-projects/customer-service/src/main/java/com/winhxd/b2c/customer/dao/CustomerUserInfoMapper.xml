@@ -61,6 +61,20 @@
         #{id}
     </foreach>
   </select>
+  <select id="selectBindingCustomer" resultMap="customerUserInfoVO1">
+      select cui.*  from customer_store_relation csr left join customer_user_info cui on cui.customer_id = csr.customer_id
+    <where>
+      <if test="customerId != null">
+        and cui.customer_id =  #{customerId,jdbcType=BIGINT}
+      </if>
+      <if test="nickName != null and nickName != ''">
+        and cui.nick_name like CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="customerMobile != null and customerMobile != ''">
+        and cui.customer_mobile like CONCAT('%', #{customerMobile,jdbcType=VARCHAR}, '%')
+      </if>
+    </where>
+  </select>
   <select id="selectCustomer" resultMap="customerUserInfoVO1">
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created
     from customer_user_info cui  left join customer_store_relation csr

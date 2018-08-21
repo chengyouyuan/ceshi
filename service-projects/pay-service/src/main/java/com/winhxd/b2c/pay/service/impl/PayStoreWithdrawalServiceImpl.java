@@ -112,7 +112,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setNick(data.getNick());
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
-				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
 				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);

@@ -42,12 +42,20 @@ public interface VerifyServiceClient {
     ResponseResult<Integer> completeAccounting(@RequestParam("orderNo") String orderNo);
 
     /**
-     * 订单费用与支付平台结算
+     * 查询未标记支付平台已结算的费用订单号
+     *
+     * @return
+     */
+    @RequestMapping(value = "/pay/6083/v1/thirdPartyNotVerifyOrderNoList", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    ResponseResult<List<String>> thirdPartyNotVerifyOrderNoList();
+
+    /**
+     * 订单费用与支付平台结算，由定时任务调用
      *
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/pay/6083/v1/thirdPartyVerifyAccounting", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/pay/6084/v1/thirdPartyVerifyAccounting", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<Integer> thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition);
 
     /**
@@ -159,6 +167,12 @@ class VerifyServiceClientFallback implements VerifyServiceClient, FallbackFactor
 
     @Override
     public ResponseResult<Integer> completeAccounting(String orderNo) {
+        log.error(e.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<String>> thirdPartyNotVerifyOrderNoList() {
         log.error(e.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

@@ -40,10 +40,17 @@ public class VerifyController {
         return new ResponseResult(count);
     }
 
+    @ApiOperation(value = "查询未标记支付平台已结算的费用订单号", notes = "用于标记与支付平台费用明细结算状态")
+    @PostMapping("/pay/6083/v1/thirdPartyNotVerifyOrderNoList")
+    public ResponseResult<List<String>> thirdPartyNotVerifyOrderNoList() {
+        List<String> list = verifyService.thirdPartyNotVerifyOrderNoList();
+        return new ResponseResult(list);
+    }
+
     @ApiOperation(value = "订单费用与支付平台结算", notes = "支付平台结算后，更新费用明细与支付平台为结算完成")
-    @PostMapping("/pay/6083/v1/thirdPartyVerifyAccounting")
+    @PostMapping("/pay/6084/v1/thirdPartyVerifyAccounting")
     public ResponseResult<Integer> thirdPartyVerifyAccounting(@RequestBody ThirdPartyVerifyAccountingCondition condition) {
-        int count = verifyService.thirdPartyVerifyAccounting(condition);
+        int count = verifyService.thirdPartyVerifyAccounting(condition.getOrderNo());
         return new ResponseResult(count);
     }
 

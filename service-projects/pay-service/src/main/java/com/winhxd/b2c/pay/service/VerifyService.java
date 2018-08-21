@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -9,6 +10,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.OrderVerifyMoneyVO;
@@ -23,6 +25,7 @@ import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
+import com.winhxd.b2c.pay.weixin.dao.PayStatementMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +55,12 @@ public class VerifyService {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private PayStatementMapper payStatementMapper;
+
+    @Autowired
+    private Cache cache;
 
     /**
      * 订单支付成功事件
@@ -182,16 +191,30 @@ public class VerifyService {
     }
 
     /**
+     * 查询未标记支付平台已结算的费用订单号
+     *
+     * @return
+     */
+    public List<String> thirdPartyNotVerifyOrderNoList() {
+        return accountingDetailMapper.selectThirdPartyNotVerifyOrderNoList();
+    }
+
+    /**
      * 订单费用与支付平台结算
      *
-     * @param condition
+     * @param orderNo
      * @return
      */
     @Transactional
-    public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
-        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
-        int updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
-        log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", condition.getOrderNo(), condition.getServiceFee(), updateCount);
+    public int thirdPartyVerifyAccounting(String orderNo) {
+        PayStatement payStatement = payStatementMapper.selectByOutOrderNo(orderNo);
+        // 订单手续费
+        BigDecimal serviceFee = payStatement.getFee();
+        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee);
+        int updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
+        if (updateCount > 0) {
+            log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
+        }
         return updateCount;
     }
 
@@ -450,9 +473,7 @@ public class VerifyService {
             payWithdrawals.setAuditStatus(auditStatus);
             payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
-            // 门店资金变动
-            UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
-            payService.updateStoreBankroll(rollCondition);
+            // TODO 门店提现
             // 更新门店提现状态
             payWithdrawals.setAuditStatus(null);
             payWithdrawals.setAuditDesc(null);

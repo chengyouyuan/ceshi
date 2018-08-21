@@ -94,7 +94,7 @@
             "name": "撤销已发放优惠券",
             "icon": null,
             "event": {
-              "ajaxType": "delete",
+              "ajaxType": "post",
               "type": "ajax",
               "params": [
                 "id"

@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 /**
  * 阅信平台发送短信
+ * @author fanzhanzhan
  */
 @Component
 public class YxSmsProcess {
@@ -76,7 +77,8 @@ public class YxSmsProcess {
 		try {
 			String mttime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 			String sentContent = content;
-			if (content != null && content.trim().length() > 4
+			int contentLength = 4;
+			if (content != null && content.trim().length() > contentLength
 					&& content.indexOf(SmsConstant.FLAG_VERIFICATION) > -1) {
 				if (String.valueOf(SmsTypeEnum.VOICE.getType()).equals(type)) {
 					smsSupplier = SmsSupplierEnum.voice_yx;
@@ -105,10 +107,8 @@ public class YxSmsProcess {
 
 				CloseableHttpClient httpClient = httpClientUtil.getHttpClient();
 				HttpPost httpPost = new HttpPost(smsSupplier.getUrl());
-				String curTime = String.valueOf(((new Date()).getTime() - 5000) / 1000L);
 				httpPost.setEntity(new UrlEncodedFormEntity(nvps, ContextHelper.UTF_8));
 				HttpResponse response = httpClient.execute(httpPost);
-				//String rs = HttpClientUtil.postSend(smsSupplier.getUrl(), "", pair);
 				String rs = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
 				smsReturn = analysisReturn(rs);
 				smsReturn.setSmsSupplier(smsSupplier);

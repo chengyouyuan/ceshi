@@ -2,6 +2,7 @@ package com.winhxd.b2c.message.sms.process;
 
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
+import com.winhxd.b2c.message.sms.common.SmsConstant;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -14,7 +15,7 @@ import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ManDaoLongMessageProcess extends SmsProcess {
+public class ManDaoLongMessageProcess extends BaseSmsProcess {
 
 	@Override
 	public int sendMessage(MessageSmsHistory smsSend) {
@@ -44,7 +45,7 @@ public class ManDaoLongMessageProcess extends SmsProcess {
 		return -1;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ManDaoLongMessageProcess tManDaoSmsProcess = new ManDaoLongMessageProcess();
 		MessageSmsHistory smsSend = new MessageSmsHistory();
 		smsSend.setContent("长沙疾控中心向新生儿家长推出“护苗日记”App，视频介绍小儿常见疾病知识和疫苗接种注意事项，并有常见问题专业解答。点击http://t.cn/8F14q7h 免费下载1。");
@@ -159,7 +160,7 @@ public class ManDaoLongMessageProcess extends SmsProcess {
 				in = new BufferedReader(isr);
 				String inputLine;
 				while (null != (inputLine = in.readLine())) {
-					Pattern pattern = Pattern.compile("<mdMmsSendResult>(.*)</mdMmsSendResult>");
+					Pattern pattern = Pattern.compile(SmsConstant.SMS_MANDAO_MDMMSSEND_PATTERN);
 					Matcher matcher = pattern.matcher(inputLine);
 					while (matcher.find()) {
 						result = matcher.group(1);

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
-import com.winhxd.b2c.common.constant.TransfersChannelCodeType;
+import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class PayTransfersToWxBankCondition extends ApiCondition implements Seria
     /**
      * 流向名称,银行代码
      */
-    private TransfersChannelCodeType channelCode;
+    private TransfersChannelCodeTypeEnum channelCode;
 
     /**
      * 提现金额,单位元

@@ -3,6 +3,13 @@ package com.winhxd.b2c.common.domain.message.model;
 import lombok.Data;
 
 import java.util.Date;
+
+/**
+ * 短信消息表
+ *
+ * @author fanzhanzhan
+ * @date 2018/8/18 14:50
+ */
 @Data
 public class MessageSmsHistory {
 	private Long id;

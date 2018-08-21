@@ -13,19 +13,19 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author jujinbiao
- * @className SMSServiceImpl
+ * @className SmsServiceImpl
  * @description
  */
 @Service
-public class SMSServiceImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SMSServiceImpl.class);
+public class SmsServiceImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SmsServiceImpl.class);
 
 	@Autowired
 	private SmsServerSendUtils smsServer;
 
 	@StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
-	public void sendSMS(String smsConditionJson) {
-		LOGGER.info("消息服务->发送短信，SMSServiceImpl.sendSMS(),smsConditionJson={}",smsConditionJson);
+	public void sendSms(String smsConditionJson) {
+		LOGGER.info("消息服务->发送短信，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
 		SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
 		String mobile = smsCondition.getMobile();
 		String content = smsCondition.getContent();

@@ -16,4 +16,5 @@ public class MessageMiniTemplate {
     private String page;
     private String form_id;
     private Map<String,Object> data;
+    private String emphasis_keyword;
 }

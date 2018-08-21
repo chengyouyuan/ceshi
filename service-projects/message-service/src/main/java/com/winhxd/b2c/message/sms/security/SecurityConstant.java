@@ -95,17 +95,17 @@ public class SecurityConstant {
 	/**
 	 * 普通手机号码每日发送短信数量上限(次) security.properties 对应的属性
 	 * */ 
-	private static final String security_mobile_maxtimes = "security.mobile.maxtimes";
+	private static final String SECURITY_MOBILE_MAXTIMES = "security.mobile.maxtimes";
 
 	/**
 	 * #普通手机号码 两次发送短信时间间隔(毫秒) security.properties 对应的属性:security.mobile.timeinterval
 	 * */
-	private static final String security_mobile_timeinterval = "security.mobile.timeinterval";
+	private static final String SECURITY_MOBILE_TIMEINTERVAL = "security.mobile.timeinterval";
 
 	/**
 	 * #白名单手机内的号码 每日发送短信数量上限(次) security.properties 对应的属性：security.mobile.whitelist.maxtimes
 	 * */	
-	private static final String security_mobile_whitelist_maxtimes ="security.mobile.whitelist.maxtimes";
+	private static final String SECURITY_MOBILE_WHITELIST_MAXTIMES ="security.mobile.whitelist.maxtimes";
 
 	/**
 	 * #白名单手机号码 两次发送短信时间间隔(毫秒) security.properties 对应的属性:security.mobile.whitelist.timeinterval
@@ -266,7 +266,7 @@ public class SecurityConstant {
 	private static synchronized void setMobileMaxTimes()
 	{
 	    try {
-	        MOBILE_MAX_TIMES = Integer.parseInt(SecurityConfigurator.getInstance().getValueByKey(security_mobile_maxtimes)) ;
+	        MOBILE_MAX_TIMES = Integer.parseInt(SecurityConfigurator.getInstance().getValueByKey(SECURITY_MOBILE_MAXTIMES)) ;
         }
         catch (Exception e) {
             MOBILE_MAX_TIMES = DEFAULT_MOBILE_MAX_TIMES;
@@ -294,7 +294,7 @@ public class SecurityConstant {
     private static synchronized void setMobileTimeInterval()
     {
         try {
-            MOBILE_TIME_INTERVAL = Long.parseLong(SecurityConfigurator.getInstance().getValueByKey(security_mobile_timeinterval)) ;
+            MOBILE_TIME_INTERVAL = Long.parseLong(SecurityConfigurator.getInstance().getValueByKey(SECURITY_MOBILE_TIMEINTERVAL)) ;
         }
         catch (Exception e) {
             MOBILE_TIME_INTERVAL = DEFAULT_MOBILE_TIME_INTERVAL;
@@ -322,7 +322,7 @@ public class SecurityConstant {
     private static synchronized void setMobileWhitelistMaxTimes()
     {
         try {
-            MOBILE_WHITELIST_MAX_TIMES = Integer.parseInt(SecurityConfigurator.getInstance().getValueByKey(security_mobile_whitelist_maxtimes)) ;
+            MOBILE_WHITELIST_MAX_TIMES = Integer.parseInt(SecurityConfigurator.getInstance().getValueByKey(SECURITY_MOBILE_WHITELIST_MAXTIMES)) ;
         }
         catch (Exception e) {
             MOBILE_WHITELIST_MAX_TIMES = DEFAULT_MOBILE_WHITELIST_MAX_TIMES;

@@ -49,10 +49,8 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition) {
         ResponseResult<StoreBankrollVO> result = new ResponseResult<StoreBankrollVO>();
         StoreBankrollVO vo = new StoreBankrollVO();
-
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
-        //Long storeId = 4L;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
             vo.setId(storeBankroll.getId());
@@ -79,7 +77,6 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
-        //Long storeId = 4L;
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -105,7 +102,6 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
-        //Long storeId = 1L;
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -120,6 +116,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     }
 
 
+    
 	@Override
 	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
 		if (payStoreTransactionRecord!=null) {

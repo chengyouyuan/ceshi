@@ -1,7 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.Currency;
+import com.winhxd.b2c.common.constant.CurrencyEnum;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -10,14 +10,9 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +21,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  *
@@ -207,7 +200,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         model.setTotalAmount(condition.getTotalAmount());
         model.setRefundFee(dto.getRefundFee());
         model.setRefundAmount(condition.getRefundAmount());
-        model.setRefundFeeType(Currency.CNY.getCode());
+        model.setRefundFeeType(CurrencyEnum.CNY.getCode());
         model.setRefundDesc(condition.getRefundDesc());
         //model.setRefundAccount();
         //model.setNotifyUrl();

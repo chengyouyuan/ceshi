@@ -106,6 +106,48 @@
         "inputModel": "inputDia",
         "title": "门店",
         "configKey": "/template/module/order/order_store_list_win.json"
+      },
+      {
+        "name": "withdrawalsDate",
+        "inputModel": "double-date-picker",
+        "title": "提款时间"
+      },
+      {
+        "name": "mobile",
+        "inputModel": "input",
+        "title": "联系电话"
+      },
+      {
+        "name": "totalFee",
+        "inputModel": "range",
+        "title": "提款金额"
+      },
+      {
+        "name": "auditStatus",
+        "inputModel": "select",
+        "title": "审核状态",
+        "options": [ {
+          "label": "未处理",
+          "value": "0"
+        }, {
+          "label": "已审核",
+          "value": "1"
+        } ]
+      },
+      {
+        "name": "callbackStatus",
+        "inputModel": "select",
+        "title": "提款状态",
+        "options": [ {
+          "label": "未提款",
+          "value": "0"
+        }, {
+          "label": "已提款",
+          "value": "1"
+        }, {
+          "label": "提款失败",
+          "value": "2"
+        } ]
       }
     ]
   }

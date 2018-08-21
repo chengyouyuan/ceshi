@@ -120,7 +120,7 @@ public class ApiOrderQueryController {
             result.setCode(BusinessCode.CODE_1001);
             throw e;
         }
-        LOGGER.info("{}--结束 result={}", result);
+        LOGGER.info("{}--结束", logTitle);
         return result;
     }
 
@@ -218,7 +218,7 @@ public class ApiOrderQueryController {
         LOGGER.info("{}=--结束", logTitle);
         return result;
     }
-    
+
 
     @ApiOperation(value = "C端获取支付信息", notes = "C端获取支付信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -244,5 +244,5 @@ public class ApiOrderQueryController {
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
-    
+
 }

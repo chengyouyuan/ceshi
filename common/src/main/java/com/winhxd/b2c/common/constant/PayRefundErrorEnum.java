@@ -7,7 +7,7 @@ package com.winhxd.b2c.common.constant;
  * @Date 2018/8/16 17:35
  * @Description:
  */
-public enum PayRefundError {
+public enum PayRefundErrorEnum {
     /**
      *名称 描述 原因 解决方案
      SYSTEMERROR 接口返回错误 系统超时等 请不要更换商户退款单号，请使用相同参数再次调用API。
@@ -42,7 +42,7 @@ public enum PayRefundError {
     XML_FORMAT_ERROR("XML_FORMAT_ERROR","XML格式错误"),
     FREQUENCY_LIMITED("FREQUENCY_LIMITED","频率限制");
 
-    private PayRefundError(String code, String name){
+    private PayRefundErrorEnum(String code, String name){
         this.code = code;
         this.name = name;
     }

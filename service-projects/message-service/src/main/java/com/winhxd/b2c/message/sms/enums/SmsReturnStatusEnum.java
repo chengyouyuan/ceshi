@@ -4,6 +4,9 @@ package com.winhxd.b2c.message.sms.enums;
  * 短信发送返回状态枚举
  * */
 public enum SmsReturnStatusEnum {
+	/**
+	 * 短信发送返回状态枚举
+	 */
 	SUCCESS(0,"短信发送成功"),
 	SECURITYCHECKERROR(98,"安全检查不通过"),
 	HTTPCLIENTERROR(99,"HttpClient请求错误"),
@@ -38,7 +41,7 @@ public enum SmsReturnStatusEnum {
 	
 	private String remark;// 描述
 	
-	private SmsReturnStatusEnum( int statusCode,String remark) {
+	SmsReturnStatusEnum(int statusCode, String remark) {
         this.statusCode = statusCode;
         this.remark = remark;
     }

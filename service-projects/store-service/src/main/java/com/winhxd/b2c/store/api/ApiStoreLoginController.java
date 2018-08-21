@@ -532,7 +532,7 @@ public class ApiStoreLoginController {
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);
-		messageSendUtils.sendSMS(sMSCondition);
+		messageSendUtils.sendSms(sMSCondition);
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}

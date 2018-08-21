@@ -7,7 +7,6 @@ import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author jujinbiao
@@ -22,7 +21,7 @@ public class MessageSendUtils {
      * 发送短信
      * @param smsCondition
      */
-    public void sendSMS(SMSCondition smsCondition){
+    public void sendSms(SMSCondition smsCondition){
         sender.send(MQDestination.SMS_MESSAGE,JsonUtil.toJSONString(smsCondition));
     }
 

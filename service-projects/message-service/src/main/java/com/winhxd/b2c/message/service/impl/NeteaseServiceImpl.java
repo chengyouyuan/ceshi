@@ -78,6 +78,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		NeteaseAccountVO result = new NeteaseAccountVO();
 		Long customerId = neteaseAccountCondition.getCustomerId();
 		if (customerId == null) {
+			LOGGER.error("消息服务 ->创建云信账号异常，NeteaseServiceImpl.createNeteaseAccount(),参数错误，customerId是null");
 			throw new BusinessException(BusinessCode.CODE_701301);
 		}
 		//创建云信用户
@@ -90,6 +91,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		if (SUCCESS_CODE.equals(codeMes)) {
 			//如果云信账户存在,则更新token
 			String token = GeneratePwd.generatePwd();
+			LOGGER.info("创建云信用户，用户已存在，新密码为={}",token);
 			String accid = customerId + accidSuffix;
 			Map<String, Object> tokenMap = neteaseUtils.updateUserInfo(accid, token);
 			if (SUCCESS_CODE.equals(String.valueOf(tokenMap.get(PARAM_CODE)))) {
@@ -125,12 +127,16 @@ public class NeteaseServiceImpl implements NeteaseService {
 		//校验参数
 		int errorCode = verifyParamSend(neteaseMsgCondition);
 		if (BusinessCode.CODE_OK != errorCode) {
-			throw new BusinessException(errorCode);
+			LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
+			return;
+			//throw new BusinessException(errorCode);
 		}
 		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
 		if (account == null) {
 			//云信用户不存在
-			throw new BusinessException(BusinessCode.CODE_701403);
+			LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
+			return;
+			//throw new BusinessException(BusinessCode.CODE_701403);
 		}
 		//发送云信消息
 		Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
@@ -143,7 +149,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			}
 		} else {
 			LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
-			throw new BusinessException(BusinessCode.CODE_701404);
+			//throw new BusinessException(BusinessCode.CODE_701404);
 		}
 	}
 
@@ -155,7 +161,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
-		accid = "13_102_uat";//neteaseAccount.getAccid();
+		accid = neteaseAccount.getAccid();
 		PagedList<NeteaseMsgVO> pagedList = new PagedList<>();
 		condition.setAccid(accid);
 		Date currentDate = new Date();
@@ -182,7 +188,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
-		accid = "13_102_uat";//neteaseAccount.getAccid();
+		accid = neteaseAccount.getAccid();
 		condition.setAccid(accid);
 		int updateCount = neteaseHistoryMapper.updateReadStatusByCondition(condition);
 		if (updateCount > 0) {

@@ -3,6 +3,8 @@ package com.winhxd.b2c.admin.module.pay.controller;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
+import com.winhxd.b2c.common.domain.pay.vo.DoubleDecimal;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,26 @@ public class VerifyController {
     @RequestMapping("/verifyList")
     @ResponseBody
     public ResponseResult<?> verifyList(@RequestBody VerifySummaryListCondition condition) {
+        DoubleDate recordedDate = condition.getRecordedDate();
+        if (recordedDate != null) {
+            condition.setRecordedDateStart(recordedDate.getStart());
+            condition.setRecordedDateEnd(recordedDate.getEnd());
+        }
+        DoubleDate verifyDate = condition.getVerifyDate();
+        if (verifyDate != null) {
+            condition.setVerifyDateStart(verifyDate.getStart());
+            condition.setVerifyDateEnd(verifyDate.getEnd());
+        }
+        DoubleDecimal realPayMoney = condition.getRealPayMoney();
+        if (realPayMoney != null) {
+            condition.setRealPayMoneyStart(realPayMoney.getStart());
+            condition.setRealPayMoneyEnd(realPayMoney.getEnd());
+        }
+        DoubleDecimal realVerifyMoney = condition.getRealVerifyMoney();
+        if (realVerifyMoney != null) {
+            condition.setRealVerifyMoneyStart(realVerifyMoney.getStart());
+            condition.setRealVerifyMoneyEnd(realVerifyMoney.getEnd());
+        }
         return verifyServiceClient.verifyList(condition);
     }
 
@@ -54,6 +75,16 @@ public class VerifyController {
     @RequestMapping("/accountingDetailList")
     @ResponseBody
     public ResponseResult<?> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
+        DoubleDate recordedDate = condition.getRecordedDate();
+        if (recordedDate != null) {
+            condition.setRecordedDateStart(recordedDate.getStart());
+            condition.setRecordedDateEnd(recordedDate.getEnd());
+        }
+        DoubleDate verifyDate = condition.getVerifyDate();
+        if (verifyDate != null) {
+            condition.setVerifyDateStart(verifyDate.getStart());
+            condition.setVerifyDateEnd(verifyDate.getEnd());
+        }
         return verifyServiceClient.accountingDetailList(condition);
     }
 
@@ -96,8 +127,6 @@ public class VerifyController {
     @ResponseBody
     public ResponseResult<?> accountingDetailRestore(@RequestBody List<Map<String, Object>> list) {
         VerifyDetailCondition condition = new VerifyDetailCondition();
-        Map<String, Object> m = new HashMap<>();
-        m.put("id", 2);
         for (Map<String, Object> map : list) {
             Object id = map.get("id");
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
@@ -114,13 +143,33 @@ public class VerifyController {
     @RequestMapping("/storeWithdrawList")
     @ResponseBody
     public ResponseResult<?> storeWithdrawList(@RequestBody PayWithdrawalsListCondition condition) {
+        DoubleDate withdrawalsDate = condition.getWithdrawalsDate();
+        if (withdrawalsDate != null) {
+            condition.setWithdrawalsDateStart(withdrawalsDate.getStart());
+            condition.setWithdrawalsDateEnd(withdrawalsDate.getEnd());
+        }
+        DoubleDecimal totalFee = condition.getTotalFee();
+        if (totalFee != null) {
+            condition.setTotalFeeStart(totalFee.getStart());
+            condition.setTotalFeeEnd(totalFee.getEnd());
+        }
         return verifyServiceClient.storeWithdrawalsList(condition);
     }
 
     @ApiOperation(value = "门店提现申请导出Excel")
     @RequestMapping("/storeWithdrawalsListExport")
-    public ResponseEntity<byte[]> storeWithdrawalsListExport(PayWithdrawalsListCondition condition) {
+    public ResponseEntity<byte[]> storeWithdrawalsListExport(@RequestBody PayWithdrawalsListCondition condition) {
         condition.setIsQueryAll(true);
+        DoubleDate withdrawalsDate = condition.getWithdrawalsDate();
+        if (withdrawalsDate != null) {
+            condition.setWithdrawalsDateStart(withdrawalsDate.getStart());
+            condition.setWithdrawalsDateEnd(withdrawalsDate.getEnd());
+        }
+        DoubleDecimal totalFee = condition.getTotalFee();
+        if (totalFee != null) {
+            condition.setTotalFeeStart(totalFee.getStart());
+            condition.setTotalFeeEnd(totalFee.getEnd());
+        }
         ResponseResult<List<PayWithdrawalsVO>> responseResult = verifyServiceClient.storeWithdrawalsListExport(condition);
         if (responseResult != null && responseResult.getCode() == 0) {
             List<PayWithdrawalsVO> list = responseResult.getData();
@@ -136,7 +185,7 @@ public class VerifyController {
         ApproveStoreWithdrawalsCondition condition = new ApproveStoreWithdrawalsCondition();
         for (Map<String, Object> map : list) {
             Object id = map.get("id");
-            Object storeId = map.get("id");
+            Object storeId = map.get("storeId");
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))
                     && storeId != null && NumberUtils.isCreatable(ObjectUtils.toString(storeId))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));

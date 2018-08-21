@@ -7,7 +7,7 @@ package com.winhxd.b2c.common.constant;
  * @Date 2018/8/14 15:54
  * @Description: 货币种类枚举
  */
-public enum Currency {
+public enum CurrencyEnum {
 
     /**
      * 英镑：GBP、港币：HKD、美元：USD、新加坡元：SGD、日元：JPY、加拿大元：CAD、
@@ -49,7 +49,7 @@ public enum Currency {
     ZAR("ZAR","南非兰特"),
     CNY("CNY","人民币");
 
-    private Currency(String code, String name){
+    private CurrencyEnum(String code, String name){
         this.code = code;
         this.name = name;
     }

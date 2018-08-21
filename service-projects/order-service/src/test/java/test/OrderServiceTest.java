@@ -111,7 +111,7 @@ public class OrderServiceTest {
     
     @Test
     public void testOrderPayNotify() throws InterruptedException {
-        orderService.orderPaySuccessNotify("C18082013625541074","123123123123");
+        orderService.orderPaySuccessNotify("C18082013125329793","123123123123");
         Thread.sleep(1000000L);
     }
     

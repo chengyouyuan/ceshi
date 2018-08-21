@@ -1,7 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.TransfersChannelCodeType;
+import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
@@ -275,7 +275,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setAccountName(wxChangeDTO.getReUserName());
         //设置渠道&金额信息
         record.setChannel(TransfersChannelType.WXBALANCE.getCode());
-        record.setChannelCode(String.valueOf(TransfersChannelCodeType.WXBALANCE.getCode()));
+        record.setChannelCode(String.valueOf(TransfersChannelCodeTypeEnum.WXBALANCE.getCode()));
         //转账至零钱接口不返回金额信息, 从入参中获取
         record.setTotalFee(wxChangeDTO.getAmount());
         record.setTotalAmount(new BigDecimal(wxChangeDTO.getAmount()).divide(UNITS).setScale(2,RoundingMode.HALF_UP));

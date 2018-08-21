@@ -15,7 +15,7 @@ public class SecurityCheckUtil
 	/**
 	 * 手机号码正则表达式
 	 * */
-	private static final String regExpMobile = "^((1[3-9][0-9]))\\d{8}$";
+	private static final String REG_EXP_MOBILE = "^((1[3-9][0-9]))\\d{8}$";
 	
 	/**
 	 * 手机号码长度
@@ -92,7 +92,7 @@ public class SecurityCheckUtil
 		boolean rs = false;	
 		if (validateLength(mobile, LENGTH_MOBILE,LENGTH_MOBILE))
 		{
-			Pattern pattern = Pattern.compile(regExpMobile);
+			Pattern pattern = Pattern.compile(REG_EXP_MOBILE);
 			
 			Matcher matcher = pattern.matcher(mobile);
 			rs = matcher.matches();

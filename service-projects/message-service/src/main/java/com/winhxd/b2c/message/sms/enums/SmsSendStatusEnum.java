@@ -4,6 +4,9 @@ package com.winhxd.b2c.message.sms.enums;
  * 短信发送状态枚举
  * */
 public enum SmsSendStatusEnum {
+	/**
+	 * 发送成功与否枚举
+	 */
 	SUCCESS(1,"发送成功"),
 	FAIL(0,"发送失败"),
 	NOTSENT(2,"未发送");
@@ -12,7 +15,7 @@ public enum SmsSendStatusEnum {
 
 	private String remark;// 描述
 
-	private SmsSendStatusEnum( int code,String remark) {
+	SmsSendStatusEnum(int code, String remark) {
         this.code = code;
         this.remark = remark;
         

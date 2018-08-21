@@ -24,6 +24,10 @@ public enum MQDestination {
      */
     NETEASE_MESSAGE_DELAY(true),
     /**
+     * 订单超时未付款延时消息
+     */
+    ORDER_PAY_TIMEOUT_DELAYED(true),
+    /**
      * 订单超时未接单延时消息
      */
     ORDER_RECEIVE_TIMEOUT_DELAYED(true),

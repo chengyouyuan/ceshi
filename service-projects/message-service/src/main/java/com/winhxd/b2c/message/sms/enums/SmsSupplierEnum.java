@@ -5,6 +5,9 @@ package com.winhxd.b2c.message.sms.enums;
  */
 public enum SmsSupplierEnum {
 
+	/**
+	 * 发送平台枚举
+	 */
 	DEFUALT("yxt", "yingxt1", "Tch456789", "http://222.73.117.158/msg/", null, "创蓝短信平台混合通道"),
 
 	MANDAOI("yxt", "yingxt1", "Tch456789", "http://222.73.117.158/msg/", null, "创蓝短信平台混合通道"),
@@ -54,7 +57,7 @@ public enum SmsSupplierEnum {
 
 	private String remark;// 描述
 
-	private SmsSupplierEnum(String code, String account, String pwd, String url, SmsSupplierEnum backup, String remark) {
+	SmsSupplierEnum(String code, String account, String pwd, String url, SmsSupplierEnum backup, String remark) {
 		this.code = code;
 		this.remark = remark;
 		this.url = url;

@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.message.service.NeteaseService;
 import io.swagger.annotations.Api;
@@ -19,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author jujinbiao
@@ -49,15 +51,15 @@ public class ApiNeteaseController {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
 			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox当前用户登录的凭证无效 ");
-			//throw new BusinessException(BusinessCode.CODE_1002);
+			throw new BusinessException(BusinessCode.CODE_1002);
 		}
 		if (condition == null || condition.getTimeType() == null) {
 			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		//Long customerId = storeUser.getStoreCustomerId();
+		Long customerId = storeUser.getStoreCustomerId();
 		ResponseResult<PagedList<NeteaseMsgVO>> result = new ResponseResult<>();
-		PagedList<NeteaseMsgVO> list = neteaseService.findNeteaseMsgBox(condition, 13L);
+		PagedList<NeteaseMsgVO> list = neteaseService.findNeteaseMsgBox(condition, customerId);
 		result.setData(list);
 		return result;
 	}
@@ -75,15 +77,15 @@ public class ApiNeteaseController {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus当前用户登录的凭证无效 ");
-			//throw new BusinessException(BusinessCode.CODE_1002);
+			throw new BusinessException(BusinessCode.CODE_1002);
 		}
 		if (condition == null || condition.getAllRead() == null) {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		//Long customerId = storeUser.getStoreCustomerId();
+		Long customerId = storeUser.getStoreCustomerId();
 		ResponseResult<Void> result = new ResponseResult<>();
-		neteaseService.modifyNeteaseMsgReadStatus(condition, 13L);
+		neteaseService.modifyNeteaseMsgReadStatus(condition, customerId);
 		return result;
 	}
 }

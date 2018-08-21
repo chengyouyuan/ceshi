@@ -4,6 +4,9 @@ package com.winhxd.b2c.message.sms.enums;
  * 短信类型枚举
  */
 public enum SmsTypeEnum {
+	/**
+	 * 验证码短信
+	 */
 	VERIFICATION(1, "验证码短信"),
 	VOICE(2, "语音短信"),
 	MARKETING(3, "通知、营销短信"),
@@ -13,7 +16,7 @@ public enum SmsTypeEnum {
 
 	private String remark;// 描述
 
-	private SmsTypeEnum(int type, String remark) {
+	SmsTypeEnum(int type, String remark) {
 		this.type = type;
 		this.remark = remark;
 

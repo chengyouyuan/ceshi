@@ -31,7 +31,7 @@ public class StoreSubmitProductVO {
     @ApiModelProperty("商品图片1")
     private String prodImage1;
 
-    @ApiModelProperty("审核状态（0 待审核 ，1 审核不通过 ，2 审核通过，3 已添加）")
+    @ApiModelProperty("审核状态（0 待审核 ，1 审核通过 ，2 审核不通过，3 已添加）")
     private Integer prodStatus;
     
     @ApiModelProperty("审核备注")

@@ -25,9 +25,11 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="activity_status" jdbcType="SMALLINT" property="activityStatus" />
+    <result column="activity_status_name" jdbcType="VARCHAR" property="activityStatusName" />
     <result column="citeNum" jdbcType="INTEGER" property="citeNum" />
     <result column="storeNum" jdbcType="INTEGER" property="storeNum" />
     <result column="coupon_num_type" jdbcType="SMALLINT" property="couponNumType" />
+    <result column="coupon_num_type_name" jdbcType="VARCHAR" property="couponNumTypeName" />
     <result column="coupon_num" jdbcType="INTEGER" property="couponNum" />
     <result column="getNum" jdbcType="INTEGER" property="getNum" />
     <result column="useNum" jdbcType="INTEGER" property="useNum" />
@@ -88,15 +90,12 @@
     cts.updated
     FROM
     coupon_activity ca
-    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id
-    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
-    LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id
+    LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id AND cat.`status` = 1
+    LEFT JOIN coupon_template ct ON ct.id = cat.template_id AND ct.`status` = 1
+    LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id AND cts.`status` = 1
     WHERE
     1 = 1
     AND ca.`status` = 1
-    AND cat.`status` = 1
-    AND ct.`status` = 1
-    AND cts.`status` = 1
     <if test="condition.id != null">
       AND ca.id = #{condition.id}
     </if>
@@ -107,6 +106,14 @@
     ca.`code`,
     ca.`name`,
     ca.`activity_status`,
+    (
+    CASE
+    WHEN ca.`activity_status` = 1 THEN
+    '开启'
+    WHEN ca.`activity_status` = 2 THEN
+    '停用'
+    END
+    ) AS activity_status_name,
     (
     SELECT
     count(DISTINCT template_id)
@@ -135,6 +142,22 @@
     cat.`status` = 1
     AND cat.coupon_activity_id = ca.id
     ) AS coupon_num_type,
+    (
+    SELECT
+    (
+    CASE
+    WHEN MAX(cat.coupon_num_type) = 1 THEN
+    '优惠券总数'
+    WHEN MAX(cat.coupon_num_type) = 2 THEN
+    '每个门店优惠券数'
+    END
+    ) AS coupon_num_type_name
+    FROM
+    coupon_activity_template cat
+    WHERE
+    cat.`status` = 1
+    AND cat.coupon_activity_id = ca.id
+    ) AS coupon_num_type_name,
     (
     SELECT
     MAX(cat.coupon_num)

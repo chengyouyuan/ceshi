@@ -66,7 +66,7 @@
             }
           },
           {
-            "name": "引用优惠券",
+            "name": "引用信息",
             "icon": null,
             "event": {
               "type": "router",
@@ -113,7 +113,7 @@
         "title": "领券活动名称"
       },
       {
-        "name": "activityStatus",
+        "name": "activityStatusName",
         "title": "活动状态"
       },
       {
@@ -125,18 +125,8 @@
         "title": "配置可领券小店数量"
       },
       {
-        "name": "couponNumType",
-        "title": "优惠券数量的限制方式",
-        "isHidden": false,
-        "options": [{
-          "value": "1",
-          "label": "优惠券总数"
-        },
-          {
-            "value": "2",
-            "label": "每个门店优惠券数"
-          }
-        ]
+        "name": "couponNumTypeName",
+        "title": "配置可领券小店数量"
       },
       {
         "name": "couponNum",

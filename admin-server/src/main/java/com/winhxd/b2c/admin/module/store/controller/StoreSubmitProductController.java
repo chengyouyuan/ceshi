@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -15,6 +16,7 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCond
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -26,6 +28,8 @@ import io.swagger.annotations.ApiResponses;
  * @author: wuyuanbao
  * @date: 2018年8月14日 下午3:48:27
  */
+@Api(tags = "门店提报商品管理")
+@RestController
 public class StoreSubmitProductController {
 	private static final Logger logger = LoggerFactory.getLogger(StoreSubmitProductController.class);
 	@Autowired

@@ -35,7 +35,7 @@
         "fixed": "left"
       },
       {
-        "name": "prodStatus",
+        "name": "prodStatusStr",
         "title": "状态"
       
       },
@@ -45,6 +45,7 @@
       },
       {
         "name": "prodImage1",
+        "type": "image",
         "title": "商品图片"
       },
       {
@@ -103,25 +104,26 @@
       {
         "name": "prodStatus",
         "inputModel": "select",
+        "title": "审核状态",
+        "placeholder": "请选择",
         "options":[
 			{
-				"lable":"待审核",
+				"label":"待审核",
 				"value":"0"
 			},
 			{
-				"lable":"审核不通过",
+				"label":"审核通过",
 				"value":"1"
 			},
 			{
-				"lable":"审核通过",
+				"label":"审核未通过",
 				"value":"2"
 			},
 			{
-				"lable":"已添加",
+				"label":"已添加",
 				"value":"3"
 			}
 		],
-        "placeholder": "请选择",
         "isHidden": false
       },
       {

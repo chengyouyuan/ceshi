@@ -1776,29 +1776,34 @@ public class CommonOrderServiceImpl implements OrderService {
         neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
         //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款
         String msgContent = "";
+        NeteaseMsg neteaseMsg = new NeteaseMsg();
         switch (type) {
             case 1:
                 msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
+                neteaseMsg.setAudioType(1);
                 break;
             case 2:
                 msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
+                neteaseMsg.setAudioType(1);
                 break;
             case 3:
                 //3天
                 msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
+                neteaseMsg.setAudioType(1);
                 break;
             case 4:
                 //【已退款】手机尾号8513黄小姐退款已到账
                 msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
+                neteaseMsg.setAudioType(0);
                 break;
             default:
         }
         if (StringUtils.isBlank(msgContent)) {
             return;
         }
-        NeteaseMsg neteaseMsg = new NeteaseMsg();
+
         neteaseMsg.setMsgContent(msgContent);
-        neteaseMsg.setAudioType(0);
+        neteaseMsg.setAudioType(1);
         neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
         messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
     }

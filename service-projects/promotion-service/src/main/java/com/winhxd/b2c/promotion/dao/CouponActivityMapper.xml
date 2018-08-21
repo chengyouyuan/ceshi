@@ -102,7 +102,7 @@
     </if>
   </select>
   <select id="selectCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
-    SELECT
+    SELECT DISTINCT
     ca.id,
     ca.`code`,
     ca.`name`,
@@ -114,23 +114,43 @@
     coupon_activity_template
     WHERE
     coupon_activity_id = ca.id
+    AND STATUS = 1
     ) AS citeNum,
     (
     SELECT
-    count(DISTINCT store_id)
+    count(DISTINCT casc.store_id)
     FROM
-    coupon_activity_store_customer
+    coupon_activity_store_customer casc
+    LEFT JOIN coupon_activity_template cat ON casc.coupon_activity_template_id = cat.id
     WHERE
-    coupon_activity_template_id = cat.id
+    casc.`status` = 1
+    AND cat.coupon_activity_id = ca.id
     ) AS storeNum,
-    cat.coupon_num_type,
-    cat.coupon_num,
+    (
+    SELECT
+    MAX(cat.coupon_num_type)
+    FROM
+    coupon_activity_template cat
+    WHERE
+    cat.`status` = 1
+    AND cat.coupon_activity_id = ca.id
+    ) AS coupon_num_type,
+    (
+    SELECT
+    MAX(cat.coupon_num)
+    FROM
+    coupon_activity_template cat
+    WHERE
+    cat.`status` = 1
+    AND cat.coupon_activity_id = ca.id
+    ) AS coupon_num,
     (
     SELECT
     count(cts.id)
     FROM
     coupon_template_send cts
     LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
+    AND cat.`status` = 1
     WHERE
     cat.coupon_activity_id = ca.id
     ) AS getNum,
@@ -140,6 +160,7 @@
     FROM
     coupon_template_send cts
     LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
+    AND cat.`status` = 1
     WHERE
     cat.coupon_activity_id = ca.id
     AND cts. STATUS = '1'
@@ -150,14 +171,31 @@
     FROM
     coupon_template_send cts
     LEFT JOIN coupon_activity_template cat ON cts.template_id = cat.template_id
+    AND cat.`status` = 1
     WHERE
     cat.coupon_activity_id = ca.id
     AND cts. STATUS = '0'
     ) AS revocationNum,
     ca.activity_start,
     ca.activity_end,
-    cat.start_time AS coupon_start_time,
-    cat.end_time AS coupon_end_time,
+    (
+    SELECT
+    MAX(cat.start_time)
+    FROM
+    coupon_activity_template cat
+    WHERE
+    cat.`status` = 1
+    AND cat.coupon_activity_id = ca.id
+    ) AS coupon_start_time,
+    (
+    SELECT
+    MAX(cat.end_time)
+    FROM
+    coupon_activity_template cat
+    WHERE
+    cat.`status` = 1
+    AND cat.coupon_activity_id = ca.id
+    ) AS coupon_end_time,
     ca.created_by_name,
     ca.created,
     ca.updated_by_name,
@@ -165,12 +203,18 @@
     FROM
     coupon_activity ca
     LEFT JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id
+    AND cat.`status` = 1
     LEFT JOIN coupon_template ct ON ct.id = cat.template_id
+    AND ct.`status` = 1
     LEFT JOIN coupon_activity_store_customer casc ON casc.coupon_activity_template_id = cat.id
+    AND casc.`status` = 1
+    LEFT JOIN customer_user_info cui ON cui.customer_id = casc.customer_id
+    AND cui.`status` = 1
     LEFT JOIN store_user_info sui ON sui.id = casc.store_id
+    AND sui.store_status = 1
     WHERE
     1 = 1
-    AND ca.`status` = '1'
+    AND ca.`status` = 1
     <if test="condition.type == 1">
       AND ca.`type` = '1'
     </if>

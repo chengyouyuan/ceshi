@@ -4,6 +4,7 @@
 package com.winhxd.b2c.message.sms.process;
 
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
+import com.winhxd.b2c.message.sms.enums.SignatureEnum;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ public class HxrtSmsProcess extends BaseSmsProcess {
     public int sendMessage(MessageSmsHistory smsSend) {
         HxrtSmsProcess tt = new HxrtSmsProcess();
         try {
-            String ret = tt.sendMsg("", smsSend.getTelephone(), smsSend.getContent() + "【惠下单】");
+            String ret = tt.sendMsg("", smsSend.getTelephone(), smsSend.getContent() + SignatureEnum.RETAIL.getRemark());
             String[] results = ret.split("&");
             if (results != null) {
                 for (int i = 0; i < results.length; i++) {
@@ -170,12 +171,12 @@ public class HxrtSmsProcess extends BaseSmsProcess {
         return strRes;
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         HxrtSmsProcess tt = new HxrtSmsProcess();
         try {
             String ret = tt.sendMsg("", "18701243491",
                 "测试短信发送" + "【惠赢天下】");
-            String results[] = ret.split("&");
+            String[] results = ret.split("&");
             if (results != null) {
                 for (int i = 0; i < results.length; i++) {
 //					String result = results[i];

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -208,7 +209,8 @@ public class ApiStoreProductManageController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_101301, message = "参数无效！"),
-            @ApiResponse(code = BusinessCode.CODE_101302, message = "部分skuCode无效！") })
+            @ApiResponse(code = BusinessCode.CODE_101302, message = "部分skuCode无效！"),
+            @ApiResponse(code = BusinessCode.CODE_101303, message = "价格无效！")})
     @PostMapping(value = "1013/v1/storeProdOperate", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> storeProdOperate(@RequestBody ProdOperateCondition condition) {
         ResponseResult<Void> responseResult = new ResponseResult<>();
@@ -234,6 +236,15 @@ public class ApiStoreProductManageController {
         List<String> skuCodes = new ArrayList<>();
         String[] skuCodeArray = new String[prodInfo.size()];
         for (int i = 0; i < prodInfo.size(); i++) {
+            BigDecimal sellMoney=prodInfo.get(i).getSellMoney();
+            //判断价格是否无效
+            if(sellMoney!=null){
+                int r=sellMoney.compareTo(BigDecimal.ZERO); 
+                if(r<=0){
+                    responseResult = new ResponseResult<>(BusinessCode.CODE_101303);
+                    return responseResult;  
+                }
+            }
             skuCodes.add(prodInfo.get(i).getSkuCode());
             skuCodeArray[i] = prodInfo.get(i).getSkuCode();
         }

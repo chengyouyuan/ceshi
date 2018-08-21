@@ -36,7 +36,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<ProductMsgVO>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProductMsg/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProductMsg", method = RequestMethod.POST)
 	ResponseResult<ProductMsgVO> getProductMsg(@RequestBody ProductConditionByPage condition);
 	
 	/**
@@ -47,7 +47,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<ProductSkuMsgVO>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProductSkuMsg/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProductSkuMsg", method = RequestMethod.POST)
 	ResponseResult<ProductSkuMsgVO> getProductSkuMsg(ProductConditionByPage condition);
 	
 	/**
@@ -58,7 +58,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<PagedList<ProductVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProductsByPage/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProductsByPage", method = RequestMethod.POST)
 	ResponseResult<PagedList<ProductVO>> getProductsByPage(@RequestBody ProductConditionByPage condition);
 	
 	/**
@@ -69,7 +69,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<PagedList<ProductSkuVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProductSkusByPage/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProductSkusByPage", method = RequestMethod.POST)
 	ResponseResult<PagedList<ProductSkuVO>> getProductSkusByPage(@RequestBody ProductConditionByPage condition);
 	
 	/**
@@ -80,7 +80,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<List<ProductVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProducts/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProducts", method = RequestMethod.POST)
 	ResponseResult<List<ProductVO>> getProducts(@RequestBody ProductCondition condition);
 	
 	/**
@@ -91,7 +91,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<List<ProductSkuVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getProductSkus/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getProductSkus", method = RequestMethod.POST)
 	ResponseResult<List<ProductSkuVO>> getProductSkus(@RequestBody ProductCondition condition);
 	 
 	
@@ -104,7 +104,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<List<ProductSkuVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getBrandInfo/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getBrandInfo", method = RequestMethod.POST)
 	ResponseResult<List<BrandVO>> getBrandInfo(@RequestBody List<String> brandCodes);
 	
 	/**	
@@ -116,7 +116,7 @@ public interface ProductServiceClient {
 	 * @return: ResponseResult<List<BrandVO>>      
 	 * @throws
 	 */
-	@RequestMapping(value = "/product/v1/getBrandInfoByPage/", method = RequestMethod.POST)
+	@RequestMapping(value = "/product/v1/getBrandInfoByPage", method = RequestMethod.POST)
 	ResponseResult<PagedList<BrandVO>> getBrandInfoByPage(@RequestBody BrandCondition condition);
 }
 

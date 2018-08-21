@@ -176,7 +176,12 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
     
     @Override
     public void orderInfoAfterConfirmSuccessProcess(OrderInfo orderInfo) {
-        logger.info("{},orderNo={} 订单确认成功后无业务处理", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        // 发送延时MQ信息，处理超时未付款 取消操作
+        logger.info("{},orderNo={} 发送延时MQ信息，处理超时未付款 取消操作 开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        int delayMilliseconds = OrderOperateTime.ORDER_NEED_PAY_TIME_BY_MILLISECONDS;
+        stringMessageSender.send(MQDestination.ORDER_PAY_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
+        logger.info("{},orderNo={} 发送延时MQ信息，处理超时未付款 取消操作 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        logger.info("{},orderNo={} 订单确认成功后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
     }
 
     @Override

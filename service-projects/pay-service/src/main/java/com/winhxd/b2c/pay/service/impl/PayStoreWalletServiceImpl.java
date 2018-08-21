@@ -2,6 +2,16 @@ package com.winhxd.b2c.pay.service.impl;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
+import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.service.PayStoreCashService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +22,14 @@ import org.springframework.stereotype.Service;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
 import com.winhxd.b2c.pay.service.PayStoreWalletService;
+
+import java.math.BigDecimal;
 
 @Service
 public class PayStoreWalletServiceImpl implements PayStoreWalletService{
@@ -27,6 +40,12 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	
 	@Resource
 	private Cache redisClusterCache;
+
+    @Autowired
+    private PayService payService;
+
+    @Autowired
+    private PayStoreCashService payStoreCashService;
 
 	@Override
 	public int savePayStoreWallet(PayStoreWalletCondition condition) {
@@ -66,10 +85,16 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
-		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+condition.getStoreId());
+//    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    ///////////////////测试假数据///////////////////////
+    	StoreUser currentStoreUser = new StoreUser();
+    	currentStoreUser.setBusinessId(1l);
+   ////////////////////////////////////////////////////
+    	
+		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		System.out.print("微信验证码是否存在-----------"+exists);
 		if(exists){
-			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+condition.getStoreId());
+			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 			if(!verificationCode.equals(code)){
 				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
 				res = BusinessCode.CODE_610019;
@@ -87,5 +112,35 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 			throw new BusinessException(BusinessCode.CODE_610031);
 		}
 		return res;
+    }
+
+    /**
+     * 订单闭环，添加交易记录
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
+    @EventMessageListener(value = EventTypeHandler.PAY_STORE_TRANSACTION_RECORD_HANDLER, concurrency = "3-6")
+    public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
+        //计算门店资金
+        //手续费
+        BigDecimal cmmsAmt = orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
+        //门店应得金额（订单总额-手续费）
+        BigDecimal money = orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
+        UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
+        condition.setOrderNo(orderNo);
+        condition.setStoreId(orderInfo.getStoreId());
+        condition.setMoney(money);
+        condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
+        payService.updateStoreBankroll(condition);
+        //添加交易记录
+        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
+        payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
+        payStoreTransactionRecord.setOrderNo(orderNo);
+        payStoreTransactionRecord.setType(StoreTransactionStatusEnum.ORDER_ENTRY.getStatusCode());
+        payStoreTransactionRecord.setMoney(money);
+        payStoreTransactionRecord.setRate(WXCalculation.FEE_RATE_OF_WX);
+        payStoreTransactionRecord.setCmmsAmt(cmmsAmt);
+        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
     }
 }

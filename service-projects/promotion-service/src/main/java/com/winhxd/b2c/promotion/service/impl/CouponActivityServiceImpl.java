@@ -26,10 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  *
@@ -422,7 +419,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             throw new BusinessException(BusinessCode.CODE_503501,"停止活动失败");
         }
         //撤销已发放的优惠券
-        List<Long> longList = null;
+        List<Long> longList = new ArrayList<>();
         longList.add(condition.getId());
         RevokeCouponCodition couponCondition = new RevokeCouponCodition();
         couponCondition.setSendIds(longList);

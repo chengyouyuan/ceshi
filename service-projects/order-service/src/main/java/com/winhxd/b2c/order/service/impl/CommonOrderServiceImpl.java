@@ -64,6 +64,7 @@ import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -184,7 +185,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 创建后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("创建订单结束orderNo：{}", orderInfo.getOrderNo());
         //注册订单创建成功事务提交后相关事件
-        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnerble(orderInfo), new SubmitFailureProcessRunnerble(orderInfo, orderCreateCondition.getCouponIds()));
+        registerProcessAfterTransSuccess(new SubmitSuccessProcessRunnable(orderInfo), new SubmitFailureProcessRunnable(orderInfo, orderCreateCondition.getCouponIds()));
         return orderInfo;
     }
 
@@ -224,7 +225,7 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单orderNo：{} 支付后相关业务操作执行开始", orderInfo.getOrderNo());
         getOrderHandler(orderInfo.getValuationType()).orderFinishPayProcess(orderInfo);
         //订单支付成功事务提交后相关事件
-        registerProcessAfterTransSuccess(new PaySuccessProcessRunnerble(orderInfo), null);
+        registerProcessAfterTransSuccess(new PaySuccessProcessRunnable(orderInfo), null);
         logger.info("订单orderNo：{} 支付后相关业务操作执行结束", orderInfo.getOrderNo());
         logger.info("订单orderNo={}，paymentSerialNum={} 支付通知处理结束.", orderNo, paymentSerialNum);
     }
@@ -586,21 +587,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         orderChangeLogService.orderChange(order.getOrderNo(), oldOrderJsonString, newOrderJsonString, oldStatus,
                                 order.getOrderStatus(), customer.getCustomerId(), customerUserInfoVO.getNickName(), order.getCancelReason(), MainPointEnum.MAIN);
                         logger.info("C端申请退款-添加流转日志结束-订单号={}", orderNo);
-                        //发送云信--手机尾号8513顾客申请退款
-                        String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
-                        String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
-                        //发送MQ延时消息
-                        logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                        //获取两天后的时间
-                        Calendar time2DaysAfter = Calendar.getInstance();
-                        time2DaysAfter.add(Calendar.DATE, 2);
-                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
-                        //获取3天后-1小时
-                        Calendar time1HourAfter = Calendar.getInstance();
-                        time1HourAfter.add(Calendar.DATE, 3);
-                        long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
-                        stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
-                        logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
+                        registerProcessAfterTransSuccess(new CustomerApplyRefundSuccessRunnable(order, customerUserInfoVO), null);
                     } else {
                         throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单取消-C端申请退款不成功 订单号={}", orderNo));
                     }
@@ -714,7 +701,7 @@ public class CommonOrderServiceImpl implements OrderService {
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getValuationType()).orderInfoConfirmProcess(orderInfo);
         //注册确认订单成功相关操作
-        registerProcessAfterTransSuccess(new OrderConfirmSuccessRunnerble(orderInfo), null);
+        registerProcessAfterTransSuccess(new OrderConfirmSuccessRunnable(orderInfo), null);
         logger.info("门店确认订单结束：condition={}", condition);
     }
 
@@ -745,8 +732,14 @@ public class CommonOrderServiceImpl implements OrderService {
         if (condition.getOrderTotal().compareTo(orderInfo.getOrderTotalMoney()) == 0) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY_NO_CHANGE);
         }
-        //TODO 调用支付中心 判断当前订单是否有支付信息
-        if (1 != 1) {
+        //调用支付中心 判断当前订单是否有支付信息
+        OrderIsPayCondition orderIsPayCondition = new OrderIsPayCondition();
+        orderIsPayCondition.setOrderNo(orderInfo.getOrderNo());
+        ResponseResult<Boolean> orderPayRet = payServiceClient.orderIsPay(orderIsPayCondition);
+        if (orderPayRet == null || orderPayRet.getCode() != BusinessCode.CODE_OK) {
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
+        }
+        if (orderPayRet.getData() == null || !orderPayRet.getData()) {
             //如果已有支付单存在，则不允许修改支付价格
             throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
         }
@@ -794,7 +787,36 @@ public class CommonOrderServiceImpl implements OrderService {
                 orderCancel(orderInfo, "超时未接单取消", orderInfo.getCustomerId(), "sys", 5);
             }
 
-            registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnerable(orderInfo), null);
+            registerProcessAfterTransSuccess(new ReceiveTimeOutProcessSuccessRunnable(orderInfo), null);
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @StringMessageListener(value = MQHandler.ORDER_PAY_TIMEOUT_DELAYED_HANDLER)
+    public void orderPayTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        String lockKey = CacheName.CACHE_KEY_MODIFY_ORDER + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+            if (orderInfo == null) {
+                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+            }
+            if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_PAY.getStatusCode()) {
+                // 如果非 带确认状态，直接返回
+                logger.info("订单：{} 状态：{} 非待付款状态，无需进行超时取消操作", orderNo,
+                        OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+                return;
+            }
+            //取消
+            orderCancel(orderInfo, "超时未付款取消", orderInfo.getCustomerId(), "sys", 5);
+            registerProcessAfterTransSuccess(new PayTimeOutProcessSuccessRunnable(orderInfo), null);
         } finally {
             lock.unlock();
         }
@@ -826,7 +848,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 //退款
                 orderApplyRefund(orderInfo, "超时未接单退款", null, "sys");
             }
-            registerProcessAfterTransSuccess(new PickupTimeOutProcessSuccessRunnerable(orderInfo), null);
+            registerProcessAfterTransSuccess(new PickupTimeOutProcessSuccessRunnable(orderInfo), null);
         } finally {
             lock.unlock();
         }
@@ -870,7 +892,7 @@ public class CommonOrderServiceImpl implements OrderService {
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJsonString, newOrderJsonString, orderInfo.getOrderStatus(),
                 orderInfo.getOrderStatus(), orderInfo.getStoreId(), null,
                 OrderStatusEnum.FINISHED.getStatusDes(), MainPointEnum.MAIN);
-        registerProcessAfterTransSuccess(new OrderCompleteProcessRunnerble(orderInfo), null);
+        registerProcessAfterTransSuccess(new OrderCompleteProcessRunnable(orderInfo), null);
         logger.info("订单：orderNo={} 自提收货结束", condition.getOrderNo());
     }
 
@@ -899,6 +921,8 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
         orderInfo.setCreatedBy(orderCreateCondition.getCustomerId());
+        orderInfo.setUpdated(new Date());
+        orderInfo.setUpdatedBy(orderCreateCondition.getCustomerId());
         orderInfo.setCustomerId(orderCreateCondition.getCustomerId());
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
@@ -1203,9 +1227,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 hashCodeV = hashCodeV >> 1;
             }
             String orderNoDateTimeFormatter = "yyMMddHH";
-            // 0 代表前面补充0       
-            // 9 代表长度为4       
-            // d 代表参数为正数型 
+            // 0 代表前面补充0
+            // 9 代表长度为4
+            // d 代表参数为正数型
             String randomFormat = "%09d";
             orderNo = "C" + DateFormatUtils.format(date, orderNoDateTimeFormatter) + String.format(randomFormat, hashCodeV);
         } while (!checkOrderNoAvailable(orderNo, date));
@@ -1243,11 +1267,11 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月8日 下午3:16:37
      */
-    private class PaySuccessProcessRunnerble implements Runnable {
+    private class PaySuccessProcessRunnable implements Runnable {
 
         private OrderInfo orderInfo;
 
-        public PaySuccessProcessRunnerble(OrderInfo orderInfo) {
+        public PaySuccessProcessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
@@ -1265,11 +1289,11 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月8日 下午3:16:17
      */
-    private class SubmitSuccessProcessRunnerble implements Runnable {
+    private class SubmitSuccessProcessRunnable implements Runnable {
 
         private OrderInfo orderInfo;
 
-        public SubmitSuccessProcessRunnerble(OrderInfo orderInfo) {
+        public SubmitSuccessProcessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
@@ -1287,13 +1311,13 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月8日 下午3:16:17
      */
-    private class SubmitFailureProcessRunnerble implements Runnable {
+    private class SubmitFailureProcessRunnable implements Runnable {
 
         private OrderInfo orderInfo;
 
         private Long[] couponIds;
 
-        public SubmitFailureProcessRunnerble(OrderInfo orderInfo, Long[] couponIds) {
+        public SubmitFailureProcessRunnable(OrderInfo orderInfo, Long[] couponIds) {
             super();
             this.orderInfo = orderInfo;
             this.couponIds = couponIds;
@@ -1326,10 +1350,10 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月8日 下午3:16:17
      */
-    private class OrderCompleteProcessRunnerble implements Runnable {
+    private class OrderCompleteProcessRunnable implements Runnable {
         private OrderInfo orderInfo;
 
-        public OrderCompleteProcessRunnerble(OrderInfo orderInfo) {
+        public OrderCompleteProcessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
@@ -1394,11 +1418,11 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月8日 下午3:16:17
      */
-    private class OrderConfirmSuccessRunnerble implements Runnable {
+    private class OrderConfirmSuccessRunnable implements Runnable {
 
         private OrderInfo orderInfo;
 
-        public OrderConfirmSuccessRunnerble(OrderInfo orderInfo) {
+        public OrderConfirmSuccessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
@@ -1411,20 +1435,62 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
+     * 订单 超时未付款处理成功
+     *
+     * @author wangbin
+     * @date 2018年8月13日 下午3:16:17
+     */
+    private class PayTimeOutProcessSuccessRunnable implements Runnable {
+
+        private OrderInfo orderInfo;
+
+        public PayTimeOutProcessSuccessRunnable(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+
+        @Override
+        public void run() {
+            //给用户发信息
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_PAY_TIMEOUT_MSG_4_CUSTOMER;
+                OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
+                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
+                        "...";
+                String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName(KEYWORD1);
+                data.setValue(prodTitles);
+                data.setKeyName(KEYWORD2);
+                data.setValue(orderTotal);
+                data.setKeyName(KEYWORD3);
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.STORE_CANCEL_ORDER.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
+            } catch (Exception e) {
+                logger.error("订单未接单超时给用户发送消息失败：", e);
+            }
+        }
+    }
+    
+    /**
      * 订单门店 超时未确认处理成功
      *
      * @author wangbin
      * @date 2018年8月13日 下午3:16:17
      */
-    private class ReceiveTimeOutProcessSuccessRunnerable implements Runnable {
-
+    private class ReceiveTimeOutProcessSuccessRunnable implements Runnable {
+        
         private OrderInfo orderInfo;
-
-        public ReceiveTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
+        
+        public ReceiveTimeOutProcessSuccessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
-
+        
         @Override
         public void run() {
             //给用户发信息
@@ -1458,11 +1524,11 @@ public class CommonOrderServiceImpl implements OrderService {
      * @author wangbin
      * @date 2018年8月13日 下午3:16:17
      */
-    private class PickupTimeOutProcessSuccessRunnerable implements Runnable {
+    private class PickupTimeOutProcessSuccessRunnable implements Runnable {
 
         private OrderInfo orderInfo;
 
-        public PickupTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
+        public PickupTimeOutProcessSuccessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
@@ -1545,6 +1611,61 @@ public class CommonOrderServiceImpl implements OrderService {
                 sendMsgToStore(4, orderInfo);
             } catch (Exception e) {
                 logger.error("订单退款完成给门店发送消息失败orderNo={}", orderInfo.getOrderNo());
+            }
+        }
+    }
+
+    /**
+     * C端用户申请退款事务提交成功后 处理
+     *
+     * @author pangjianhua
+     * @date 2018年8月21日 下午3:16:17
+     */
+    private class CustomerApplyRefundSuccessRunnable implements Runnable {
+
+        private OrderInfo orderInfo;
+        private CustomerUserInfoVO customerUserInfoVO;
+
+        public CustomerApplyRefundSuccessRunnable(OrderInfo orderInfo, CustomerUserInfoVO customerUserInfoVO) {
+            super();
+            this.orderInfo = orderInfo;
+            this.customerUserInfoVO = customerUserInfoVO;
+        }
+
+        @Override
+        public void run() {
+            String orderNo = orderInfo.getOrderNo();
+            try {
+                //发送云信--手机尾号8513顾客申请退款
+                String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
+                String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
+                NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
+                neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
+                NeteaseMsg neteaseMsg = new NeteaseMsg();
+                neteaseMsg.setMsgContent(msgContent);
+                neteaseMsg.setAudioType(1);
+                neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
+                messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+            } catch (Exception e) {
+                logger.error("C端申请退款发送云信失败orderNo=" + orderNo, e);
+            }
+            try {
+                //发送MQ延时消息
+                logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
+                //获取两天后的时间
+                Calendar time2DaysAfter = Calendar.getInstance();
+                time2DaysAfter.add(Calendar.DATE, 2);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
+                //获取3天后-1小时
+                Calendar time1HourAfter = Calendar.getInstance();
+                time1HourAfter.add(Calendar.DATE, 3);
+                long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
+                //发送3天后超时消息
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, (int) time1HourAfter.getTimeInMillis());
+                logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
+            } catch (Exception e) {
+                logger.error("C端申请退款发送消息失败orderNo={}", orderInfo.getOrderNo());
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.winhxd.b2c.pay;
 
-import com.winhxd.b2c.common.constant.TransfersChannelCodeType;
+import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
@@ -23,8 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * TransfersTest
@@ -91,7 +89,7 @@ public class TransfersTest {
         toWxBankCondition.setPartnerTradeNo("T18081717643679377");
         toWxBankCondition.setAccount("6217000210004907167");
         toWxBankCondition.setAccountName("李中华");
-        toWxBankCondition.setChannelCode(TransfersChannelCodeType.CCB);
+        toWxBankCondition.setChannelCode(TransfersChannelCodeTypeEnum.CCB);
         toWxBankCondition.setTotalAmount(new BigDecimal("1.00"));
         toWxBankCondition.setDesc("研发用户提现demo.");
         toWxBankCondition.setOperaterID("8");

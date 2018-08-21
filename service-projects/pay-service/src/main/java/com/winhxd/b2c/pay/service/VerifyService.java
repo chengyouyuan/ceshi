@@ -8,10 +8,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
@@ -55,9 +52,6 @@ public class VerifyService {
     @Autowired
     private PayService payService;
 
-    @Autowired
-    private PayStoreCashService payStoreCashService;
-
     /**
      * 订单支付成功事件
      *
@@ -70,7 +64,7 @@ public class VerifyService {
     }
 
     /**
-     * 订单闭环事件
+     * 订单闭环，费用记账
      *
      * @param orderNo
      * @param orderInfo
@@ -78,26 +72,6 @@ public class VerifyService {
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
-        //计算门店资金
-        //手续费
-        BigDecimal cmmsAmt = orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
-        //门店应得金额（订单总额-手续费）
-        BigDecimal money = orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
-        UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
-        condition.setOrderNo(orderNo);
-        condition.setStoreId(orderInfo.getStoreId());
-        condition.setMoney(money);
-        condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
-        payService.updateStoreBankroll(condition);
-        //添加交易记录
-        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
-        payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
-        payStoreTransactionRecord.setOrderNo(orderNo);
-        payStoreTransactionRecord.setType(StoreTransactionStatusEnum.ORDER_ENTRY.getStatusCode());
-        payStoreTransactionRecord.setMoney(money);
-        payStoreTransactionRecord.setRate(WXCalculation.FEE_RATE_OF_WX);
-        payStoreTransactionRecord.setCmmsAmt(cmmsAmt);
-        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
     }
 
     /**
@@ -399,24 +373,26 @@ public class VerifyService {
         if (!condition.getIsQueryAll()) {
             PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
-        Set<Long> storeSet = new HashSet<>();
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
-        for (PayWithdrawalsVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
-        }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (PayWithdrawalsVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (PayWithdrawalsVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (PayWithdrawalsVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }

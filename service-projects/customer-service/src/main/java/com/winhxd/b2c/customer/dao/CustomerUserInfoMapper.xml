@@ -98,6 +98,12 @@
       <if test="storeName != null and storeName != ''">
         and sui.store_name like CONCAT('%',  #{storeName,jdbcType=VARCHAR}, '%')
       </if>
+      <if test="bindStatus != null and bindStatus == 1">
+        and sui.store_name is not null
+      </if>
+        <if test="bindStatus != null and bindStatus == 0">
+          and sui.store_name is  null
+        </if>
       </where>
   </select>
 

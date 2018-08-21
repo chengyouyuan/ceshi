@@ -261,13 +261,13 @@
     from pay_store_bankroll_log
     where 1=1
     <if test="orderNo != null and orderNo != ''">
-      and order_no = #{orderNo,jdbcType=CHAR},
+      and order_no = #{orderNo,jdbcType=CHAR}
      </if>
      <if test="withdrawalsNo != null and withdrawalsNo != ''">
-       and withdrawals_no = #{withdrawalsNo,jdbcType=CHAR},
+       and withdrawals_no = #{withdrawalsNo,jdbcType=CHAR}
      </if>
      <if test="moneyType != null">
-       and money_type = #{moneyType,jdbcType=SMALLINT},
+       and money_type = #{moneyType,jdbcType=SMALLINT}
      </if>
     and store_id = #{storeId,jdbcType=BIGINT} 
     and status=1

@@ -632,19 +632,23 @@ public class PayServiceImpl implements PayService{
 		String createdByName=order.getUpdatedByName();
 		if (totalAmount==null) {
 			logger.info(log+"--订单金额为空");
-			throw new BusinessException(BusinessCode.CODE_600204);
+//			throw new BusinessException(BusinessCode.CODE_600204);
+			return;
 		}
 		if (refundAmount==null) {
 			logger.info(log+"--退款金额为空");
-			throw new BusinessException(BusinessCode.CODE_600205);
+//			throw new BusinessException(BusinessCode.CODE_600205);
+			return;
 		}
 		if (createdBy==null) {
 			logger.info(log+"--创建人为空");
-			throw new BusinessException(BusinessCode.CODE_600206);
+//			throw new BusinessException(BusinessCode.CODE_600206);
+			return;
 		}
 		if (StringUtils.isBlank(createdByName)) {
 			logger.info(log+"--创建人姓名为空");
-			throw new BusinessException(BusinessCode.CODE_600207);
+//			throw new BusinessException(BusinessCode.CODE_600207);
+			return;
 		}
 		logger.info(log+"--参数"+order.toString());
 		PayRefundCondition payRefund = new PayRefundCondition();

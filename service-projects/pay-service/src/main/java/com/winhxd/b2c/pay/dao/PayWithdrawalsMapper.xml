@@ -207,6 +207,9 @@
       <if test="flowDirectionName != null">
         #{flowDirectionName,jdbcType=VARCHAR},
       </if>
+      <if test="swiftCode != null">
+        #{swiftCode,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>

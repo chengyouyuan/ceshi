@@ -362,7 +362,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return result;
 	}
 
-	//审核当前用户提现信息
+	//审核当前用户提现信息 返回 当前 提现的手续费 和 实际到账金额
 	public ResponseResult<PayStoreApplyWithdrawVO> checkStorWithdrawalInfo(PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<PayStoreApplyWithdrawVO> result = new ResponseResult<PayStoreApplyWithdrawVO>();
 //		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();

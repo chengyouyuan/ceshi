@@ -80,7 +80,7 @@
         "title": "提款手机号"
       },
       {
-        "name": "updated",
+        "name": "timeEnd",
         "title": "提款时间"
       },
       {

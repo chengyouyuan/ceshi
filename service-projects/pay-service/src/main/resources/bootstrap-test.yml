@@ -2,3 +2,9 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka/
+
+pay:
+  withdrawal:
+    rate: 0.001
+    #提现的最大金额
+    maxmoney: 20000

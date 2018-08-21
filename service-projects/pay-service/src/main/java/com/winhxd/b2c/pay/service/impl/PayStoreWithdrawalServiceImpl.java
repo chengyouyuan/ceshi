@@ -462,7 +462,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
         	//判断提现金额是否大于可提现金额
         	BigDecimal total = storeBankroll.getPresentedMoney();
     		if(totalFee.compareTo(total) == 1){
-    			LOGGER.info(log+"提现金额大于可提现金额");
+    			LOGGER.info(log+"可提现金额不足");
     			throw new BusinessException(BusinessCode.CODE_611104);
     		}
         }

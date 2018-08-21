@@ -512,7 +512,7 @@ public final class BusinessCode {
     @ApiModelProperty("提现计算手续费 金额为空")
     public static final int CODE_611103 = 611103;
     
-    @ApiModelProperty("提现计算手续费 提现金额大于可提现金额")
+    @ApiModelProperty("提现计算手续费 可提现金额不足")
     public static final int CODE_611104 = 611104;
 
     @ApiModelProperty("云信账户异常")

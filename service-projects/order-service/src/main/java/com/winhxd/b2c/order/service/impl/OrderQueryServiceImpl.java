@@ -152,19 +152,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                     MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
         }
         logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
-        StoreOrderSalesSummaryVO orderSalesSummaryVO = null;
-        // 从缓存中获取
-        String summaryInfoStr = cache.hget(OrderUtil.getStoreOrderSalesSummaryKey(storeId),
-                OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime));
-        if (StringUtils.isNotBlank(summaryInfoStr)) {
-            logger.info("获取到缓存订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime,
-                    endDateTime);
-            orderSalesSummaryVO = JsonUtil.parseJSONObject(summaryInfoStr, StoreOrderSalesSummaryVO.class);
-        } else {
-            logger.info("缓存中未找到订单销售汇总信息：storeId={}，startDateTime={}，endDateTime={},通过数据库计算", storeId, startDateTime,
-                    endDateTime);
-            orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
-        }
+        StoreOrderSalesSummaryVO orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
+        logger.info("获取门店订单销售汇总信息结束：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
         return orderSalesSummaryVO;
     }
 
@@ -179,11 +168,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
         }
         storeOrderSalesSummaryVO.setStoreId(storeId);
-        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId), OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
-        //获取当天最后一秒
-        long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-        //当天有效
-        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+//        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId), OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+//        //获取当天最后一秒
+//        long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
+//        //当天有效
+//        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
         return storeOrderSalesSummaryVO;
     }
 
@@ -266,12 +255,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new NullPointerException("订单编号不能为空");
         }
         OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
-        String orderVal = cache.hget(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, orderNo);
-        if (StringUtils.isNotBlank(orderVal)) {
-            logger.info("订单 orderNo={} OrderInfoDetailVO4Management订单信息缓存中存在，直接返回", orderNo);
-            orderInfoDetailVO4Management = JsonUtil.parseJSONObject(orderVal, OrderInfoDetailVO4Management.class);
-            return orderInfoDetailVO4Management;
-        }
         OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);
         if (orderInfoDetailVO == null) {
             logger.info("订单 orderNo={} 未找到相关订单信息", orderNo);
@@ -281,14 +264,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
         List<OrderChangeVO> orderChangeVoList = orderChangeLogService.listOrderChanges(orderNo);
         orderInfoDetailVO4Management.setOrderInfoDetailVO(orderInfoDetailVO);
         orderInfoDetailVO4Management.setOrderChangeVoList(orderChangeVoList);
-        if (Arrays.binarySearch(OrderStatusEnum.finalStatus(), orderInfoDetailVO.getOrderStatus().shortValue()) > -1) {
-            //如果订单流转已结束，直接缓存
-            cache.hset(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, orderNo, JsonUtil.toJSONString(orderInfoDetailVO4Management));
-            //获取当天最后一秒
-            long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-            //当天有效
-            cache.expire(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
-        }
         logger.info("订单 orderNo={} 订单信息查询结束", orderNo);
         return orderInfoDetailVO4Management;
     }

@@ -11,6 +11,10 @@ public class PayStatementDownloadRecord {
 	
 	public static final String DOWNLOAD_SUCCESS = "SUCCESS";
 	
+	public static final String DOWNLOAD_FAIL = "FAIL";
+	
+	public static final String DOWNLOADED = "DOWNLOADED";
+	
 	/**
 	 * 主键
 	 */

@@ -53,7 +53,7 @@ public class DownLoadStatementController implements DownLoadStatementClient {
 	public ResponseResult<String> downloadFundFlow(DownloadStatementCondition condition) {
 		logger.info("/6156/v1/downloadFundFlow 下载资金账单");
 		ResponseResult<String> result = new ResponseResult<String>();
-		condition.setAccountType(PayFinancialBillDTO.SourceType.OPERATION.getText());
+		condition.setAccountType(PayFinancialBillDTO.SourceType.BASIC.getText());
 		String res = wXDownloadBillService.downloadFundFlow(condition);
 		result.setData(res);
 		return result;

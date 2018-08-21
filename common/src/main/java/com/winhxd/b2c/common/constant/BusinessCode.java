@@ -314,6 +314,8 @@ public final class BusinessCode {
     public static final int ORDER_GET_PAY_INFO_ERROR = 400022;
     @ApiModelProperty("订单号和用户不匹配")
     public static final int ORDER_INFO_NOT_MATCH_ERROR = 400023;
+    @ApiModelProperty("订单支付信息查询失败，无法修改价格")
+    public static final int ORDER_PAY_INFO_ERROR = 400024;
 
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;
@@ -554,4 +556,25 @@ public final class BusinessCode {
 
     @ApiModelProperty("后台消息管理 手动给门店推送消息 消息推送出错（需查询官方错误码）")
     public static final int CODE_703503 = 703503;
+    
+    @ApiModelProperty("支付中，请勿重复支付")
+    public static final int CODE_3400900 = 3400900;
+    @ApiModelProperty("生产签名失败")
+    public static final int CODE_3400901 = 3400901;
+    @ApiModelProperty("微信请求参数转换异常")
+    public static final int CODE_3400902 = 3400902;
+    @ApiModelProperty("微信响应参数解析异常")
+    public static final int CODE_3400903 = 3400903;
+    @ApiModelProperty("微信响应值错误")
+    public static final int CODE_3400904 = 3400904;
+    @ApiModelProperty("微信响应验签失败")
+    public static final int CODE_3400905 = 3400905;
+    @ApiModelProperty("Bean转换失败")
+    public static final int CODE_3400906 = 3400906;
+    @ApiModelProperty("下载对账单时，响应参数解析失败")
+    public static final int CODE_3400907 = 3400907;
+    @ApiModelProperty("微信无证书请求失败")
+    public static final int CODE_3400910 = 3400910;
+    @ApiModelProperty("微信有证书请求失败")
+    public static final int CODE_3400911 = 3400911;
 }

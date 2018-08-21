@@ -64,6 +64,7 @@ import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -731,8 +732,14 @@ public class CommonOrderServiceImpl implements OrderService {
         if (condition.getOrderTotal().compareTo(orderInfo.getOrderTotalMoney()) == 0) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_TOTAL_MONEY_NO_CHANGE);
         }
-        //TODO 调用支付中心 判断当前订单是否有支付信息
-        if (1 != 1) {
+        //调用支付中心 判断当前订单是否有支付信息
+        OrderIsPayCondition orderIsPayCondition = new OrderIsPayCondition();
+        orderIsPayCondition.setOrderNo(orderInfo.getOrderNo());
+        ResponseResult<Boolean> orderPayRet = payServiceClient.orderIsPay(orderIsPayCondition);
+        if (orderPayRet == null || orderPayRet.getCode() != BusinessCode.CODE_OK) {
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
+        }
+        if (orderPayRet.getData() == null || !orderPayRet.getData()) {
             //如果已有支付单存在，则不允许修改支付价格
             throw new BusinessException(BusinessCode.ORDER_IS_BEING_PAID);
         }

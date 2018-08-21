@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.base.wxpayapi.impl;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
@@ -55,7 +56,7 @@ public class WXPayApiImpl implements WXPayApi {
 			reqData = XmlUtil.bean2MapUnderline2Hump(payPreOrderDTO);
 		} catch (Exception e) {
 			logger.error("预支付时，请求参数解析失败", e);
-			throw new BusinessException(3400906, "预支付时，请求参数解析失败");
+			throw new BusinessException(BusinessCode.CODE_3400906, "预支付时，请求参数解析失败");
 		}
         //统一下单，respXml为响应参数
         String respXml = this.unifiedOrder(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
@@ -67,7 +68,7 @@ public class WXPayApiImpl implements WXPayApi {
 			payPreOrderResponseDTO = XmlUtil.map2Bean(respData, PayPreOrderResponseDTO.class);
 		} catch (Exception e) {
 			logger.error("预支付时，响应参数解析失败", e);
-			throw new BusinessException(3400906, "预支付时，响应参数解析失败");
+			throw new BusinessException(BusinessCode.CODE_3400906, "预支付时，响应参数解析失败");
 		}
         
         return payPreOrderResponseDTO;
@@ -89,7 +90,7 @@ public class WXPayApiImpl implements WXPayApi {
 		} catch (Exception e) {
 			logger.error("申请退款时，请求参数解析失败", e);
 			//TODO 错误码
-			throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+			throw new BusinessException(BusinessCode.CODE_3400906, "申请退款时，响应参数解析失败");
 		}
         //申请退款，respXml为响应参数
         String respXml = this.refund(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
@@ -100,7 +101,7 @@ public class WXPayApiImpl implements WXPayApi {
             responseDTO = XmlUtil.map2Bean(respData, PayRefundResponseDTO.class);
         } catch (Exception e) {
             logger.error("申请退款时，响应参数解析失败", e);
-            throw new BusinessException(3400906, "申请退款时，响应参数解析失败");
+            throw new BusinessException(BusinessCode.CODE_3400906, "申请退款时，响应参数解析失败");
         }
         return responseDTO;
     }
@@ -157,7 +158,7 @@ public class WXPayApiImpl implements WXPayApi {
         	payPreOrderCallbackDTO = XmlUtil.map2Bean(respData, PayPreOrderCallbackDTO.class);
     	} catch(Exception e) {
     		logger.error("主动查询订单支付状态，参数解析失败", e);
-            throw new BusinessException(3400906, "主动查询订单支付状态，参数解析失败");
+            throw new BusinessException(BusinessCode.CODE_3400906, "主动查询订单支付状态，参数解析失败");
     	}
     	return payPreOrderCallbackDTO;
     }
@@ -194,7 +195,7 @@ public class WXPayApiImpl implements WXPayApi {
 			reqData = XmlUtil.bean2MapUnderline2Hump(payRefundDTO);
 		} catch (Exception e) {
 			logger.error("查询退款时，请求参数解析失败", e);
-			throw new BusinessException(3400906, "查询退款时，请求参数解析失败");
+			throw new BusinessException(BusinessCode.CODE_3400906, "查询退款时，请求参数解析失败");
 		}
 		String respXml = this.refundQuery(reqData, config.getHttpConnectTimeoutMs(), this.config.getHttpReadTimeoutMs());
 		//响应参数验证，转为map
@@ -277,7 +278,7 @@ public class WXPayApiImpl implements WXPayApi {
         	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {
 			logger.error("签名失败", e);
-			throw new BusinessException(3400901, "生产签名失败");
+			throw new BusinessException(BusinessCode.CODE_3400901, "生产签名失败");
 		}
         return sign;
 	}
@@ -296,7 +297,7 @@ public class WXPayApiImpl implements WXPayApi {
         	sign = WXPayUtil.generateSignature(reqData, config.getKey(), signType);
 		} catch (Exception e) {
 			logger.error("签名失败", e);
-			throw new BusinessException(3400901, "生产签名失败");
+			throw new BusinessException(BusinessCode.CODE_3400901, "生产签名失败");
 		}
         return sign;
     }
@@ -320,7 +321,7 @@ public class WXPayApiImpl implements WXPayApi {
 			resp = this.wxPayRequest.requestWithoutCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, autoReport);
 		} catch (Exception e) {
 			logger.error("请求微信支付失败", e);
-			throw new BusinessException(3400910, "微信无证书请求失败");
+			throw new BusinessException(BusinessCode.CODE_3400910, "微信无证书请求失败");
 		}
         return resp;
     }
@@ -339,7 +340,7 @@ public class WXPayApiImpl implements WXPayApi {
 			reqBody = XmlUtil.mapToXml(reqData);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
-			throw new BusinessException(3400902, "微信请求参数转换异常");
+			throw new BusinessException(BusinessCode.CODE_3400902, "微信请求参数转换异常");
 		}
     	return reqBody;
     }
@@ -357,7 +358,7 @@ public class WXPayApiImpl implements WXPayApi {
 			respData = XmlUtil.xmlToMap(xmlStr);
 		} catch (Exception e) {
 			logger.error("将Map转换为XML格式的字符串出错", e);
-			throw new BusinessException(3400903, "微信响应参数解析异常");
+			throw new BusinessException(BusinessCode.CODE_3400903, "微信响应参数解析异常");
 		}
     	
     	return respData;
@@ -375,7 +376,7 @@ public class WXPayApiImpl implements WXPayApi {
         Map<String, String> respData = this.xmlToMap(xmlStr);
         if (!respData.containsKey(RETURN_CODE)) {
         	logger.error("No `return_code` in XML: %s", xmlStr);
-			throw new BusinessException(3400904, "微信响应值错误");
+			throw new BusinessException(BusinessCode.CODE_3400904, "微信响应值错误");
         }
         return_code = respData.get(RETURN_CODE);
 		if (return_code.equals(WXPayConstants.FAIL)) {
@@ -385,12 +386,12 @@ public class WXPayApiImpl implements WXPayApi {
 			boolean success = this.isResponseSignatureValid(respData);
 			if(!success) {
 				logger.error("微信支付返回验签失败");
-				throw new BusinessException(3400905, "微信响应验签失败");
+				throw new BusinessException(BusinessCode.CODE_3400905, "微信响应验签失败");
 			}
 			return respData;
 		} else{
 			logger.error("return_code value %s is invalid in XML: %s", return_code, xmlStr);
-			throw new BusinessException(3400904, "微信响应值错误");
+			throw new BusinessException(BusinessCode.CODE_3400904, "微信响应值错误");
 		}
     }
     
@@ -407,7 +408,7 @@ public class WXPayApiImpl implements WXPayApi {
 			return WXPayUtil.isSignatureValid(reqData, this.config.getKey(), this.signType);
 		} catch (Exception e) {
 			logger.error("微信支付返回验签失败", e);
-			throw new BusinessException(3400905, "微信响应验签失败");
+			throw new BusinessException(BusinessCode.CODE_3400905, "微信响应验签失败");
 		}
     }
 
@@ -468,7 +469,7 @@ public class WXPayApiImpl implements WXPayApi {
 			resp = this.wxPayRequest.requestWithCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, this.autoReport);
 		} catch (Exception e) {
 			logger.error("请求微信退款", e);
-			throw new BusinessException(3400911, "微信有证书请求失败");
+			throw new BusinessException(BusinessCode.CODE_3400911, "微信有证书请求失败");
 		}
 		return resp;
 	}
@@ -496,7 +497,7 @@ public class WXPayApiImpl implements WXPayApi {
             reqData = XmlUtil.bean2MapUnderline2Hump(payStatementDTO);
         } catch (Exception e) {
             logger.error("下载对账单时，请求参数解析失败", e);
-            throw new BusinessException(3400906, "下载对账单时，请求参数解析失败");
+            throw new BusinessException(BusinessCode.CODE_3400906, "下载对账单时，请求参数解析失败");
         }
 
         String url;
@@ -526,7 +527,7 @@ public class WXPayApiImpl implements WXPayApi {
 	        responseDTO = XmlUtil.map2Bean(ret, PayBillDownloadResponseDTO.class);
 	    } catch (Exception e) {
 	        logger.error("下载对账单时，响应参数解析失败", e);
-	        throw new BusinessException(3400907, "下载对账单时，响应参数解析失败");
+	        throw new BusinessException(BusinessCode.CODE_3400907, "下载对账单时，响应参数解析失败");
 	    }
         return responseDTO;
     }
@@ -554,7 +555,7 @@ public class WXPayApiImpl implements WXPayApi {
             reqData = XmlUtil.bean2MapUnderline2Hump(payFinancialBillDTO);
         } catch (Exception e) {
             logger.error("下载资金对账单时，请求参数解析失败", e);
-            throw new BusinessException(3400906, "下载资金对账单时，请求参数解析失败");
+            throw new BusinessException(BusinessCode.CODE_3400906, "下载资金对账单时，请求参数解析失败");
         }
 
         String url;
@@ -585,7 +586,7 @@ public class WXPayApiImpl implements WXPayApi {
 	        responseDTO = XmlUtil.map2Bean(ret, PayBillDownloadResponseDTO.class);
         } catch (Exception e) {
             logger.error("下载资金账单时，响应参数解析失败", e);
-            throw new BusinessException(3400907, "下载资金账单时，响应参数解析失败");
+            throw new BusinessException(BusinessCode.CODE_3400907, "下载资金账单时，响应参数解析失败");
         }
         return responseDTO;
         

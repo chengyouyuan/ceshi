@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	@Resource
 	private PayWithdrawalConfig payWithDrawalConfig;
+	
+	private static final String ACCOUNT_NAME = "微信钱包";
+	
+	private static final int EXPIRE_TIME = 60*60*24;
 
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
@@ -78,8 +83,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
+				 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
 				 String carnumber = data.getCardNumber();
-				 withdrawalPage.setUserAcountName(data.getStoreName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
+				 withdrawalPage.setUserAcountName(data.getBankName()+"("+carnumber.substring(carnumber.length()-4, carnumber.length())+")");
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 withdrawalPage.setBandBranchName(data.getBandBranchName());
 				 withdrawalPage.setBankName(data.getBankName());
@@ -90,6 +96,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 result.setData(withdrawalPage);
 				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
+				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -100,15 +107,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 PayStoreUserInfoVO data = bindAccount.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 withdrawalPage.setUserAcountName(data.getOpenid());
+				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
 				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setNick(data.getNick());
-//				 withdrawalPage.setOpenid(data.getOpenid());
-				 withdrawalPage.setUserAcountName(data.getName());
+				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
-				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
 				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
+				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 }
 		}
 		return result;
@@ -121,7 +127,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		///////////////测试数据//////////////////////////
 		Long businessId = 1l;
 		//////////////////结束/////////////////////////
-		
+		// 验证入参是否传入正确
+		int res = valiApplyWithDrawCondition(condition);
+		if(res > 0){
+			result.setCode(res);
+			return result;
+		}
 		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
 		String[] user = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
@@ -157,6 +168,24 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return result;
 	} 
 	
+	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
+		int res = 0;
+		BigDecimal totalFee = condition.getTotalFee();
+		if(BigDecimal.ZERO.equals(totalFee) || totalFee == null){
+			res = BusinessCode.CODE_610032;
+		}
+		short type = condition.getFlowDirectionType();
+		if(type == 0){
+			res = BusinessCode.CODE_610033;
+		}
+		
+		String name = condition.getFlowDirectionName();
+		if(StringUtils.isEmpty(name)){
+			res = BusinessCode.CODE_610034;
+		}
+		return res;
+	}
+
 	/** 验证当前用户是否绑定了微信账户；  验证方式暂时是查询当前用户是否拥有微信的唯一标识*/
 	public ResponseResult<PayStoreUserInfoVO> validStoreBindAccount(Long businessId){
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +99,17 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		if (billDate == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
+
+		//某天资金账单已下载,则不再重复下载
+		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+		record.setBillDate(billDate);
+		record.setBillType(PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+		if (CollectionUtils.isNotEmpty(selectByModel)) {
+			logger.info("{}当天的对账单已下载,不再重复下载！", billDate);
+			return PayStatementDownloadRecord.DOWNLOADED;
+		}
 		
 		PayStatementDTO dto = new PayStatementDTO();
 		dto.setBillDate(sdf.format(billDate));
@@ -124,24 +136,34 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					
 				//成功则开始插入数据
 				}else{
+					
+					
+					
+
 					//获取微信返回的总数据
-					String data = responseDTO.getData();
-					//去掉表头
-					String substring1 = data.substring(data.indexOf(DATA_SEPARATE));
-					//去掉统计数据
-					String substring2 = substring1.substring(0, substring1.indexOf(STATEMENT_REMOVE_TAIL)).replace(DATA_SEPARATE, "");
-					//把数据按条分割
-//					substring2 = substring2.replace("\r\n", "\n");
-//					String[] dataArray = substring2.split("\n");
-					String[] dataArray = substring2.split(System.lineSeparator());
-//					String lineSeparator = System.lineSeparator();
+					String data = responseDTO.getData().replace(DATA_SEPARATE, "");
+					
 					List<PayStatement> list = new ArrayList<PayStatement>();
-					for (String everyData : dataArray) {
-						//把每一条数据按逗号分割
-						String[] everyDataArray = everyData.split(",");
-						PayStatement statement = this.assemblePayStatement(everyDataArray, dto.getBillType(), billDate);
-						list.add(statement);
+					PayStatementCount payStatementCount = new PayStatementCount();
+
+					String[] split = data.split(System.lineSeparator());
+
+					for (int i = 0; i < split.length; i++) {
+						//对第一行和倒数第二行(表头文字)不作处理
+						if (i == 0 || i == split.length - 2) {
+							continue;
+						}
+						//把 第二行~倒数第三行 的数据转成PayStatement
+						if (i > 0 && i < split.length - 2) {
+							PayStatement payFinancialBill = this.assemblePayStatement(split[i], dto.getBillType(), billDate);
+							list.add(payFinancialBill);
+						}
+						//把 最后一行 的数据转成PayStatementCount
+						if (i == split.length - 1) {
+							payStatementCount = this.assemblePayStatementCount(split[i], billDate);
+						}
 					}
+					
 					//保存数据
 					//此处list过大需要分批次插入
 					for (PayStatement payStatement : list) {
@@ -153,11 +175,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					
 //					=====================处理统计数据=================================================================================
 
-					String totalData = data.substring(data.lastIndexOf(STATEMENT_COUNT_REMOVE_HEAD)+1, data.length()).replace(DATA_SEPARATE, "");
-
-					String[] totalDataArray = totalData.split(",");
-					PayStatementCount statementCount = this.assemblePayStatementCount(totalDataArray, billDate);
-					payStatementCountMapper.insertSelective(statementCount);
+					payStatementCountMapper.insertSelective(payStatementCount);
 
 					//业务成功，记录到记录表
 					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
@@ -174,7 +192,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			payStatementCountMapper.deleteByBillDate(billDate);
 			e.printStackTrace();
 		}
-		return "";
+		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
 	/**
@@ -245,8 +263,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 * @return
 	 * @throws ParseException 
 	 */
-	private PayStatement assemblePayStatement(String[] everyDataArray, String billType, Date billDate) throws ParseException {
+	private PayStatement assemblePayStatement(String everyData, String billType, Date billDate) throws ParseException {
 		//把数据放入bean中
+		String[] everyDataArray = everyData.split(",");
 		PayStatement statement = new PayStatement();
 		statement.setPayTime(sdf1.parse(everyDataArray[0]));
 		statement.setAppid(everyDataArray[1]);
@@ -318,8 +337,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 * @param billDate
 	 * @return
 	 */
-	private PayStatementCount assemblePayStatementCount(String[] totalDataArray, Date billDate) {
+	private PayStatementCount assemblePayStatementCount(String everyData, Date billDate) {
 		//把数据放入bean中
+		String[] totalDataArray = everyData.split(",");
 		PayStatementCount statementCount = new PayStatementCount();
 		statementCount.setPayNumCount(Integer.valueOf(totalDataArray[0]));
 		statementCount.setPayAmountCount(new BigDecimal(totalDataArray[1]));
@@ -335,6 +355,17 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		Date billDate = condition.getBillDate();
 		if (condition.getBillDate() == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
+		}
+		
+		//某天资金账单已下载,则不再重复下载
+		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+		record.setBillDate(billDate);
+		record.setBillType(PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+		if (CollectionUtils.isNotEmpty(selectByModel)) {
+			logger.info("{}当天的资金账单已下载,不再重复下载！", billDate);
+			return PayStatementDownloadRecord.DOWNLOADED;
 		}
 		
 		PayFinancialBillDTO dto = new PayFinancialBillDTO();
@@ -364,22 +395,29 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 				//成功则开始插入数据
 				}else{
 					//获取微信返回的总数据
-					String data = billMap.getData();
-					//去掉表头
-					String substring1 = data.substring(data.indexOf(DATA_SEPARATE));
-					//去掉统计数据
-					String substring2 = substring1.substring(0, substring1.indexOf(FINANCIAL_BILL_REMOVE_TAIL)).replace(DATA_SEPARATE, "");
-					//把数据按条分割
-//					substring2 = substring2.replace("\r\n", "\n");
-//					String[] dataArray = substring2.split("\n");
-					String[] dataArray = substring2.split(System.lineSeparator());
+					String data = billMap.getData().replace(DATA_SEPARATE, "");
+					
 					List<PayFinancialBill> list = new ArrayList<PayFinancialBill>();
-					for (String everyData : dataArray) {
-						//把每一条数据按逗号分割
-						String[] everyDataArray = everyData.split(",");
-						PayFinancialBill payFinancialBill = this.assemblePayFinancialBill(everyDataArray, dto.getAccountType(), billDate);
-						list.add(payFinancialBill);
+					PayFinancialBillCount payFinancialBillCount = new PayFinancialBillCount();
+
+					String[] split = data.split(System.lineSeparator());
+
+					for (int i = 0; i < split.length; i++) {
+						//对第一行和倒数第二行(表头文字)不作处理
+						if (i == 0 || i == split.length - 2) {
+							continue;
+						}
+						//把 第二行~倒数第三行 的数据转成PayFinancialBill
+						if (i > 0 && i < split.length - 2) {
+							PayFinancialBill payFinancialBill = this.assemblePayFinancialBill(split[i], dto.getAccountType(), billDate);
+							list.add(payFinancialBill);
+						}
+						//把 最后一行 的数据转成PayFinancialBillCount
+						if (i == split.length - 1) {
+							payFinancialBillCount = this.assemblePayFinancialBillCount(split[i], billDate);
+						}
 					}
+					
 					//保存数据
 					//此处list过大需要分批次插入
 					for (PayFinancialBill payFinancialBill : list) {
@@ -390,11 +428,6 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					logger.info("资金账单插入成功");
 					
 //					=====================处理统计数据=================================================================================
-
-					String totalData = data.substring(data.lastIndexOf(STATEMENT_COUNT_REMOVE_HEAD)+1, data.length()).replace(DATA_SEPARATE, "");
-
-					String[] totalDataArray = totalData.split(",");
-					PayFinancialBillCount payFinancialBillCount = this.assemblePayFinancialBillCount(totalDataArray, billDate);
 					payFinancialBillCountMapper.insertSelective(payFinancialBillCount);
 
 					//业务成功，记录到记录表
@@ -404,18 +437,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 				}
 			}
-			
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e.toString());
 			payFinancialBillMapper.deleteByBillDate(billDate);
 			payFinancialBillCountMapper.deleteByBillDate(billDate);
 		}
-		return "";
+		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
-	private PayFinancialBill assemblePayFinancialBill(String[] everyDataArray,
+	private PayFinancialBill assemblePayFinancialBill(String everyData,
 			String accountType, Date billDate) throws ParseException {
 		//把数据放入bean中
+
+		String[] everyDataArray = everyData.split(",");
+		
 		PayFinancialBill financialBill = new PayFinancialBill();
 		if (PayFinancialBillDTO.SourceType.BASIC.getText().equals(accountType)) {
 			financialBill.setAccountingTime(sdf2.parse(everyDataArray[0]));
@@ -440,8 +475,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	}
 	
 	private PayFinancialBillCount assemblePayFinancialBillCount(
-			String[] totalDataArray, Date billDate) {
+			String everyData, Date billDate) {
 		//把数据放入bean中
+		String[] totalDataArray = everyData.split(",");
 		PayFinancialBillCount financialBillCount = new PayFinancialBillCount();
 		financialBillCount.setFinancialSwiftNumCount(new BigDecimal(totalDataArray[0]));
 		financialBillCount.setIncomeNumCount(new BigDecimal(totalDataArray[1]));

@@ -15,7 +15,7 @@ public enum SmsSendStatusEnum {
 
 	private String remark;// 描述
 
-	private SmsSendStatusEnum( int code,String remark) {
+	SmsSendStatusEnum(int code, String remark) {
         this.code = code;
         this.remark = remark;
         

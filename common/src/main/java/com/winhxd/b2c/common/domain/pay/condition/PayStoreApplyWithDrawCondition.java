@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;

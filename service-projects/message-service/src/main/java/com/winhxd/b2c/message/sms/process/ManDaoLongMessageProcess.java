@@ -45,7 +45,7 @@ public class ManDaoLongMessageProcess extends BaseSmsProcess {
 		return -1;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ManDaoLongMessageProcess tManDaoSmsProcess = new ManDaoLongMessageProcess();
 		MessageSmsHistory smsSend = new MessageSmsHistory();
 		smsSend.setContent("长沙疾控中心向新生儿家长推出“护苗日记”App，视频介绍小儿常见疾病知识和疫苗接种注意事项，并有常见问题专业解答。点击http://t.cn/8F14q7h 免费下载1。");

@@ -109,13 +109,11 @@ public class GatewayFilter implements GlobalFilter, Ordered {
 
             @Override
             public Flux<DataBuffer> getBody() {
+                if (!MediaType.APPLICATION_JSON.includes(contentType) && !MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
+                    return super.getBody();
+                }
                 return super.getBody()
-                        .doOnNext(buffer -> {
-                            if (MediaType.APPLICATION_JSON.includes(contentType)
-                                    || MediaType.APPLICATION_FORM_URLENCODED.includes(contentType)) {
-                                recordBytes(stream, buffer);
-                            }
-                        })
+                        .doOnNext(buffer -> recordBytes(stream, buffer))
                         .doOnComplete(() -> {
                             if (stream.size() > 0) {
                                 String req = new String(stream.toByteArray(), StandardCharsets.UTF_8);

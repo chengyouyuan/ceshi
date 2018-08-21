@@ -33,18 +33,19 @@ public class SmsServerSendUtils {
 
 	@Autowired
 	private YxtSmsProcess yxtSmsProcess;
+
 	/**
 	 * 发送短信
-	 * @param msg  包含手机号、短信内容、类型、用户名、平台等信息
+	 *
+	 * @param msg 包含手机号、短信内容、类型、用户名、平台等信息
 	 */
 	public void sendSms(SmsSend msg) {
-		String type = null;
+		String type = StringUtils.isBlank(msg.getType()) ? "1" : msg.getType();
+		int result;
+		boolean security;
 
 		List<MessageSmsHistory> list = new ArrayList<>();
 		MessageSmsHistory tSmsSendHistory = new MessageSmsHistory();
-		if (StringUtils.isBlank(type)) {
-			type = "1";
-		}
 		tSmsSendHistory.setSendType(Short.parseShort(type));
 		tSmsSendHistory.setSupplyId(type);
 		tSmsSendHistory.setContent(msg.getContent());
@@ -52,8 +53,7 @@ public class SmsServerSendUtils {
 		tSmsSendHistory.setTelephone(msg.getTelePhoneNo());
 		tSmsSendHistory.setUserName(msg.getUsername());
 		tSmsSendHistory.setGrp(msg.getGrp());
-		int result;
-		boolean security = securityCheckService.securityCheck(tSmsSendHistory.getTelephone());
+		security = securityCheckService.securityCheck(tSmsSendHistory.getTelephone());
 		if (security) {
 			SmsReturn smsReturn = yxtSmsProcess.sendMessage(tSmsSendHistory);
 			result = smsReturn.getStatus().getStatusCode();
@@ -63,12 +63,12 @@ public class SmsServerSendUtils {
 		}
 
 		if (result == SmsReturnStatusEnum.SUCCESS.getStatusCode()) {
-			tSmsSendHistory.setSendStatus((short)SmsSendStatusEnum.SUCCESS.getCode());
+			tSmsSendHistory.setSendStatus((short) SmsSendStatusEnum.SUCCESS.getCode());
 		} else {
-			tSmsSendHistory.setSendStatus((short)SmsSendStatusEnum.FAIL.getCode());
+			tSmsSendHistory.setSendStatus((short) SmsSendStatusEnum.FAIL.getCode());
 		}
 
-		tSmsSendHistory.setErrorCode((short)result);
+		tSmsSendHistory.setErrorCode((short) result);
 		list.add(tSmsSendHistory);
 		/**
 		 * 保存到数据库中

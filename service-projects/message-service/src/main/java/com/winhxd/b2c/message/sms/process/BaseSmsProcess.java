@@ -5,7 +5,7 @@ import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
 /**
  * @author yaoshuai
  */
-public abstract class SmsProcess {
+public abstract class BaseSmsProcess {
 
 	/**
 	 * @param smsSend

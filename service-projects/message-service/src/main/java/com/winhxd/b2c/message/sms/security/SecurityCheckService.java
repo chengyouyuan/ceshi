@@ -45,7 +45,9 @@ public class SecurityCheckService {
 				}
 			}
 
-			// ip地址短信发送安全检查
+			/**
+			 * ip地址短信发送安全检查
+			 */
 			if (rs) {
 				updateTimes(mobile);
 				rs = true;
@@ -104,14 +106,20 @@ public class SecurityCheckService {
 				lastTime = Long.parseLong(info.split(SecurityConstant.SPLIT)[1]);
 				lastDate = info.split(SecurityConstant.SPLIT)[2];
 
-				// 判断当日发送次数以及时间间隔
+				/**
+				 * 判断当日发送次数以及时间间隔
+ 				 */
 				if (thisDate.equals(lastDate) && nTimes < maxTimes && (thisTime - lastTime) > timeInterval) {
 					checkRs = true;
 				} else if (!thisDate.equals(lastDate)) {
-					// 日期不一致则为本日首次访问
+					/**
+					 * 日期不一致则为本日首次访问
+ 					 */
 					checkRs = true;
 				} else {
-					// 否则为超出限制
+					/**
+					 * 否则为超出限制
+ 					 */
 					checkRs = false;
 					sbufLog.delete(0, sbufLog.length());
 					sbufLog.append("安全检查检查结果 info= ").append(info);

@@ -4,6 +4,9 @@ package com.winhxd.b2c.message.sms.enums;
  * 国际短信发送返回状态枚举
  * */
 public enum InternationalStatusEnum {
+	/**
+	 * 国际短信返回状态
+	 */
 	SUCCESS(0,"短信发送成功"),
 	SECURITYCHECKERROR(98,"安全检查不通过"),
 	HTTPCLIENTERROR(99,"HttpClient请求错误"),

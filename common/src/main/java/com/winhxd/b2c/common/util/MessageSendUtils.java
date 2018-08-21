@@ -48,4 +48,11 @@ public class MessageSendUtils {
         sender.send(MQDestination.NETEASE_MESSAGE_DELAY,JsonUtil.toJSONString(neteaseMsgDelayCondition),delayMilliseconds);
     }
 
+    /**
+     * 发送延迟云信消息（后台消息管理，有定时发送云信消息功能）
+     */
+    public void sendNeteaseMsgBatch(NeteaseMsgDelayCondition neteaseMsgDelayCondition){
+        sender.send(MQDestination.NETEASE_MESSAGE_DELAY,JsonUtil.toJSONString(neteaseMsgDelayCondition));
+    }
+
 }

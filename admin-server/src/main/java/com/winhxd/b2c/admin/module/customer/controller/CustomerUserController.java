@@ -57,6 +57,12 @@ public class CustomerUserController {
         return responseResult;
     }
 
+    @PostMapping(value = "/1065/v1/findAvabileCustomerPageInfo")
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition){
+        ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.findAvabileCustomerPageInfo(condition);
+        return responseResult;
+    }
+
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/1060/v1/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {

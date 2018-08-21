@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
@@ -50,6 +52,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "api-store/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
+
 	/**
 	 * 惠小店状态 1有效
 	 */
@@ -86,6 +89,7 @@ public class ApiStoreLoginController {
 	StoreHxdServiceClient storeHxdServiceClient;
 	@Autowired
 	MessageServiceClient messageServiceClient;
+
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:11:59
@@ -100,6 +104,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_100821, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
+			@ApiResponse(code = BusinessCode.CODE_100819, message = "您还没有绑定惠下单账号"),
 			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧") })
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
@@ -135,12 +140,12 @@ public class ApiStoreLoginController {
 				result = new ResponseResult<>(BusinessCode.CODE_100822);
 				return result;
 			} else {
-				
+
 				/**
 				 * 调用云信服务获取用户信息
 				 */
 				getNeteaseAcctInfo(db, vo);
-				cache.del(CacheName.STORE_USER_INFO_TOKEN +db.getToken());
+				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setId(db.getId());
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
@@ -174,8 +179,8 @@ public class ApiStoreLoginController {
 					 * 调用云信服务获取用户信息
 					 */
 					getNeteaseAcctInfo(db, vo);
-					
-					cache.del(CacheName.STORE_USER_INFO_TOKEN +db.getToken());
+
+					cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 					/**
 					 * 更新数据库
 					 */
@@ -232,8 +237,8 @@ public class ApiStoreLoginController {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				throw new BusinessException(BusinessCode.CODE_100822);
+				logger.info("{} - , 您还没有绑定惠下单账号");
+				throw new BusinessException(BusinessCode.CODE_100819);
 			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
@@ -246,7 +251,7 @@ public class ApiStoreLoginController {
 			 * 调用云信服务获取用户信息
 			 */
 			getNeteaseAcctInfo(db, vo);
-			cache.del(CacheName.STORE_USER_INFO_TOKEN +db.getToken());
+			cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 			storeUserInfo.setId(db.getId());
 			storeUserInfo.setStoreMobile(map.getStoreMobile());
 			logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
@@ -283,7 +288,7 @@ public class ApiStoreLoginController {
 				 * 调用云信服务获取用户信息
 				 */
 				getNeteaseAcctInfo(db, vo);
-				cache.del(CacheName.STORE_USER_INFO_TOKEN +db.getToken());
+				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setId(db.getId());
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
@@ -314,7 +319,7 @@ public class ApiStoreLoginController {
 					 * 调用云信服务获取用户信息
 					 */
 					getNeteaseAcctInfo(db, vo);
-					cache.del(CacheName.STORE_USER_INFO_TOKEN +db.getToken());
+					cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 					/**
 					 * 更新数据库
 					 */
@@ -356,24 +361,22 @@ public class ApiStoreLoginController {
 		ResponseResult<NeteaseAccountVO> netease;
 		NeteaseAccountVO accountVO;
 		NeteaseAccountCondition neteaseAccountCondition = new NeteaseAccountCondition();
-		if(HXD_STATUS1.equals(db.getStoreStatus())){
 			neteaseAccountCondition.setCustomerId(db.getId());
-			netease =  messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
-			if(netease.getCode() != 0){
+			netease = messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
+			if (netease.getCode() != 0) {
 				logger.info("{} - , 云信获取用户信息失败");
 				throw new BusinessException(BusinessCode.CODE_100815);
 			}
-			accountVO =  netease.getData();
+			accountVO = netease.getData();
 			vo.setNeteaseAccid(accountVO.getAccid());
 			vo.setNeteaseToken(accountVO.getToken());
-		}
 	}
 
 	private void getStoreUserInfoToken(StoreUserInfo db, StoreUser user) {
 		user.setBusinessId(db.getId());
 		user.setStoreCustomerId(db.getStoreCustomerId());
 		cache.set(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), JsonUtil.toJSONString(user));
-		cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), 30 * 24 * 60 * 60);
+		cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 	}
 
 	/**
@@ -517,18 +520,19 @@ public class ApiStoreLoginController {
 			logger.info("{} - , 请求验证码时长为超过一分钟");
 			throw new BusinessException(BusinessCode.CODE_100912);
 		}
-		verificationCode =  GeneratePwd.generatePwd6Mobile();
+		verificationCode = GeneratePwd.generatePwd6Mobile();
 		cache.set(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, verificationCode);
-		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, 5 * 60);
+		cache.expire(CacheName.STORE_USER_SEND_VERIFICATION_CODE + storeMobile, AppConstant.SEND_SMS_EXPIRE_SECOND);
 		/**
 		 * 60秒以后调用短信服务
 		 */
 		cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile, verificationCode);
-		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile, 60);
+		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + storeMobile,
+				AppConstant.REQUEST_SEND_SMS_EXPIRE_SECOND);
 		/**
 		 * 发送模板内容
 		 */
-		content = "【惠小店】验证码：" + verificationCode + ",有效时间五分钟";
+		content = String.format(SendSMSTemplate.SMSCONTENT, verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(storeMobile);

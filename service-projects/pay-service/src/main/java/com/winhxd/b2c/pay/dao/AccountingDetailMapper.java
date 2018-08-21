@@ -5,6 +5,7 @@ import com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
+import com.winhxd.b2c.common.domain.pay.vo.OrderVerifyMoneyVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
 import org.apache.ibatis.annotations.Param;
@@ -40,12 +41,28 @@ public interface AccountingDetailMapper {
     List<AccountingDetail> selectAccountingDetailListByOrderNo(@Param("orderNo") String orderNo);
 
     /**
-     * 按核销批次查询的费用明细
+     * 按核销批次查询费用明细
      *
      * @param verifyCode
      * @return
      */
     List<AccountingDetail> selectAccountingDetailListByVerifyCode(@Param("verifyCode") String verifyCode);
+
+    /**
+     * 按核销批次查询订单应核销金额
+     *
+     * @param verifyCode
+     * @return
+     */
+    List<OrderVerifyMoneyVO> selectOrderVerifyMoneyListByVerifyCode(@Param("verifyCode") String verifyCode);
+
+    /**
+     * 按核销批次查询订单应核销金额
+     *
+     * @param verifyCode
+     * @return
+     */
+    List<String> selectThirdPartyNotVerifiedList(@Param("verifyCode") String verifyCode);
 
     /**
      * 查询费用明细

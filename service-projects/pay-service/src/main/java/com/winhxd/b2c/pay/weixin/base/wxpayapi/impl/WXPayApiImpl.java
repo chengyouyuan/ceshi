@@ -54,6 +54,7 @@ public class WXPayApiImpl implements WXPayApi {
         Map<String, String> reqData = null;
 		try {
 			reqData = XmlUtil.bean2MapUnderline2Hump(payPreOrderDTO);
+			logger.info("预支付时1，请求参数reqData：{}", reqData);
 		} catch (Exception e) {
 			logger.error("预支付时，请求参数解析失败", e);
 			throw new BusinessException(BusinessCode.CODE_3400906, "预支付时，请求参数解析失败");
@@ -315,7 +316,7 @@ public class WXPayApiImpl implements WXPayApi {
                                      int connectTimeoutMs, int readTimeoutMs) {
         String msgUUID = reqData.get("nonce_str");
         String reqBody = this.mapToXml(reqData);
-
+        logger.info("请求微信支付参数：{}", reqBody);
         String resp = null;
 		try {
 			resp = this.wxPayRequest.requestWithoutCert(urlSuffix, msgUUID, reqBody, connectTimeoutMs, readTimeoutMs, autoReport);

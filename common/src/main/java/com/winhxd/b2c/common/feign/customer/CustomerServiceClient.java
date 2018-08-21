@@ -64,6 +64,16 @@ public interface CustomerServiceClient {
      */
     @RequestMapping(value = "/customer/2008/v1/findCustomerByToken", method = RequestMethod.GET)
     ResponseResult<CustomerUserInfoVO> findCustomerByToken(@RequestParam("token") String token);
+
+    /**
+     * @param condition 查询条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/21 14:38
+     * @Description 查询有效的用户(有与门店绑定关系的用户)
+     */
+    @RequestMapping(value = "/customer/2009/v1/findAvabileCustomerPageInfo", method = RequestMethod.POST)
+    ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition);
 }
 
 @Component
@@ -98,6 +108,12 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     @Override
     public ResponseResult<CustomerUserInfoVO> findCustomerByToken(String token) {
         logger.error("CustomerServiceClientFallBack -> findCustomerByToken错误信息{}", throwable.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(BackStageCustomerInfoCondition condition) {
+        logger.error("CustomerServiceClientFallBack -> findAvabileCustomerPageInfo错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

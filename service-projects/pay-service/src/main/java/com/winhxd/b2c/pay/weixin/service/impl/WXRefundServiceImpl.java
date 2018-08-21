@@ -64,7 +64,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         try {
             //支付流水号
             String outTradeNo = condition.getOutTradeNo();
-            PayRefund payRefund = payRefundMapper.selectByOutRefundNo(outTradeNo);
+            PayRefund payRefund = payRefundMapper.selectByOutTradeNo(outTradeNo);
             Integer switchStatus = -1;
             if (payRefund != null) {
                 switchStatus = new Integer(payRefund.getCallbackRefundStatus());
@@ -98,7 +98,7 @@ public class WXRefundServiceImpl implements WXRefundService {
     public PayRefund updatePayRefundByOutTradeNo(PayRefundResponseDTO payRefundResponseDTO) throws Exception{
 
         String reqInfo = payRefundResponseDTO.getReqInfo();
-        PayRefund payRefund = payRefundMapper.selectByOutRefundNo(payRefundResponseDTO.getOutTradeNo());
+        PayRefund payRefund = payRefundMapper.selectByOutTradeNo(payRefundResponseDTO.getOutTradeNo());
         if (payRefund.getCallbackRefundStatus() != 1){
             payRefund.setCallbackRefundId(payRefundResponseDTO.getRefundId());
             payRefund.setOutRefundNo(payRefundResponseDTO.getOutRefundNo());
@@ -107,7 +107,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             payRefund.setCallbackRefundFee(payRefundResponseDTO.getRefundFee());
             payRefund.setCallbackSettlementRefundFee(payRefundResponseDTO.getSettlementRefundFee());
 
-            DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
             payRefund.setCallbackSuccessTime(bf.parse(payRefundResponseDTO.getSuccessTime()));
             payRefund.setCallbackRefundRecvAccout(payRefundResponseDTO.getRefundRecvAccout());
             payRefund.setCallbackRefundAccount(payRefundResponseDTO.getRefundAccount());
@@ -317,7 +317,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                 model.setCallbackRefundStatus((short)0);
             }else if("SUCCESS".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)1);
-                DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
                 model.setCallbackSuccessTime(bf.parse(mapOut.get("refund_success_time_0")));
             }else if("REFUNDCLOSE".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)2);

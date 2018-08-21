@@ -32,12 +32,12 @@ public interface MessageServiceClient {
     ResponseResult<NeteaseAccountVO> getNeteaseAccountInfo(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
-     * @Description 创建云信用户
+     * @Description 更新云信用户信息
      * @param neteaseAccountCondition
      * @return
      */
     @RequestMapping(value = "/message/7013/v1/createNeteaseAccount",method = RequestMethod.POST)
-    ResponseResult<NeteaseAccountVO> createNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
+    ResponseResult<Void> updateNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
      * @Description: 小程序登录相关，根据code返回openid和sessionKey
@@ -125,8 +125,8 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     }
 
     @Override
-    public ResponseResult<NeteaseAccountVO> createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
-        logger.error("MessageServiceClientFallBack -> createNeteaseAccount，错误信息为{}",throwable);
+    public ResponseResult<Void> updateNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+        logger.error("MessageServiceClientFallBack -> updateNeteaseAccount，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

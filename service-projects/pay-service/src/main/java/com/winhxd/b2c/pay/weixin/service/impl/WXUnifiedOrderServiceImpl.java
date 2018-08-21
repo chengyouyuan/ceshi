@@ -23,6 +23,7 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
+import com.winhxd.b2c.pay.weixin.constant.TradeStateEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
@@ -79,7 +80,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
 		bill.setBankType(payPreOrderCallbackDTO.getBankType());
 		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
-		bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getSettlementTotalFee() != null) {
+			bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
 		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
 		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
@@ -87,7 +90,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
 		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
 		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
-		bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getTotalFee() != null) {
+			bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
 		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
 		
@@ -155,7 +160,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 */
 	private void paid(PayPreOrderCondition condition) {
 		logger.warn("订单{}支付完成，请勿重复支付", condition.getOutOrderNo());
-		throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
+		throw new BusinessException(BusinessCode.CODE_3400908, "支付中，请勿重复支付");
 	}
 	
 	/**
@@ -168,7 +173,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @return
 	 */
 	private PayPreOrderVO paying(PayPreOrderCondition condition, PayBill bill) {
-		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
+		PayPreOrderVO payPreOrderVO = null;
 		// 主动查询，更新流水
 		PayOrderQueryDTO payOrderQueryDTO = new PayOrderQueryDTO();
 		String outTradeNo = bill.getOutTradeNo();
@@ -189,19 +194,62 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			return this.toPay(condition);
 		}
 		
-		PayBill currentBill = payBillMapper.selectByOutTradeNo(outTradeNo);
-		if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.error("主动查询{}交易状态成功：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
-			if(!BillStatusEnum.PAID.getCode().equals(currentBill.getStatus())) {
-				this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
-				throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
-			}
-		} else if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
+		//主动查询状态处理
+		if(TradeStateEnum.SUCCESS.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.error("主动查询{}交易状态为成功：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
+			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
 			
+		} else if(TradeStateEnum.REFUND.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为已退款：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
+			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
+			
+		} else if(TradeStateEnum.NOTPAY.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为未支付：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			payPreOrderVO = returnPayPreOrderVO(bill);
+			
+		} else if(TradeStateEnum.CLOSED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为未支付：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
+			//再次去支付
+			payPreOrderVO = toPay(condition);
+			
+		} else if(TradeStateEnum.REVOKED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为已撤销：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
+			//再次去支付
+			payPreOrderVO = toPay(condition);
+			
+		} else if(TradeStateEnum.USERPAYING.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为支付中：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
+			
+			//TODO 处理 USERPAYING--用户支付中，支付时间大于10分钟，调起关闭订单，成功后再次支付
+		} else if(TradeStateEnum.PAYERROR.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
+			logger.warn("主动查询{}交易状态为支付失败：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
+			//再次去支付
+			payPreOrderVO = toPay(condition);
+			
+		} else {
+			logger.warn("主动查询{}交易状态为{}：{}", outTradeNo, payPreOrderCallbackDTO.getTradeState(), payPreOrderCallbackDTO.getReturnMsg());
+			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		
-		
-		//TODO 处理 NOTPAY—未支付，USERPAYING--用户支付中，PAYERROR--支付失败(其他原因，如银行返回失败)
+		return payPreOrderVO;
+	}
+	
+	/**
+	 * 返回支付凭证
+	 * @author mahongliang
+	 * @date  2018年8月21日 下午5:35:57
+	 * @Description 
+	 * @param bill
+	 * @return
+	 */
+	private PayPreOrderVO returnPayPreOrderVO(PayBill bill) {
+		PayPreOrderVO payPreOrderVO = new PayPreOrderVO();
 		
 		//初始化反参
 		payPreOrderVO.setAppId(bill.getAppid());
@@ -254,7 +302,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
 		payPreOrderDTO.setTimeStart(new Date());
-		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getText());
+		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getCode());
 		
 		return payPreOrderDTO;
 	}

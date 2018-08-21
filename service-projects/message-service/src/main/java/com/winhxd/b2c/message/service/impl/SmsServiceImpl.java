@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author jujinbiao
- * @className SMSServiceImpl
+ * @className SmsServiceImpl
  * @description
  */
 @Service
-public class SMSServiceImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SMSServiceImpl.class);
+public class SmsServiceImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SmsServiceImpl.class);
 
 	@Autowired
 	private SmsServerSendUtils smsServer;
@@ -35,8 +35,7 @@ public class SMSServiceImpl {
 			smsSend.setContent(content);
 			smsServer.sendSms(smsSend);
 		} catch (Exception e) {
-			LOGGER.info("消息服务->发送短信失败，SMSServiceImpl.sendSMS(),smsConditionJson={}",smsConditionJson);
-			LOGGER.error("消息服务->发送短信失败", e);
+			LOGGER.error("发送短信失败", e);
 		}
 	}
 }

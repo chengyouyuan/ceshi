@@ -25,6 +25,7 @@ import com.winhxd.b2c.promotion.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -140,15 +141,17 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
         }
         //获取区域信息
-        for (int a = 0 ; a < condition.getCouponActivityAreaList().size(); a++){
-            CouponActivityArea couponActivityArea = new CouponActivityArea();
-            couponActivityArea.setCouponActivityId(couponActivity.getId());
-            couponActivityArea.setRegionCode(condition.getCouponActivityAreaList().get(a).getRegionCode());
-            couponActivityArea.setRegionName(condition.getCouponActivityAreaList().get(a).getRegionName());
-            couponActivityArea.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-            int n4 = couponActivityAreaMapper.insertSelective(couponActivityArea);
-            if(n4==0){
-                throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+        if(!CollectionUtils.isEmpty(condition.getCouponActivityAreaList())){
+            for (int a = 0 ; a < condition.getCouponActivityAreaList().size(); a++){
+                CouponActivityArea couponActivityArea = new CouponActivityArea();
+                couponActivityArea.setCouponActivityId(couponActivity.getId());
+                couponActivityArea.setRegionCode(condition.getCouponActivityAreaList().get(a).getRegionCode());
+                couponActivityArea.setRegionName(condition.getCouponActivityAreaList().get(a).getRegionName());
+                couponActivityArea.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                int n4 = couponActivityAreaMapper.insertSelective(couponActivityArea);
+                if(n4==0){
+                    throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+                }
             }
         }
 

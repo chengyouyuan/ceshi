@@ -1,5 +1,6 @@
 package com.winhxd.b2c.gateway.config;
 
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +27,7 @@ public class CorsConfig {
     private static final String ALLOWED_HEADERS = "*";
     private static final String ALLOWED_METHODS = "*";
     private static final String ALLOWED_ORIGIN = "*";
-    private static final String ALLOWED_EXPOSE = "*";
+    private static final String ALLOWED_EXPOSE = ContextHelper.TRACER_API_TRACE_ID;
     private static final String MAX_AGE = "864000";
 
     @Bean

@@ -186,9 +186,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(StringUtils.isEmpty(paymentAccount)){
 			res = BusinessCode.CODE_610012;
 		}
-		String swiftCode = condition.getSwiftCode();
-		if(StringUtils.isEmpty(swiftCode)){
-			res = BusinessCode.CODE_610029;
+		if(withdrawType == 2){
+			String swiftCode = condition.getSwiftCode();
+			if(StringUtils.isEmpty(swiftCode)){
+				res = BusinessCode.CODE_610029;
+			}
 		}
 		return res;
 	}

@@ -133,6 +133,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                 payRefund.setCallbackRefundStatus((short)3);
             }
             payRefund.setCallbackReqInfo(reqInfo);
+            payRefund.setUpdated(new Date());
             payRefundMapper.updateByPrimaryKeySelective(payRefund);
         }
         

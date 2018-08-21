@@ -156,7 +156,8 @@ public class ApiPayStoreBindBankCardController {
 		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
 //		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-		
+		// 验证当前传入的参数是否正确
+		int res = vaildatVerifiCode(condition);
 		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
 		//生成验证码
@@ -170,9 +171,8 @@ public class ApiPayStoreBindBankCardController {
 		// 将验证码存放到redis中
 		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
 		cache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
-		if(StringUtils.isEmpty(condition.getMobile())){
-			result.setCode(BusinessCode.CODE_610015);
-			LOGGER.info("手机号为空");
+		if(res > 0){
+			result.setCode(res);
 		}else{
 			SMSCondition sMSCondition = new SMSCondition();
 			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
@@ -181,6 +181,19 @@ public class ApiPayStoreBindBankCardController {
 		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
+	}
+
+	private int vaildatVerifiCode(VerifiCodeCondtion condition) {
+		int res = 0;
+		String mobile = condition.getMobile();
+		if(StringUtils.isEmpty(mobile)){
+			res = BusinessCode.CODE_610015;
+		}
+		short withdrawType = condition.getWithdrawType();
+		if(withdrawType == 0){
+			res = BusinessCode.CODE_610022;
+		}
+		return res;
 	}
 	
 }

@@ -66,7 +66,7 @@
             }
           },
           {
-            "name": "引用优惠券信息",
+            "name": "引用信息",
             "icon": null,
             "event": {
               "type": "router",
@@ -91,10 +91,10 @@
             }
           },
           {
-            "name": "撤销已发放优惠券",
+            "name": "撤销优惠券",
             "icon": null,
             "event": {
-              "ajaxType": "delete",
+              "ajaxType": "post",
               "type": "ajax",
               "params": [
                 "id"

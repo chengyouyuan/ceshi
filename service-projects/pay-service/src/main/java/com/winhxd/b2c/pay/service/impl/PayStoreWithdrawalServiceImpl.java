@@ -94,8 +94,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setMobile(data.getStoreMobile());
 //				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
-				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
+				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称,实际账户总额
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName()+","+data.getTotalFee());
 				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
@@ -113,7 +113,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
+				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName()+","+data.getTotalFee());
 				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 }
 		}
@@ -142,6 +142,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		// 生成提现订单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		BigDecimal totalFee = condition.getTotalFee();
+		// 当前提现金而不能大于实际账户总额
+		BigDecimal total = new BigDecimal(user[2]);
+		if(totalFee.compareTo(total) == 1){
+			result.setCode(BusinessCode.CODE_610035);
+			LOGGER.info("业务异常："+BusinessCode.CODE_610035);
+			return result;
+		}
 		payWithdrawal.setTotalFee(totalFee);
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
@@ -151,8 +158,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			BigDecimal realFee = totalFee.multiply(BigDecimal.valueOf(1).subtract(rate));
 			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
 			payWithdrawal.setRealFee(realFee);
-			// 计算手续费
-			BigDecimal cmms = totalFee.multiply(rate);
+			BigDecimal cmms = countCmms(rate,totalFee);
 			LOGGER.info("当前计算所得的手续费为："+cmms);
 			payWithdrawal.setCmmsAmt(cmms);
 			payWithdrawal.setRate(rate);
@@ -173,6 +179,23 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	} 
+	
+	// 计算手续费率
+	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
+		BigDecimal cmms = totalFee.multiply(rate);
+		// 计算手续费
+		BigDecimal mix = new BigDecimal(1);
+	    BigDecimal max = new BigDecimal(25);
+		int a = cmms.compareTo(mix);
+		int b = cmms.compareTo(max);
+		if(a == -1){
+			cmms = mix;
+		}
+		if(b == 1){
+			cmms = max;
+		}
+		return cmms;
+	}
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;
@@ -201,24 +224,24 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(businessId);
 		PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();
 		if(storeBankroll != null){
-			storeUserinfo.setFlowDirectionName(payStoreWallet.get(0).getNick());
-			storeUserinfo.setFlowDirectionType((short)1);
-			storeUserinfo.setOpenid(payStoreWallet.get(0).getOpenid());
-			storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
-			storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
-			storeUserinfo.setNick(payStoreWallet.get(0).getNick());
-			storeUserinfo.setName(payStoreWallet.get(0).getName());
-			res.setCode(0);
+			PayStoreWallet storeWallet = payStoreWallet.get(0);
+			if(payStoreWallet.size() > 0 && storeWallet != null){
+				storeUserinfo.setFlowDirectionName(storeWallet.getNick());
+				storeUserinfo.setFlowDirectionType((short)1);
+				storeUserinfo.setOpenid(storeWallet.getOpenid());
+				storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
+				storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
+				storeUserinfo.setNick(storeWallet.getNick());
+				storeUserinfo.setName(storeWallet.getName());
+				res.setData(storeUserinfo);
+				res.setCode(0);
+			}else{
+				res.setCode(BusinessCode.CODE_610026);
+				LOGGER.info("当前用户没有绑定微信账户");
+			}
 		}else{
 			res.setCode(BusinessCode.CODE_610027);
 			LOGGER.info("门店当前没有可提现的金额记录");
-		}
-		
-		if(payStoreWallet.size() == 0){
-			res.setCode(BusinessCode.CODE_610026);
-			LOGGER.info("门店微信账户不存在");
-		}else{
-			res.setData(storeUserinfo);
 		}
 		return res;
 	}

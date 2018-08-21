@@ -79,10 +79,6 @@
         "title": "优惠券适用范围"
       },
       {
-        "name": "calTypeName",
-        "title": "金额计算方式"
-      },
-      {
         "name": "investorName",
         "title": "出资方规则名称"
       },
@@ -139,22 +135,6 @@
         "value": "",
         "placeholder": "",
         "isHidden": false
-      },
-      {
-        "name": "calType",
-        "inputModel": "select",
-        "title": "优惠券金额计算方式",
-        "placeholder": "",
-        "isHidden": false,
-        "options": [{
-          "value": "1",
-          "label": "订单"
-        },
-          {
-            "value": "2",
-            "label": "商品"
-          }
-        ]
       },
       {
         "name": "investorName",

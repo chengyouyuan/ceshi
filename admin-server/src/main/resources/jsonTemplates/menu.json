@@ -109,50 +109,6 @@
       ]
     },
     {
-      "id": "7",
-      "menuName": "消息管理",
-      "path": "",
-      "permission": "",
-      "children": [
-        {
-          "id": "7_2",
-          "menuName": "手动推送列表",
-          "path": "",
-          "configKey": "/template/module/message/message_batch_push_list.json",
-          "permission": ""
-        }
-      ]
-    },
-    {
-      "id": "8",
-      "menuName": "系统管理",
-      "path": "",
-      "permission": "",
-      "children": [
-        {
-          "id": "8_1",
-          "menuName": "权限管理",
-          "path": "",
-          "configKey": "/template/module/system/system_role_list.json",
-          "permission": ""
-        },
-        {
-          "id": "8_2",
-          "menuName": "成员管理",
-          "path": "",
-          "configKey": "/template/module/system/system_user_list.json",
-          "permission": ""
-        },
-        {
-          "id": "8_3",
-          "menuName": "订单时间设置",
-          "path": "/setOrderTime/index",
-          "configKey": "",
-          "permission": ""
-        }
-      ]
-    },
-    {
       "id": "9",
       "menuName": "促销管理",
       "path": "",
@@ -183,7 +139,7 @@
         },
         {
           "id": "9_2",
-          "menuName": "适用对象规则管理",
+          "menuName": "适用对象规则",
           "path": "",
           "configKey": "",
           "permission": "",
@@ -206,7 +162,7 @@
         },
         {
           "id": "9_3",
-          "menuName": "优惠券坎级管理",
+          "menuName": "优惠券坎级",
           "path": "",
           "permission": "",
           "children": [
@@ -228,7 +184,7 @@
         },
         {
           "id": "9_4",
-          "menuName": "优惠券模板管理",
+          "menuName": "优惠券模板",
           "path": "",
           "permission": "",
           "children": [
@@ -296,6 +252,51 @@
           ]
         }
       ]
+    },
+    {
+      "id": "7",
+      "menuName": "消息管理",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "7_2",
+          "menuName": "手动推送列表",
+          "path": "",
+          "configKey": "/template/module/message/message_batch_push_list.json",
+          "permission": ""
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "menuName": "系统管理",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "8_1",
+          "menuName": "权限管理",
+          "path": "",
+          "configKey": "/template/module/system/system_role_list.json",
+          "permission": ""
+        },
+        {
+          "id": "8_2",
+          "menuName": "成员管理",
+          "path": "",
+          "configKey": "/template/module/system/system_user_list.json",
+          "permission": ""
+        },
+        {
+          "id": "8_3",
+          "menuName": "订单时间设置",
+          "path": "/setOrderTime/index",
+          "configKey": "",
+          "permission": ""
+        }
+      ]
     }
+
   ]
 }

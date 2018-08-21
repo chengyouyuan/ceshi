@@ -293,7 +293,7 @@ public class CouponController {
 		 */
 		if(condition==null || StringUtils.isBlank(condition.getTitle()) || condition.getInvestorId()==null
 		   || condition.getGradeId()==null || condition.getApplyRuleId()==null
-		   || condition.getPayType()==null || condition.getCalType()==null	){
+		   || condition.getPayType()==null 	){
            throw new BusinessException(BusinessCode.CODE_500010,"优惠券模板必填参数错误");
 		}
 		UserInfo userInfo = UserManager.getCurrentUser();

@@ -30,8 +30,9 @@ public interface WXUnifiedOrderService {
 	 * @date  2018年8月19日 下午4:19:07
 	 * @Description 
 	 * @param payPreOrderCallbackDTO
+	 * @param status
 	 * @return
 	 */
-	PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO);
-	
+	PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO, Short status);
+
 }

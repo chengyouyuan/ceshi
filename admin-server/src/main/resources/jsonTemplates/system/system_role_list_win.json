@@ -29,7 +29,7 @@
       {
         "type": "radio",
         "aglign": "center",
-        "width": "20",
+        "width": "50",
         "fixed": "left"
       },
       {

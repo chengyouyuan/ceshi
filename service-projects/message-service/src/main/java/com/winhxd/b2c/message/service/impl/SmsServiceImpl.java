@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author jujinbiao
- * @className SMSServiceImpl
+ * @className SmsServiceImpl
  * @description
  */
 @Service
-public class SMSServiceImpl {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SMSServiceImpl.class);
+public class SmsServiceImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SmsServiceImpl.class);
 
 	@Autowired
 	private SmsServerSendUtils smsServer;

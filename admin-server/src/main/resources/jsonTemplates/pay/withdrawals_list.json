@@ -25,7 +25,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "id" ],
+          "params": [ "id", "storeId" ],
           "path": "/pay/verify/approveStoreWithdraw",
           "confirm": {
             "title": "提示",

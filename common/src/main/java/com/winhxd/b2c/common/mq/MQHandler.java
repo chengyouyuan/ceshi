@@ -25,6 +25,10 @@ public enum MQHandler {
      */
     NETEASE_MESSAGE_DELAY_HANDLER(MQDestination.NETEASE_MESSAGE_DELAY),
     /**
+     * 订单超时未支付
+     */
+    ORDER_PAY_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_PAY_TIMEOUT_DELAYED),
+    /**
      * 订单超时未接单延时消息
      */
     ORDER_RECEIVE_TIMEOUT_DELAYED_HANDLER(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED),

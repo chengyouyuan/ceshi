@@ -792,6 +792,35 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.unlock();
         }
     }
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @StringMessageListener(value = MQHandler.ORDER_PAY_TIMEOUT_DELAYED_HANDLER)
+    public void orderPayTimeOut(String orderNo) {
+        if (StringUtils.isBlank(orderNo)) {
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
+        }
+        String lockKey = CacheName.CACHE_KEY_MODIFY_ORDER + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
+            if (orderInfo == null) {
+                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+            }
+            if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_PAY.getStatusCode()) {
+                // 如果非 带确认状态，直接返回
+                logger.info("订单：{} 状态：{} 非待付款状态，无需进行超时取消操作", orderNo,
+                        OrderStatusEnum.getMarkByCode(orderInfo.getOrderStatus()));
+                return;
+            }
+            //取消
+            orderCancel(orderInfo, "超时未付款取消", orderInfo.getCustomerId(), "sys", 5);
+            registerProcessAfterTransSuccess(new PayTimeOutProcessSuccessRunnerable(orderInfo), null);
+        } finally {
+            lock.unlock();
+        }
+    }
 
 
     @Override
@@ -892,6 +921,8 @@ public class CommonOrderServiceImpl implements OrderService {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setCreated(new Date());
         orderInfo.setCreatedBy(orderCreateCondition.getCustomerId());
+        orderInfo.setUpdated(new Date());
+        orderInfo.setUpdatedBy(orderCreateCondition.getCustomerId());
         orderInfo.setCustomerId(orderCreateCondition.getCustomerId());
         orderInfo.setStoreId(orderCreateCondition.getStoreId());
         orderInfo.setPayStatus((short) PayStatusEnum.UNPAID.getStatusCode());
@@ -1404,20 +1435,62 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     /**
+     * 订单 超时未付款处理成功
+     *
+     * @author wangbin
+     * @date 2018年8月13日 下午3:16:17
+     */
+    private class PayTimeOutProcessSuccessRunnerable implements Runnable {
+
+        private OrderInfo orderInfo;
+
+        public PayTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
+            super();
+            this.orderInfo = orderInfo;
+        }
+
+        @Override
+        public void run() {
+            //给用户发信息
+            try {
+                String customerMsg = OrderNotifyMsg.ORDER_PAY_TIMEOUT_MSG_4_CUSTOMER;
+                OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
+                String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
+                        "...";
+                String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+                String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
+                String page = null;
+                MiniTemplateData data = new MiniTemplateData();
+                data.setKeyName(KEYWORD1);
+                data.setValue(prodTitles);
+                data.setKeyName(KEYWORD2);
+                data.setValue(orderTotal);
+                data.setKeyName(KEYWORD3);
+                data.setValue(customerMsg);
+                short msgType2C = MiniMsgTypeEnum.STORE_CANCEL_ORDER.getMsgType();
+                MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+                messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
+            } catch (Exception e) {
+                logger.error("订单未接单超时给用户发送消息失败：", e);
+            }
+        }
+    }
+    
+    /**
      * 订单门店 超时未确认处理成功
      *
      * @author wangbin
      * @date 2018年8月13日 下午3:16:17
      */
     private class ReceiveTimeOutProcessSuccessRunnerable implements Runnable {
-
+        
         private OrderInfo orderInfo;
-
+        
         public ReceiveTimeOutProcessSuccessRunnerable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
-
+        
         @Override
         public void run() {
             //给用户发信息

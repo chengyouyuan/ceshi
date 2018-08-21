@@ -101,13 +101,14 @@ public class OrderUtil {
         return neteaseMsgCondition;
     }
 
-    public static MiniMsgCondition genMiniMsgCondition(String openid, String page, short msgType2C, MiniTemplateData... datas) {
+    public static MiniMsgCondition genMiniMsgCondition(String openid, String page, short msgType2C, String emphasisKeyword, MiniTemplateData... datas) {
         List<MiniTemplateData> temData = Arrays.asList(datas);
         MiniMsgCondition miniMsgCondition = new MiniMsgCondition();
         miniMsgCondition.setToUser(openid);
         miniMsgCondition.setPage(page);
         miniMsgCondition.setMsgType(msgType2C);
         miniMsgCondition.setData(temData);
+        miniMsgCondition.setEmphasisKeyword(emphasisKeyword);
         return miniMsgCondition;
     }
 
@@ -176,13 +177,10 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:32:26
      */
-    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal) {
+    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal, String pickupCode) {
         try {
             pickupDateTime = pickupDateTime == null ? new Date() : pickupDateTime;
             String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
-            if (pickupType == PickUpTypeEnum.SELF_PICK_UP_NOW.getTypeCode()) {
-                customerMsg = OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER_PICKUP_NOW;
-            }
             String page = null;
             MiniTemplateData data = new MiniTemplateData();
             data.setKeyName("keyword1");
@@ -191,8 +189,10 @@ public class OrderUtil {
             data.setValue(orderTotal);
             data.setKeyName("keyword3");
             data.setValue(customerMsg);
+            data.setKeyName("keyword4");
+            data.setValue(pickupCode);
             short msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C);
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, "keyword4.DATA");
             messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},提货发送消息失败", openid);

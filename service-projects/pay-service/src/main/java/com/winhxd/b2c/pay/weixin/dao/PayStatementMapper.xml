@@ -382,4 +382,13 @@
   </delete>
   
   
+  <select id="selectByOutOrderNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_statement
+    where 
+      out_order_no = #{outOrderNo,jdbcType=VARCHAR}
+	  AND  pay_status = 'SUCCESS'
+  </select>
+  
 </mapper>

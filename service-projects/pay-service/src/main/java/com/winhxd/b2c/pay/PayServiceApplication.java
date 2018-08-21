@@ -12,7 +12,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-//@EnableEventMessage
+@EnableEventMessage
 @SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class})
 @MapperScan({"com.winhxd.b2c.pay.dao","com.winhxd.b2c.pay.weixin.dao"})
 @ComponentScan(basePackages = "com.winhxd.b2c")

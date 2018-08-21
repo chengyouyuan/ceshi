@@ -50,7 +50,7 @@ public class ManDaoSmsProcess extends BaseSmsProcess {
 		try {
 			Client client = new ManDaoSmsProcess.Client();
 			String resultMo = client.mo();
-			if (resultMo.startsWith("-")) {
+			if (resultMo.startsWith(SmsConstant.SEND_FAIL_IDENTIFY)) {
 				//接收失败的情况，输出失败信息
 				System.out.print(resultMo + " 序列号或密码不对");
 			} else if ("1" == resultMo) {
@@ -68,7 +68,7 @@ public class ManDaoSmsProcess extends BaseSmsProcess {
 		}
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		ManDaoSmsProcess tManDaoSmsProcess = new ManDaoSmsProcess();
 		MessageSmsHistory smsSend = new MessageSmsHistory();

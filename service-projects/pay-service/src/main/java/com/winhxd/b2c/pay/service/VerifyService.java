@@ -208,6 +208,10 @@ public class VerifyService {
     @Transactional
     public int thirdPartyVerifyAccounting(String orderNo) {
         PayStatement payStatement = payStatementMapper.selectByOutOrderNo(orderNo);
+        if (payStatement == null) {
+            log.warn("没有查询到订单[{}]与支付平台对账信息", orderNo);
+            return 0;
+        }
         // 订单手续费
         BigDecimal serviceFee = payStatement.getFee();
         accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee);
@@ -473,13 +477,11 @@ public class VerifyService {
             payWithdrawals.setAuditStatus(auditStatus);
             payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
-            // TODO 门店提现
-            // 更新门店提现状态
-            payWithdrawals.setAuditStatus(null);
-            payWithdrawals.setAuditDesc(null);
-            payWithdrawals.setCallbackStatus(null);
-            payWithdrawals.setCallbackReason(null);
-            payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
+            // 门店提现
+            PayWithdrawalsCondition toWxBankCondition = new PayWithdrawalsCondition();
+            toWxBankCondition.setWithdrawalsId(id);
+            toWxBankCondition.setOperaterID(String.valueOf(condition.getUpdatedBy()));
+            payService.transfersPatrent(toWxBankCondition);
             count++;
         }
         return count;

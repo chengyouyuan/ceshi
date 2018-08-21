@@ -29,7 +29,7 @@ public class ThirdPartyVerifyTask {
     @Autowired
     private VerifyServiceClient verifyServiceClient;
 
-    @Scheduled(cron = "0 0 0/1 * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void thirdPartyVerifyAccounting() {
         String key = "third-party-not-verify-order-set";
         // 预计执行一小时
@@ -39,7 +39,7 @@ public class ThirdPartyVerifyTask {
         boolean isCanGetLock = lock.tryLock(3, TimeUnit.SECONDS);
         if (isCanGetLock) {
             log.info("与支付平台结算状态更新任务开始执行");
-            int orderCount = 0;
+            int orderCount;
             int updateCount = 0;
             int errorCount = 0;
             try {

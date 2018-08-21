@@ -116,7 +116,7 @@
       "children": [
         {
           "id": "9_1",
-          "menuName": "出资方规则管理",
+          "menuName": "出资方规则",
           "path": "",
           "configKey": "",
           "permission": "",
@@ -184,7 +184,7 @@
         },
         {
           "id": "9_4",
-          "menuName": "优惠券模板",
+          "menuName": "优惠券模板管理",
           "path": "",
           "permission": "",
           "children": [

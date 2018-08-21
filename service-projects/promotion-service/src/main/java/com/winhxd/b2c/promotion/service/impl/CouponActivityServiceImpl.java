@@ -487,6 +487,15 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         return result;
     }
 
+    @Override
+    public Boolean getActivityDateClash(CouponActivityAddCondition condition) {
+        Integer count = couponActivityMapper.getActivityDateClash(condition);
+        if(count>0){
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 自动生成32位的UUid，对应数据库的主键id进行插入用。

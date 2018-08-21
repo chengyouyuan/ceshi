@@ -61,6 +61,25 @@
     activity_status, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
+  <select id="getActivityDateClash" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition" resultType="java.lang.Integer">
+    SELECT
+    COUNT(ca.id)
+    FROM
+    coupon_activity ca
+    WHERE
+    1 = 1
+    AND ca.type = 2
+    AND (
+    (
+    #{condition.activityStart} &gt;= ca.activity_start
+    AND #{condition.activityStart} &lt;= ca.activity_end
+    )
+    OR (
+    #{condition.activityEnd} &gt;= ca.activity_start
+    AND #{condition.activityEnd} &lt;= ca.activity_end
+    )
+    )
+  </select>
   <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,

@@ -25,7 +25,7 @@ import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
 public class DownLoadStatementTask {
     private static final Logger logger = LoggerFactory.getLogger(DownLoadStatementTask.class);
  
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-mm-DD HH:mm:ss");
  
     @Autowired
     DownLoadStatementClient downLoadStatementClient;

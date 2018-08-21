@@ -262,7 +262,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
 		payPreOrderDTO.setTimeStart(new Date());
-		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getText());
+		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getCode());
 		
 		return payPreOrderDTO;
 	}

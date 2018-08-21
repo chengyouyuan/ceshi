@@ -399,24 +399,26 @@ public class VerifyService {
         if (!condition.getIsQueryAll()) {
             PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
-        Set<Long> storeSet = new HashSet<>();
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
-        for (PayWithdrawalsVO vo : page.getResult()) {
-            if (!storeSet.contains(vo.getStoreId())) {
-                storeSet.add(vo.getStoreId());
-            }
-        }
-        Map<Long, String> storeMap = new HashMap<>();
-        ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
-        if (responseResult != null && responseResult.getCode() == 0) {
-            if (responseResult.getData() != null) {
-                for (StoreUserInfoVO vo : responseResult.getData()) {
-                    storeMap.put(vo.getId(), vo.getStoreName());
+        if (page.getTotal() > 0) {
+            Set<Long> storeSet = new HashSet<>();
+            for (PayWithdrawalsVO vo : page.getResult()) {
+                if (!storeSet.contains(vo.getStoreId())) {
+                    storeSet.add(vo.getStoreId());
                 }
             }
-        }
-        for (PayWithdrawalsVO vo : page.getResult()) {
-            vo.setStoreName(storeMap.get(vo.getStoreId()));
+            Map<Long, String> storeMap = new HashMap<>();
+            ResponseResult<List<StoreUserInfoVO>> responseResult = storeServiceClient.findStoreUserInfoList(storeSet);
+            if (responseResult != null && responseResult.getCode() == 0) {
+                if (responseResult.getData() != null) {
+                    for (StoreUserInfoVO vo : responseResult.getData()) {
+                        storeMap.put(vo.getId(), vo.getStoreName());
+                    }
+                }
+            }
+            for (PayWithdrawalsVO vo : page.getResult()) {
+                vo.setStoreName(storeMap.get(vo.getStoreId()));
+            }
         }
         return page;
     }

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
 import com.winhxd.b2c.common.domain.common.PagedCondition;
+import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,11 +25,17 @@ public class VerifyDetailListCondition extends PagedCondition implements Seriali
     @ApiModelProperty("费用类型")
     private Integer detailType;
 
+    @ApiModelProperty("费用入账时间")
+    private DoubleDate recordedDate;
+
     @ApiModelProperty("费用入账时间开始")
     private Date recordedDateStart;
 
     @ApiModelProperty("费用入账时间结束")
     private Date recordedDateEnd;
+
+    @ApiModelProperty("结算时间")
+    private DoubleDate verifyDate;
 
     @ApiModelProperty("结算时间开始")
     private Date verifyDateStart;

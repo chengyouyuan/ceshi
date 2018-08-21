@@ -32,20 +32,8 @@
         "title": "优惠券活动编码"
       },
       {
-        "name": "status",
-        "inputModel": "select",
-        "title": "优惠券状态",
-        "placeholder": "",
-        "isHidden": false,
-        "options": [{
-          "value": "0",
-          "label": "无效"
-        },
-          {
-            "value": "1",
-            "label": "有效"
-          }
-        ]
+        "name": "statusName",
+        "title": "优惠券状态"
       },
       {
         "name": "updated",

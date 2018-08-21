@@ -53,6 +53,7 @@
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
     <result column="activityCode" jdbcType="VARCHAR" property="activityCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="status_name" jdbcType="VARCHAR" property="statusName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -87,11 +88,19 @@
     ca.`name` AS activityName,
     ca.`code` AS activityCode,
     ct.`status`,
+    (
+    CASE
+    WHEN ct.`status` = 1 THEN
+    '有效'
+    WHEN ct.`status` = 0 THEN
+    '无效'
+    END
+    ) AS status_name,
     cts.updated
     FROM
     coupon_activity ca
     LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id AND cat.`status` = 1
-    LEFT JOIN coupon_template ct ON ct.id = cat.template_id AND ct.`status` = 1
+    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
     LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id AND cts.`status` = 1
     WHERE
     1 = 1

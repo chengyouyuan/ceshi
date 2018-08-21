@@ -82,7 +82,8 @@ public class ApiPayStoreWithdrawalController {
 	@ApiOperation(value = "门店提现到微信或者银行卡", notes = "门店提现到微信或者银行卡")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数")
+		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
+		@ApiResponse(code = BusinessCode.CODE_610035, message = "提取限额不能大于实际账户余额")
 	})
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){

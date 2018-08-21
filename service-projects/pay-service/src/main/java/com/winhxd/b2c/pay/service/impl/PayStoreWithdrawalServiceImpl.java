@@ -157,7 +157,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setName(user[1]);
-		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		payWithdrawal.setCreated(new Date());
 		payWithdrawal.setCreatedByName(user[1]);
 		payWithdrawal.setCreatedBy(businessId);
@@ -165,6 +164,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setUpdatedBy(businessId);
 		payWithdrawal.setUpdatedByName(user[1]);
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
+		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	} 
 	

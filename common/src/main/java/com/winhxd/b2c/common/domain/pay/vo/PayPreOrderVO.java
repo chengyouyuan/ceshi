@@ -25,5 +25,7 @@ public class PayPreOrderVO {
 	private String signType;
 	@ApiModelProperty("签名")
 	private String paySign;
+	@ApiModelProperty("支付状态，true：去支付；false：支付中")
+	private Boolean payStatus;
 
 }

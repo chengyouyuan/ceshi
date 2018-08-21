@@ -445,6 +445,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
         if(null ==condition.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
@@ -464,6 +465,10 @@ public class CouponServiceImpl implements CouponService {
 
     @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_UNTREAD_COUPON_HANDLER)
     public void eventOrderUntreadCoupon(String orderNo, OrderInfo order) {
+        if(null ==order.getOrderNo()){
+            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         OrderUntreadCouponCondition condition = new OrderUntreadCouponCondition();
         condition.setOrderNo(order.getOrderNo());
         this.orderUntreadCoupon(condition);
@@ -473,6 +478,7 @@ public class CouponServiceImpl implements CouponService {
     public Boolean revokeCoupon(RevokeCouponCodition condition) {
         List<Long> sendIds = condition.getSendIds();
         if(sendIds.isEmpty()){
+            logger.error("CouponServiceImpl.revokeCoupon 优惠券发放id为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         for(int i =0 ;i<sendIds.size();i++){
@@ -492,6 +498,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
         if(null == couponCondition.getOrderNo()){
+            logger.error("CouponServiceImpl.couponCondition-订单号为空");
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
@@ -590,15 +597,32 @@ public class CouponServiceImpl implements CouponService {
         CouponGradeDetail couponGradeDetail = couponGradeDetails.get(0);
         //优惠类型 1.金额2，折扣
         if(couponGradeDetail.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_CASH.getCode())){
-            //订单金额大于等于满减金额,取优惠金额
+
+            //满减金额等于0 代表无门槛券
+            if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
+                //总额大于等于满减金额,返回满减金额否则返回总额
+                return amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0 ? couponGradeDetail.getReducedAmt():amountPrice;
+            }
+
+            //总额大于等于满减金额
             if(amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0){
                 return couponGradeDetail.getDiscountedAmt();
             }
         }else{
+            //计算优惠金额
             BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted());
+
+            //满减金额等于0 代表无门槛券
+            if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
+                //总额大于等于满减金额,返回满减金额否则返回总额
+                // 折扣券不存在优惠金额大于总额
+            }
+
             //优惠金额大于等于优惠最大限额,取优惠最大限额
             if(discountAmount.compareTo(couponGradeDetail.getDiscountedMaxAmt())>=0){
                 return couponGradeDetail.getDiscountedMaxAmt();
+            }else{
+                return discountAmount;
             }
         }
         return new BigDecimal(0);

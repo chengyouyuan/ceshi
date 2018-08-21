@@ -1,17 +1,5 @@
 package com.winhxd.b2c.customer.api;
 
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -31,11 +19,21 @@ import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.customer.service.CustomerLoginService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * @author wufuyun
@@ -198,7 +196,7 @@ public class ApiCustomerLoginController {
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(customerUserInfoCondition.getCustomerMobile());
-		messageSendUtils.sendSMS(sMSCondition);
+		messageSendUtils.sendSms(sMSCondition);
 		logger.info(customerUserInfoCondition.getCustomerMobile() + ":发送的内容为:" + content);
 		return result;
 	}

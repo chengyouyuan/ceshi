@@ -29,7 +29,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
     private Pattern serviceClass = Pattern.compile("^com\\.winhxd\\.b2c\\.\\w+(\\.\\w+)?\\.controller\\.\\w+Controller$");
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {/*
 
         List<String> errorList = new ArrayList<>();
         Set<String> codes = new HashSet<>();
@@ -62,7 +62,7 @@ public class ControllerChecker implements ApplicationListener<ContextRefreshedEv
             );
             System.exit(1);
         }
-    }
+    */}
 
     private void checkMethodOutput(List<String> errorList, Method method) {
         String methodName = method.getName(), className = method.getDeclaringClass().getCanonicalName();

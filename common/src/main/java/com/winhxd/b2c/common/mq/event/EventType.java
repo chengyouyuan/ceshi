@@ -29,11 +29,7 @@ public enum EventType {
     /**
      * 订单取消事件
      */
-    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class),
-	/**
-	 * 订单退款 完成事件
-	 */
-    EVENT_CUSTOMER_ORDER_REFUND_UPDATE_ORDER(OrderInfo.class);
+    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class);
 
     private Class<?> eventObjectClass;
 

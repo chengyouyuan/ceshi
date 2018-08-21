@@ -14,7 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
-public class ManDaoInternationalSmsProcess extends SmsProcess {
+public class ManDaoInternationalSmsProcess extends BaseSmsProcess {
 
 	@Override
 	public int sendMessage(MessageSmsHistory smsSend) {

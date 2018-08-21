@@ -362,6 +362,8 @@
     <result column="rate" jdbcType="DECIMAL" property="rate" />
     <result column="audit_status" jdbcType="SMALLINT" property="auditStatus" />
     <result column="audit_desc" jdbcType="VARCHAR" property="auditDesc" />
+    <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
+    <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
     <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
     <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
     <result column="name" jdbcType="VARCHAR" property="name" />

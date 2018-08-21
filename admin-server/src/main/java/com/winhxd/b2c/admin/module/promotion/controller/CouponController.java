@@ -52,6 +52,7 @@ public class CouponController {
 	@Autowired
 	private CouponApplyServiceClient couponApplyServiceClient;
 
+
 	//=====================================优惠券活动开始=============================================================
 	/**
 	 *
@@ -109,7 +110,7 @@ public class CouponController {
 	}
     @ApiOperation("优惠券活动导出小店信息")
     @GetMapping(value = "/5051/v1/couponActivityExportStoreExcel")
-    public ResponseEntity<byte[]> couponActivityExportStoreExcel(@RequestBody CouponActivityCondition condition){
+    public ResponseEntity<byte[]> couponActivityExportStoreExcel(CouponActivityCondition condition){
         ResponseResult<PagedList<CouponActivityStoreVO>> responseResult = couponActivityServiceClient.queryStoreByActivity(condition);
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
         return ExcelUtils.exp(list, "惠小店信息");
@@ -390,8 +391,7 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		String code = getUUID();
-
+		String code = "WS_CZF"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
 		condition.setCode(code);
 		condition.setName(name);
 		condition.setUserId(userId);
@@ -486,7 +486,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	 UserInfo userInfo = UserManager.getCurrentUser();
 	 String userId = userInfo.getId()+"";
 	 String userName = userInfo.getUsername();
-	 String code = getUUID();
+	 String code = "WS_KJGZ"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
 	 couponGradeCondition.setCode(code);
 	 couponGradeCondition.setUserId(userId);
 	 couponGradeCondition.setUserName(userName);
@@ -564,7 +564,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		String code = getUUID();
+		String code  = "WS_SYDX"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
 		condition.setCode(code);
 		condition.setUserId(userId);
 		condition.setUserName(userName);
@@ -717,6 +717,18 @@ public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPag
 				}
 			}
 		}
+	}
+
+
+	public String getTimeStr(){
+		Calendar cal = Calendar.getInstance();
+		String timw = cal.get(Calendar.YEAR)+""
+				+(cal.get(Calendar.MONTH)+1)+""
+				+cal.get(Calendar.DAY_OF_MONTH)+""
+				+cal.get(Calendar.HOUR_OF_DAY)+""
+				+cal.get(Calendar.MINUTE)+""
+				+cal.get(Calendar.SECOND)+"";
+        return timw;
 	}
 
 }

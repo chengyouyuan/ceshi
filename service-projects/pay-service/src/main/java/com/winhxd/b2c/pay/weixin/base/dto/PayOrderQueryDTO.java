@@ -11,14 +11,14 @@ public class PayOrderQueryDTO extends RequestBase {
 	/**
 	 * 支付流水号
 	 */
-	private String outRradeNo;
+	private String outTradeNo;
 
-	public String getOutRradeNo() {
-		return outRradeNo;
+	public String getOutTradeNo() {
+		return outTradeNo;
 	}
 
-	public void setOutRradeNo(String outRradeNo) {
-		this.outRradeNo = outRradeNo;
+	public void setOutTradeNo(String outTradeNo) {
+		this.outTradeNo = outTradeNo;
 	}
 
 }

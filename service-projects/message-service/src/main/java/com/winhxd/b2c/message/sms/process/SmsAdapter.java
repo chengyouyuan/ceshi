@@ -18,9 +18,9 @@ import java.util.List;
  */
 public class SmsAdapter {
 	private static Log logger = LogFactory.getLog(SmsAdapter.class);
-	private final static List<String> ydList = new ArrayList<String>();
-	private final static List<String> ltList = new ArrayList<String>();
-	private final static List<String> dxList = new ArrayList<String>();
+	private final static List<String> YDLIST = new ArrayList<String>();
+	private final static List<String> LTLIST = new ArrayList<String>();
+	private final static List<String> DXLIST = new ArrayList<String>();
 	private static boolean isDetect = true;
 
 	@Value("${longmessage.class}")
@@ -30,37 +30,37 @@ public class SmsAdapter {
 	private static String replaceSuffix;
 
 	static {
-		ydList.add("134");
-		ydList.add("135");
-		ydList.add("136");
-		ydList.add("137");
-		ydList.add("138");
-		ydList.add("139");
-		ydList.add("147");
-		ydList.add("150");
-		ydList.add("151");
-		ydList.add("152");
-		ydList.add("157");
-		ydList.add("158");
-		ydList.add("159");
-		ydList.add("182");
-		ydList.add("183");
-		ydList.add("187");
-		ydList.add("188");
+		YDLIST.add("134");
+		YDLIST.add("135");
+		YDLIST.add("136");
+		YDLIST.add("137");
+		YDLIST.add("138");
+		YDLIST.add("139");
+		YDLIST.add("147");
+		YDLIST.add("150");
+		YDLIST.add("151");
+		YDLIST.add("152");
+		YDLIST.add("157");
+		YDLIST.add("158");
+		YDLIST.add("159");
+		YDLIST.add("182");
+		YDLIST.add("183");
+		YDLIST.add("187");
+		YDLIST.add("188");
 
-		ltList.add("130");
-		ltList.add("131");
-		ltList.add("132");
-		ltList.add("145");
-		ltList.add("155");
-		ltList.add("156");
-		ltList.add("185");
-		ltList.add("186");
+		LTLIST.add("130");
+		LTLIST.add("131");
+		LTLIST.add("132");
+		LTLIST.add("145");
+		LTLIST.add("155");
+		LTLIST.add("156");
+		LTLIST.add("185");
+		LTLIST.add("186");
 
-		dxList.add("133");
-		dxList.add("153");
-		dxList.add("180");
-		dxList.add("189");
+		DXLIST.add("133");
+		DXLIST.add("153");
+		DXLIST.add("180");
+		DXLIST.add("189");
 	}
 
 	/**
@@ -71,11 +71,11 @@ public class SmsAdapter {
 	 * @param content   短信内容
 	 * @return SmsProcess 短信发送实例
 	 */
-	public static SmsProcess adapter(String codeType, String telephone, String content) throws Exception {
+	public static BaseSmsProcess adapter(String codeType, String telephone, String content) throws Exception {
 
 		String replace;// 是否需要替代
 		Class<?> clazz = null;
-		SmsProcess smsProcess = null;
+		BaseSmsProcess smsProcess = null;
 		String className = null;
 
 		try {
@@ -102,7 +102,7 @@ public class SmsAdapter {
 			}
 
 			clazz = Class.forName(className);
-			smsProcess = (SmsProcess) clazz.newInstance();
+			smsProcess = (BaseSmsProcess) clazz.newInstance();
 		} catch (ClassNotFoundException e) {
 			logger.error(e.getMessage(), e.getCause());
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.admin.config;
 
+import com.winhxd.b2c.common.context.support.ContextHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,7 +22,7 @@ public class CorsConfig {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addExposedHeader("*");
+        config.addExposedHeader(ContextHelper.TRACER_API_TRACE_ID);
         config.setMaxAge(864000L);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

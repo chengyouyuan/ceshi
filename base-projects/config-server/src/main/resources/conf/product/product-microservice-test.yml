@@ -41,7 +41,7 @@ product:
 pagehelper:
    helperDialect: mysql
    offsetAsPageNum: true
-   reasonable: true
+   reasonable: false
    supportMethodsArguments: true
    params: count=countSql
 

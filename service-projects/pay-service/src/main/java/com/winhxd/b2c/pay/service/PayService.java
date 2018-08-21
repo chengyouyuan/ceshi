@@ -4,13 +4,11 @@ import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 
@@ -31,7 +29,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderPay(PayBill condition);
+	Boolean callbackOrderPay(PayBill condition);
 	/**
 	 * @author liuhanning
 	 * @date  2018年8月13日 下午1:07:13
@@ -39,7 +37,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	Integer callbackOrderRefund(PayRefund condition);
+	Boolean callbackOrderRefund(PayRefund condition);
 	
 	/**
 	 * @author liuhanning
@@ -58,7 +56,7 @@ public interface PayService {
 	 * @param condition
 	 * @return
 	 */
-	PayPreOrderVO unifiedOrder(PayPreOrderCondition condition);
+	OrderPayVO unifiedOrder(PayPreOrderCondition condition);
 	
 	/**
 	 * 退款

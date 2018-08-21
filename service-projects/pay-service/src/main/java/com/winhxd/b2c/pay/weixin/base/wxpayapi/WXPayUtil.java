@@ -212,10 +212,16 @@ public class WXPayUtil {
             }
             // 参数值为空，则不参与签名
             if (data.get(k).trim().length() > 0){
-                sb.append(k).append("=").append(data.get(k).trim()).append("&");
+            	//对package关键字做特殊处理
+            	if(k.equalsIgnoreCase("packageData")) {
+            		sb.append("package").append("=").append(data.get(k).trim()).append("&");
+            	} else{
+            		sb.append(k).append("=").append(data.get(k).trim()).append("&");
+            	}
             }
         }
         sb.append("key=").append(key);
+        WXPayUtil.getLogger().warn("-----签名数据BBB------"+sb.toString());
         if (SignType.MD5.equals(signType)) {
             return MD5(sb.toString()).toUpperCase();
         }

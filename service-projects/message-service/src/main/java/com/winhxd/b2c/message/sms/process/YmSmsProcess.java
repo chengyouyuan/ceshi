@@ -7,7 +7,7 @@ import com.winhxd.b2c.message.sms.common.SmsConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class YmSmsProcess extends SmsProcess {
+public class YmSmsProcess extends BaseSmsProcess {
 
     private final Logger logger = LoggerFactory.getLogger(YmSmsProcess.class);
 

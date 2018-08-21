@@ -26,6 +26,7 @@ import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
 import com.winhxd.b2c.pay.weixin.util.DecipherUtil;
+import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,13 +66,14 @@ public class ApiPayCallbackController {
 			this.response(response, FAIL_RESPONSE);
 			return;
 		}
+		logger.info("支付回调参数：{}", resqXml);
 		try {
-			//Map<String, String> map = WXPayUtil.xmlToMap(respXml);
-			PayPreOrderCallbackDTO payPreOrderCallbackDTO = BeanAndXmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
+			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
+			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", payPreOrderCallbackDTO);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
 				PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
-				int success = payService.callbackOrderPay(bill);
-				if(success == 0) {
+				Boolean result = payService.callbackOrderPay(bill);
+				if(result) {
 					this.response(response, SUCCESS_RESPONSE);
 				} else {
 					this.response(response, FAIL_RESPONSE);
@@ -98,8 +100,10 @@ public class ApiPayCallbackController {
 			this.response(response, FAIL_RESPONSE);
 			return;
 		}
+		logger.info("退款回调参数：{}", resqXml);
 		try {
-			PayRefundResponseDTO refundCallbackDTO = BeanAndXmlUtil.xml2Bean(resqXml, PayRefundResponseDTO.class);
+			PayRefundResponseDTO refundCallbackDTO = XmlUtil.xml2Bean(resqXml, PayRefundResponseDTO.class);
+			logger.info("退款回调转换参数（PayRefundResponseDTO）：{}", refundCallbackDTO);
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密
@@ -107,8 +111,8 @@ public class ApiPayCallbackController {
 				refundCallbackDTO = BeanAndXmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
 
 				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(refundCallbackDTO);
-				int success = payService.callbackOrderRefund(payRefund);
-				if(success == 0) {
+				Boolean result = payService.callbackOrderRefund(payRefund);
+				if(result) {
 					this.response(response, SUCCESS_RESPONSE);
 				} else {
 					this.response(response, FAIL_RESPONSE);

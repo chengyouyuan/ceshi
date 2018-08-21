@@ -1,16 +1,5 @@
 package com.winhxd.b2c.pay.api;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -22,16 +11,24 @@ import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
-import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author zhanghuan
@@ -179,7 +176,7 @@ public class ApiPayStoreBindBankCardController {
 			SMSCondition sMSCondition = new SMSCondition();
 			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
 			sMSCondition.setMobile(condition.getMobile());
-			messageSendUtils.sendSMS(sMSCondition);
+			messageSendUtils.sendSms(sMSCondition);
 		}
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;

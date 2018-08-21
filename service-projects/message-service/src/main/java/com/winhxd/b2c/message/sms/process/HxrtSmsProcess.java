@@ -12,17 +12,17 @@ import java.util.Date;
 /**
  * @author yaoshuai
  */
-public class HxrtSmsProcess extends SmsProcess {
+public class HxrtSmsProcess extends BaseSmsProcess {
 
-    private static final String strRegUrl = "http://www.stongnet.com/sdkhttp/reg.aspx";
-    private static final String strBalanceUrl = "http://www.stongnet.com/sdkhttp/getbalance.aspx";
-    private static final String strSmsUrl = "http://www.stongnet.com/sdkhttp/sendsms.aspx";
-    private static final String strSchSmsUrl = "http://www.stongnet.com/sdkhttp/sendschsms.aspx";
-    private static final String strStatusUrl = "http://www.stongnet.com/sdkhttp/getmtreport.aspx";
-    private static final String strUpPwdUrl = "http://www.stongnet.com/sdkhttp/uptpwd.aspx";
+    private static final String STR_REG_URL = "http://www.stongnet.com/sdkhttp/reg.aspx";
+    private static final String STR_BALANCE_URL = "http://www.stongnet.com/sdkhttp/getbalance.aspx";
+    private static final String STR_SMS_URL = "http://www.stongnet.com/sdkhttp/sendsms.aspx";
+    private static final String STR_SCH_SMS_URL = "http://www.stongnet.com/sdkhttp/sendschsms.aspx";
+    private static final String STR_STATUS_URL = "http://www.stongnet.com/sdkhttp/getmtreport.aspx";
+    private static final String STR_UP_PWD_URL = "http://www.stongnet.com/sdkhttp/uptpwd.aspx";
 
-    private static final String strReg = "101100-WEB-HUAX-810224";
-    private static final String strPwd = "VXCQMPIN";
+    private static final String STR_REG = "101100-WEB-HUAX-810224";
+    private static final String STR_PWD = "VXCQMPIN";
 
     @Override
     public int sendMessage(MessageSmsHistory smsSend) {
@@ -70,13 +70,13 @@ public class HxrtSmsProcess extends SmsProcess {
         strCompany = HxrtHttpSend.paraTo16(strCompany);
         strAddress = HxrtHttpSend.paraTo16(strAddress);
 
-        String strRegParam = "reg=" + strReg + "&pwd=" + strPwd + "&uname="
+        String strRegParam = "reg=" + STR_REG + "&pwd=" + STR_PWD + "&uname="
             + strUname + "&mobile=" + strMobile + "&phone=" + strRegPhone
             + "&fax=" + strFax + "&email=" + strEmail + "&postcode="
             + strPostcode + "&company=" + strCompany + "&address="
             + strAddress;
 
-        strRes = HxrtHttpSend.postSend(strRegUrl, strRegParam);
+        strRes = HxrtHttpSend.postSend(STR_REG_URL, strRegParam);
         return strRes;
     }
 
@@ -87,9 +87,9 @@ public class HxrtSmsProcess extends SmsProcess {
 
     public String getBalance() {
         String strRes = new String();
-        String strBalanceParam = "reg=" + strReg + "&pwd=" + strPwd;
+        String strBalanceParam = "reg=" + STR_REG + "&pwd=" + STR_PWD;
 
-        strRes = HxrtHttpSend.postSend(strBalanceUrl, strBalanceParam);
+        strRes = HxrtHttpSend.postSend(STR_BALANCE_URL, strBalanceParam);
         return strRes;
     }
 
@@ -105,12 +105,12 @@ public class HxrtSmsProcess extends SmsProcess {
                           String strContent) throws UnsupportedEncodingException {
         strContent = HxrtHttpSend.paraTo16(strContent);
 
-        String strSmsParam = "reg=" + strReg + "&pwd=" + strPwd + "&sourceadd="
+        String strSmsParam = "reg=" + STR_REG + "&pwd=" + STR_PWD + "&sourceadd="
             + strSourceAdd + "&phone=" + strPhone + "&content="
             + strContent;
         String strRes = new String();
         // 发送短信
-        strRes = HxrtHttpSend.postSend(strSmsUrl, strSmsParam);
+        strRes = HxrtHttpSend.postSend(STR_SMS_URL, strSmsParam);
         return strRes;
     }
 
@@ -132,11 +132,11 @@ public class HxrtSmsProcess extends SmsProcess {
 
         String strTim = HxrtHttpSend.paraTo16(df.format(date)); // 定时发送时间
 
-        String strSchSmsParam = "reg=" + strReg + "&pwd=" + strPwd
+        String strSchSmsParam = "reg=" + STR_REG + "&pwd=" + STR_PWD
             + "&sourceadd=" + strSourceAdd + "&tim=" + strTim + "&phone="
             + strPhone + "&content=" + strContent;
 
-        strRes = HxrtHttpSend.postSend(strSchSmsUrl, strSchSmsParam);
+        strRes = HxrtHttpSend.postSend(STR_SCH_SMS_URL, strSchSmsParam);
         return strRes;
     }
 
@@ -147,9 +147,9 @@ public class HxrtSmsProcess extends SmsProcess {
 
     public String statusReport() {
         String strRes = new String();
-        String strStatusParam = "reg=" + strReg + "&pwd=" + strPwd;
+        String strStatusParam = "reg=" + STR_REG + "&pwd=" + STR_PWD;
 
-        strRes = HxrtHttpSend.postSend(strStatusUrl, strStatusParam);
+        strRes = HxrtHttpSend.postSend(STR_STATUS_URL, strStatusParam);
         return strRes;
     }
 
@@ -163,10 +163,10 @@ public class HxrtSmsProcess extends SmsProcess {
     public String changePwd(String strNewPwd) {
         String strRes = new String();
 
-        String strUpPwdParam = "reg=" + strReg + "&pwd=" + strPwd + "&newpwd="
+        String strUpPwdParam = "reg=" + STR_REG + "&pwd=" + STR_PWD + "&newpwd="
             + strNewPwd;
 
-        strRes = HxrtHttpSend.postSend(strUpPwdUrl, strUpPwdParam);
+        strRes = HxrtHttpSend.postSend(STR_UP_PWD_URL, strUpPwdParam);
         return strRes;
     }
 

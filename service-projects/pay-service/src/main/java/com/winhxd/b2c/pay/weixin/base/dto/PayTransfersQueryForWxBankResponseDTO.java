@@ -40,6 +40,11 @@ public class PayTransfersQueryForWxBankResponseDTO {
     private String errCodeDes;
 
     /**
+     * 商户号
+     */
+    private String mchId;
+
+    /**
      * 商户订单号
      */
     private String partnerTradeNo;

@@ -76,8 +76,9 @@ public class GeneratePwd {
             array[i - 1] = tmp;
         }
         int result = 0;
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++) {
             result = result * 10 + array[i];
+        }
         if (("" + result).length() != 6) {
             return generatePwd6Mobile();
         }
@@ -94,8 +95,9 @@ public class GeneratePwd {
             array[i - 1] = tmp;
         }
         int result = 0;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++) {
             result = result * 10 + array[i];
+        }
         if (("" + result).length() != 8) {
             return generateCode4Film();
         }
@@ -124,10 +126,11 @@ public class GeneratePwd {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(1),
                             (Character) getUpper().get(1)).toString();
-                    } else
+                    } else {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(0),
                             (Character) getUpper().get(0)).toString();
+                    }
                 }
             }
 
@@ -156,10 +159,11 @@ public class GeneratePwd {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(1),
                             (Character) getUpper().get(1)).toString();
-                    } else
+                    } else {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(0),
                             (Character) getUpper().get(0)).toString();
+                    }
                 }
             }
 
@@ -188,10 +192,11 @@ public class GeneratePwd {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(1),
                             (Character) getUpper().get(1)).toString();
-                    } else
+                    } else {
                         randomstr = randomstr
                             + randomChar((Character) getLower().get(0),
                             (Character) getUpper().get(0)).toString();
+                    }
                 }
             }
 
@@ -221,9 +226,9 @@ public class GeneratePwd {
 
             while (more && (getValue().charAt(1) == '-')) {
 
-                if (getValue().charAt(0) == '\\')
+                if (getValue().charAt(0) == '\\') {
                     break;
-                else {
+                } else {
 
                     getLower().add(new Character(getValue().charAt(0)));
                     getUpper().add(new Character(getValue().charAt(2)));
@@ -236,8 +241,9 @@ public class GeneratePwd {
                 }
             }
         }
-        if ((lower == null))
+        if ((lower == null)) {
             setCharset();
+        }
     }
 
     /**
@@ -255,8 +261,9 @@ public class GeneratePwd {
             array[i - 1] = tmp;
         }
         int result = 0;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
             result = result * 10 + array[i];
+        }
         if (("" + result).length() != 4) {
             return generate4MobileCode();
         }
@@ -296,8 +303,9 @@ public class GeneratePwd {
             array[i - 1] = tmp;
         }
         long result = 0;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             result = result * 10 + array[i];
+        }
         if (("" + result).length() < 10) {
             return generatePwd10Mobile();
         }

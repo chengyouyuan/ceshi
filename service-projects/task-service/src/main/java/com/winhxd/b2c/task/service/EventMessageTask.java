@@ -2,34 +2,45 @@ package com.winhxd.b2c.task.service;
 
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.mq.event.EventMessageSender;
 import com.winhxd.b2c.common.mq.event.EventType;
-import com.winhxd.b2c.common.mq.event.support.EventMessageHelper;
+import com.winhxd.b2c.common.mq.event.support.EventCorrelationData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 事件消息补偿任务
+ *
+ * @author lixiaodong
+ */
 @Component
 @Slf4j
-public class EventTaskService {
+public class EventMessageTask {
     /**
      * 10分钟
      */
     private static final double EVENT_HISTORY_BEFORE = 600000D;
+    /**
+     * 1分钟
+     */
+    private static final int TASK_INTERVAL = 60000;
 
     @Autowired
     private Cache cache;
 
     @Autowired
-    private EventMessageSender eventMessageSender;
+    @Qualifier("eventRabbitTemplate")
+    private RabbitTemplate rabbitTemplate;
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = TASK_INTERVAL, initialDelay = TASK_INTERVAL)
     public void checkEventSentHistory() {
         log.info("事件补偿计划任务开始");
         double ms = System.currentTimeMillis() - EVENT_HISTORY_BEFORE;
@@ -41,17 +52,15 @@ public class EventTaskService {
             if (CollectionUtils.isNotEmpty(idSet)) {
                 String[] ids = idSet.toArray(new String[0]);
                 List<String> bodies = cache.hmget(bodyKey, ids);
-                String body;
+                String key, body;
                 for (int i = 0; i < ids.length; i++) {
+                    key = ids[i];
                     body = bodies.get(i);
                     if (StringUtils.isNotBlank(body)) {
-                        try {
-                            EventMessageHelper.EventTransferObject<?> transferObject
-                                    = EventMessageHelper.toTransferObject(body, et.getEventObjectClass());
-                            eventMessageSender.send(et, transferObject.getEventKey(), transferObject.getEventObject());
-                        } catch (Exception e) {
-                            log.error("事件处理异常:" + et + "-" + ids[i], e);
-                        }
+                        rabbitTemplate.convertAndSend(et.toString(), null, body, new EventCorrelationData(key, et));
+                        log.info("事件补偿发送: {} - {} - {}", et, key, body);
+                    } else {
+                        log.warn("事件补偿错误: {} - {}", et, key);
                     }
                 }
             }

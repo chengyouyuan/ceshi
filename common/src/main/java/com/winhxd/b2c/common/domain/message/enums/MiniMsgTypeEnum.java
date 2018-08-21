@@ -12,52 +12,50 @@ public enum MiniMsgTypeEnum {
     /**
      * 门店确认订单
      */
-    STORE_CONFIRM_ORDER((short) 1, "门店确认订单", "9P9K-qlU8TQPuSDjuYLlNjhd6djZFP8J0uoBQfkAfNs", "您要购买的商品店主已经知道啦，正在为您备货，请于{0}到店取货"),
+    STORE_CONFIRM_ORDER((short) 1, "门店确认订单", "9P9K-qlU8TQPuSDjuYLlNjhd6djZFP8J0uoBQfkAfNs"),
 
     /**
      * 用户取消订单
      */
-    USER_CANCEL_ORDER((short) 2, "用户取消订单", "", "您的订单已取消"),
+    USER_CANCEL_ORDER((short) 2, "用户取消订单", ""),
     /**
      * 门店确认退款
      */
-    STORE_CONFIRM_REFUND((short) 3, "门店确认退款", "", "您有一笔订单已退款完成，退款金额已退回至您的付款账户，请注意查收"),
+    STORE_CONFIRM_REFUND((short) 3, "门店确认退款", ""),
 
     /**
      * 门店超时未确认
      */
-    STORE_NOT_CONFIRM_TIMEOUT((short) 4, "门店超时未确认", "", "小店没有接收到订单，再试一次吧"),
+    STORE_NOT_CONFIRM_TIMEOUT((short) 4, "门店超时未确认", ""),
     /**
      * 门店取消订单
      */
-    STORE_CANCEL_ORDER((short) 5, "门店取消订单", "", "小店因为{0}取消了订单，请再看看其他的商品吧"),
+    STORE_CANCEL_ORDER((short) 5, "门店取消订单", ""),
     /**
      * 用户超时未取货且未付款
      */
-    USER_TIMEOUT_NO_GOODS_NO_PAYMENT((short) 6, "用户超时未取货且未付款", "", "您未在限定时间内取货，订单已取消"),
+    USER_TIMEOUT_NO_GOODS_NO_PAYMENT((short) 6, "用户超时未取货且未付款", ""),
     /**
      * 用户超时未取货但已付款
      */
-    USER_TIMEOUT_NO_GOODS_PAID((short) 7, "用户超时未取货但已付款", "", "您未在限定时间内取货，订单已取消，订单金额已退回至您的付款账户，请注意查收"),
+    USER_TIMEOUT_NO_GOODS_PAID((short) 7, "用户超时未取货但已付款", ""),
     /**
      * 用户取货完成
      */
-    USER_PICK_UP_GOODS((short) 8, "用户取货完成", "", "您购买的商品已成功取货"),
+    USER_PICK_UP_GOODS((short) 8, "用户取货完成", ""),
     /**
      * 待自提订单还有一小时失效
      */
-    ORDER_INVALID_ONE_HOUR((short) 9, "待自提订单还有一小时失效", "", "还有一小时订单就要失效了，快去取货吧");
+    ORDER_INVALID_ONE_HOUR((short) 9, "待自提订单还有一小时失效", "");
 
     private short msgType;
     private String msgDesc;
     private String templateId;
-    private String msgContent;
 
-    MiniMsgTypeEnum(short msgType, String msgDesc, String templateId, String msgContent) {
+    MiniMsgTypeEnum(short msgType, String msgDesc, String templateId) {
         this.msgType = msgType;
         this.msgDesc = msgDesc;
         this.templateId = templateId;
-        this.msgContent = msgContent;
     }
 
     public short getMsgType() {
@@ -66,10 +64,6 @@ public enum MiniMsgTypeEnum {
 
     public String getMsgDesc() {
         return msgDesc;
-    }
-
-    public String getMsgContent() {
-        return msgContent;
     }
 
     public String getTemplateId(){

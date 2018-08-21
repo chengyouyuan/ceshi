@@ -17,7 +17,7 @@ public class PayTransfersForWxBankDTO {
     /**
      * 商户号
      */
-    private String mchid;
+    private String mchId;
 
     /**
      * 商户企业付款单号
@@ -52,7 +52,7 @@ public class PayTransfersForWxBankDTO {
     /**
      * 提现金额,单位分
      */
-    private Integer amount;
+    private int amount;
 
     /**
      * 付款说明

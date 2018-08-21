@@ -12,27 +12,27 @@ public enum BillStatusEnum {
 	/**
 	 * 支付中
 	 */
-	PAYING(0, "支付中"),
+	PAYING((short)0, "支付中"),
 
 	/**
 	 * 支付完成
 	 */
-	PAID(1, "支付完成"),
+	PAID((short)1, "支付完成"),
 
 	/**
 	 * 支付失败
 	 */
-	FAIL(2, "支付失败");
+	FAIL((short)2, "支付失败");
 
-	private int code;
+	private Short code;
 	private String text;
 
-	private BillStatusEnum(int code, String text) {
+	private BillStatusEnum(Short code, String text) {
 		this.code = code;
 		this.text = text;
 	}
 
-	public int getCode() {
+	public Short getCode() {
 		return code;
 	}
 

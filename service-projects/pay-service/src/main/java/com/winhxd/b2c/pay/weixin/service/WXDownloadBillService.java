@@ -1,8 +1,8 @@
 package com.winhxd.b2c.pay.weixin.service;
 
-import java.util.Date;
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 
 
@@ -20,7 +20,7 @@ public interface WXDownloadBillService {
      * @Description 下载对账单
      * @return
      */
-    String downloadStatement(Date billDate);
+    String downloadStatement(DownloadStatementCondition condition);
 
     /**
      * @author yuluyuan
@@ -28,7 +28,7 @@ public interface WXDownloadBillService {
      * @Description 下载资金账单
      * @return
      */
-    String downloadFundFlow(Date billDate);
+    String downloadFundFlow(DownloadStatementCondition condition);
 
 	/**
 	 * @Description 根据model条件查询数据

@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 /**
  * 阅信平台发送短信
+ * @author fanzhanzhan
  */
 @Component
 public class YxSmsProcess {

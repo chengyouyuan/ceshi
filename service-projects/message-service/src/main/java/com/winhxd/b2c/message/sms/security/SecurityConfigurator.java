@@ -23,12 +23,13 @@ public class SecurityConfigurator {
 
 		}
 		finally{
-			if(securityConfig!=null)
+			if(securityConfig!=null) {
 				try {
 					securityConfig.close();
 				}
                 catch (IOException e) {
 				}
+			}
 		}
 	}
 	public static SecurityConfigurator getInstance() {

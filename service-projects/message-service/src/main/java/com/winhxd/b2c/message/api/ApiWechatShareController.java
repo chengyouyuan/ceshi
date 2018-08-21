@@ -50,7 +50,7 @@ public class ApiWechatShareController {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
 
-        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(3L);
+        QRCodeInfoVO qrCodeInfoVO = wechatShareService.generateQRCodePic(storeUser.getBusinessId());
         if (qrCodeInfoVO == null || StringUtils.isEmpty(qrCodeInfoVO.getMiniProgramCodeUrl())) {
             throw new BusinessException(BusinessCode.CODE_200018);
         }
@@ -74,7 +74,7 @@ public class ApiWechatShareController {
             logger.error("ApiWechatShareController ->fetchMiniProgramConfig当前用户登录的凭证无效 ");
             throw new BusinessException(BusinessCode.CODE_1002);
         }
-        MiniProgramConfigVO configVO = wechatShareService.getMiniProgramConfigVO(1L);
+        MiniProgramConfigVO configVO = wechatShareService.getMiniProgramConfigVO(storeUser.getBusinessId());
         responseResult.setData(configVO);
         return responseResult;
 

@@ -196,8 +196,16 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 				this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 				throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
 			}
-		} else if("SUCCESS".equals(payPreOrderCallbackDTO.getTradeState())) {
+		} else if("REFUND".equals(payPreOrderCallbackDTO.getTradeState())) {
 			
+		} else if("NOTPAY".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("CLOSED".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("REVOKED".equals(payPreOrderCallbackDTO.getTradeState())) {
+			
+		} else if("USERPAYING".equals(payPreOrderCallbackDTO.getTradeState())) {
+				
 		}
 		
 		

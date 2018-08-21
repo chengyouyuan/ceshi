@@ -79,7 +79,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
 		bill.setBankType(payPreOrderCallbackDTO.getBankType());
 		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
-		bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getSettlementTotalFee() != null) {
+			bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
 		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
 		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
@@ -87,7 +89,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
 		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
 		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
-		bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		if(payPreOrderCallbackDTO.getTotalFee() != null) {
+			bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+		}
 		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
 		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
 		

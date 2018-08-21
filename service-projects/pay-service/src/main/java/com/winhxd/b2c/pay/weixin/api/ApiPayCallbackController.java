@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
@@ -70,7 +71,7 @@ public class ApiPayCallbackController {
 		logger.info("支付回调参数：{}", resqXml);
 		try {
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
-			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", payPreOrderCallbackDTO);
+			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", JsonUtil.toJSONString(payPreOrderCallbackDTO));
 			if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
 				this.response(response, FAIL_RESPONSE);
 				return;

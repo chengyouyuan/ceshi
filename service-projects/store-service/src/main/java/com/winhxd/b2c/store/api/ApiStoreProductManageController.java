@@ -495,7 +495,7 @@ public class ApiStoreProductManageController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！") })
     @PostMapping(value = "1018/v1/loginCheckSellMoney", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition) {
+    public ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoney(ApiCondition condition) {
         ResponseResult<LoginCheckSellMoneyVO> responseResult = new ResponseResult<>();
         LoginCheckSellMoneyVO vo = new LoginCheckSellMoneyVO();
         logger.info("B端获取门店未设置价格上架商品数量接口入参为：{}", condition);

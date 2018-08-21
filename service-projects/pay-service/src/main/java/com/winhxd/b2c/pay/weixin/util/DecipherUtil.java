@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.util;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,12 +18,16 @@ import static sun.security.x509.CertificateAlgorithmId.ALGORITHM;
  */
 public class DecipherUtil {
 
-    private static String password = "aaa";
+    /**
+     * API 密钥
+     */
+    @Value("${WX.KEY}")
+    private static String password;
     private static SecretKeySpec key = new SecretKeySpec(byteArrayToHexString(DigestUtils.md5(password)).toLowerCase().getBytes(), ALGORITHM);
 
     public static String decodeReqInfo(String reqInfo) throws Exception{
         byte[] b = Base64.decodeBase64(reqInfo);
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance("PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
         return new String(cipher.doFinal(b),"UTF-8");
 

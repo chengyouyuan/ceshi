@@ -62,7 +62,7 @@ public class MessageSendMqHandler {
     private SmsServerSendUtils smsServer;
 
     /**
-     * 小程序消息MQ消费
+     * 发送小程序消息MQ消费
      * @param miniMsgConditionJson
      */
     @StringMessageListener(MQHandler.MINI_TEMPLATE_MESSAGE_HANDLER)
@@ -136,6 +136,87 @@ public class MessageSendMqHandler {
     }
 
     /**
+     * 批量发送云信消息MQ消费
+     * @param neteaseMsgDelayConditionJson
+     */
+    @StringMessageListener(MQHandler.NETEASE_MESSAGE_DELAY_HANDLER)
+    public void batchSendNeteaseMsg(String neteaseMsgDelayConditionJson){
+        LOGGER.info("消息服务->批量发送云信消息，MessageBatchPushServiceImpl.batchSendNeteaseMsg(),neteaseMsgDelayConditionJson={}",neteaseMsgDelayConditionJson);
+        NeteaseMsgDelayCondition neteaseMsgDelayCondition = JsonUtil.parseJSONObject(neteaseMsgDelayConditionJson,NeteaseMsgDelayCondition.class);
+        List<String> accids = neteaseMsgDelayCondition.getAccids();
+        String msgContent = neteaseMsgDelayCondition.getMsgContent();
+        String[] accidsArr = accids.toArray(new String[accids.size()]);
+        //给所有门店批量推送云信消息
+        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Batch(accidsArr,msgContent);
+        if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
+            //云信消息发送成功
+            saveBatchNeteaseMsgHistory(accids, msgContent);
+        } else {
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，neteaseMsgDelayConditionJson={}", neteaseMsgDelayConditionJson);
+            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
+            //throw new BusinessException(BusinessCode.CODE_703503);
+        }
+    }
+
+    /**
+     * 发送云信消息MQ消费
+     * @param neteaseMsgConditionJson
+     */
+    @StringMessageListener(value = MQHandler.NETEASE_MESSAGE_HANDLER)
+    public void sendNeteaseMsg(String neteaseMsgConditionJson) {
+        NeteaseMsgCondition neteaseMsgCondition = JsonUtil.parseJSONObject(neteaseMsgConditionJson,NeteaseMsgCondition.class);
+        LOGGER.info("消息服务->发送云信消息，NeteaseServiceImpl.sendNeteaseMsg(),neteaseMsgConditionJson={}",neteaseMsgConditionJson);
+        //校验参数
+        int errorCode = verifyParamSend(neteaseMsgCondition);
+        if (BusinessCode.CODE_OK != errorCode) {
+            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
+            return;
+            //throw new BusinessException(errorCode);
+        }
+        MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
+        if (account == null) {
+            //云信用户不存在
+            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
+            return;
+            //throw new BusinessException(BusinessCode.CODE_701403);
+        }
+        //发送云信消息
+        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
+        if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
+            //云信消息发送成功
+            int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
+            //在消息盒子中，则保存消息记录
+            if (msgType == 0){
+                saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
+            }
+        } else {
+            LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
+            //throw new BusinessException(BusinessCode.CODE_701404);
+        }
+    }
+
+    /**
+     * 发送短信MQ消费
+     * @param smsConditionJson
+     */
+    @StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
+    public void sendSms(String smsConditionJson) {
+        LOGGER.info("消息服务->发送短信，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
+        SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
+        String mobile = smsCondition.getMobile();
+        String content = smsCondition.getContent();
+        try {
+            SmsSend smsSend = new SmsSend();
+            smsSend.setTelePhoneNo(mobile);
+            smsSend.setContent(content);
+            smsServer.sendSms(smsSend);
+        } catch (Exception e) {
+            LOGGER.error("消息服务->发送短信失败，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
+            LOGGER.error("发送短信失败", e);
+        }
+    }
+
+    /**
      * 保存小程序模板消息发送记录
      * @param template
      */
@@ -173,30 +254,6 @@ public class MessageSendMqHandler {
         template.setData(data);
         return template;
     }
-
-    /**
-     * 批量发送云信消息
-     * @param neteaseMsgDelayConditionJson
-     */
-    @StringMessageListener(MQHandler.NETEASE_MESSAGE_DELAY_HANDLER)
-    public void batchSendNeteaseMsg(String neteaseMsgDelayConditionJson){
-        LOGGER.info("消息服务->批量发送云信消息，MessageBatchPushServiceImpl.batchSendNeteaseMsg(),neteaseMsgDelayConditionJson={}",neteaseMsgDelayConditionJson);
-        NeteaseMsgDelayCondition neteaseMsgDelayCondition = JsonUtil.parseJSONObject(neteaseMsgDelayConditionJson,NeteaseMsgDelayCondition.class);
-        List<String> accids = neteaseMsgDelayCondition.getAccids();
-        String msgContent = neteaseMsgDelayCondition.getMsgContent();
-        String[] accidsArr = accids.toArray(new String[accids.size()]);
-        //给所有门店批量推送云信消息
-        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Batch(accidsArr,msgContent);
-        if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
-            //云信消息发送成功
-            saveBatchNeteaseMsgHistory(accids, msgContent);
-        } else {
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，neteaseMsgDelayConditionJson={}", neteaseMsgDelayConditionJson);
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
-            //throw new BusinessException(BusinessCode.CODE_703503);
-        }
-    }
-
     /**
      * 保存云信消息推送记录
      * @param accids
@@ -220,39 +277,6 @@ public class MessageSendMqHandler {
             list.add(history);
         }
         messageNeteaseHistoryMapper.insertHistories(list);
-    }
-
-    @StringMessageListener(value = MQHandler.NETEASE_MESSAGE_HANDLER)
-    public void sendNeteaseMsg(String neteaseMsgConditionJson) {
-        NeteaseMsgCondition neteaseMsgCondition = JsonUtil.parseJSONObject(neteaseMsgConditionJson,NeteaseMsgCondition.class);
-        LOGGER.info("消息服务->发送云信消息，NeteaseServiceImpl.sendNeteaseMsg(),neteaseMsgConditionJson={}",neteaseMsgConditionJson);
-        //校验参数
-        int errorCode = verifyParamSend(neteaseMsgCondition);
-        if (BusinessCode.CODE_OK != errorCode) {
-            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
-            return;
-            //throw new BusinessException(errorCode);
-        }
-        MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
-        if (account == null) {
-            //云信用户不存在
-            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
-            return;
-            //throw new BusinessException(BusinessCode.CODE_701403);
-        }
-        //发送云信消息
-        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
-        if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
-            //云信消息发送成功
-            int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
-            //在消息盒子中，则保存消息记录
-            if (msgType == 0){
-                saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
-            }
-        } else {
-            LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
-            //throw new BusinessException(BusinessCode.CODE_701404);
-        }
     }
 
     /**
@@ -292,24 +316,4 @@ public class MessageSendMqHandler {
         return BusinessCode.CODE_OK;
     }
 
-    /**
-     * 发送短信MQ消费
-     * @param smsConditionJson
-     */
-    @StringMessageListener(value = MQHandler.SMS_MESSAGE_HANDLER)
-    public void sendSms(String smsConditionJson) {
-        LOGGER.info("消息服务->发送短信，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
-        SMSCondition smsCondition = JsonUtil.parseJSONObject(smsConditionJson,SMSCondition.class);
-        String mobile = smsCondition.getMobile();
-        String content = smsCondition.getContent();
-        try {
-            SmsSend smsSend = new SmsSend();
-            smsSend.setTelePhoneNo(mobile);
-            smsSend.setContent(content);
-            smsServer.sendSms(smsSend);
-        } catch (Exception e) {
-            LOGGER.error("消息服务->发送短信失败，SmsServiceImpl.sendSms(),smsConditionJson={}",smsConditionJson);
-            LOGGER.error("发送短信失败", e);
-        }
-    }
 }

@@ -4,16 +4,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.message.condition.*;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseAccount;
-import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseAccountVO;
 import com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.mq.MQHandler;
-import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.util.GeneratePwd;
-import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.message.dao.MessageNeteaseAccountMapper;
 import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.service.NeteaseService;
@@ -22,10 +20,10 @@ import com.winhxd.b2c.message.utils.NeteaseUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +43,6 @@ public class NeteaseServiceImpl implements NeteaseService {
 	private static final String ERROR_MSG = "not register";
 	private static final String PARAM_CODE = "code";
 	private static final String PARAM_DESC = "desc";
-	private static final String PARAM_MSGID = "msgid";
 	private static final Short TIME_TYPE_TODAY = 0;
 
 	@Value("${netease.accidSuffix}")
@@ -59,6 +56,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 	NeteaseUtils neteaseUtils;
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public NeteaseAccountVO getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition) {
 		NeteaseAccountVO result = new NeteaseAccountVO();
 		Long customerId = neteaseAccountCondition.getCustomerId();
@@ -68,49 +66,41 @@ public class NeteaseServiceImpl implements NeteaseService {
 		//查询云信账户信息
 		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
 		if (neteaseAccount != null) {
-			BeanUtils.copyProperties(neteaseAccount, result);
+			result.setAccid(neteaseAccount.getAccid());
+			result.setToken(neteaseAccount.getToken());
+			return result;
 		}
-		return result;
-	}
-
-	@Override
-	public NeteaseAccountVO createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
-		NeteaseAccountVO result = new NeteaseAccountVO();
-		Long customerId = neteaseAccountCondition.getCustomerId();
-		if (customerId == null) {
-			LOGGER.error("消息服务 ->创建云信账号异常，NeteaseServiceImpl.createNeteaseAccount(),参数错误，customerId是null");
-			throw new BusinessException(BusinessCode.CODE_701301);
-		}
-		//创建云信用户
 		//从云信获取该用户的信息，判断该用户是否在云信已经存在
 		String accidUinfo = "[\"" + customerId + accidSuffix + "\"]";
 		Map<String, Object> userInfo = neteaseUtils.getUserInfo(accidUinfo);
-		LOGGER.info("NeteaseServiceImpl ->createNeteaseAccount,创建云信用户前获取用户信息userinfo={}", JsonUtil.toJSONString(userInfo));
 		String codeMes = String.valueOf(userInfo.get(PARAM_CODE));
 		String desc = String.valueOf(userInfo.get(PARAM_DESC));
 		if (SUCCESS_CODE.equals(codeMes)) {
-			//如果云信账户存在,则更新token
+			//如果云信账户存在,则更新token,返给手机端
 			String token = GeneratePwd.generatePwd();
-			LOGGER.info("创建云信用户，用户已存在，新密码为={}",token);
 			String accid = customerId + accidSuffix;
-			Map<String, Object> tokenMap = neteaseUtils.updateUserInfo(accid, token);
+			Map<String, Object> tokenMap = neteaseUtils.updateUserToken(accid, token);
 			if (SUCCESS_CODE.equals(String.valueOf(tokenMap.get(PARAM_CODE)))) {
 				neteaseAccountMapper.updateByCustomerId(customerId,accid,token);
-				MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
-				BeanUtils.copyProperties(account, result);
+				saveAccount(neteaseAccountCondition, customerId, token, accid);
+				result.setAccid(accid);
+				result.setToken(token);
+				result.setName(neteaseAccountCondition.getName());
+				result.setIcon(neteaseAccountCondition.getIcon());
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，customerId={}", customerId);
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，失败原因={}", tokenMap.get(PARAM_DESC));
 				throw new BusinessException(BusinessCode.CODE_701302);
 			}
-		} else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
+		}else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
 			// 如果云信账号不存在，则创建
 			String token = GeneratePwd.generatePwd();
 			String accid = customerId + accidSuffix;
 			Map<String, Object> createMap = neteaseUtils.createAccount(accid, token, neteaseAccountCondition.getName(), neteaseAccountCondition.getIcon());
 			if (SUCCESS_CODE.equals(String.valueOf(createMap.get(PARAM_CODE)))) {
-				MessageNeteaseAccount account = saveAccount(neteaseAccountCondition, customerId, token, accid);
-				BeanUtils.copyProperties(account, result);
+				saveAccount(neteaseAccountCondition, customerId, token, accid);
+				result.setAccid(accid);
+				result.setToken(token);
 			} else {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败 customerId={}", customerId);
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,创建网易云信账号失败，失败原因={}", createMap.get(PARAM_DESC));
@@ -120,36 +110,28 @@ public class NeteaseServiceImpl implements NeteaseService {
 		return result;
 	}
 
-	@StringMessageListener(value = MQHandler.NETEASE_MESSAGE_HANDLER)
-	public void sendNeteaseMsg(String neteaseMsgConditionJson) {
-		NeteaseMsgCondition neteaseMsgCondition = JsonUtil.parseJSONObject(neteaseMsgConditionJson,NeteaseMsgCondition.class);
-		LOGGER.info("消息服务->发送云信消息，NeteaseServiceImpl.sendNeteaseMsg(),neteaseMsgConditionJson={}",neteaseMsgConditionJson);
-		//校验参数
-		int errorCode = verifyParamSend(neteaseMsgCondition);
-		if (BusinessCode.CODE_OK != errorCode) {
-			LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
-			return;
-			//throw new BusinessException(errorCode);
+	@Override
+	public void updateNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
+		NeteaseAccountVO result = new NeteaseAccountVO();
+		Long customerId = neteaseAccountCondition.getCustomerId();
+		if (customerId == null) {
+			LOGGER.error("消息服务 ->更新云信账号信息异常，NeteaseServiceImpl.updateNeteaseAccount(),参数错误，customerId是null");
+			throw new BusinessException(BusinessCode.CODE_701301);
 		}
-		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
-		if (account == null) {
-			//云信用户不存在
-			LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
-			return;
-			//throw new BusinessException(BusinessCode.CODE_701403);
-		}
-		//发送云信消息
-		Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
-		if (SUCCESS_CODE.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
-			//云信消息发送成功
-			int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
-			//在消息盒子中，则保存消息记录
-			if (msgType == 0){
-				saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
-			}
-		} else {
-			LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
-			//throw new BusinessException(BusinessCode.CODE_701404);
+		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		//更新云信账户信息
+		Map<String, Object> infoMap = neteaseUtils.updateUserInfo(account.getAccid(), account.getName(),account.getIcon());
+		String codeMes = String.valueOf(infoMap.get(PARAM_CODE));
+		if (SUCCESS_CODE.equals(codeMes)) {
+			//更新云信用户记录
+			account.setName(neteaseAccountCondition.getName());
+			account.setMobile(neteaseAccountCondition.getMobile());
+			account.setIcon(neteaseAccountCondition.getIcon());
+			neteaseAccountMapper.updateByPrimaryKey(account);
+		}else{
+			LOGGER.error("NeteaseServiceImpl ->updateNeteaseAccount,云信账号更新失败，customerId={}", customerId);
+			LOGGER.error("NeteaseServiceImpl ->updateNeteaseAccount,云信账号更新失败，失败原因={}", infoMap.get(PARAM_CODE));
+			throw new BusinessException(BusinessCode.CODE_701302);
 		}
 	}
 
@@ -197,25 +179,6 @@ public class NeteaseServiceImpl implements NeteaseService {
 		return result;
 	}
 
-	/**
-	 * 保存云信消息发送记录
-	 *
-	 * @param accid
-	 * @param neteaseMsg
-	 */
-	private void saveNeteaseMsgHistory(String accid, NeteaseMsg neteaseMsg, String msgIdServer) {
-		MessageNeteaseHistory history = new MessageNeteaseHistory();
-		history.setFromAccid("admin");
-		history.setToAccid(accid);
-		history.setMsgType(Short.valueOf("0"));
-		history.setMsgBody(neteaseMsg.getMsgContent());
-		history.setExtJson(NeteaseUtils.buildExtJsonMsg(neteaseMsg));
-		history.setPageType(neteaseMsg.getPageType());
-		history.setTreeCode(neteaseMsg.getTreeCode());
-		history.setMsgIdServer(msgIdServer);
-		history.setMsgTimeStamp(new Date());
-		neteaseHistoryMapper.insert(history);
-	}
 
 	/**
 	 * 保存云信账户信息
@@ -237,23 +200,6 @@ public class NeteaseServiceImpl implements NeteaseService {
 		account.setCreated(new Date());
 		neteaseAccountMapper.insert(account);
 		return account;
-	}
-
-	/**
-	 * 校验发送云信消息参数
-	 *
-	 * @param netEaseCondition
-	 */
-	private int verifyParamSend(NeteaseMsgCondition netEaseCondition) {
-		if (netEaseCondition.getCustomerId() == null) {
-			LOGGER.info("给B端用户发送云信消息，接口参数getCustomerId为空");
-			return BusinessCode.CODE_701401;
-		}
-		if (netEaseCondition.getNeteaseMsg() == null) {
-			LOGGER.info("给B端用户发送云信消息，,接口参数getEaseMsg为空");
-			return BusinessCode.CODE_701402;
-		}
-		return BusinessCode.CODE_OK;
 	}
 
 }

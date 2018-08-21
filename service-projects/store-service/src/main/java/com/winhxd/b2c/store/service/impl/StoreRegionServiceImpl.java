@@ -66,7 +66,7 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         storeRegion.setStatus(StoreRegionEnum.VALIDATE.getCode());
         storeRegion.setUpdated(new Date());
         storeRegion.setUpdatedBy(UserContext.getCurrentAdminUser().getAccount());
-        return storeRegionMapper.updateByPrimaryKey(storeRegion);
+        return storeRegionMapper.updateByPrimaryKeySelective(storeRegion);
     }
 
     @Override

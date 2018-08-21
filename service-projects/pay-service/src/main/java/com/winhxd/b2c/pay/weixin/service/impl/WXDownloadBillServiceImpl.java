@@ -494,4 +494,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		return payStatementDownloadRecordMapper.selectByModel(record);
 	}
 
+	@Override
+	public PayStatement getPayStatementByOutOrderNo(String outOrderNo) {
+		return payStatementMapper.selectByOutOrderNo(outOrderNo);
+	}
+
 }

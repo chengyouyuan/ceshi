@@ -3,6 +3,7 @@ package com.winhxd.b2c.pay.weixin.service;
 import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
+import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 
 
@@ -39,5 +40,14 @@ public interface WXDownloadBillService {
 	 */
 	List<PayStatementDownloadRecord> findDownloadRecord(
 			PayStatementDownloadRecord record);
+
+	/**
+	 * @Description 根据订单号查询成功支付的对账单
+	 * @author yuluyuan
+	 * @date 2018年8月21日 下午3:49:57
+	 * @param outOrderNo
+	 * @return
+	 */
+	PayStatement getPayStatementByOutOrderNo(String outOrderNo);
 
 }

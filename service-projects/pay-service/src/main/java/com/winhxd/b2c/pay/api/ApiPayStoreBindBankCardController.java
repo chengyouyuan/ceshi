@@ -19,6 +19,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +52,8 @@ public class ApiPayStoreBindBankCardController {
 	@Autowired
 	MessageSendUtils messageSendUtils;
 	
-	@Autowired
-	private Cache cache;
+	@Resource
+	private Cache redisClusterCache;
 	
 	private static final int MOBILEVERIFICATIONCODE = 2*60;// 验证码有效时间
 
@@ -141,8 +144,10 @@ public class ApiPayStoreBindBankCardController {
 	@ApiOperation(value = "获取短信验证码", notes = "获取短信验证码")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
-            @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成")
+            @ApiResponse(code = BusinessCode.CODE_610018, message = "验证码已生成"),
+            @ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型")
     })
     @RequestMapping(value = "/6106/v1/verificationCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<String> getVerificationCode(@RequestBody VerifiCodeCondtion condition) {
@@ -158,7 +163,7 @@ public class ApiPayStoreBindBankCardController {
 //		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确
 		int res = vaildatVerifiCode(condition);
-		String modileVerifyCode = cache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
+		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
 		//生成验证码
 		if(modileVerifyCode != null){
@@ -169,8 +174,8 @@ public class ApiPayStoreBindBankCardController {
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
 		} 
 		// 将验证码存放到redis中
-		cache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
-		cache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
+		redisClusterCache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
+		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
 		if(res > 0){
 			result.setCode(res);
 		}else{

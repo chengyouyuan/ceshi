@@ -6,6 +6,7 @@
     "id": "coupon_cite_view",
     "code": "coupon_cite_view",
     "title": "优惠券引用详情",
+    "buttons": [],
     "columns": [
       {
         "type": "index",
@@ -32,25 +33,14 @@
         "title": "优惠券活动编码"
       },
       {
-        "name": "status",
-        "inputModel": "select",
-        "title": "优惠券状态",
-        "placeholder": "",
-        "isHidden": false,
-        "options": [{
-          "value": "0",
-          "label": "无效"
-        },
-          {
-            "value": "1",
-            "label": "有效"
-          }
-        ]
+        "name": "statusName",
+        "title": "优惠券状态"
       },
       {
         "name": "updated",
         "title": "优惠券发放时间"
       }
-    ]
+    ],
+    "params": []
   }
 }

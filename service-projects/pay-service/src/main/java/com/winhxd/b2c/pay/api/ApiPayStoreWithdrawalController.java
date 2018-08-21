@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
+import com.winhxd.b2c.common.domain.pay.vo.PayStoreApplyWithdrawVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsTypeVO;
 import com.winhxd.b2c.pay.service.impl.PayStoreWithdrawalServiceImpl;
@@ -79,24 +80,36 @@ public class ApiPayStoreWithdrawalController {
 		return result;
 	}
 	
-	@ApiOperation(value = "门店提现到微信或者银行卡", notes = "门店提现到微信或者银行卡")
+	@ApiOperation(value = "确认门店提现到微信或者银行卡", notes = "确认门店提现到微信或者银行卡")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数")
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
+		result = payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
+		return result;
+	}
+	
+	@ApiOperation(value = "审核门店提现到微信或者银行卡", notes = "审核门店提现到微信或者银行卡")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
+		@ApiResponse(code = BusinessCode.CODE_610035, message = "提取限额不能大于实际账户余额")
+	})
+	@PostMapping(value = "/6111/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseResult<PayStoreApplyWithdrawVO> payStoreWithdrawalPre(@RequestBody PayStoreApplyWithDrawCondition condition){
+		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
+		ResponseResult<PayStoreApplyWithdrawVO> result = new ResponseResult<PayStoreApplyWithdrawVO>();
 		if(condition.getWithdrawType() != 0){
-			payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
+			result = payStoreWithdrawalService.checkStorWithdrawalInfo(condition);
 		}else{
 			result.setCode(BusinessCode.CODE_610022);
 			LOGGER.info("请传入提现类型");
 		}
 		return result;
 	}
-	
 	
 	
 }

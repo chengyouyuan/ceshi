@@ -84,7 +84,7 @@ public class XmlUtil {
     	if(strXML == null) {
     		return null;
     	}
-    	Map<String, String> map = xml2MapUnderline2Hump(strXML);
+    	Map<String, String> map = xmlToMap(strXML);
     	
 		return map2Bean(map, c);
     }

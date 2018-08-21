@@ -57,4 +57,13 @@ public interface CustomerUserInfoMapper {
      * @Description 根据用户的token查询用户信息
      */
     CustomerUserInfo selectCustomerByToken(@Param("token") String token);
+
+    /**
+     * @param condition 查询条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/6 9:33
+     * @Description 根据条件查询绑定用户分页数据
+     */
+    List<CustomerUserInfoVO> selectBindingCustomer(BackStageCustomerInfoCondition condition);
 }

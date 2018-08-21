@@ -1,7 +1,7 @@
 {
   "meta": {
     "ajaxType": "post",
-    "path": "/customer/user/1059/v1/findCustomerPageInfo",
+    "path": "/customer/user/1065/v1/findAvabileCustomerPageInfo",
     "type": "report",
     "id": "order_customer_list_win",
     "code": "order_customer_list_win",
@@ -13,7 +13,7 @@
         "event": {
           "type": "submit",
           "ajaxType": "post",
-          "path": "/customer/user/1059/v1/findCustomerPageInfo"
+          "path": "/customer/user/1065/v1/findAvabileCustomerPageInfo"
         }
       },
       {
@@ -28,7 +28,7 @@
     "columns": [
       {
         "type": "radio",
-        "name": "id",
+        "name": "customerId",
         "title": "选择",
         "aglign": "center",
         "width": "50",

@@ -32,22 +32,16 @@
         "isHidden": false
       },
       {
-        "name": "roleId",
-        "inputModel": "select",
+        "name": "roleName",
+        "inputModel": "input",
         "title": "权限组",
-        "value": "",
-        "placeholder": "请选择权限组",
-        "isHidden": false,
-        "options": [
-          {
-            "value": 1,
-            "label": "系统管理员"
-          },
-          {
-            "value": 3,
-            "label": "测试角色"
-          }
-        ]
+        "isHidden": false
+      },
+      {
+        "name": "regionName",
+        "inputModel": "input",
+        "title": "地理区域",
+        "isHidden": false
       }
     ]
   }

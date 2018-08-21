@@ -16,9 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
+import com.winhxd.b2c.pay.weixin.constant.BillStatusEnum;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
@@ -69,20 +71,24 @@ public class ApiPayCallbackController {
 		logger.info("支付回调参数：{}", resqXml);
 		try {
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
-			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", payPreOrderCallbackDTO);
+			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", JsonUtil.toJSONString(payPreOrderCallbackDTO));
+			if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
+				this.response(response, FAIL_RESPONSE);
+				return;
+			}
+			Short status = BillStatusEnum.FAIL.getCode();
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(payPreOrderCallbackDTO.getReturnCode())) {
-				PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO);
-				Boolean result = payService.callbackOrderPay(bill);
-				if(result) {
-					this.response(response, SUCCESS_RESPONSE);
-				} else {
-					this.response(response, FAIL_RESPONSE);
-				}
+				status = BillStatusEnum.PAID.getCode();
+			}
+			PayBill bill = unifiedOrderService.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, status);
+			Boolean result = payService.callbackOrderPay(bill);
+			if(result) {
+				this.response(response, SUCCESS_RESPONSE);
 			} else {
 				this.response(response, FAIL_RESPONSE);
 			}
 		} catch (Exception e) {
-			logger.error("微信支付回调转换失败", e);
+			logger.error("微信支付回调失败", e);
 			this.response(response, FAIL_RESPONSE);
 		}
 	}

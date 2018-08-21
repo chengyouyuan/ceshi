@@ -58,42 +58,42 @@
     prod_status, audit_remark,sku_code
   </sql>
   <sql id="BackStage_Column_List">
-    sp.id, sp.store_id, store_name, sp.prod_name, sp.prod_code, sp.prod_image1, sp.prod_image2, sp.prod_image3,
+    sp.id, sp.store_id, u.store_name, sp.prod_name, sp.prod_code, sp.prod_image1, sp.prod_image2, sp.prod_image3,
     sp.sku_attribute_option, sp.prod_status, sp.audit_remark, sp.prod_info_voice, sp.prod_info_text,
     sp.sku_code,u.store_mobile
   </sql>
   
-  <select id="selectBackStageVOByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition" resultMap="BaseResultMap">
+  <select id="selectBackStageVOByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition" resultMap="BackStageResultMap">
   	select
   	<include refid="BackStage_Column_List" />
-  	from store_submit_product prod
-  		LEFT JOIN store_user_info u on u.id=prod.store_id
+  	from store_submit_product sp
+  		LEFT JOIN store_user_info u on u.id=sp.store_id
 		where 1=1
 	<if test="condition.storeId != null">
-  		and prod.id=#{condition.id,jdbcType=BIGINT}
+  		and sp.id=#{condition.id,jdbcType=BIGINT}
   	</if>
   	<if test="condition.prodStatus != null">
-  		and prod.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
+  		and sp.prod_status=#{condition.prodStatus,jdbcType=SMALLINT}
   	</if>
   	<if test="condition.storeId != null">
-  		and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
+  		and sp.store_id=#{condition.storeId,jdbcType=BIGINT}
   	</if>
-  	<if test="condition.prodCode != null">
-  		and prod.prod_code=#{condition.prodCode ,jdbcType=VARCHAR}
+  	<if test="condition.prodCode != null and condition.prodCode !=''">
+  		and sp.prod_code=#{condition.prodCode ,jdbcType=VARCHAR}
   	</if>
-  	<if test="condition.skuCode != null">
-  		and prod.sku_code=#{condition.skuCode ,jdbcType=VARCHAR}
+  	<if test="condition.skuCode != null and condition.skuCode != ''">
+  		and sp.sku_code=#{condition.skuCode ,jdbcType=VARCHAR}
   	</if>
-  	<if test="condition.prodName != null">
-  		and prod.prod_name like '%'+ #{condition.prodName} + '%'
+  	<if test="condition.prodName != null and condition.prodName != ''">
+  		and sp.prod_name like '%${condition.prodName}%'
   	</if>
-  	<if test="condition.storeName != null">
-  		and u.store_name like '%' + #{condition.storeName} + '%' 
+  	<if test="condition.storeName != null and condition.storeName != ''">
+  		and u.store_name like '%${condition.storeName}%' 
   	</if>
-  	<if test="condition.storeMobile != null">
+  	<if test="condition.storeMobile != null and condition.storeMobile != ''">
   		and u.store_mobile = #{condition.storeMobile,jdbcType=VARCHAR} 
   	</if>
-  	order by prod.created desc
+  	order by sp.created desc
   	
   </select>
   

@@ -107,7 +107,7 @@ public class YxtSmsProcess {
 		}
 
 		if (smsSend.getSendType() != SmsTypeEnum.VOICE.getType() && smsSend.getSendType() != SmsTypeEnum.INTERNATIONAL.getType()) {
-			smsSend.setContent(SignatureEnum.RETAIL.getRemark() + smsSend.getContent());
+			smsSend.setContent(smsSend.getContent());
 		}
 
 		/**

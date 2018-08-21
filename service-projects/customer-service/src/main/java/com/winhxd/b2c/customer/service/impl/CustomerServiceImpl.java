@@ -67,4 +67,17 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return null;
     }
+
+    @Override
+    public PagedList<CustomerUserInfoVO> findAvabileCustomerPageInfo(BackStageCustomerInfoCondition condition) {
+        PagedList<CustomerUserInfoVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
+        List<CustomerUserInfoVO> customers = customerUserInfoMapper.selectBindingCustomer(condition);
+        PageInfo<CustomerUserInfoVO> pageInfo = new PageInfo<>(customers);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        return pagedList;
+    }
 }

@@ -74,4 +74,17 @@ public class CustomerServiceController implements CustomerServiceClient {
         responseResult.setData(customerUserInfoVO);
         return responseResult;
     }
+
+    @Override
+    public ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
+        ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = new ResponseResult<PagedList<CustomerUserInfoVO>>();
+        try {
+            PagedList<CustomerUserInfoVO> page = customerService.findAvabileCustomerPageInfo(condition);
+            responseResult.setData(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseResult.setCode(BusinessCode.CODE_1001);
+        }
+        return responseResult;
+    }
 }

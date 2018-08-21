@@ -8,12 +8,10 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
+import com.winhxd.b2c.common.domain.pay.vo.OrderVerifyMoneyVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
@@ -55,9 +53,6 @@ public class VerifyService {
     @Autowired
     private PayService payService;
 
-    @Autowired
-    private PayStoreCashService payStoreCashService;
-
     /**
      * 订单支付成功事件
      *
@@ -70,7 +65,7 @@ public class VerifyService {
     }
 
     /**
-     * 订单闭环事件
+     * 订单闭环，费用记账
      *
      * @param orderNo
      * @param orderInfo
@@ -78,26 +73,6 @@ public class VerifyService {
     @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         completeAccounting(orderInfo.getOrderNo());
-        //计算门店资金
-        //手续费
-        BigDecimal cmmsAmt = orderInfo.getRealPaymentMoney().multiply(WXCalculation.FEE_RATE_OF_WX).setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
-        //门店应得金额（订单总额-手续费）
-        BigDecimal money = orderInfo.getOrderTotalMoney().subtract(cmmsAmt);
-        UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
-        condition.setOrderNo(orderNo);
-        condition.setStoreId(orderInfo.getStoreId());
-        condition.setMoney(money);
-        condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
-        payService.updateStoreBankroll(condition);
-        //添加交易记录
-        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
-        payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
-        payStoreTransactionRecord.setOrderNo(orderNo);
-        payStoreTransactionRecord.setType(StoreTransactionStatusEnum.ORDER_ENTRY.getStatusCode());
-        payStoreTransactionRecord.setMoney(money);
-        payStoreTransactionRecord.setRate(WXCalculation.FEE_RATE_OF_WX);
-        payStoreTransactionRecord.setCmmsAmt(cmmsAmt);
-        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
     }
 
     /**
@@ -215,7 +190,9 @@ public class VerifyService {
     @Transactional
     public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
         accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
-        return accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
+        int updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
+        log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", condition.getOrderNo(), condition.getServiceFee(), updateCount);
+        return updateCount;
     }
 
     /**
@@ -309,9 +286,7 @@ public class VerifyService {
                     verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
-        // 门店资金变动
-        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
-        payService.updateStoreBankroll(rollCondition);
+        notifyStoreMoneyVerify(verifyCode);
         return updatedCount;
     }
 
@@ -335,9 +310,37 @@ public class VerifyService {
         verifyHistory.setOperatedByName(operatedByName);
         accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
-        // 门店资金变动
-        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
-        payService.updateStoreBankroll(rollCondition);
+        notifyStoreMoneyVerify(verifyCode);
+        return updatedCount;
+    }
+
+    /**
+     * 门店资金结算，按核销批次结算
+     *
+     * @param verifyCode
+     * @return
+     */
+    @Transactional
+    private int notifyStoreMoneyVerify(String verifyCode) {
+        int updatedCount = 0;
+        List<OrderVerifyMoneyVO> orderVerifyMoneyVOList = accountingDetailMapper.selectOrderVerifyMoneyListByVerifyCode(verifyCode);
+        for (OrderVerifyMoneyVO vo : orderVerifyMoneyVOList) {
+            UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+            // 2.结算审核
+            rollCondition.setType(2);
+            rollCondition.setOrderNo(vo.getOrderNo());
+            rollCondition.setStoreId(vo.getStoreId());
+            // 货款
+            rollCondition.setMoneyType(Short.valueOf("1"));
+            rollCondition.setMoney(vo.getPaymentMoney());
+            payService.updateStoreBankroll(rollCondition);
+            // 促销费
+            rollCondition.setMoneyType(Short.valueOf("2"));
+            rollCondition.setMoney(vo.getPaymentMoney());
+            payService.updateStoreBankroll(rollCondition);
+            updatedCount++;
+        }
+        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔订单", verifyCode, updatedCount);
         return updatedCount;
     }
 

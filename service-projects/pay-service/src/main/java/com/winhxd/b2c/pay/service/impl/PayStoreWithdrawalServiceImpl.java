@@ -27,8 +27,10 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.vo.PayStoreApplyWithdrawVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
@@ -55,7 +57,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	private StoreBankrollMapper storeBankrollMapper;
 	
 	@Resource
-	Cache cache;
+	private Cache redisClusterCache;
 	
 	@Resource
 	private PayWithdrawalConfig payWithDrawalConfig;
@@ -92,11 +94,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setBankUserName(data.getBankUserName());
 				 withdrawalPage.setCardNumber(data.getCardNumber());
 				 withdrawalPage.setMobile(data.getStoreMobile());
+				 withdrawalPage.setSwiftCode(data.getSwiftCode());
 //				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
-				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName());
-				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
+				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称,实际账户总额
+				 redisClusterCache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName()+","+data.getTotalFee());
+				 redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -113,8 +116,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
-				 cache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName());
-				 cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
+				 redisClusterCache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName()+","+data.getTotalFee());
+				 redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 }
 		}
 		return result;
@@ -127,46 +130,35 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		///////////////测试数据//////////////////////////
 		Long businessId = 1l;
 		//////////////////结束/////////////////////////
-		// 验证入参是否传入正确
-		int res = valiApplyWithDrawCondition(condition);
-		if(res > 0){
-			result.setCode(res);
-			return result;
+		String payWithdrawalStr = redisClusterCache.get(CacheName.STOR_WITHDRAWAL_CHECK_INFO+businessId);
+		PayWithdrawals payWithdrawal = null;
+		if(payWithdrawalStr != null){
+			payWithdrawal = JsonUtil.parseJSONObject(payWithdrawalStr, PayWithdrawals.class);
+			LOGGER.info("获取redis中获取提现缓存数据：--"+payWithdrawal);
+			saveStoreWithdrawalInfo(businessId, payWithdrawal);
+			result.setCode(0);
+		}else{
+			result.setCode(BusinessCode.CODE_1001);
 		}
-		String userInfo = cache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
-		String[] user = userInfo.split(",");
-		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
-		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-		PayWithdrawals payWithdrawal = new PayWithdrawals();
-		payWithdrawal.setStoreId(businessId);
-		// 生成提现订单号
-		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
-		payWithdrawal.setTotalFee(condition.getTotalFee());
-		payWithdrawal.setRealFee(condition.getRealFee());
-		System.out.println("当前计算所得实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
-		if(bankType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
-			payWithdrawal.setFlowDirectionType(bankType);
-			payWithdrawal.setMobile(user[0]);
-		}else if(weixType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
-			payWithdrawal.setFlowDirectionType(weixType);
-		}
-		payWithdrawal.setCmmsAmt(condition.getCmmsAmt());
-		payWithdrawal.setRate(payWithDrawalConfig.getRate());
-		payWithdrawal.setAuditStatus((short)0);
-//		payWithdrawal.setAuditDesc(auditDesc);
-		payWithdrawal.setName(user[1]);
-		payWithdrawal.setCreated(new Date());
-		payWithdrawal.setCreatedByName(user[1]);
-		payWithdrawal.setCreatedBy(businessId);
-		payWithdrawal.setUpdated(new Date());
-		payWithdrawal.setUpdatedBy(businessId);
-		payWithdrawal.setUpdatedByName(user[1]);
-		saveStoreWithdrawalInfo(businessId, payWithdrawal);
-		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	} 
+	
+	// 计算手续费率
+	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
+		BigDecimal cmms = totalFee.multiply(rate);
+		// 计算手续费
+		BigDecimal mix = new BigDecimal(1);
+	    BigDecimal max = new BigDecimal(25);
+		int a = cmms.compareTo(mix);
+		int b = cmms.compareTo(max);
+		if(a == -1){
+			cmms = mix;
+		}
+		if(b == 1){
+			cmms = max;
+		}
+		return cmms;
+	}
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;
@@ -183,6 +175,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(StringUtils.isEmpty(name)){
 			res = BusinessCode.CODE_610034;
 		}
+		short withdrawType = condition.getWithdrawType();
+		if(withdrawType == 1){
+			String openId = condition.getBuyerId();
+			if(StringUtils.isEmpty(openId)){
+				res = BusinessCode.CODE_610031;
+			}
+		}
+		String paymentAccount = condition.getPaymentAccount();
+		if(StringUtils.isEmpty(paymentAccount)){
+			res = BusinessCode.CODE_610012;
+		}
+		String swiftCode = condition.getSwiftCode();
+		if(StringUtils.isEmpty(swiftCode)){
+			res = BusinessCode.CODE_610029;
+		}
 		return res;
 	}
 
@@ -195,24 +202,24 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(businessId);
 		PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();
 		if(storeBankroll != null){
-			storeUserinfo.setFlowDirectionName(payStoreWallet.get(0).getNick());
-			storeUserinfo.setFlowDirectionType((short)1);
-			storeUserinfo.setOpenid(payStoreWallet.get(0).getOpenid());
-			storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
-			storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
-			storeUserinfo.setNick(payStoreWallet.get(0).getNick());
-			storeUserinfo.setName(payStoreWallet.get(0).getName());
-			res.setCode(0);
+			PayStoreWallet storeWallet = payStoreWallet.get(0);
+			if(payStoreWallet.size() > 0 && storeWallet != null){
+				storeUserinfo.setFlowDirectionName(storeWallet.getNick());
+				storeUserinfo.setFlowDirectionType((short)1);
+				storeUserinfo.setOpenid(storeWallet.getOpenid());
+				storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());
+				storeUserinfo.setTotalFee(storeBankroll.getPresentedMoney());
+				storeUserinfo.setNick(storeWallet.getNick());
+				storeUserinfo.setName(storeWallet.getName());
+				res.setData(storeUserinfo);
+				res.setCode(0);
+			}else{
+				res.setCode(BusinessCode.CODE_610026);
+				LOGGER.info("当前用户没有绑定微信账户");
+			}
 		}else{
 			res.setCode(BusinessCode.CODE_610027);
 			LOGGER.info("门店当前没有可提现的金额记录");
-		}
-		
-		if(payStoreWallet.size() == 0){
-			res.setCode(BusinessCode.CODE_610026);
-			LOGGER.info("门店微信账户不存在");
-		}else{
-			res.setData(storeUserinfo);
 		}
 		return res;
 	}
@@ -280,15 +287,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
     private boolean checkOrderNoAvailable(String withdrawalsNo, Date date) {
 
         String withdrawalsNoDateTimeFormatter = "yyMMddHH";
-        String val = cache.hget(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo);
+        String val = redisClusterCache.hget(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo);
         if (StringUtils.isNotBlank(val)) {
             LOGGER.info("订单号生成出现重复：orderNo={}", withdrawalsNo);
             return false;
         } else {
-            cache.hset(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo, withdrawalsNo);
+        	redisClusterCache.hset(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), withdrawalsNo, withdrawalsNo);
             //下一小时就过期
             Long expires = (DateUtils.truncate(DateUtils.addHours(date, 1), Calendar.HOUR_OF_DAY).getTime() - date.getTime()) / 1000;
-            cache.expire(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), expires.intValue());
+            redisClusterCache.expire(CacheName.CACHE_KEY_ORDERNO_CHECK_EXISTS + DateFormatUtils.format(date, withdrawalsNoDateTimeFormatter), expires.intValue());
             return true;
         }
     }
@@ -303,6 +310,79 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}else{
 			result.setCode(BusinessCode.CODE_610023);
 		}
+		return result;
+	}
+
+	//审核当前用户提现信息
+	public ResponseResult<PayStoreApplyWithdrawVO> checkStorWithdrawalInfo(PayStoreApplyWithDrawCondition condition) {
+		ResponseResult<PayStoreApplyWithdrawVO> result = new ResponseResult<PayStoreApplyWithdrawVO>();
+//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		///////////////测试数据//////////////////////////
+		Long businessId = 1l;
+		//////////////////结束/////////////////////////
+		// 验证入参是否传入正确
+		int res = valiApplyWithDrawCondition(condition);
+		if(res > 0){
+			result.setCode(res);
+			return result;
+		}
+		// 返回页面提现审核页面参数
+		PayStoreApplyWithdrawVO payStoreApplyWithdraw = new PayStoreApplyWithdrawVO();
+		
+		String userInfo = redisClusterCache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
+		String[] user = userInfo.split(",");
+		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
+		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
+		PayWithdrawals payWithdrawal = new PayWithdrawals();
+		payWithdrawal.setStoreId(businessId);
+		// 生成提现订单号
+		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
+		BigDecimal totalFee = condition.getTotalFee();
+		// 当前提现金而不能大于实际账户总额
+		BigDecimal total = new BigDecimal(user[2]);
+		if(totalFee.compareTo(total) == 1){
+			result.setCode(BusinessCode.CODE_610035);
+			LOGGER.info("业务异常："+BusinessCode.CODE_610035);
+			return result;
+		}
+		payWithdrawal.setTotalFee(totalFee);
+		if(bankType == condition.getWithdrawType()){
+			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
+			payWithdrawal.setFlowDirectionType(bankType);
+			payWithdrawal.setMobile(user[0]);
+			BigDecimal rate = payWithDrawalConfig.getRate();
+			BigDecimal cmms = countCmms(rate,totalFee);
+			payWithdrawal.setCmmsAmt(cmms);
+			LOGGER.info("当前计算所得的手续费为："+cmms);
+			BigDecimal realFee = totalFee.subtract(cmms);
+			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
+			payWithdrawal.setRealFee(realFee);
+			payWithdrawal.setRate(rate);
+			payWithdrawal.setPaymentAccount(condition.getPaymentAccount());
+			payWithdrawal.setSwiftCode(condition.getSwiftCode());
+			
+			payStoreApplyWithdraw.setCmmsAmt(cmms);
+			payStoreApplyWithdraw.setRealFee(realFee);
+			payStoreApplyWithdraw.setRate(rate);
+			result.setData(payStoreApplyWithdraw);
+		}else if(weixType == condition.getWithdrawType()){
+			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
+			payWithdrawal.setFlowDirectionType(weixType);
+			payWithdrawal.setBuyerId(condition.getBuyerId());
+		}
+		payWithdrawal.setAuditStatus((short)0);
+//		payWithdrawal.setAuditDesc(auditDesc);
+		payWithdrawal.setName(user[1]);
+		payWithdrawal.setCreated(new Date());
+		payWithdrawal.setCreatedByName(user[1]);
+		payWithdrawal.setCreatedBy(businessId);
+		payWithdrawal.setUpdated(new Date());
+		payWithdrawal.setUpdatedBy(businessId);
+		payWithdrawal.setUpdatedByName(user[1]);
+		//将本次的提现数据存入redis
+		redisClusterCache.set(CacheName.STOR_WITHDRAWAL_CHECK_INFO+businessId, JsonUtil.toJSONString(payWithdrawal));
+		redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_CHECK_INFO+businessId, EXPIRE_TIME);
+		redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	}
 }

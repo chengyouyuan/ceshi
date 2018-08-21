@@ -26,7 +26,7 @@ public class SysUserCondition extends PagedCondition {
     @ApiModelProperty(value = "手机")
     private String mobile;
 
-    @ApiModelProperty(value = "角色名称")
-    private String roleName;
+    @ApiModelProperty(value = "角色ID")
+    private String roleId;
 
 }

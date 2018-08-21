@@ -54,6 +54,8 @@ public final class BusinessCode {
     public static final int  CODE_100821 = 100821;
     /**您还不是惠下单用户快去注册吧*/
     public static final int  CODE_100822 = 100822;
+    /**您还没有绑定惠下单账号*/
+    public static final int  CODE_100819 = 100819;
     /**请求超时*/
     public static final int  CODE_100815 = 100815;
     /**验证码请求时长没有超过一分钟*/
@@ -398,6 +400,8 @@ public final class BusinessCode {
     public static final int CODE_610033 = 610033;
     @ApiModelProperty("请输入流向名称")
     public static final int CODE_610034 = 610034;
+    @ApiModelProperty("提取限额不能大于实际账户余额")
+    public static final int CODE_610035 = 610035;
     
     
     @ApiModelProperty("订单支付  参数为空")
@@ -573,6 +577,8 @@ public final class BusinessCode {
     public static final int CODE_3400906 = 3400906;
     @ApiModelProperty("下载对账单时，响应参数解析失败")
     public static final int CODE_3400907 = 3400907;
+    @ApiModelProperty("支付完成，请勿重复支付")
+    public static final int CODE_3400908 = 3400908;
     @ApiModelProperty("微信无证书请求失败")
     public static final int CODE_3400910 = 3400910;
     @ApiModelProperty("微信有证书请求失败")

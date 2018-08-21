@@ -96,6 +96,11 @@ public class CacheName {
     public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
     
     /**
+     * 门店提现待审核数据
+     */
+    public static final String STOR_WITHDRAWAL_CHECK_INFO = "PAY:WITHDRAWAL:CHECK:";
+    
+    /**
      * 门店资金流转
      */
     public static final String BACKROLL_STORE = "BACKROLL:STORE";

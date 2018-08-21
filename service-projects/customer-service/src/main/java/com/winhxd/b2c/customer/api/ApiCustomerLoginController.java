@@ -1,8 +1,10 @@
 package com.winhxd.b2c.customer.api;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.SendSMSTemplate;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -124,7 +126,8 @@ public class ApiCustomerLoginController {
 			user.setCustomerId(customerUserInfo.getCustomerId());
 			user.setOpenid(mini.getOpenid());
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
-			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
+					AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 			result.setData(vo);
 		} else {
 			if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
@@ -134,7 +137,7 @@ public class ApiCustomerLoginController {
 			customerUserInfo.setCustomerId(db.getCustomerId());
 			customerUserInfo.setSessionKey(mini.getSessionKey());
 			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
-			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN +db.getToken());
+			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken());
 			customerLoginService.updateCustomerInfo(customerUserInfo);
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(db.getCustomerMobile());
@@ -143,7 +146,8 @@ public class ApiCustomerLoginController {
 			user.setOpenid(db.getOpenid());
 			user.setCustomerId(db.getCustomerId());
 			cache.set(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), JsonUtil.toJSONString(user));
-			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(), 30 * 24 * 60 * 60);
+			cache.expire(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken(),
+					AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 			result.setData(vo);
 		}
 		return result;
@@ -165,6 +169,7 @@ public class ApiCustomerLoginController {
 	public ResponseResult<String> sendVerification(
 			@RequestBody CustomerSendVerificationCodeCondition customerUserInfoCondition) {
 		ResponseResult<String> result = new ResponseResult<>();
+		String content = "";
 		if (null == customerUserInfoCondition) {
 			logger.info("{} - 发送验证码, 参数：customerUserInfoCondition={}", "",
 					JsonUtil.toJSONString(customerUserInfoCondition));
@@ -182,17 +187,18 @@ public class ApiCustomerLoginController {
 		cache.set(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
 				verificationCode);
 		cache.expire(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerUserInfoCondition.getCustomerMobile(),
-				5 * 60);
+				AppConstant.SEND_SMS_EXPIRE_SECOND);
 		/**
 		 * 60秒以后调用短信服务
 		 */
 		cache.set(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
 				verificationCode);
-		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(), 60);
+		cache.expire(CacheName.SEND_VERIFICATION_CODE_REQUEST_TIME + customerUserInfoCondition.getCustomerMobile(),
+				AppConstant.REQUEST_SEND_SMS_EXPIRE_SECOND);
 		/**
 		 * 发送模板内容
 		 */
-		String content = "【小程序】验证码：" + verificationCode + ",有效时间五分钟";
+		content = String.format(SendSMSTemplate.SMSCONTENT, verificationCode);
 		SMSCondition sMSCondition = new SMSCondition();
 		sMSCondition.setContent(content);
 		sMSCondition.setMobile(customerUserInfoCondition.getCustomerMobile());
@@ -239,8 +245,8 @@ public class ApiCustomerLoginController {
 			logger.info("{} - ");
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		if (!customerChangeMobileCondition.getVerificationCode().equals(
-				cache.get(CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerChangeMobileCondition.getCustomerMobile()))) {
+		if (!customerChangeMobileCondition.getVerificationCode().equals(cache.get(
+				CacheName.CUSTOMER_USER_SEND_VERIFICATION_CODE + customerChangeMobileCondition.getCustomerMobile()))) {
 			logger.info("{} - 用户验证码错误");
 			throw new BusinessException(BusinessCode.CODE_202308);
 		}

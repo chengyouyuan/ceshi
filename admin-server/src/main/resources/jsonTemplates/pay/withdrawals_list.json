@@ -110,7 +110,8 @@
       {
         "name": "withdrawalsDate",
         "inputModel": "double-date-picker",
-        "title": "提款时间"
+        "title": "提款时间",
+        "value": {}
       },
       {
         "name": "mobile",
@@ -120,7 +121,8 @@
       {
         "name": "totalFee",
         "inputModel": "range",
-        "title": "提款金额"
+        "title": "提款金额",
+        "value": {}
       },
       {
         "name": "auditStatus",

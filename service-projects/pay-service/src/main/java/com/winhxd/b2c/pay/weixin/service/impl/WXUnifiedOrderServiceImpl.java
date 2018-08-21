@@ -11,8 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.constant.Currency;
-import com.winhxd.b2c.common.constant.TradeType;
+import com.winhxd.b2c.common.constant.CurrencyEnum;
+import com.winhxd.b2c.common.constant.TradeTypeEnum;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -112,7 +112,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		long timeStamp = System.currentTimeMillis();
 		String outTradeNo = generateOutTradeNo(condition.getOutOrderNo(), timeStamp);
 		payPreOrderDTO.setOutTradeNo(outTradeNo);
-		payPreOrderDTO.setTradeType(TradeType.WECHAT_H5.getCode());
+		payPreOrderDTO.setTradeType(TradeTypeEnum.WECHAT_H5.getCode());
 		
         //调用微信统一下单API
 		PayPreOrderResponseDTO payPreOrderResponseDTO = wxPayApi.unifiedOrder(payPreOrderDTO);
@@ -238,7 +238,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//支付金额，单位为分
 		payPreOrderDTO.setTotalFee(condition.getTotalAmount().multiply(new BigDecimal(100)).intValue());
 		payPreOrderDTO.setTimeStart(new Date());
-		payPreOrderDTO.setFeeType(Currency.CNY.getText());
+		payPreOrderDTO.setFeeType(CurrencyEnum.CNY.getText());
 		
 		return payPreOrderDTO;
 	}

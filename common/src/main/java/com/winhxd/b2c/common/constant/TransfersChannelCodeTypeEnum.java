@@ -7,7 +7,7 @@ package com.winhxd.b2c.common.constant;
  * @Date 2018/8/14 9:55
  * @Description: 转账通道编码枚举
  */
-public enum TransfersChannelCodeType {
+public enum TransfersChannelCodeTypeEnum {
 
     WXBALANCE(1, "微信余额"),
     ICBC(1002, "工商银行"),
@@ -28,7 +28,7 @@ public enum TransfersChannelCodeType {
     BOB(1032, "北京银行"),
     BANKOFNINGBO(1056, "宁波银行");
 
-    private TransfersChannelCodeType(int code, String text){
+    private TransfersChannelCodeTypeEnum(int code, String text){
         this.code = code;
         this.text = text;
     }

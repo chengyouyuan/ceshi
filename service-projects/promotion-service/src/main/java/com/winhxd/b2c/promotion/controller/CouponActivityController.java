@@ -287,7 +287,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @ApiOperation(value = "撤回活动优惠券", notes = "撤回活动优惠券")
     @Override
-    public ResponseResult<Integer> revocationActivityCoupon(CouponActivityCondition condition) {
+    public ResponseResult<Integer> revocationActivityCoupon(@RequestBody CouponActivityCondition condition) {
         if(condition.getId() == null){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -308,8 +308,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
+    @ApiOperation(value = "停用活动", notes = "停用活动")
     @Override
-    public ResponseResult<Integer> updateCouponActivityStatus(CouponActivityAddCondition condition) {
+    public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
         if(condition == null){
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -324,6 +325,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         ResponseResult responseResult = new ResponseResult();
         couponActivityService.updateCouponActivityStatus(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
+        responseResult.setMessage("停止活动成功！");
         return responseResult;
     }
 

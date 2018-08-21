@@ -59,12 +59,20 @@ public class DownLoadStatementTask {
 //        	DownloadStatementCondition condition = new DownloadStatementCondition();
         	String statementResult = downLoadStatementClient.downloadStatement(null).getData();
         	String fundFlowResult = downLoadStatementClient.downloadFundFlow(null).getData();
-            //定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
+            
             if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(statementResult)) {
             	logger.info("对账单下载完成！");
+            }else if (PayStatementDownloadRecord.DOWNLOAD_FAIL.equals(statementResult)){
+            	logger.info("对账单下载失败！");
+            }else if (PayStatementDownloadRecord.DOWNLOADED.equals(statementResult)){
+            	logger.info("对账单已下载！");
             }
             if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(fundFlowResult)) {
             	logger.info("资金账单下载完成！");
+            }else if (PayStatementDownloadRecord.DOWNLOAD_FAIL.equals(fundFlowResult)){
+            	logger.info("资金账单下载失败！");
+            }else if (PayStatementDownloadRecord.DOWNLOADED.equals(fundFlowResult)){
+            	logger.info("资金账单已下载！");
             }
 
         } catch (Exception ex) {
@@ -77,6 +85,7 @@ public class DownLoadStatementTask {
     	System.out.println("啥时候下载之前失败过的账单呢");
     	try {
     		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+    		//查所有失败过的？    还是按日期查询
     		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 			List<PayStatementDownloadRecord> list = downLoadStatementClient.findDownloadRecord(record).getData();
 			if (CollectionUtils.isNotEmpty(list)) {
@@ -98,13 +107,21 @@ public class DownLoadStatementTask {
 						
 					}
 					//定时任务可以做耗时操作，包括做生成数据库报表、文件IO等等需要定时执行的逻辑
-					if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(statementResult)) {
+
+		            if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(statementResult)) {
 						logger.info("{}对账单下载完成！", billDate);
-					}
-					if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(fundFlowResult)) {
+		            }else if (PayStatementDownloadRecord.DOWNLOAD_FAIL.equals(statementResult)){
+						logger.info("{}对账单下载失败！", billDate);
+		            }else if (PayStatementDownloadRecord.DOWNLOADED.equals(statementResult)){
+						logger.info("{}对账单已下载！", billDate);
+		            }
+		            if (PayStatementDownloadRecord.DOWNLOAD_SUCCESS.equals(fundFlowResult)) {
 						logger.info("{}资金账单下载完成！", billDate);
-					}
-					
+		            }else if (PayStatementDownloadRecord.DOWNLOAD_FAIL.equals(fundFlowResult)){
+						logger.info("{}资金账单下载失败！", billDate);
+		            }else if (PayStatementDownloadRecord.DOWNLOADED.equals(fundFlowResult)){
+						logger.info("{}资金账单已下载！", billDate);
+		            }
 				}
 			}
     	} catch (Exception ex) {

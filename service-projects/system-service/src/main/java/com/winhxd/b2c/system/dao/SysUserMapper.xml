@@ -8,6 +8,7 @@
     <result column="mobile" jdbcType="CHAR" property="mobile" />
     <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="identity" jdbcType="INTEGER" property="identity" />
+    <result column="region_code" jdbcType="CHAR" property="regionCode" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -18,10 +19,11 @@
   <resultMap id="voMap" type="com.winhxd.b2c.common.domain.system.user.model.SysUser" extends="BaseResultMap">
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="region_name" jdbcType="VARCHAR" property="regionName" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, account, username, mobile, status, password, identity, created_by, created_by_name, created,
+    id, account, username, mobile, status, password, identity, region_code, created_by, created_by_name, created,
     updated_by, updated, updated_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -30,22 +32,6 @@
     from sys_user
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sys_user
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
-    insert into sys_user (id, account, username,
-      mobile, status, password,
-      created_by, created_by_name, created,
-      updated_by, updated, updated_by_name
-      )
-    values (#{id,jdbcType=BIGINT}, #{account,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
-      #{mobile,jdbcType=CHAR}, #{status,jdbcType=SMALLINT}, #{password,jdbcType=VARCHAR},
-      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP},
-      #{updatedBy,jdbcType=BIGINT}, #{updated,jdbcType=TIMESTAMP}, #{updatedByName,jdbcType=VARCHAR}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
     insert into sys_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -85,6 +71,12 @@
       <if test="updatedByName != null">
         updated_by_name,
       </if>
+      <if test="identity != null">
+        identity,
+      </if>
+      <if test="regionCode != null">
+        region_code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -122,6 +114,12 @@
       </if>
       <if test="updatedByName != null">
         #{updatedByName,jdbcType=VARCHAR},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=INTEGER},
+      </if>
+      <if test="regionCode != null">
+        #{regionCode,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -161,40 +159,14 @@
       <if test="updatedByName != null">
         updated_by_name = #{updatedByName,jdbcType=VARCHAR},
       </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.user.model.SysUser">
-    update sys_user
-    set account = #{account,jdbcType=VARCHAR},
-      username = #{username,jdbcType=VARCHAR},
-      mobile = #{mobile,jdbcType=CHAR},
-      status = #{status,jdbcType=SMALLINT},
-      password = #{password,jdbcType=VARCHAR},
-      created_by = #{createdBy,jdbcType=BIGINT},
-      created_by_name = #{createdByName,jdbcType=VARCHAR},
-      created = #{created,jdbcType=TIMESTAMP},
-      updated_by = #{updatedBy,jdbcType=BIGINT},
-      updated = #{updated,jdbcType=TIMESTAMP},
-      updated_by_name = #{updatedByName,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-
-  <update id="updatePassword">
-    update sys_user
-    <set>
-      password=#{newPassword},
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=BIGINT},
+      <if test="identity != null">
+        identity = #{identity,jdbcType=INTEGER},
       </if>
-      <if test="updated != null">
-        updated = #{updated,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedByName != null">
-        updated_by_name = #{updatedByName,jdbcType=VARCHAR},
+      <if test="regionCode != null">
+        region_code = #{regionCode,jdbcType=CHAR},
       </if>
     </set>
-    where id=#{id}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 
   <select id="selectSysUser" resultMap="voMap" parameterType="com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition">
@@ -210,13 +182,15 @@
       u.updated,
       u.created_by_name,
       u.updated_by_name,
-      ur.id,
       ur.role_id,
       r.role_name,
-      u.identity
-    from sys_user u
-      left join sys_user_role ur on u.id=ur.user_id
-      left join sys_role r on r.id=ur.role_id
+      u.identity,
+      u.region_code,
+      CONCAT(re.province, re.city, re.county, re.town, re.village) AS region_name
+    FROM sys_user u
+    LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+    LEFT JOIN sys_role r ON r.id = ur.role_id
+    LEFT JOIN sys_region re ON u.region_code = re.region_code
     <where>
       u.status=1
       <if test="userId != null">
@@ -254,13 +228,15 @@
       u.updated,
       u.created_by_name,
       u.updated_by_name,
-      ur.id,
       ur.role_id,
       r.role_name,
-      u.identity
-    from sys_user u
-    left join sys_user_role ur on u.id=ur.user_id
-    left join sys_role r on r.id=ur.role_id
-    where u.account = #{account}
+      u.identity,
+      u.region_code,
+      CONCAT(re.province, re.city, re.county, re.town, re.village) AS region_name
+    FROM sys_user u
+    LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+    LEFT JOIN sys_role r ON r.id = ur.role_id
+    LEFT JOIN sys_region re ON u.region_code = re.region_code
+    WHERE u.account = #{account}
   </select>
 </mapper>

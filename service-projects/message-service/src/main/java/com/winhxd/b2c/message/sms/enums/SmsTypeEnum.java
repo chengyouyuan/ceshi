@@ -16,7 +16,7 @@ public enum SmsTypeEnum {
 
 	private String remark;// 描述
 
-	private SmsTypeEnum(int type, String remark) {
+	SmsTypeEnum(int type, String remark) {
 		this.type = type;
 		this.remark = remark;
 

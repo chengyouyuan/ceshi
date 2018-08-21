@@ -57,7 +57,7 @@ public enum SmsSupplierEnum {
 
 	private String remark;// 描述
 
-	private SmsSupplierEnum(String code, String account, String pwd, String url, SmsSupplierEnum backup, String remark) {
+	SmsSupplierEnum(String code, String account, String pwd, String url, SmsSupplierEnum backup, String remark) {
 		this.code = code;
 		this.remark = remark;
 		this.url = url;

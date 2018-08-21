@@ -61,21 +61,29 @@
       },
       {
         "name": "roleId",
-        "inputModel": "select",
+        "value": {
+          "value": "roleId",
+          "textValue": "roleName"
+        },
+        "inputModel": "inputDia",
         "title": "权限组",
-        "value": "",
         "placeholder": "请选择权限组",
         "isHidden": false,
-        "options": [
-          {
-            "value": 1,
-            "label": "系统管理员"
-          },
-          {
-            "value": 3,
-            "label": "测试角色"
-          }
-        ]
+        "path": "",
+        "configKey": "/template/module/system/system_role_list_win.json"
+      },
+      {
+        "name": "regionCode",
+        "value": {
+          "value": "regionCode",
+          "textValue": "regionName"
+        },
+        "inputModel": "inputDia",
+        "title": "地理区域",
+        "placeholder": "请选择地理区域",
+        "isHidden": false,
+        "path": "",
+        "configKey": "/template/module/system/system_region_list_radio_win.json"
       }
     ]
   }

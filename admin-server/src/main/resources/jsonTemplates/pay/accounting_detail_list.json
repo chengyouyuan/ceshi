@@ -112,35 +112,59 @@
     ],
     "params": [
       {
+        "name": "verifyStatus",
+        "inputModel": "select",
+        "title": "结算状态",
+        "options": [ {
+          "label": "已结算",
+          "value": "1"
+        }, {
+          "label": "未结算",
+          "value": "0"
+        } ]
+      },
+      {
+        "name": "verifyDate",
+        "inputModel": "double-date-picker",
+        "title": "实际结算时间"
+      },
+      {
         "name": "storeId",
         "inputModel": "inputDia",
         "title": "门店",
         "configKey": "/template/module/order/order_store_list_win.json"
       },
       {
-        "name": "orderNo",
-        "inputModel": "input",
-        "title": "订单号"
+        "name": "detailType",
+        "inputModel": "select",
+        "title": "费用类型",
+        "options": [ {
+          "label": "订单货款",
+          "value": "1"
+        }, {
+          "label": "手续费",
+          "value": "2"
+        }, {
+          "label": "优惠抵扣",
+          "value": "3"
+        } ]
       },
       {
-        "name": "recordedDateStart",
-        "inputModel": "single-date-picker",
-        "title": "费用入账时间"
+        "name": "thirdPartyVerifyStatus",
+        "inputModel": "select",
+        "title": "微信入账",
+        "options": [ {
+          "label": "已入账",
+          "value": "1"
+        }, {
+          "label": "未入账",
+          "value": "0"
+        } ]
       },
       {
-        "name": "recordedDateEnd",
-        "inputModel": "single-date-picker",
-        "title": "费用入账时间"
-      },
-      {
-        "name": "verifyDateStart",
-        "inputModel": "single-date-picker",
-        "title": "结算时间"
-      },
-      {
-        "name": "verifyDateEnd",
-        "inputModel": "single-date-picker",
-        "title": "结算时间"
+        "name": "recordedDate",
+        "inputModel": "double-date-picker",
+        "title": "订单完成时间"
       }
     ]
   }

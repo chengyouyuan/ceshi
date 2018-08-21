@@ -50,7 +50,7 @@ public class ManDaoRetailProcess extends BaseSmsProcess {
 		try {
 			Client client = new ManDaoRetailProcess.Client();
 			String resultMo = client.mo();
-			if (resultMo.startsWith("-")) {
+			if (resultMo.startsWith(SmsConstant.SEND_FAIL_IDENTIFY)) {
 				//接收失败的情况，输出失败信息
 				System.out.print(resultMo + " 序列号或密码不对");
 			} else if ("1" == resultMo) {
@@ -68,7 +68,7 @@ public class ManDaoRetailProcess extends BaseSmsProcess {
 		}
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		ManDaoRetailProcess tManDaoSmsProcess = new ManDaoRetailProcess();
 		MessageSmsHistory smsSend = new MessageSmsHistory();
 		smsSend.setContent("值此新春佳节来临之际，惠赢天下全体同仁恭祝您马年马到成功，龙马精神。事业一马当先。");

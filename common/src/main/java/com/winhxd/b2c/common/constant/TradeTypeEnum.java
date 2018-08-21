@@ -7,13 +7,13 @@ package com.winhxd.b2c.common.constant;
  * @Date 2018/8/14 16:04
  * @Description: 交易类型枚举
  */
-public enum TradeType {
+public enum TradeTypeEnum {
     //wechat
     WECHAT_H5("JSAPI","微信公众号支付"),
     WECHAT_CSB("NATIVE","微信扫码支付"),
     WECHAT_APP("APP","微信支付");
 
-    private TradeType(String code, String name){
+    private TradeTypeEnum(String code, String name){
         this.code = code;
         this.name = name;
     }

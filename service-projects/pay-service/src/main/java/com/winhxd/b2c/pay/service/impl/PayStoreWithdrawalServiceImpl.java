@@ -141,23 +141,27 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setStoreId(businessId);
 		// 生成提现订单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
-		payWithdrawal.setTotalFee(condition.getTotalFee());
-		payWithdrawal.setRealFee(condition.getRealFee());
-		System.out.println("当前计算所得实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
+		BigDecimal totalFee = condition.getTotalFee();
+		payWithdrawal.setTotalFee(totalFee);
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
 			payWithdrawal.setMobile(user[0]);
+			BigDecimal rate = payWithDrawalConfig.getRate();
+			BigDecimal realFee = totalFee.multiply(BigDecimal.valueOf(1).subtract(rate));
+			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
+			payWithdrawal.setRealFee(realFee);
+			BigDecimal cmms = countCmms(rate,totalFee);
+			LOGGER.info("当前计算所得的手续费为："+cmms);
+			payWithdrawal.setCmmsAmt(cmms);
+			payWithdrawal.setRate(rate);
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 		}
-		payWithdrawal.setCmmsAmt(condition.getCmmsAmt());
-		payWithdrawal.setRate(payWithDrawalConfig.getRate());
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setName(user[1]);
-		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		payWithdrawal.setCreated(new Date());
 		payWithdrawal.setCreatedByName(user[1]);
 		payWithdrawal.setCreatedBy(businessId);
@@ -165,8 +169,26 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setUpdatedBy(businessId);
 		payWithdrawal.setUpdatedByName(user[1]);
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
+		cache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
 		return result;
 	} 
+	
+	// 计算手续费率
+	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
+		BigDecimal cmms = totalFee.multiply(rate);
+		// 计算手续费
+		BigDecimal mix = new BigDecimal(1);
+	    BigDecimal max = new BigDecimal(25);
+		int a = cmms.compareTo(mix);
+		int b = cmms.compareTo(max);
+		if(a == -1){
+			cmms = mix;
+		}
+		if(b == 1){
+			cmms = max;
+		}
+		return cmms;
+	}
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;

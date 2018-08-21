@@ -8,21 +8,38 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface SysUserMapper {
-    int deleteByPrimaryKey(Long id);
-
-    int insert(SysUser record);
-
+    /**
+     * 插入新用户
+     * @param record
+     * @return
+     */
     int insertSelective(SysUser record);
 
+    /**
+     * 根据条件查询用户列表
+     * @param condition
+     * @return
+     */
     Page<SysUser> selectSysUser(SysUserCondition condition);
 
+    /**
+     * 根据主键查询用户
+     * @param id
+     * @return
+     */
     SysUser selectByPrimaryKey(Long id);
 
+    /**
+     * 更新用户
+     * @param record
+     * @return
+     */
     int updateByPrimaryKeySelective(SysUser record);
 
-    int updateByPrimaryKey(SysUser record);
-
-    int updatePassword(SysUser record);
-
+    /**
+     * 根据账号查询用户
+     * @param account
+     * @return
+     */
     SysUser getByAccount(@Param("account") String account);
 }

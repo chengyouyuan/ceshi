@@ -32,6 +32,8 @@ import java.util.List;
 public class MiniProgramImpl implements MiniProgramService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MiniProgramImpl.class);
     private static final String RETURN_NULL = "null";
+    /**过滤模拟器工具获取到的formid*/
+    private static final String IGNORE_FORMID = "the formId is a mock one";
 
     @Autowired
     MiniProgramUtils miniProgramUtils;
@@ -76,10 +78,12 @@ public class MiniProgramImpl implements MiniProgramService {
         List<MessageCustomerFormIds> list = new ArrayList<>();
         for (String formid:miniFormIdCondition.getFormIds()) {
             MessageCustomerFormIds customerFormIds = new MessageCustomerFormIds();
-            customerFormIds.setOpenid(user.getOpenid());
-            customerFormIds.setFormid(formid);
-            customerFormIds.setCreated(new Date());
-            list.add(customerFormIds);
+            if(!IGNORE_FORMID.equals(customerFormIds.getFormid())){
+                customerFormIds.setOpenid(user.getOpenid());
+                customerFormIds.setFormid(formid);
+                customerFormIds.setCreated(new Date());
+                list.add(customerFormIds);
+            }
         }
         if (CollectionUtils.isNotEmpty(list)){
             customerFormIdsMapper.insertFormIds(list);

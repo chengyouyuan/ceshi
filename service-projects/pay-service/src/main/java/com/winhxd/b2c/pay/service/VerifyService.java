@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.VerifyHistory;
+import com.winhxd.b2c.common.domain.pay.vo.OrderVerifyMoneyVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO;
 import com.winhxd.b2c.common.domain.pay.vo.VerifySummaryVO;
@@ -189,7 +190,9 @@ public class VerifyService {
     @Transactional
     public int thirdPartyVerifyAccounting(ThirdPartyVerifyAccountingCondition condition) {
         accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(condition.getOrderNo(), condition.getServiceFee());
-        return accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
+        int updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(condition.getOrderNo());
+        log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", condition.getOrderNo(), condition.getServiceFee(), updateCount);
+        return updateCount;
     }
 
     /**
@@ -283,9 +286,7 @@ public class VerifyService {
                     verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
-        // 门店资金变动
-        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
-        payService.updateStoreBankroll(rollCondition);
+        notifyStoreMoneyVerify(verifyCode);
         return updatedCount;
     }
 
@@ -309,9 +310,37 @@ public class VerifyService {
         verifyHistory.setOperatedByName(operatedByName);
         accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
-        // 门店资金变动
-        UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
-        payService.updateStoreBankroll(rollCondition);
+        notifyStoreMoneyVerify(verifyCode);
+        return updatedCount;
+    }
+
+    /**
+     * 门店资金结算，按核销批次结算
+     *
+     * @param verifyCode
+     * @return
+     */
+    @Transactional
+    private int notifyStoreMoneyVerify(String verifyCode) {
+        int updatedCount = 0;
+        List<OrderVerifyMoneyVO> orderVerifyMoneyVOList = accountingDetailMapper.selectOrderVerifyMoneyListByVerifyCode(verifyCode);
+        for (OrderVerifyMoneyVO vo : orderVerifyMoneyVOList) {
+            UpdateStoreBankRollCondition rollCondition = new UpdateStoreBankRollCondition();
+            // 2.结算审核
+            rollCondition.setType(2);
+            rollCondition.setOrderNo(vo.getOrderNo());
+            rollCondition.setStoreId(vo.getStoreId());
+            // 货款
+            rollCondition.setMoneyType(Short.valueOf("1"));
+            rollCondition.setMoney(vo.getPaymentMoney());
+            payService.updateStoreBankroll(rollCondition);
+            // 促销费
+            rollCondition.setMoneyType(Short.valueOf("2"));
+            rollCondition.setMoney(vo.getPaymentMoney());
+            payService.updateStoreBankroll(rollCondition);
+            updatedCount++;
+        }
+        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔订单", verifyCode, updatedCount);
         return updatedCount;
     }
 

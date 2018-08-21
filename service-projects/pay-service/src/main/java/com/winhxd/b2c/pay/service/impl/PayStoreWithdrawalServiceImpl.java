@@ -141,19 +141,25 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setStoreId(businessId);
 		// 生成提现订单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
-		payWithdrawal.setTotalFee(condition.getTotalFee());
-		payWithdrawal.setRealFee(condition.getRealFee());
-		System.out.println("当前计算所得实际提现金额："+payWithdrawal.getRealFee() +";当前的费率："+ payWithDrawalConfig.getRate());
+		BigDecimal totalFee = condition.getTotalFee();
+		payWithdrawal.setTotalFee(totalFee);
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
 			payWithdrawal.setMobile(user[0]);
+			BigDecimal rate = payWithDrawalConfig.getRate();
+			BigDecimal realFee = totalFee.multiply(BigDecimal.valueOf(1).subtract(rate));
+			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
+			payWithdrawal.setRealFee(realFee);
+			// 计算手续费
+			BigDecimal cmms = totalFee.multiply(rate);
+			LOGGER.info("当前计算所得的手续费为："+cmms);
+			payWithdrawal.setCmmsAmt(cmms);
+			payWithdrawal.setRate(rate);
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 		}
-		payWithdrawal.setCmmsAmt(condition.getCmmsAmt());
-		payWithdrawal.setRate(payWithDrawalConfig.getRate());
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setName(user[1]);

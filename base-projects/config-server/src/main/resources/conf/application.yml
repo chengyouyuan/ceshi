@@ -11,8 +11,12 @@ spring:
   sleuth:
     sampler:
       probability: 0.0
+  zipkin:
+    sender:
+      type: rabbit
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
     hikari:
       minimum-idle: 5
       maximum-pool-size: 30

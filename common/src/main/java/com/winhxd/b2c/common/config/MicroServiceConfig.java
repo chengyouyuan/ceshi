@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.config;
 
 import com.winhxd.b2c.common.context.support.ContextInitFilter;
 import com.winhxd.b2c.common.context.support.ContextRequestInterceptor;
+import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
 import com.winhxd.b2c.common.exception.support.BusinessDecoder;
 import com.winhxd.b2c.common.exception.support.ServiceHandlerExceptionResolver;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
@@ -51,5 +52,10 @@ public class MicroServiceConfig {
     @Bean
     public BusinessDecoder businessDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         return new BusinessDecoder(messageConverters);
+    }
+
+    @Bean
+    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
+        return new VersionedZoneAvoidanceRule();
     }
 }

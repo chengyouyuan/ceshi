@@ -78,7 +78,7 @@ public class MiniProgramImpl implements MiniProgramService {
         List<MessageCustomerFormIds> list = new ArrayList<>();
         for (String formid:miniFormIdCondition.getFormIds()) {
             MessageCustomerFormIds customerFormIds = new MessageCustomerFormIds();
-            if(!IGNORE_FORMID.equals(customerFormIds.getFormid())){
+            if(!IGNORE_FORMID.equals(formid)){
                 customerFormIds.setOpenid(user.getOpenid());
                 customerFormIds.setFormid(formid);
                 customerFormIds.setCreated(new Date());

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.order.enums;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -93,5 +94,11 @@ public enum OrderStatusEnum {
             map.put(orderStatusEnum.getStatusCode(), orderStatusEnum.getStatusMark());
         }
         return map;
+    }
+    
+    public static short[] finalStatus(){
+        short[] status = new short[]{FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode()};
+        Arrays.sort(status);
+        return status;
     }
 }

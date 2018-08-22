@@ -126,7 +126,8 @@
       {
         "name": "verifyDate",
         "inputModel": "double-date-picker",
-        "title": "实际结算时间"
+        "title": "实际结算时间",
+        "value": {}
       },
       {
         "name": "storeId",
@@ -164,7 +165,8 @@
       {
         "name": "recordedDate",
         "inputModel": "double-date-picker",
-        "title": "订单完成时间"
+        "title": "订单完成时间",
+        "value": {}
       }
     ]
   }

@@ -105,10 +105,10 @@ public class CouponServiceImpl implements CouponService {
         }
         //step1 查询符合
         CouponActivity couponActivity = new CouponActivity();
-        couponActivity.setCouponType((short)1);
-        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
-        couponActivity.setActivityStatus((short)1);
-        couponActivity.setType((short)2);
+        couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+        couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
         List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
         if(couponActivities.isEmpty()){
             logger.error("不存在符合新用户注册的优惠券活动");
@@ -492,6 +492,7 @@ public class CouponServiceImpl implements CouponService {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         for(int i =0 ;i<sendIds.size();i++){
+            logger.info("=撤回优惠券,优惠券发放表ID{}", condition.getSendIds());
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setId(sendIds.get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.INVALYD.getCode());

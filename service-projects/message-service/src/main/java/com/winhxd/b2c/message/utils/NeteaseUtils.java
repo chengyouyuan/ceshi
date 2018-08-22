@@ -114,10 +114,25 @@ public class NeteaseUtils {
      * @param token
      * @return
      */
-    public Map<String,Object> updateUserInfo(String accid,String token){
+    public Map<String,Object> updateUserToken(String accid,String token){
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("accid", accid));
         nvps.add(new BasicNameValuePair("token", token));
+        return sendHttpClientPost(UPDATE_ACCOUNT_URL, nvps);
+    }
+
+    /**
+     * 修改云信账户信息
+     * @param accid
+     * @param name
+     * @param icon
+     * @return
+     */
+    public Map<String,Object> updateUserInfo(String accid,String name,String icon){
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("accid", accid));
+        nvps.add(new BasicNameValuePair("name", name));
+        nvps.add(new BasicNameValuePair("icon", icon));
         return sendHttpClientPost(UPDATE_ACCOUNT_URL, nvps);
     }
 

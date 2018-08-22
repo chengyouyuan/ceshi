@@ -1,6 +1,7 @@
 package com.winhxd.b2c.store.api;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.RegexConstant;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
@@ -218,6 +219,7 @@ public class ApiOpenStoreController {
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息保存接口 门店用户编码:{}", storeCustomerId);
+        logger.info("惠小店开店基础信息保存接口 入参:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);
@@ -311,11 +313,25 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
-        if (StringUtils.isBlank(storeBusinessInfoCondition.getStoreName()) || StringUtils.isBlank(storeBusinessInfoCondition.getPickupType())||
-                StringUtils.isBlank(storeBusinessInfoCondition.getPayType()) || StringUtils.isBlank(storeBusinessInfoCondition.getShopkeeper()) ||
-                StringUtils.isBlank(storeBusinessInfoCondition.getContactMobile()) || StringUtils.isBlank(storeBusinessInfoCondition.getStoreAddress())) {
+        if (StringUtils.isBlank(storeBusinessInfoCondition.getPickupType())|| StringUtils.isBlank(storeBusinessInfoCondition.getPayType())) {
             logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200006);
+        }
+        boolean storeNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreName()).matches();
+        if (!storeNameMatcher) {
+            throw new BusinessException(BusinessCode.CODE_200006, "店铺名称不能有特殊字符且长度不能超过15");
+        }
+        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(storeBusinessInfoCondition.getStoreAddress()).matches();
+        if (!storeAddressMatcher) {
+            throw new BusinessException(BusinessCode.CODE_200006, "提货地址不能有特殊字符且长度不能超过30");
+        }
+        boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(storeBusinessInfoCondition.getShopkeeper()).matches();
+        if (!shopkeeperMatcher) {
+            throw new BusinessException(BusinessCode.CODE_200006, "联系人不能有特殊字符且长度不能超过10");
+        }
+        boolean contactMobileMatcher = RegexConstant.CONTACT_MOBILE_PATTERN.matcher(storeBusinessInfoCondition.getContactMobile()).matches();
+        if (!contactMobileMatcher) {
+            throw new BusinessException(BusinessCode.CODE_200006, "联系方式格式不正确");
         }
         if (UserContext.getCurrentStoreUser() == null) {
             logger.error("惠小店开店店铺信息保存接口 未获取到当前用户信息");
@@ -323,6 +339,7 @@ public class ApiOpenStoreController {
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店店铺信息保存接口 门店用户编码:{}", storeCustomerId);
+        logger.info("惠小店开店店铺信息保存接口 入参:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
         if (storeUserInfo == null) {
             logger.error("惠小店开店基础信息保存接口 modifyStoreBaseInfo,门店信息不存在:{}", storeCustomerId);

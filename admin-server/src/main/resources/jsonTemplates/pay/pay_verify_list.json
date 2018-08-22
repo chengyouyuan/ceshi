@@ -100,12 +100,14 @@
       {
         "name": "recordedDate",
         "inputModel": "double-date-picker",
-        "title": "订单截止日"
+        "title": "订单截止日",
+        "value": {}
       },
       {
         "name": "realPayMoney",
         "inputModel": "range",
-        "title": "实收款"
+        "title": "实收款",
+        "value": {}
       },
       {
         "name": "storeId",
@@ -116,12 +118,14 @@
       {
         "name": "verifyDate",
         "inputModel": "double-date-picker",
-        "title": "核销日"
+        "title": "核销日",
+        "value": {}
       },
       {
         "name": "realVerifyMoney",
         "inputModel": "range",
-        "title": "实结款"
+        "title": "实结款",
+        "value": {}
       }
     ]
   }

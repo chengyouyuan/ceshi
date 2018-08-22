@@ -57,12 +57,11 @@ public interface AccountingDetailMapper {
     List<OrderVerifyMoneyVO> selectOrderVerifyMoneyListByVerifyCode(@Param("verifyCode") String verifyCode);
 
     /**
-     * 按核销批次查询订单应核销金额
+     * 查询未标记支付平台已结算的费用订单号
      *
-     * @param verifyCode
      * @return
      */
-    List<String> selectThirdPartyNotVerifiedList(@Param("verifyCode") String verifyCode);
+    List<String> selectThirdPartyNotVerifyOrderNoList();
 
     /**
      * 查询费用明细

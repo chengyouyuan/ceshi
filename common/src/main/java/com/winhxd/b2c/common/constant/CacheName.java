@@ -34,6 +34,10 @@ public class CacheName {
      */
     public static final String CACHE_KEY_STORE_ORDER_SALESSUMMARY = "STORE:SALESSUMMARY:";
     /**
+     * 订单缓存
+     */
+    public static final String CACHE_ORDER_INFO_4_MANAGEMENT = "ORDER:INFO4MANAGEMENT:";
+    /**
      * 订单号生成重复redis验证KEY
      */
     public static final String CACHE_KEY_ORDERNO_CHECK_EXISTS = "ORDERNO:CHECK:";

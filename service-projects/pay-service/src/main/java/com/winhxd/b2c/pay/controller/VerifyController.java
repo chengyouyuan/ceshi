@@ -30,21 +30,28 @@ public class VerifyController {
     @PostMapping("/pay/6081/v1/recordAccounting")
     public ResponseResult<Integer> recordAccounting(@RequestParam("orderNo") String orderNo) {
         int count = verifyService.saveAccountingDetailsByOrderNo(orderNo);
-        return new ResponseResult(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "订单费用标记入账", notes = "订单闭环后，更新费用入账状态为已完成")
     @PostMapping("/pay/6082/v1/completeAccounting")
     public ResponseResult<Integer> completeAccounting(@RequestParam("orderNo") String orderNo) {
         int count = verifyService.completeAccounting(orderNo);
-        return new ResponseResult(count);
+        return new ResponseResult<>(Integer.valueOf(count));
+    }
+
+    @ApiOperation(value = "查询未标记支付平台已结算的费用订单号", notes = "用于标记与支付平台费用明细结算状态")
+    @PostMapping("/pay/6083/v1/thirdPartyNotVerifyOrderNoList")
+    public ResponseResult<List<String>> thirdPartyNotVerifyOrderNoList() {
+        List<String> list = verifyService.thirdPartyNotVerifyOrderNoList();
+        return new ResponseResult<>(list);
     }
 
     @ApiOperation(value = "订单费用与支付平台结算", notes = "支付平台结算后，更新费用明细与支付平台为结算完成")
-    @PostMapping("/pay/6083/v1/thirdPartyVerifyAccounting")
+    @PostMapping("/pay/6084/v1/thirdPartyVerifyAccounting")
     public ResponseResult<Integer> thirdPartyVerifyAccounting(@RequestBody ThirdPartyVerifyAccountingCondition condition) {
-        int count = verifyService.thirdPartyVerifyAccounting(condition);
-        return new ResponseResult(count);
+        int count = verifyService.thirdPartyVerifyAccounting(condition.getOrderNo());
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
@@ -67,7 +74,7 @@ public class VerifyController {
         }
         int count = verifyService.verifyByStoreSummary(
                 condition.getList(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
-        return new ResponseResult<>(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
@@ -90,7 +97,7 @@ public class VerifyController {
         }
         int count = verifyService.verifyByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
-        return new ResponseResult<>(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
@@ -101,7 +108,7 @@ public class VerifyController {
         }
         int count = verifyService.pauseByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
-        return new ResponseResult<>(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
@@ -112,7 +119,7 @@ public class VerifyController {
         }
         int count = verifyService.restoreByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
-        return new ResponseResult<>(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
@@ -134,7 +141,7 @@ public class VerifyController {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
         int count = verifyService.approveWithdrawals(condition);
-        return new ResponseResult<>(count);
+        return new ResponseResult<>(Integer.valueOf(count));
     }
 
     @ApiOperation(value = "门店提现申请导出查询")

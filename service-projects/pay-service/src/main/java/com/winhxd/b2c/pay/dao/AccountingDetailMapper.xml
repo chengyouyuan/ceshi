@@ -62,6 +62,14 @@
     group by d.order_no, d.store_id
   </select>
 
+  <select id="selectThirdPartyNotVerifyOrderNoList" resultType="string">
+    select d.order_no as orderNo
+    from pay_accounting_detail d
+    where d.order_complete_status = 1
+    and d.third_party_verify_status = 0
+    group by d.order_no
+  </select>
+
   <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition">
     select *
     from pay_accounting_detail d

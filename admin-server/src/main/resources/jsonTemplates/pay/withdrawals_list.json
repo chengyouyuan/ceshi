@@ -37,7 +37,7 @@
         "name": "导出Excel",
         "event": {
           "type": "export",
-          "ajaxType": "get",
+          "ajaxType": "post",
           "path": "/pay/verify/storeWithdrawalsListExport"
         }
       }
@@ -80,7 +80,7 @@
         "title": "提款手机号"
       },
       {
-        "name": "updated",
+        "name": "timeEnd",
         "title": "提款时间"
       },
       {
@@ -110,7 +110,8 @@
       {
         "name": "withdrawalsDate",
         "inputModel": "double-date-picker",
-        "title": "提款时间"
+        "title": "提款时间",
+        "value": {}
       },
       {
         "name": "mobile",
@@ -120,7 +121,8 @@
       {
         "name": "totalFee",
         "inputModel": "range",
-        "title": "提款金额"
+        "title": "提款金额",
+        "value": {}
       },
       {
         "name": "auditStatus",

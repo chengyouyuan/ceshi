@@ -185,7 +185,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
         String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
         String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
-        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal);
+        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal, orderInfo.getPickupCode());
     }
     
 

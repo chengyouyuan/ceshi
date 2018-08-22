@@ -152,26 +152,32 @@
     order by created desc
   </select>
 
-  <select id="selectRepeatStoreRegion" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/> from store_region where 1 = 1
-    <if test="areaCode != null and areaCode != ''">
-      <bind name="pattern" value="areaCode + '%'" />
-      and area_code like #{pattern}
-    </if>
-    <!--<if test="level != null and level != 0">
-      and level &gt;= #{level, jdbc=SMALLINT}
-    </if>-->
-  </select>
-
   <select id="selectByRegionCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from store_region
     where status = 1
-    and area_code &lt;= #{regionCode,jdbcType=VARCHAR}
-    and level &lt;= #{level,jdbcType=SMALLINT}
-    <bind name="prefixCode" value="prefixCode + '%'" />
-    and area_code like #{prefixCode}
+    and area_code in
+    <foreach collection="regionCodeList" index="index" item="regionCode" open="(" close=")" separator=",">
+       #{regionCode}
+    </foreach>
     limit 1
+  </select>
+
+  <select id="selectFatherRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region where status = 1 and area_code in
+      <foreach collection="regionCodes" item="regionCode" open="(" close=")" separator=",">
+        #{regionCode}
+      </foreach>
+  </select>
+  <select id="selectSonRegion" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_region where status = 1
+    <if test="areaCode != null and areaCode != ''">
+      <bind name="pattern" value="areaCode + '%'" />
+      and area_code like #{pattern}
+    </if>
+    <if test="level != null and level != 0">
+      and level &gt; #{level}
+    </if>
   </select>
 </mapper>

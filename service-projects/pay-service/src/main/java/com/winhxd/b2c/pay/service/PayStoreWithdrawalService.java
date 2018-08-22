@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
+import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 
 /**
@@ -22,4 +24,12 @@ public interface PayStoreWithdrawalService {
 	ResponseResult<Integer> saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition);
 	/**进入提现页面*/
 	ResponseResult<PayWithdrawalPageVO> showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition);
+	
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月21日 下午9:27:00
+	 * @Description 提现计算费率
+	 * @return
+	 */
+	CalculationCmmsAmtVO calculationCmmsAmt(CalculationCmmsAmtCondition condition);
 }

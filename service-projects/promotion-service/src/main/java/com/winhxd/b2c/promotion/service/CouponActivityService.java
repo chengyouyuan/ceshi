@@ -90,4 +90,14 @@ public interface CouponActivityService {
      *@Date   2018/8/9
      */
     ResponseResult<PagedList<CouponActivityStoreVO>> findStoreByActivity(CouponActivityCondition condition);
+
+    /**
+     *
+     *@Deccription 判断活动时间是否冲突
+     *@Params  condition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/21
+     */
+    Boolean getActivityDateClash(CouponActivityAddCondition condition);
 }

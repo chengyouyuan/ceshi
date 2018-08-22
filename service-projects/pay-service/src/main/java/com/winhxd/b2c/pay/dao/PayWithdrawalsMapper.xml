@@ -207,6 +207,9 @@
       <if test="flowDirectionName != null">
         #{flowDirectionName,jdbcType=VARCHAR},
       </if>
+      <if test="swiftCode != null">
+        #{swiftCode,jdbcType=VARCHAR},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -420,6 +423,7 @@
     <result column="bandBranchName" property="bandBranchName" />
     <result column="bankName" property="bankName" />
     <result column="bankUserName" property="bankUserName" />
+    <result column="swiftCode" property="swiftCode" />
   </resultMap>
 
   <sql id="common_storeUser">
@@ -430,7 +434,7 @@
 
   <sql id="common_statusBank">
     sbc.card_number as cardNumber,sbc.bank_name as flowDirectionName,sbc.band_branch_name as bandBranchName,
-    sbc.mobile as storeMobile,sbc.bank_name as bankName,sbc.bank_user_name as bankUserName
+    sbc.mobile as storeMobile,sbc.bank_name as bankName,sbc.bank_user_name as bankUserName,sbc.swift_code as swiftCode
   </sql>
 
   <!--根据门店id查询门店用户的信息以及当前账户的可提现资金  -->
@@ -472,10 +476,10 @@
       and time_end &lt; date_add(date_format(#{withdrawalsDateEnd}, '%Y-%m-%d'), interval 1 day)
     </if>
     <if test="totalFeeStart != null">
-      and total_fee &gt;= totalFeeStart
+      and total_fee &gt;= #{totalFeeStart}
     </if>
     <if test="totalFeeEnd != null">
-      and total_fee &lt; totalFeeEnd
+      and total_fee &lt;= #{totalFeeEnd}
     </if>
     order by 1 desc
   </select>

@@ -370,11 +370,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<List<PayWithdrawalsType>> result = new ResponseResult<>();
 		List<PayWithdrawalsType> types = payWithdrawalsTypeMapper.selectAll();
 		 LOGGER.info("types------"+types);
-		if(!types.isEmpty()){
-			result.setData(types);
-		}else{
+		 result.setData(types);
+		if(types.isEmpty()){
 			result.setCode(BusinessCode.CODE_610023);
-		}
+		} 
 		return result;
 	}
 

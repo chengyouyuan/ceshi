@@ -47,4 +47,13 @@ public interface CustomerService {
      * @Description 根据token查询用户信息
      */
     CustomerUserInfoVO findCustomerByToken(String token);
+
+    /**
+     * @param condition 查询条件
+     * @return 分页数据
+     * @author chengyy
+     * @date 2018/8/6 9:25
+     * @Description 根据查询条件查询有绑定关系用户分页数据
+     */
+    PagedList<CustomerUserInfoVO> findAvabileCustomerPageInfo(BackStageCustomerInfoCondition condition);
 }

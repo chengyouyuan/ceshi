@@ -26,6 +26,8 @@ public class PayWithdrawalPageVO {
     private String bankUserName;
 	@ApiModelProperty("银行名称")
     private String bankName;
+	@ApiModelProperty("银行swiftCode")
+	private String swiftCode;
 	@ApiModelProperty("银行支行或者分行名称")
     private String bandBranchName;
 	@ApiModelProperty("手机号")

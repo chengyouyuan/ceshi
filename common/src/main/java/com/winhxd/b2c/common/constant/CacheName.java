@@ -34,6 +34,10 @@ public class CacheName {
      */
     public static final String CACHE_KEY_STORE_ORDER_SALESSUMMARY = "STORE:SALESSUMMARY:";
     /**
+     * 订单缓存
+     */
+    public static final String CACHE_ORDER_INFO_4_MANAGEMENT = "ORDER:INFO4MANAGEMENT:";
+    /**
      * 订单号生成重复redis验证KEY
      */
     public static final String CACHE_KEY_ORDERNO_CHECK_EXISTS = "ORDERNO:CHECK:";
@@ -94,6 +98,11 @@ public class CacheName {
      * 门店提现模块的门店信息
      */
     public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
+    
+    /**
+     * 门店提现待审核数据
+     */
+    public static final String STOR_WITHDRAWAL_CHECK_INFO = "PAY:WITHDRAWAL:CHECK:";
     
     /**
      * 门店资金流转

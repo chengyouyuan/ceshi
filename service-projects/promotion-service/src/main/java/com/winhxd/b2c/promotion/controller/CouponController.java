@@ -44,7 +44,7 @@ public class CouponController implements CouponServiceClient{
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	public ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition) {
-		LOGGER.info("=/coupon/orderUseCoupon-订单使用优惠券=--开始--{}", condition);
+		LOGGER.info("=/coupon/orderUseCoupon-订单使用优惠券=--开始--{}--订单号{}", condition,condition.getOrderNo());
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		Boolean flag =  couponService.orderUseCoupon(condition);
 		result.setData(flag);

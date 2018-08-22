@@ -15,11 +15,11 @@ public interface NeteaseService {
      */
     NeteaseAccountVO getNeteaseAccountInfo(NeteaseAccountCondition neteaseAccountCondition);
     /**
-     * 创建云信用户
+     * 更新云信用户信息
      * @param neteaseAccountCondition
      * @return
      */
-    NeteaseAccountVO createNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition);
+    void updateNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition);
 
     /**
      * 获取云信消息盒子

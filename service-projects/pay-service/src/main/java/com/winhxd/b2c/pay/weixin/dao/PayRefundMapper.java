@@ -21,4 +21,11 @@ public interface PayRefundMapper {
      * @return
      */
     PayRefund selectByOutRefundNo(String outRefundNo);
+
+    /**
+     * 根据商户流水单号查询
+     * @param outRefundNo
+     * @return
+     */
+    PayRefund selectByOutTradeNo(String outTradeNo);
 }

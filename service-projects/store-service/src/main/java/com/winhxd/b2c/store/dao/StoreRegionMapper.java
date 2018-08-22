@@ -41,4 +41,8 @@ public interface StoreRegionMapper {
      * @return
      */
     StoreRegion selectByRegionCode(@Param("regionCode") String regionCode, @Param("level") int level, @Param("prefixCode") String prefixCode);
+
+    List<StoreRegionVO> selectFatherRegion(@Param("regionCodes") List<String> regionCodes);
+
+    List<StoreRegionVO> selectSonRegion(@Param("areaCode") String areaCode, @Param("level") Integer level);
 }

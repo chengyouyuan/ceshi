@@ -1,21 +1,7 @@
 package com.winhxd.b2c.pay.weixin.api;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.weixin.base.dto.PayPreOrderCallbackDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
@@ -25,14 +11,21 @@ import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
-import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
 import com.winhxd.b2c.pay.weixin.util.DecipherUtil;
 import com.winhxd.b2c.pay.weixin.util.XmlUtil;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 /**
  * 微信支付回调
@@ -70,7 +63,7 @@ public class ApiPayCallbackController {
 		logger.info("支付回调参数：{}", resqXml);
 		try {
 			PayPreOrderCallbackDTO payPreOrderCallbackDTO = XmlUtil.xml2Bean(resqXml, PayPreOrderCallbackDTO.class);
-			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", payPreOrderCallbackDTO);
+			logger.info("支付回调转换参数（PayPreOrderCallbackDTO）：{}", JsonUtil.toJSONString(payPreOrderCallbackDTO));
 			if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
 				this.response(response, FAIL_RESPONSE);
 				return;
@@ -87,7 +80,7 @@ public class ApiPayCallbackController {
 				this.response(response, FAIL_RESPONSE);
 			}
 		} catch (Exception e) {
-			logger.error("微信支付回调转换失败", e);
+			logger.error("微信支付回调失败", e);
 			this.response(response, FAIL_RESPONSE);
 		}
 	}
@@ -112,8 +105,9 @@ public class ApiPayCallbackController {
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密
+
 				String decodeString = DecipherUtil.decodeReqInfo(reqInfo);
-				refundCallbackDTO = BeanAndXmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
+				refundCallbackDTO = XmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
 
 				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(refundCallbackDTO);
 				Boolean result = payService.callbackOrderRefund(payRefund);

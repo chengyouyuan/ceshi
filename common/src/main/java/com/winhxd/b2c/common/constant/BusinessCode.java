@@ -54,6 +54,8 @@ public final class BusinessCode {
     public static final int  CODE_100821 = 100821;
     /**您还不是惠下单用户快去注册吧*/
     public static final int  CODE_100822 = 100822;
+    /**您还没有绑定惠下单账号*/
+    public static final int  CODE_100819 = 100819;
     /**请求超时*/
     public static final int  CODE_100815 = 100815;
     /**验证码请求时长没有超过一分钟*/
@@ -94,6 +96,9 @@ public final class BusinessCode {
     
     /**1049接口参数无效*/
     public static final int CODE_104901 = 104901;
+
+    /**1022接口参数无效*/
+    public static final int CODE_102201 = 102201;
     
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
@@ -492,9 +497,23 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店提现  未获取到提现信息")
     public static final int CODE_600310 = 600310;
+    @ApiModelProperty("门店提现 审核失败 请重新发起申请")
+    public static final int CODE_600311 = 600311;
     
     @ApiModelProperty("判断订单是否支付  订单号为空")
     public static final int CODE_601601 = 601601;
+    
+    @ApiModelProperty("提现计算手续费 参数为空")
+    public static final int CODE_611101 = 611101;
+    
+    @ApiModelProperty("提现计算手续费 提现类型为空")
+    public static final int CODE_611102 = 611102;
+    
+    @ApiModelProperty("提现计算手续费 金额为空")
+    public static final int CODE_611103 = 611103;
+    
+    @ApiModelProperty("提现计算手续费 可提现金额不足")
+    public static final int CODE_611104 = 611104;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;
@@ -502,11 +521,14 @@ public final class BusinessCode {
     @ApiModelProperty("消息服务 创建云信用户 customerId为空")
     public static final int CODE_701301 = 701301;
 
-    @ApiModelProperty("消息服务 创建云信用户 云信用户存在，更新token失败（需查询官方错误码）")
+    @ApiModelProperty("消息服务 修改云信用户 云信用户存在，更新token失败（需查询官方错误码）")
     public static final int CODE_701302 = 701302;
 
-    @ApiModelProperty("消息服务 创建云信用户 云信用户不存在，创建新用户失败（需查询官方错误码）")
+    @ApiModelProperty("消息服务 修改云信用户 云信用户不存在，创建新用户失败（需查询官方错误码）")
     public static final int CODE_701303 = 701303;
+
+    @ApiModelProperty("消息服务 修改云信用户信息 云信用户不存在")
+    public static final int CODE_701304 = 701304;
 
     @ApiModelProperty("消息服务 给B端用户发云信消息 customerId为空")
     public static final int CODE_701401 = 701401;
@@ -575,6 +597,8 @@ public final class BusinessCode {
     public static final int CODE_3400906 = 3400906;
     @ApiModelProperty("下载对账单时，响应参数解析失败")
     public static final int CODE_3400907 = 3400907;
+    @ApiModelProperty("支付完成，请勿重复支付")
+    public static final int CODE_3400908 = 3400908;
     @ApiModelProperty("微信无证书请求失败")
     public static final int CODE_3400910 = 3400910;
     @ApiModelProperty("微信有证书请求失败")

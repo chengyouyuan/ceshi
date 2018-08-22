@@ -53,6 +53,7 @@
     <result column="activityName" jdbcType="VARCHAR" property="activityName" />
     <result column="activityCode" jdbcType="VARCHAR" property="activityCode" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="status_name" jdbcType="VARCHAR" property="statusName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -60,6 +61,25 @@
     activity_status, status, created_by, created_by_name, created, updated_by, updated_by_name, 
     updated
   </sql>
+  <select id="getActivityDateClash" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition" resultType="java.lang.Integer">
+    SELECT
+    COUNT(ca.id)
+    FROM
+    coupon_activity ca
+    WHERE
+    1 = 1
+    AND ca.type = 2
+    AND (
+    (
+    #{condition.activityStart} &gt;= ca.activity_start
+    AND #{condition.activityStart} &lt;= ca.activity_end
+    )
+    OR (
+    #{condition.activityEnd} &gt;= ca.activity_start
+    AND #{condition.activityEnd} &lt;= ca.activity_end
+    )
+    )
+  </select>
   <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
     ca.id,
@@ -87,11 +107,19 @@
     ca.`name` AS activityName,
     ca.`code` AS activityCode,
     ct.`status`,
+    (
+    CASE
+    WHEN ct.`status` = 1 THEN
+    '有效'
+    WHEN ct.`status` = 0 THEN
+    '无效'
+    END
+    ) AS status_name,
     cts.updated
     FROM
     coupon_activity ca
     LEFT JOIN coupon_activity_template cat ON ca.id = cat.coupon_activity_id AND cat.`status` = 1
-    LEFT JOIN coupon_template ct ON ct.id = cat.template_id AND ct.`status` = 1
+    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
     LEFT JOIN coupon_template_send cts ON cts.template_id = ct.id AND cts.`status` = 1
     WHERE
     1 = 1
@@ -303,7 +331,7 @@
     <if test="type != null">
       AND type = #{type,jdbcType=SMALLINT}
     </if>
-
+    AND NOW() BETWEEN activity_start AND activity_end
   </select>
   <select id="selectCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
@@ -322,8 +350,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(ca.activity_start) activityStart,
-    DATE(ca.activity_end) activityEnd,
+    DATE(cts.start_time) activityStart,
+    DATE(cts.end_time) activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -353,10 +381,10 @@
       AND cts.status = #{status}
     </if>
     <if test="status == 3">
-      AND cts.end_time &gt; now()
+      AND cts.end_time &lt; now()
     </if>
     <if test="status == null">
-      AND cts.start_time &lt;= NOW()
+      AND cts.start_time &lt;= NOW() AND cts.end_time >= NOW()
       AND (cts.STATUS = 2 OR cts.STATUS = 4)
     </if>
     GROUP BY ca.id,cts.template_id

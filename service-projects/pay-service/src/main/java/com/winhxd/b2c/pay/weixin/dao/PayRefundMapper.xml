@@ -539,4 +539,10 @@
         from pay_refund
         where out_refund_no = #{outRefundNo,jdbcType=VARCHAR}
     </select>
+    <select id="selectByOutTradeNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from pay_refund
+        where out_trade_no = #{outTradeNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

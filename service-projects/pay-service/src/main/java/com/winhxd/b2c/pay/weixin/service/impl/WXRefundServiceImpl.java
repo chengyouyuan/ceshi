@@ -13,8 +13,10 @@ import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -30,6 +32,7 @@ import java.util.Map;
  */
 @Service
 public class WXRefundServiceImpl implements WXRefundService {
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WXRefundServiceImpl.class);
 
     @Autowired
     WXPayApi wxPayApi;
@@ -57,6 +60,7 @@ public class WXRefundServiceImpl implements WXRefundService {
     private static final String REFUND_STATUS_2 = "2";
     private static final String REFUND_STATUS_3 = "3";
 
+    @Transactional
     @Override
     public PayRefundVO refundOrder(PayRefundCondition condition){
         //方法返参
@@ -64,7 +68,7 @@ public class WXRefundServiceImpl implements WXRefundService {
         try {
             //支付流水号
             String outTradeNo = condition.getOutTradeNo();
-            PayRefund payRefund = payRefundMapper.selectByOutRefundNo(outTradeNo);
+            PayRefund payRefund = payRefundMapper.selectByOutTradeNo(outTradeNo);
             Integer switchStatus = -1;
             if (payRefund != null) {
                 switchStatus = new Integer(payRefund.getCallbackRefundStatus());
@@ -88,6 +92,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                     break;
             }
         }catch (Exception e){
+            logger.error("退款时发生错误" + e.getMessage(), e);
             throw new BusinessException(BusinessCode.ORDER_REFUND_CLOSED);
         }
 
@@ -98,17 +103,24 @@ public class WXRefundServiceImpl implements WXRefundService {
     public PayRefund updatePayRefundByOutTradeNo(PayRefundResponseDTO payRefundResponseDTO) throws Exception{
 
         String reqInfo = payRefundResponseDTO.getReqInfo();
-        PayRefund payRefund = payRefundMapper.selectByOutRefundNo(payRefundResponseDTO.getOutTradeNo());
+        PayRefund payRefund = payRefundMapper.selectByOutTradeNo(payRefundResponseDTO.getOutTradeNo());
         if (payRefund.getCallbackRefundStatus() != 1){
             payRefund.setCallbackRefundId(payRefundResponseDTO.getRefundId());
             payRefund.setOutRefundNo(payRefundResponseDTO.getOutRefundNo());
             payRefund.setCallbackTotalFee(payRefundResponseDTO.getTotalFee());
-            payRefund.setCallbackSettlementTotalFee(payRefundResponseDTO.getSettlementTotalFee());
+
+            if(payRefundResponseDTO.getSettlementTotalFee() != null){
+                payRefund.setCallbackSettlementTotalFee(payRefundResponseDTO.getSettlementTotalFee());
+            }
+
             payRefund.setCallbackRefundFee(payRefundResponseDTO.getRefundFee());
             payRefund.setCallbackSettlementRefundFee(payRefundResponseDTO.getSettlementRefundFee());
 
-            DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            payRefund.setCallbackSuccessTime(bf.parse(payRefundResponseDTO.getSuccessTime()));
+            if(payRefundResponseDTO.getSuccessTime() != null){
+                DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
+                payRefund.setCallbackSuccessTime(bf.parse(payRefundResponseDTO.getSuccessTime()));
+            }
+
             payRefund.setCallbackRefundRecvAccout(payRefundResponseDTO.getRefundRecvAccout());
             payRefund.setCallbackRefundAccount(payRefundResponseDTO.getRefundAccount());
             payRefund.setCallbackRefundRequestSource(payRefundResponseDTO.getRefundRequestSource());
@@ -121,6 +133,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                 payRefund.setCallbackRefundStatus((short)3);
             }
             payRefund.setCallbackReqInfo(reqInfo);
+            payRefund.setUpdated(new Date());
             payRefundMapper.updateByPrimaryKeySelective(payRefund);
         }
         
@@ -177,7 +190,9 @@ public class WXRefundServiceImpl implements WXRefundService {
         payRefundVO.setTransactionId(responseDTO.getTransactionId());
         payRefundVO.setOutRefundNo(responseDTO.getOutRefundNo());
         payRefundVO.setRefundId(responseDTO.getRefundId());
-        payRefundVO.setRefundAmount(new BigDecimal(responseDTO.getSettlementRefundFee()).divide(UNITS));
+        if(responseDTO.getSettlementRefundFee() != null){
+            payRefundVO.setRefundAmount(new BigDecimal(responseDTO.getSettlementRefundFee()).divide(UNITS));
+        }
         return payRefundVO;
     }
 
@@ -214,7 +229,9 @@ public class WXRefundServiceImpl implements WXRefundService {
             model.setCallbackRefundFee(dto.getRefundFee());
             model.setCallbackRefundAmount(new BigDecimal(dto.getRefundFee()).divide(UNITS));
             model.setCallbackSettlementRefundFee(dto.getSettlementRefundFee());
-            model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            if (dto.getSettlementRefundFee() != null){
+                model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            }
             model.setCallbackTotalFee(dto.getTotalFee());
             model.setCallbackSettlementTotalFee(dto.getSettlementTotalFee());
             model.setCallbackFeeType(dto.getFeeType());
@@ -245,7 +262,9 @@ public class WXRefundServiceImpl implements WXRefundService {
             model.setCallbackRefundFee(dto.getRefundFee());
             model.setCallbackRefundAmount(new BigDecimal(dto.getRefundFee()).divide(UNITS));
             model.setCallbackSettlementRefundFee(dto.getSettlementRefundFee());
-            model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            if (dto.getSettlementRefundFee() != null){
+                model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+            }
             model.setCallbackTotalFee(dto.getTotalFee());
             model.setCallbackSettlementTotalFee(dto.getSettlementTotalFee());
             model.setCallbackFeeType(dto.getFeeType());
@@ -317,7 +336,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                 model.setCallbackRefundStatus((short)0);
             }else if("SUCCESS".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)1);
-                DateFormat bf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
                 model.setCallbackSuccessTime(bf.parse(mapOut.get("refund_success_time_0")));
             }else if("REFUNDCLOSE".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)2);

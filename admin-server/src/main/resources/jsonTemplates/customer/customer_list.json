@@ -158,6 +158,21 @@
             "value": "1",
             "label": "否"
           }]
+      },
+      {
+        "name": "bindStatus",
+        "inputModel": "select",
+        "title": "是否绑定门店",
+        "placeholder": "",
+        "isHidden": false,
+        "options": [{
+          "value": "1",
+          "label": "是"
+        },
+          {
+            "value": "0",
+            "label": "否"
+          }]
       }
     ]
   }

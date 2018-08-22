@@ -51,33 +51,6 @@
         "type": "button",
         "buttons": [
           {
-            "name": "编辑",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "update"
-              },
-              "path": "",
-              "configKey": "/template/module/message/message_batch_push_edit.json"
-            }
-          },
-          {
-            "name": "推送",
-            "icon": null,
-            "event": {
-              "ajaxType": "get",
-              "type": "ajax",
-              "params": [
-                "id"
-              ],
-              "path": "/message/batchPushMessage/{id}"
-            }
-          },
-          {
             "name": "删除",
             "icon": null,
             "event": {

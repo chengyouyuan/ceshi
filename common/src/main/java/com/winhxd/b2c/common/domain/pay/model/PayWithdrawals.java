@@ -28,9 +28,13 @@ public class PayWithdrawals {
 
     private String callbackReason;
 
+    private BigDecimal callbackCmmsAmt;
+
     private Short flowDirectionType;
 
     private String flowDirectionName;
+
+    private String swiftCode;
 
     private String name;
 
@@ -154,6 +158,14 @@ public class PayWithdrawals {
         this.callbackReason = callbackReason;
     }
 
+    public BigDecimal getCallbackCmmsAmt() {
+        return callbackCmmsAmt;
+    }
+
+    public void setCallbackCmmsAmt(BigDecimal callbackCmmsAmt) {
+        this.callbackCmmsAmt = callbackCmmsAmt;
+    }
+
     public Short getFlowDirectionType() {
         return flowDirectionType;
     }
@@ -168,6 +180,14 @@ public class PayWithdrawals {
 
     public void setFlowDirectionName(String flowDirectionName) {
         this.flowDirectionName = flowDirectionName;
+    }
+
+    public String getSwiftCode() {
+        return swiftCode;
+    }
+
+    public void setSwiftCode(String swiftCode) {
+        this.swiftCode = swiftCode;
     }
 
     public String getName() {

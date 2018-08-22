@@ -21,8 +21,6 @@ import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
-import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
-import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
 import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 
 @RestController
@@ -42,7 +40,7 @@ public class DownLoadStatementController implements DownLoadStatementClient {
 	public ResponseResult<String> downloadStatement(DownloadStatementCondition condition) {
 		logger.info("/6155/v1/downloadStatement 下载对账单");
 		ResponseResult<String> result = new ResponseResult<String>();
-		condition.setStatementType(PayStatementDTO.StatementType.ALL.getText());
+		condition.setStatementType(DownloadStatementCondition.StatementType.ALL.getText());
 		String res = wXDownloadBillService.downloadStatement(condition);
 		result.setData(res);
 		return result;
@@ -55,7 +53,7 @@ public class DownLoadStatementController implements DownLoadStatementClient {
 	public ResponseResult<String> downloadFundFlow(DownloadStatementCondition condition) {
 		logger.info("/6156/v1/downloadFundFlow 下载资金账单");
 		ResponseResult<String> result = new ResponseResult<String>();
-		condition.setAccountType(PayFinancialBillDTO.SourceType.BASIC.getText());
+		condition.setAccountType(DownloadStatementCondition.SourceType.BASIC.getText());
 		String res = wXDownloadBillService.downloadFundFlow(condition);
 		result.setData(res);
 		return result;

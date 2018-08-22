@@ -29,6 +29,11 @@ public class PayStatementDownloadRecord {
 	 * 账单日期
 	 */
     private Date billDate;
+    
+    /**
+     * 与账单日期作比较，例：billDate1 < billDate
+     */
+    private Date billDate1;
 
 	/**
 	 * 错误代码
@@ -69,7 +74,15 @@ public class PayStatementDownloadRecord {
         this.billDate = billDate;
     }
 
-    public String getErrCode() {
+    public Date getBillDate1() {
+		return billDate1;
+	}
+
+	public void setBillDate1(Date billDate1) {
+		this.billDate1 = billDate1;
+	}
+
+	public String getErrCode() {
         return errCode;
     }
 

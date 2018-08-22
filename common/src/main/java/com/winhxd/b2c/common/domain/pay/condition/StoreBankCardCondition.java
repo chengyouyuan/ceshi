@@ -1,7 +1,5 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
-import java.util.Date;
-
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 
 import io.swagger.annotations.ApiModel;
@@ -11,10 +9,6 @@ import lombok.Data;
 @ApiModel("门店银行卡信息")
 @Data
 public class StoreBankCardCondition extends ApiCondition{
-	@ApiModelProperty("主键")
-    private Long id;
-	@ApiModelProperty("门店id")
-    private Long storeId;
 	@ApiModelProperty("银行卡号")
     private String cardNumber;
 	@ApiModelProperty("身份证号")
@@ -33,16 +27,4 @@ public class StoreBankCardCondition extends ApiCondition{
     private String verificationCode;
 	@ApiModelProperty("是否有效 0无效1有效")
     private Short status;
-	@ApiModelProperty("创建人id")
-    private Long createdBy;
-	@ApiModelProperty("创建人")
-    private String createdByName;
-	@ApiModelProperty("创建时间(使用时间)")
-    private Date created;
-	@ApiModelProperty("修改人id")
-    private Long updatedBy;
-	@ApiModelProperty("修改人")
-    private String updatedByName;
-	@ApiModelProperty("修改时间")
-    private Date updated;
 }

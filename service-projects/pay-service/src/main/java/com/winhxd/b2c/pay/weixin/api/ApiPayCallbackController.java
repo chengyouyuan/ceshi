@@ -17,12 +17,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -50,6 +53,19 @@ public class ApiPayCallbackController {
 	WXRefundService wxRefundService;
 	@Autowired
 	PayRefundMapper payRefundMapper;
+
+	/**
+	 * 密钥算法
+	 */
+	private static final String ALGORITHM = "AES";
+	/**
+	 * API 密钥
+	 */
+	@Value("${WX.KEY}")
+	private String apiKey;
+
+//	private SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
+
 
 	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
 	@PostMapping(value = "${WX.PAY_NOTIFY_URL}")
@@ -91,7 +107,7 @@ public class ApiPayCallbackController {
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	@PostMapping(value = "${WX.REFUND_NOTIFY_URL}")
-	private void refundCallback(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	private void refundCallback(HttpServletRequest request,HttpServletResponse response){
 		//微信回调解析
 		String resqXml = this.wxCallbackParser(request);
 		if(resqXml == null) {
@@ -105,11 +121,15 @@ public class ApiPayCallbackController {
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密
+				SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
+				logger.info("注入的apiKey为："+apiKey);
+				logger.info("apiKey进行MD5之后为"+ key);
+				String decodeString = DecipherUtil.decodeReqInfo(reqInfo, key);
 
-				String decodeString = DecipherUtil.decodeReqInfo(reqInfo);
-				refundCallbackDTO = XmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
+				PayRefundResponseDTO fillResponseDto = XmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
+				fillResponseDto.setReqInfo(reqInfo);
 
-				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(refundCallbackDTO);
+				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(fillResponseDto);
 				Boolean result = payService.callbackOrderRefund(payRefund);
 				if(result) {
 					this.response(response, SUCCESS_RESPONSE);

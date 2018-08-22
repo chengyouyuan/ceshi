@@ -16,9 +16,6 @@ import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +45,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private StoreServiceClient storeServiceClient;
 
     @Override
-    @ApiOperation(value = "领券推券活动列表接口", notes = "领券推券活动列表接口")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
@@ -59,7 +53,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
         return result;
     }
 
-    @ApiOperation(value = "优惠券活动导入小店信息", notes = "优惠券活动导入小店信息")
     @Override
     public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
         ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
@@ -92,7 +85,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@Date   2018/8/6
      */
     @Override
-    @ApiOperation(value = "添加优惠券活动", notes = "添加优惠券活动")
     public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
         if(null == condition){
@@ -173,7 +165,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/8
      */
-    @ApiOperation(value = "优惠券活动查看&回显编辑页", notes = "优惠券活动查看&回显编辑页")
     @Override
     public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
         if(StringUtils.isBlank(id)){
@@ -200,7 +191,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@Date   2018/8/7
      */
     @Override
-    @ApiOperation(value = "编辑优惠券活动", notes = "编辑优惠券活动")
     public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
         //活动有效期内不允许修改活动！！
@@ -270,7 +260,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/8
      */
-    @ApiOperation(value = "删除优惠券活动", notes = "删除优惠券活动")
     @Override
     public ResponseResult<Integer> deleteCouponActivity(CouponActivityCondition condition) {
         if(condition.getId() == null){
@@ -293,7 +282,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "撤回活动优惠券", notes = "撤回活动优惠券")
     @Override
     public ResponseResult<Integer> revocationActivityCoupon(@RequestBody CouponActivityCondition condition) {
         if(condition.getId() == null){
@@ -316,7 +304,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "停用活动", notes = "停用活动")
     @Override
     public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
@@ -345,9 +332,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "根据活动获取优惠券列表", notes = "根据活动获取优惠券列表")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition) {
         if(condition == null){
@@ -370,9 +354,6 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *@User  sjx
      *@Date   2018/8/9
      */
-    @ApiOperation(value = "根据活动获取小店信息", notes = "根据活动获取小店信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @Override
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition) {
         if(condition == null){

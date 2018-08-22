@@ -1,26 +1,5 @@
 package com.winhxd.b2c.pay.api;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
-import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
-import com.winhxd.b2c.common.util.GeneratePwd;
-import com.winhxd.b2c.common.util.MessageSendUtils;
-import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
-import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +12,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
+import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.MessageSendUtils;
+import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
+import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author zhanghuan
@@ -78,10 +76,8 @@ public class ApiPayStoreBindBankCardController {
         String logTitle = "/api-pay/pay/6105/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
-    	StoreBankCard storeBankCard = new StoreBankCard();
-    	BeanUtils.copyProperties(condition, storeBankCard);
-    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+storeBankCard);
-    	Integer res = storeBankCardService.saveStoreBankCard(storeBankCard);
+    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+condition);
+    	Integer res = storeBankCardService.saveStoreBankCard(condition);
     	result.setCode(res);
     	LOGGER.info("绑定银行卡返回值：-------"+res);
     	if(res > 0){
@@ -98,7 +94,9 @@ public class ApiPayStoreBindBankCardController {
     		@ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
     		@ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
     		@ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
-    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号") 
+    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号"),
+    		@ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员"),
+    		@ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定微信失败")
     })
     @RequestMapping(value = "/6110/v1/bindWeixiAccount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindWeixiAccount(@RequestBody PayStoreWalletCondition condition) {

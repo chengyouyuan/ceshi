@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.service;
 
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 
 /**
@@ -16,5 +15,5 @@ public interface PayStoreBankCardService {
 	StoreBankCardVO findStoreBankCardInfo(StoreBankCardCondition condition);
 	
 	/**B端绑定银行卡*/
-	int saveStoreBankCard(StoreBankCard condition);
+	int saveStoreBankCard(StoreBankCardCondition condition);
 }

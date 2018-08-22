@@ -1,17 +1,10 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import javax.annotation.Resource;
 
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
-import com.winhxd.b2c.common.mq.event.EventMessageListener;
-import com.winhxd.b2c.common.mq.event.EventTypeHandler;
-import com.winhxd.b2c.pay.service.PayService;
-import com.winhxd.b2c.pay.service.PayStoreCashService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +16,22 @@ import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
+import com.winhxd.b2c.pay.service.PayService;
+import com.winhxd.b2c.pay.service.PayStoreCashService;
 import com.winhxd.b2c.pay.service.PayStoreWalletService;
-
-import java.math.BigDecimal;
 
 @Service
 public class PayStoreWalletServiceImpl implements PayStoreWalletService{
@@ -61,7 +63,20 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 				LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
 				//插入当前要绑定的微信钱包信息
 				payStoreWallet.setStatus((short)1);
-				payStoreWalletMapper.insertSelective(payStoreWallet);
+				//判断当前的微信账户是否存在
+				List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
+				if(list.size()>0){
+					if(list.size() > 1){
+						LOGGER.info("当前微信账户有多个重复，请联系管理员");
+						res = BusinessCode.CODE_610021;
+					}
+					PayStoreWallet wallet = list.get(0);
+					Long id = wallet.getId();
+					payStoreWallet.setId(id);
+					payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
+				}else{
+					payStoreWalletMapper.insertSelective(payStoreWallet);
+				}
 			}
 		}else{
 			res = BusinessCode.CODE_610030;
@@ -85,10 +100,10 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
-//    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
-    	StoreUser currentStoreUser = new StoreUser();
-    	currentStoreUser.setBusinessId(1l);
+//    	StoreUser currentStoreUser = new StoreUser();
+//    	currentStoreUser.setBusinessId(1l);
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());

@@ -25,7 +25,7 @@ public class TransferToBankStatusCheckTask {
     private PayServiceClient payServiceClient;
 
     @Scheduled(cron = "0/3600 * * * * ?")
-    public void queryAndConfirmTransferToBankStatus(){
+    public void queryAndConfirmTransferToBankStatus() throws Exception {
         ResponseResult<Integer> result = payServiceClient.confirmTransferToBankStatus();
         if(BusinessCode.CODE_1001 == result.getCode()){
             logger.error("PayTransferServiceClientFallBack:confirmTransferToBankStatus called failed.");

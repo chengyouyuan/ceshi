@@ -78,9 +78,11 @@ public class WXRefundServiceImpl implements WXRefundService {
                     payRefundVO = this.refunding(payRefund, condition);
                     break;
                 case 1:
+                    logger.info("退款已完成(1)，交易流水号是："+outTradeNo);
                     this.refunded();
                     break;
                 case 2:
+                    logger.info("退款已关闭(2)，交易流水号是："+outTradeNo);
                     this.refundAlreadyClosed();
                 case 3:
                     payRefundVO = this.refundRetry(condition, payRefund);
@@ -355,7 +357,8 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @return
      */
     private void refunded(){
-        throw new BusinessException(BusinessCode.ORDER_REFUND_FINISHED);
+        logger.info("退款已完成");
+        //throw new BusinessException(BusinessCode.ORDER_REFUND_FINISHED);
     }
 
     /**
@@ -363,7 +366,8 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @return
      */
     private void refundAlreadyClosed(){
-        throw new BusinessException(BusinessCode.ORDER_REFUND_CLOSED);
+        logger.info("退款已关闭");
+        //throw new BusinessException(BusinessCode.ORDER_REFUND_CLOSED);
     }
 
     /**

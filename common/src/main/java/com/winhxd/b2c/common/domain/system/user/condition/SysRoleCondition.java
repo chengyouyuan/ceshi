@@ -13,6 +13,6 @@ public class SysRoleCondition extends PagedCondition {
     private Long id;
 
     @ApiModelProperty("权组名称")
-    private String ruleName;
+    private String roleName;
 
 }

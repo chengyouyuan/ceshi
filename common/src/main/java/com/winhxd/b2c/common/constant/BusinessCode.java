@@ -166,6 +166,8 @@ public final class BusinessCode {
     public static final int CODE_402012 = 402012;
     /** 购物车:用户下单操作频繁*/
     public static final int CODE_402014 = 402014;
+    /** 购物车:用户加购操作频繁*/
+    public static final int CODE_402016 = 402016;
     /** 购物车:获取支付信息失败*/
     public static final int CODE_402015 = 402015;
 

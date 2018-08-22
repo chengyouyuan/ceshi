@@ -267,7 +267,9 @@ public class PayServiceImpl implements PayService{
 		Map<String, Object> map=new HashMap<>();
 		map.put("type", condition.getType());
 		map.put("storeId", storeId);
-		StoreBankrollChangeCondition changeCondition=null;
+		StoreBankrollChangeCondition changeCondition=new StoreBankrollChangeCondition();
+	    changeCondition.setStoreId(storeId);
+	    changeCondition.setType(condition.getType());
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			// 验证该订单是否已经做过此项操作
 			String orderNo=condition.getOrderNo();
@@ -284,9 +286,6 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--订单闭环计算用户资金重复--订单号"+orderNo);
 				throw new BusinessException(BusinessCode.CODE_600006);
 			}
-			 changeCondition=new StoreBankrollChangeCondition();
-			 changeCondition.setStoreId(storeId);
-			 changeCondition.setType(condition.getType());
 			 changeCondition.setOrderNo(orderNo);
 			 //待结算金额增加
 			 changeCondition.setSettlementSettledMoney(condition.getMoney());
@@ -315,8 +314,6 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--结算审核计算用户资金重复--订单号"+orderNo+"费用类型"+moneyType);
 				throw new BusinessException(BusinessCode.CODE_600008);
 			}
-			 changeCondition=new StoreBankrollChangeCondition();
-			 changeCondition.setType(condition.getType());
 			 changeCondition.setOrderNo(orderNo);
 			 changeCondition.setMoneyType(moneyType);
 			 //待结算金额减少(因为用户资金变化都是add，这里需要传负数)
@@ -342,8 +339,7 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--提现申请计算用户资金重复--提现单号"+withdrawalsNo);
 				throw new BusinessException(BusinessCode.CODE_600011);
 			}
-			 changeCondition=new StoreBankrollChangeCondition();
-			 changeCondition.setType(condition.getType());
+			 
 			 changeCondition.setWithdrawalsNo(withdrawalsNo);
 			 //可提现金额减少(因为用户资金变化都是add，这里需要传负数)
 			 changeCondition.setPresentedMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
@@ -366,8 +362,6 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--提现审核不通过计算用户资金重复--提现单号"+withdrawalsNo);
 				throw new BusinessException(BusinessCode.CODE_600012);
 			}
-			changeCondition=new StoreBankrollChangeCondition();
-			changeCondition.setType(condition.getType());
 			changeCondition.setWithdrawalsNo(withdrawalsNo);
 			//可提现金额增加
 			changeCondition.setPresentedMoney(condition.getMoney());
@@ -390,8 +384,6 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--提现失败计算用户资金重复--提现单号"+withdrawalsNo);
 				throw new BusinessException(BusinessCode.CODE_600013);
 			}
-			changeCondition=new StoreBankrollChangeCondition();
-			changeCondition.setType(condition.getType());
 			changeCondition.setWithdrawalsNo(withdrawalsNo);
 			//可提现金额增加
 			changeCondition.setPresentedMoney(condition.getMoney());
@@ -415,8 +407,6 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--提现审核计算用户资金重复--提现单号"+withdrawalsNo);
 				throw new BusinessException(BusinessCode.CODE_600008);
 			}
-			 changeCondition=new StoreBankrollChangeCondition();
-			 changeCondition.setType(condition.getType());
 			 changeCondition.setWithdrawalsNo(withdrawalsNo);
 			 //冻结金额减少(因为用户资金变化都是add，这里需要传负数)
 			 changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
@@ -442,6 +432,7 @@ public class PayServiceImpl implements PayService{
 			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
 			BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
 			
+			
 			BigDecimal totalMoney=settlementSettledMoney;
 			if (storeBankroll==null) {
 				storeBankroll=new StoreBankroll();
@@ -454,7 +445,7 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
-				totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+				totalMoney=storeBankroll.getTotalMoeny().add(totalMoney.abs());
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
@@ -524,6 +515,7 @@ public class PayServiceImpl implements PayService{
 		payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
 		payStoreBankrollLog.setRemarks(remarks);
 		payStoreBankrollLog.setMoneyType(condition.getMoneyType());
+		payStoreBankrollLog.setType(condition.getType());
 		payStoreBankrollLog.setCreated(new Date());
 		payStoreBankrollLog.setUpdated(new Date());
 		payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);

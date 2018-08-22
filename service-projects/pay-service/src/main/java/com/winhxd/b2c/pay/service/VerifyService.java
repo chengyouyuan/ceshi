@@ -125,8 +125,10 @@ public class VerifyService {
                             .setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
                     thirdPartyfee.setDetailMoney(fee.multiply(BigDecimal.valueOf(-1)));
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
-                    accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
-                    count++;
+                    if (BigDecimal.ZERO.compareTo(fee) == 0) {
+                        accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
+                        count++;
+                    }
                 }
                 if (!isHasRealPay) {
                     AccountingDetail realPay = new AccountingDetail();

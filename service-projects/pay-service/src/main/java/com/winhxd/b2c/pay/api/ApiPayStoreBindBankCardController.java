@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
@@ -128,6 +129,12 @@ public class ApiPayStoreBindBankCardController {
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
     	BeanUtils.copyProperties(condition, condition);
+    	// 获取当前门店id
+//    	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+    	//////////////////测试门店id//////////////////
+    	Long businessId = 1l;
+    	///////////////////////////////////////////
+    	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
     	Integer res = payStoreWalletMapperService.savePayStoreWallet(condition);
     	result.setCode(res);

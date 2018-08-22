@@ -158,42 +158,6 @@ public class StoreServiceImpl implements StoreService {
                 stageStoreVO.setStoreStatusDesc(StoreStatusEnum.UN_OPEN.getStatusDesc());
             }
         }
-        //取货方式
-        if (StringUtils.isNotBlank(stageStoreVO.getPickupType())) {
-            String[] pickupTypeArray = stageStoreVO.getPickupType().split(",");
-            if (pickupTypeArray.length > 0) {
-                StringBuilder pickupTypeDesc = new StringBuilder();
-                for (String storeType : pickupTypeArray) {
-                    for (PickupTypeEnum pickupType : PickupTypeEnum.values()) {
-                        if (Short.parseShort(storeType) == pickupType.getTypeCode()) {
-                            pickupTypeDesc.append(pickupType.getTypeDesc()).append(" ");
-                            break;
-                        }
-                    }
-                    //一期先写死，只传第一个
-                    break;
-                }
-                stageStoreVO.setPickupTypeDesc(pickupTypeDesc.toString());
-            }
-        }
-        //支付方式
-        if (StringUtils.isNotBlank(stageStoreVO.getPayType())) {
-            String[] payTypeArray = stageStoreVO.getPayType().split(",");
-            if (payTypeArray.length > 0) {
-                StringBuilder payTypeDesc = new StringBuilder();
-                for (String storeType : payTypeArray) {
-                    for (PayTypeEnum payType : PayTypeEnum.values()) {
-                        if (Short.parseShort(storeType) == payType.getTypeCode()) {
-                            payTypeDesc.append(payType.getTypeDesc()).append(" ");
-                            break;
-                        }
-                    }
-                    //一期先写死，只传第一个
-                    break;
-                }
-                stageStoreVO.setPayTypeDesc(payTypeDesc.toString());
-            }
-        }
         return stageStoreVO;
     }
 
@@ -243,8 +207,34 @@ public class StoreServiceImpl implements StoreService {
         } else {
             logger.error("门店详细信息查询，未查询到该门店的行政区域！区域编码为：{}", storeUserInfo.getStoreRegionCode());
         }
-        this.changeStatusDesc(backStageStoreVO);
+        this.changeDescForDetail(backStageStoreVO);
         return backStageStoreVO;
+    }
+
+    /**
+     * 后台管理查看详细和编辑时 处理字典类型字段回显
+     *
+     * @param stageStoreVO
+     * @return
+     */
+    private void changeDescForDetail(BackStageStoreVO stageStoreVO){
+        if(null == stageStoreVO){
+            return;
+        }
+        // 状态
+        stageStoreVO = this.changeStatusDesc(stageStoreVO);
+        //取货方式
+        if (StringUtils.isNotBlank(stageStoreVO.getPickupType())) {
+            String typeDesc = Arrays.stream(stageStoreVO.getPickupType().split(","))
+                    .map(s -> PickupTypeEnum.getPickupTypeDescByCode(new Short(s))).collect(Collectors.joining(","));
+            stageStoreVO.setPickupTypeDesc(typeDesc);
+        }
+        //支付方式
+        if (StringUtils.isNotBlank(stageStoreVO.getPayType())) {
+            String typeDesc = Arrays.stream(stageStoreVO.getPayType().split(","))
+                    .map(s -> PayTypeEnum.getPayTypeEnumDescByTypeCode(new Short(s))).collect(Collectors.joining(","));
+            stageStoreVO.setPayTypeDesc(typeDesc);
+        }
     }
 
     @Override

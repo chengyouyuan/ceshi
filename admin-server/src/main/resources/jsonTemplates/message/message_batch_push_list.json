@@ -34,6 +34,10 @@
 
       },
       {
+        "name": "timingPush",
+        "title": "定时推送"
+      },
+      {
         "name": "created",
         "title": "创建时间"
       },

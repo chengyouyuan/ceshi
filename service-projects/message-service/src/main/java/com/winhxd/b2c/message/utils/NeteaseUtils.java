@@ -31,10 +31,6 @@ public class NeteaseUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(NeteaseUtils.class);
     private static final String NETEASE_PLATFORM_ADMIN = "admin";
     /**
-     * 请求超时
-     */
-    private static final int TIME_OUT = 3000;
-    /**
      * 创建网易云通信ID
      */
     private static final String CREATE_ACCOUNT_URL = "https://api.netease.im/nimserver/user/create.action";

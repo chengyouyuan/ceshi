@@ -66,6 +66,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     @Override
     public int addBatchPush(MessageBatchPush messageBatchPush) {
         int id = messageBatchPushMapper.insertSelective(messageBatchPush);
+        messageBatchPush.setId(Long.parseLong(String.valueOf(id)));
         LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
         //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();

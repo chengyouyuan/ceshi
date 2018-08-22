@@ -516,7 +516,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
                         throw new BusinessException(BusinessCode.WRONG_ORDERNO, "门店处理用户退款订单查询失败");
                     }
-                    orderApplyRefund(order, null, storeVO.getId(), storeVO.getShopkeeper());
+                    orderApplyRefund(order, order.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
                     logger.info("门店同意退款-操作订单结束-订单号={}", orderNo);
                 }
             } finally {
@@ -562,13 +562,13 @@ public class CommonOrderServiceImpl implements OrderService {
                         || status.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
                     throw new BusinessException(BusinessCode.CODE_4021002, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
                 }
-                //申请退款时商家没确认就直接退款、退优惠券
+                //申请退款时商家没确认就直接退款、退优惠券 修改订单状态为退款中
                 if (order.getPayStatus().equals(PayStatusEnum.PAID.getStatusCode()) && status.equals(OrderStatusEnum.UNRECEIVED.getStatusCode())) {
                     //退款流程
                     orderApplyRefund(order, orderRefundCondition.getCancelReason(), customerId, customerUserInfoVO.getNickName());
                 } else {
                     //更新订单状态为待退款，并更新相关属性
-                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId, orderRefundCondition.getCancelReason());
+                    int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(orderNo, customerId, orderRefundCondition.getCancelReason(), OrderStatusEnum.WAIT_REFUND.getStatusCode());
                     //添加订单流转日志
                     if (updateResult > 0) {
                         logger.info("C端申请退款-添加流转日志开始-订单号={}", orderNo);
@@ -627,7 +627,7 @@ public class CommonOrderServiceImpl implements OrderService {
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
         String orderNo = order.getOrderNo();
         //更新订单状态为退款中
-        int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason);
+        int updateResult = this.orderInfoMapper.updateOrderStatusForApplyRefund(order.getOrderNo(), null, reason, OrderStatusEnum.REFUNDING.getStatusCode());
         //添加订单流转日志
         if (updateResult > 0) {
 //            applyRefund(order, operatorId, operatorName, cancelReason);

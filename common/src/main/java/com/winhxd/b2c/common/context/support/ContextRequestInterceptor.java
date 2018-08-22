@@ -4,9 +4,16 @@ import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.context.version.VersionContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
+import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 微服务间上下文传递
+ *
+ * @author lixiaodong
+ */
 public class ContextRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
@@ -21,6 +28,11 @@ public class ContextRequestInterceptor implements RequestInterceptor {
         }
         if (storeUser != null) {
             requestTemplate.header(ContextHelper.HEADER_USER_STORE, ContextHelper.getHeaderJsonString(storeUser));
+        }
+
+        String msVer = VersionContext.getVersion();
+        if (StringUtils.isNotBlank(msVer)) {
+            requestTemplate.header(VersionContext.HEADER_NAME, msVer);
         }
     }
 }

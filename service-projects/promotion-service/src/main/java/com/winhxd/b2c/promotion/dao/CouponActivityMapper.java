@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion.dao;
 
+import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
@@ -70,4 +71,11 @@ public interface CouponActivityMapper {
      * @return
      */
     List<CouponVO> selectStoreCouponList(Long storeId);
+
+    /**
+     * 判断活动时间是否冲突
+     * @param condition
+     * @return
+     */
+    Integer getActivityDateClash(@Param("condition") CouponActivityAddCondition condition);
 }

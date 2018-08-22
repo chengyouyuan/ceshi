@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
-import com.winhxd.b2c.common.domain.pay.vo.PayStoreApplyWithdrawVO;
+import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsTypeVO;
-import com.winhxd.b2c.pay.service.impl.PayStoreWithdrawalServiceImpl;
+import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +37,7 @@ public class ApiPayStoreWithdrawalController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreWithdrawalController.class);
 	
 	@Autowired
-	private PayStoreWithdrawalServiceImpl payStoreWithdrawalService;
+	private PayStoreWithdrawalService payStoreWithdrawalService;
 	
 	@ApiOperation(value = "返回提现类型", notes = "返回提现类型")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -92,22 +93,16 @@ public class ApiPayStoreWithdrawalController {
 		return result;
 	}
 	
-	@ApiOperation(value = "审核门店提现到微信或者银行卡", notes = "审核门店提现到微信或者银行卡")
+	@ApiOperation(value = "计算门店提现手续费", notes = "计算门店提现手续费")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
-		@ApiResponse(code = BusinessCode.CODE_610035, message = "提取限额不能大于实际账户余额")
 	})
-	@PostMapping(value = "/6111/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<PayStoreApplyWithdrawVO> payStoreWithdrawalPre(@RequestBody PayStoreApplyWithDrawCondition condition){
-		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
-		ResponseResult<PayStoreApplyWithdrawVO> result = new ResponseResult<PayStoreApplyWithdrawVO>();
-		if(condition.getWithdrawType() != 0){
-			result = payStoreWithdrawalService.checkStorWithdrawalInfo(condition);
-		}else{
-			result.setCode(BusinessCode.CODE_610022);
-			LOGGER.info("请传入提现类型");
-		}
+	@PostMapping(value = "/6111/v1/calculationCmmsAmt", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	private ResponseResult<CalculationCmmsAmtVO> calculationCmmsAmt(@RequestBody CalculationCmmsAmtCondition condition){
+		LOGGER.info("/6111/v1/withdrawal-计算门店提现手续费："+condition);
+		ResponseResult<CalculationCmmsAmtVO> result = new ResponseResult<CalculationCmmsAmtVO>();
+		CalculationCmmsAmtVO vo = payStoreWithdrawalService.calculationCmmsAmt(condition);
+		result.setData(vo);
 		return result;
 	}
 	

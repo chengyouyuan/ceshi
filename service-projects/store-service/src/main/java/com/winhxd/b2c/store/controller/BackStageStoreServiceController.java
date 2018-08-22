@@ -151,11 +151,12 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 			    List<ProductSkuVO> finalProdVoList=prodResult.getData();
 			    List<BackStageStoreProdVO> finalBSSPVoList=resultVO.getData();
 				for(int i=0;i<finalProdVoList.size();i++){
+				    System.err.println("skuCode:"+finalProdVoList.get(i).getSkuCode());
 				    for(int j=0;j<finalBSSPVoList.size();j++){
 				        if(finalBSSPVoList.get(j).getSkuCode().equals(finalProdVoList.get(i).getSkuCode())){
 				            finalBSSPVoList.get(j).setProdName(finalProdVoList.get(i).getSkuName());
 				            finalBSSPVoList.get(j).setSkuImage(finalProdVoList.get(i).getSkuImage());
-		                    break;
+		                   
 				        }
 				    }
 					

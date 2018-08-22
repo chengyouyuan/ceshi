@@ -146,7 +146,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         //判断活动时间是否冲突
         Boolean flag = couponActivityService.getActivityDateClash(condition);
         if(flag){
-            responseResult.setCode(BusinessCode.CODE_503001);
+            responseResult.setCode(BusinessCode.CODE_503002);
             responseResult.setMessage("活动时间冲突");
             return responseResult;
         }

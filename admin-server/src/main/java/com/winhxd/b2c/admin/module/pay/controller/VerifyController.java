@@ -115,11 +115,11 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
             Object verifyStatus = map.get("verifyStatus");
-            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(verifyStatus))) {
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()).equals(String.valueOf(verifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
             }
             Object thirdPartyVerifyStatus = map.get("thirdPartyVerifyStatus");
-            if (String.valueOf(AccountingDetail.ThirdPartyVerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(thirdPartyVerifyStatus))) {
+            if (!String.valueOf(AccountingDetail.ThirdPartyVerifyStatusEnum.VERIFIED.getCode()).equals(String.valueOf(thirdPartyVerifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
             }
         }
@@ -142,7 +142,7 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
             Object verifyStatus = map.get("verifyStatus");
-            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(verifyStatus))) {
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()).equals(String.valueOf(verifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可暂缓的记录，请检查后重试");
             }
         }
@@ -165,7 +165,7 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
             Object verifyStatus = map.get("verifyStatus");
-            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.PAUSED).equals(String.valueOf(verifyStatus))) {
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.PAUSED.getCode()).equals(String.valueOf(verifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可恢复的记录，请检查后重试");
             }
         }

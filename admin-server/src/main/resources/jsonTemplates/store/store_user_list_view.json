@@ -67,7 +67,7 @@
       {
         "name": "storeAddress",
         "title": "提货地址",
-        "inputModel": "input",
+        "inputModel": "text",
         "value": "",
         "isHidden": false
       },

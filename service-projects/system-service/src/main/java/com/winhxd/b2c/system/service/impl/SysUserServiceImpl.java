@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -91,14 +90,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUser getByAccount(String account) {
-        SysUser sysUser = sysUserMapper.getByAccount(account);
-        if(null == sysUser){
-            // 该用户不存在
-            throw new BusinessException(BusinessCode.CODE_1004);
-        }
-        List<String> permissionList = sysRolePermissionMapper.selectPermissionByUserId(sysUser.getId());
-        sysUser.setPermissions(permissionList);
-        return sysUser;
+        return sysUserMapper.getByAccount(account);
     }
 
     @Override

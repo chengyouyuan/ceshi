@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
+import com.winhxd.b2c.system.service.SysRoleService;
 import com.winhxd.b2c.system.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +35,9 @@ public class SysUserController implements UserServiceClient {
 
     @Autowired
     private SysUserService sysUserService;
+    @Autowired
+    private SysRoleService sysRoleService;
+
 
     /**
      * 新增用户
@@ -114,6 +118,9 @@ public class SysUserController implements UserServiceClient {
         logger.info("{} - 根据登录账号获取用户信息, 参数：account={}", MODULE_NAME, account);
         ResponseResult<SysUser> result = new ResponseResult<>(BusinessCode.CODE_OK);
         SysUser sysUser = sysUserService.getByAccount(account);
+        if (null != sysUser) {
+            sysUser.setPermissions(sysRoleService.getPermissionsByUser(sysUser.getId()));
+        }
         result.setData(sysUser);
         return result;
     }

@@ -16,23 +16,10 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class DecipherUtil {
 
-
-    /**
-     * 密钥算法
-     */
-//    private static final String ALGORITHM = "AES";
     /**
      * 加解密算法/工作模式/填充方式
      */
     private static final String ALGORITHM_MODE_PADDING = "AES/ECB/PKCS5Padding";
-
-    /**
-     * API 密钥
-     */
-    /*@Value("${WX.KEY}")
-    private static String password;
-
-    private static SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(password).toLowerCase().getBytes(), ALGORITHM);*/
 
     /**
      * AES解密

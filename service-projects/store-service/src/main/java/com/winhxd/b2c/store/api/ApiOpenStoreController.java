@@ -480,7 +480,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_1001);
         }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
-        Long businessId = UserContext.getCurrentStoreUser().getStoreCustomerId();
+        Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
         logger.info("惠小店获取营业数据查询接口 门店用户编码:{}", storeCustomerId);
         Date currentDate = new Date();
         Date beginTime = DateUtils.truncate(currentDate, Calendar.DATE);

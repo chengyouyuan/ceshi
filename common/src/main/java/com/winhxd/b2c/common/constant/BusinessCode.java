@@ -411,6 +411,8 @@ public final class BusinessCode {
     public static final int CODE_610036 = 610036;
     @ApiModelProperty("请输入门店名称")
     public static final int CODE_610037 = 610037;
+    @ApiModelProperty("当前门店没有可提现金额")
+    public static final int CODE_610038 = 610038;
     
     
     @ApiModelProperty("订单支付  参数为空")

@@ -19,6 +19,13 @@
           "path": "",
           "configKey": "/template/module/store/store_product_list.json",
           "permission": ""
+      	},
+      	{
+      	  "id": "1_2",
+          "menuName": "门店提报商品管理",
+          "path": "",
+          "configKey": "/template/module/store/store_submitProduct_list.json",
+          "permission": ""
       	}
       ]
     },

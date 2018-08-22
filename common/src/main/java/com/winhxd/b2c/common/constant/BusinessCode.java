@@ -99,6 +99,14 @@ public final class BusinessCode {
 
     /**1022接口参数无效*/
     public static final int CODE_102201 = 102201;
+    /**1022接口 店铺名称不能有特殊字符且长度不能超过15*/
+    public static final int CODE_102202 = 102202;
+    /**1022接口 提货地址不能有特殊字符且长度不能超过30*/
+    public static final int CODE_102203 = 102203;
+    /**1022接口 联系人不能有特殊字符且长度不能超过10*/
+    public static final int CODE_102204 = 102204;
+    /**1022接口 联系方式格式不正确*/
+    public static final int CODE_102205 = 102205;
     
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;

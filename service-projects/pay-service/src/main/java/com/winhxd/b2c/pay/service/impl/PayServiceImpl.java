@@ -783,26 +783,8 @@ public class PayServiceImpl implements PayService{
         if(null == payTransfersToWxBankVO){
             logger.info(log+"--transfersService.transfersToChange返回结果为空");
         }
-        PayWithdrawals payWithdrawals = new PayWithdrawals();
-        payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
-		if(payTransfersToWxBankVO.isTransfersResult()){
-			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
-		}else{
-			//是否需要用户重新申请提现流程
-			if(payTransfersToWxBankVO.isAbleContinue()){
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
-			}else{
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
-			}
-		}
-        payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
-		payWithdrawals.setCallbackCmmsAmt(payTransfersToWxBankVO.getCmmsAmt());
-        payWithdrawals.setTransactionId(payTransfersToWxBankVO.getPaymentNo());
-        payWithdrawals.setTimeEnd(new Date());
-        int transfersResult = this.transfersPublic(payWithdrawals,log);
 
-
-		return transfersResult;
+		return 1;
 	}
 
 	@Override
@@ -886,41 +868,38 @@ public class PayServiceImpl implements PayService{
 
 	@Override
 	public Integer confirmTransferToBankStatus()  throws Exception {
+		String  log =logLabel + "确认转账到银行卡记录状态confirmTransferToBankStatus";
 		//待遍历集合
-		Set<PayWithdrawals> unclearStatus = getTransferToBankUnclearStatusWithdrawals();
+		List<PayWithdrawals> unclearStatus = getTransferToBankUnclearStatusWithdrawals();
 		if(CollectionUtils.isEmpty(unclearStatus)){
+			logger.info(log+"--不存在转至银行卡状态为处理中的提现记录");
 			return 0;
 		}
-		//待更新集合
-		Set<PayWithdrawals> readyToUpdate = new HashSet<PayWithdrawals>();
+		//确认结果,更新提现状态
 		for (PayWithdrawals payWithdrawals : unclearStatus){
 			PayTransfersQueryForWxBankResponseDTO resultForWxBank = wxTransfersService.getExactResultForWxBank(payWithdrawals.getWithdrawalsNo());
 			String transfersStatus = resultForWxBank.getStatus();
+			logger.info(log+"--提现流水号{},提现状态{}",payWithdrawals.getWithdrawalsNo(),transfersStatus);
+			payWithdrawals.setCallbackReason(resultForWxBank.getReason());
+			payWithdrawals.setCallbackCmmsAmt(BigDecimal.valueOf(resultForWxBank.getCmmsAmt()).divide(new BigDecimal(100)));
+			payWithdrawals.setTransactionId(resultForWxBank.getPaymentNo());
+			payWithdrawals.setTimeEnd(new Date());
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
-				//payWithdrawals.setErrorDesc(null);
-				readyToUpdate.add(payWithdrawals);
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
-				//payWithdrawals.setErrorDesc(queryForWxBankResponseDTO.getReason());
-				readyToUpdate.add(payWithdrawals);
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			}
+			this.transfersPublic(payWithdrawals,log);
 		}
-		return updateBatch(readyToUpdate);
+		return 1;
 	}
 
 	/**
-	 * 获得所有转至银行卡状态处理中的提现记录(按道理只需要两个字段)
+	 * 获得所有转至银行卡状态处理中的提现记录
 	 * @return
 	 */
-	private Set<PayWithdrawals> getTransferToBankUnclearStatusWithdrawals(){
-		return null;
+	private List<PayWithdrawals> getTransferToBankUnclearStatusWithdrawals(){
+		return payWithdrawalsMapper.selectTransferToBankUnclearStatusWithdrawals();
 	}
-
-	/**
-	 * 更新提现记录属性
-	 * @return
-	 */
-	private int updateBatch(Set<PayWithdrawals> payWithdrawalsSet){
-		return 0;
-	}
-
 }

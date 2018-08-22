@@ -580,4 +580,10 @@
     from pay_withdrawals
     where withdrawals_no = #{withdrawalsNo}
   </select>
+  <select id="selectByWithdrawalsNo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_withdrawals
+    where audit_status = 1 AND callback_status = 1 AND flow_direction_type = 2
+  </select>
 </mapper>

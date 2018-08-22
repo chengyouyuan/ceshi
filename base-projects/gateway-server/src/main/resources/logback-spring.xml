@@ -44,4 +44,8 @@
             <appender-ref ref="async_log"/>
         </logger>
     </springProfile>
+    <logger name="com.netflix.hystrix.AbstractCommand" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="async_log"/>
+    </logger>
 </configuration>

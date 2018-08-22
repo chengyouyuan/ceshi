@@ -57,7 +57,16 @@ public interface PayServiceClient {
 	 */
 	@PostMapping(value = "/pay/6016/v1/orderIsPay", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseResult<Boolean> orderIsPay(@RequestBody OrderIsPayCondition condition);
-	
+
+	/**
+	 * 轮询确认转账到银行卡记录状态
+	 * @Author yindanqing
+	 * @Date 2018-8-22 12:50:29
+	 * @return 更新状态计数
+	 */
+	@PostMapping(value = "/pay/6017/v1/confirmTransferToBankStatus", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	ResponseResult<Integer> confirmTransferToBankStatus() throws Exception;
+
 }
 class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayServiceClient>{
 	private static final Logger logger = LoggerFactory.getLogger(FinancialManagerServiceClientFallback.class);
@@ -103,6 +112,14 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 	public ResponseResult<Boolean> orderIsPay(OrderIsPayCondition condition) {
 		logger.error("PayServiceClientFallback -> orderIsPay{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
+
+	@Override
+	public ResponseResult<Integer> confirmTransferToBankStatus(){
+		logger.error("PayServiceClientFallback -> confirmTransferToBankStatus{}", throwable);
+		ResponseResult<Integer> result = new ResponseResult<Integer>();
+		result.setCode(BusinessCode.CODE_1001);
+		return result;
 	}
 
 	

@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
+import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersQueryForWxBankResponseDTO;
 
 /**
  * WXTransfersService
@@ -25,5 +26,13 @@ public interface WXTransfersService {
      * @return
      */
     PayTransfersToWxBankVO transfersToBank(PayTransfersToWxBankCondition toWxBankCondition);
+
+    /**
+     * 重新查询转账结果, 确认结果
+     *
+     * @param toWxBankVO wx转账至银行卡接口返参
+     * @throws Exception
+     */
+    public PayTransfersQueryForWxBankResponseDTO getExactResultForWxBank(String partnerTradeNo) throws Exception;
 
 }

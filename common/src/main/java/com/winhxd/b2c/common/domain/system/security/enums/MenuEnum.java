@@ -17,6 +17,7 @@ public enum MenuEnum {
      */
     STORE_MANAGEMENT("门店管理", PermissionEnum.STORE_MANAGEMENT),
     STORE_MANAGEMENT_LIST("门店列表", STORE_MANAGEMENT, PermissionEnum.STORE_MANAGEMENT),
+    STORE_MANAGEMENT_REGION("门店测试区域管理列表", STORE_MANAGEMENT, PermissionEnum.STORE_MANAGEMENT_REGION),
 
 
     /**

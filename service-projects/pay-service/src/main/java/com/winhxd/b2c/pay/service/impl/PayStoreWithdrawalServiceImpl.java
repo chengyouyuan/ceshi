@@ -293,7 +293,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
 		LOGGER.info("当前用户绑定银行卡列表：----"+selectStorBankCardInfo);
-		if(selectStorBankCardInfo == null){
+		if(selectStorBankCardInfo.size() == 0){
 			res.setCode(BusinessCode.CODE_610025);
 			LOGGER.info("当前用户没有绑定银行卡");
 		}else{

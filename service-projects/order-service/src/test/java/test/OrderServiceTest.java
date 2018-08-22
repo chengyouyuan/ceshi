@@ -27,6 +27,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCon
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -211,6 +212,13 @@ public class OrderServiceTest {
         condition.setOrderTotal(new BigDecimal("33"));
         condition.setStoreId(3L);
         orderService.orderPriceChange4Store(condition);
+    }
+    
+    @Test
+    public void testUpdateOrderRefundCallback(){
+        OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
+        condition.setOrderNo("C18082219860675647");
+        orderService.updateOrderRefundCallback(condition);
     }
     
 }

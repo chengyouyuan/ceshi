@@ -14,8 +14,33 @@ import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
  * @Description
  **/
 public interface PayStoreCashService {
+    /**
+     *
+     *@Deccription 资金提现首页
+     *@Params condition
+     *@Return ResponseResult<StoreBankrollVO>
+     *@User  wl
+     *@Date   2018/8/22 9:30
+     */
     ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition);
+    /**
+     *
+     *@Deccription 门店交易记录收支明细
+     *@Params  condition
+     *@Return  ResponseResult<PagedList<PayStoreTransactionRecordVO>>
+     *@User  wl
+     *@Date   2018/8/22 9:31
+     */
     ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition);
+
+    /**
+     *
+     *@Deccription 门店提现记录
+     *@Params  condition
+     *@Return  ResponseResult<PagedList<PayWithdrawalsVO>>
+     *@User  wl
+     *@Date   2018/8/22 9:31
+     */
     ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition);
     
     

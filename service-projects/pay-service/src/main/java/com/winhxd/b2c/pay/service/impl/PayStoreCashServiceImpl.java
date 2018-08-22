@@ -116,7 +116,14 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     }
 
 
-    
+    /**
+     *
+     *@Deccription  保存门店交易记录
+     *@Params payStoreTransactionRecord
+     *@Return
+     *@User  wl
+     *@Date   2018/8/22 9:32
+     */
 	@Override
 	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
 		if (payStoreTransactionRecord!=null) {

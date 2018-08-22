@@ -48,15 +48,18 @@ public class ApiPayStoreWithdrawalController {
 	private ResponseResult<PagedList<PayWithdrawalsTypeVO>> getStoreWithdrawalType(@RequestBody PayCondition condition){
 		ResponseResult<PagedList<PayWithdrawalsTypeVO>> result = new ResponseResult<PagedList<PayWithdrawalsTypeVO>>();
 		ResponseResult<List<PayWithdrawalsType>> allWithdrawalType = payStoreWithdrawalService.getAllWithdrawalType();
-		PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
-		List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>();
-		for(PayWithdrawalsType type:allWithdrawalType.getData()){
-			PayWithdrawalsTypeVO typevo = new PayWithdrawalsTypeVO();
-			BeanUtils.copyProperties(type, typevo);
-			listvo.add(typevo);
-			pagelistvo.setData(listvo);
+		List<PayWithdrawalsType> data = allWithdrawalType.getData();
+		if(data.size() > 0){
+			PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
+			List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>();
+			for(PayWithdrawalsType type:data){
+				PayWithdrawalsTypeVO typevo = new PayWithdrawalsTypeVO();
+				BeanUtils.copyProperties(type, typevo);
+				listvo.add(typevo);
+				pagelistvo.setData(listvo);
+			}
+			result.setData(pagelistvo);
 		}
-		result.setData(pagelistvo);
 		result.setCode(allWithdrawalType.getCode());
 		return result;
 	}

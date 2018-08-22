@@ -5,6 +5,7 @@ import brave.Tracer;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.context.version.VersionContext;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,6 +22,7 @@ public class UserContext {
     private static ThreadLocal<AdminUser> currentAdminUser = new ThreadLocal<>();
     private static ThreadLocal<StoreUser> currentStoreUser = new ThreadLocal<>();
     private static ThreadLocal<CustomerUser> currentCustomerUser = new ThreadLocal<>();
+    private static ThreadLocal<String> acceptLanguage = new ThreadLocal<>();
 
     /**
      * 获取当前后台管理员用户信息
@@ -43,9 +45,15 @@ public class UserContext {
         return currentCustomerUser.get();
     }
 
+    public static String getAcceptLanguage() {
+        return acceptLanguage.get();
+    }
+
     public static void initContext(Tracer tracer) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
+
+        acceptLanguage.set(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE));
 
         String msVer = request.getHeader(VersionContext.HEADER_NAME);
         if (StringUtils.isNotBlank(msVer)) {

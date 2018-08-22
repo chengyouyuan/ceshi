@@ -33,4 +33,10 @@ public interface PayWithdrawalsMapper {
     int updateByWithdrawalsNoSelective(PayWithdrawals payWithdrawals);
 
     List<PayWithdrawals> selectByWithdrawalsNo(String withdrawalsNo);
+
+    /**
+     * 转至银行卡状态处理中的提现记录
+     * @return
+     */
+    List<PayWithdrawals> selectTransferToBankUnclearStatusWithdrawals();
 }

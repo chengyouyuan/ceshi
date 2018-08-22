@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
@@ -27,12 +28,14 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.i18n.LocaleContextResolver;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.regex.Matcher;
 
 /**
@@ -57,7 +60,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         String path = request.getURI().getPath();
         Matcher matcher = ContextHelper.PATTERN_API_PATH.matcher(path);
         if (!matcher.matches()) {
-            return error(response, BusinessCode.CODE_1009);
+            return error(exchange, response, BusinessCode.CODE_1009);
         }
         MediaType contentType = request.getHeaders().getContentType();
         String pathTag = matcher.group(2);
@@ -72,7 +75,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
             String token = request.getHeaders().getFirst("token");
             String grp = request.getHeaders().getFirst("grp");
             if (StringUtils.isBlank(token) || StringUtils.isBlank(grp)) {
-                return error(response, BusinessCode.CODE_1002);
+                return error(exchange, response, BusinessCode.CODE_1002);
             }
             currentSpan.tag(ContextHelper.TRACER_API_TOKEN, token);
             currentSpan.tag(ContextHelper.TRACER_API_GRP, grp);
@@ -89,10 +92,10 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                     tokenJson = cache.get(key);
                     break;
                 default:
-                    return error(response, BusinessCode.CODE_1002);
+                    return error(exchange, response, BusinessCode.CODE_1002);
             }
             if (StringUtils.isBlank(tokenJson)) {
-                return error(response, BusinessCode.CODE_1002);
+                return error(exchange, response, BusinessCode.CODE_1002);
             }
             if (grp.equals(AppConstant.GRP_CUSTOMER)) {
                 CustomerUser customerUser = ContextHelper.getHeaderObject(tokenJson, CustomerUser.class);
@@ -170,9 +173,17 @@ public class GatewayFilter implements GlobalFilter, Ordered {
         return -100;
     }
 
-    private Mono<Void> error(ServerHttpResponse response, int businessCode) {
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private LocaleContextResolver resolver;
+
+    private Mono<Void> error(ServerWebExchange exchange, ServerHttpResponse response, int businessCode) {
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
-        ResponseResult result = new ResponseResult(businessCode);
+        Locale locale = resolver.resolveLocaleContext(exchange).getLocale();
+        ResponseResult result = new ResponseResult();
+        result.setCode(businessCode);
+        result.setMessage(messageSource.getMessage(String.valueOf(businessCode), null, locale));
         byte[] bytes = JsonUtil.toJSONString(result).getBytes(StandardCharsets.UTF_8);
         DataBuffer buffer = response.bufferFactory().wrap(bytes);
         return response.writeWith(Flux.just(buffer));

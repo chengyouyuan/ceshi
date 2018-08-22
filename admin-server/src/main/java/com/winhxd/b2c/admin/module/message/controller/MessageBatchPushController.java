@@ -52,7 +52,11 @@ public class MessageBatchPushController {
     }
 
     @ApiOperation(value = "新增手动推送消息", notes = "新增手动推送消息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,新增手动推送消息失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,新增手动推送消息失败"),
+            @ApiResponse(code = BusinessCode.CODE_703502, message = "后台消息管理 新增手动给门店推送消息失败 云信门店记录不存在"),
+            @ApiResponse(code = BusinessCode.CODE_703504, message = "后台消息管理 新增手动给门店推送消息失败 消息内容为空"),
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/addBatchPush")
     @CheckPermission(PermissionEnum.MESSAGE_MANAGEMENT)
     public ResponseResult addBatchPush(@RequestBody MessageBatchPushDTO messageBatchPushDTO) {

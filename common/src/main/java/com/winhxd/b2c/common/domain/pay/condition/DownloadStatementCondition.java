@@ -54,5 +54,76 @@ public class DownloadStatementCondition extends ApiCondition implements Serializ
 		return serialVersionUID;
 	}
 
+	public enum SourceType {
+		/**
+		 * 对账单
+		 */
+		BASIC("Basic", "基本账户"),
+
+		/**
+		 * 对账单统计
+		 */
+		OPERATION("Operation", "运营账户"),
+
+		/**
+		 * 资金账单
+		 */
+		FEES("Fees", "手续费账户");
+
+		private String text;
+		private String desc;
+
+		private SourceType(String text, String desc) {
+			this.text = text;
+			this.desc = desc;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
+	public enum StatementType {
+
+		/**
+		 * 返回当日所有订单信息，默认值
+		 */
+		ALL("ALL", "返回当日所有订单信息，默认值"),
+
+		/**
+		 * 返回当日成功支付的订单
+		 */
+		SUCCESS("SUCCESS", "返回当日成功支付的订单"),
+
+		/**
+		 * 返回当日退款订单
+		 */
+		REFUND("REFUND", "返回当日退款订单"),
+		
+		/**
+		 * 返回当日充值退款订单
+		 */
+		RECHARGE_REFUND("RECHARGE_REFUND", "返回当日充值退款订单");
+
+		private String text;
+		private String desc;
+
+		private StatementType(String text, String desc) {
+			this.text = text;
+			this.desc = desc;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
 
 }

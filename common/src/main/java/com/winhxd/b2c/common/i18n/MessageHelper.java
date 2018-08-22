@@ -2,6 +2,10 @@ package com.winhxd.b2c.common.i18n;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.Locale;
 
@@ -14,6 +18,9 @@ public class MessageHelper {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private LocaleResolver localeResolver;
+
     public static MessageHelper getInstance() {
         return instance;
     }
@@ -22,16 +29,24 @@ public class MessageHelper {
         instance = this;
     }
 
-    public String getMessage(String code, Object... args) {
-        return getMessageWithLocale(null, code, args);
+    private Locale getLocale() {
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
+            return localeResolver.resolveLocale(((ServletRequestAttributes) requestAttributes).getRequest());
+        }
+        return null;
     }
 
-    public String getMessageWithLocale(Locale locale, String code, Object... args) {
+    public String getMessage(String code, Object... args) {
+        return getMessage(getLocale(), code, args);
+    }
+
+    public String getMessage(Locale locale, String code, Object... args) {
         return messageSource.getMessage(code, args, locale);
     }
 
     public String getMessage(String code, String defaultMessage, Object... args) {
-        return getMessage(null, code, defaultMessage, args);
+        return getMessage(getLocale(), code, defaultMessage, args);
     }
 
     public String getMessage(Locale locale, String code, String defaultMessage, Object... args) {

@@ -69,6 +69,7 @@
     WHERE
     1 = 1
     AND ca.type = 2
+    AND ca.activity_status = 1
     AND (
     (
     #{condition.activityStart} &gt;= ca.activity_start
@@ -77,6 +78,10 @@
     OR (
     #{condition.activityEnd} &gt;= ca.activity_start
     AND #{condition.activityEnd} &lt;= ca.activity_end
+    )
+    OR (
+    #{condition.activityStart} &lt;= ca.activity_start
+    AND #{condition.activityEnd} &gt;= ca.activity_end
     )
     )
   </select>

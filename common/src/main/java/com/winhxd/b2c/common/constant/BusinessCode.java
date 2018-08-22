@@ -217,6 +217,8 @@ public final class BusinessCode {
 
     /** 优惠券活动添加失败*/
     public static final int CODE_503001 = 503001;
+    /** 优惠券活动添加时时间冲突*/
+    public static final int CODE_503002 = 503002;
 
     /** 优惠券活动更新失败*/
     public static final int CODE_503201 = 503201;
@@ -584,7 +586,10 @@ public final class BusinessCode {
 
     @ApiModelProperty("后台消息管理 手动给门店推送消息 消息推送出错（需查询官方错误码）")
     public static final int CODE_703503 = 703503;
-    
+
+    @ApiModelProperty("后台消息管理 手动给门店推送消息 消息内容为空")
+    public static final int CODE_703504 = 703504;
+
     @ApiModelProperty("支付中，请勿重复支付")
     public static final int CODE_3400900 = 3400900;
     @ApiModelProperty("生产签名失败")

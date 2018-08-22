@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
@@ -96,7 +97,7 @@ public class ApiPayStoreBindBankCardController {
     		@ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
     		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号"),
     		@ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员"),
-    		@ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定微信失败")
+    		@ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定微信失败") 
     })
     @RequestMapping(value = "/6110/v1/bindWeixiAccount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindWeixiAccount(@RequestBody PayStoreWalletCondition condition) {
@@ -107,7 +108,7 @@ public class ApiPayStoreBindBankCardController {
     	// 获取当前门店id
     	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
     	//////////////////测试门店id//////////////////
-//    	Long businessId = 1l;
+//    	Long businessId = 62l;
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
@@ -139,7 +140,7 @@ public class ApiPayStoreBindBankCardController {
 		
 		/////////////////////////////// 测试数据
 //		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(1l);
+//		currentStoreUser.setBusinessId(62l);
 //		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();

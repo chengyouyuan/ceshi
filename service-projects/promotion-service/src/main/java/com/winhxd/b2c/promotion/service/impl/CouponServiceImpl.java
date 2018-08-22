@@ -671,13 +671,20 @@ public class CouponServiceImpl implements CouponService {
         for(CouponVO couponVO : couponVOS){
             //根据优惠券总数限制用户领取
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))){
+                //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(),couponVO.getTemplateId());
                 if(templateNum < couponVO.getCouponNum()){
-                    int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
-                    if(userNum < couponVO.getLimitNum()){
+                    //limitNum为空代表不限制用户领取数量
+                    if(couponVO.getLimitNum()==null) {
                         couponVO.setReceiveStatus("1");
                     }else{
-                        couponVO.setReceiveStatus("0");
+                        //获取某个优惠券用户领取的数量
+                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                        if(userNum < couponVO.getLimitNum()){
+                            couponVO.setReceiveStatus("1");
+                        }else{
+                            couponVO.setReceiveStatus("0");
+                        }
                     }
                 }else{
                     // 优惠券已领完
@@ -686,13 +693,20 @@ public class CouponServiceImpl implements CouponService {
             }
             //根据每个门店可领取的优惠券数量限制用户领取
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))){
+                //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getId());
                 if(storeNum < couponVO.getCouponNum()){
-                    int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
-                    if(userNum < couponVO.getLimitNum()){
+                    //limitNum为空代表不限制用户领取数量
+                    if(couponVO.getLimitNum()==null){
                         couponVO.setReceiveStatus("1");
                     }else{
-                        couponVO.setReceiveStatus("0");
+                        //获取某个优惠券用户领取的数量
+                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                        if(userNum < couponVO.getLimitNum()){
+                            couponVO.setReceiveStatus("1");
+                        }else{
+                            couponVO.setReceiveStatus("0");
+                        }
                     }
                 }else{
                     // 当前门店优惠券已领完
@@ -808,7 +822,8 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> couponVOList =  findStoreCouponList();
         int count = 0 ;
         for (int i = 0; i < couponVOList.size(); i++){
-            if(couponVOList.get(i).getReceiveStatus().equals("0")){
+            //优惠券是否可领取 0 已领取  1 可领取
+            if(couponVOList.get(i).getReceiveStatus().equals("1")){
                 count++;
             }
         }
@@ -950,6 +965,39 @@ public class CouponServiceImpl implements CouponService {
         return result;
     }
 
+    @Override
+    public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition) {
+        if(null == couponCondition|| couponCondition.getSendIds().isEmpty()){
+            logger.error("CouponServiceImpl.getCouponDiscountAmount 参数错误");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+
+        //获取购物车商品信息
+        List<CouponProductCondition> productConditions = new ArrayList<>();
+
+        ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
+        shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
+        if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
+            logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
+            throw new BusinessException(responseResult.getCode());
+        }
+        List<ShopCarProdInfoVO> shopCarProdInfoVOS = responseResult.getData();
+
+        for(ShopCarProdInfoVO shopCarProdInfoVO: shopCarProdInfoVOS){
+            CouponProductCondition couponProductCondition = new CouponProductCondition();
+            couponProductCondition.setBrandBusinessCode(shopCarProdInfoVO.getCompanyCode());
+            couponProductCondition.setBrandCode(shopCarProdInfoVO.getBrandCode());
+            couponProductCondition.setPrice(shopCarProdInfoVO.getPrice());
+            couponProductCondition.setSkuNum(shopCarProdInfoVO.getAmount());
+            couponProductCondition.setSkuCode(shopCarProdInfoVO.getSkuCode());
+            productConditions.add(couponProductCondition);
+        }
+        CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
+        couponPreAmountCondition.setProducts(productConditions);
+        couponPreAmountCondition.setSendIds(couponCondition.getSendIds());
+        return this.couponDiscountAmount(couponPreAmountCondition);
+    }
 
     /**
      * 获取优惠券适用范围

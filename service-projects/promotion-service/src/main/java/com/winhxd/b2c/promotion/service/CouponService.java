@@ -130,4 +130,11 @@ public interface CouponService {
      * @return
      */
     CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition);
+
+    /**
+     * C端获取优惠券优惠金额
+     * @param couponCondition
+     * @return
+     */
+    CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition);
 }

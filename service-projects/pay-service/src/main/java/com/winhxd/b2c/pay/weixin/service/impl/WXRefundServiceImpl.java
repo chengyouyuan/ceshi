@@ -13,6 +13,7 @@ import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
+import com.winhxd.b2c.pay.weixin.util.DateUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,11 @@ public class WXRefundServiceImpl implements WXRefundService {
     
     @Autowired
     PayRefundMapper payRefundMapper;
+
+    /**
+     * 退款通知日期格式
+     */
+    private static final String WX_REFUND_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * 分与元单位转换
@@ -119,8 +125,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             payRefund.setCallbackSettlementRefundFee(payRefundResponseDTO.getSettlementRefundFee());
 
             if(payRefundResponseDTO.getSuccessTime() != null){
-                DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
-                payRefund.setCallbackSuccessTime(bf.parse(payRefundResponseDTO.getSuccessTime()));
+                payRefund.setCallbackSuccessTime(DateUtil.toDate(payRefundResponseDTO.getSuccessTime(), WX_REFUND_DATE_FORMAT));
             }
 
             payRefund.setCallbackRefundRecvAccout(payRefundResponseDTO.getRefundRecvAccout());
@@ -200,10 +205,11 @@ public class WXRefundServiceImpl implements WXRefundService {
 
     /**
      * 组装持久对象，用于插入
-     * @param condition
-     * @param dto
+     * @param condition 接口入参
+     * @param payRefundDTO 微信入参
+     * @param dto 微信返参
      */
-    private void savePayRefund(PayRefundCondition condition, PayRefundResponseDTO dto){
+    private void savePayRefund(PayRefundCondition condition,PayRefundDTO payRefundDTO, PayRefundResponseDTO dto){
         PayRefund model = new PayRefund();
         model.setAppid(dto.getAppid());
         model.setMchId(dto.getMchId());
@@ -338,8 +344,9 @@ public class WXRefundServiceImpl implements WXRefundService {
                 model.setCallbackRefundStatus((short)0);
             }else if("SUCCESS".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)1);
-                DateFormat bf = new SimpleDateFormat("yyyyMMddHHmmss");
-                model.setCallbackSuccessTime(bf.parse(mapOut.get("refund_success_time_0")));
+                if(mapOut.get("refund_success_time_0") != null){
+                    model.setCallbackSuccessTime(DateUtil.toDate(mapOut.get("refund_success_time_0"), WX_REFUND_DATE_FORMAT));
+                }
             }else if("REFUNDCLOSE".equals(refundStatus)){
                 model.setCallbackRefundStatus((short)2);
             }else if("CHANGE".equals(refundStatus)){
@@ -377,9 +384,27 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @throws Exception
      */
     private PayRefundVO refund(PayRefundCondition condition) throws Exception{
-        PayRefundResponseDTO responseDTO = this.callRefund(condition);
+        //支付流水号
+        String outTradeNo = condition.getOutTradeNo();
+        //订单金额
+        Integer totalFee = condition.getTotalAmount().multiply(UNITS).intValue();
+        //退款金额
+        Integer refundFee = condition.getRefundAmount().multiply(UNITS).intValue();
+        //退款原因
+        String refundDesc = condition.getRefundDesc();
+        //微信入参
+        PayRefundDTO payRefundDTO = new PayRefundDTO();
+        //对微信入参进行赋值
+        payRefundDTO.setOutTradeNo(outTradeNo);
+        payRefundDTO.setOutRefundNo(outTradeNo);
+        payRefundDTO.setTotalFee(totalFee);
+        payRefundDTO.setRefundFee(refundFee);
+        payRefundDTO.setRefundDesc(refundDesc);
+
+        //调用
+        PayRefundResponseDTO responseDTO = wxPayApi.refundOder(payRefundDTO);
         //向数据库持久
-        this.savePayRefund(condition, responseDTO);
+        this.savePayRefund(condition, payRefundDTO, responseDTO);
         PayRefundVO payRefundVO = this.getResultVO(responseDTO);
         return payRefundVO;
     }

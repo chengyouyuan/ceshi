@@ -31,7 +31,7 @@ public class DateUtil {
 		if(StringUtils.isEmpty(format)) {
 			return null;
 		}
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+		return new SimpleDateFormat(format).format(date);
 	}
 	
 	/**

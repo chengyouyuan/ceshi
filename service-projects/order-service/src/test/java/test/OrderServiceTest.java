@@ -26,6 +26,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -141,6 +142,13 @@ public class OrderServiceTest {
     public void testStringMessageSender() {
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, "123", 10000);
         System.out.println("finished" + new Date());
+    }
+    
+    @Test
+    public void testfindOrderByCustomerId() {
+        OrderQueryByCustomerCondition condition = new OrderQueryByCustomerCondition();
+        condition.setOrderNo("C18082217932063648");
+        orderQueryService.findOrderByCustomerId(condition);
     }
     
     @Test

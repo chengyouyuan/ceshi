@@ -100,11 +100,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setCardNumber(data.getCardNumber());
 				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setSwiftCode(data.getSwiftCode());
-//				 withdrawalPage.setPersonId(data.getOpenid());
 				 result.setData(withdrawalPage);
-				 // 将用户信息保存到redis中，以便在做保存操作的时候获取信息 格式： 电话,用户名称,实际账户总额
-				 redisClusterCache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getStoreMobile()+","+ data.getStoreName()+","+data.getTotalFee());
-				 redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
@@ -121,8 +117,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
-				 redisClusterCache.set(CacheName.STOR_WITHDRAWAL_INFO+businessId, data.getOpenid()+","+ data.getName()+","+data.getTotalFee());
-				 redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, EXPIRE_TIME);
 			 }
 		}
 		return result;
@@ -141,17 +135,17 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(res > 0){
 			return result;
 		} 
-		String userInfo = redisClusterCache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
-		String[] user = userInfo.split(",");
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		PayWithdrawals payWithdrawal = new PayWithdrawals();
 		payWithdrawal.setStoreId(businessId);
 		// 生成提现订单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
+		ResponseResult<PayStoreUserInfoVO> storeBindBank = validStoreBindBank(businessId);
+		PayStoreUserInfoVO data = storeBindBank.getData();
+		// 当前提现金而不能大于实际账户可提现
+		BigDecimal total = data.getTotalFee();
 		BigDecimal totalFee = condition.getTotalFee();
-		// 当前提现金而不能大于实际账户总额
-		BigDecimal total = new BigDecimal(user[2]);
 		if(totalFee.compareTo(total) == 1){
 			result.setCode(BusinessCode.CODE_610035);
 			LOGGER.info("业务异常："+BusinessCode.CODE_610035);
@@ -161,7 +155,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(bankType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
-			payWithdrawal.setMobile(user[0]);
+			payWithdrawal.setMobile(condition.getMobile());
 			BigDecimal rate = payWithDrawalConfig.getRate();
 			BigDecimal cmms = countCmms(rate,totalFee);
 			payWithdrawal.setCmmsAmt(cmms);
@@ -172,20 +166,24 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setRate(rate);
 			payWithdrawal.setPaymentAccount(condition.getPaymentAccount());
 			payWithdrawal.setSwiftCode(condition.getSwiftCode());
+			payWithdrawal.setName(condition.getStroeName());
+			payWithdrawal.setCreatedByName(condition.getStroeName());
+			payWithdrawal.setUpdatedByName(condition.getStroeName());
 		}else if(weixType == condition.getWithdrawType()){
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 			payWithdrawal.setBuyerId(condition.getBuyerId());
+			payWithdrawal.setName(condition.getNick());
+			payWithdrawal.setCreatedByName(condition.getNick());
+			payWithdrawal.setUpdatedByName(condition.getNick());
 		}
 		payWithdrawal.setAuditStatus((short)0);
 //		payWithdrawal.setAuditDesc(auditDesc);
-		payWithdrawal.setName(user[1]);
 		payWithdrawal.setCreated(new Date());
-		payWithdrawal.setCreatedByName(user[1]);
 		payWithdrawal.setCreatedBy(businessId);
 		payWithdrawal.setUpdated(new Date());
 		payWithdrawal.setUpdatedBy(businessId);
-		payWithdrawal.setUpdatedByName(user[1]);
+		
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
 		return result;
 	} 
@@ -362,79 +360,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return result;
 	}
 
-	//审核当前用户提现信息 返回 当前 提现的手续费 和 实际到账金额
-	public ResponseResult<PayStoreApplyWithdrawVO> checkStorWithdrawalInfo(PayStoreApplyWithDrawCondition condition) {
-		ResponseResult<PayStoreApplyWithdrawVO> result = new ResponseResult<PayStoreApplyWithdrawVO>();
-//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-		///////////////测试数据//////////////////////////
-		Long businessId = 1l;
-		//////////////////结束/////////////////////////
-		// 验证入参是否传入正确
-		int res = valiApplyWithDrawCondition(condition);
-		if(res > 0){
-			result.setCode(res);
-			return result;
-		}
-		// 返回页面提现审核页面参数
-		PayStoreApplyWithdrawVO payStoreApplyWithdraw = new PayStoreApplyWithdrawVO();
-		
-		String userInfo = redisClusterCache.get(CacheName.STOR_WITHDRAWAL_INFO+businessId);
-		String[] user = userInfo.split(",");
-		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
-		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-		PayWithdrawals payWithdrawal = new PayWithdrawals();
-		payWithdrawal.setStoreId(businessId);
-		// 生成提现订单号
-		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
-		BigDecimal totalFee = condition.getTotalFee();
-		// 当前提现金而不能大于实际账户总额
-		BigDecimal total = new BigDecimal(user[2]);
-		if(totalFee.compareTo(total) == 1){
-			result.setCode(BusinessCode.CODE_610035);
-			LOGGER.info("业务异常："+BusinessCode.CODE_610035);
-			return result;
-		}
-		payWithdrawal.setTotalFee(totalFee);
-		if(bankType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
-			payWithdrawal.setFlowDirectionType(bankType);
-			payWithdrawal.setMobile(user[0]);
-			BigDecimal rate = payWithDrawalConfig.getRate();
-			BigDecimal cmms = countCmms(rate,totalFee);
-			payWithdrawal.setCmmsAmt(cmms);
-			LOGGER.info("当前计算所得的手续费为："+cmms);
-			BigDecimal realFee = totalFee.subtract(cmms);
-			LOGGER.info("当前计算所得实际提现金额："+realFee +";当前的银行费率："+ rate);
-			payWithdrawal.setRealFee(realFee);
-			payWithdrawal.setRate(rate);
-			payWithdrawal.setPaymentAccount(condition.getPaymentAccount());
-			payWithdrawal.setSwiftCode(condition.getSwiftCode());
-			
-			payStoreApplyWithdraw.setCmmsAmt(cmms);
-			payStoreApplyWithdraw.setRealFee(realFee);
-			payStoreApplyWithdraw.setRate(rate);
-			result.setData(payStoreApplyWithdraw);
-		}else if(weixType == condition.getWithdrawType()){
-			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
-			payWithdrawal.setFlowDirectionType(weixType);
-			payWithdrawal.setBuyerId(condition.getBuyerId());
-		}
-		payWithdrawal.setAuditStatus((short)0);
-//		payWithdrawal.setAuditDesc(auditDesc);
-		payWithdrawal.setName(user[1]);
-		payWithdrawal.setCreated(new Date());
-		payWithdrawal.setCreatedByName(user[1]);
-		payWithdrawal.setCreatedBy(businessId);
-		payWithdrawal.setUpdated(new Date());
-		payWithdrawal.setUpdatedBy(businessId);
-		payWithdrawal.setUpdatedByName(user[1]);
-		//将本次的提现数据存入redis
-		redisClusterCache.set(CacheName.STOR_WITHDRAWAL_CHECK_INFO+businessId, JsonUtil.toJSONString(payWithdrawal));
-		redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_CHECK_INFO+businessId, EXPIRE_TIME);
-		redisClusterCache.expire(CacheName.STOR_WITHDRAWAL_INFO+businessId, 0);//删除缓存
-		return result;
-	}
-
 	@Override
 	public CalculationCmmsAmtVO calculationCmmsAmt(CalculationCmmsAmtCondition condition) {
 		String log="门店提现计算手续费---";
@@ -455,8 +380,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		LOGGER.info(log+"参数为--"+condition.toString());
 		//获取门店资金信息
-	    StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
+//	    StoreUser storeUser = UserContext.getCurrentStoreUser();
+//        Long storeId = storeUser.getBusinessId();
+		// 写死门店id
+		Long storeId = 1l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
         	//判断提现金额是否大于可提现金额

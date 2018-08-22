@@ -93,17 +93,6 @@ public class CacheName {
      * 事件消息处理去重
      */
     public static final String EVENT_MESSAGE_HANDLER = "EVENT:MESSAGE:HANDLER:";
-
-    /**
-     * 门店提现模块的门店信息
-     */
-    public static final String STOR_WITHDRAWAL_INFO = "PAY:WITHDRAWAL:";
-    
-    /**
-     * 门店提现待审核数据
-     */
-    public static final String STOR_WITHDRAWAL_CHECK_INFO = "PAY:WITHDRAWAL:CHECK:";
-    
     /**
      * 门店资金流转
      */

@@ -34,4 +34,10 @@ public class PayStoreApplyWithDrawCondition extends ApiCondition {
     private String swiftCode;
     @ApiModelProperty("微信账号openid")
     private String buyerId;
+    @ApiModelProperty("昵称")
+    private String nick;
+    @ApiModelProperty("门店名称")
+    private String stroeName;
+    @ApiModelProperty("手机号")
+    private String mobile;
 }

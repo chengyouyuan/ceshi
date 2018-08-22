@@ -66,7 +66,8 @@ public class ApiPayStoreWithdrawalController {
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 		@ApiResponse(code = BusinessCode.CODE_610022, message = "请传入提现类型参数"),
 		@ApiResponse(code = BusinessCode.CODE_610025, message = "请先绑定银行卡"),
-		@ApiResponse(code = BusinessCode.CODE_610026, message = "请先绑定微信账号")
+		@ApiResponse(code = BusinessCode.CODE_610026, message = "请先绑定微信账号"),
+		@ApiResponse(code = BusinessCode.CODE_610027, message = "门店当前没有可提现的记录")
 	})
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){
@@ -83,7 +84,14 @@ public class ApiPayStoreWithdrawalController {
 	
 	@ApiOperation(value = "确认门店提现到微信或者银行卡", notes = "确认门店提现到微信或者银行卡")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+		@ApiResponse(code = BusinessCode.CODE_610035, message = "提取限额不能大于实际账户余额"),
+		@ApiResponse(code = BusinessCode.CODE_610032, message = "请输入提现金额"),
+		@ApiResponse(code = BusinessCode.CODE_610033, message = "请输入流向类型"),
+		@ApiResponse(code = BusinessCode.CODE_610034, message = "请输入流向名称"),
+		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号"),
+		@ApiResponse(code = BusinessCode.CODE_610012, message = "银行卡卡号为空"),
+		@ApiResponse(code = BusinessCode.CODE_610029, message = "请输入银行swiftcode")
 	})
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){

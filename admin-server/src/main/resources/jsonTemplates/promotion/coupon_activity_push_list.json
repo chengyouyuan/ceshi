@@ -191,14 +191,6 @@
         "isHidden": false
       },
       {
-        "name": "customerMobile",
-        "inputModel": "input",
-        "title": "C端用户手机号",
-        "value": "",
-        "placeholder": "请输入手机号",
-        "isHidden": false
-      },
-      {
         "name": "createdByName",
         "inputModel": "input",
         "title": "创建人",

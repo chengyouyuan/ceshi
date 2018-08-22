@@ -31,12 +31,12 @@ wechat:
     openidUrl: https://api.weixin.qq.com/sns/jscode2session
     accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
     sendMsgUrl: https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send
-  msgTemplate:
-    storeConfirmOrder: -uMG1WQxIOflPKaCGyRjsWWPP5RwxlKeFzeOGQtP-fg
-    orderFinish: 9mbk7J8MxY9nyRSf7r3MtmjsNugjbil8aiqUaN5ntRA
-    orderCanceled: ywS5OMp09yV12g2qXCm_fYFYD7p9OndeYnzrgy6fm4I
-    paySuccess: aoFbgtDYcSTubZDwJgaFmpdSx9XJnWG_k7OTUY2xvlQ
-    refundSuccess: TdCW9xGUtkhr1kKeAVe2Q5bbs5bcAPeZ6rSaGCq-OOU
+    msgTemplate:
+      storeConfirmOrder: -uMG1WQxIOflPKaCGyRjsWWPP5RwxlKeFzeOGQtP-fg
+      orderFinish: 9mbk7J8MxY9nyRSf7r3MtmjsNugjbil8aiqUaN5ntRA
+      orderCanceled: ywS5OMp09yV12g2qXCm_fYFYD7p9OndeYnzrgy6fm4I
+      paySuccess: aoFbgtDYcSTubZDwJgaFmpdSx9XJnWG_k7OTUY2xvlQ
+      refundSuccess: TdCW9xGUtkhr1kKeAVe2Q5bbs5bcAPeZ6rSaGCq-OOU
 
 ##云信配置##
 netease:

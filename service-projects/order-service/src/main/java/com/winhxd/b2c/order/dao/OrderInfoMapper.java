@@ -222,7 +222,7 @@ public interface OrderInfoMapper {
      * @param orderNo
      * @param customerId
      */
-    int updateOrderStatusForApplyRefund(@Param("orderNo") String orderNo, @Param("customerId") Long customerId, @Param("reason") String reason);
+    int updateOrderStatusForApplyRefund(@Param("orderNo") String orderNo, @Param("customerId") Long customerId, @Param("reason") String reason,@Param("orderStatus") short orderStatus);
 
     /**
      * 订单提货

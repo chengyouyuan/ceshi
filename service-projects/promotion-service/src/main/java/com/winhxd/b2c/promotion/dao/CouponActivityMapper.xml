@@ -79,6 +79,10 @@
     #{condition.activityEnd} &gt;= ca.activity_start
     AND #{condition.activityEnd} &lt;= ca.activity_end
     )
+    OR (
+    #{condition.activityStart} &lt;= ca.activity_start
+    AND #{condition.activityEnd} &gt;= ca.activity_end
+    )
     )
   </select>
   <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">

@@ -23,7 +23,7 @@ import feign.hystrix.FallbackFactory;
  * @date 2018年8月6日 下午4:49:30
  * @Description 调用惠下单服务
  */
-@FeignClient(name = "RETAIL-REST-SERVICE", path = "/restapi", fallbackFactory = StoreHxdServiceClientFallBack.class)
+@FeignClient(name = "RETAIL-REST-SERVICE", path = "RETAIL-REST-SERVICE/restapi", fallbackFactory = StoreHxdServiceClientFallBack.class)
 public interface StoreHxdServiceClient {
 
     @RequestMapping(value = "/hxdStore/getStoreUserInfo", method = RequestMethod.POST)

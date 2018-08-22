@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.context.version.VersionContext;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 
 /**
  * 微服务间上下文传递
@@ -28,6 +29,11 @@ public class ContextRequestInterceptor implements RequestInterceptor {
         }
         if (storeUser != null) {
             requestTemplate.header(ContextHelper.HEADER_USER_STORE, ContextHelper.getHeaderJsonString(storeUser));
+        }
+
+        String acceptLanguage = UserContext.getAcceptLanguage();
+        if (StringUtils.isNotBlank(acceptLanguage)) {
+            requestTemplate.header(HttpHeaders.ACCEPT_LANGUAGE, acceptLanguage);
         }
 
         String msVer = VersionContext.getVersion();

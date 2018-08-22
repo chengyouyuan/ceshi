@@ -772,7 +772,9 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
             if (orderInfo == null) {
-                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+//                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+                logger.info("订单号：{}未找到对应订单，无法执行订单未支付超时处理");
+                return;
             }
             if (orderInfo.getOrderStatus() != OrderStatusEnum.UNRECEIVED.getStatusCode()) {
                 // 如果非 带确认状态，直接返回
@@ -807,7 +809,9 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
             if (orderInfo == null) {
-                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+//                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+                logger.info("订单号：{}未找到对应订单，无法执行订单未支付超时处理");
+                return;
             }
             if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_PAY.getStatusCode()) {
                 // 如果非 带确认状态，直接返回
@@ -837,7 +841,9 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
             if (orderInfo == null) {
-                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+//                throw new BusinessException(BusinessCode.WRONG_ORDERNO);
+                logger.info("订单号：{}未找到对应订单，无法执行订单未自提超时处理");
+                return;
             }
             if (orderInfo.getOrderStatus() != OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode()) {
                 // 如果非 带确认状态，直接返回

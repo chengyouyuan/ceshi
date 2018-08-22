@@ -451,6 +451,7 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setTotalMoeny(totalMoney);
 				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
 				storeBankroll.setPresentedMoney(presentedMoney);
+				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
 				storeBankroll.setCreated(new Date());
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankrollMapper.insertSelective(storeBankroll);

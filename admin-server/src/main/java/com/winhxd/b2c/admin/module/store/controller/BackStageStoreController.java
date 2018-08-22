@@ -1,5 +1,7 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.RegexConstant;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -11,6 +13,8 @@ import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
+import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
@@ -53,6 +57,8 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
     @PostMapping(value = "/1020/v1/findStoreList")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
+    @MenuAssign(MenuEnum.STORE_MANAGEMENT_LIST)
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);
@@ -111,6 +117,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1023/v1/regionCodeList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult regionCodeList(@RequestBody SysRegionCondition condition) {
         ResponseResult<List<SysRegion>> responseResult = new ResponseResult<>();
         try {
@@ -129,6 +136,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1024/v1/updateRegionCode", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<Integer> updateRegionCode(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("{} - 更改门店区域信息, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
         ResponseResult<Integer> responseResult = backStageStoreServiceClient.modifyStoreInfoRegionCode(condition);
@@ -140,6 +148,7 @@ public class BackStageStoreController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
     @PostMapping(value = "/1051/v1/findStoreIdList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<List<String>> findStoreIdList(@RequestBody BackStageStoreInfoCondition condition) {
         logger.info("{} - 根据区域集合查询门店, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
         ResponseResult<List<String>> responseResult = new ResponseResult<>();
@@ -154,6 +163,7 @@ public class BackStageStoreController {
     @ApiOperation(value = "根据条件查询门店的分页数据信息", notes = "根据条件查询门店的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/1058/v1/findStorePageInfo")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
     public ResponseResult<PagedList<StoreUserInfoVO>> findStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
         ResponseResult<PagedList<StoreUserInfoVO>> responseResult = storeServiceClient.queryStorePageInfo(condition);
         return responseResult;

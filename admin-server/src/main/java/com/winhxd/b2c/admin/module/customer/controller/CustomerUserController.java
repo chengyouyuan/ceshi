@@ -1,5 +1,6 @@
 package com.winhxd.b2c.admin.module.customer.controller;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -10,6 +11,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCon
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.system.login.condition.BackStageCustomerInfoCondition;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -36,6 +38,7 @@ import java.util.List;
 @Api(value = "后台小程序用户管理控制器", tags = "后台小程序用户信息管理接口")
 @RestController
 @RequestMapping(value = "customer/user")
+@CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT)
 public class CustomerUserController {
 
     private Logger logger = LoggerFactory.getLogger(CustomerUserController.class);
@@ -48,7 +51,7 @@ public class CustomerUserController {
 
     @Autowired
     private CouponServiceClient couponServiceClient;
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_LIST)
     @ApiOperation(value = "根据条件查询用户的分页数据信息", notes = "根据条件查询用户的分页数据信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @PostMapping(value = "/1059/v1/findCustomerPageInfo")
@@ -57,12 +60,15 @@ public class CustomerUserController {
         return responseResult;
     }
 
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_LIST)
     @PostMapping(value = "/1065/v1/findAvabileCustomerPageInfo")
+    @ApiOperation(value = "根据条件查询有门店绑定关系用户的分页数据信息", notes = "根据条件查询用户的分页数据信息")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误,查询用户列表数据失败"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     public ResponseResult<PagedList<CustomerUserInfoVO>> findAvabileCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition){
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = customerServiceClient.findAvabileCustomerPageInfo(condition);
         return responseResult;
     }
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_EXPORT)
     @ApiOperation(value = "导出根据条件查询用户的分页数据信息", notes = "导出根据条件查询用户的分页数据信息")
     @GetMapping(value = "/1060/v1/customerExport")
     public ResponseEntity<byte[]> customerExport(BackStageCustomerInfoCondition condition) {
@@ -74,7 +80,7 @@ public class CustomerUserController {
         }
         return ExcelUtils.exp(list, "用户信息");
     }
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_BLACK)
     @ApiOperation(value = "添加黑名单", notes = "添加黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "添加黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/1061/v1/addBlackList")
@@ -86,7 +92,7 @@ public class CustomerUserController {
         condition.setStatus(0);
         return customerServiceClient.updateStatus(condition);
     }
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_BLACK)
     @ApiOperation(value = "移出黑名单", notes = "移出黑名单")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "移出黑名单成功"), @ApiResponse(code = BusinessCode.CODE_200001, message = "用户id为空")})
     @PostMapping(value = "/1062/v1/removeBlackList")
@@ -98,7 +104,7 @@ public class CustomerUserController {
         condition.setStatus(1);
         return customerServiceClient.updateStatus(condition);
     }
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_DETAIL)
     @ApiOperation(value = "根据用户id查询当前用户的信息以及订单信息", notes = "点击用户详情页查询用户已经订单详情列表信息")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_200001, message = "用户id参数为空*"), @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功")})
     @GetMapping(value = "/1063/v1/queryCustomerUserInfoDeatil")
@@ -133,7 +139,7 @@ public class CustomerUserController {
             result.setOrderCount(pagedList.getTotalRows());
         }
     }
-
+    @CheckPermission(PermissionEnum.CUSTOMER_MANAGEMENT_ORDER_DETAIL)
     @ApiOperation(value = "查询订单详情信息", notes = "根据订单查询订单详情已经订单状态信息")
     @GetMapping(value = "/1064/v1/queryOderInfoDetail/{orderNum}")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"), @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误")})

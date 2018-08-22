@@ -1,12 +1,12 @@
 package com.winhxd.b2c.common.config;
 
+import com.winhxd.b2c.common.config.support.ControllerChecker;
 import com.winhxd.b2c.common.context.support.ContextInitFilter;
 import com.winhxd.b2c.common.context.support.ContextRequestInterceptor;
-import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
+import com.winhxd.b2c.common.context.version.VersionedRoundRobinRule;
 import com.winhxd.b2c.common.exception.support.BusinessDecoder;
 import com.winhxd.b2c.common.exception.support.ServiceHandlerExceptionResolver;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
-import com.winhxd.b2c.common.config.support.ControllerChecker;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +55,7 @@ public class MicroServiceConfig {
     }
 
     @Bean
-    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
-        return new VersionedZoneAvoidanceRule();
+    public VersionedRoundRobinRule versionedRoundRobinRule(){
+        return new VersionedRoundRobinRule();
     }
 }

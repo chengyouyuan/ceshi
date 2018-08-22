@@ -44,7 +44,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	}
 	
 	@Override
-	public int saveStoreBankCard(StoreBankCard condition) {
+	public int saveStoreBankCard(StoreBankCardCondition condition) {
 		int res = 0;
 		// 校验用户填入的信息是否完善
     	String bankName = condition.getBankName();
@@ -116,26 +116,30 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     			res = BusinessCode.CODE_610020;
     			throw new BusinessException(BusinessCode.CODE_610020);
     		} 
-    		condition.setStoreId(currentStoreUser.getBusinessId());
-    		condition.setStatus((short)1); 
-    		condition.setCreated(new Date());
-    		condition.setUpdated(new Date());
-    		condition.setCreatedBy(currentStoreUser.getBusinessId());
-    		condition.setUpdatedBy(currentStoreUser.getBusinessId());
-    		condition.setCreatedByName(condition.getBankUserName());
-    		condition.setUpdatedByName(condition.getBankUserName());
+    		
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
-    		StoreBankCardCondition scondition = new StoreBankCardCondition();
-    		BeanUtils.copyProperties(condition, scondition);
-    		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ scondition);
-    		scondition.setCreated(null);
-    		scondition.setUpdated(null);
-    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(scondition);
+    		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);
+    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(condition);
+    		
+        	StoreBankCard storeBankCard = new StoreBankCard();
+        	BeanUtils.copyProperties(condition, storeBankCard);
+    		
+        	storeBankCard.setStoreId(currentStoreUser.getBusinessId());
+        	storeBankCard.setStatus((short)1); 
+        	storeBankCard.setCreated(new Date());
+        	storeBankCard.setUpdated(new Date());
+        	storeBankCard.setCreatedBy(currentStoreUser.getBusinessId());
+        	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
+        	storeBankCard.setCreatedByName(condition.getBankUserName());
+        	storeBankCard.setUpdatedByName(condition.getBankUserName());
     		if(storBankCardInfo != null){
-    			res = BusinessCode.CODE_610024;
-    			LOGGER.info("当前银行卡已经存在");
+//    			res = BusinessCode.CODE_610024;
+//    			LOGGER.info("当前银行卡已经存在");
+    			Long id = storBankCardInfo.getId();
+    			storeBankCard.setId(id);
+    			storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
     		}else{
-    			storeBankCardMapper.insertStoreBankCardinfo(condition);
+    			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
     		}
     	}
 		return res;

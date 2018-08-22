@@ -10,7 +10,7 @@ import org.springframework.cloud.gateway.config.GatewayLoadBalancerClientAutoCon
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(exclude = {GatewayLoadBalancerClientAutoConfiguration.class})
+@SpringBootApplication
 @ComponentScan(basePackages = {"com.winhxd.b2c.gateway", "com.winhxd.b2c.common.cache"})
 @Import({CommonConfig.class, ZipkinRabbitConfig.class})
 public class GatewayServerApplication {

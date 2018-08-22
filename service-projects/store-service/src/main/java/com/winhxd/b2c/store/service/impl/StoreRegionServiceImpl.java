@@ -165,6 +165,20 @@ public class StoreRegionServiceImpl implements StoreRegionService{
             logger.error("开店测试区域查询，未查询到该门店的行政区域！区域编码为：{}", regionCode);
             throw new BusinessException(BusinessCode.CODE_200004);
         }
-        return storeRegionMapper.selectByRegionCode(regionCode,sysRegion.getLevel(),regionCode.substring(0,3));
+        List<String> regionCodeList = new ArrayList<>();
+        regionCodeList.add(sysRegion.getProvinceCode());
+        if (StringUtils.isNotBlank(sysRegion.getCityCode())) {
+            regionCodeList.add(sysRegion.getCityCode());
+            if (StringUtils.isNotBlank(sysRegion.getCountyCode())) {
+                regionCodeList.add(sysRegion.getCountyCode());
+                if (StringUtils.isNotBlank(sysRegion.getTownCode())) {
+                    regionCodeList.add(sysRegion.getTownCode());
+                    if (StringUtils.isNotBlank(sysRegion.getVillageCode())) {
+                        regionCodeList.add(sysRegion.getVillageCode());
+                    }
+                }
+            }
+        }
+        return storeRegionMapper.selectByRegionCode(regionCodeList);
     }
 }

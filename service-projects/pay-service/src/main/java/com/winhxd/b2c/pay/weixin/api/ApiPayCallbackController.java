@@ -105,11 +105,12 @@ public class ApiPayCallbackController {
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密
-
 				String decodeString = DecipherUtil.decodeReqInfo(reqInfo);
-				refundCallbackDTO = XmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
 
-				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(refundCallbackDTO);
+				PayRefundResponseDTO fillResponseDto = XmlUtil.xml2Bean(decodeString, PayRefundResponseDTO.class);
+				fillResponseDto.setReqInfo(reqInfo);
+
+				PayRefund payRefund = wxRefundService.updatePayRefundByOutTradeNo(fillResponseDto);
 				Boolean result = payService.callbackOrderRefund(payRefund);
 				if(result) {
 					this.response(response, SUCCESS_RESPONSE);

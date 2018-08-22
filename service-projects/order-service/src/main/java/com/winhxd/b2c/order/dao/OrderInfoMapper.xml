@@ -764,7 +764,7 @@
 			sum(case when order_status=33 then 1 else 0 end) waitRefundNum,
 			sum(case when order_status=22 then 1 else 0 end) finishedNum,
 			sum(case when order_status=77 then 1 else 0 end) refundedNum,
-			sum(case when order_status=22 then 1 else 0 end) canceledNum,
+			sum(case when order_status=99 then 1 else 0 end) canceledNum,
 			sum(case when order_status=66 then 1 else 0 end) refundingNum,
 			store_id storeId
 		from

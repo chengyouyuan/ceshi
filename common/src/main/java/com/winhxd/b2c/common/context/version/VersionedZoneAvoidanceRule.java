@@ -20,6 +20,7 @@ public class VersionedZoneAvoidanceRule extends ZoneAvoidanceRule {
     private MyPredicate myPredicate;
 
     public VersionedZoneAvoidanceRule() {
+        super();
         myPredicate = new MyPredicate(super.getPredicate());
     }
 

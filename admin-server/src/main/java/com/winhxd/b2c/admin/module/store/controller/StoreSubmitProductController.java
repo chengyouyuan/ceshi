@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
 
 import io.swagger.annotations.Api;
@@ -41,6 +43,7 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1052/v1/findStoreSubmitProdList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
 	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
 			@RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> result=new ResponseResult<>();
@@ -54,6 +57,7 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1053/v1/findStoreSubmitProd/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
 	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@PathVariable("id") Long id) {
 		BackStageStoreSubmitProdCondition condition=new BackStageStoreSubmitProdCondition();
 		condition.setId(id);

@@ -74,7 +74,7 @@
                 "id"
               ],
               "path": "",
-              "configKey": "/template/module/promotion/coupon_activity_cite_view.json"
+              "configKey": "/template/module/promotion/coupon_activity_push_cite_view.json"
             }
           },
           {
@@ -87,7 +87,7 @@
                 "id",
                 "activityStatus"
               ],
-              "path": "/promotion/5035/v1/updateCouponActivityStatus"
+              "path": "/promotion/5055/v1/updateCouponActivityStatusPush"
             }
           },
           {
@@ -99,7 +99,7 @@
               "params": [
                 "id"
               ],
-              "path": "/promotion/5034/v1/revocationActivityCoupon"
+              "path": "/promotion/5054/v1/revocationActivityCouponPush"
             }
           }
         ]

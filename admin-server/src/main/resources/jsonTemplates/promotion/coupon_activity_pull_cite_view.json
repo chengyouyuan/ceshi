@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/promotion/5036/v1/queryCouponByActivityPull",
+    "type": "report",
+    "id": "coupon_cite_view",
+    "code": "coupon_cite_view",
+    "title": "优惠券引用详情",
+    "buttons": [],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "couponName",
+        "title": "优惠券模板名称"
+      },
+      {
+        "name": "couponCode",
+        "title": "优惠券模板编码"
+      },
+      {
+        "name": "activityName",
+        "title": "优惠券活动名称"
+      },
+      {
+        "name": "activityCode",
+        "title": "优惠券活动编码"
+      },
+      {
+        "name": "statusName",
+        "title": "优惠券状态"
+      },
+      {
+        "name": "updated",
+        "title": "优惠券发放时间"
+      }
+    ],
+    "params": []
+  }
+}

@@ -67,6 +67,7 @@ public class CouponController {
 	 */
 	@ApiOperation("获取优惠券活动领券列表")
 	@PostMapping(value = "/5029/v1/queryCouponActivityPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_LIST)
 	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivityPull(@RequestBody CouponActivityCondition condition){
 		condition.setType((short) 1);
 		logger.info("获取优惠券活动领券列表，type="+condition.getType());
@@ -82,6 +83,7 @@ public class CouponController {
 	 */
 	@ApiOperation("获取优惠券活动推券列表")
 	@PostMapping(value = "/5049/v1/queryCouponActivityPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_LIST)
 	public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivityPush(@RequestBody CouponActivityCondition condition){
 		condition.setType((short) 2);
 		logger.info("获取优惠券活动推券列表，type="+condition.getType());
@@ -129,15 +131,37 @@ public class CouponController {
 	}
 	/**
 	 *
-	 *@Deccription 添加优惠券活动
+	 *@Deccription 添加优惠券活动（领券）
 	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/7
 	 */
 	@ApiOperation("添加优惠券活动")
-	@PostMapping(value = "/5030/v1/addCouponActivity")
-	public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition){
+	@PostMapping(value = "/5030/v1/addCouponActivityPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_ADD)
+	public ResponseResult<Integer> addCouponActivityPull(@RequestBody CouponActivityAddCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		String code = getUUID();
+		condition.setCode(code);
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
+		return couponActivityServiceClient.addCouponActivity(condition);
+	}
+	/**
+	 *
+	 *@Deccription 添加优惠券活动（推券）
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/7
+	 */
+	@ApiOperation("添加优惠券活动")
+	@PostMapping(value = "/5052/v1/addCouponActivityPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_ADD)
+	public ResponseResult<Integer> addCouponActivityPush(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
 		String userName = userInfo.getUsername();
@@ -150,15 +174,30 @@ public class CouponController {
 
 	/**
 	 *
-	 *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)
+	 *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)（领券）
 	 *@Params   id
 	 *@Return   ResponseResult
 	 *@User     sjx
 	 *@Date   2018/8/8
 	 */
 	@ApiOperation("根据id 查询优惠券活动")
-	@PostMapping(value = "/5031/v1/getCouponActivityById")
-	public ResponseResult<CouponActivityVO> getCouponActivityById(@RequestParam("id") String id){
+	@PostMapping(value = "/5031/v1/getCouponActivityByIdPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_VIEW)
+	public ResponseResult<CouponActivityVO> getCouponActivityByIdPull(@RequestParam("id") String id){
+		return couponActivityServiceClient.getCouponActivityById(id);
+	}
+	/**
+	 *
+	 *@Deccription 根据id 查询出对应的实体类(查看和回显编辑页)（推券）
+	 *@Params   id
+	 *@Return   ResponseResult
+	 *@User     sjx
+	 *@Date   2018/8/8
+	 */
+	@ApiOperation("根据id 查询优惠券活动")
+	@PostMapping(value = "/5053/v1/getCouponActivityByIdPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_VIEW)
+	public ResponseResult<CouponActivityVO> getCouponActivityByIdPush(@RequestParam("id") String id){
 		return couponActivityServiceClient.getCouponActivityById(id);
 	}
 	/**
@@ -201,15 +240,16 @@ public class CouponController {
 	}
 	/**
 	 *
-	 *@Deccription 撤回活动优惠券
+	 *@Deccription 撤回活动优惠券（领券）
 	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("撤回活动优惠券")
-	@PostMapping(value = "/5034/v1/revocationActivityCoupon")
-	public ResponseResult<Integer> revocationActivityCoupon(@RequestBody CouponActivityCondition condition){
+	@PostMapping(value = "/5034/v1/revocationActivityCouponPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_REVOCATION)
+	public ResponseResult<Integer> revocationActivityCouponPull(@RequestBody CouponActivityCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
 		String userName = userInfo.getUsername();
@@ -219,15 +259,35 @@ public class CouponController {
 	}
 	/**
 	 *
-	 *@Deccription 停用/开启活动
+	 *@Deccription 撤回活动优惠券（推券）
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("撤回活动优惠券")
+	@PostMapping(value = "/5054/v1/revocationActivityCouponPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_REVOCATION)
+	public ResponseResult<Integer> revocationActivityCouponPush(@RequestBody CouponActivityCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
+		return couponActivityServiceClient.revocationActivityCoupon(condition);
+	}
+	/**
+	 *
+	 *@Deccription 停用/开启活动（领券）
 	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("停用/开启活动")
-	@PostMapping(value = "/5035/v1/updateCouponActivityStatus")
-	public ResponseResult<Integer> updateCouponActivityStatus(@RequestBody CouponActivityAddCondition condition){
+	@PostMapping(value = "/5035/v1/updateCouponActivityStatusPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_UPDATE_STATUS)
+	public ResponseResult<Integer> updateCouponActivityStatusPull(@RequestBody CouponActivityAddCondition condition){
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
 		String userName = userInfo.getUsername();
@@ -237,15 +297,49 @@ public class CouponController {
 	}
 	/**
 	 *
-	 *@Deccription 根据活动获取优惠券列表
+	 *@Deccription 停用/开启活动（推券）
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("停用/开启活动")
+	@PostMapping(value = "/5055/v1/updateCouponActivityStatusPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_UPDATE_STATUS)
+	public ResponseResult<Integer> updateCouponActivityStatusPush(@RequestBody CouponActivityAddCondition condition){
+		UserInfo userInfo = UserManager.getCurrentUser();
+		Long userId = userInfo.getId();
+		String userName = userInfo.getUsername();
+		condition.setCreatedBy(userId);
+		condition.setCreatedByName(userName);
+		return couponActivityServiceClient.updateCouponActivityStatus(condition);
+	}
+	/**
+	 *
+	 *@Deccription 根据活动获取优惠券列表（领券）
 	 *@Params  condition
 	 *@Return  ResponseResult
 	 *@User  sjx
 	 *@Date   2018/8/9
 	 */
 	@ApiOperation("根据活动获取优惠券列表")
-	@PostMapping(value = "/5036/v1/queryCouponByActivity")
-	public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(@RequestBody CouponActivityCondition condition){
+	@PostMapping(value = "/5036/v1/queryCouponByActivityPull")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_TEMPLATE_VIEW)
+	public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivityPull(@RequestBody CouponActivityCondition condition){
+		return couponActivityServiceClient.queryCouponByActivity(condition);
+	}
+	/**
+	 *
+	 *@Deccription 根据活动获取优惠券列表（推券）
+	 *@Params  condition
+	 *@Return  ResponseResult
+	 *@User  sjx
+	 *@Date   2018/8/9
+	 */
+	@ApiOperation("根据活动获取优惠券列表")
+	@PostMapping(value = "/5056/v1/queryCouponByActivityPush")
+	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_TEMPLATE_VIEW)
+	public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivityPush(@RequestBody CouponActivityCondition condition){
 		return couponActivityServiceClient.queryCouponByActivity(condition);
 	}
 	/**

@@ -1,10 +1,12 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,6 +38,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @PostMapping(value = "/store/1037/v1/findStoreRegions")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
@@ -48,6 +51,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @GetMapping(value = "/store/1038/v1/removeStoreRegion/{id}")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
     public ResponseResult<Void> removeStoreRegion(@PathVariable("id") Long id){
         storeServiceClient.removeStoreRegion(id);
         return new ResponseResult<>();
@@ -60,6 +64,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @PostMapping(value = "/store/1039/v1/saveStoreRegion")
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
     public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition condition){
         storeServiceClient.saveStoreRegion(condition);
         return new ResponseResult<>();

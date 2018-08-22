@@ -12,17 +12,17 @@ public class RegexConstant {
     /**
      * 店铺名称
      */
-    public static Pattern STORE_NAME_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,15}$");
+    public static final Pattern STORE_NAME_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,15}$");
     /**
      * 提货地址
      */
-    public static Pattern STORE_ADDRESS_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,30}$");
+    public static final Pattern STORE_ADDRESS_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,30}$");
     /**
      * 联系人
      */
-    public static Pattern SHOPKEEPER_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,10}$");
+    public static final Pattern SHOPKEEPER_PATTERN = Pattern.compile("^[\\w\u4e00-\u9fa5]{1,10}$");
     /**
      * 联系方式
      */
-    public static Pattern CONTACT_MOBILE_PATTERN = Pattern.compile("^1[3-8][0-9]\\d{8}$");
+    public static final Pattern CONTACT_MOBILE_PATTERN = Pattern.compile("^1[3-8][0-9]\\d{8}$");
 }

@@ -54,8 +54,8 @@ public class MicroServiceConfig {
         return new BusinessDecoder(messageConverters);
     }
 
-    @Bean
-    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
-        return new VersionedZoneAvoidanceRule();
-    }
+//    @Bean
+//    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
+//        return new VersionedZoneAvoidanceRule();
+//    }
 }

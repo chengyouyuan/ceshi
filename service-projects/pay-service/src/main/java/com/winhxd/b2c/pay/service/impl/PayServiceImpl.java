@@ -287,7 +287,7 @@ public class PayServiceImpl implements PayService{
 			 changeCondition=new StoreBankrollChangeCondition();
 			 changeCondition.setStoreId(storeId);
 			 changeCondition.setType(condition.getType());
-			 condition.setOrderNo(orderNo);
+			 changeCondition.setOrderNo(orderNo);
 			 //待结算金额增加
 			 changeCondition.setSettlementSettledMoney(condition.getMoney());
 			 flag=true;
@@ -618,6 +618,7 @@ public class PayServiceImpl implements PayService{
      * @return
      */
 	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
+	@Transactional
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
@@ -661,6 +662,7 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--参数"+order.toString());
 		PayRefundCondition payRefund = new PayRefundCondition();
 		payRefund.setOutTradeNo(order.getPaymentSerialNum());
+		payRefund.setOrderNo(orderNo);
 		payRefund.setTotalAmount(totalAmount);
 		payRefund.setRefundAmount(refundAmount);
 		payRefund.setCreatedBy(order.getUpdatedBy());
@@ -670,9 +672,9 @@ public class PayServiceImpl implements PayService{
 		if (vo!=null) {
 			//插入退款流水信息
 			PayRefundPayment payRefundPayment=new PayRefundPayment();
-			payRefundPayment.setOrderNo(payRefund.getOrderNo());
+			payRefundPayment.setOrderNo(orderNo);
 			payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
-			payRefundPayment.setRefundNo(payRefund.getOrderNo());
+			payRefundPayment.setRefundNo(orderNo);
 			payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
 			payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 			payRefundPayment.setTotalAmount(payRefund.getTotalAmount());

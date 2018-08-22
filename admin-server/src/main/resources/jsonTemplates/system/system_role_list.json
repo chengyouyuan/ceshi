@@ -61,7 +61,7 @@
               "static": {
                 "method": "update"
               },
-              "path": "",
+              "path": "/authorization/index",
               "configKey": ""
             }
           },

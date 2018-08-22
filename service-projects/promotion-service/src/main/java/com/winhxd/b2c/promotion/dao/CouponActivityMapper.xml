@@ -69,6 +69,7 @@
     WHERE
     1 = 1
     AND ca.type = 2
+    AND ca.activity_status = 1
     AND (
     (
     #{condition.activityStart} &gt;= ca.activity_start

@@ -58,7 +58,7 @@
         "title": "手机号"
       },
       {
-        "name": "permissions",
+        "name": "roleName",
         "title": "所在权限组"
       },
       {

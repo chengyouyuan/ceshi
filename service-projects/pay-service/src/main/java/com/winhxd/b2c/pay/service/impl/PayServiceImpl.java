@@ -661,6 +661,7 @@ public class PayServiceImpl implements PayService{
 		logger.info(log+"--参数"+order.toString());
 		PayRefundCondition payRefund = new PayRefundCondition();
 		payRefund.setOutTradeNo(order.getPaymentSerialNum());
+		payRefund.setOrderNo(orderNo);
 		payRefund.setTotalAmount(totalAmount);
 		payRefund.setRefundAmount(refundAmount);
 		payRefund.setCreatedBy(order.getUpdatedBy());

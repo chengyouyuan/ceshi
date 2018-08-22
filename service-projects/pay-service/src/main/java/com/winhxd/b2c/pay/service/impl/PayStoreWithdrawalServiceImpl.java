@@ -75,7 +75,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		////////////////////////测试数据////////////////////////////////////
-//		Long businessId = 1l;
+//		Long businessId = 62l;
 		//////////////////////结束////////////////////////////////////////
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
@@ -123,7 +123,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		///////////////测试数据//////////////////////////
-//		Long businessId = 1l;
+//		Long businessId = 62l;
 		//////////////////结束/////////////////////////
 		// 验证入参是否传入正确
 		int res = valiApplyWithDrawCondition(condition);
@@ -296,6 +296,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(selectStorBankCardInfo.size() == 0){
 			res.setCode(BusinessCode.CODE_610025);
 			LOGGER.info("当前用户没有绑定银行卡");
+			res.setData(new PayStoreUserInfoVO());
 		}else{
 			res.setCode(0);
 			res.setData(selectStorBankCardInfo.get(0));//返回最新插入的一条银行卡信息
@@ -400,7 +401,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	    StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
 		// 写死门店id
-//		Long storeId = 1l;
+//		Long storeId = 62l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
         	//判断提现金额是否大于可提现金额

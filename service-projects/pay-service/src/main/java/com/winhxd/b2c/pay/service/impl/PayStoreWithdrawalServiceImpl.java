@@ -209,8 +209,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		UpdateStoreBankRollCondition rollCondtion = new UpdateStoreBankRollCondition();
 		rollCondtion.setType(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode());
 		rollCondtion.setStoreId(businessId);
-		rollCondtion.setOrderNo(payWithdrawal.getWithdrawalsNo());
+		rollCondtion.setWithdrawalsNo(payWithdrawal.getWithdrawalsNo());
 		rollCondtion.setMoney(payWithdrawal.getTotalFee());
+		LOGGER.info("当前更新账户金额入参：--"+rollCondtion);
 		payServiceImpl.updateStoreBankroll(rollCondtion);
 		return result;
 	} 

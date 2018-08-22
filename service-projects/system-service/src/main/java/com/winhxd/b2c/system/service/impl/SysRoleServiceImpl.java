@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author zhangzhengyang
@@ -77,6 +77,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     public int remove(Long id) {
         sysRolePermissionMapper.deleteByRoleId(id);
         return sysRoleMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public List<String> getPermissionsByUser(Long userId) {
+        return sysRolePermissionMapper.selectPermissionByUserId(userId);
     }
 
 }

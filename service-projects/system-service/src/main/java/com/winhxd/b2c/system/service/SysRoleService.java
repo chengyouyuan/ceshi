@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.user.condition.SysRoleCondition;
 import com.winhxd.b2c.common.domain.system.user.model.SysRole;
 
+import java.util.List;
+
 public interface SysRoleService {
 
     /**
@@ -50,5 +52,13 @@ public interface SysRoleService {
      * @param id
      */
     int remove(Long id);
+
+
+    /**
+     * 根据用户ID获取权限列表
+     * @param userId
+     * @return
+     */
+    List<String> getPermissionsByUser(Long userId);
 
 }

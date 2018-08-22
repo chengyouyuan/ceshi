@@ -42,7 +42,7 @@ import java.util.Date;
  * @Date 2018/8/13 12:47
  * @Description: 微信转账实现
  */
-@Service(value = "wXTransfersService")
+@Service(value = "wxTransfersService")
 public class WXTransfersServiceImpl implements WXTransfersService {
 
     private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
@@ -85,9 +85,9 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             //准备wx侧请求参数
             PayTransfersForWxChangeDTO wxChangeDTO = getReqParamForChange(toWxBalanceCondition);
             //处理微信请求及结果
-            String respxml = wxPayApi.transferToChange(BeanAndXmlUtil.beanToSortedMap(wxChangeDTO));
+            String respxml = wxPayApi.transferToChange(XmlUtil.bean2MapUnderline2Hump(wxChangeDTO));
             System.out.println(respxml);
-            PayTransfersToWxChangeResponseDTO responseDTO = BeanAndXmlUtil.xml2Bean(respxml, PayTransfersToWxChangeResponseDTO.class);
+            PayTransfersToWxChangeResponseDTO responseDTO = XmlUtil.xml2Bean(respxml, PayTransfersToWxChangeResponseDTO.class);
             //准备返参
             toWxChangeVO = praseResultForChange(responseDTO);
             //错误情况下调用查询确认转账情况
@@ -153,7 +153,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setDesc(toWxBalanceCondition.getDesc());
         forWxChangeDTO.setSpbillCreateIp(toWxBalanceCondition.getSpbillCreateIp());
         //处理签名
-        forWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(forWxChangeDTO), payConfig.getKey()));
+        forWxChangeDTO.setSign(WXPayUtil.generateSignature(XmlUtil.bean2MapUnderline2Hump(forWxChangeDTO), payConfig.getKey()));
         return forWxChangeDTO;
     }
 
@@ -236,11 +236,12 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         queryForWxChangeDTO.setPartnerTradeNo(wxChangeDTO.getPartnerTradeNo());
         queryForWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理签名
-        queryForWxChangeDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO), payConfig.getKey()));
+        queryForWxChangeDTO.setSign(WXPayUtil.generateSignature(XmlUtil.bean2Map(queryForWxChangeDTO), payConfig.getKey()));
         //返参
-        String resultXml = wxPayApi.queryTransferToChange(BeanAndXmlUtil.beanToSortedMap(queryForWxChangeDTO));
+        String resultXml = wxPayApi.queryTransferToChange(XmlUtil.bean2Map(queryForWxChangeDTO));
+        System.out.println(resultXml);
         if(StringUtils.isNotBlank(resultXml)){
-            queryForWxChangeResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
+            queryForWxChangeResponseDTO = XmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxChangeResponseDTO.class);
         }
         if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxChangeResponseDTO.getStatus()) &&
                 PayTransfersStatus.PROCESSING.getCode().equals(queryForWxChangeResponseDTO.getStatus())){
@@ -311,8 +312,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             //准备wx侧请求参数
             PayTransfersForWxBankDTO wxBankDTO = getReqParamForBank(toWxBankCondition);
             //处理微信请求及结果
-            String respxml = wxPayApi.transferToBank(BeanAndXmlUtil.beanToSortedMap(wxBankDTO));
-            PayTransfersToWxBankResponseDTO responseDTO = BeanAndXmlUtil.xml2Bean(respxml, PayTransfersToWxBankResponseDTO.class);
+            String respxml = wxPayApi.transferToBank(XmlUtil.bean2MapUnderline2Hump(wxBankDTO));
+            PayTransfersToWxBankResponseDTO responseDTO = XmlUtil.xml2Bean(respxml, PayTransfersToWxBankResponseDTO.class);
             //准备返参
             toWxBankVO = praseResultForBank(responseDTO);
             //错误情况下调用查询确认转账情况
@@ -421,7 +422,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * @throws Exception
      */
     private PayTransfersToWxBankVO confirmTransfersToWxBankResult(PayTransfersToWxBankVO toWxBankVO, PayTransfersForWxBankDTO wxBankDTO)  throws Exception{
-        PayTransfersQueryForWxBankResponseDTO queryForWxBankResponseDTO = getExactResultForWxBank(wxBankDTO, 3);
+        PayTransfersQueryForWxBankResponseDTO queryForWxBankResponseDTO = getExactResultForWxBank(wxBankDTO.getPartnerTradeNo());
         if (null == queryForWxBankResponseDTO) {
             logger.error("Transfers result query failed, partnerTradeNo : " + toWxBankVO.getPartnerTradeNo());
             return toWxBankVO;
@@ -448,31 +449,33 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     }
 
     /**
-     * 转账结果失败时重新查询, 确认结果
+     * 重新查询转账结果, 确认结果
      *
      * @param toWxBankVO wx转账至银行卡接口返参
      * @throws Exception
      */
-    private PayTransfersQueryForWxBankResponseDTO getExactResultForWxBank(PayTransfersForWxBankDTO wxBankDTO, int queryTimes) throws Exception {
+    @Override
+    public PayTransfersQueryForWxBankResponseDTO getExactResultForWxBank(String partnerTradeNo) throws Exception {
         PayTransfersQueryForWxBankResponseDTO queryForWxBankResponseDTO = new PayTransfersQueryForWxBankResponseDTO();
         //请求查询接口参数
         PayTransfersQueryForWxBankDTO queryForWxBankDTO = new PayTransfersQueryForWxBankDTO();
         queryForWxBankDTO.setMchId(payConfig.getMchID());
-        queryForWxBankDTO.setPartnerTradeNo(wxBankDTO.getPartnerTradeNo());
+        queryForWxBankDTO.setPartnerTradeNo(partnerTradeNo);
         queryForWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理签名
-        queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), payConfig.getKey()));
+        queryForWxBankDTO.setSign(WXPayUtil.generateSignature(XmlUtil.bean2MapUnderline2Hump(queryForWxBankDTO), payConfig.getKey()));
         //返参
-        String resultXml = wxPayApi.queryTransferToBank(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO));
+        String resultXml = wxPayApi.queryTransferToBank(XmlUtil.bean2MapUnderline2Hump(queryForWxBankDTO));
         if(StringUtils.isNotBlank(resultXml)){
-            queryForWxBankResponseDTO = BeanAndXmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
+            queryForWxBankResponseDTO = XmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }
+/*      //舍弃递归, 转账至银行卡过程缓慢, 再次查询没有意义
         if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxBankResponseDTO.getStatus()) &&
                 PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())){
             logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
             Thread.sleep(1 * 1000);
-            queryForWxBankResponseDTO = getExactResultForWxBank(wxBankDTO, --queryTimes);
-        }
+            queryForWxBankResponseDTO = getExactResultForWxBank(partnerTradeNo, --queryTimes);
+        }*/
         return queryForWxBankResponseDTO;
     }
 

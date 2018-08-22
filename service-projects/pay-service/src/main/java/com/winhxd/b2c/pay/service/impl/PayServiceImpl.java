@@ -1,14 +1,13 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.enums.*;
+import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersQueryForWxBankResponseDTO;
+import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -63,8 +61,6 @@ import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 
-import io.swagger.annotations.ApiModelProperty;
-
 @Service
 public class PayServiceImpl implements PayService{
 	
@@ -96,8 +92,10 @@ public class PayServiceImpl implements PayService{
 	private PayStoreCashService payStoreCashService;
 	@Autowired
 	private PayFinanceAccountDetailService payFinanceAccountDetailService;
-	
-	
+
+	@Autowired
+	private WXTransfersService wxTransfersService;
+
 	@Autowired
     private Cache cache;
     private static final int BACKROLL_LOCK_EXPIRES_TIME = 3000;
@@ -885,4 +883,44 @@ public class PayServiceImpl implements PayService{
 		}
 		return isPay;
 	}
+
+	@Override
+	public Integer confirmTransferToBankStatus()  throws Exception {
+		//待遍历集合
+		Set<PayWithdrawals> unclearStatus = getTransferToBankUnclearStatusWithdrawals();
+		if(CollectionUtils.isEmpty(unclearStatus)){
+			return 0;
+		}
+		//待更新集合
+		Set<PayWithdrawals> readyToUpdate = new HashSet<PayWithdrawals>();
+		for (PayWithdrawals payWithdrawals : unclearStatus){
+			PayTransfersQueryForWxBankResponseDTO resultForWxBank = wxTransfersService.getExactResultForWxBank(payWithdrawals.getWithdrawalsNo());
+			String transfersStatus = resultForWxBank.getStatus();
+			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
+				//payWithdrawals.setErrorDesc(null);
+				readyToUpdate.add(payWithdrawals);
+			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
+				//payWithdrawals.setErrorDesc(queryForWxBankResponseDTO.getReason());
+				readyToUpdate.add(payWithdrawals);
+			}
+		}
+		return updateBatch(readyToUpdate);
+	}
+
+	/**
+	 * 获得所有转至银行卡状态处理中的提现记录(按道理只需要两个字段)
+	 * @return
+	 */
+	private Set<PayWithdrawals> getTransferToBankUnclearStatusWithdrawals(){
+		return null;
+	}
+
+	/**
+	 * 更新提现记录属性
+	 * @return
+	 */
+	private int updateBatch(Set<PayWithdrawals> payWithdrawalsSet){
+		return 0;
+	}
+
 }

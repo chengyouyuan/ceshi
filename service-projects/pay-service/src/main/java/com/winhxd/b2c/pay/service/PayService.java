@@ -99,5 +99,13 @@ public interface PayService {
      * @return
      */
     Boolean orderIsPay(OrderIsPayCondition condition);
-	
+
+	/**
+	 * 轮询确认转账到银行卡记录状态
+	 * @Author yindanqing
+	 * @Date 2018-8-22 12:50:29
+	 * @return 更新状态计数
+	 */
+	Integer confirmTransferToBankStatus() throws Exception;
+
 }

@@ -78,10 +78,8 @@ public class ApiPayStoreBindBankCardController {
         String logTitle = "/api-pay/pay/6105/v1/bindStoreBankCard-B端绑定银行卡";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
-    	StoreBankCard storeBankCard = new StoreBankCard();
-    	BeanUtils.copyProperties(condition, storeBankCard);
-    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+storeBankCard);
-    	Integer res = storeBankCardService.saveStoreBankCard(storeBankCard);
+    	LOGGER.info("B端绑定银行卡参数storeBankCard----"+condition);
+    	Integer res = storeBankCardService.saveStoreBankCard(condition);
     	result.setCode(res);
     	LOGGER.info("绑定银行卡返回值：-------"+res);
     	if(res > 0){
@@ -98,7 +96,9 @@ public class ApiPayStoreBindBankCardController {
     		@ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
     		@ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
     		@ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
-    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号") 
+    		@ApiResponse(code = BusinessCode.CODE_610031, message = "请输入微信账号"),
+    		@ApiResponse(code = BusinessCode.CODE_610021, message = "查询结果有误，请联系管理员"),
+    		@ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定微信失败")
     })
     @RequestMapping(value = "/6110/v1/bindWeixiAccount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> bindWeixiAccount(@RequestBody PayStoreWalletCondition condition) {

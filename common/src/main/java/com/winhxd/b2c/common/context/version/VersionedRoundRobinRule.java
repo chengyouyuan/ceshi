@@ -24,11 +24,6 @@ public class VersionedRoundRobinRule extends AbstractLoadBalancerRule {
         nextServerCyclicCounter = new AtomicInteger(0);
     }
 
-//    public RoundRobinRule(ILoadBalancer lb) {
-//        this();
-//        setLoadBalancer(lb);
-//    }
-
     public Server choose(ILoadBalancer lb, Object key) {
         if (lb == null) {
             log.warn("no load balancer");

@@ -296,11 +296,8 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
             //状态是待退款和已付款的订单才能把状态置为已退款
-            if (order.getOrderStatus() != OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getPayStatus() != PayStatusEnum.PAID.getStatusCode()
-                    || order.getOrderStatus() != OrderStatusEnum.REFUNDING.getStatusCode()) {
-                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
-                callbackResult = false;
-            } else {
+            if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode()
+                    && (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode())) {
                 int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
                 if (result != 1) {
                     logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
@@ -318,6 +315,9 @@ public class CommonOrderServiceImpl implements OrderService {
                     //订单退款成功事务提交后相关事件
                     registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                 }
+            } else {
+                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
+                callbackResult = false;
             }
         } finally {
             lock.unlock();

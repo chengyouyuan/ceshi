@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.order.condition.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,11 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -203,6 +199,13 @@ public class OrderServiceTest {
         condition.setOrderTotal(new BigDecimal("33"));
         condition.setStoreId(3L);
         orderService.orderPriceChange4Store(condition);
+    }
+
+    @Test
+    public void testUpdateOrderRefundCallback(){
+        OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
+        condition.setOrderNo("C18082219860675647");
+        orderService.updateOrderRefundCallback(condition);
     }
     
 }

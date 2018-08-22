@@ -53,18 +53,6 @@ public class WXRefundServiceImpl implements WXRefundService {
      * 分与元单位转换
      */
     private static final BigDecimal UNITS = new BigDecimal("100");
-    /**
-     * 10分钟毫秒数=10*60*1000
-     */
-    private static final int TEN_MILLS = 600000;
-
-    /**
-     * 0退款中 1退款成功 2退款关闭 3退款异常
-     */
-    private static final String REFUND_STATUS_0 = "0";
-    private static final String REFUND_STATUS_1 = "1";
-    private static final String REFUND_STATUS_2 = "2";
-    private static final String REFUND_STATUS_3 = "3";
 
     @Transactional
     @Override
@@ -147,35 +135,6 @@ public class WXRefundServiceImpl implements WXRefundService {
         return payRefund;
     }
 
-    /**
-     * 调用微信退款API接口
-     * @param condition
-     * @return
-     * @throws Exception
-     */
-    private PayRefundResponseDTO callRefund(PayRefundCondition condition) throws Exception{
-        //支付流水号
-        String outTradeNo = condition.getOutTradeNo();
-        //订单金额
-        Integer totalFee = condition.getTotalAmount().multiply(UNITS).intValue();
-        //退款金额
-        Integer refundFee = condition.getRefundAmount().multiply(UNITS).intValue();
-        //退款原因
-        String refundDesc = condition.getRefundDesc();
-        //微信入参
-        PayRefundDTO payRefundDTO = new PayRefundDTO();
-        //对微信入参进行赋值
-        payRefundDTO.setOutTradeNo(outTradeNo);
-        payRefundDTO.setOutRefundNo(outTradeNo);
-        payRefundDTO.setTotalFee(totalFee);
-        payRefundDTO.setRefundFee(refundFee);
-        payRefundDTO.setRefundDesc(refundDesc);
-
-        //调用
-        PayRefundResponseDTO responseDTO = wxPayApi.refundOder(payRefundDTO);
-        return responseDTO;
-    }
-
     private PayRefundVO getResultVO(PayRefundResponseDTO responseDTO){
         PayRefundVO payRefundVO = new PayRefundVO();
         //返回失败
@@ -211,11 +170,11 @@ public class WXRefundServiceImpl implements WXRefundService {
      */
     private void savePayRefund(PayRefundCondition condition,PayRefundDTO payRefundDTO, PayRefundResponseDTO dto){
         PayRefund model = new PayRefund();
-        model.setAppid(dto.getAppid());
-        model.setMchId(dto.getMchId());
-        model.setNonceStr(dto.getNonceStr());
-        model.setSign(dto.getSign());
-        model.setSignType(WXPayConstants.MD5);
+        model.setAppid(payRefundDTO.getAppid());
+        model.setMchId(payRefundDTO.getMchId());
+        model.setNonceStr(payRefundDTO.getNonceStr());
+        model.setSign(payRefundDTO.getSign());
+        model.setSignType(payRefundDTO.getSignType());
         model.setTransactionId(dto.getTransactionId());
         model.setOutTradeNo(condition.getOutTradeNo());
         model.setOutRefundNo(dto.getOutRefundNo());
@@ -226,70 +185,47 @@ public class WXRefundServiceImpl implements WXRefundService {
         model.setRefundFeeType(CurrencyEnum.CNY.getCode());
         model.setRefundDesc(condition.getRefundDesc());
         //model.setRefundAccount();
-        //model.setNotifyUrl();
+        model.setNotifyUrl(payRefundDTO.getNotifyUrl());
         model.setOrderNo(condition.getOrderNo());
         model.setPayType((short)1);
         model.setCreated(new Date());
         model.setCreatedBy(condition.getCreatedBy());
         model.setCreatedByName(condition.getCreatedByName());
-        if (PayRefundResponseDTO.SUCCESS.equals(dto.getReturnCode()) && PayRefundResponseDTO.SUCCESS.equals(dto.getResultCode())) {
-            model.setCallbackRefundId(dto.getRefundId());
-            model.setCallbackRefundFee(dto.getRefundFee());
-            model.setCallbackRefundAmount(new BigDecimal(dto.getRefundFee()).divide(UNITS));
-            model.setCallbackSettlementRefundFee(dto.getSettlementRefundFee());
-            if (dto.getSettlementRefundFee() != null){
-                model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
-            }
-            model.setCallbackTotalFee(dto.getTotalFee());
-            model.setCallbackSettlementTotalFee(dto.getSettlementTotalFee());
-            model.setCallbackFeeType(dto.getFeeType());
-            model.setCallbackCashFee(dto.getCashFee());
-            model.setCallbackCashFeeType(dto.getCashFeeType());
-            model.setCallbackCashRefundFee(dto.getCashRefundFee());
-            model.setCallbackRefundStatus((short)0);
-        }else {
-            model.setCallbackRefundStatus((short)3);
-            if (PayRefundResponseDTO.FAIL.equals(dto.getReturnCode())){
-                model.setErrorMessage(dto.getReturnMsg());
-            }else if (PayRefundResponseDTO.FAIL.equals(dto.getResultCode())){
-                model.setErrorMessage(dto.getErrCode());
-                model.setErrorCode(dto.getErrCodeDes());
-            }
-        }
+        model = this.fillReturnParam(dto,model);
         payRefundMapper.insert(model);
     }
 
     /**
-     * 组装持久对象，用于更新
-     * @param dto
-     * @param model
+     * 组装退款返回或主动查询返回的参数
+     * @param responseDTO
+     * @param refund
      */
-    private void modifyPayRefund(PayRefundResponseDTO dto, PayRefund model){
-        if (PayRefundResponseDTO.SUCCESS.equals(dto.getReturnCode()) && PayRefundResponseDTO.SUCCESS.equals(dto.getResultCode())) {
-            model.setCallbackRefundId(dto.getRefundId());
-            model.setCallbackRefundFee(dto.getRefundFee());
-            model.setCallbackRefundAmount(new BigDecimal(dto.getRefundFee()).divide(UNITS));
-            model.setCallbackSettlementRefundFee(dto.getSettlementRefundFee());
-            if (dto.getSettlementRefundFee() != null){
-                model.setCallbackSettlementRefundAmount(new BigDecimal(dto.getSettlementRefundFee()).divide(UNITS));
+    private PayRefund fillReturnParam(PayRefundResponseDTO responseDTO, PayRefund refund){
+        if (PayRefundResponseDTO.SUCCESS.equals(responseDTO.getReturnCode()) && PayRefundResponseDTO.SUCCESS.equals(responseDTO.getResultCode())) {
+            refund.setCallbackRefundId(responseDTO.getRefundId());
+            refund.setCallbackRefundFee(responseDTO.getRefundFee());
+            refund.setCallbackRefundAmount(new BigDecimal(responseDTO.getRefundFee()).divide(UNITS));
+            refund.setCallbackSettlementRefundFee(responseDTO.getSettlementRefundFee());
+            if (responseDTO.getSettlementRefundFee() != null){
+                refund.setCallbackSettlementRefundAmount(new BigDecimal(responseDTO.getSettlementRefundFee()).divide(UNITS));
             }
-            model.setCallbackTotalFee(dto.getTotalFee());
-            model.setCallbackSettlementTotalFee(dto.getSettlementTotalFee());
-            model.setCallbackFeeType(dto.getFeeType());
-            model.setCallbackCashFee(dto.getCashFee());
-            model.setCallbackCashFeeType(dto.getCashFeeType());
-            model.setCallbackCashRefundFee(dto.getCashRefundFee());
-            model.setCallbackRefundStatus((short)0);
+            refund.setCallbackTotalFee(responseDTO.getTotalFee());
+            refund.setCallbackSettlementTotalFee(responseDTO.getSettlementTotalFee());
+            refund.setCallbackFeeType(responseDTO.getFeeType());
+            refund.setCallbackCashFee(responseDTO.getCashFee());
+            refund.setCallbackCashFeeType(responseDTO.getCashFeeType());
+            refund.setCallbackCashRefundFee(responseDTO.getCashRefundFee());
+            refund.setCallbackRefundStatus((short)0);
         }else {
-            model.setCallbackRefundStatus((short)3);
-            if (PayRefundResponseDTO.FAIL.equals(dto.getReturnCode())){
-                model.setErrorMessage(dto.getReturnMsg());
-            }else if (PayRefundResponseDTO.FAIL.equals(dto.getResultCode())){
-                model.setErrorMessage(dto.getErrCode());
-                model.setErrorCode(dto.getErrCodeDes());
+            refund.setCallbackRefundStatus((short)3);
+            if (PayRefundResponseDTO.FAIL.equals(responseDTO.getReturnCode())){
+                refund.setErrorMessage(responseDTO.getReturnMsg());
+            }else if (PayRefundResponseDTO.FAIL.equals(responseDTO.getResultCode())){
+                refund.setErrorMessage(responseDTO.getErrCode());
+                refund.setErrorCode(responseDTO.getErrCodeDes());
             }
         }
-        payRefundMapper.updateByPrimaryKeySelective(model);
+        return refund;
     }
 
     /**
@@ -416,9 +352,28 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @throws Exception
      */
     private PayRefundVO refundRetry(PayRefundCondition condition, PayRefund payRefund) throws Exception{
-        PayRefundResponseDTO responseDTO = this.callRefund(condition);
+        //支付流水号
+        String outTradeNo = condition.getOutTradeNo();
+        //订单金额
+        Integer totalFee = condition.getTotalAmount().multiply(UNITS).intValue();
+        //退款金额
+        Integer refundFee = condition.getRefundAmount().multiply(UNITS).intValue();
+        //退款原因
+        String refundDesc = condition.getRefundDesc();
+        //微信入参
+        PayRefundDTO payRefundDTO = new PayRefundDTO();
+        //对微信入参进行赋值
+        payRefundDTO.setOutTradeNo(outTradeNo);
+        payRefundDTO.setOutRefundNo(outTradeNo);
+        payRefundDTO.setTotalFee(totalFee);
+        payRefundDTO.setRefundFee(refundFee);
+        payRefundDTO.setRefundDesc(refundDesc);
+        //调用
+        PayRefundResponseDTO responseDTO = wxPayApi.refundOder(payRefundDTO);
         //modifyPayRefund
-        this.modifyPayRefund(responseDTO, payRefund);
+        PayRefund refund = this.fillReturnParam(responseDTO, payRefund);
+        payRefundMapper.updateByPrimaryKeySelective(refund);
+
         PayRefundVO payRefundVO = this.getResultVO(responseDTO);
         return payRefundVO;
     }

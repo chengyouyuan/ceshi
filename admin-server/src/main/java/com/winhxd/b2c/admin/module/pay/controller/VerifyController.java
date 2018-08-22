@@ -5,6 +5,7 @@ import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDecimal;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
@@ -71,6 +72,9 @@ public class VerifyController {
     public ResponseResult<?> verifyBySummary(@RequestBody List<VerifySummaryCondition.StoreAndDateVO> list) {
         VerifySummaryCondition condition = new VerifySummaryCondition();
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
+            if (vo.getVerifyStatus().compareTo(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()) != 0) {
+                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+            }
             condition.getList().add(vo);
         }
         if (condition.getList().size() == 0) {
@@ -110,6 +114,14 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+            }
+            Object thirdPartyVerifyStatus = map.get("thirdPartyVerifyStatus");
+            if (String.valueOf(AccountingDetail.ThirdPartyVerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(thirdPartyVerifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+            }
         }
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
@@ -129,6 +141,10 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.VERIFIED).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可暂缓的记录，请检查后重试");
+            }
         }
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
@@ -147,6 +163,10 @@ public class VerifyController {
             Object id = map.get("id");
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
+            }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.VERIFIED).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可恢复的记录，请检查后重试");
             }
         }
         if (condition.getIds().size() == 0) {
@@ -210,6 +230,10 @@ public class VerifyController {
                     && storeId != null && NumberUtils.isCreatable(ObjectUtils.toString(storeId))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
                 condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
+            }
+            Object callbackStatus = map.get("callbackStatus");
+            if (String.valueOf(3).equals(String.valueOf(callbackStatus)) || String.valueOf(1).equals(String.valueOf(callbackStatus))) {
+                throw new BusinessException(-1, "记录中包含不可提现的记录，请检查后重试");
             }
         }
         if (condition.getIds().size() == 0) {

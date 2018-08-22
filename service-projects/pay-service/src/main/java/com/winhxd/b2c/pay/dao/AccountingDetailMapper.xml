@@ -49,14 +49,14 @@
   <resultMap id="OrderVerifyMoneyVOMap" type="com.winhxd.b2c.common.domain.pay.vo.OrderVerifyMoneyVO">
     <id column="order_no" property="orderNo"></id>
     <result column="store_id" property="storeId"></result>
-    <result column="detail_type" property="paymentMoney"></result>
-    <result column="detail_money" property="discountMoney"></result>
+    <result column="payment_money" property="paymentMoney"></result>
+    <result column="discount_money" property="discountMoney"></result>
   </resultMap>
 
   <select id="selectOrderVerifyMoneyListByVerifyCode" resultMap="OrderVerifyMoneyVOMap">
-    select d.order_no as orderNo, d.store_id as storeId,
-    sum(case when d.detail_type = 1 or d.detail_type = 2 then d.detail_money else 0 end) as paymentMoney,
-    sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discountMoney
+    select d.order_no, d.store_id,
+    sum(case when d.detail_type = 1 or d.detail_type = 2 then d.detail_money else 0 end) as payment_money,
+    sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discount_money
     from pay_accounting_detail d
     where d.verify_code = #{verifyCode}
     group by d.order_no, d.store_id

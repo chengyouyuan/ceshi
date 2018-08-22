@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.pay.vo;
 
+import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,6 +20,9 @@ public class VerifySummaryVO {
 
     @ApiModelProperty("结算状态")
     private Integer verifyStatus;
+
+    @ApiModelProperty("结算状态")
+    private String verifyStatusName;
 
     @ApiModelProperty("订单截止日")
     private Date lastRecordedTime;
@@ -40,4 +44,8 @@ public class VerifySummaryVO {
 
     @ApiModelProperty("实结款")
     private BigDecimal realVerify;
+
+    public String getVerifyStatusName() {
+        return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    }
 }

@@ -405,6 +405,10 @@ public final class BusinessCode {
     public static final int CODE_610034 = 610034;
     @ApiModelProperty("提取限额不能大于实际账户余额")
     public static final int CODE_610035 = 610035;
+    @ApiModelProperty("请输入微信昵称")
+    public static final int CODE_610036 = 610036;
+    @ApiModelProperty("请输入门店名称")
+    public static final int CODE_610037 = 610037;
     
     
     @ApiModelProperty("订单支付  参数为空")

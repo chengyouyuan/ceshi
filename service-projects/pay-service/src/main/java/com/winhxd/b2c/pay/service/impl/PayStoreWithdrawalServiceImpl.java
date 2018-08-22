@@ -77,9 +77,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
-//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		////////////////////////测试数据////////////////////////////////////
-		Long businessId = 1l;
+//		Long businessId = 1l;
 		//////////////////////结束////////////////////////////////////////
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
@@ -125,9 +125,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	@Override
 	public ResponseResult<Integer> saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
-//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		///////////////测试数据//////////////////////////
-		Long businessId = 1l;
+//		Long businessId = 1l;
 		//////////////////结束/////////////////////////
 		// 验证入参是否传入正确
 		int res = valiApplyWithDrawCondition(condition);
@@ -207,6 +207,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;
+		short  withdralType = condition.getWithdrawType();
+		if(withdralType == 0){
+			res = BusinessCode.CODE_610022;
+		}
+		
 		BigDecimal totalFee = condition.getTotalFee();
 		if(BigDecimal.ZERO.equals(totalFee) || totalFee == null){
 			res = BusinessCode.CODE_610032;
@@ -226,6 +231,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(StringUtils.isEmpty(openId)){
 				res = BusinessCode.CODE_610031;
 			}
+			String nick = condition.getNick(); 
+			if(StringUtils.isEmpty(nick)){
+				res = BusinessCode.CODE_610036;
+			}
 		}
 		String paymentAccount = condition.getPaymentAccount();
 		if(StringUtils.isEmpty(paymentAccount)){
@@ -236,7 +245,16 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(StringUtils.isEmpty(swiftCode)){
 				res = BusinessCode.CODE_610029;
 			}
+			String storeName = condition.getStroeName();
+			if(StringUtils.isEmpty(storeName)){
+				res = BusinessCode.CODE_610037;
+			}
 		}
+		String mobile = condition.getMobile();
+		if(StringUtils.isEmpty(mobile)){
+			res = BusinessCode.CODE_610015;
+		}
+	 
 		return res;
 	}
 
@@ -380,10 +398,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		LOGGER.info(log+"参数为--"+condition.toString());
 		//获取门店资金信息
-//	    StoreUser storeUser = UserContext.getCurrentStoreUser();
-//        Long storeId = storeUser.getBusinessId();
+	    StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
 		// 写死门店id
-		Long storeId = 1l;
+//		Long storeId = 1l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
         	//判断提现金额是否大于可提现金额

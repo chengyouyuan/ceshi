@@ -57,29 +57,6 @@ public class ApiPayStoreBindBankCardController {
 	private Cache redisClusterCache;
 	
 	private static final int MOBILEVERIFICATIONCODE = 2*60;// 验证码有效时间
-
-	@ApiOperation(value = "B端获取银行卡信息", notes = "B端获取银行卡信息")
-    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常") 
-    })
-//    @RequestMapping(value = "/6104/v1/storeBindBankCard", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<StoreBankCardVO> queryStoreBindBankCard(@RequestBody StoreBankCardCondition condition) {
-        String logTitle = "/api-pay/pay/6104/v1/storeBindBankCard-B端获取银行卡信息";
-        LOGGER.info("{}=--开始--{}", logTitle,condition);
-        ResponseResult<StoreBankCardVO> result = new ResponseResult<>();
-        StoreBankCardVO storeBankCardInfo = new StoreBankCardVO();
-        storeBankCardInfo = storeBankCardService.findStoreBankCardInfo(condition);
-    	if(storeBankCardInfo == null){
-    		LOGGER.info("当前用户没有银行卡信息");
-    		result.setCode(BusinessCode.CODE_610001);
-    	}else{
-    		result.setData(storeBankCardInfo);
-    		result.setCode(BusinessCode.CODE_OK);
-    	}
-    	LOGGER.info("B端获取银行卡信息返回数据---："+storeBankCardInfo);
-        LOGGER.info("{}=--结束 result={}", logTitle, result);
-        return result;
-    }
 	
 	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -130,9 +107,9 @@ public class ApiPayStoreBindBankCardController {
         ResponseResult<Integer> result = new ResponseResult<>();
     	BeanUtils.copyProperties(condition, condition);
     	// 获取当前门店id
-//    	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+    	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
     	//////////////////测试门店id//////////////////
-    	Long businessId = 1l;
+//    	Long businessId = 1l;
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
@@ -163,11 +140,11 @@ public class ApiPayStoreBindBankCardController {
 		ResponseResult<String> result = new ResponseResult<String>();
 		
 		/////////////////////////////// 测试数据
-		StoreUser currentStoreUser = new StoreUser();
-		currentStoreUser.setBusinessId(1l);
-		Long businessId = currentStoreUser.getBusinessId();
+//		StoreUser currentStoreUser = new StoreUser();
+//		currentStoreUser.setBusinessId(1l);
+//		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
-//		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确
 		int res = vaildatVerifiCode(condition);
 		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);

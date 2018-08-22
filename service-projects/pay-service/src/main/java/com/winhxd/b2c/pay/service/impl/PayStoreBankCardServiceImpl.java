@@ -95,10 +95,10 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		res = BusinessCode.CODE_610029;
     		throw new BusinessException(BusinessCode.CODE_610029);
     	}
-//    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
+    	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
-    	StoreUser currentStoreUser = new StoreUser();
-    	currentStoreUser.setBusinessId(1l);
+//    	StoreUser currentStoreUser = new StoreUser();
+//    	currentStoreUser.setBusinessId(1l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){

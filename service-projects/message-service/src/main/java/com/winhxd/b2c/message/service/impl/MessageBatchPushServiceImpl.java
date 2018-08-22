@@ -70,9 +70,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
             LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");
             throw new BusinessException(BusinessCode.CODE_703504);
         }
-        int id = messageBatchPushMapper.insertSelective(messageBatchPush);
-        messageBatchPush.setId(Long.parseLong(String.valueOf(id)));
-        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给所有门店推送云信消息，开始...消息配置id={}",id);
+        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给所有门店推送云信消息，开始...消息配置{}");
         //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
         if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
@@ -92,6 +90,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         if(timingPush == null){
             //立即发送
             messageSendUtils.sendNeteaseMsgBatch(neteaseMsgDelayCondition);
+            messageBatchPush.setLastPushTime(new Date());
         }else{
             //延迟发送
             int delayMilli = 0;
@@ -100,8 +99,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
             }
             messageSendUtils.sendNeteaseMsgDelay(neteaseMsgDelayCondition,delayMilli);
         }
-        messageBatchPush.setLastPushTime(new Date());
-        messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
+        int id = messageBatchPushMapper.insert(messageBatchPush);
         LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给门店推送云信消息，结束...消息配置id={}",id);
         return id;
     }

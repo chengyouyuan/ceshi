@@ -513,7 +513,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 if (agree == 1) {
                     logger.info("门店同意退款-操作订单开始-订单号={}", orderNo);
                     OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
-                    if (null == order || !order.getStoreId().equals(store.getStoreCustomerId())) {
+                    if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
                         throw new BusinessException(BusinessCode.WRONG_ORDERNO, "门店处理用户退款订单查询失败");
                     }
                     orderApplyRefund(order, null, storeVO.getId(), storeVO.getShopkeeper());
@@ -616,10 +616,13 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderApplyRefund(OrderInfo order, String cancelReason, Long operatorId, String operatorName) {
         if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
-            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, "未支付的订单不允许退款");
+            throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
-        if (order.getOrderStatus().equals(OrderStatusEnum.FINISHED.getStatusCode())) {
-            throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, "已完成的订单不允许退款");
+        Short orderStatus = order.getOrderStatus();
+        if (orderStatus.equals(OrderStatusEnum.FINISHED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.WAIT_REFUND.getStatusCode())
+                || orderStatus.equals(OrderStatusEnum.CANCELED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDED.getStatusCode())
+                || orderStatus.equals(OrderStatusEnum.REFUNDING.getStatusCode())) {
+            throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, MessageFormat.format("订单状态不允许退款orderNo={0}", order.getOrderNo()));
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
         String orderNo = order.getOrderNo();

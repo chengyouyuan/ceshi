@@ -120,8 +120,10 @@ public class VerifyService {
                     AccountingDetail thirdPartyfee = new AccountingDetail();
                     thirdPartyfee.setOrderNo(orderNo);
                     thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
-                    BigDecimal fee = WXCalculation.FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney().multiply(BigDecimal.valueOf(-1)));
-                    thirdPartyfee.setDetailMoney(fee);
+                    BigDecimal fee = WXCalculation.FEE_RATE_OF_WX
+                            .multiply(orderInfoDetailVO.getRealPaymentMoney())
+                            .setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
+                    thirdPartyfee.setDetailMoney(fee.multiply(BigDecimal.valueOf(-1)));
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
                     accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                     count++;

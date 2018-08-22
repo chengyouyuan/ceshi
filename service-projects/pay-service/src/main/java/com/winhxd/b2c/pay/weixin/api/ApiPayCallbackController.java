@@ -64,7 +64,7 @@ public class ApiPayCallbackController {
 	@Value("${WX.KEY}")
 	private String apiKey;
 
-	private SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
+//	private SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
 
 
 	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
@@ -107,7 +107,7 @@ public class ApiPayCallbackController {
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	@PostMapping(value = "${WX.REFUND_NOTIFY_URL}")
-	private void refundCallback(HttpServletRequest request,HttpServletResponse response) throws Exception{
+	private void refundCallback(HttpServletRequest request,HttpServletResponse response){
 		//微信回调解析
 		String resqXml = this.wxCallbackParser(request);
 		if(resqXml == null) {
@@ -121,6 +121,7 @@ public class ApiPayCallbackController {
 			if(PayPreOrderCallbackDTO.SUCCESS.equals(refundCallbackDTO.getReturnCode())) {
 				String reqInfo = refundCallbackDTO.getReqInfo();
 				//对加密串进行解密
+				SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
 				logger.info("注入的apiKey为："+apiKey);
 				logger.info("apiKey进行MD5之后为"+ key);
 				String decodeString = DecipherUtil.decodeReqInfo(reqInfo, key);

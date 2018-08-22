@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.context;
 import brave.Span;
 import brave.Tracer;
 import com.winhxd.b2c.common.context.support.ContextHelper;
+import com.winhxd.b2c.common.context.version.VersionContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -45,6 +46,13 @@ public class UserContext {
     public static void initContext(Tracer tracer) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
+
+        String msVer = request.getHeader(VersionContext.HEADER_NAME);
+        if (StringUtils.isNotBlank(msVer)) {
+            VersionContext.setVersion(msVer);
+        } else {
+            VersionContext.clean();
+        }
 
         Span span = tracer.currentSpan();
 

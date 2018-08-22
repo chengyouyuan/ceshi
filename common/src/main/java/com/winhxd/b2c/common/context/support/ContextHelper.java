@@ -29,10 +29,10 @@ public class ContextHelper {
     public static final String TRACER_API_TRACE_ID = "API-TRACE-ID";
 
     public static final String PATH_TAG_SECURITY = "/security";
-    public static final String PATH_TAG_COOPERATION = "/cooperation";
+    public static final String PATH_TAG_COOPERATION = "/openapi";
 
     public static final Pattern PATTERN_SERVICE_PATH = Pattern.compile("^/([a-zA-Z]+)/(\\d{3,4})/v\\d+/\\w+.*");
-    public static final Pattern PATTERN_API_PATH = Pattern.compile("^/api-[a-zA-Z]+/([a-zA-Z]+)(/security|/cooperation)?/(\\d{3,4})/v\\d+/\\w+.*");
+    public static final Pattern PATTERN_API_PATH = Pattern.compile("^/api-[a-zA-Z]+/([a-zA-Z]+)(/security|/openapi)?/(\\d{3,4})/v\\d+/\\w+.*");
 
     public static <T> T getHeaderObject(HttpServletRequest request, String headerName, Class<T> clazz) {
         String header = request.getHeader(headerName);

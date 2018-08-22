@@ -1,5 +1,9 @@
 package com.winhxd.b2c.pay.controller;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +14,6 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.pay.service.PayService;
 
@@ -79,5 +82,14 @@ public class PayController implements PayServiceClient {
 		result.setData(data);
 		return result;
 	}
-	
+
+	@Override
+	@ApiOperation(value = "轮询确认转账到银行卡记录状态", notes = "轮询确认转账到银行卡记录状态")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
+	public ResponseResult<Integer> confirmTransferToBankStatus() throws Exception {
+		ResponseResult<Integer> result=new ResponseResult<>();
+		Integer data=payService.confirmTransferToBankStatus();
+		result.setData(data);
+		return result;
+	}
 }

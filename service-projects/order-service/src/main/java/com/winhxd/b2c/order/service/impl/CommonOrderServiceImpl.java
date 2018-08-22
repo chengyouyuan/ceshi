@@ -1,36 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
@@ -48,19 +17,8 @@ import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.enums.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -97,6 +55,28 @@ import com.winhxd.b2c.order.service.OrderChangeLogService.MainPointEnum;
 import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.util.OrderUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wangbin
@@ -244,7 +224,11 @@ public class CommonOrderServiceImpl implements OrderService {
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
             lock.lock();
-            OrderInfo order = getOrderInfo(orderNo);
+            OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+            if (null == order) {
+                logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩3天未确认操作", orderNo);
+                return;
+            }
             if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
                 orderApplyRefund(order, "申请退款超时3天系统自动退款", order.getCreatedBy(), "sys");
                 sendMsgToStore(3, order);
@@ -263,7 +247,11 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
-        OrderInfo order = getOrderInfo(orderNo);
+        OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+        if (null == order) {
+            logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1天未确认操作", orderNo);
+            return;
+        }
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(2, order);
         }
@@ -278,7 +266,11 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
-        OrderInfo order = getOrderInfo(orderNo);
+        OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
+        if (null == order) {
+            logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1小时未确认操作", orderNo);
+            return;
+        }
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(1, order);
         }
@@ -795,7 +787,7 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.unlock();
         }
     }
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_PAY_TIMEOUT_DELAYED_HANDLER)
@@ -1307,8 +1299,7 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            getOrderHandler(orderInfo.getValuationType())
-                    .orderInfoAfterCreateSuccessProcess(orderInfo);
+            getOrderHandler(orderInfo.getValuationType()).orderInfoAfterCreateSuccessProcess(orderInfo);
         }
     }
 
@@ -1482,7 +1473,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
         }
     }
-    
+
     /**
      * 订单门店 超时未确认处理成功
      *
@@ -1490,14 +1481,14 @@ public class CommonOrderServiceImpl implements OrderService {
      * @date 2018年8月13日 下午3:16:17
      */
     private class ReceiveTimeOutProcessSuccessRunnable implements Runnable {
-        
+
         private OrderInfo orderInfo;
-        
+
         public ReceiveTimeOutProcessSuccessRunnable(OrderInfo orderInfo) {
             super();
             this.orderInfo = orderInfo;
         }
-        
+
         @Override
         public void run() {
             //给用户发信息
@@ -1777,42 +1768,46 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param orderInfo
      */
     private void sendMsgToStore(int type, OrderInfo orderInfo) {
-        CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
-        String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
-        NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
-        neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
-        //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款
-        String msgContent = "";
-        NeteaseMsg neteaseMsg = new NeteaseMsg();
-        switch (type) {
-            case 1:
-                msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
-                neteaseMsg.setAudioType(1);
-                break;
-            case 2:
-                msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
-                neteaseMsg.setAudioType(1);
-                break;
-            case 3:
-                //3天
-                msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
-                neteaseMsg.setAudioType(1);
-                break;
-            case 4:
-                //【已退款】手机尾号8513黄小姐退款已到账
-                msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
-                neteaseMsg.setAudioType(0);
-                break;
-            default:
-        }
-        if (StringUtils.isBlank(msgContent)) {
-            return;
-        }
+        try {
+            CustomerUserInfoVO customer = getCustomerUserInfoVO(orderInfo.getCustomerId());
+            String mobileStr = OrderUtil.getLast4Mobile(customer.getCustomerMobile());
+            NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
+            neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
+            //【申请退款】手机尾号8513顾客申请退款，系统1天后将自动退款
+            String msgContent = "";
+            NeteaseMsg neteaseMsg = new NeteaseMsg();
+            switch (type) {
+                case 1:
+                    msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
+                    neteaseMsg.setAudioType(1);
+                    break;
+                case 2:
+                    msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
+                    neteaseMsg.setAudioType(1);
+                    break;
+                case 3:
+                    //3天
+                    msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
+                    neteaseMsg.setAudioType(1);
+                    break;
+                case 4:
+                    //【已退款】手机尾号8513黄小姐退款已到账
+                    msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
+                    neteaseMsg.setAudioType(0);
+                    break;
+                default:
+            }
+            if (StringUtils.isBlank(msgContent)) {
+                return;
+            }
 
-        neteaseMsg.setMsgContent(msgContent);
-        neteaseMsg.setAudioType(1);
-        neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
-        messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+            neteaseMsg.setMsgContent(msgContent);
+            neteaseMsg.setAudioType(1);
+            neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
+            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
+        } catch (Exception e) {
+            logger.error(MessageFormat.format("给门店发送消息失败orderNo={0},type={1}", orderInfo.getOrderNo(), type), e);
+        }
     }
 
 }

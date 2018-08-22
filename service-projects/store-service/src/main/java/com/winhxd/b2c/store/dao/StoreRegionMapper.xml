@@ -157,10 +157,10 @@
     <include refid="Base_Column_List" />
     from store_region
     where status = 1
-    and area_code &lt;= #{regionCode,jdbcType=VARCHAR}
-    and level &lt;= #{level,jdbcType=SMALLINT}
-    <bind name="prefixCode" value="prefixCode + '%'" />
-    and area_code like #{prefixCode}
+    and area_code in
+    <foreach collection="regionCodeList" index="index" item="regionCode" open="(" close=")" separator=",">
+       #{regionCode}
+    </foreach>
     limit 1
   </select>
 

@@ -49,21 +49,6 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
     private static final String DATA_SEPARATE = "`";
     
     /**
-     * 对账单去掉尾部标识符
-     */
-    private static final String STATEMENT_REMOVE_TAIL = "总";
-    
-    /**
-     * 资金账单去掉尾部标识符
-     */
-    private static final String FINANCIAL_BILL_REMOVE_TAIL = "资金";
-    
-    /**
-     * 对账单统计数据 去掉头部标识符
-     */
-    private static final String STATEMENT_COUNT_REMOVE_HEAD = "额";
-    
-    /**
      * 微信入参时间格式
      */
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -124,6 +109,16 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getReturnMsg());
 				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getReturnMsg());
 				logger.info("对账单下载失败，返回信息：{}", responseDTO.getReturnCode());
+				if ("No Bill Exist".equals(responseDTO.getReturnMsg())) {
+					logger.info("请检查当前商户号在指定日期内是否有成功的交易。");
+				} else if ("Bill Creating".equals(responseDTO.getReturnMsg())) {
+					logger.info("账单正在生成中，请在上午10点以后再下载。");
+				} else if ("missing parameter".equals(responseDTO.getReturnMsg())
+						|| "SIGN ERROR".equals(responseDTO.getReturnMsg())) {
+					logger.info("参数错误，请重新检查");
+				} else {
+					logger.info("微信侧返回的其他错误码");
+				}
 
 			//通信成功
 			} else {
@@ -136,10 +131,6 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					
 				//成功则开始插入数据
 				}else{
-					
-					
-					
-
 					//获取微信返回的总数据
 					String data = responseDTO.getData().replace(DATA_SEPARATE, "");
 					

@@ -1,26 +1,5 @@
 package com.winhxd.b2c.pay.api;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
-import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
-import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
-import com.winhxd.b2c.common.util.GeneratePwd;
-import com.winhxd.b2c.common.util.MessageSendUtils;
-import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
-import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +12,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
+import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
+import com.winhxd.b2c.common.util.GeneratePwd;
+import com.winhxd.b2c.common.util.MessageSendUtils;
+import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
+import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author zhanghuan

@@ -31,11 +31,9 @@ import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayStoreApplyWithdrawVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
@@ -69,8 +67,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	private static final String ACCOUNT_NAME = "微信钱包";
 	
-	private static final int EXPIRE_TIME = 60*60*24;
-
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
 	public ResponseResult<PayWithdrawalPageVO> showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition) {
@@ -143,6 +139,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		ResponseResult<PayStoreUserInfoVO> storeBindBank = validStoreBindBank(businessId);
 		PayStoreUserInfoVO data = storeBindBank.getData();
+		if(storeBindBank.getCode() > 0){
+			result.setCode(storeBindBank.getCode());
+			return result;
+		}
 		// 当前提现金而不能大于实际账户可提现
 		BigDecimal total = data.getTotalFee();
 		BigDecimal totalFee = condition.getTotalFee();

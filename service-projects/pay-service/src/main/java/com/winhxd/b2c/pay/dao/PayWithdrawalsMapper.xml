@@ -580,7 +580,7 @@
     from pay_withdrawals
     where withdrawals_no = #{withdrawalsNo}
   </select>
-  <select id="selectByWithdrawalsNo" resultMap="BaseResultMap">
+  <select id="selectTransferToBankUnclearStatusWithdrawals" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from pay_withdrawals

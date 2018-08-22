@@ -22,6 +22,7 @@ import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 
 public class OrderUtil {
@@ -172,15 +173,26 @@ public class OrderUtil {
      *
      * @param messageServiceClient
      * @param pickupDateTime
-     * @param pickupType
+     * @param valuationType
      * @param openid
      * @author wangbin
      * @date 2018年8月16日 下午6:32:26
      */
-    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, Date pickupDateTime, short pickupType, String openid, String prodTitles, String orderTotal, String pickupCode) {
+    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, short valuationType, String openid, String prodTitles, String orderTotal, String realPay, String pickupCode) {
         try {
-            pickupDateTime = pickupDateTime == null ? new Date() : pickupDateTime;
-            String customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, DateFormatUtils.format(pickupDateTime, OrderNotifyMsg.DATE_TIME_PARTTEN));
+            String customerMsg;
+            short msgType2C;
+            String keyword4 = null;
+            String emphasisKeyword = null;
+            if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+                customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_OFFLINE_PRICE_ORDER_NOTIFY_MSG_4_CUSTOMER, pickupCode);
+                msgType2C = MiniMsgTypeEnum.PAY_SUCCESS.getMsgType();
+                keyword4 = realPay;
+                emphasisKeyword = "keyword4.DATA";
+            }else {
+                customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, pickupCode);
+                msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
+            }
             String page = null;
             MiniTemplateData data = new MiniTemplateData();
             data.setKeyName("keyword1");
@@ -189,10 +201,11 @@ public class OrderUtil {
             data.setValue(orderTotal);
             data.setKeyName("keyword3");
             data.setValue(customerMsg);
-            data.setKeyName("keyword4");
-            data.setValue(pickupCode);
-            short msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, "keyword4.DATA");
+            if (StringUtils.isNotBlank(keyword4)) {
+                data.setKeyName("keyword4");
+                data.setValue(keyword4);
+            }
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword);
             messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},提货发送消息失败", openid);
@@ -226,5 +239,99 @@ public class OrderUtil {
             logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
             logger.error("订单待提货给门店发送消息失败：", e);
         }
+    }
+
+    /**
+     * 订单需要门店确认用户信息通知
+     * @author wangbin
+     * @date  2018年8月22日 上午10:31:54
+     * @Description 
+     * @param messageServiceClient
+     * @param valuationType
+     * @param openid
+     * @param prodTitles
+     * @param orderTotal
+     * @param couponTitles
+     * @param couponHxdMoney
+     * @param realPay
+     */
+    public static void orderNeedConfirmSendMsg2Customer(MessageSendUtils messageServiceClient, Short valuationType,
+            String openid, String prodTitles, String orderTotal, String couponTitles, String couponHxdMoney, String realPay) {
+        try {
+            String customerMsg;
+            short msgType2C;
+            String keyword4 = null;
+            String emphasisKeyword = null;
+            if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
+                logger.info("线下计价待门店确认无需发送消息给用户");
+                return;
+            }else {
+                customerMsg = OrderNotifyMsg.ONLINE_PRICE_ORDER_PAY_SUCCESS_NOTIFY_MSG_4_CUSTOMER;
+                msgType2C = MiniMsgTypeEnum.PAY_SUCCESS.getMsgType();
+                keyword4 = realPay;
+                emphasisKeyword = "keyword4.DATA";
+            }
+            String page = null;
+            MiniTemplateData data = new MiniTemplateData();
+            data.setKeyName("keyword1");
+            data.setValue(prodTitles);
+            data.setKeyName("keyword2");
+            if (StringUtils.isNotBlank(couponTitles)) {
+                data.setValue(orderTotal + "，优惠券抵扣 " + couponHxdMoney);
+            }
+            data.setKeyName("keyword3");
+            data.setValue(customerMsg);
+            if (StringUtils.isNotBlank(keyword4)) {
+                data.setKeyName("keyword4");
+                data.setValue(keyword4);
+            }
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword);
+            messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
+        } catch (Exception e) {
+            logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);
+            logger.error("提醒用户订单待确认发送消息失败：", e);
+        }
+        
+    }
+
+    /**
+     * 订单待支付发送给门店信息
+     * @author wangbin
+     * @date  2018年8月22日 上午10:49:43
+     * @Description 
+     * @param messageServiceClient
+     * @param valuationType
+     * @param openid
+     * @param prodTitles
+     * @param orderTotal
+     * @param realPay
+     * @param pickupCode
+     */
+    public static void orderNeedPayMsg2Customer(MessageSendUtils messageServiceClient, Short valuationType,
+            String openid, String prodTitles, String orderTotal, String realPay, String pickupCode) {
+        try {
+            String customerMsg;
+            short msgType2C;
+            if (valuationType == ValuationTypeEnum.ONLINE_VALUATION.getTypeCode()) {
+                logger.info("线上计价待支付无需发送消息给用户");
+                return;
+            }
+            customerMsg = OrderNotifyMsg.OFFLINE_PRICE_ORDER_NEED_PAY_NOTIFY_MSG_4_CUSTOMER;
+            msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
+            String page = null;
+            MiniTemplateData data = new MiniTemplateData();
+            data.setKeyName("keyword1");
+            data.setValue(prodTitles);
+            data.setKeyName("keyword2");
+            data.setValue(orderTotal);
+            data.setKeyName("keyword3");
+            data.setValue(customerMsg);
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
+            messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
+        } catch (Exception e) {
+            logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);
+            logger.error("提醒用户订单待确认发送消息失败：", e);
+        }
+        
     }
 }

@@ -185,7 +185,8 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
         String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
         String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
-        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getPickupDateTime(), orderInfo.getPayType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal, orderInfo.getPickupCode());
+        String realPay = "￥" + orderInfo.getRealPaymentMoney().toString();
+        OrderUtil.orderNeedPickupSendMsg2Customer(messageServiceClient, orderInfo.getValuationType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal, realPay, orderInfo.getPickupCode());
     }
     
 
@@ -194,8 +195,6 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        //支付成功清空门店订单销量统计cache
-        cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
         //给门店发送云信
         OrderUtil.newOrderSendMsg2Store(messageServiceClient, orderInfo.getStoreId());    
         // 发送延时MQ信息，处理超时未确认取消操作
@@ -203,7 +202,16 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_RECEIVE_TIME_BY_MILLISECONDS;
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
-        
+        // 发送消息给用户
+        OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
+        String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";
+        String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+        String realPay = "￥" + orderInfo.getRealPaymentMoney().toString();
+        String couponHxdMoney = null;
+        if (orderInfo.getCouponHxdMoney()!=null) {
+            couponHxdMoney = "￥" + orderInfo.getCouponHxdMoney().toString();
+        }
+        OrderUtil.orderNeedConfirmSendMsg2Customer(messageServiceClient, orderInfo.getValuationType(), getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid(), prodTitles, orderTotal, orderInfo.getCouponTitles(), couponHxdMoney, realPay);
         //发送订单支付事件
         eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, orderInfo.getOrderNo(), orderInfo);
     }

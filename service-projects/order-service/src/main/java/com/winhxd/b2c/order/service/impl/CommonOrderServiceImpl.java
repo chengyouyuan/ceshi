@@ -1543,7 +1543,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
                 msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
             } else {
-                customerMsg = OrderNotifyMsg.ORDER_PICKUP_UNPAID_TIMEOUT_MSG_4_CUSTOMER;
+                customerMsg = OrderNotifyMsg.ORDER_PICKUP_ALREADY_PAID_TIMEOUT_MSG_4_CUSTOMER;
                 msgType2C = MiniMsgTypeEnum.ORDER_CANCELED.getMsgType();
             }
             try {

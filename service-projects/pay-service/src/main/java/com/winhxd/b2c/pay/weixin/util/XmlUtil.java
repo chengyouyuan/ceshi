@@ -311,8 +311,7 @@ public class XmlUtil {
         } else if(value instanceof BigDecimal) {
             retVal = ((BigDecimal) value).toString();
         } else if(value instanceof Date) {
-        	DateFormat bf = new SimpleDateFormat(WX_DATE_FORMAT);
-            retVal = bf.format(value);
+            retVal = DateUtil.format((Date) value, WX_DATE_FORMAT);
         } else{
         	retVal = String.valueOf(value);
         }
@@ -346,8 +345,7 @@ public class XmlUtil {
                 || double.class.getName().equals(fieldTypeClass.getName())) {
             retVal = Double.parseDouble(value);
         } else if(Date.class.getName().equals(fieldTypeClass.getName())) {
-            DateFormat bf = new SimpleDateFormat(WX_DATE_FORMAT);
-            retVal = bf.parse(value);
+            retVal = DateUtil.toDate(value, WX_DATE_FORMAT);
         } else if(BigDecimal.class.getName().equals(fieldTypeClass.getName())) {
             retVal = new BigDecimal(value);
         }

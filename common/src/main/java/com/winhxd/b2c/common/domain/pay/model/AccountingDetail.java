@@ -21,7 +21,7 @@ public class AccountingDetail {
      */
     public enum DetailTypeEnum {
 
-        REAL_PAY(1, "实付款"), FEE_OF_WX(2, "交易手续费"), DISCOUNT(3, "促销费");
+        REAL_PAY(1, "订单货款"), FEE_OF_WX(2, "手续费"), DISCOUNT(3, "优惠抵扣");
 
         private int code;
         private String memo;

@@ -99,6 +99,14 @@ public final class BusinessCode {
 
     /**1022接口参数无效*/
     public static final int CODE_102201 = 102201;
+    /**1022接口 店铺名称不能有特殊字符且长度不能超过15*/
+    public static final int CODE_102202 = 102202;
+    /**1022接口 提货地址不能有特殊字符且长度不能超过30*/
+    public static final int CODE_102203 = 102203;
+    /**1022接口 联系人不能有特殊字符且长度不能超过10*/
+    public static final int CODE_102204 = 102204;
+    /**1022接口 联系方式格式不正确*/
+    public static final int CODE_102205 = 102205;
     
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
@@ -166,6 +174,8 @@ public final class BusinessCode {
     public static final int CODE_402012 = 402012;
     /** 购物车:用户下单操作频繁*/
     public static final int CODE_402014 = 402014;
+    /** 购物车:用户加购操作频繁*/
+    public static final int CODE_402016 = 402016;
     /** 购物车:获取支付信息失败*/
     public static final int CODE_402015 = 402015;
 
@@ -411,6 +421,8 @@ public final class BusinessCode {
     public static final int CODE_610036 = 610036;
     @ApiModelProperty("请输入门店名称")
     public static final int CODE_610037 = 610037;
+    @ApiModelProperty("当前门店没有可提现金额")
+    public static final int CODE_610038 = 610038;
     
     
     @ApiModelProperty("订单支付  参数为空")

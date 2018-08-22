@@ -192,20 +192,25 @@ public class OrderUtil {
             }else {
                 customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, pickupCode);
                 msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
+                keyword4 = pickupCode;
+                emphasisKeyword = "keyword4.DATA";
             }
             String page = null;
-            MiniTemplateData data = new MiniTemplateData();
-            data.setKeyName("keyword1");
-            data.setValue(prodTitles);
-            data.setKeyName("keyword2");
-            data.setValue(orderTotal);
-            data.setKeyName("keyword3");
-            data.setValue(customerMsg);
+            MiniTemplateData data1 = new MiniTemplateData();
+            data1.setKeyName("keyword1");
+            data1.setValue(prodTitles);
+            MiniTemplateData data2 = new MiniTemplateData();
+            data2.setKeyName("keyword2");
+            data2.setValue(orderTotal);
+            MiniTemplateData data3 = new MiniTemplateData();
+            data3.setKeyName("keyword3");
+            data3.setValue(customerMsg);
+            MiniTemplateData data4 = new MiniTemplateData();
             if (StringUtils.isNotBlank(keyword4)) {
-                data.setKeyName("keyword4");
-                data.setValue(keyword4);
+                data4.setKeyName("keyword4");
+                data4.setValue(keyword4);
             }
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword);
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword, data1, data2, data3, data4);
             messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},提货发送消息失败", openid);
@@ -272,20 +277,24 @@ public class OrderUtil {
                 emphasisKeyword = "keyword4.DATA";
             }
             String page = null;
-            MiniTemplateData data = new MiniTemplateData();
-            data.setKeyName("keyword1");
-            data.setValue(prodTitles);
-            data.setKeyName("keyword2");
+            MiniTemplateData data1 = new MiniTemplateData();
+            data1.setKeyName("keyword1");
+            data1.setValue(prodTitles);
+            MiniTemplateData data2 = new MiniTemplateData();
+            data2.setKeyName("keyword2");
+            data2.setValue(orderTotal);
             if (StringUtils.isNotBlank(couponTitles)) {
-                data.setValue(orderTotal + "，优惠券抵扣 " + couponHxdMoney);
+                data2.setValue(orderTotal + "，优惠券抵扣 " + couponHxdMoney);
             }
-            data.setKeyName("keyword3");
-            data.setValue(customerMsg);
+            MiniTemplateData data3 = new MiniTemplateData();
+            data3.setKeyName("keyword3");
+            data3.setValue(customerMsg);
+            MiniTemplateData data4 = new MiniTemplateData();
             if (StringUtils.isNotBlank(keyword4)) {
-                data.setKeyName("keyword4");
-                data.setValue(keyword4);
+                data4.setKeyName("keyword4");
+                data4.setValue(keyword4);
             }
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword);
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, emphasisKeyword, data1, data2, data3, data4);
             messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);
@@ -319,14 +328,16 @@ public class OrderUtil {
             customerMsg = OrderNotifyMsg.OFFLINE_PRICE_ORDER_NEED_PAY_NOTIFY_MSG_4_CUSTOMER;
             msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
             String page = null;
-            MiniTemplateData data = new MiniTemplateData();
-            data.setKeyName("keyword1");
-            data.setValue(prodTitles);
-            data.setKeyName("keyword2");
-            data.setValue(orderTotal);
-            data.setKeyName("keyword3");
-            data.setValue(customerMsg);
-            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null);
+            MiniTemplateData data1 = new MiniTemplateData();
+            data1.setKeyName("keyword1");
+            data1.setValue(prodTitles);
+            MiniTemplateData data2 = new MiniTemplateData();
+            data2.setKeyName("keyword2");
+            data2.setValue(orderTotal);
+            MiniTemplateData data3 = new MiniTemplateData();
+            data3.setKeyName("keyword3");
+            data3.setValue(customerMsg);
+            MiniMsgCondition miniMsgCondition = OrderUtil.genMiniMsgCondition(openid, page, msgType2C, null, data1, data2, data3);
             messageServiceClient.sendMiniTemplateMsg(miniMsgCondition);
         } catch (Exception e) {
             logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);

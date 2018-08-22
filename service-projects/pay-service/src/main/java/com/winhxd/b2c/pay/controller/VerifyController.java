@@ -1,6 +1,8 @@
 package com.winhxd.b2c.pay.controller;
 
 import com.github.pagehelper.Page;
+import com.winhxd.b2c.common.context.AdminUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
@@ -72,6 +74,9 @@ public class VerifyController {
         if (condition.getList().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        condition.setOperatedBy(adminUser.getId());
+        condition.setOperatedByName(adminUser.getUsername());
         int count = verifyService.verifyByStoreSummary(
                 condition.getList(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(Integer.valueOf(count));
@@ -95,6 +100,9 @@ public class VerifyController {
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        condition.setOperatedBy(adminUser.getId());
+        condition.setOperatedByName(adminUser.getUsername());
         int count = verifyService.verifyByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(Integer.valueOf(count));
@@ -106,6 +114,9 @@ public class VerifyController {
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        condition.setOperatedBy(adminUser.getId());
+        condition.setOperatedByName(adminUser.getUsername());
         int count = verifyService.pauseByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(Integer.valueOf(count));
@@ -117,6 +128,9 @@ public class VerifyController {
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        condition.setOperatedBy(adminUser.getId());
+        condition.setOperatedByName(adminUser.getUsername());
         int count = verifyService.restoreByAccountingDetail(
                 condition.getIds(), condition.getVerifyRemark(), condition.getOperatedBy(), condition.getOperatedByName());
         return new ResponseResult<>(Integer.valueOf(count));
@@ -140,6 +154,9 @@ public class VerifyController {
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
         }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        condition.setUpdatedBy(adminUser.getId());
+        condition.setUpdatedByName(adminUser.getUsername());
         int count = verifyService.approveWithdrawals(condition);
         return new ResponseResult<>(Integer.valueOf(count));
     }

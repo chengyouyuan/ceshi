@@ -17,6 +17,8 @@ import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ import java.util.List;
  **/
 @Service
 public class PayStoreCashServiceImpl implements PayStoreCashService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PayStoreCashServiceImpl.class);
       @Autowired
       private StoreBankrollMapper storeBankrollMapper;
       @Autowired
@@ -51,6 +54,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         StoreBankrollVO vo = new StoreBankrollVO();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id"+storeId);
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
             vo.setId(storeBankroll.getId());
@@ -61,6 +65,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
             vo.setPresentedMoney(storeBankroll.getPresentedMoney());
         }
         result.setData(vo);
+        LOGGER.info("门店金额提现首页信息"+result);
         return result;
     }
 
@@ -77,6 +82,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id"+storeId);
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -87,6 +93,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         result.setData(pagedList);
+        LOGGER.info("提现明细列表结果"+result);
         return result;
     }
 
@@ -102,6 +109,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
+        LOGGER.info("当前门店id"+storeId);
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -112,6 +120,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         result.setData(pagedList);
+        LOGGER.info("提现明细列表结果"+result);
         return result;
     }
 

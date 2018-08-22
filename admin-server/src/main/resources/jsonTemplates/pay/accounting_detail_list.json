@@ -25,7 +25,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "id" ],
+          "params": [ "id", "verifyStatus", "thirdPartyVerifyStatus" ],
           "path": "/pay/verify/accountingDetailRestore",
           "confirm": {
             "title": "提示",
@@ -38,7 +38,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "id" ],
+          "params": [ "id", "verifyStatus", "thirdPartyVerifyStatus" ],
           "path": "/pay/verify/accountingDetailPause",
           "confirm": {
             "title": "提示",
@@ -51,7 +51,7 @@
         "event": {
           "type": "batch",
           "ajaxType": "post",
-          "params": [ "id", "verifyStatus" ],
+          "params": [ "id", "verifyStatus", "thirdPartyVerifyStatus" ],
           "path": "/pay/verify/verifyByDetail",
           "confirm": {
             "title": "提示",

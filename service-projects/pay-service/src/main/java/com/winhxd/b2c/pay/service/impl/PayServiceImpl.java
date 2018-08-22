@@ -287,7 +287,7 @@ public class PayServiceImpl implements PayService{
 			 changeCondition=new StoreBankrollChangeCondition();
 			 changeCondition.setStoreId(storeId);
 			 changeCondition.setType(condition.getType());
-			 condition.setOrderNo(orderNo);
+			 changeCondition.setOrderNo(orderNo);
 			 //待结算金额增加
 			 changeCondition.setSettlementSettledMoney(condition.getMoney());
 			 flag=true;

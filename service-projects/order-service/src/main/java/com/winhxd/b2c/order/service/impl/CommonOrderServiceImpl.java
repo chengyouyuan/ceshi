@@ -226,6 +226,7 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
             if (null == order) {
+                logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩3天未确认操作", orderNo);
                 return;
             }
             if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
@@ -248,6 +249,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
+            logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1天未确认操作", orderNo);
             return;
         }
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
@@ -266,6 +268,7 @@ public class CommonOrderServiceImpl implements OrderService {
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
+            logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1小时未确认操作", orderNo);
             return;
         }
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {

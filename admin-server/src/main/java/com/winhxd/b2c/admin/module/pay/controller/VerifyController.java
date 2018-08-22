@@ -142,7 +142,7 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
             Object verifyStatus = map.get("verifyStatus");
-            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.VERIFIED).equals(String.valueOf(verifyStatus))) {
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED).equals(String.valueOf(verifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可暂缓的记录，请检查后重试");
             }
         }
@@ -165,7 +165,7 @@ public class VerifyController {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
             Object verifyStatus = map.get("verifyStatus");
-            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.VERIFIED).equals(String.valueOf(verifyStatus))) {
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.PAUSED).equals(String.valueOf(verifyStatus))) {
                 throw new BusinessException(-1, "记录中包含不可恢复的记录，请检查后重试");
             }
         }
@@ -232,7 +232,7 @@ public class VerifyController {
                 condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
             }
             Object callbackStatus = map.get("callbackStatus");
-            if (String.valueOf(3).equals(String.valueOf(callbackStatus)) || String.valueOf(1).equals(String.valueOf(callbackStatus))) {
+            if (String.valueOf(1).equals(String.valueOf(callbackStatus)) || String.valueOf(3).equals(String.valueOf(callbackStatus))) {
                 throw new BusinessException(-1, "记录中包含不可提现的记录，请检查后重试");
             }
         }

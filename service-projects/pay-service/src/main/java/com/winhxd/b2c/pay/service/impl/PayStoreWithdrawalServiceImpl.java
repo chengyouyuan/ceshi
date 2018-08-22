@@ -120,7 +120,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
-				 withdrawalPage.setMobile(data.getStoreMobile());
+//				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setNick(data.getNick());
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());

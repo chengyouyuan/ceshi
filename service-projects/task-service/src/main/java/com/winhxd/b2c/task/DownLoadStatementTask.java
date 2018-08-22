@@ -1,6 +1,5 @@
 package com.winhxd.b2c.task;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -25,18 +24,18 @@ import com.winhxd.b2c.common.feign.pay.DownLoadStatementClient;
 public class DownLoadStatementTask {
     private static final Logger logger = LoggerFactory.getLogger(DownLoadStatementTask.class);
  
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
  
     @Autowired
     DownLoadStatementClient downLoadStatementClient;
     
-    /**
-     * 每隔5秒执行, 单位：ms。
-     */
-    @Scheduled(fixedRate = 5000)
-    public void testFixRate() {
-        System.out.println("我每隔5秒冒泡一次：" + DATE_FORMAT.format(new Date()));
-    }
+//    /**
+//     * 每隔5秒执行, 单位：ms。
+//     */
+//    @Scheduled(fixedRate = 5000)
+//    public void testFixRate() {
+//        System.out.println("我每隔5秒冒泡一次：" + DATE_FORMAT.format(new Date()));
+//    }
     
     /**
     "0/5 * *  * * ?"   每5秒触发
@@ -52,7 +51,7 @@ public class DownLoadStatementTask {
     "0 10,44 14 ? 3 WED"    三月的每周三的14：10和14：44触发
     "0 15 10 ? * MON-FRI"    每个周一、周二、周三、周四、周五的10：15触发
     */
-    @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
+    @Scheduled(cron = "0 0 10 * * ?")    //每天上午10点执行
     public void downLoadStatement() {
         System.out.println("我每天上午10点开始执行");
         try {
@@ -80,7 +79,7 @@ public class DownLoadStatementTask {
         }
     }
     
-    @Scheduled(cron = "0 52 15 * * ?")    //每天上午10点执行
+    @Scheduled(cron = "0 0 11 * * ?")    //每天上午10点执行
     public void reDownLoadStatement() {
     	System.out.println("啥时候下载之前失败过的账单呢");
     	try {

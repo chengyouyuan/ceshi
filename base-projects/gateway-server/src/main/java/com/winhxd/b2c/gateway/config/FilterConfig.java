@@ -1,6 +1,6 @@
 package com.winhxd.b2c.gateway.config;
 
-import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
+import com.winhxd.b2c.common.context.version.VersionedRoundRobinRule;
 import com.winhxd.b2c.gateway.filter.VersionedLoadBalancerClientFilter;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.cloud.gateway.filter.LoadBalancerClientFilter;
@@ -18,7 +18,7 @@ public class FilterConfig {
     }
 
     @Bean
-    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
-        return new VersionedZoneAvoidanceRule();
+    public VersionedRoundRobinRule versionedRoundRobinRule() {
+        return new VersionedRoundRobinRule();
     }
 }

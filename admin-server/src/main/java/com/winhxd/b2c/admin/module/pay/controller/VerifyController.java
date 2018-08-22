@@ -120,7 +120,7 @@ public class VerifyController {
             }
             Object thirdPartyVerifyStatus = map.get("thirdPartyVerifyStatus");
             if (!String.valueOf(AccountingDetail.ThirdPartyVerifyStatusEnum.VERIFIED.getCode()).equals(String.valueOf(thirdPartyVerifyStatus))) {
-                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+                throw new BusinessException(-1, "记录中包含微信未结算的记录，请检查后重试");
             }
         }
         if (condition.getIds().size() == 0) {

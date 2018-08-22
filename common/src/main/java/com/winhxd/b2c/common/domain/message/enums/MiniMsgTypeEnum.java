@@ -12,34 +12,32 @@ public enum MiniMsgTypeEnum {
     /**
      * 门店确认订单
      */
-    STORE_CONFIRM_ORDER((short) 1, "门店确认订单", "-uMG1WQxIOflPKaCGyRjsWWPP5RwxlKeFzeOGQtP-fg"),
+    STORE_CONFIRM_ORDER((short) 1, "门店确认订单"),
 
     /**
      * 订单完成
      */
-    ORDER_FINISH((short) 2, "订单完成", "9mbk7J8MxY9nyRSf7r3MtmjsNugjbil8aiqUaN5ntRA"),
+    ORDER_FINISH((short) 2, "订单完成"),
     /**
      * 订单取消
      */
-    ORDER_CANCELED((short) 3, "订单取消", "ywS5OMp09yV12g2qXCm_fYFYD7p9OndeYnzrgy6fm4I"),
+    ORDER_CANCELED((short) 3, "订单取消"),
 
     /**
      * 支付完成
      */
-    PAY_SUCCESS((short) 4, "支付完成", "aoFbgtDYcSTubZDwJgaFmpdSx9XJnWG_k7OTUY2xvlQ"),
+    PAY_SUCCESS((short) 4, "支付完成"),
     /**
      * 退款成功
      */
-    REFUND_SUCCESS((short) 5, "退款成功", "TdCW9xGUtkhr1kKeAVe2Q5bbs5bcAPeZ6rSaGCq-OOU");
+    REFUND_SUCCESS((short) 5, "退款成功");
 
     private short msgType;
     private String msgDesc;
-    private String templateId;
 
-    MiniMsgTypeEnum(short msgType, String msgDesc, String templateId) {
+    MiniMsgTypeEnum(short msgType, String msgDesc) {
         this.msgType = msgType;
         this.msgDesc = msgDesc;
-        this.templateId = templateId;
     }
 
     public short getMsgType() {
@@ -48,10 +46,6 @@ public enum MiniMsgTypeEnum {
 
     public String getMsgDesc() {
         return msgDesc;
-    }
-
-    public String getTemplateId(){
-        return templateId;
     }
 
     public static MiniMsgTypeEnum getMiniMsgTypeEnumByMsgType(short msgType) {

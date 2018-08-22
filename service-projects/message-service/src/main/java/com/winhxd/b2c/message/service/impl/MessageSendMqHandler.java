@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -61,6 +62,21 @@ public class MessageSendMqHandler {
     @Autowired
     private SmsServerSendUtils smsServer;
 
+    @Value("${wechat.miniProgram.msgTemplate.storeConfirmOrder}")
+    private String storeConfirmOrderTid;
+
+    @Value("${wechat.miniProgram.msgTemplate.orderFinish}")
+    private String orderFinishTid;
+
+    @Value("${wechat.miniProgram.msgTemplate.orderCanceled}")
+    private String orderCanceledTid;
+
+    @Value("${wechat.miniProgram.msgTemplate.paySuccess}")
+    private String paySuccessTid;
+
+    @Value("${wechat.miniProgram.msgTemplate.refundSuccess}")
+    private String refundSuccessTid;
+
     /**
      * 发送小程序消息MQ消费
      * @param miniMsgConditionJson
@@ -72,13 +88,11 @@ public class MessageSendMqHandler {
         if(StringUtils.isEmpty(miniMsgCondition.getToUser())){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，toUser为空,miniMsgConditionJson={}",miniMsgConditionJson);
             return;
-            //throw new BusinessException(BusinessCode.CODE_702201);
         }
         List<MiniTemplateData> params = miniMsgCondition.getData();
         if (CollectionUtils.isEmpty(params)){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，消息内容为空,miniMsgConditionJson={}",miniMsgConditionJson);
             return;
-            //throw new BusinessException(BusinessCode.CODE_702202);
         }
         //根据小程序模板，给C端用户发消息
         //根据消息类型获取模板id，模板内容
@@ -86,16 +100,14 @@ public class MessageSendMqHandler {
         if (msgTypeEnum == null){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，msgTypeEnum不存在，msgType={}",miniMsgCondition.getMsgType());
             return;
-            //throw new BusinessException(BusinessCode.CODE_702203);
         }
         //消息模板id
-        String templateId = msgTypeEnum.getTemplateId();
+        String templateId = getTemplateId(msgTypeEnum.getMsgType());
         //根据toUser获取可用的formid，若无可用formid,返回错误码
         MessageCustomerFormIds formIdByOpenid = customerFormIdsMapper.getProd(miniMsgCondition.getToUser());
         if (formIdByOpenid == null){
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，不存在可用的formid，toUser={}",miniMsgCondition.getToUser());
             return;
-            //throw new BusinessException(BusinessCode.CODE_702204);
         }
         String formId = formIdByOpenid.getFormid();
         //组织参数，发送消息
@@ -105,13 +117,11 @@ public class MessageSendMqHandler {
             if (StringUtils.isEmpty(returnStr)){
                 LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息出错,发送后没有返回returnStr,miniMsgConditionJson={}",miniMsgConditionJson);
                 return;
-                //throw new BusinessException(BusinessCode.CODE_702205);
             }
             Map<String, Object> stringObjectMap = JsonUtil.parseJSONObject(returnStr);
             if(stringObjectMap.get(RETURN_ERR_CODE) == null){
                 LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，发送消息出错,没有返回错误码,miniMsgConditionJson={}",miniMsgConditionJson);
                 return;
-                //throw new BusinessException(BusinessCode.CODE_702206);
             }
             String errCode = String.valueOf(stringObjectMap.get(RETURN_ERR_CODE));
             String errMsg = String.valueOf(stringObjectMap.get(RETURN_ERR_MSG));
@@ -126,13 +136,40 @@ public class MessageSendMqHandler {
             }else{
                 LOGGER.error("MiniProgramImpl -> ,给C端用户推送小程序模板消息，发送消息出错,miniMsgConditionJson={}",miniMsgConditionJson);
                 LOGGER.error("MiniProgramImpl -> ,给C端用户推送小程序模板消息，发送消息出错,错误信息为={}",errMsg);
-                //throw new BusinessException(BusinessCode.CODE_702207);
             }
         } catch (Exception e) {
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，发送消息出错,miniMsgConditionJson={}",miniMsgConditionJson);
             LOGGER.error("MiniProgramImpl -> sendMiniMsg,给C端用户推送小程序模板消息，发送消息出错",e);
-            //throw new BusinessException(BusinessCode.CODE_702207);
         }
+    }
+
+    /**
+     * 根据消息类型获取模板id
+     * @param msgType
+     * @return
+     */
+    private String getTemplateId(short msgType) {
+        String templateId;
+        switch (msgType){
+            case 1:
+                templateId = storeConfirmOrderTid;
+                break;
+            case 2:
+                templateId = orderFinishTid;
+                break;
+            case 3:
+                templateId = orderCanceledTid;
+                break;
+            case 4:
+                templateId = paySuccessTid;
+                break;
+            case 5:
+                templateId = refundSuccessTid;
+                break;
+                default:
+                    templateId = "";
+        }
+        return templateId;
     }
 
     /**

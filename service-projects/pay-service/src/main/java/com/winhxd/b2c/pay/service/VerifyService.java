@@ -120,7 +120,8 @@ public class VerifyService {
                     AccountingDetail thirdPartyfee = new AccountingDetail();
                     thirdPartyfee.setOrderNo(orderNo);
                     thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
-                    thirdPartyfee.setDetailMoney(WXCalculation.FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney()));
+                    BigDecimal fee = WXCalculation.FEE_RATE_OF_WX.multiply(orderInfoDetailVO.getRealPaymentMoney().multiply(BigDecimal.valueOf(-1)));
+                    thirdPartyfee.setDetailMoney(fee);
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
                     accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                     count++;
@@ -212,12 +213,15 @@ public class VerifyService {
             log.warn("没有查询到订单[{}]与支付平台对账信息", orderNo);
             return 0;
         }
+        int updateCount = 0;
         // 订单手续费
         BigDecimal serviceFee = payStatement.getFee();
-        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee);
-        int updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
-        if (updateCount > 0) {
-            log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
+        if (serviceFee != null && BigDecimal.ZERO.compareTo(serviceFee) != 0) {
+            accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
+            updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
+            if (updateCount > 0) {
+                log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
+            }
         }
         return updateCount;
     }

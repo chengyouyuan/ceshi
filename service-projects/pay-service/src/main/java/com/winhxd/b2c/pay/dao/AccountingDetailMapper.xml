@@ -145,17 +145,18 @@
       and d.verify_time &lt; date_add(date_format(#{verifyDateEnd}, '%Y-%m-%d'), interval 1 day)
     </if>
     group by d.store_id, d.verify_status, h.verify_code, h.operated_time, h.operated_by_name
+    having 1 = 1
     <if test="realPayMoneyStart != null">
-      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
     </if>
     <if test="realPayMoneyEnd != null">
-      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
     </if>
     <if test="realVerifyMoneyStart != null">
-      having sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
+      and sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
     </if>
     <if test="realVerifyMoneyEnd != null">
-      having sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
+      and sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
     </if>
     order by h.operated_time desc
   </select>

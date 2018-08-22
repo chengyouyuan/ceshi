@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponKindsVo;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
@@ -202,6 +203,21 @@ public class ApiCouponController{
         CouponVO couponVO = couponService.findDefaultCouponByOrder(couponCondition);
         result.setData(couponVO);
         LOGGER.info("/api-promotion/coupon//5048/v1/findDefaultCouponByOrder结果:"+result);
+        return result;
+    }
+
+    @ApiOperation(value = "C端获取优惠券优惠金额", notes = "C端获取优惠券优惠金额")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/5057/v1/getCouponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<CouponDiscountVO> getCouponDiscountAmount(@RequestBody CouponAmountCondition couponCondition){
+        LOGGER.info("=/api-promotion/coupon//5057/v1/getCouponDiscountAmount");
+
+        ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
+        CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition);
+        result.setData(couponDiscountVO);
+        LOGGER.info("/api-promotion/coupon//5057/v1/getCouponDiscountAmount结果:"+result);
         return result;
     }
 

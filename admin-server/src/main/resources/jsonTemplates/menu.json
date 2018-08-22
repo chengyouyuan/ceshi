@@ -287,13 +287,6 @@
           "path": "",
           "configKey": "/template/module/system/system_user_list.json",
           "permission": ""
-        },
-        {
-          "id": "8_3",
-          "menuName": "订单时间设置",
-          "path": "/setOrderTime/index",
-          "configKey": "",
-          "permission": ""
         }
       ]
     }

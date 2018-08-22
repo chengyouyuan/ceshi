@@ -66,7 +66,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     }
 
     @Override
-    @Transactional(rollbackFor = BusinessException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int addBatchPush(MessageBatchPush messageBatchPush) {
         if (StringUtils.isEmpty(messageBatchPush.getMsgContent())){
             LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");

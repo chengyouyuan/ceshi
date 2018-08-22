@@ -217,8 +217,8 @@
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
     where d.verify_status &lt;&gt; 1
-    and d.third_party_verify_status = 1
-    and d.order_complete_status = 1
+    and (case when h.verify_status = 1 then d.third_party_verify_status else 1 end) = 1
+    and (case when h.verify_status = 1 then d.order_complete_status else 1 end) = 1
     and h.verify_code = #{verifyCode}
     and d.id in
     <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>

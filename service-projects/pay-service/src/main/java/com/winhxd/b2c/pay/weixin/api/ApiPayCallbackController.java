@@ -62,9 +62,9 @@ public class ApiPayCallbackController {
 	 * API 密钥
 	 */
 	@Value("${WX.KEY}")
-	private static String apiKey;
+	private String apiKey;
 
-	private static SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
+	private SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
 
 
 	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")

@@ -192,6 +192,8 @@ public class OrderUtil {
             }else {
                 customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, pickupCode);
                 msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
+                keyword4 = pickupCode;
+                emphasisKeyword = "keyword4.DATA";
             }
             String page = null;
             MiniTemplateData data1 = new MiniTemplateData();

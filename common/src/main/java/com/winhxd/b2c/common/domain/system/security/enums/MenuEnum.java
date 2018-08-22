@@ -12,6 +12,12 @@ public enum MenuEnum {
     ORDER_MANAGEMENT("订单管理", PermissionEnum.ORDER_MANAGEMENT),
     ORDER_MANAGEMENT_LIST("订单列表", ORDER_MANAGEMENT, PermissionEnum.ORDER_MANAGEMENT),
 
+    /**
+     * 门店管理
+     */
+    STORE_MANAGEMENT("门店管理", PermissionEnum.STORE_MANAGEMENT),
+    STORE_MANAGEMENT_LIST("门店列表", STORE_MANAGEMENT, PermissionEnum.STORE_MANAGEMENT),
+
 
     /**
      * 系统管理

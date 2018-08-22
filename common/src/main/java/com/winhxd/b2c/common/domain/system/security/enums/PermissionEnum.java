@@ -83,7 +83,9 @@ public enum PermissionEnum {
      * 店铺管理
      */
     STORE_MANAGEMENT("店铺管理"),
-    STORE_MANAGEMENT_REGION("门店测试区域管理", STORE_MANAGEMENT);
+    STORE_MANAGEMENT_REGION("门店测试区域管理", STORE_MANAGEMENT),
+    STORE_MANAGEMENT_STORE("门店管理", STORE_MANAGEMENT);
+
 
     private String name;
     private PermissionEnum parent;

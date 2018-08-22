@@ -1,6 +1,7 @@
 package com.winhxd.b2c.admin.module.promotion.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.admin.utils.ExcelVerifyResult;
 import com.winhxd.b2c.admin.utils.ImportResult;
@@ -13,6 +14,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
@@ -39,6 +41,7 @@ import java.util.*;
 @Api(value = "后台优惠券管理", tags = "后台优惠券管理接口")
 @RestController
 @RequestMapping(value = "/promotion")
+@CheckPermission(PermissionEnum.PROMOTION_MANAGEMENT)
 public class CouponController {
 	private Logger logger = LoggerFactory.getLogger(CouponController.class);
 	@Autowired
@@ -273,6 +276,7 @@ public class CouponController {
 	 */
 	@ApiOperation("优惠券模板分页列表")
 	@PostMapping(value = "/5010/v1/getCouponTemplatePage")
+	@CheckPermission(PermissionEnum.PROMOTION_TEMPLETE_MANAGEMENT_LIST)
 	public ResponseResult<PagedList<CouponTemplateVO>> getCouponTemplatePage(@RequestBody CouponTemplateCondition condition){
 		return couponTemplateServiceClient.findCouponTemplatePageByCondition(condition);
 	}
@@ -287,6 +291,7 @@ public class CouponController {
 	 */
 	@ApiOperation("优惠券模板新建")
 	@PostMapping(value = "/5011/v1/addCouponTemplate")
+	@CheckPermission(PermissionEnum.PROMOTION_TEMPLETE_MANAGEMENT_ADD)
 	public ResponseResult<Integer> addCouponTemplate(@RequestBody CouponTemplateCondition condition){
 		/**
 		 * 参数校验还未完善
@@ -317,6 +322,7 @@ public class CouponController {
 	 */
 	@ApiOperation("优惠券模板详情查看")
 	@GetMapping(value = "/5012/v1/viewCouponTemplateDetail")
+	@CheckPermission(PermissionEnum.PROMOTION_TEMPLETE_MANAGEMENT_LIST_VIEW)
 	public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id){
 		ResponseResult<CouponTemplateVO> responseResult = couponTemplateServiceClient.viewCouponTemplateDetail(id);
 		return responseResult;
@@ -326,7 +332,7 @@ public class CouponController {
 
 	/**
 	 *
-	 *@Deccription  设为无效
+	 *@Deccription  设为无效(暂时未使用)
 	 *@Params  id
 	 *@Return  ResponseResult 删除是否成功
 	 *@User  wl
@@ -357,6 +363,7 @@ public class CouponController {
     */
 	@ApiOperation("出资方分页列表")
 	@PostMapping(value = "/5028/v1/getCouponInvestorPage")
+	@CheckPermission(PermissionEnum.PROMOTION_INVESTOR_RULE_LIST)
 	public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition){
 		ResponseResult<PagedList<CouponInvestorVO>> responseResult = couponInvestorServiceClient.getCouponInvestorPage(condition);
 		return responseResult;
@@ -372,6 +379,7 @@ public class CouponController {
 	 */
 	@ApiOperation("出资方规则新建")
 	@PostMapping(value = "/5014/v1/addCouponInvestor")
+	@CheckPermission(PermissionEnum.PROMOTION_INVESTOR_RULE_ADD)
 	public ResponseResult<Integer> addCouponInvestor(@RequestBody LinkedHashMap detailData){
 		/**
 		 *  校验参数
@@ -415,12 +423,21 @@ public class CouponController {
 	 */
 	@ApiOperation("出资方规则详情查看")
 	@GetMapping(value = "/5015/v1/viewCouponInvestorDetail")
+	@CheckPermission(PermissionEnum.PROMOTION_INVESTOR_RULE_LIST_VIEW)
 	public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id){
 		ResponseResult<CouponInvestorVO> responseResult = couponInvestorServiceClient.viewCouponInvestorDetail(id);
 		return responseResult;
 	}
 
 
+	/**
+	 *
+	 *@Deccription   (暂时未使用)
+	 *@Params
+	 *@Return
+	 *@User  wl
+	 *@Date   2018/8/22 10:23
+	 */
 	@ApiOperation("出资方规则设置无效")
 	@PostMapping(value = "/5016/v1/updateCouponInvestorToValid")
 	public ResponseResult<Integer> updateCouponInvestorToValid(@RequestBody CouponSetToValidCondition condition){
@@ -444,6 +461,7 @@ public class CouponController {
  */
 @ApiOperation("坎级多条件分页查询")
 @PostMapping(value = "/5017/v1/getCouponGradePage")
+@CheckPermission(PermissionEnum.PROMOTION_GRADE_RULE_LIST)
 public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition){
 	ResponseResult<PagedList<CouponGradeVO>> responseResult = couponGradeServiceClient.getCouponGradePage(condition);
 	return responseResult;
@@ -459,6 +477,7 @@ public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody 
  */
 @ApiOperation("坎级规则新建")
 @PostMapping(value = "/5018/v1/addCouponGrade")
+@CheckPermission(PermissionEnum.PROMOTION_GRADE_RULE_ADD)
 public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition){
 	/**
 	 * 参数校验
@@ -504,6 +523,7 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
  */
 @ApiOperation("坎级详情查看")
 @GetMapping(value = "/5019/v1/viewCouponGradeDetail")
+@CheckPermission(PermissionEnum.PROMOTION_GRADE_RULE_LIST_VIEW)
 public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id){
 	ResponseResult<CouponGradeVO> responseResult = couponGradeServiceClient.viewCouponGradeDetail(id);
 	return responseResult;
@@ -511,7 +531,7 @@ public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") S
 
 /**
  *
- *@Deccription 坎级逻辑删除/设置为无效
+ *@Deccription 坎级逻辑删除/设置为无效 (按时未使用)
  *@Params  id  坎级id
  *@Return  是否成功 0 表示成功
  *@User  wl
@@ -541,6 +561,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 */
 	@ApiOperation("适用对象新建")
 	@PostMapping(value = "/5021/v1/addCouponApply")
+	@CheckPermission(PermissionEnum.PROMOTION_APPLY_RULE_ADD)
 	public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition  condition){
 		/**
 		 * 参数校验
@@ -583,6 +604,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 */
 	@ApiOperation("适用对象类型查看")
 	@PostMapping(value = "/5022/v1/viewCouponApplyDetail")
+	@CheckPermission(PermissionEnum.PROMOTION_APPLY_RULE_LIST_VIEW)
 	public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type){
 		ResponseResult<CouponApplyVO> responseResult = couponApplyServiceClient.viewCouponApplyDetail(id,type);
 		return responseResult;
@@ -590,7 +612,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 
 	/**
 	 *
-	 *@Deccription 适用对象设置无效
+	 *@Deccription 适用对象设置无效(暂时未使用)
 	 *@Params  id
 	 *@Return  是否成功 0 表示成功
 	 *@User  wl
@@ -616,6 +638,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 */
 	@ApiOperation("适用对象列表分页条件查询")
 	@PostMapping(value = "/5024/v1/findCouponApplyPage")
+	@CheckPermission(PermissionEnum.PROMOTION_APPLY_RULE_LIST)
 	public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition  condition){
 		ResponseResult<PagedList<CouponApplyVO>> responseResult = couponApplyServiceClient.findCouponApplyPage(condition);
 		return responseResult;
@@ -634,6 +657,7 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 	 */
 @ApiOperation("点出资方列表上模板引用数量表分页")
 @PostMapping(value = "/5025/v1/findInvertorTempleteCountPage")
+@CheckPermission(PermissionEnum.PROMOTION_INVESTOR_RULE_LIST_REL)
 public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
 	ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = couponInvestorServiceClient.findInvertorTempleteCountPage(condition);
    return responseResult;
@@ -649,6 +673,7 @@ public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCo
 	 */
 @ApiOperation("点坎级列表上模板引用数量表分页")
 @PostMapping(value = "/5026/v1/findGradeTempleteCountPage")
+@CheckPermission(PermissionEnum.PROMOTION_GRADE_RULE_LIST_REL)
 public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
 	ResponseResult<PagedList<GradeTempleteCountVO>> responseResult = couponGradeServiceClient.findGradeTempleteCountPage(condition);
 	return responseResult;
@@ -666,6 +691,7 @@ public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPag
  */
 @ApiOperation("点适用对象列表上模板引用数量表分页")
 @PostMapping(value = "/5027/v1/findApplyTempleteCountPage")
+@CheckPermission(PermissionEnum.PROMOTION_APPLY_RULE_LIST_REL)
 public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition){
 	ResponseResult<PagedList<ApplyTempleteCountVO>> responseResult = couponApplyServiceClient.findApplyTempleteCountPage(condition);
 	return responseResult;

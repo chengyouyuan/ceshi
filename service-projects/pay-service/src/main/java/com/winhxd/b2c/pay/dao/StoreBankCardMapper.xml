@@ -22,6 +22,15 @@
   </resultMap>
   
   <resultMap type="com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO" id="storeBankCardResultMap" extends="BaseResultMap">
+  	<result column="card_number" jdbcType="VARCHAR" property="cardNumber" />
+    <result column="person_id" jdbcType="VARCHAR" property="personId" />
+    <result column="bank_user_name" jdbcType="VARCHAR" property="bankUserName" />
+    <result column="bank_name" jdbcType="VARCHAR" property="bankName" />
+    <result column="band_branch_name" jdbcType="VARCHAR" property="bandBranchName" />
+    <result column="swift_code" jdbcType="VARCHAR" property="swiftCode" />
+    <result column="mobile" jdbcType="CHAR" property="mobile" />
+    <result column="verification_code" jdbcType="VARCHAR" property="verificationCode" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
   </resultMap>
   
   <sql id="Base_Column_List">
@@ -242,12 +251,6 @@
     <include refid="Base_Column_List" />
     from store_bank_card
     where status = 1
-    <if test="id != null">
-    	and id = #{id,jdbcType=BIGINT}
-    </if>
-    <if test="storeId != null">
-       and store_id = #{storeId,jdbcType=BIGINT}
-     </if>
      <if test="cardNumber != null">
        and card_number = #{cardNumber,jdbcType=VARCHAR}
      </if>
@@ -268,27 +271,6 @@
      </if>
      <if test="mobile != null">
       and mobile = #{mobile,jdbcType=CHAR}
-     </if>
-     <if test="verificationCode != null">
-       and verification_code = #{verificationCode,jdbcType=VARCHAR}
-     </if>
-     <if test="createdBy != null">
-       and created_by = #{createdBy,jdbcType=BIGINT}
-     </if>
-     <if test="createdByName != null">
-       and created_by_name = #{createdByName,jdbcType=VARCHAR}
-     </if>
-     <if test="created != null">
-       and created = #{created,jdbcType=TIMESTAMP}
-     </if>
-     <if test="updatedBy != null">
-       and updated_by = #{updatedBy,jdbcType=BIGINT}
-     </if>
-     <if test="updatedByName != null">
-       and updated_by_name = #{updatedByName,jdbcType=VARCHAR}
-     </if>
-     <if test="updated != null">
-       and updated = #{updated,jdbcType=TIMESTAMP}
      </if>
   </select>
   

@@ -68,29 +68,39 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public int saveShopCar(ShopCarCondition condition, Long customerId){
         logger.info("saveShopCar {}-> 新增购物车执行...");
-        // 校验商品
-        checkShopCarProdInfo(condition);
-        // 加购：存在则更新数量，不存在保存
-        ShopCar shopCar = new ShopCar();
-        // 获取当前用户信息
-        shopCar.setCustomerId(customerId);
-        shopCar.setStoreId(condition.getStoreId());
-        shopCar.setSkuCode(condition.getSkuCode());
-        ShopCar result = shopCarMapper.selectShopCarsBySkuCode(shopCar);
-        if (null != result) {
-            if (INTEGER_ZERO.equals(condition.getAmount())) {
-                return shopCarMapper.deleteByPrimaryKey(result.getId());
+        String lockKey = CacheName.CACHE_KEY_CUSTOMER_SHOPCART_REPEAT + customerId;
+        Lock lock = new RedisLock(cache, lockKey, 1000);
+        try {
+            if (lock.tryLock()) {
+                // 校验商品
+                checkShopCarProdInfo(condition);
+                // 加购：存在则更新数量，不存在保存
+                ShopCar shopCar = new ShopCar();
+                // 获取当前用户信息
+                shopCar.setCustomerId(customerId);
+                shopCar.setStoreId(condition.getStoreId());
+                shopCar.setSkuCode(condition.getSkuCode());
+                ShopCar result = shopCarMapper.selectShopCarsBySkuCode(shopCar);
+                if (null != result) {
+                    if (INTEGER_ZERO.equals(condition.getAmount())) {
+                        return shopCarMapper.deleteByPrimaryKey(result.getId());
+                    }
+                    result.setAmount(condition.getAmount());
+                    return shopCarMapper.updateByPrimaryKey(result);
+                }
+                Date current = new Date();
+                shopCar.setCreated(current);
+                shopCar.setCreatedBy(customerId);
+                shopCar.setUpdated(current);
+                shopCar.setUpdatedBy(customerId);
+                shopCar.setAmount(condition.getAmount());
+                return shopCarMapper.insertSelective(shopCar);
+            } else {
+                throw new BusinessException(BusinessCode.CODE_402016);
             }
-            result.setAmount(condition.getAmount());
-            return shopCarMapper.updateByPrimaryKey(result);
+        } finally {
+            lock.unlock();
         }
-        Date current = new Date();
-        shopCar.setCreated(current);
-        shopCar.setCreatedBy(customerId);
-        shopCar.setUpdated(current);
-        shopCar.setUpdatedBy(customerId);
-        shopCar.setAmount(condition.getAmount());
-        return shopCarMapper.insertSelective(shopCar);
     }
 
     @Override
@@ -132,7 +142,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
-            if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
+            if (lock.tryLock()) {
                 // 后台去获取购物车信息
                 List<ShopCar> shopCars = queryShopCars(customerId, condition.getStoreId());
                 if (CollectionUtils.isEmpty(shopCars)) {
@@ -164,8 +174,6 @@ public class ShopCarServiceImpl implements ShopCarService {
             } else {
                 throw new BusinessException(BusinessCode.CODE_402014);
             }
-        } catch (InterruptedException e){
-            throw new BusinessException(BusinessCode.CODE_1001);
         } finally {
             lock.unlock();
         }

@@ -20,7 +20,7 @@ public class DecipherUtil {
     /**
      * 密钥算法
      */
-    private static final String ALGORITHM = "AES";
+//    private static final String ALGORITHM = "AES";
     /**
      * 加解密算法/工作模式/填充方式
      */
@@ -29,10 +29,10 @@ public class DecipherUtil {
     /**
      * API 密钥
      */
-    @Value("${WX.KEY}")
+    /*@Value("${WX.KEY}")
     private static String password;
 
-    private static SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(password).toLowerCase().getBytes(), ALGORITHM);
+    private static SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(password).toLowerCase().getBytes(), ALGORITHM);*/
 
     /**
      * AES解密
@@ -41,7 +41,7 @@ public class DecipherUtil {
      * @return
      * @throws Exception
      */
-    public static String decodeReqInfo(String reqInfo) throws Exception{
+    public static String decodeReqInfo(String reqInfo, SecretKeySpec key) throws Exception{
         Cipher cipher = Cipher.getInstance(ALGORITHM_MODE_PADDING);
         cipher.init(Cipher.DECRYPT_MODE, key);
         return new String(cipher.doFinal(Base64.decodeBase64(reqInfo)),"UTF-8");

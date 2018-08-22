@@ -126,6 +126,7 @@
     left join pay_verify_history h on h.verify_code = d.verify_code
     where d.order_complete_status = 1
     and d.third_party_verify_status = 1
+    and d.verify_status in (0, 1)
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>

@@ -618,6 +618,7 @@ public class PayServiceImpl implements PayService{
      * @return
      */
 	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
+	@Transactional
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
@@ -671,9 +672,9 @@ public class PayServiceImpl implements PayService{
 		if (vo!=null) {
 			//插入退款流水信息
 			PayRefundPayment payRefundPayment=new PayRefundPayment();
-			payRefundPayment.setOrderNo(payRefund.getOrderNo());
+			payRefundPayment.setOrderNo(orderNo);
 			payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
-			payRefundPayment.setRefundNo(payRefund.getOrderNo());
+			payRefundPayment.setRefundNo(orderNo);
 			payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
 			payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 			payRefundPayment.setTotalAmount(payRefund.getTotalAmount());

@@ -179,7 +179,6 @@ public class GatewayFilter implements GlobalFilter, Ordered {
     private LocaleContextResolver resolver;
 
     private Mono<Void> error(ServerWebExchange exchange, ServerHttpResponse response, int businessCode) {
-        logger.info(resolver.getClass().getCanonicalName());
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
         Locale locale = resolver.resolveLocaleContext(exchange).getLocale();
         ResponseResult result = new ResponseResult();

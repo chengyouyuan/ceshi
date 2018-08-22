@@ -64,9 +64,6 @@ public class ApiPayCallbackController {
 	@Value("${WX.KEY}")
 	private String apiKey;
 
-//	private SecretKeySpec key = new SecretKeySpec(DigestUtils.md5Hex(apiKey).toLowerCase().getBytes(), ALGORITHM);
-
-
 	@ApiOperation(value = "微信支付回调", notes = "微信支付回调")
 	@PostMapping(value = "${WX.PAY_NOTIFY_URL}")
 	private void unifiedOrderCallback(HttpServletRequest request,HttpServletResponse response){

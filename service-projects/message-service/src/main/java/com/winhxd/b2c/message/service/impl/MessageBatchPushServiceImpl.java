@@ -17,6 +17,7 @@ import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.service.MessageBatchPushService;
 import com.winhxd.b2c.message.utils.NeteaseUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,13 +66,17 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
 
     @Override
     public int addBatchPush(MessageBatchPush messageBatchPush) {
+        if (StringUtils.isEmpty(messageBatchPush.getMsgContent())){
+            LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");
+            throw new BusinessException(BusinessCode.CODE_703504);
+        }
         int id = messageBatchPushMapper.insertSelective(messageBatchPush);
         messageBatchPush.setId(Long.parseLong(String.valueOf(id)));
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
+        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给所有门店推送云信消息，开始...消息配置id={}",id);
         //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
         if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，没有云信门店记录。");
+            LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，手动给门店推送消息出错，没有云信门店记录。");
             throw new BusinessException(BusinessCode.CODE_703502);
         }
         List<String> accids = new ArrayList<>();
@@ -97,7 +102,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         }
         messageBatchPush.setLastPushTime(new Date());
         messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
+        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给门店推送云信消息，结束...消息配置id={}",id);
         return id;
     }
 

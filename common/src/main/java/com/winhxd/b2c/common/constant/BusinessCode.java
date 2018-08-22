@@ -586,7 +586,10 @@ public final class BusinessCode {
 
     @ApiModelProperty("后台消息管理 手动给门店推送消息 消息推送出错（需查询官方错误码）")
     public static final int CODE_703503 = 703503;
-    
+
+    @ApiModelProperty("后台消息管理 手动给门店推送消息 消息内容为空")
+    public static final int CODE_703504 = 703504;
+
     @ApiModelProperty("支付中，请勿重复支付")
     public static final int CODE_3400900 = 3400900;
     @ApiModelProperty("生产签名失败")

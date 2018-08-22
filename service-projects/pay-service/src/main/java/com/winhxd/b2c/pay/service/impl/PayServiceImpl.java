@@ -291,7 +291,7 @@ public class PayServiceImpl implements PayService{
 			 changeCondition.setType(condition.getType());
 			 condition.setOrderNo(orderNo);
 			 //待结算金额增加
-			 changeCondition.setPresentedMoney(condition.getMoney());
+			 changeCondition.setSettlementSettledMoney(condition.getMoney());
 			 flag=true;
 		}
 
@@ -447,9 +447,11 @@ public class PayServiceImpl implements PayService{
 			BigDecimal totalMoney=settlementSettledMoney;
 			if (storeBankroll==null) {
 				storeBankroll=new StoreBankroll();
+				storeBankroll.setStoreId(condition.getStoreId());
 				storeBankroll.setTotalMoeny(totalMoney);
 				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-				storeBankroll.setPresentedMoney(presentedMoney);;
+				storeBankroll.setPresentedMoney(presentedMoney);
+				storeBankroll.setCreated(new Date());
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
@@ -470,6 +472,7 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setPresentedMoney(presentedMoney);
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
+				storeBankroll.setUpdated(new Date());
 				storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 			}
 		}finally{
@@ -522,6 +525,8 @@ public class PayServiceImpl implements PayService{
 		payStoreBankrollLog.setWithdrawalsNo(condition.getWithdrawalsNo());
 		payStoreBankrollLog.setRemarks(remarks);
 		payStoreBankrollLog.setMoneyType(condition.getMoneyType());
+		payStoreBankrollLog.setCreated(new Date());
+		payStoreBankrollLog.setUpdated(new Date());
 		payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 	}
 

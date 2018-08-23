@@ -684,11 +684,13 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
+                            continue;
                         }
                     }
                 }else{
                     // 优惠券已领完
                     couponVO.setReceiveStatus("0");
+                    continue;
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
@@ -706,11 +708,13 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
+                            continue;
                         }
                     }
                 }else{
                     // 当前门店优惠券已领完
                     couponVO.setReceiveStatus("0");
+                    continue;
                 }
             }
             results.add(couponVO);

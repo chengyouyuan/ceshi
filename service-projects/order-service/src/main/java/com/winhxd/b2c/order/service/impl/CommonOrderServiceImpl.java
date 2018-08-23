@@ -488,23 +488,28 @@ public class CommonOrderServiceImpl implements OrderService {
                 //门店是否同意退款，不同意时只增加日志
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                 if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
-                    throw new BusinessException(BusinessCode.WRONG_ORDERNO, "门店处理用户退款订单查询失败");
+                    throw new BusinessException(BusinessCode.WRONG_ORDERNO, MessageFormat.format("门店处理用户退款订单查询失败orderNo={0}", orderNo));
                 }
                 if (agree == 1) {
                     logger.info("门店处理退款申请-门店同意退款-操作订单开始-订单号={}", orderNo);
-
                     orderApplyRefund(order, "门店同意退款", storeVO.getId(), storeVO.getShopkeeper());
                     logger.info("门店处理退款申请-门店同意退款-操作订单结束-订单号={}", orderNo);
                 } else {
-                    logger.info("门店处理退款申请-门店不同意退款-添加流转日志开始-订单号={}", orderNo);
-                    Short oldStatus = order.getOrderStatus();
-                    String oldOrderJsonString = JsonUtil.toJSONString(order);
-                    order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
-                    String newOrderJsonString = JsonUtil.toJSONString(order);
-                    //添加订单流转日志
-                    orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), storeVO.getId(), storeVO.getStoreName(), "门店不同意退款", MainPointEnum.MAIN);
-                    logger.info("门店处理退款申请-门店不同意退款-添加流转日志结束-订单号={}", orderNo);
+                    //回退订单状态为待自提(已确认)
+                    int result = this.orderInfoMapper.updateOrderStatusForReturnWaitSelfLifting(orderNo, storeVO.getId(), null);
+                    if (result > 0) {
+                        logger.info("门店处理退款申请-门店不同意退款-添加流转日志开始-订单号={}", orderNo);
+                        Short oldStatus = order.getOrderStatus();
+                        String oldOrderJsonString = JsonUtil.toJSONString(order);
+                        order.setOrderStatus(OrderStatusEnum.REFUNDING.getStatusCode());
+                        String newOrderJsonString = JsonUtil.toJSONString(order);
+                        //添加订单流转日志
+                        orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
+                                order.getOrderStatus(), storeVO.getId(), storeVO.getStoreName(), "门店不同意退款", MainPointEnum.MAIN);
+                        logger.info("门店处理退款申请-门店不同意退款-添加流转日志结束-订单号={}", orderNo);
+                    } else {
+                        throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("门店处理不同意用户退款订单更新状态失败orderNo={0}", orderNo));
+                    }
                 }
             } finally {
                 lock.unlock();

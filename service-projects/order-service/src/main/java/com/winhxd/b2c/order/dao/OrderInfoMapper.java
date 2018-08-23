@@ -94,7 +94,7 @@ public interface OrderInfoMapper {
      * @param orderNo 订单编号
      * @return
      */
-    @OrderInfoConvertAnnotation(queryCustomerInfo=true, queryStoreInfo=true)
+    @OrderInfoConvertAnnotation(queryCustomerInfo = true, queryStoreInfo = true)
     OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
 
     /**
@@ -222,7 +222,7 @@ public interface OrderInfoMapper {
      * @param orderNo
      * @param customerId
      */
-    int updateOrderStatusForApplyRefund(@Param("orderNo") String orderNo, @Param("customerId") Long customerId, @Param("reason") String reason,@Param("orderStatus") short orderStatus);
+    int updateOrderStatusForApplyRefund(@Param("orderNo") String orderNo, @Param("customerId") Long customerId, @Param("reason") String reason, @Param("orderStatus") short orderStatus);
 
     /**
      * 订单提货
@@ -294,4 +294,14 @@ public interface OrderInfoMapper {
      * @return {@link OrderInfoDetailVO}
      */
     OrderInfoDetailVO selectOrderInfoByOrderNoAndStore(@Param("orderNo") String orderNo, @Param("storeId") Long storeId);
+
+    /**
+     * 回退订单状态为待自提（门店不同意退款时使用）
+     *
+     * @param orderNo
+     * @param storeId
+     * @param reason
+     * @return
+     */
+    int updateOrderStatusForReturnWaitSelfLifting(@Param("orderNo") String orderNo, @Param("storeId") Long storeId, @Param("reason") String reason);
 }

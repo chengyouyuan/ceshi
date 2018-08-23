@@ -68,4 +68,12 @@ public interface SysUserService {
      * @param id
      */
     int disabled(Long id);
+
+    /**
+     * 根据主键启用用户
+     * @author songkai
+     * @date 2018/8/23
+     * @param id
+     */
+    int enable(Long id);
 }

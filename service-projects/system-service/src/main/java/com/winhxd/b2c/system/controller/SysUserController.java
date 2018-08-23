@@ -157,4 +157,18 @@ public class SysUserController implements UserServiceClient {
         sysUserService.disabled(id);
         return result;
     }
+    /**
+     * 根据主键启用用户
+     * @author songkai
+     * @date 2018/8/23
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult<Void> enable(@PathVariable("id") Long id) {
+        logger.info("{} - 根据主键启用用户, 参数：id={}", MODULE_NAME, id);
+        ResponseResult result = new ResponseResult<>(BusinessCode.CODE_OK);
+        sysUserService.enable(id);
+        return result;
+    }
 }

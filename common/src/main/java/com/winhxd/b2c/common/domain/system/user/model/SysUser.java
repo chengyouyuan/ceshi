@@ -65,4 +65,7 @@ public class SysUser {
     @ApiModelProperty(value = "区域名称")
     private String regionName;
 
+    @ApiModelProperty(value = "状态描述")
+    private String statusDesc;
+
 }

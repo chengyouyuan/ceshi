@@ -81,7 +81,11 @@ public class SysUserServiceImpl implements SysUserService {
     public PagedList<SysUser> find(SysUserCondition condition) {
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize(),condition.getOrderBy());
         PagedList<SysUser> pagedList = new PagedList();
-        pagedList.setData(sysUserMapper.selectSysUser(condition));
+        Page<SysUser> users = sysUserMapper.selectSysUser(condition);
+        for (SysUser user : users) {
+            user.setStatusDesc(UserStatusEnum.getDescMap().get(user.getStatus()));
+        }
+        pagedList.setData(users);
         pagedList.setPageNo(condition.getPageNo());
         pagedList.setPageSize(condition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -109,6 +113,14 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = new SysUser();
         sysUser.setId(id);
         sysUser.setStatus(UserStatusEnum.DISABLED.getCode());
+        return sysUserMapper.updateByPrimaryKeySelective(sysUser);
+    }
+
+    @Override
+    public int enable(Long id) {
+        SysUser sysUser = new SysUser();
+        sysUser.setId(id);
+        sysUser.setStatus(UserStatusEnum.ENABLED.getCode());
         return sysUserMapper.updateByPrimaryKeySelective(sysUser);
     }
 }

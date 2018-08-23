@@ -326,41 +326,18 @@ public final class BusinessCode {
     public static final int ORDER_REFUND_FINISHED = 400020;
     @ApiModelProperty("订单退款失败")
     public static final int ORDER_REFUND_CLOSED = 400021;
-
     @ApiModelProperty("订单获取支付信息失败")
     public static final int ORDER_GET_PAY_INFO_ERROR = 400022;
     @ApiModelProperty("订单号和用户不匹配")
     public static final int ORDER_INFO_NOT_MATCH_ERROR = 400023;
     @ApiModelProperty("订单支付信息查询失败，无法修改价格")
     public static final int ORDER_PAY_INFO_ERROR = 400024;
-
     /** 参数异常*/
     public static final int CODE_4022001 = 4022001;
-    /** 未支付的订单不允许退款*/
-    public static final int CODE_422002 = 422002;
-    /** 已完成的订单不允许退款*/
-    public static final int CODE_422003 = 422003;
-    /** 订单修改中*/
-    public static final int CODE_422004 = 422004;
-
     /** 订单状态不允许退款*/
     public static final int CODE_4021002 = 4021002;
-    /** 参数错误*/
-    public static final int CODE_421001 = 421001;
-    /** 订单号不能为空*/
-    public static final int CODE_420001 = 420001;
-    /** 订单已支付成功不能取消*/
-    public static final int CODE_420002 = 420002;
     /** 用户不存在*/
     public static final int CODE_4010001 = 4010001;
-    /** 订单号错误*/
-    public static final int CODE_420003 = 420003;
-    /** 取消订单状态更新失败*/
-    public static final int CODE_420004 = 420004;
-    /** 订单取消处理用户退款失败*/
-    public static final int CODE_422005 = 422005;
-    /** 订单取消退优惠券失败*/
-    public static final int CODE_4022006 = 4022006;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int CODE_3020001 = 3020001;

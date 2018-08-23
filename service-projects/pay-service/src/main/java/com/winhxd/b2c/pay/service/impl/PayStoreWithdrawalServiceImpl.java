@@ -272,12 +272,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(StringUtils.isEmpty(storeName)){
 				res = BusinessCode.CODE_610037;
 			}
+			String mobile = condition.getMobile();
+			if(StringUtils.isEmpty(mobile)){
+				res = BusinessCode.CODE_610015;
+			}
 		}
-		String mobile = condition.getMobile();
-		if(StringUtils.isEmpty(mobile)){
-			res = BusinessCode.CODE_610015;
-		}
-	 
 		return res;
 	}
 

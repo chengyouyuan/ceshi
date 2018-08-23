@@ -214,11 +214,15 @@ public class PayServiceImpl implements PayService{
 			//更新订单状态
 			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
 			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
-			ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
-			if (callbackResult.getCode()!=0&&!callbackResult.getData()) {
-				//订单更新失败
-				logger.info(log+"--订单更新失败");
-//				throw new BusinessException(BusinessCode.CODE_600301);
+			try {
+				ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
+				if (callbackResult.getCode()!=BusinessCode.CODE_OK&&!callbackResult.getData()) {
+					//订单更新失败
+					logger.info(log+"--订单更新失败");
+					return false;
+				}
+			} catch (Exception e) {
+				logger.error(log+"--订单更新失败",e);
 				return false;
 			}
 		}

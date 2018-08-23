@@ -25,6 +25,14 @@ public interface AccountingDetailMapper {
     int insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
+     * 单独插入订单手续费
+     *
+     * @param accountingDetail
+     * @return
+     */
+    int insertAccountingDetailServiceFee(AccountingDetail accountingDetail);
+
+    /**
      * 按指定ID查询的费用明细
      *
      * @param id

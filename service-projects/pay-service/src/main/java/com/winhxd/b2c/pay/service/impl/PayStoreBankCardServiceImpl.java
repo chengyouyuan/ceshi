@@ -89,7 +89,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(73l);
+//    	currentStoreUser.setBusinessId(106l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){

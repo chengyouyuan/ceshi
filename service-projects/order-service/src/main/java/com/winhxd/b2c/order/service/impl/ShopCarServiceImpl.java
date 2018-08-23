@@ -329,18 +329,19 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     private void checkShopCarProdInfo(List<ShopCar> shopCars, Long customerId){
         List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId(), customerId);
-        for (ShopCartProdVO shopCarProdVO : list) {
+        // 程序能走到这的一定是上架中的商品
+        /*for (ShopCartProdVO shopCarProdVO : list) {
             if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
                 logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402010);
             }
-        }
+        }*/
     }
 
     private void checkShopCarProdInfo(ShopCarCondition condition ,Long customerId){
         List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId(), customerId);
         for (ShopCartProdVO shopCarProdVO : list) {
-            // 程序能走到这的一定是上加中的商品
+            // 程序能走到这的一定是上架中的商品
             /*if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
                 logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
                 throw new BusinessException(BusinessCode.CODE_402010);

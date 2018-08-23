@@ -50,7 +50,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public PagedList<StoreRegionVO> findStoreRegions(StoreRegionCondition condition) {
-        checkCurrentAdminUser();
         Page page = PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         PagedList<StoreRegionVO> pagedList = new PagedList();
         StoreRegion region = new StoreRegion();
@@ -65,7 +64,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public int removeStoreRegion(Long id) {
-        checkCurrentAdminUser();
         StoreRegion storeRegion = new StoreRegion();
         storeRegion.setId(id);
         storeRegion.setStatus(StoreRegionEnum.VALIDATE.getCode());
@@ -76,7 +74,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
 
     @Override
     public int saveStoreRegion(StoreRegionCondition condition) {
-        checkCurrentAdminUser();
         String areaCode = condition.getAreaCode();
         SysRegion sr = getSysRegion(areaCode);
         List<String> regionCodes = new ArrayList<>();
@@ -140,20 +137,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
             throw new BusinessException(BusinessCode.CODE_103902);
         }
         return result.getData();
-    }
-
-    /**
-     *
-     * @author: wangbaokuo
-     * @date: 2018/8/10 10:31
-     * @return: 获取用户info
-     */
-    private void checkCurrentAdminUser() {
-        AdminUser adminUser = UserContext.getCurrentAdminUser();
-        if (null == adminUser) {
-            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
-            throw new BusinessException(BusinessCode.CODE_1004);
-        }
     }
 
     @Override

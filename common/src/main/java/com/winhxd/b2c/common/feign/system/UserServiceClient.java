@@ -105,59 +105,67 @@ public interface UserServiceClient {
 }
 
 @Component
-class UserServiceClientFallback implements FallbackFactory<UserServiceClient> {
+class UserServiceClientFallback implements UserServiceClient, FallbackFactory<UserServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceClientFallback.class);
+    private Throwable throwable;
+
+    public UserServiceClientFallback() {
+    }
+
+    private UserServiceClientFallback(Throwable throwable) {
+        this.throwable = throwable;
+    }
+
+    @Override
+    public ResponseResult<Long> save(SysUser sysUser) {
+        logger.error("UserServiceClientFallback -> save", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult modify(SysUser sysUser) {
+        logger.error("UserServiceClientFallback -> modify", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
+        logger.error("UserServiceClientFallback -> updatePassword", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<PagedList<SysUser>> find(SysUserCondition condition) {
+        logger.error("UserServiceClientFallback -> find", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<SysUser> getByAccount(String account) {
+        logger.error("UserServiceClientFallback -> getByUserCode", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<SysUser> get(Long userId) {
+        logger.error("UserServiceClientFallback -> get", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult disabled(Long id) {
+        logger.error("UserServiceClientFallback -> disabled", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> enable(Long id) {
+        logger.error("UserServiceClientFallback -> enable", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
 
     @Override
     public UserServiceClient create(Throwable throwable) {
-        return  new UserServiceClient() {
-            @Override
-            public ResponseResult<Long> save(SysUser sysUser) {
-                logger.error("UserServiceClientFallback -> save", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult modify(SysUser sysUser) {
-                logger.error("UserServiceClientFallback -> modify", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
-                logger.error("UserServiceClientFallback -> updatePassword", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult<PagedList<SysUser>> find(SysUserCondition condition) {
-                logger.error("UserServiceClientFallback -> find", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult<SysUser> getByAccount(String account) {
-                logger.error("UserServiceClientFallback -> getByUserCode", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult<SysUser> get(Long userId) {
-                logger.error("UserServiceClientFallback -> get", throwable);
-                return new ResponseResult<>(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult disabled(Long id) {
-                logger.error("UserServiceClientFallback -> disabled", throwable);
-                return new ResponseResult(BusinessCode.CODE_1001);
-            }
-
-            @Override
-            public ResponseResult<Void> enable(Long id) {
-                logger.error("UserServiceClientFallback -> enable", throwable);
-                return new ResponseResult(BusinessCode.CODE_1001);
-            }
-        };
+        return new UserServiceClientFallback(throwable);
     }
 }

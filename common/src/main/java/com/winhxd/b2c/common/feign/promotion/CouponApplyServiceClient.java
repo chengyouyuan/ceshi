@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidConditio
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -82,37 +83,43 @@ public interface CouponApplyServiceClient {
 }
 
 @Component
-class CouponApplyServiceClientFallback implements CouponApplyServiceClient{
+class CouponApplyServiceClientFallback implements FallbackFactory<CouponApplyServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(CouponApplyServiceClientFallback.class);
-    private Throwable throwable;
 
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(String id, Short type) {
-        logger.error("CouponApplyServiceClient -> viewCouponApplyDetail", throwable);
-        return new ResponseResult<CouponApplyVO>(BusinessCode.CODE_1001);
-    }
+    public CouponApplyServiceClient create(Throwable throwable) {
+        return new CouponApplyServiceClient() {
 
-    @Override
-    public ResponseResult<Integer> updateCouponApplyToValid(CouponSetToValidCondition condition) {
-        logger.error("CouponApplyServiceClient -> updateCouponApplyToValid", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<CouponApplyVO> viewCouponApplyDetail(String id, Short type) {
+                logger.error("CouponApplyServiceClient -> viewCouponApplyDetail", throwable);
+                return new ResponseResult<CouponApplyVO>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
-        logger.error("CouponApplyServiceClient -> findCouponApplyPage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> updateCouponApplyToValid(CouponSetToValidCondition condition) {
+                logger.error("CouponApplyServiceClient -> updateCouponApplyToValid", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> addCouponApply(CouponApplyCondition condition) {
-        logger.error("CouponApplyServiceClient -> addCouponApply", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
+                logger.error("CouponApplyServiceClient -> findCouponApplyPage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
-        logger.error("CouponApplyServiceClient -> findApplyTempleteCountPage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
+            @Override
+            public ResponseResult<Integer> addCouponApply(CouponApplyCondition condition) {
+                logger.error("CouponApplyServiceClient -> addCouponApply", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
+                logger.error("CouponApplyServiceClient -> findApplyTempleteCountPage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+
+        };
     }
 }

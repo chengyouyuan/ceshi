@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidConditio
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -83,38 +84,43 @@ public interface CouponInvestorServiceClient {
 }
 
 @Component
-class CouponInvestorServiceFallback implements CouponInvestorServiceClient{
+class CouponInvestorServiceFallback implements FallbackFactory<CouponInvestorServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(CouponInvestorServiceFallback.class);
-    private Throwable throwable;
 
     @Override
-    public ResponseResult<Integer> addCouponInvestor(CouponInvestorCondition condition) {
-        logger.error("CouponInvestorServiceClient -> addCouponInvestor", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+    public CouponInvestorServiceClient create(Throwable throwable) {
+        return new CouponInvestorServiceClient() {
 
-    @Override
-    public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(String id) {
-        logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
-        return new ResponseResult<CouponInvestorVO>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> addCouponInvestor(CouponInvestorCondition condition) {
+                logger.error("CouponInvestorServiceClient -> addCouponInvestor", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> updateCouponInvestorToValid(CouponSetToValidCondition condition) {
-        logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(String id) {
+                logger.error("CouponInvestorServiceClient -> viewCouponInvestorDetail", throwable);
+                return new ResponseResult<CouponInvestorVO>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
-        logger.error("CouponInvestorServiceClient -> getCouponInvestorPage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> updateCouponInvestorToValid(CouponSetToValidCondition condition) {
+                logger.error("CouponInvestorServiceClient -> updateCouponInvestorToValid", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
-        logger.error("CouponInvestorServiceClient -> findInvertorTempleteCountPage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
+                logger.error("CouponInvestorServiceClient -> getCouponInvestorPage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
 
+            @Override
+            public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
+                logger.error("CouponInvestorServiceClient -> findInvertorTempleteCountPage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+
+        };
+    }
 }

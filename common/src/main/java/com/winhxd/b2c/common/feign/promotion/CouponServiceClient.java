@@ -63,49 +63,40 @@ public interface CouponServiceClient {
 
 
 @Component
-class CouponServiceFallback implements CouponServiceClient, FallbackFactory<CouponServiceClient>{
+class CouponServiceFallback implements FallbackFactory<CouponServiceClient>{
 	private static final Logger logger = LoggerFactory.getLogger(CouponTemplateServiceFallback.class);
-    private Throwable throwable;
-
-    public CouponServiceFallback() {
-    }
-
-    private CouponServiceFallback(Throwable throwable) {
-        this.throwable = throwable;
-    }
     @Override
     public CouponServiceClient create(Throwable throwable) {
-        return new CouponServiceFallback(throwable);
-    }
-	@Override
-	public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
-		 logger.error("CouponServiceClient -> getCouponNumsByCustomerForStore", throwable);
-	     return new ResponseResult<String>(BusinessCode.CODE_1001);
-	}
+        return new CouponServiceClient() {
+            @Override
+            public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
+                logger.error("CouponServiceClient -> getCouponNumsByCustomerForStore", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult orderUseCoupon(OrderUseCouponCondition condition) {
-        logger.error("CouponServiceClient -> orderUseCoupon", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult orderUseCoupon(OrderUseCouponCondition condition) {
+                logger.error("CouponServiceClient -> orderUseCoupon", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult orderUntreadCoupon(OrderUntreadCouponCondition condition) {
-        logger.error("CouponServiceClient -> orderUntreadCoupon", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult orderUntreadCoupon(OrderUntreadCouponCondition condition) {
+                logger.error("CouponServiceClient -> orderUntreadCoupon", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult revokeCoupon(RevokeCouponCodition condition) {
-        logger.error("CouponServiceClient -> revokeCoupon", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult revokeCoupon(RevokeCouponCodition condition) {
+                logger.error("CouponServiceClient -> revokeCoupon", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult couponListByOrder(OrderCouponCondition couponCondition) {
-        logger.error("CouponServiceClient -> couponListByOrder", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult couponListByOrder(OrderCouponCondition couponCondition) {
+                logger.error("CouponServiceClient -> couponListByOrder", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
 
 //    @Override
 //    public ResponseResult availableCouponListByOrder(CouponPreAmountCondition couponCondition) {
@@ -113,28 +104,32 @@ class CouponServiceFallback implements CouponServiceClient, FallbackFactory<Coup
 //        return new ResponseResult<String>(BusinessCode.CODE_1001);
 //    }
 
-    @Override
-    public ResponseResult couponDiscountAmount(CouponPreAmountCondition couponCondition) {
-        logger.error("CouponServiceClient -> couponAmountCompute", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
+            @Override
+            public ResponseResult couponDiscountAmount(CouponPreAmountCondition couponCondition) {
+                logger.error("CouponServiceClient -> couponAmountCompute", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult checkCouponStatus(CouponCheckStatusCondition condition) {
+                logger.error("CouponServiceClient -> checkCouponStatus", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
+                logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult findDefaultCoupon(OrderAvailableCouponCondition condition) {
+                logger.error("CouponServiceClient -> findDefaultCouponByOrder", throwable);
+                return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
+        };
     }
 
-    @Override
-    public ResponseResult checkCouponStatus(CouponCheckStatusCondition condition) {
-        logger.error("CouponServiceClient -> checkCouponStatus", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
 
-    @Override
-    public ResponseResult getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
-        logger.error("CouponServiceClient -> getCouponInvestorAmount", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult findDefaultCoupon(OrderAvailableCouponCondition condition) {
-        logger.error("CouponServiceClient -> findDefaultCouponByOrder", throwable);
-        return new ResponseResult<String>(BusinessCode.CODE_1001);
-    }
 
 }

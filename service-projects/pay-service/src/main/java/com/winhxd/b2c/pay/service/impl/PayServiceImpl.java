@@ -614,8 +614,8 @@ public class PayServiceImpl implements PayService{
      * @param order
      * @return
      */
-	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
 	@Transactional
+	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
@@ -941,13 +941,14 @@ public class PayServiceImpl implements PayService{
 	private List<PayWithdrawals> getTransferToBankUnclearStatusWithdrawals(){
 		return payWithdrawalsMapper.selectTransferToBankUnclearStatusWithdrawals();
 	}
-	 /**
-     * 订单闭环，添加交易记录
-     *
+    /**
+     * @author liuhanning
+     * @date  2018年8月23日 下午5:47:47
+     * @Description 订单闭环，添加交易记录
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.PAY_STORE_TRANSACTION_RECORD_HANDLER, concurrency = "3-6")
+	@Override
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         //计算门店资金
         //手续费

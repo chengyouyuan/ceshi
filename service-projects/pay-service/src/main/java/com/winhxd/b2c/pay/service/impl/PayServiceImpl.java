@@ -957,6 +957,7 @@ public class PayServiceImpl implements PayService{
         condition.setMoney(money);
         condition.setType(StoreBankRollOpearateEnums.ORDER_FINISH.getCode());
         updateStoreBankroll(condition);
+        logger.info("订单闭环，添加交易记录 condition:{}", condition.toString());
         //添加交易记录
         PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
         payStoreTransactionRecord.setStoreId(orderInfo.getStoreId());
@@ -965,6 +966,7 @@ public class PayServiceImpl implements PayService{
         payStoreTransactionRecord.setMoney(money);
         payStoreTransactionRecord.setRate(WXCalculation.FEE_RATE_OF_WX);
         payStoreTransactionRecord.setCmmsAmt(cmmsAmt);
+        logger.info("订单闭环，添加交易记录 record:{}", payStoreTransactionRecord.toString());
         payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
     }
 }

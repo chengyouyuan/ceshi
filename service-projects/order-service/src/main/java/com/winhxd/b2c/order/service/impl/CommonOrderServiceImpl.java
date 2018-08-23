@@ -22,6 +22,7 @@ import com.winhxd.b2c.common.domain.order.enums.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
@@ -57,6 +58,7 @@ import com.winhxd.b2c.order.util.OrderUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -70,7 +72,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -1354,8 +1358,6 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
-            //支付成功清空门店订单销量统计cache
-            cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
             try {
                 String last4MobileNums;
                 CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
@@ -1404,6 +1406,52 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             // 发送mq完成消息
             eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, orderInfo.getOrderNo(), orderInfo);
+            
+            //更新销量信息
+            //1.更新月销量信息
+            String lockKey = CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY + "LOCK" + orderInfo.getStoreId();
+            Lock lock = new RedisLock(cache, lockKey, 50000);
+            try {
+                lock.lock();
+                String monthOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, orderInfo.getStoreId() + "");
+                if (StringUtils.isNotBlank(monthOrderSalesSummaryStr)) {
+                    StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(monthOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo.getSkuCategoryQuantity());
+                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
+                    //获取当天最后一秒
+                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+                    //设置到缓存
+                    cache.hset(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+                    //当天有效
+                    cache.expire(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+                }
+            }catch(Exception e) {
+                logger.error("更新门店storeId={};月销售数据错误：", orderInfo.getStoreId().toString(), e);
+            }finally {
+                lock.unlock();
+            }
+            //2.更新当天销量信息
+            lockKey = CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + "LOCK" + orderInfo.getStoreId();
+            lock = new RedisLock(cache, lockKey, 50000);
+            try {
+                lock.lock();
+                String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "");
+                if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
+                    StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity()==null?0:storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo.getSkuCategoryQuantity());
+                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity()==null?0:storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
+                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum()==null?0:storeOrderSalesSummaryVO.getOrderNum() + 1);
+                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover()==null?BigDecimal.ZERO:storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds", orderInfo.getCustomerId().toString());
+                    storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds").intValue());
+                    //设置到缓存
+                    cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+                }
+            }catch(Exception e) {
+                logger.error("更新门店storeId={};当日销售数据错误：", orderInfo.getStoreId().toString(), e);
+            }finally {
+                lock.unlock();
+            }
         }
     }
 

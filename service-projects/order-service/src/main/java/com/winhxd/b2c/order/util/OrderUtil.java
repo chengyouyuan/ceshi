@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -14,17 +13,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 
+/**
+ * 订单Util工具类
+ * @author wangbin
+ * @date  2018年8月23日 下午12:54:48
+ * @version 
+ */
 public class OrderUtil {
 
     /**
@@ -35,11 +39,6 @@ public class OrderUtil {
 
     private OrderUtil() {
 
-    }
-
-    public static final String getStoreOrderSalesSummaryKey(long storeId) {
-        String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}";
-        return MessageFormat.format(storeSalesSummary, storeId);
     }
 
     public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {

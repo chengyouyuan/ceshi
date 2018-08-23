@@ -39,4 +39,10 @@ public class StoreSubmitProductVO {
 
     @ApiModelProperty("商品sku")
     private String skuCode;
+    
+    @ApiModelProperty("商品信息（语音）")
+    private String prodInfoVoice;
+    
+    @ApiModelProperty("商品信息（文字）")
+    private String prodInfoText;
 }

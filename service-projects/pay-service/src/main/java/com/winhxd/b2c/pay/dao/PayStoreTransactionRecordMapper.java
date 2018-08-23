@@ -20,4 +20,7 @@ public interface PayStoreTransactionRecordMapper {
     int updateByPrimaryKey(PayStoreTransactionRecord record);
 
     List<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(@Param("storeId") Long storeId);
+    
+    List<PayStoreTransactionRecord> getPayStoreTransRecordByOrderNo(@Param("orderNo") String orderNo);
+    
 }

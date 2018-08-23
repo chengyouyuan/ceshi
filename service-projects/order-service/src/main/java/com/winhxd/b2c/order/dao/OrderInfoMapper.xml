@@ -543,10 +543,10 @@
             and created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
         </if>
         <if test="condition.moneyInterval != null and condition.moneyInterval.start != null">
-            and created &gt;= #{condition.moneyInterval.start,jdbcType=DECIMAL}
+            and order_total_money &gt;= #{condition.moneyInterval.start,jdbcType=DECIMAL}
         </if>
         <if test="condition.moneyInterval != null and condition.moneyInterval.end != null">
-            and created &lt;= #{condition.moneyInterval.end,jdbcType=DECIMAL}
+            and order_total_money &lt;= #{condition.moneyInterval.end,jdbcType=DECIMAL}
         </if>
         <if test="condition.valuationType != null">
             and valuation_type = #{condition.valuationType,jdbcType=SMALLINT}

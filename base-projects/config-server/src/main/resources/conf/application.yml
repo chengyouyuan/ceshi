@@ -47,7 +47,7 @@ eureka:
   client:
     registry-fetch-interval-seconds: 5
 
-feign.hystrix.enabled: true
+feign.hystrix.enabled: false
 
 hystrix.threadpool.default:
   coreSize: 20

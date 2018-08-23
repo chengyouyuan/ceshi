@@ -160,9 +160,9 @@ public class ApiPayCallbackController {
         		sb.append(line);
         	}
         	resqXml = sb.toString();
-            logger.info("微信支付回调参数：{}", resqXml);
+            //logger.info("微信回调参数：{}", resqXml);
         } catch (IOException e) {
-        	logger.error("微信支付回调通知失败", e);
+        	logger.error("微信回调通知失败", e);
         }
 		return resqXml;
 	}
@@ -181,7 +181,7 @@ public class ApiPayCallbackController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			logger.error("微信支付回调响应失败", e);
+			logger.error("微信回调响应失败", e);
 		}
 	}
 

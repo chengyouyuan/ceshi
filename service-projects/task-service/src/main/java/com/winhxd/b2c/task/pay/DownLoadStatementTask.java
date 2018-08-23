@@ -1,4 +1,4 @@
-package com.winhxd.b2c.task;
+package com.winhxd.b2c.task.pay;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

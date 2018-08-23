@@ -1,4 +1,4 @@
-package com.winhxd.b2c.task.service;
+package com.winhxd.b2c.task.common;
 
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;

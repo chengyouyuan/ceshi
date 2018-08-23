@@ -82,9 +82,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		////////////////////////测试数据////////////////////////////////////
 //		Long businessId = 62l;
 		//////////////////////结束////////////////////////////////////////
+		int code = 0;
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
-			int code = bindBank.getCode();
+			code = bindBank.getCode();
 			result.setCode(code);
 			PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			if(code == 0){
@@ -102,17 +103,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setSwiftCode(data.getSwiftCode());
 				 result.setData(withdrawalPage);
-			 }else{
-				 //返回当前账户钱包里的可提现金额
-				 ResponseResult<PayWithdrawalPageVO> withdrawMoney = getWithdrawMoney(businessId);
-				 if(withdrawMoney.getData() != null){
-					 result.setCode(0);
-					 result.setData(withdrawMoney.getData());
-				 }
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
-			 int code = bindAccount.getCode();
+			 code = bindAccount.getCode();
 			 result.setCode(code);
 			 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			 if(code == 0){
@@ -125,13 +119,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
-			 }else{
-				//返回当前账户钱包里的可提现金额
-				 ResponseResult<PayWithdrawalPageVO> withdrawMoney = getWithdrawMoney(businessId);
-				 if(withdrawMoney.getData() != null){
-					 result.setCode(0);
-					 result.setData(withdrawMoney.getData());
-				 }
+			 } 
+		}
+		if(code > 0){
+			//返回当前账户钱包里的可提现金额
+			 ResponseResult<PayWithdrawalPageVO> withdrawMoney = getWithdrawMoney(businessId);
+			 if(withdrawMoney.getData() != null){
+				 result.setCode(0);
+				 result.setData(withdrawMoney.getData());
 			 }
 		}
 		return result;
@@ -193,6 +188,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 			payWithdrawal.setBuyerId(condition.getBuyerId());
+			payWithdrawal.setPaymentAccount(condition.getBuyerId());
 			payWithdrawal.setName(condition.getNick());
 			payWithdrawal.setCreatedByName(condition.getNick());
 			payWithdrawal.setUpdatedByName(condition.getNick());

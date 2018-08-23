@@ -131,7 +131,7 @@ public class MessageServiceController implements MessageServiceClient {
             messageBatchPushService.addBatchPush(messageBatchPush);
             result.setData(messageBatchPush.getId());
         } catch (BusinessException be) {
-            LOGGER.error("/message/7031/v1/addBatchPush,后台新增手动推送消息出错，异常信息为={}", be);
+            LOGGER.error("/message/7031/v1/addBatchPush,后台新增手动推送消息出错，异常信息为={}", be.getMessage());
             result.setCode(be.getErrorCode());
         } catch (Exception e) {
             LOGGER.error("/message/7031/v1/addBatchPush,后台新增手动推送消息出错，异常信息为={}", e);

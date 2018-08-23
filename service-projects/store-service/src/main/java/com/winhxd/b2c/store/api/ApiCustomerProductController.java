@@ -110,11 +110,7 @@ public class ApiCustomerProductController {
             logger.error("ApiProductController -> filtrateStoreProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-        CustomerBrowseLog customerBrowseLog = new CustomerBrowseLog();
-        customerBrowseLog.setStoreCustomerId(condition.getStoreId());
-        customerBrowseLog.setCustomerId(currentCustomerUser.getCustomerId());
-        customerBrowseLog.setLoginDatetime(new Date());
-        storeBrowseLogService.saveBrowseLogLogin(customerBrowseLog);
+
         ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, currentCustomerUser);
         logger.info("{} - [已登录]筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;

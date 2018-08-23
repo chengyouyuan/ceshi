@@ -303,10 +303,10 @@
                     <when test="condition.orderBy==0">
                         <choose>
                             <when test="condition.descAsc != null and condition.descAsc==1">
-                                order by prod.created desc
+                                order by prod.putaway_time desc
                             </when>
                             <otherwise>
-                                order by prod.created asc
+                                order by prod.putaway_time asc
                             </otherwise>
                         </choose>
                     </when>
@@ -321,7 +321,7 @@
                         </choose>
                     </when>
                     <otherwise>
-                        order by prod.created desc
+                        order by prod.putaway_time desc
                     </otherwise>
                 </choose>
 

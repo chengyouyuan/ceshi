@@ -88,10 +88,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 //		Long businessId = 106l;
 		//////////////////////结束////////////////////////////////////////
 		int code = 0;
+		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
 			code = bindBank.getCode();
-			PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			if(code == 0){
 				PayStoreUserInfoVO data = bindBank.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee() == null?BigDecimal.valueOf(0L):data.getTotalFee());
@@ -107,12 +107,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setCardNumber(data.getCardNumber());
 				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setSwiftCode(data.getSwiftCode());
-				 result.setData(withdrawalPage);
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
 			 code = bindAccount.getCode();
-			 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			 PayStoreUserInfoVO data = bindAccount.getData();
 			 LOGGER.info("6108当前用户绑定微信账户信息："+data);
 			 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
@@ -122,18 +120,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 if(code == 0){
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 result.setData(withdrawalPage);
 			 } 
 		}
 		if(code > 0){
 			//返回当前账户钱包里的可提现金额
 			 ResponseResult<PayWithdrawalPageVO> withdrawMoney = getWithdrawMoney(businessId);
-			 if(withdrawMoney.getData() != null){
-				 result.setCode(0);
-				 result.setData(withdrawMoney.getData());
-				 LOGGER.info("当前用户没有绑定微信账号");
+			 PayWithdrawalPageVO data = withdrawMoney.getData();
+			if(data != null){
+				withdrawalPage.setPresented_money(data.getPresented_money());
+				withdrawalPage.setTotal_moeny(data.getTotal_moeny());
+				withdrawalPage.setRate(data.getRate());
+				result.setCode(0);
+				LOGGER.info("当前用户没有绑定微信账号");
 			 }
 		}
+		result.setData(withdrawalPage);
 		return result;
 	}
 	

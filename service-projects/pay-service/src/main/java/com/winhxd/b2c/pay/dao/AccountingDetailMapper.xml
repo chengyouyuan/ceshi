@@ -10,6 +10,14 @@
     )
   </insert>
 
+  <insert id="insertAccountingDetailServiceFee" useGeneratedKeys="true" keyProperty="id" parameterType="com.winhxd.b2c.common.domain.pay.model.AccountingDetail">
+    insert into pay_accounting_detail (
+      order_no, detail_type, detail_money, store_id, insert_time, order_complete_status, recorded_time, third_party_verify_status, third_party_verify_time
+    ) values (
+      #{orderNo}, 2, #{detailMoney}, #{storeId}, now(), #{orderCompleteStatus}, #{recordedTime}, 1, now()
+    )
+  </insert>
+
   <resultMap id="VerifyDetailVOMap" type="com.winhxd.b2c.common.domain.pay.vo.VerifyDetailVO">
     <id column="id" property="id"></id>
     <result column="order_no" property="orderNo"></result>
@@ -169,6 +177,13 @@
       recorded_time = #{recordedTime}
     where order_no = #{orderNo}
   </update>
+
+  <select id="selectAccountingDetailServiceFeeByOrderNo" resultType="decimal">
+    select detail_money
+    from pay_accounting_detail
+    where detail_type = 2
+    and order_no = #{orderNo}
+  </select>
 
   <update id="updateAccountingDetailServiceFeeByThirdParty">
     update pay_accounting_detail set

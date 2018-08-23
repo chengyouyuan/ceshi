@@ -1,6 +1,7 @@
 package test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
@@ -30,6 +32,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerConditio
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -71,17 +74,13 @@ public class OrderServiceTest {
     
     @Test
     public void testGetStoreOrderSalesSummary() {
-        //鏀粯鎴愬姛娓呯┖闂ㄥ簵璁㈠崟閿�閲忕粺璁ache
 //        System.out.println(cache.del(OrderUtil.getStoreOrderSalesSummaryKey(0L)));
         long storeId = 0L;
-        //鏌ヨ褰撳ぉ鏁版嵁
-        //鑾峰彇褰撳ぉ鏈�鍚庝竴绉�
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-        //鑾峰彇褰撳ぉ寮�濮嬬涓�绉�
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
-        System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
+//        System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
     }
     
     @Test
@@ -165,15 +164,15 @@ public class OrderServiceTest {
         Long storeId = 12L;
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
-            // 鍙戦�佷簯淇�
             String createdBy= "";
             int expiration = 0;
             int msgType = 0;
             short pageType = 1;
+            short categoryType = 0;
             int audioType = 0;
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
 //            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
 //                throw new BusinessException(BusinessCode.CODE_1001);
 //            }
@@ -219,6 +218,32 @@ public class OrderServiceTest {
         OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
         condition.setOrderNo("C18082219860675647");
         orderService.updateOrderRefundCallback(condition);
+    }
+    
+    
+    @Test
+    public void testgetStoreMonthOrderSalesSummary(){
+        System.out.println(orderQueryService.getStoreMonthOrderSalesSummary(104L));
+    }
+    
+    @Test
+    public void testgetStoreIntradayOrderSalesSummary(){
+        System.out.println(orderQueryService.getStoreIntradayOrderSalesSummary(104L));
+    }
+    
+    @Test
+    public void testgetStoreIntradayOrderSalesSummary1(){
+//        String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
+//        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+//        storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity()==null?0:storeOrderSalesSummaryVO.getSkuCategoryQuantity() + 1);
+//        storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity()==null?0:storeOrderSalesSummaryVO.getSkuQuantity() + 1);
+//        storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum()==null?0:storeOrderSalesSummaryVO.getOrderNum() + 1);
+//        storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover()==null?BigDecimal.ZERO:storeOrderSalesSummaryVO.getTurnover().add(BigDecimal.ONE).setScale(2, RoundingMode.HALF_UP));
+//        cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + 104L + ":customerIds", "111");
+//        storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + 104L + ":customerIds").intValue());
+//        //设置到缓存
+//        cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hdel(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
     }
     
 }

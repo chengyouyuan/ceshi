@@ -1,13 +1,14 @@
 package com.winhxd.b2c.task.pay;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 
 /**
  * TransferToBankStatusCheckTask
@@ -31,7 +32,7 @@ public class TransferToBankStatusCheckTask {
             logger.error("PayTransferServiceClientFallBack:confirmTransferToBankStatus called failed.");
         } else {
             logger.info("PayTransferServiceClientFallBack:confirmTransferToBankStatus called finished, "
-                    + result.getData() + "rows updated.");
+                    + result.getData() + " rows updated.");
         }
     }
 

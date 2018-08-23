@@ -42,33 +42,12 @@ public interface OrderQueryService {
 
     /**
      * B端用户查订单详情
+     * @date  2018年8月23日 下午1:17:38
      * @param orderQueryByCustomerCondition
      * @return
      */
-    OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition condition);
+    OrderInfoDetailVO findOrderForStore(OrderQueryByStoreCondition orderQueryByCustomerCondition);
 
-    /**
-     * 获取门店销售数据
-     * @author wangbin
-     * @date  2018年8月4日 上午10:51:59
-     * @param storeId
-     * @param startDateTime
-     * @param endDateTime
-     * @return
-     */
-    StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
-
-    /**
-     * 计算并缓存门店销售数据
-     * @author wangbin
-     * @date  2018年8月4日 下午3:38:46
-     * @param storeId
-     * @param startDateTime
-     * @param endDateTime
-     * @return
-     */
-    StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime,
-            Date endDateTime);
     /**
      * 根据门店ID获取门店提货码
      * @author pangjianhua
@@ -138,4 +117,23 @@ public interface OrderQueryService {
      */
     OrderPayVO getOrderPayInfo(String orderNo, String spbillCreateIp, String deviceInfo, Long customerId,
             String openid);
+
+    /**
+     * 获取门店当天订单销售数据
+     * @author wangbin
+     * @date  2018年8月23日 下午1:18:08
+     * @Description 
+     * @param storeId
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreIntradayOrderSalesSummary(long storeId);
+
+    /**
+     * 获取门店30天销量数据
+     * @author wangbin
+     * @date  2018年8月23日 下午1:32:48
+     * @param storeId
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreMonthOrderSalesSummary(long storeId);
 }

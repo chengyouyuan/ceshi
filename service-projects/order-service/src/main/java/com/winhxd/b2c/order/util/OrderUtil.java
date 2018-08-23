@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -14,17 +13,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 
+/**
+ * 订单Util工具类
+ * @author wangbin
+ * @date  2018年8月23日 下午12:54:48
+ * @version 
+ */
 public class OrderUtil {
 
     /**
@@ -35,11 +41,6 @@ public class OrderUtil {
 
     private OrderUtil() {
 
-    }
-
-    public static final String getStoreOrderSalesSummaryKey(long storeId) {
-        String storeSalesSummary = CacheName.CACHE_KEY_STORE_ORDER_SALESSUMMARY + "{0}";
-        return MessageFormat.format(storeSalesSummary, storeId);
     }
 
     public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {
@@ -83,17 +84,19 @@ public class OrderUtil {
      * @param audioType
      * @return
      * @author wangbin
+     * @param categoryType 
      * @date 2018年8月16日 下午5:24:49
      * @Description
      */
     public static NeteaseMsgCondition genNeteaseMsgCondition(Long storeId, String storeMsg, String createdBy, int expiration,
-                                                             int msgType, short pageType, int audioType, String treeCode) {
+                                                             int msgType, short pageType, short categoryType, int audioType, String treeCode) {
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
         neteaseMsgCondition.setCustomerId(storeId);
         NeteaseMsg neteaseMsg = new NeteaseMsg();
         neteaseMsg.setMsgContent(storeMsg);
         neteaseMsg.setAudioType(audioType);
         neteaseMsg.setPageType(pageType);
+        neteaseMsg.setMsgCategory(categoryType);
         neteaseMsg.setMsgType(msgType);
         neteaseMsg.setTreeCode(treeCode);
         neteaseMsg.setCreatedBy(createdBy);
@@ -114,14 +117,11 @@ public class OrderUtil {
     }
 
     public static String genRealPayMoney(BigDecimal money) {
-        String result = "￥";
         if (ObjectUtils.allNotNull(money)) {
-            result += money.toString();
+           return "￥"+money.toString();
         } else {
-            result += "0";
-
+           return "--";
         }
-        return result;
     }
 
     /**
@@ -138,6 +138,9 @@ public class OrderUtil {
                 result += "...";
             }
         }
+        if(StringUtils.isBlank(result)){
+            result="--";
+        }
         return result;
     }
 
@@ -149,18 +152,19 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:27:59
      */
-    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId) {
+    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId, String orderNo) {
         try {
             // 发送云信
             String storeMsg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
             String createdBy = "";
             int expiration = 0;
             int msgType = 0;
-            short pageType = 1;
+            short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
+            short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 1;
-            String treeCode = "treeCode";
+            String treeCode = orderNo;
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("客户下单给门店:storeId={},发送消息：{} 失败", storeId, OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE);
@@ -227,18 +231,19 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:37:26
      */
-    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId) {
+    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId, String orderNo) {
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             // 发送云信
             String createdBy = "";
             int expiration = 0;
             int msgType = 0;
-            short pageType = 1;
+            short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
+            short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 0;
-            String treeCode = "treeCode";
+            String treeCode = orderNo;
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);

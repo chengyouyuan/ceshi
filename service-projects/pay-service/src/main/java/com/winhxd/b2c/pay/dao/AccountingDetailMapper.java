@@ -25,6 +25,14 @@ public interface AccountingDetailMapper {
     int insertAccountingDetail(AccountingDetail accountingDetail);
 
     /**
+     * 单独插入订单手续费
+     *
+     * @param accountingDetail
+     * @return
+     */
+    int insertAccountingDetailServiceFee(AccountingDetail accountingDetail);
+
+    /**
      * 按指定ID查询的费用明细
      *
      * @param id
@@ -87,6 +95,14 @@ public interface AccountingDetailMapper {
      * @return
      */
     int updateAccountingDetailCompletedByComplete(@Param("orderNo") String orderNo, @Param("recordedTime") Date recordedTime);
+
+    /**
+     * 查询订单支付手续费
+     *
+     * @param orderNo
+     * @return
+     */
+    BigDecimal selectAccountingDetailServiceFeeByOrderNo(@Param("orderNo") String orderNo);
 
     /**
      * 按订单更新与第三方平台订单服务费

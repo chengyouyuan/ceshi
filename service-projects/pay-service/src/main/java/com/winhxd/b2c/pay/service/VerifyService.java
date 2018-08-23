@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -226,7 +227,26 @@ public class VerifyService {
                     }
                     // 订单手续费
                     BigDecimal serviceFee = payStatement.getFee();
-                    accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
+                    if (BigDecimal.ZERO.compareTo(serviceFee) != 0) {
+                        // 惠下单平台在订单支付成功时计算出的手续费，因为只有在出对账单时才知道手续费是多少
+                        BigDecimal computeServiceFee = accountingDetailMapper.selectAccountingDetailServiceFeeByOrderNo(orderNo);
+                        if (computeServiceFee == null) {
+                            AccountingDetail thirdPartyfee = new AccountingDetail();
+                            thirdPartyfee.setOrderNo(orderNo);
+                            thirdPartyfee.setDetailType(AccountingDetail.DetailTypeEnum.FEE_OF_WX.getCode());
+                            thirdPartyfee.setDetailMoney(serviceFee.multiply(BigDecimal.valueOf(-1)));
+                            thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
+                            if (orderInfoDetailVO.getOrderStatus().compareTo(OrderStatusEnum.FINISHED.getStatusCode()) == 1) {
+                                thirdPartyfee.setOrderCompleteStatus(1);
+                                thirdPartyfee.setRecordedTime(orderInfoDetailVO.getFinishDateTime());
+                            } else {
+                                thirdPartyfee.setOrderCompleteStatus(0);
+                            }
+                            accountingDetailMapper.insertAccountingDetailServiceFee(thirdPartyfee);
+                        }
+                        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(
+                                orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
+                    }
                     updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
                     if (updateCount > 0) {
                         log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
@@ -373,13 +393,17 @@ public class VerifyService {
             rollCondition.setOrderNo(vo.getOrderNo());
             rollCondition.setStoreId(vo.getStoreId());
             // 货款
-            rollCondition.setMoneyType(Short.valueOf("1"));
-            rollCondition.setMoney(vo.getPaymentMoney());
-            payService.updateStoreBankroll(rollCondition);
+            if (BigDecimal.ZERO.compareTo(vo.getPaymentMoney()) != 0) {
+                rollCondition.setMoneyType((short) 1);
+                rollCondition.setMoney(vo.getPaymentMoney());
+                payService.updateStoreBankroll(rollCondition);
+            }
             // 促销费
-            rollCondition.setMoneyType(Short.valueOf("2"));
-            rollCondition.setMoney(vo.getPaymentMoney());
-            payService.updateStoreBankroll(rollCondition);
+            if (BigDecimal.ZERO.compareTo(vo.getDiscountMoney()) != 0) {
+                rollCondition.setMoneyType((short) 2);
+                rollCondition.setMoney(vo.getDiscountMoney().abs());
+                payService.updateStoreBankroll(rollCondition);
+            }
             updatedCount++;
         }
         log.info("门店资金结算-核销批次[{}}，共结算[{}]笔订单", verifyCode, updatedCount);

@@ -38,9 +38,13 @@ import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
 @Service
 public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	private static final Logger logger = LoggerFactory.getLogger(WXUnifiedOrderServiceImpl.class);
-	//小程序预支付标识
+	/**
+	 * 小程序预支付标识
+	 */
 	private static final String PACKAGE = "prepay_id=";
-	//支付流水号最大长度
+	/**
+	 * 支付流水号最大长度
+	 */
 	private static final int TRADE_NO_MAX_LENGTH = 32;
 	
 	@Autowired

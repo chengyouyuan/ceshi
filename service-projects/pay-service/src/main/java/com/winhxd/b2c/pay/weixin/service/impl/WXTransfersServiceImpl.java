@@ -17,9 +17,8 @@ import com.winhxd.b2c.pay.weixin.constant.TransfersToWxError;
 import com.winhxd.b2c.pay.weixin.dao.PayTransfersMapper;
 import com.winhxd.b2c.pay.weixin.model.PayTransfers;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
-import com.winhxd.b2c.pay.weixin.util.BeanAndXmlUtil;
-import com.winhxd.b2c.pay.weixin.util.rsa.GetRSA;
 import com.winhxd.b2c.pay.weixin.util.XmlUtil;
+import com.winhxd.b2c.pay.weixin.util.rsa.GetRSA;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -469,13 +468,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         if(StringUtils.isNotBlank(resultXml)){
             queryForWxBankResponseDTO = XmlUtil.xml2Bean(resultXml, PayTransfersQueryForWxBankResponseDTO.class);
         }
-/*      //舍弃递归, 转账至银行卡过程缓慢, 再次查询没有意义
-        if(queryTimes > 1 && StringUtils.isNotBlank(queryForWxBankResponseDTO.getStatus()) &&
-                PayTransfersStatus.PROCESSING.getCode().equals(queryForWxBankResponseDTO.getStatus())){
-            logger.info("Pay transfers is PROCESSING, sleep for 1 second.");
-            Thread.sleep(1 * 1000);
-            queryForWxBankResponseDTO = getExactResultForWxBank(partnerTradeNo, --queryTimes);
-        }*/
         return queryForWxBankResponseDTO;
     }
 
@@ -521,15 +513,6 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     }
 
     public static void main(String[] args) throws Exception {
-        /*WXPay wxPay = new WXPay();
-        SortedMap<String,String> sortedMap = new TreeMap<String,String>();
-        sortedMap.put("mch_id", "1467361502");
-        sortedMap.put("nonce_str", WXPayUtil.generateNonceStr());
-        sortedMap.put("sign_type", "MD5");
-        sortedMap.put("sign", WXPayUtil.generateSignature(sortedMap, "u29K8cDc48zhF0hKlQ3pd1tiamkZpRoS"));
-        System.out.println(wxPay.publicKey(sortedMap));*/
-
-        //System.out.println(new BigDecimal("1001").divide(UNITS).setScale(2, RoundingMode.HALF_UP).doubleValue());
         RequestBase preOrderDTO = new PayPreOrderDTO();
         Class<? extends RequestBase> clazz = preOrderDTO.getClass();
         Field[] fields = clazz.getDeclaredFields();

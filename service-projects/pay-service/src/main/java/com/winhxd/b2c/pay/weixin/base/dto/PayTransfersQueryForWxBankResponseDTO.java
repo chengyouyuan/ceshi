@@ -100,4 +100,25 @@ public class PayTransfersQueryForWxBankResponseDTO {
      */
     private String reason;
 
+    @Override
+    public String toString() {
+        return "PayTransfersQueryForWxBankResponseDTO{" +
+                "returnCode='" + returnCode + '\'' +
+                ", returnMsg='" + returnMsg + '\'' +
+                ", resultCode='" + resultCode + '\'' +
+                ", errCode='" + errCode + '\'' +
+                ", errCodeDes='" + errCodeDes + '\'' +
+                ", mchId='" + mchId + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", paymentNo='" + paymentNo + '\'' +
+                ", bankNoMd5='" + bankNoMd5 + '\'' +
+                ", trueNameMd5='" + trueNameMd5 + '\'' +
+                ", amount=" + amount +
+                ", status='" + status + '\'' +
+                ", cmmsAmt=" + cmmsAmt +
+                ", createTime='" + createTime + '\'' +
+                ", paySuccTime='" + paySuccTime + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }

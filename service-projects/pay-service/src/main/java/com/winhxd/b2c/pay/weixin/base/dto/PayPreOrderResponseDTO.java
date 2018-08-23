@@ -90,4 +90,15 @@ public class PayPreOrderResponseDTO extends ResponseBase implements Serializable
 		this.code_url = code_url;
 	}
 
+	@Override
+	public String toString() {
+		return "PayPreOrderResponseDTO{" +
+				"resultCode='" + resultCode + '\'' +
+				", errCode='" + errCode + '\'' +
+				", errCodeDes='" + errCodeDes + '\'' +
+				", tradeType='" + tradeType + '\'' +
+				", prepayId='" + prepayId + '\'' +
+				", code_url='" + code_url + '\'' +
+				'}';
+	}
 }

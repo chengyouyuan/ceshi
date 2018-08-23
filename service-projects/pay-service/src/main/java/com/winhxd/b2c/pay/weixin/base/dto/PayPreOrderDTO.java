@@ -181,4 +181,23 @@ public class PayPreOrderDTO extends RequestBase{
 	public void setNotifyUrl(String notifyUrl) {
 		this.notifyUrl = notifyUrl;
 	}
+
+	@Override
+	public String toString() {
+		return "PayPreOrderDTO{" +
+				"outTradeNo='" + outTradeNo + '\'' +
+				", totalFee=" + totalFee +
+				", openid='" + openid + '\'' +
+				", tradeType='" + tradeType + '\'' +
+				", timeStart=" + timeStart +
+				", body='" + body + '\'' +
+				", spbillCreateIp='" + spbillCreateIp + '\'' +
+				", deviceInfo='" + deviceInfo + '\'' +
+				", productId='" + productId + '\'' +
+				", attach='" + attach + '\'' +
+				", limitPay='" + limitPay + '\'' +
+				", feeType='" + feeType + '\'' +
+				", notifyUrl='" + notifyUrl + '\'' +
+				'}';
+	}
 }

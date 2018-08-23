@@ -171,7 +171,7 @@
 
   <update id="updateAccountingDetailServiceFeeByThirdParty">
     update pay_accounting_detail set
-      detail_money = {detailMoney}
+      detail_money = #{detailMoney}
     where detail_type = 2
     and order_no = #{orderNo}
   </update>

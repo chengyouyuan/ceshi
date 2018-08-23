@@ -102,4 +102,26 @@ public class PayTransfersQueryForWxChangeResponseDTO {
      */
     private String appid;
 
+    @Override
+    public String toString() {
+        return "PayTransfersQueryForWxChangeResponseDTO{" +
+                "returnCode='" + returnCode + '\'' +
+                ", returnMsg='" + returnMsg + '\'' +
+                ", resultCode='" + resultCode + '\'' +
+                ", errCode='" + errCode + '\'' +
+                ", errCodeDes='" + errCodeDes + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", mchId='" + mchId + '\'' +
+                ", detailId='" + detailId + '\'' +
+                ", status='" + status + '\'' +
+                ", reason='" + reason + '\'' +
+                ", openid='" + openid + '\'' +
+                ", transferName='" + transferName + '\'' +
+                ", paymentAmount='" + paymentAmount + '\'' +
+                ", transferTime='" + transferTime + '\'' +
+                ", paymentTime='" + paymentTime + '\'' +
+                ", desc='" + desc + '\'' +
+                ", appid='" + appid + '\'' +
+                '}';
+    }
 }

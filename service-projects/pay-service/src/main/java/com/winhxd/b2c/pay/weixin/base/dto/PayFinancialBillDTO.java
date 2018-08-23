@@ -48,4 +48,12 @@ public class PayFinancialBillDTO extends RequestBase {
 		this.tarType = tarType;
 	}
 
+	@Override
+	public String toString() {
+		return "PayFinancialBillDTO{" +
+				"billDate='" + billDate + '\'' +
+				", accountType='" + accountType + '\'' +
+				", tarType='" + tarType + '\'' +
+				'}';
+	}
 }

@@ -279,4 +279,29 @@ public class PayPreOrderCallbackDTO extends ResponseBase{
 		this.tradeStateDesc = tradeStateDesc;
 	}
 
+	@Override
+	public String toString() {
+		return "PayPreOrderCallbackDTO{" +
+				"resultCode='" + resultCode + '\'' +
+				", errCode='" + errCode + '\'' +
+				", errCodeDes='" + errCodeDes + '\'' +
+				", outTradeNo='" + outTradeNo + '\'' +
+				", totalFee=" + totalFee +
+				", openid='" + openid + '\'' +
+				", tradeType='" + tradeType + '\'' +
+				", attach='" + attach + '\'' +
+				", isSubscribe='" + isSubscribe + '\'' +
+				", bankType='" + bankType + '\'' +
+				", settlementTotalFee=" + settlementTotalFee +
+				", feeType='" + feeType + '\'' +
+				", cashFee=" + cashFee +
+				", cashFeeType='" + cashFeeType + '\'' +
+				", couponFee=" + couponFee +
+				", couponCount=" + couponCount +
+				", transactionId='" + transactionId + '\'' +
+				", timeEnd=" + timeEnd +
+				", tradeState='" + tradeState + '\'' +
+				", tradeStateDesc='" + tradeStateDesc + '\'' +
+				'}';
+	}
 }

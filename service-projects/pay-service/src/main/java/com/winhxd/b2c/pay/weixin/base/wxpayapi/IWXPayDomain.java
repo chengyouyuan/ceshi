@@ -25,8 +25,14 @@ public abstract interface IWXPayDomain {
     abstract DomainInfo getDomain(final PayConfig config);
 
     static class DomainInfo{
-        public String domain;       //域名
-        public boolean primaryDomain;     //该域名是否为主域名。例如:api.mch.weixin.qq.com为主域名
+        /**
+         * 域名
+         */
+        public String domain;
+        /**
+         * 该域名是否为主域名。例如:api.mch.weixin.qq.com为主域名
+         */
+        public boolean primaryDomain;
         public DomainInfo(String domain, boolean primaryDomain) {
             this.domain = domain;
             this.primaryDomain = primaryDomain;

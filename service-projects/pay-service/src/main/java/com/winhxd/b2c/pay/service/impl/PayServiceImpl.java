@@ -485,6 +485,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney();
 		String remarks="";
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
+			payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
 			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
 		}
 
@@ -509,7 +510,6 @@ public class PayServiceImpl implements PayService{
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());
-		payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedMoney(presentedMoney);
 		payStoreBankrollLog.setSettlementSettledMoney(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedFrozenMoney(presentedFrozenMoney);

@@ -108,7 +108,7 @@ public class ApiPayStoreBindBankCardController {
     	// 获取当前门店id
     	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
     	//////////////////测试门店id//////////////////
-//    	Long businessId = 62l;
+//    	Long businessId = 73l;
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
@@ -140,7 +140,7 @@ public class ApiPayStoreBindBankCardController {
 		
 		/////////////////////////////// 测试数据
 //		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(62l);
+//		currentStoreUser.setBusinessId(73l);
 //		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();

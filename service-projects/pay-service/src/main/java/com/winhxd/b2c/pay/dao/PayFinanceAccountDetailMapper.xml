@@ -555,4 +555,12 @@
             AND pad.detail_type = '3'
         </if>
     </select>
+    <select id="getRevenueMoney" resultType="java.math.BigDecimal">
+        SELECT
+            SUM(
+                IFNULL(cmms_amt, 0) - IFNULL(callback_cmms_amt, 0)
+            ) AS revenueMoney
+        FROM
+            pay_withdrawals
+    </select>
 </mapper>

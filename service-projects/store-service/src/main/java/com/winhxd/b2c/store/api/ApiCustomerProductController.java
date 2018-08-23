@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.ProductService;
+import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -40,6 +41,9 @@ public class ApiCustomerProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private StoreBrowseLogService storeBrowseLogService;
 
     @ApiOperation(value = "[未登录]小程序商品搜索接口", notes = "[未登录]小程序商品搜索接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -103,6 +107,7 @@ public class ApiCustomerProductController {
             logger.error("ApiProductController -> filtrateStoreProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        storeBrowseLogService.saveBrowseLogLogin(condition.getStoreId(), currentCustomerUser.getCustomerId());
         ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, currentCustomerUser);
         logger.info("{} - [已登录]筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;

@@ -80,4 +80,6 @@ public class PayFinanceAccountDetailVO {
 	private BigDecimal todayCharge;
 	@ApiModelProperty("公司补充总入账")
 	private BigDecimal companySupplementInMoney;
+	@ApiModelProperty("营收金额")
+	private BigDecimal revenueMoney;
 }

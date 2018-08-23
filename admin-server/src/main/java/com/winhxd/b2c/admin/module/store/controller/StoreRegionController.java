@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Api(tags = "门店管理、测试区域配置")
 @RestController
+@CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
 public class StoreRegionController {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreRegionController.class);
@@ -38,7 +39,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @PostMapping(value = "/store/1037/v1/findStoreRegions")
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_LIST)
     public ResponseResult<PagedList<StoreRegionVO>> findStoreRegions(@RequestBody StoreRegionCondition condition){
         ResponseResult<PagedList<StoreRegionVO>> result = storeServiceClient.findStoreRegions(condition);
         return result;
@@ -51,7 +52,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @GetMapping(value = "/store/1038/v1/removeStoreRegion/{id}")
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_DEL)
     public ResponseResult<Void> removeStoreRegion(@PathVariable("id") Long id){
         storeServiceClient.removeStoreRegion(id);
         return new ResponseResult<>();
@@ -64,7 +65,7 @@ public class StoreRegionController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")
     })
     @PostMapping(value = "/store/1039/v1/saveStoreRegion")
-    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_REGION_ADD)
     public ResponseResult<Void> saveStoreRegion(@RequestBody StoreRegionCondition condition){
         storeServiceClient.saveStoreRegion(condition);
         return new ResponseResult<>();

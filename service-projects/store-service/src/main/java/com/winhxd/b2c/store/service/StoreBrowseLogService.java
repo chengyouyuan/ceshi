@@ -1,7 +1,5 @@
 package com.winhxd.b2c.store.service;
 
-import com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog;
-
 import java.util.Date;
 
 /**
@@ -15,32 +13,25 @@ public interface StoreBrowseLogService {
     /**
      * 新增进入记录
      *
-     * @param customerBrowseLog
+     * @param storeId    B端门店主键id
+     * @param customerId C端用户主键id
      */
-    void saveBrowseLogLogin(CustomerBrowseLog customerBrowseLog);
-
-    /**
-     * 查询最近记录id
-     *
-     * @param storeId
-     * @param customerId
-     * @return
-     */
-    CustomerBrowseLog getIdForLoginOut(Long storeId, Long customerId);
+    void saveBrowseLogLogin(Long storeId, Long customerId);
 
     /**
      * 退出修改记录
      *
-     * @param customerBrowseLog
+     * @param storeId    B端门店主键id
+     * @param customerId C端用户主键id
      */
-    void modifyByPrimaryKey(CustomerBrowseLog customerBrowseLog);
+    void saveBrowseLogLogout(Long storeId, Long customerId);
 
     /**
      * 获取某门店时间段内浏览人数
      *
      * @param storeCustomerId 门店用户编码
-     * @param beginDate 开始时间
-     * @param endDate 结束时间
+     * @param beginDate       开始时间
+     * @param endDate         结束时间
      * @return
      */
     int getBrowseNum(Long storeCustomerId, Date beginDate, Date endDate);

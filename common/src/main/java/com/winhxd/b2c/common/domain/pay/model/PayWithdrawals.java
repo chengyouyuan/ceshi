@@ -28,6 +28,8 @@ public class PayWithdrawals {
 
     private String callbackReason;
 
+    private String errorMessage;
+
     private BigDecimal callbackCmmsAmt;
 
     private Short flowDirectionType;
@@ -156,6 +158,14 @@ public class PayWithdrawals {
 
     public void setCallbackReason(String callbackReason) {
         this.callbackReason = callbackReason;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public BigDecimal getCallbackCmmsAmt() {

@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int addBatchPush(MessageBatchPush messageBatchPush) {
         if (StringUtils.isEmpty(messageBatchPush.getMsgContent())){
             LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");

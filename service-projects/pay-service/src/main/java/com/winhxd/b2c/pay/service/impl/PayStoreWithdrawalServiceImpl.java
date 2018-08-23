@@ -95,7 +95,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(code == 0){
 				PayStoreUserInfoVO data = bindBank.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee() == null?BigDecimal.valueOf(0L):data.getTotalFee());
-				 System.out.println("6108当前用户银行卡的可提现额度TotalFee--"+data.getTotalFee()+";Presented--"+withdrawalPage.getPresented_money());
+				 LOGGER.info("6108当前用户银行卡的可提现额度TotalFee--"+data.getTotalFee()+";Presented--"+withdrawalPage.getPresented_money());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
 				 String carnumber = data.getCardNumber();

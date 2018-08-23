@@ -1,4 +1,4 @@
-package com.winhxd.b2c.task;
+package com.winhxd.b2c.task.pay;
 
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.RedisLock;

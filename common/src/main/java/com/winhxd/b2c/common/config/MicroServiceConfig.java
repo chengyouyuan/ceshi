@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Scope;
  * @author lixiaodong
  */
 @Import({CommonConfig.class, MessageQueueConfig.class})
+@EnableHystrix
 public class MicroServiceConfig {
 
     /**

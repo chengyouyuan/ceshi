@@ -132,7 +132,7 @@ public class PayServiceImpl implements PayService{
 					return true;
 				}
 			} catch (Exception e) {
-				logger.info(log+"订单更新失败");
+				logger.error(log+"订单更新失败",e);
 				return false;
 			}
 			

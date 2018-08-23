@@ -144,7 +144,7 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
 		String userName = userInfo.getUsername();
-		String code = getUUID();
+		String code = "LQ_"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
 		condition.setCode(code);
 		condition.setCreatedBy(userId);
 		condition.setCreatedByName(userName);
@@ -165,7 +165,7 @@ public class CouponController {
 		UserInfo userInfo = UserManager.getCurrentUser();
 		Long userId = userInfo.getId();
 		String userName = userInfo.getUsername();
-		String code = getUUID();
+		String code = "TQ_"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
 		condition.setCode(code);
 		condition.setCreatedBy(userId);
 		condition.setCreatedByName(userName);

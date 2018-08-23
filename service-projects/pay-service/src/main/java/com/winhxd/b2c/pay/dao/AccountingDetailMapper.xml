@@ -170,6 +170,13 @@
     where order_no = #{orderNo}
   </update>
 
+  <select id="selectAccountingDetailServiceFeeByOrderNo" resultType="decimal">
+    select detail_money
+    from pay_accounting_detail
+    where detail_type = 2
+    and order_no = #{orderNo}
+  </select>
+
   <update id="updateAccountingDetailServiceFeeByThirdParty">
     update pay_accounting_detail set
       detail_money = #{detailMoney}

@@ -89,6 +89,14 @@ public interface AccountingDetailMapper {
     int updateAccountingDetailCompletedByComplete(@Param("orderNo") String orderNo, @Param("recordedTime") Date recordedTime);
 
     /**
+     * 查询订单支付手续费
+     *
+     * @param orderNo
+     * @return
+     */
+    BigDecimal selectAccountingDetailServiceFeeByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
      * 按订单更新与第三方平台订单服务费
      *
      * @param orderNo

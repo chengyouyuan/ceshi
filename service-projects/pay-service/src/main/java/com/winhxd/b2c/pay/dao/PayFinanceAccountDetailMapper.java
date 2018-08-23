@@ -66,4 +66,6 @@ public interface PayFinanceAccountDetailMapper {
 	 * @return
 	 */
     BigDecimal getRevenueMoney();
+
+	List<PayFinanceAccountDetail> selectByExample(PayFinanceAccountDetail condition);
 }

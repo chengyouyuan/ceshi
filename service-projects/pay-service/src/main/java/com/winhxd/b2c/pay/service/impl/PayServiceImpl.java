@@ -226,18 +226,19 @@ public class PayServiceImpl implements PayService{
 				logger.error(log+"--订单更新失败",e);
 				return false;
 			}
-		}
 
-		//出账明细表 pay_finance_account_detail
-		PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
-		payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
-		payFinanceAccountDetail.setOutType(PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode());
-		payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
-		payFinanceAccountDetail.setCreated(new Date());
-		payFinanceAccountDetail.setTradeNo(condition.getOutRefundNo());
-        int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
-		if (payFinanceInsertResult<1) {
-			logger.info(log+"--订单出账明细表插入失败");
+			//出账明细表 pay_finance_account_detail
+			PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
+			payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
+			payFinanceAccountDetail.setOutType(PayOutTypeEnum.CUSTOMER_REFUND.getStatusCode());
+			payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
+			payFinanceAccountDetail.setCreated(new Date());
+			payFinanceAccountDetail.setTradeNo(condition.getOutRefundNo());
+			int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
+			if (payFinanceInsertResult<1) {
+				logger.info(log+"--订单出账明细表插入失败");
+			}
+
 		}
 
 		return true;
@@ -741,17 +742,19 @@ public class PayServiceImpl implements PayService{
         //step 1  修改提现申请状态
         int payWithdrawalsResult  = payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
 
-        //step 2出账明细表 pay_finance_account_detail
-        PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
-        payFinanceAccountDetail.setOrderNo(payWithdrawals.getWithdrawalsNo());
-        payFinanceAccountDetail.setOutType(PayOutTypeEnum.STORE_WITHDRAW.getStatusCode());
-        payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
-        payFinanceAccountDetail.setCreated(new Date());
-        payFinanceAccountDetail.setTradeNo(payWithdrawals.getWithdrawalsNo());
-        int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
-        if (payFinanceInsertResult<1) {
-            logger.info(log+"--订单出账明细表插入失败");
-        }
+		//step 2出账明细表 pay_finance_account_detail
+		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
+			payFinanceAccountDetail.setOrderNo(payWithdrawals.getWithdrawalsNo());
+			payFinanceAccountDetail.setOutType(PayOutTypeEnum.STORE_WITHDRAW.getStatusCode());
+			payFinanceAccountDetail.setStatus(StatusEnums.EFFECTIVE.getCode());
+			payFinanceAccountDetail.setCreated(new Date());
+			payFinanceAccountDetail.setTradeNo(payWithdrawals.getWithdrawalsNo());
+			int payFinanceInsertResult = payFinanceAccountDetailService.saveFinanceAccountDetail(payFinanceAccountDetail);
+			if (payFinanceInsertResult<1) {
+				logger.info(log+"--订单出账明细表插入失败");
+			}
+		}
         //step 3保存交易记录
         PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
 		payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());

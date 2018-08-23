@@ -563,4 +563,18 @@
         FROM
             pay_withdrawals
     </select>
+
+    <select id="selectByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pay_finance_account_detail
+        where 1 = 1
+        <if test="orderNo != null">
+            and order_no = #{orderNo,jdbcType=VARCHAR}
+        </if>
+        <if test="outType != null">
+            and out_type = #{outType,jdbcType=SMALLINT}
+        </if>
+    </select>
+
 </mapper>

@@ -114,14 +114,11 @@ public class OrderUtil {
     }
 
     public static String genRealPayMoney(BigDecimal money) {
-        String result = "￥";
         if (ObjectUtils.allNotNull(money)) {
-            result += money.toString();
+           return "￥"+money.toString();
         } else {
-            result += "0";
-
+           return "--";
         }
-        return result;
     }
 
     /**
@@ -137,6 +134,9 @@ public class OrderUtil {
             if (orderItems.size() > 1) {
                 result += "...";
             }
+        }
+        if(StringUtils.isBlank(result)){
+            result="--";
         }
         return result;
     }

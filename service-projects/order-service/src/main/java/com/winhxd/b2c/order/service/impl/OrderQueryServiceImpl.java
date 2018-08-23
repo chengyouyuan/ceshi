@@ -9,8 +9,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +47,6 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -52,7 +54,6 @@ import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
-import com.winhxd.b2c.order.util.OrderUtil;
 
 /**
  * @author pangjianhua
@@ -146,36 +147,90 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     }
 
     @Override
-    public StoreOrderSalesSummaryVO getStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
-        if (startDateTime == null || endDateTime == null) {
-            throw new NullPointerException(
-                    MessageFormat.format("查询区间startDateTime={0}、endDateTime={1}不能为空", startDateTime, endDateTime));
+    public StoreOrderSalesSummaryVO getStoreIntradayOrderSalesSummary(long storeId) {
+        logger.info("获取门店当天订单销售汇总信息开始：storeId={}", storeId);
+        String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, storeId + "");
+        if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
+            logger.info("从缓存中获取门店当天销售数据，直接返回：storeId={}", storeId);
+            return JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
         }
-        logger.info("获取门店订单销售汇总信息开始：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
-        StoreOrderSalesSummaryVO orderSalesSummaryVO = calculateStoreOrderSalesSummaryAndSetCache(storeId, startDateTime, endDateTime);
-        logger.info("获取门店订单销售汇总信息结束：storeId={}，startDateTime={}，endDateTime={}", storeId, startDateTime, endDateTime);
-        return orderSalesSummaryVO;
-    }
-
-    @Override
-    public StoreOrderSalesSummaryVO calculateStoreOrderSalesSummaryAndSetCache(long storeId, Date startDateTime, Date endDateTime) {
-        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreOrderTurnover(storeId, startDateTime, endDateTime);
-        if (storeOrderSalesSummaryVO == null) {
-            storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = null;
+        String lockKey = CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + "LOCK" + storeId;
+        Lock lock = new RedisLock(cache, lockKey, 50000);
+        try {
+            lock.lock();
+            intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, storeId + "");
+            if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
+                logger.info("从缓存中获取门店当天销售数据，直接返回：storeId={}", storeId);
+                return JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+            }
+            //查询当天数据
+            //获取当天最后一秒
+            long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+            //获取当天开始第一秒
+            long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
+            Date startDateTime = new Date(startSecond);
+            Date endDateTime = new Date(lastSecond);
+            storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
+            if (storeOrderSalesSummaryVO != null && storeOrderSalesSummaryVO.getCustomerNum() != null && storeOrderSalesSummaryVO.getCustomerNum() > 0 ) {
+                //获取当前下单的去重用户id
+                List<Long> distinctCustomerIds = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
+                if (CollectionUtils.isNotEmpty(distinctCustomerIds)) {
+                    List<String> strCustomerIds = distinctCustomerIds.stream().map(p -> {
+                        return p.toString();
+                     }).collect(Collectors.toList());
+                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                }
+            }
+            //设置到缓存
+            cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, storeId + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+            //当天有效
+            cache.expire(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        } finally {
+            lock.unlock();
         }
-        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
-        if (storeOrderSalesSummaryVO1 != null) {
-            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
-        }
-        storeOrderSalesSummaryVO.setStoreId(storeId);
-//        cache.hset(OrderUtil.getStoreOrderSalesSummaryKey(storeId), OrderUtil.getStoreOrderSalesSummaryField(storeId, startDateTime, endDateTime), JsonUtil.toJSONString(storeOrderSalesSummaryVO));
-//        //获取当天最后一秒
-//        long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-//        //当天有效
-//        cache.expire(OrderUtil.getStoreOrderSalesSummaryKey(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        logger.info("获取门店当天订单销售汇总信息结束：storeId={}", storeId);
         return storeOrderSalesSummaryVO;
     }
-
+    
+    @Override
+    public StoreOrderSalesSummaryVO getStoreMonthOrderSalesSummary(long storeId) {
+        logger.info("获取门店当月商品销量信息开始：storeId={}", storeId);
+        String monthOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, storeId + "");
+        if (StringUtils.isNotBlank(monthOrderSalesSummaryStr)) {
+            logger.info("从缓存中获取门店当月销售数据，直接返回：storeId={}", storeId);
+            return JsonUtil.parseJSONObject(monthOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+        }
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = null;
+        String lockKey = CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY + "LOCK" + storeId;
+        Lock lock = new RedisLock(cache, lockKey, 50000);
+        try {
+            lock.lock();
+            monthOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, storeId + "");
+            if (StringUtils.isNotBlank(monthOrderSalesSummaryStr)) {
+                logger.info("从缓存中获取门店当月销售数据，直接返回：storeId={}", storeId);
+                return JsonUtil.parseJSONObject(monthOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+            }
+            //查询当天数据
+            //获取当天最后一秒
+            long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+            //获取当天开始第一秒
+            long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
+            Date startDateTime = new Date(startSecond);
+            Date endDateTime = new Date(lastSecond);
+            //取前30天开始日期
+            startDateTime = DateUtils.addMonths(startDateTime, -1);
+            storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
+            //设置到缓存
+            cache.hset(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, storeId + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+            //当天有效
+            cache.expire(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+        } finally {
+            lock.unlock();
+        }
+        logger.info("获取门店当月商品销量信息结束：storeId={};ret={}", storeId, storeOrderSalesSummaryVO);
+        return storeOrderSalesSummaryVO;
+    }
 
     /**
      * 根据门店ID获取门店提货码
@@ -369,5 +424,28 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 pickUpList.add(pickUpCode);
             }
         return pickUpList;
+    }
+    
+    
+    /**
+     * 根据门店id获取指定时间订单汇总数据
+     * @author wangbin
+     * @date  2018年8月23日 下午1:14:43
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    private StoreOrderSalesSummaryVO calculateStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreOrderTurnover(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO == null) {
+            storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
+        }
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO1 != null) {
+            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
+        }
+        storeOrderSalesSummaryVO.setStoreId(storeId);
+        return storeOrderSalesSummaryVO;
     }
 }

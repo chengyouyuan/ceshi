@@ -1,6 +1,7 @@
 package test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
@@ -30,6 +32,7 @@ import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerConditio
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -81,7 +84,7 @@ public class OrderServiceTest {
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
-        System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
+//        System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
     }
     
     @Test
@@ -219,6 +222,32 @@ public class OrderServiceTest {
         OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
         condition.setOrderNo("C18082219860675647");
         orderService.updateOrderRefundCallback(condition);
+    }
+    
+    
+    @Test
+    public void testgetStoreMonthOrderSalesSummary(){
+        System.out.println(orderQueryService.getStoreMonthOrderSalesSummary(104L));
+    }
+    
+    @Test
+    public void testgetStoreIntradayOrderSalesSummary(){
+        System.out.println(orderQueryService.getStoreIntradayOrderSalesSummary(104L));
+    }
+    
+    @Test
+    public void testgetStoreIntradayOrderSalesSummary1(){
+//        String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
+//        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+//        storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity()==null?0:storeOrderSalesSummaryVO.getSkuCategoryQuantity() + 1);
+//        storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity()==null?0:storeOrderSalesSummaryVO.getSkuQuantity() + 1);
+//        storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum()==null?0:storeOrderSalesSummaryVO.getOrderNum() + 1);
+//        storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover()==null?BigDecimal.ZERO:storeOrderSalesSummaryVO.getTurnover().add(BigDecimal.ONE).setScale(2, RoundingMode.HALF_UP));
+//        cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + 104L + ":customerIds", "111");
+//        storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + 104L + ":customerIds").intValue());
+//        //设置到缓存
+//        cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+        cache.hdel(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
     }
     
 }

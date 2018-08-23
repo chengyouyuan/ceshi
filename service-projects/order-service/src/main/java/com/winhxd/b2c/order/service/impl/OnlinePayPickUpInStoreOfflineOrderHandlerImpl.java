@@ -196,8 +196,6 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         if (orderInfo == null) {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
-        //支付成功清空门店订单销量统计cache
-        cache.del(OrderUtil.getStoreOrderSalesSummaryKey(orderInfo.getStoreId()));
         CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(orderInfo.getCustomerId());
         String last4MobileNums;
         if (StringUtils.isBlank(customerUserInfoVO.getCustomerMobile())) {

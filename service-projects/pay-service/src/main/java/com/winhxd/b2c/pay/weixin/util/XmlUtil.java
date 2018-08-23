@@ -89,6 +89,16 @@ public class XmlUtil {
 		return map2Bean(map, c);
     }
     
+    /**
+     * Map格式字符串转换为Bean，下划线转驼峰
+     * @author mahongliang
+     * @date  2018年8月23日 下午2:05:59
+     * @Description 
+     * @param map
+     * @param c
+     * @return
+     * @throws Exception
+     */
     public static <T> T map2Bean(Map<String, String> map,Class<T> c) throws Exception{
     	T bean = c.newInstance();
     	for (Map.Entry<String, String> entry : map.entrySet()) {

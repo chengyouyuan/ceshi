@@ -43,12 +43,6 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	@Resource
 	private Cache redisClusterCache;
 
-    @Autowired
-    private PayService payService;
-
-    @Autowired
-    private PayStoreCashService payStoreCashService;
-
 	@Override
 	public int savePayStoreWallet(PayStoreWalletCondition condition) {
 		int res = 0;

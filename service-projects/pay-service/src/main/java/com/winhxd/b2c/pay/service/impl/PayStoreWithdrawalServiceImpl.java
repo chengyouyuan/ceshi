@@ -114,6 +114,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 code = bindAccount.getCode();
 			 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			 PayStoreUserInfoVO data = bindAccount.getData();
+			 LOGGER.info("6108当前用户绑定微信账户信息："+data);
 			 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
 			 withdrawalPage.setNick(data.getNick());
 			 withdrawalPage.setOpenid(data.getOpenid());
@@ -293,8 +294,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		// 获取门店微信账户信息
 		List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreId(businessId);
-		LOGGER.info("当前用户门店绑定微信的信息：----"+payStoreWallet);
+		LOGGER.info("当前用户门店绑定微信的信息：----"+payStoreWallet.size());
 		if(payStoreWallet.size() > 0 && payStoreWallet.get(0) != null){
+			LOGGER.info("当前用户门店绑定微信的信息：----");
 			PayStoreWallet storeWallet = payStoreWallet.get(0);
 			// 获取门店资金信息
 			PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();

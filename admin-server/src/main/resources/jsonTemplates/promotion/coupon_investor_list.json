@@ -53,7 +53,7 @@
             "event": {
               "type": "router",
               "params": [
-                "id","detail"
+                "id","details"
               ],
               "path": "/contributiveRule/index",
               "configKey": ""

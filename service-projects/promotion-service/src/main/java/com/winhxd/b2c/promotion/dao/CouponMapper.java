@@ -43,4 +43,11 @@ public interface CouponMapper {
      * @return
      */
     List<CouponVO> couponListByOrder(String orderNo);
+
+    /**
+     * 获取门店下的优惠券种类数
+     * @param storeId
+     * @return
+     */
+    Integer getStoreCouponKinds(Long storeId);
 }

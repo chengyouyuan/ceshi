@@ -47,12 +47,11 @@ eureka:
   client:
     registry-fetch-interval-seconds: 5
 
-feign.hystrix.enabled: false
+feign.hystrix.enabled: true
 
-hystrix.threadpool.default:
-  coreSize: 20
-  maximumSize: 200
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
+hystrix.command.default.execution.isolation.strategy: SEMAPHORE
+hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests: 100
 
 ribbon:
   ServerListRefreshInterval: 2000

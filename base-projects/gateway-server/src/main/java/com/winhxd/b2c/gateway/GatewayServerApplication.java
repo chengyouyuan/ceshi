@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.winhxd.b2c.gateway", "com.winhxd.b2c.common.cache"})
+@EnableHystrix
 @Import({RedisClusterCacheAutoConfiguration.class, ZipkinRabbitConfig.class})
 public class GatewayServerApplication {
     private static final Logger log = LoggerFactory.getLogger(GatewayServerApplication.class);

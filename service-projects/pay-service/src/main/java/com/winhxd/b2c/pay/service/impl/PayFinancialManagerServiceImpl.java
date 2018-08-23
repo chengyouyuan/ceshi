@@ -123,6 +123,9 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		payFinanceAccountDetailVO.setCompanySupplementInMoney(BigDecimal.valueOf(8888));
 		//营收金额
 		BigDecimal revenueMoney = payFinanceAccountDetailMapper.getRevenueMoney();
+		if(revenueMoney == null){
+			revenueMoney = BigDecimal.valueOf(0);
+		}
 		payFinanceAccountDetailVO.setRevenueMoney(revenueMoney);
 		//当前余额=总进账金额+公司总入账金额 - 总出账金额，curLeftMoney
 		BigDecimal curLeftMoney = allInMoney.add(payFinanceAccountDetailVO.getCompanySupplementInMoney()).subtract(payFinanceAccountDetailVO.getAllOutMoney());

@@ -67,6 +67,7 @@
     from pay_accounting_detail d
     where d.order_complete_status = 1
     and d.third_party_verify_status = 0
+    and d.insert_time &lt; date_format(now(), '%Y-%m-%d')
     group by d.order_no
   </select>
 
@@ -169,9 +170,16 @@
     where order_no = #{orderNo}
   </update>
 
+  <select id="selectAccountingDetailServiceFeeByOrderNo" resultType="decimal">
+    select detail_money
+    from pay_accounting_detail
+    where detail_type = 2
+    and order_no = #{orderNo}
+  </select>
+
   <update id="updateAccountingDetailServiceFeeByThirdParty">
     update pay_accounting_detail set
-      detail_money = {detailMoney}
+      detail_money = #{detailMoney}
     where detail_type = 2
     and order_no = #{orderNo}
   </update>

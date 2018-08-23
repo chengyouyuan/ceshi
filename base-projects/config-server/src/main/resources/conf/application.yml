@@ -47,6 +47,11 @@ eureka:
   client:
     registry-fetch-interval-seconds: 5
 
+feign.hystrix.enabled: true
+
+hystrix.threadpool.default:
+  coreSize: 20
+  maximumSize: 200
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
 
 ribbon:

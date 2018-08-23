@@ -6,11 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.winhxd.b2c.gateway", "com.winhxd.b2c.common.cache"})
+@EnableHystrix
 @Import({RedisClusterCacheAutoConfiguration.class, ZipkinRabbitConfig.class})
 public class GatewayServerApplication {
     private static final Logger log = LoggerFactory.getLogger(GatewayServerApplication.class);

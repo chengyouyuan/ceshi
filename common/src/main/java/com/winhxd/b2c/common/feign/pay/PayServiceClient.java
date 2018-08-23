@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,7 +20,7 @@ import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = FinancialManagerServiceClientFallback.class)
+@FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = PayServiceClientFallback.class)
 public interface PayServiceClient {
 	
 //	/**
@@ -68,6 +69,8 @@ public interface PayServiceClient {
 	ResponseResult<Integer> confirmTransferToBankStatus() throws Exception;
 
 }
+
+@Component
 class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayServiceClient>{
 	private static final Logger logger = LoggerFactory.getLogger(FinancialManagerServiceClientFallback.class);
     private Throwable throwable;

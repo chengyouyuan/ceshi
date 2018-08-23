@@ -80,12 +80,6 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		res = BusinessCode.CODE_610016;
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
-    	/*String personId = condition.getPersonId();
-    	if(StringUtils.isEmpty(personId)){
-    		LOGGER.info("业务异常："+BusinessCode.CODE_610028);
-    		res = BusinessCode.CODE_610028;
-    		throw new BusinessException(BusinessCode.CODE_610028);
-    	}*/
     	String swiftcode = condition.getSwiftCode();
     	if(StringUtils.isEmpty(swiftcode)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610029);
@@ -95,7 +89,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(62l);
+//    	currentStoreUser.setBusinessId(73l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){
@@ -129,12 +123,10 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
         	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
         	storeBankCard.setCreatedByName(condition.getBankUserName());
         	storeBankCard.setUpdatedByName(condition.getBankUserName());
-    		if(storBankCardInfo != null){
-//    			res = BusinessCode.CODE_610024;
-//    			LOGGER.info("当前银行卡已经存在");
-    			Long id = storBankCardInfo.getId();
-    			storeBankCard.setId(id);
-    			storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
+    		if(storBankCardInfo != null && storBankCardInfo.getStoreId().equals(currentStoreUser.getBusinessId())){// 判断当前是否是同一个门店
+				Long id = storBankCardInfo.getId();
+				storeBankCard.setId(id);
+				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
     		}else{
     			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
     		}

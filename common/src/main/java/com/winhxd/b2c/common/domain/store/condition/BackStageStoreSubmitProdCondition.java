@@ -34,4 +34,6 @@ public class BackStageStoreSubmitProdCondition extends PagedCondition{
 	private String skuCode;
 	@ApiModelProperty("用户账号")
 	private String storeMobile;
+    @ApiModelProperty("审核备注")
+    private String auditRemark;
 }

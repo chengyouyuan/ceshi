@@ -126,4 +126,19 @@ public class PayRefundDTO extends RequestBase {
 	public void setNotifyUrl(String notifyUrl) {
 		this.notifyUrl = notifyUrl;
 	}
+
+	@Override
+	public String toString() {
+		return "PayRefundDTO{" +
+				"transactionId='" + transactionId + '\'' +
+				", outTradeNo='" + outTradeNo + '\'' +
+				", outRefundNo='" + outRefundNo + '\'' +
+				", totalFee=" + totalFee +
+				", refundFee=" + refundFee +
+				", refundFeeType='" + refundFeeType + '\'' +
+				", refundDesc='" + refundDesc + '\'' +
+				", refundAccount='" + refundAccount + '\'' +
+				", notifyUrl='" + notifyUrl + '\'' +
+				'}';
+	}
 }

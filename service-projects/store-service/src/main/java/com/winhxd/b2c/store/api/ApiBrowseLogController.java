@@ -37,14 +37,15 @@ public class ApiBrowseLogController {
 
     @ApiOperation(value = "C端用户浏览门店进入日志", notes = "C端用户浏览门店进入日志")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！")})
     @PostMapping(value = "/1016/v1/saveBrowseLogLogin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogin(@RequestBody StoreBrowseLogCondition condition) {
-        if (UserContext.getCurrentStoreUser() == null) {
+        if (UserContext.getCurrentCustomerUser() == null) {
             logger.info("C端用户浏览门店进入日志 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
-        if (condition.getStoreId() == null || condition.getCustomerId() == null) {
+        if (condition.getStoreId() == null) {
             logger.error("C端用户浏览门店进入日志 saveBrowseLogLogout, 参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
@@ -58,12 +59,12 @@ public class ApiBrowseLogController {
     @ApiOperation(value = "C端用户浏览门店退出日志", notes = "C端用户浏览门店退出日志")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
-            @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！")})
     @PostMapping(value = "/1017/v1/saveBrowseLogLogout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogout(@RequestBody StoreBrowseLogCondition condition) {
-        if (UserContext.getCurrentStoreUser() == null) {
+        if (UserContext.getCurrentCustomerUser() == null) {
             logger.info("C端用户浏览门店退出日志 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
+            throw new BusinessException(BusinessCode.CODE_1002);
         }
         if (condition.getStoreId() == null) {
             logger.error("C端用户浏览门店退出日志 saveBrowseLogLogout,storeCustomerId 参数为空");

@@ -414,15 +414,14 @@ public class CommonOrderServiceImpl implements OrderService {
         if (lock.tryLock()) {
             try {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
-                if (null == order) {
-                    logger.info("订单不存在 订单号={}", orderNo);
-                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, "订单不存在");
+                if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
+                    throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, MessageFormat.format("订单不存在 订单号={0}", orderNo));
                 }
                 //判断是否支付成功,支付成功走退款逻辑，支付不成功走取消订单逻辑
                 if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
-                    orderApplyRefund(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper());
+                    orderApplyRefund(order, reason, storeVO.getId(), storeVO.getShopkeeper());
                 } else {
-                    orderCancel(order, orderCancelCondition.getCancelReason(), storeVO.getId(), storeVO.getShopkeeper(), 2);
+                    orderCancel(order, reason, storeVO.getId(), storeVO.getShopkeeper(), 2);
                 }
             } finally {
                 lock.unlock();

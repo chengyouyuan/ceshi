@@ -130,14 +130,18 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 验证码错误");
 				throw new BusinessException(BusinessCode.CODE_100808);
 			}
+			if (StringUtils.isBlank(storeUserInfoCondition.getOpenid())) {
+				logger.info("{} - ,openid为空");
+				throw new BusinessException(BusinessCode.CODE_1007);
+			}
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
 			 */
 			if (db == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				result = new ResponseResult<>(BusinessCode.CODE_100822);
+				logger.info("{} - , 请求超时");
+				result = new ResponseResult<>(BusinessCode.CODE_100815);
 				return result;
 			} else {
 
@@ -155,79 +159,6 @@ public class ApiStoreLoginController {
 				getStoreUserInfoToken(storeUserInfo, user);
 				result.setData(vo);
 			}
-		}
-		/**
-		 * 微信密码登录
-		 */
-		else if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
-				&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
-			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient.getStoreUserInfo(
-					storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
-			StoreUserSimpleInfo map = object.getData();
-			if (map == null) {
-				logger.info("{} - , 您的账号或者密码错误");
-				throw new BusinessException(BusinessCode.CODE_100821);
-			} else {
-				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
-				db = storeLoginService.getStoreUserInfo(storeUserInfo);
-				if (db != null) {
-
-					if (StringUtils.isBlank(db.getOpenid())) {
-						storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
-					}
-					/**
-					 * 调用云信服务获取用户信息
-					 */
-					getNeteaseAcctInfo(db, vo);
-
-					cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
-					/**
-					 * 更新数据库
-					 */
-					storeUserInfo.setId(db.getId());
-					storeUserInfo.setStoreMobile(map.getStoreMobile());
-					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.modifyStoreUserInfo(storeUserInfo);
-					vo.setToken(storeUserInfo.getToken());
-					vo.setCustomerId(db.getStoreCustomerId());
-					storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
-					getStoreUserInfoToken(storeUserInfo, user);
-					result.setData(vo);
-				} else {
-
-					/**
-					 * 查询OpenId是否 已经绑定其他手机号
-					 */
-					open.setOpenid(storeUserInfoCondition.getOpenid());
-					db = storeLoginService.getStoreUserInfo(open);
-					/**
-					 * 如果可以查到。。证明该微信号绑定过其他账号
-					 */
-					if (null != db) {
-						logger.info("{} - , 该微信号已绑定过账号");
-						throw new BusinessException(BusinessCode.CODE_100810);
-					}
-					/*
-					 * 插入数据库
-					 */
-					storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
-					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
-					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
-					logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
-					storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
-					storeUserInfo.setCreated(new Date());
-					storeUserInfo.setStoreMobile(map.getStoreMobile());
-					storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
-					storeUserInfo.setStoreStatus((short) 0);
-					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.saveStoreInfo(storeUserInfo);
-					vo.setToken(storeUserInfo.getToken());
-					vo.setCustomerId(map.getStoreCustomerId());
-					getStoreUserInfoToken(storeUserInfo, user);
-					result.setData(vo);
-				}
-			}
-
 		}
 		/**
 		 * 微信快捷登录
@@ -352,6 +283,9 @@ public class ApiStoreLoginController {
 				}
 			}
 
+		} else {
+			logger.info("{} - , 参数无效");
+			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		logger.info("{} - B端登录返参, 参数：StoreUserInfoSimpleVO={}", "", JsonUtil.toJSONString(vo));
 		return result;
@@ -361,15 +295,15 @@ public class ApiStoreLoginController {
 		ResponseResult<NeteaseAccountVO> netease;
 		NeteaseAccountVO accountVO;
 		NeteaseAccountCondition neteaseAccountCondition = new NeteaseAccountCondition();
-			neteaseAccountCondition.setCustomerId(db.getId());
-			netease = messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
-			if (netease.getCode() != 0) {
-				logger.info("{} - , 云信获取用户信息失败");
-				throw new BusinessException(BusinessCode.CODE_100815);
-			}
-			accountVO = netease.getData();
-			vo.setNeteaseAccid(accountVO.getAccid());
-			vo.setNeteaseToken(accountVO.getToken());
+		neteaseAccountCondition.setCustomerId(db.getId());
+		netease = messageServiceClient.getNeteaseAccountInfo(neteaseAccountCondition);
+		if (netease.getCode() != 0) {
+			logger.info("{} - , 云信获取用户信息失败");
+			throw new BusinessException(BusinessCode.CODE_100815);
+		}
+		accountVO = netease.getData();
+		vo.setNeteaseAccid(accountVO.getAccid());
+		vo.setNeteaseToken(accountVO.getToken());
 	}
 
 	private void getStoreUserInfoToken(StoreUserInfo db, StoreUser user) {
@@ -441,7 +375,7 @@ public class ApiStoreLoginController {
 					 * 查询OpenId是否 已经绑定其他手机号
 					 */
 					if (StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenid())) {
-						logger.info("{} - ,openId为空");
+						logger.info("{} - ,openid为空");
 						throw new BusinessException(BusinessCode.CODE_1007);
 					}
 					open.setOpenid(storeSendVerificationCodeCondition.getOpenid());

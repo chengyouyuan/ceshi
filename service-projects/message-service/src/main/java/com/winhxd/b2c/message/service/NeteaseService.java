@@ -26,12 +26,12 @@ public interface NeteaseService {
      * @param neteaseMsgBoxCondition
      * @return
      */
-    PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long customerId);
+    PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long storeId);
 
     /**
      * 修改云信消息已读状态
      * @param neteaseMsgReadStatusCondition
      * @return
      */
-    Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition neteaseMsgReadStatusCondition, Long customerId);
+    Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition neteaseMsgReadStatusCondition, Long storeId);
 }

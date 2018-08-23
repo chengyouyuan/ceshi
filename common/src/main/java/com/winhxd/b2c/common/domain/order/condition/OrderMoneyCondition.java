@@ -13,6 +13,6 @@ import lombok.Data;
 public class OrderMoneyCondition extends ApiCondition {
     @ApiModelProperty(value = "门店ID", required = true)
     private Long storeId;
-    @ApiModelProperty(value = "门店ID", required = true)
+    @ApiModelProperty(value = "优惠券发放ID", required = true)
     private Long sendId;
 }

@@ -985,7 +985,7 @@ public class CommonOrderServiceImpl implements OrderService {
             return;
         }
         if (couponIds == null || couponIds.length < 1) {
-            //不使用优惠券
+            // 不使用优惠券
             logger.info("订单：{} 不使用优惠券，不计算优惠券金额", orderInfo.getOrderNo());
             orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney());
             return;
@@ -994,8 +994,10 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setCouponHxdMoney(couponDiscountAmount);
         orderInfo.setCouponBrandMoney(BigDecimal.ZERO);
         orderInfo.setRandomReductionMoney(BigDecimal.ZERO);
-        orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney()).subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney()));
-        //通知促销系统优惠券使用情况
+        orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney())
+                .subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney())
+                .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+        // 通知促销系统优惠券使用情况
         notifyPromotionSystem(orderInfo, couponIds);
     }
 
@@ -1014,6 +1016,7 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.error("订单：{}优惠券优惠金额接口返回数据为空:couponDiscountAmount={}，创建订单异常！~", orderInfo.getOrderNo(), couponDiscountAmount);
             throw new BusinessException(BusinessCode.CODE_401009);
         }
+        couponDiscountAmount = couponDiscountAmount.setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP);
         orderInfo.setCouponTitles(ret.getData().getCouponTitle());
         logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={},couponTitles={}", orderInfo.getOrderNo(), couponDiscountAmount, orderInfo.getCouponTitles());
         return couponDiscountAmount;

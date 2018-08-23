@@ -173,20 +173,18 @@ public class MessageSendMqHandler {
     @StringMessageListener(value = MQHandler.NETEASE_MESSAGE_HANDLER)
     public void sendNeteaseMsg(String neteaseMsgConditionJson) {
         NeteaseMsgCondition neteaseMsgCondition = JsonUtil.parseJSONObject(neteaseMsgConditionJson,NeteaseMsgCondition.class);
-        LOGGER.info("消息服务->发送云信消息，NeteaseServiceImpl.sendNeteaseMsg(),neteaseMsgConditionJson={}",neteaseMsgConditionJson);
+        LOGGER.info("消息服务->发送云信消息，MessageSendMqHandler.sendNeteaseMsg(),neteaseMsgConditionJson={}",neteaseMsgConditionJson);
         //校验参数
         int errorCode = verifyParamSend(neteaseMsgCondition);
         if (BusinessCode.CODE_OK != errorCode) {
-            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
+            LOGGER.error("消息服务 ->发送云信消息异常，MessageSendMqHandler.sendNeteaseMsg(),参数错误，errorCode={}",errorCode);
             return;
-            //throw new BusinessException(errorCode);
         }
         MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(neteaseMsgCondition.getCustomerId());
         if (account == null) {
             //云信用户不存在
-            LOGGER.error("消息服务 ->发送云信消息异常，NeteaseServiceImpl.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
+            LOGGER.error("消息服务 ->发送云信消息异常，MessageSendMqHandler.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
             return;
-            //throw new BusinessException(BusinessCode.CODE_701403);
         }
         //发送云信消息
         Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
@@ -199,7 +197,6 @@ public class MessageSendMqHandler {
             }
         } else {
             LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
-            //throw new BusinessException(BusinessCode.CODE_701404);
         }
     }
 

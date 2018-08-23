@@ -137,7 +137,7 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
 
     @Override
     public ResponseResult<Void> orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
-        // TODO Auto-generated method stub
-        return null;
+        logger.error("OrderServiceFallback -> orderPaySuccessNotify", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

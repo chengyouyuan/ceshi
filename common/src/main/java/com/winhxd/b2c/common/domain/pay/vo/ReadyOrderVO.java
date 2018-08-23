@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -16,9 +15,9 @@ import java.util.List;
 @Data
 public class ReadyOrderVO {
     @ApiModelProperty("自提地址：门店地址")
-    private String storeAddredd;
+    private String storeAddress;
     @ApiModelProperty("购物车商品Info")
-    private List<ShopCarProdInfoVO> shopCars;
+    private List<ShopCarProdInfoVO> shopCarts;
     @ApiModelProperty("支付方式")
     private String payType;
     @ApiModelProperty("默认最优惠的优惠券")

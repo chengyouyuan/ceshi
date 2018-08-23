@@ -2,7 +2,9 @@ package com.winhxd.b2c.order.dao;
 
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ShopCarMapper {
@@ -60,4 +62,13 @@ public interface ShopCarMapper {
      * @return
      */
     List<ShopCar> queryShopCartBySelective(ShopCartProductCondition condition);
+
+    /**
+     * 删除下架的商品
+     * @author: wangbaokuo
+     * @date: 2018/8/23 20:01
+     * @param:
+     * @return:
+     */
+    int deleteShopCarts(@Param("storeId") Long storeId ,@Param("customerId") Long customerId ,@Param("skuCodes") Collection<String> skuCodes);
 }

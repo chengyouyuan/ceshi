@@ -6,7 +6,7 @@ import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderMoneyVO;
 import com.winhxd.b2c.common.domain.pay.vo.ReadyOrderVO;
 
@@ -34,7 +34,7 @@ public interface ShopCarService {
      * @param: condition
      * @return: ShopCarVO
      */
-    List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId);
+    ShopCarVO findShopCar(Long storeId, Long customerId);
 
     /**
      * 删除购物车

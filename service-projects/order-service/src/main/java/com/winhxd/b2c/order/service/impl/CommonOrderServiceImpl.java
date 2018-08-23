@@ -1408,7 +1408,7 @@ public class CommonOrderServiceImpl implements OrderService {
             }
             // 发送mq完成消息
             eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_FINISHED, orderInfo.getOrderNo(), orderInfo);
-            
+
             //更新销量信息
             //1.更新月销量信息
             String lockKey = CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY + "LOCK" + orderInfo.getStoreId();
@@ -1421,15 +1421,16 @@ public class CommonOrderServiceImpl implements OrderService {
                     storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo.getSkuCategoryQuantity());
                     storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
                     //获取当天最后一秒
-                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999))
+                            .getTime();
                     //设置到缓存
                     cache.hset(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
                     //当天有效
                     cache.expire(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 logger.error("更新门店storeId={};月销售数据错误：", orderInfo.getStoreId().toString(), e);
-            }finally {
+            } finally {
                 lock.unlock();
             }
             //2.更新当天销量信息
@@ -1440,18 +1441,20 @@ public class CommonOrderServiceImpl implements OrderService {
                 String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "");
                 if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
                     StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
-                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity()==null?0:storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo.getSkuCategoryQuantity());
-                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity()==null?0:storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
-                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum()==null?0:storeOrderSalesSummaryVO.getOrderNum() + 1);
-                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover()==null?BigDecimal.ZERO:storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo
+                            .getSkuCategoryQuantity());
+                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
+                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() + 1);
+                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()
+                    ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                     cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds", orderInfo.getCustomerId().toString());
                     storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds").intValue());
                     //设置到缓存
                     cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 logger.error("更新门店storeId={};当日销售数据错误：", orderInfo.getStoreId().toString(), e);
-            }finally {
+            } finally {
                 lock.unlock();
             }
         }
@@ -1694,8 +1697,12 @@ public class CommonOrderServiceImpl implements OrderService {
                 NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                 neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
                 NeteaseMsg neteaseMsg = new NeteaseMsg();
+                neteaseMsg.setTreeCode(orderInfo.getOrderNo());
+                neteaseMsg.setPageType(MsgPageTypeEnum.ORDER_DETAIL.getPageType());
+                neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
                 neteaseMsg.setMsgContent(msgContent);
-                neteaseMsg.setAudioType(1);
+                neteaseMsg.setAudioType(2);
+                neteaseMsg.setMsgType(0);
                 neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
                 messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
             } catch (Exception e) {
@@ -1750,8 +1757,12 @@ public class CommonOrderServiceImpl implements OrderService {
                     neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
                     String storeMsgContent = "【已取消】手机尾号" + mobileStr + "的顾客已取消订单";
                     NeteaseMsg neteaseMsg = new NeteaseMsg();
+                    neteaseMsg.setTreeCode(orderInfo.getOrderNo());
+                    neteaseMsg.setPageType(MsgPageTypeEnum.ORDER_DETAIL.getPageType());
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_CANCEL.getTypeCode());
                     neteaseMsg.setMsgContent(storeMsgContent);
                     neteaseMsg.setAudioType(0);
+                    neteaseMsg.setMsgType(0);
                     neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
                     messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
 
@@ -1833,30 +1844,35 @@ public class CommonOrderServiceImpl implements OrderService {
             switch (type) {
                 case 1:
                     msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1小时后将自动退款";
-                    neteaseMsg.setAudioType(1);
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
+                    neteaseMsg.setAudioType(2);
                     break;
                 case 2:
                     msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款，系统1天后将自动退款";
-                    neteaseMsg.setAudioType(1);
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
+                    neteaseMsg.setAudioType(2);
                     break;
                 case 3:
                     //3天
                     msgContent = "【退款中】手机尾号" + mobileStr + "顾客申请退款，超时3天系统已退款";
-                    neteaseMsg.setAudioType(1);
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
+                    neteaseMsg.setAudioType(0);
                     break;
                 case 4:
                     //【已退款】手机尾号8513黄小姐退款已到账
                     msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
                     neteaseMsg.setAudioType(0);
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
                     break;
                 default:
             }
             if (StringUtils.isBlank(msgContent)) {
                 return;
             }
-
+            neteaseMsg.setTreeCode(orderInfo.getOrderNo());
+            neteaseMsg.setPageType(MsgPageTypeEnum.ORDER_DETAIL.getPageType());
             neteaseMsg.setMsgContent(msgContent);
-            neteaseMsg.setAudioType(1);
+            neteaseMsg.setMsgType(0);
             neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {

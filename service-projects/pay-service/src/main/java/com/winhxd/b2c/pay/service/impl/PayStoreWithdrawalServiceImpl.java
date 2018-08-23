@@ -451,7 +451,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//返回当前账户钱包里的可提现金额
 		  StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeid);
 		  if(storeBankroll == null){
-			  withdrawalPage.setPresented_money(BigDecimal.valueOf(0l));
+			  withdrawalPage.setPresented_money(BigDecimal.valueOf(0L));
 		  }else{
 			  withdrawalPage.setPresented_money(storeBankroll.getPresentedMoney());
 		  }

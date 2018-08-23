@@ -67,7 +67,7 @@
     from pay_accounting_detail d
     where d.order_complete_status = 1
     and d.third_party_verify_status = 0
-    and d.verify_time &lt; date_format(now(), '%Y-%m-%d')
+    and d.insert_time &lt; date_format(now(), '%Y-%m-%d')
     group by d.order_no
   </select>
 

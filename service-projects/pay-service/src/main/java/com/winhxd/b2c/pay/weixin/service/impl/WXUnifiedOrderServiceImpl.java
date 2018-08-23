@@ -202,17 +202,17 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		
 		//主动查询状态处理
 		if(TradeStateEnum.SUCCESS.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.REFUND.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.NOTPAY.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			//支付凭证是否过期
 			long timeExpire = bill.getTimeExpire() == null ? 0 : bill.getTimeExpire().getTime();
 			if(timeExpire == 0) {
@@ -230,30 +230,30 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 			}
 			
 		} else if(TradeStateEnum.CLOSED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else if(TradeStateEnum.REVOKED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else if(TradeStateEnum.USERPAYING.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
 			
 			//TODO 处理 USERPAYING--用户支付中，支付时间大于10分钟，调起关闭订单，成功后再次支付
 		} else if(TradeStateEnum.PAYERROR.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getErrCodeDes());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else {
-			logger.error("主动查询{}交易状态为{}：{}", outTradeNo, payPreOrderCallbackDTO.getTradeState(), payPreOrderCallbackDTO.getErrCodeDes());
+			logger.error("主动查询{}交易状态为{}：{}", outTradeNo, payPreOrderCallbackDTO.getTradeState(), payPreOrderCallbackDTO.getTradeStateDesc());
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		

@@ -153,10 +153,10 @@
         status,
       </if>
       <if test="tradeState != null" >
-        tradeState,
+        trade_state,
       </if>
       <if test="tradeStateDesc != null" >
-        tradeStateDesc,
+        trade_state_desc,
       </if>
       <if test="errorCode != null" >
         error_code,
@@ -427,10 +427,10 @@
         status = #{status,jdbcType=SMALLINT},
       </if>
       <if test="tradeState != null" >
-        tradeState = #{tradeState,jdbcType=VARCHAR},
+        trade_state = #{tradeState,jdbcType=VARCHAR},
       </if>
       <if test="tradeStateDesc != null" >
-		tradeStateDesc = #{tradeStateDesc,jdbcType=VARCHAR},
+		trade_state_desc = #{tradeStateDesc,jdbcType=VARCHAR},
       </if>
       <if test="errorCode != null" >
         error_code = #{errorCode,jdbcType=VARCHAR},

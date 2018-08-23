@@ -19,6 +19,8 @@ import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.util.MessageSendUtils;
@@ -82,17 +84,19 @@ public class OrderUtil {
      * @param audioType
      * @return
      * @author wangbin
+     * @param categoryType 
      * @date 2018年8月16日 下午5:24:49
      * @Description
      */
     public static NeteaseMsgCondition genNeteaseMsgCondition(Long storeId, String storeMsg, String createdBy, int expiration,
-                                                             int msgType, short pageType, int audioType, String treeCode) {
+                                                             int msgType, short pageType, short categoryType, int audioType, String treeCode) {
         NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
         neteaseMsgCondition.setCustomerId(storeId);
         NeteaseMsg neteaseMsg = new NeteaseMsg();
         neteaseMsg.setMsgContent(storeMsg);
         neteaseMsg.setAudioType(audioType);
         neteaseMsg.setPageType(pageType);
+        neteaseMsg.setMsgCategory(categoryType);
         neteaseMsg.setMsgType(msgType);
         neteaseMsg.setTreeCode(treeCode);
         neteaseMsg.setCreatedBy(createdBy);
@@ -155,11 +159,12 @@ public class OrderUtil {
             String createdBy = "";
             int expiration = 0;
             int msgType = 0;
-            short pageType = 1;
+            short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
+            short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 1;
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("客户下单给门店:storeId={},发送消息：{} 失败", storeId, OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE);
@@ -233,11 +238,12 @@ public class OrderUtil {
             String createdBy = "";
             int expiration = 0;
             int msgType = 0;
-            short pageType = 1;
+            short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
+            short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 0;
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
             logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);

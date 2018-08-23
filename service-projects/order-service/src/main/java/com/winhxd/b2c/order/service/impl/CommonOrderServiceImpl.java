@@ -17,6 +17,8 @@ import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
+import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.enums.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
@@ -1370,11 +1372,12 @@ public class CommonOrderServiceImpl implements OrderService {
                 String createdBy = "";
                 int expiration = 0;
                 int msgType = 0;
-                short pageType = 1;
+                short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
+                short categoryType = MsgCategoryEnum.ORDER_COMPLETE.getTypeCode();
                 int audioType = 0;
                 String treeCode = "treeCode";
                 NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(orderInfo.getStoreId(), storeMsg, createdBy, expiration, msgType,
-                        pageType, audioType, treeCode);
+                        pageType, categoryType, audioType, treeCode);
                 messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
             } catch (Exception e) {
                 logger.error("订单提货完成给门店发送消息失败：", e);

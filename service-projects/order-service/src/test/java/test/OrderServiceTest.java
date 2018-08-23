@@ -74,13 +74,9 @@ public class OrderServiceTest {
     
     @Test
     public void testGetStoreOrderSalesSummary() {
-        //鏀粯鎴愬姛娓呯┖闂ㄥ簵璁㈠崟閿�閲忕粺璁ache
 //        System.out.println(cache.del(OrderUtil.getStoreOrderSalesSummaryKey(0L)));
         long storeId = 0L;
-        //鏌ヨ褰撳ぉ鏁版嵁
-        //鑾峰彇褰撳ぉ鏈�鍚庝竴绉�
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-        //鑾峰彇褰撳ぉ寮�濮嬬涓�绉�
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
@@ -168,15 +164,15 @@ public class OrderServiceTest {
         Long storeId = 12L;
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
-            // 鍙戦�佷簯淇�
             String createdBy= "";
             int expiration = 0;
             int msgType = 0;
             short pageType = 1;
+            short categoryType = 0;
             int audioType = 0;
             String treeCode = "treeCode";
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
-                    pageType, audioType, treeCode);
+                    pageType, categoryType, audioType, treeCode);
 //            if (messageServiceClient.sendNeteaseMsg(neteaseMsgCondition).getCode() != BusinessCode.CODE_OK) {
 //                throw new BusinessException(BusinessCode.CODE_1001);
 //            }

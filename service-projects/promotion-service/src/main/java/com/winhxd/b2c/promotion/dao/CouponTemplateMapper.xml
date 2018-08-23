@@ -505,10 +505,11 @@
     sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
     c.template_id as templeteId
     FROM
-    coupon_template_send c
-    LEFT JOIN coupon_template a ON a.id = c.template_id
-    LEFT JOIN coupon_activity_store_customer d on c.template_id = a.id
-    WHERE d.store_id = 84
+    coupon_activity_store_customer d
+    LEFT JOIN coupon_activity_template e on e.id = d.coupon_activity_template_id
+    LEFT JOIN coupon_template a ON a.id = e.template_id
+    LEFT JOIN  coupon_template_send c ON c.template_id = a.id
+    WHERE d.store_id = #{storeId}
     group by c.template_id
   </select>
 

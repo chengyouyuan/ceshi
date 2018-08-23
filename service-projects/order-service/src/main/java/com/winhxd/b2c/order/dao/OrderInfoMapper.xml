@@ -653,7 +653,7 @@
         and pay_status = 1
         and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
         and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
-        and order_status not in (33, 77, 99)
+        and order_status not in (33, 66, 77, 99)
         group by store_id
     </select>
     <resultMap id="StoreOrderSalesSummaryMap1" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
@@ -668,9 +668,11 @@
         	ifnull(sum(sku_category_quantity),0) skuCategoryQuantity
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
-        and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
-        and finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
-        and order_status = 22
+        and pay_status = 1
+        and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status not in (33, 66, 77, 99)
+        group by store_id
     </select>
     <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
         select count(*) from order_info info

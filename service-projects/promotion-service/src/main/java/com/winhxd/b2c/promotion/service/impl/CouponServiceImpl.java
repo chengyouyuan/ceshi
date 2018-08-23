@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCartQueryCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -315,6 +316,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
+        results.sort((a,b)->Integer.parseInt(a.getReceiveStatus())-Integer.parseInt(b.getReceiveStatus()));
         return this.getCouponDetail(results);
     }
 
@@ -684,11 +686,13 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
+                            continue;
                         }
                     }
                 }else{
                     // 优惠券已领完
                     couponVO.setReceiveStatus("0");
+                    continue;
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
@@ -706,11 +710,13 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
+                            continue;
                         }
                     }
                 }else{
                     // 当前门店优惠券已领完
                     couponVO.setReceiveStatus("0");
+                    continue;
                 }
             }
             results.add(couponVO);
@@ -736,8 +742,9 @@ public class CouponServiceImpl implements CouponService {
         }
 
         //获取购物车商品信息
-        ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
+        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
         if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
             logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，订单可用优惠券接口异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
@@ -819,16 +826,19 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponKindsVo getStoreCouponKinds() {
-        List<CouponVO> couponVOList =  findStoreCouponList();
-        int count = 0 ;
-        for (int i = 0; i < couponVOList.size(); i++){
-            //优惠券是否可领取 0 已领取  1 可领取
-            if(couponVOList.get(i).getReceiveStatus().equals("1")){
-                count++;
-            }
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+            logger.error("优惠券种类数：{}获取门店信息接口调用失败:code={}，用户查询门店优惠券列表异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+            throw new BusinessException(result.getCode());
+        }
+        StoreUserInfoVO storeUserInfo = result.getData();
+        Integer couponKinds = couponMapper.getStoreCouponKinds(storeUserInfo.getId());
         CouponKindsVo couponKindsVo = new CouponKindsVo();
-        couponKindsVo.setStoreCouponKinds(count);
+        couponKindsVo.setStoreCouponKinds(couponKinds);
         return couponKindsVo;
     }
 
@@ -880,8 +890,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize) {
-        Page page = PageHelper.startPage(pageNo, pageSize);
+    public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId,CouponInStoreGetedAndUsedCodition codition) {
+        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
@@ -907,8 +917,8 @@ public class CouponServiceImpl implements CouponService {
 
         List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
         pagedList.setData(finalList);
-        pagedList.setPageNo(pageNo);
-        pagedList.setPageSize(pageSize);
+        pagedList.setPageNo(codition.getPageNo());
+        pagedList.setPageSize(codition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
@@ -922,6 +932,10 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public CouponVO findDefaultCouponByOrder(OrderAvailableCouponCondition couponCondition) {
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+        }
         List<CouponProductCondition> productConditions = new ArrayList<>();
         BigDecimal maxDiscountAmount = new BigDecimal(0);
         CouponVO result = new CouponVO();
@@ -929,8 +943,9 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> couponVOs = this.availableCouponListByOrder(couponCondition);
         CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
         //获取购物车商品信息
-        ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
+        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
         if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
             logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());
@@ -967,6 +982,10 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition) {
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+        }
         if(null == couponCondition|| couponCondition.getSendIds().isEmpty()){
             logger.error("CouponServiceImpl.getCouponDiscountAmount 参数错误");
             throw new BusinessException(BusinessCode.CODE_1007);
@@ -975,8 +994,9 @@ public class CouponServiceImpl implements CouponService {
         //获取购物车商品信息
         List<CouponProductCondition> productConditions = new ArrayList<>();
 
-        ShopCarQueryCondition shopCarQueryCondition = new ShopCarQueryCondition();
+        ShopCartQueryCondition shopCarQueryCondition = new ShopCartQueryCondition();
         shopCarQueryCondition.setStoreId(couponCondition.getStoreId());
+        shopCarQueryCondition.setCustomerId(customerUser.getCustomerId());
         ResponseResult<List<ShopCarProdInfoVO>> responseResult = shopCartServiceClient.findShopCar(shopCarQueryCondition);
         if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK ) {
             logger.error("优惠券：{}获取购物车信息接口调用失败:code={}，获取最优惠的优惠券信息异常！~", couponCondition.getStoreId(), responseResult == null ? null : responseResult.getCode());

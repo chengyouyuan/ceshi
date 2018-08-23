@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
 @FeignClient(value = ServiceName.SYSTEM_SERVICE, fallbackFactory = UserServiceClientFallback.class)
 public interface UserServiceClient {
 
@@ -82,13 +83,24 @@ public interface UserServiceClient {
     ResponseResult<SysUser> get(@PathVariable("id") Long id);
 
     /**
-     * 根据主键获取用户信息
+     * 根据主键禁用用户
      * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
+     * @return
      */
     @RequestMapping(value = "/user/3006/v1/disabled/{id}", method = RequestMethod.PUT)
     ResponseResult<Void> disabled(@PathVariable("id") Long id);
+
+    /**
+     * 根据主键启用用户
+     * @author songkai
+     * @date 2018/8/23
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/user/3007/v1/enable/{id}", method = RequestMethod.PUT)
+    ResponseResult<Void> enable(@PathVariable("id") Long id);
 
 }
 
@@ -143,6 +155,12 @@ class UserServiceClientFallback implements UserServiceClient, FallbackFactory<Us
     @Override
     public ResponseResult disabled(Long id) {
         logger.error("UserServiceClientFallback -> disabled", throwable);
+        return new ResponseResult(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Void> enable(Long id) {
+        logger.error("UserServiceClientFallback -> enable", throwable);
         return new ResponseResult(BusinessCode.CODE_1001);
     }
 

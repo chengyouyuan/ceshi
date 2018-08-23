@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
@@ -69,6 +70,35 @@ public class StoreSubmitProductController {
 		result=backStageStoreServiceClient.findStoreSubmitProd(condition);
 		return result;
 	}
+	
+	@ApiOperation("审核门店提报商品信息")
+    @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+    @PostMapping(value = "/store/1066/v1/auditStoreSubmitProd",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
+    @MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
+    public ResponseResult<Void> auditStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
+        ResponseResult<Void> result=new ResponseResult<>();
+        result=backStageStoreServiceClient.modifyStoreSubmitProd(condition);
+        return result;
+    }
+	
+    @ApiOperation("门店提报商品去添加商品")
+    @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+            @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
+    @PostMapping(value = "/store/1067/v1/addProdStoreSubmitProd", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission({ PermissionEnum.PROD_MANAGEMENT_SUBMIT })
+    @MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
+    public ResponseResult<Void> addProdStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
+        ResponseResult<Void> result = new ResponseResult<>();
+        condition.setProdStatus(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode());
+        result=backStageStoreServiceClient.modifyStoreSubmitProd(condition);
+        return result;
+    }
 	
 	
 

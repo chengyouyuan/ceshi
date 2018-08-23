@@ -46,6 +46,8 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * 支付流水号最大长度
 	 */
 	private static final int TRADE_NO_MAX_LENGTH = 32;
+	//支付凭证过期时间，微信方2小时，此处默认一小时后再次生产
+	private static final int PAY_TIME_EXPIRE = 1 * 3600 * 1000;
 	
 	@Autowired
 	private PayBillMapper payBillMapper;
@@ -191,7 +193,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		}
 		//查询支付失败
 		if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getResultCode())) {
-			logger.error("上次支付{}失败，再次发起支付", outTradeNo);
+			logger.warn("上次支付{}失败，再次发起支付", outTradeNo);
 			//更新上次支付失败记录
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//重新发起支付
@@ -200,44 +202,58 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		
 		//主动查询状态处理
 		if(TradeStateEnum.SUCCESS.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.error("主动查询{}交易状态为成功：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.REFUND.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为已退款：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.PAID.getCode());
 			throw new BusinessException(BusinessCode.CODE_3400908, "支付完成，请勿重复支付");
 			
 		} else if(TradeStateEnum.NOTPAY.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为未支付：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
-			payPreOrderVO = returnPayPreOrderVO(bill);
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
+			//支付凭证是否过期
+			long timeExpire = bill.getTimeExpire() == null ? 0 : bill.getTimeExpire().getTime();
+			if(timeExpire == 0) {
+				timeExpire = bill.getCreated().getTime() + PAY_TIME_EXPIRE;
+			}
+			//已过期
+			if(System.currentTimeMillis() > timeExpire) {
+				logger.warn("订单{}交易流水号{}已过期，重新生产", bill.getOutOrderNo(), outTradeNo);
+				this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
+				//再次去支付
+				payPreOrderVO = toPay(condition);
+			} else {
+				//未过期，使用原来流水
+				payPreOrderVO = returnPayPreOrderVO(bill);
+			}
 			
 		} else if(TradeStateEnum.CLOSED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为未支付：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else if(TradeStateEnum.REVOKED.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为已撤销：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else if(TradeStateEnum.USERPAYING.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为支付中：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			throw new BusinessException(BusinessCode.CODE_3400900, "支付中，请勿重复支付");
 			
 			//TODO 处理 USERPAYING--用户支付中，支付时间大于10分钟，调起关闭订单，成功后再次支付
 		} else if(TradeStateEnum.PAYERROR.getCode().equals(payPreOrderCallbackDTO.getTradeState())) {
-			logger.warn("主动查询{}交易状态为支付失败：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
+			logger.warn("主动查询{}交易：{}", outTradeNo, payPreOrderCallbackDTO.getTradeStateDesc());
 			this.updatePayBillByOutTradeNo(payPreOrderCallbackDTO, BillStatusEnum.FAIL.getCode());
 			//再次去支付
 			payPreOrderVO = toPay(condition);
 			
 		} else {
-			logger.warn("主动查询{}交易状态为{}：{}", outTradeNo, payPreOrderCallbackDTO.getTradeState(), payPreOrderCallbackDTO.getReturnMsg());
+			logger.error("主动查询{}交易状态为{}：{}", outTradeNo, payPreOrderCallbackDTO.getTradeState(), payPreOrderCallbackDTO.getTradeStateDesc());
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
 		

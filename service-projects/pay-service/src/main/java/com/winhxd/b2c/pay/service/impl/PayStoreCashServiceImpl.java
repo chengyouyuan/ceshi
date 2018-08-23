@@ -17,11 +17,14 @@ import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -56,14 +59,20 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         Long storeId = storeUser.getBusinessId();
         LOGGER.info("当前门店id"+storeId);
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
-        if(storeBankroll != null){
-            vo.setId(storeBankroll.getId());
-            vo.setStoreId(storeBankroll.getStoreId());
-            vo.setTotalMoeny(storeBankroll.getTotalMoeny());
-            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney());
-            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney());
-            vo.setPresentedMoney(storeBankroll.getPresentedMoney());
+        if(storeBankroll!=null){
+            vo.setId(storeBankroll.getId()==null?null:storeBankroll.getId());
+            vo.setStoreId(storeBankroll.getStoreId()==null?null:storeBankroll.getStoreId());
+            vo.setTotalMoeny(storeBankroll.getTotalMoeny()==null? BigDecimal.valueOf(0.00):storeBankroll.getTotalMoeny());
+            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedFrozenMoney());
+            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getSettlementSettledMoney());
+            vo.setPresentedMoney(storeBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedMoney());
+        }else{
+            vo.setTotalMoeny( BigDecimal.valueOf(0.00));
+            vo.setPresentedFrozenMoney(BigDecimal.valueOf(0.00));
+            vo.setSettlementSettledMoney(BigDecimal.valueOf(0.00));
+            vo.setPresentedMoney(BigDecimal.valueOf(0.00));
         }
+
         result.setData(vo);
         LOGGER.info("门店金额提现首页信息"+result);
         return result;
@@ -136,9 +145,18 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
 	@Override
 	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
 		if (payStoreTransactionRecord!=null) {
-			payStoreTransactionRecord.setCreated(new Date());
-			payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
-			payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+			//根据门店订单号和交易类型  查询交易记录
+			List<PayStoreTransactionRecord> records=payStoreTransactionRecordMapper.getPayStoreTransRecordByOrderNo(payStoreTransactionRecord.getOrderNo());
+			if (CollectionUtils.isEmpty(records)) {
+				payStoreTransactionRecord.setCreated(new Date());
+				payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
+				payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+			}else {
+				PayStoreTransactionRecord record=records.get(0);
+				record.setUpdated(new Date());
+				payStoreTransactionRecordMapper.updateByPrimaryKeySelective(record);
+				
+			}
 		}
 		
 	}

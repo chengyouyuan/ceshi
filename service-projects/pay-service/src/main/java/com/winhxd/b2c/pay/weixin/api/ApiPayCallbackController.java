@@ -90,6 +90,7 @@ public class ApiPayCallbackController {
 			if(result) {
 				this.response(response, SUCCESS_RESPONSE);
 			} else {
+				logger.error("支付回调成功，回调业务系统返回失败，订单号：{}，支付流水号：{}", bill.getOutOrderNo(), bill.getOutTradeNo());
 				this.response(response, FAIL_RESPONSE);
 			}
 		} catch (Exception e) {
@@ -160,9 +161,9 @@ public class ApiPayCallbackController {
         		sb.append(line);
         	}
         	resqXml = sb.toString();
-            logger.info("微信支付回调参数：{}", resqXml);
+            //logger.info("微信回调参数：{}", resqXml);
         } catch (IOException e) {
-        	logger.error("微信支付回调通知失败", e);
+        	logger.error("微信回调通知失败", e);
         }
 		return resqXml;
 	}
@@ -181,7 +182,7 @@ public class ApiPayCallbackController {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			logger.error("微信支付回调响应失败", e);
+			logger.error("微信回调响应失败", e);
 		}
 	}
 

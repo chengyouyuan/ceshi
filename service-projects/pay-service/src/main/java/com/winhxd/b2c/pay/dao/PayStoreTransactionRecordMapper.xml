@@ -211,5 +211,11 @@
     where store_id = #{storeId}
     ORDER BY transaction_date DESC ,created DESC
   </select>
+  <select id="getPayStoreTransRecordByOrderNo"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pay_store_transaction_record
+    where  order_no = #{orderNo,jdbcType=CHAR}
+  </select>
 
 </mapper>

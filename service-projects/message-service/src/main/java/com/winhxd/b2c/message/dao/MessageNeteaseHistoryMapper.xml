@@ -17,13 +17,12 @@
         <result column="msg_category" jdbcType="SMALLINT" property="msgCategory"/>
     </resultMap>
     <resultMap id="NeteaseMsgVOResultMap" type="com.winhxd.b2c.common.domain.message.vo.NeteaseMsgVO">
-        <result column="to_accid" jdbcType="VARCHAR" property="accid"/>
+        <result column="id" jdbcType="BIGINT" property="msgId"/>
         <result column="msg_type" jdbcType="SMALLINT" property="msgType"/>
         <result column="msg_body" jdbcType="VARCHAR" property="message"/>
         <result column="page_type" jdbcType="SMALLINT" property="pageType"/>
         <result column="tree_code" jdbcType="VARCHAR" property="treeCode"/>
         <result column="msg_time" jdbcType="TIMESTAMP" property="alertTime"/>
-        <result column="msg_id_server" jdbcType="VARCHAR" property="msgId"/>
         <result column="read_status" jdbcType="SMALLINT" property="readStatus"/>
         <result column="msg_category" jdbcType="SMALLINT" property="msgCategory"/>
     </resultMap>
@@ -32,7 +31,7 @@
     msg_time, msg_id_server, msg_category
   </sql>
     <sql id="Message_List">
-    msg_id_server,msg_type,msg_body,page_type,tree_code,msg_time,read_status, msg_category
+    id,msg_type,msg_body,page_type,tree_code,msg_time,read_status, msg_category
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -227,7 +226,7 @@
         where 1=1
         and to_accid=#{accid,jdbcType=VARCHAR}
         <if test="allRead != 1 ">
-            and msg_id_server in
+            and id in
             <foreach collection="msgIds" open="(" separator="," close=")" item="msgId">
                 #{msgId}
             </foreach>

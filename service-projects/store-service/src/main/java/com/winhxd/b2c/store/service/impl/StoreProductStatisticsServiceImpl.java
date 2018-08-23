@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.store.dao.StoreProductStatisticsMapper;
 import com.winhxd.b2c.store.service.StoreProductStatisticsService;
 /**
@@ -37,7 +36,7 @@ public class StoreProductStatisticsServiceImpl implements StoreProductStatistics
 	}
 
 	@Override
-	@Transactional(rollbackFor=BusinessException.class)
+	@Transactional(rollbackFor=Exception.class)
 	public void bathSaveStoreProductStatistics(List<StoreProductStatistics> records) {
 		if (records != null) {
 			for (StoreProductStatistics record : records) {

@@ -66,4 +66,14 @@ public interface StoreSubmitProductService {
 	* @date 2018年8月14日下午4:12:06
 	 */
 	PagedList<BackStageStoreSubmitProdVO> findBackStageVOByCondition(BackStageStoreSubmitProdCondition condition);
+	/**
+	 * 
+	* @Title: findById 
+	* @Description: TODO 
+	* @param id
+	* @return StoreSubmitProduct
+	* @author wuyuanbao
+	* @date 2018年8月23日下午3:02:24
+	 */
+	StoreSubmitProduct findById(Long id);
 }

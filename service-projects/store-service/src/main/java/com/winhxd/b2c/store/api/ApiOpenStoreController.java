@@ -314,24 +314,24 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
         if (StringUtils.isBlank(storeBusinessInfoCondition.getPickupType())|| StringUtils.isBlank(storeBusinessInfoCondition.getPayType())) {
-            logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误:{}", JsonUtil.toJSONString(storeBusinessInfoCondition));
+            logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误");
             throw new BusinessException(BusinessCode.CODE_200006);
         }
         boolean storeNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreName()).matches();
         if (!storeNameMatcher) {
-            throw new BusinessException(BusinessCode.CODE_200006, "店铺名称不能有特殊字符且长度不能超过15");
-        }
-        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(storeBusinessInfoCondition.getStoreAddress()).matches();
-        if (!storeAddressMatcher) {
-            throw new BusinessException(BusinessCode.CODE_200006, "提货地址不能有特殊字符且长度不能超过30");
+            throw new BusinessException(BusinessCode.CODE_102501, "店铺名称不能有特殊字符且长度不能超过15");
         }
         boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(storeBusinessInfoCondition.getShopkeeper()).matches();
         if (!shopkeeperMatcher) {
-            throw new BusinessException(BusinessCode.CODE_200006, "联系人不能有特殊字符且长度不能超过10");
+            throw new BusinessException(BusinessCode.CODE_102502, "联系人不能有特殊字符且长度不能超过10");
         }
         boolean contactMobileMatcher = RegexConstant.CONTACT_MOBILE_PATTERN.matcher(storeBusinessInfoCondition.getContactMobile()).matches();
         if (!contactMobileMatcher) {
-            throw new BusinessException(BusinessCode.CODE_200006, "联系方式格式不正确");
+            throw new BusinessException(BusinessCode.CODE_102503, "联系方式格式不正确");
+        }
+        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(storeBusinessInfoCondition.getStoreAddress()).matches();
+        if (!storeAddressMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102504, "提货地址不能有特殊字符且长度不能超过50");
         }
         if (UserContext.getCurrentStoreUser() == null) {
             logger.error("惠小店开店店铺信息保存接口 未获取到当前用户信息");
@@ -429,9 +429,8 @@ public class ApiOpenStoreController {
         }
         StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
         Date now = new Date();
-        condition.setEndDateTime(now);
-        condition.setStartDateTime(DateUtils.addMonths(now,-1));
         condition.setStoreId(storeId);
+        condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
         if(storeOrderSalesSummaryVO != null){
             return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
@@ -514,8 +513,7 @@ public class ApiOpenStoreController {
         Integer browseNum = storeBrowseLogService.getBrowseNum(storeCustomerId, startDatetime, endDatetime);
         StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
         todayCondition.setStoreId(businessId);
-        todayCondition.setStartDateTime(startDatetime);
-        todayCondition.setEndDateTime(endDatetime);
+        todayCondition.setQueryPeriodType(StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE);
         //营业额、下单人数、订单数
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
                 orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();

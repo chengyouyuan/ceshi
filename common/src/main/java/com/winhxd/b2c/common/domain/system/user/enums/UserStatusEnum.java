@@ -1,5 +1,8 @@
 package com.winhxd.b2c.common.domain.system.user.enums;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * 用户状态
  * @author zhangzhengyang
@@ -25,5 +28,11 @@ public enum UserStatusEnum {
     public String getDesc() {
         return desc;
     }
-
+    public static Map<Short, String> getDescMap() {
+        Map<Short, String> map = new TreeMap<>();
+        for (UserStatusEnum userStatusEnum : values()) {
+            map.put(userStatusEnum.getCode(), userStatusEnum.getDesc());
+        }
+        return map;
+    }
 }

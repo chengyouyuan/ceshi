@@ -1,21 +1,20 @@
 package com.winhxd.b2c.common.feign.company;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.Retail2cCompanyCondition;
 import com.winhxd.b2c.common.domain.product.vo.CompanyInfo;
-
 import feign.hystrix.FallbackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 @FeignClient(value = ServiceName.USER_SERVICE, fallbackFactory = CompanyServiceFallback.class)
 public interface CompanyServiceClient {
@@ -26,7 +25,7 @@ public interface CompanyServiceClient {
 	@RequestMapping(value = "/company/7002/v1/getCompanyInfoByCodes", method = RequestMethod.POST)
 	ResponseResult<List<CompanyInfo>> getCompanyInfoByCodes(List<String> codes);
 }
-
+@Component
 class CompanyServiceFallback implements CompanyServiceClient, FallbackFactory<CompanyServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(CompanyServiceClient.class);
     private Throwable throwable;

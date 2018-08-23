@@ -85,6 +85,7 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_102201, message = "参数无效！")})
     @PostMapping(value = "/1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE_EDIT)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(condition.toString()));
         if (condition.getId() == null) {
@@ -95,17 +96,17 @@ public class BackStageStoreController {
         if (!storeNameMatcher) {
             throw new BusinessException(BusinessCode.CODE_102202, "店铺名称不能有特殊字符且长度不能超过15");
         }
-        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(condition.getStoreAddress()).matches();
-        if (!storeAddressMatcher) {
-            throw new BusinessException(BusinessCode.CODE_102203, "提货地址不能有特殊字符且长度不能超过30");
-        }
         boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(condition.getShopkeeper()).matches();
         if (!shopkeeperMatcher) {
-            throw new BusinessException(BusinessCode.CODE_102204, "联系人不能有特殊字符且长度不能超过10");
+            throw new BusinessException(BusinessCode.CODE_102203, "联系人不能有特殊字符且长度不能超过10");
         }
         boolean contactMobileMatcher = RegexConstant.CONTACT_MOBILE_PATTERN.matcher(condition.getContactMobile()).matches();
         if (!contactMobileMatcher) {
-            throw new BusinessException(BusinessCode.CODE_102205, "联系方式格式不正确");
+            throw new BusinessException(BusinessCode.CODE_102204, "联系方式格式不正确");
+        }
+        boolean storeAddressMatcher = RegexConstant.STORE_ADDRESS_PATTERN.matcher(condition.getStoreAddress()).matches();
+        if (!storeAddressMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102205, "提货地址不能有特殊字符且长度不能超过50");
         }
         condition.setStoreCustomerId(null);
         condition.setStoreRegionCode(null);

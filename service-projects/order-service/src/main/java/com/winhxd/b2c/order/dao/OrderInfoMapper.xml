@@ -753,12 +753,12 @@
         update order_info
         <!--订单状态为待自提-->
         set order_status=9,
-        updated = now(),
+        updated = now()
         <if test="reason != null and reason !=''">
             ,cancel_reason = #{reason,jdbcType=VARCHAR}
         </if>
         where order_no=#{orderNo,jdbcType=VARCHAR}
-        <if test="customerId != null">
+        <if test="storeId != null">
             and store_id = #{storeId,jdbcType=BIGINT}
         </if>
     </update>

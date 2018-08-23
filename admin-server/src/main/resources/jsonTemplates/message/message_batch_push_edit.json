@@ -50,7 +50,8 @@
         "value": "",
         "placeholder": "请选择推送时间",
         "isHidden": false,
-        "format": "yyyy-MM-dd HH:mm:ss"
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "limit": 1
       }
     ]
   }

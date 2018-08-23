@@ -226,12 +226,10 @@ public class VerifyService {
                     }
                     // 订单手续费
                     BigDecimal serviceFee = payStatement.getFee();
-                    if (serviceFee != null && BigDecimal.ZERO.compareTo(serviceFee) != 0) {
-                        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
-                        updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
-                        if (updateCount > 0) {
-                            log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
-                        }
+                    accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
+                    updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
+                    if (updateCount > 0) {
+                        log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
                     }
                 }
             }

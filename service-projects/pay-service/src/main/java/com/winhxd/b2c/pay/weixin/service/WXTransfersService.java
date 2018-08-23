@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.service;
 
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersQueryToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersQueryForWxBankResponseDTO;
@@ -37,6 +38,6 @@ public interface WXTransfersService {
      * @return
      * @throws Exception
      */
-    public PayTransfersQueryForWxBankResponseDTO getExactResultForWxBank(String partnerTradeNo) throws Exception;
+    PayTransfersQueryToWxBankVO getExactResultForWxBank(String partnerTradeNo) throws Exception;
 
 }

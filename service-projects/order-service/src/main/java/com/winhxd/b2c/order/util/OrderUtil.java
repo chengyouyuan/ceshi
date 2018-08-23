@@ -239,7 +239,7 @@ public class OrderUtil {
             int expiration = 0;
             int msgType = 0;
             short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
-            short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
+            short categoryType = MsgCategoryEnum.WAIT_PICK_UP.getTypeCode();
             int audioType = 0;
             String treeCode = orderNo;
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,

@@ -74,4 +74,21 @@ public class PayTransfersToWxChangeResponseDTO {
      */
     private String paymentTime;
 
+    @Override
+    public String toString() {
+        return "PayTransfersToWxChangeResponseDTO{" +
+                "returnCode='" + returnCode + '\'' +
+                ", returnMsg='" + returnMsg + '\'' +
+                ", mchAppid='" + mchAppid + '\'' +
+                ", mchid='" + mchid + '\'' +
+                ", deviceInfo='" + deviceInfo + '\'' +
+                ", nonceStr='" + nonceStr + '\'' +
+                ", resultCode='" + resultCode + '\'' +
+                ", errCode='" + errCode + '\'' +
+                ", errCodeDes='" + errCodeDes + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", paymentNo='" + paymentNo + '\'' +
+                ", paymentTime='" + paymentTime + '\'' +
+                '}';
+    }
 }

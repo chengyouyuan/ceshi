@@ -39,4 +39,14 @@ public class PayTransfersQueryForWxChangeDTO {
      */
     private String appid;
 
+    @Override
+    public String toString() {
+        return "PayTransfersQueryForWxChangeDTO{" +
+                "nonceStr='" + nonceStr + '\'' +
+                ", sign='" + sign + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", mchId='" + mchId + '\'' +
+                ", appid='" + appid + '\'' +
+                '}';
+    }
 }

@@ -126,6 +126,7 @@
     left join pay_verify_history h on h.verify_code = d.verify_code
     where d.order_complete_status = 1
     and d.third_party_verify_status = 1
+    and d.verify_status in (0, 1)
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>
@@ -145,17 +146,18 @@
       and d.verify_time &lt; date_add(date_format(#{verifyDateEnd}, '%Y-%m-%d'), interval 1 day)
     </if>
     group by d.store_id, d.verify_status, h.verify_code, h.operated_time, h.operated_by_name
+    having 1 = 1
     <if test="realPayMoneyStart != null">
-      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
     </if>
     <if test="realPayMoneyEnd != null">
-      having sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
     </if>
     <if test="realVerifyMoneyStart != null">
-      having sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
+      and sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
     </if>
     <if test="realVerifyMoneyEnd != null">
-      having sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
+      and sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
     </if>
     order by h.operated_time desc
   </select>
@@ -169,7 +171,7 @@
 
   <update id="updateAccountingDetailServiceFeeByThirdParty">
     update pay_accounting_detail set
-      detail_money = {detailMoney}
+      detail_money = #{detailMoney}
     where detail_type = 2
     and order_no = #{orderNo}
   </update>
@@ -215,8 +217,8 @@
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
     where d.verify_status &lt;&gt; 1
-    and d.third_party_verify_status = 1
-    and d.order_complete_status = 1
+    and (case when h.verify_status = 1 then d.third_party_verify_status else 1 end) = 1
+    and (case when h.verify_status = 1 then d.order_complete_status else 1 end) = 1
     and h.verify_code = #{verifyCode}
     and d.id in
     <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>

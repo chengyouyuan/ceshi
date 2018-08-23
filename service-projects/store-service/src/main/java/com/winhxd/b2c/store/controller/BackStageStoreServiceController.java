@@ -73,7 +73,7 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
     }
 
     @Override
-    public ResponseResult<Integer> modifyStoreInfoRegionCode(BackStageModifyStoreCondition condition) {
+    public ResponseResult<Integer> modifyStoreInfoRegionCode(@RequestBody BackStageModifyStoreCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult<>();
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         BeanUtils.copyProperties(condition, storeUserInfo);

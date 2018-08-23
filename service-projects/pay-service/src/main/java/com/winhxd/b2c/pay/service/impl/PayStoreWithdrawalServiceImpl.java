@@ -113,15 +113,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
 			 code = bindAccount.getCode();
 			 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
+			 PayStoreUserInfoVO data = bindAccount.getData();
+			 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
+			 withdrawalPage.setNick(data.getNick());
+			 withdrawalPage.setOpenid(data.getOpenid());
+			 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 			 if(code == 0){
-				 PayStoreUserInfoVO data = bindAccount.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
-//				 withdrawalPage.setMobile(data.getStoreMobile());
-				 withdrawalPage.setNick(data.getNick());
-				 withdrawalPage.setOpenid(data.getOpenid());
-				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
 			 } 
 		}

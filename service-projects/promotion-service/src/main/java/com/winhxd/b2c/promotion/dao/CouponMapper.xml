@@ -92,4 +92,21 @@ JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
 WHERE
 	ctu.order_no = #{orderNo}
   </select>
+    <select id="getStoreCouponKinds" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT
+        COUNT(DISTINCT cat.template_id) AS CouponKinds
+        FROM
+        coupon_activity ca
+        JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id
+        AND cat.`status` = 1
+        JOIN coupon_activity_store_customer cas ON cas.coupon_activity_template_id = cat.id
+        AND cas. STATUS = 1
+        WHERE
+        ca.type = 1
+        AND ca.activity_status = 1
+        AND ca. STATUS = 1
+        AND ca.activity_start &lt;= NOW()
+        AND ca.activity_end &gt;= NOW()
+        AND cas.store_id = #{storeId}
+    </select>
 </mapper>

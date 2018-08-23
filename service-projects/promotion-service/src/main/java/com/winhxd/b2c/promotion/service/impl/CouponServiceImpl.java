@@ -823,16 +823,19 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponKindsVo getStoreCouponKinds() {
-        List<CouponVO> couponVOList =  findStoreCouponList();
-        int count = 0 ;
-        for (int i = 0; i < couponVOList.size(); i++){
-            //优惠券是否可领取 0 已领取  1 可领取
-            if(couponVOList.get(i).getReceiveStatus().equals("1")){
-                count++;
-            }
+        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+        if (customerUser == null) {
+            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
         }
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+            logger.error("优惠券种类数：{}获取门店信息接口调用失败:code={}，用户查询门店优惠券列表异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+            throw new BusinessException(result.getCode());
+        }
+        StoreUserInfoVO storeUserInfo = result.getData();
+        Integer couponKinds = couponMapper.getStoreCouponKinds(storeUserInfo.getId());
         CouponKindsVo couponKindsVo = new CouponKindsVo();
-        couponKindsVo.setStoreCouponKinds(count);
+        couponKindsVo.setStoreCouponKinds(couponKinds);
         return couponKindsVo;
     }
 

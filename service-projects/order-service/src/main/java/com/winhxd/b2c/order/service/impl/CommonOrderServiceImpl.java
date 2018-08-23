@@ -23,7 +23,6 @@ import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -403,7 +402,8 @@ public class CommonOrderServiceImpl implements OrderService {
         if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
         }
-
+        //Oscar定的一期不上取消原因，定死
+        String reason = StringUtils.isNotBlank(orderCancelCondition.getCancelReason()) ? orderCancelCondition.getCancelReason() : "商品暂时缺货";
         StoreUserInfoVO storeVO = storeData.getData();
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);

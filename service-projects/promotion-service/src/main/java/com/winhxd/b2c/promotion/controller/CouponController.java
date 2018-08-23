@@ -167,7 +167,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<CouponVO> findDefaultCoupon(OrderAvailableCouponCondition condition) {
+	public ResponseResult<CouponVO> findDefaultCoupon(@RequestBody OrderAvailableCouponCondition condition) {
 		LOGGER.info("=/promotion/5058/v1/findDefaultCoupon-最优惠的优惠券=--开始--{}", condition);
 		ResponseResult<CouponVO> result = new ResponseResult<>();
 		CouponVO couponVO = couponService.findDefaultCouponByOrder(condition);

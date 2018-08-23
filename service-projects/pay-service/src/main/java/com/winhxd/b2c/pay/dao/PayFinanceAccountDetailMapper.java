@@ -60,4 +60,10 @@ public interface PayFinanceAccountDetailMapper {
 	 * @return
 	 */
     BigDecimal getIncome(@Param("type")String type);
+
+	/**
+	 * 营收金额
+	 * @return
+	 */
+    BigDecimal getRevenueMoney();
 }

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -61,10 +62,10 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         if(storeBankroll != null){
             vo.setId(storeBankroll.getId());
             vo.setStoreId(storeBankroll.getStoreId());
-            vo.setTotalMoeny(storeBankroll.getTotalMoeny());
-            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney());
-            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney());
-            vo.setPresentedMoney(storeBankroll.getPresentedMoney());
+            vo.setTotalMoeny(storeBankroll.getTotalMoeny()==null? BigDecimal.valueOf(0.00):storeBankroll.getTotalMoeny());
+            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedFrozenMoney());
+            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getSettlementSettledMoney());
+            vo.setPresentedMoney(storeBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedMoney());
         }
         result.setData(vo);
         LOGGER.info("门店金额提现首页信息"+result);

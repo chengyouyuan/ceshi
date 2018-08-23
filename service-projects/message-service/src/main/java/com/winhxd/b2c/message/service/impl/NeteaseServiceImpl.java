@@ -141,9 +141,9 @@ public class NeteaseServiceImpl implements NeteaseService {
 
 	@Override
 	@MessageEnumConvertAnnotation
-	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long customerId) {
+	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long storeId) {
 		String accid;
-		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(storeId);
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
@@ -167,10 +167,10 @@ public class NeteaseServiceImpl implements NeteaseService {
 	}
 
 	@Override
-	public Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition condition, Long customerId) {
+	public Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition condition, Long storeId) {
 		Boolean result = false;
 		String accid;
-		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(storeId);
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}

@@ -88,6 +88,9 @@ public class OrderInfoDetailVO implements Serializable {
     private Short payType;
     @ApiModelProperty(value = "支付类型描述", required = true)
     private String payTypeDesc;
+    
+    @ApiModelProperty(value = "订单支付流水号", required = false)
+    private String paymentSerialNum;
     /**
      * 支付状态:0为未支付;1为已支付;
      */

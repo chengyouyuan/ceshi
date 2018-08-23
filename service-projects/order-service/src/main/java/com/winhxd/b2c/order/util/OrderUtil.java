@@ -152,7 +152,7 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:27:59
      */
-    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId) {
+    public static void newOrderSendMsg2Store(MessageSendUtils messageServiceClient, Long storeId, String orderNo) {
         try {
             // 发送云信
             String storeMsg = OrderNotifyMsg.NEW_ORDER_NOTIFY_MSG_4_STORE;
@@ -162,7 +162,7 @@ public class OrderUtil {
             short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
             short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 1;
-            String treeCode = "treeCode";
+            String treeCode = orderNo;
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
@@ -231,7 +231,7 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:37:26
      */
-    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId) {
+    public static void orderNeedPickupSendMsg2Store(MessageSendUtils messageServiceClient, String last4MobileNums, Long storeId, String orderNo) {
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
             // 发送云信
@@ -241,7 +241,7 @@ public class OrderUtil {
             short pageType = MsgPageTypeEnum.ORDER_DETAIL.getPageType();
             short categoryType = MsgCategoryEnum.ORDER_NEW.getTypeCode();
             int audioType = 0;
-            String treeCode = "treeCode";
+            String treeCode = orderNo;
             NeteaseMsgCondition neteaseMsgCondition = OrderUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, categoryType, audioType, treeCode);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);

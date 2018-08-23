@@ -115,7 +115,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         stringMessageSender.send(MQDestination.ORDER_RECEIVE_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
         logger.info("{}, orderNo={} 下单成功发送 超时未确认取消操作MQ延时消息 结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         //给门店发送云信
-        OrderUtil.newOrderSendMsg2Store(messageServiceClient, orderInfo.getStoreId());
+        OrderUtil.newOrderSendMsg2Store(messageServiceClient, orderInfo.getStoreId(), orderInfo.getOrderNo());
     }
     
     @Override
@@ -209,7 +209,7 @@ public class OnlinePayPickUpInStoreOfflineOrderHandlerImpl implements OrderHandl
         stringMessageSender.send(MQDestination.ORDER_PICKUP_TIMEOUT_DELAYED, orderInfo.getOrderNo(), delayMilliseconds);
         
         //发送信息给门店
-        OrderUtil.orderNeedPickupSendMsg2Store(messageServiceClient, last4MobileNums, orderInfo.getStoreId());
+        OrderUtil.orderNeedPickupSendMsg2Store(messageServiceClient, last4MobileNums, orderInfo.getStoreId(), orderInfo.getOrderNo());
         // 发送消息给用户
         OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
         String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() + "...";

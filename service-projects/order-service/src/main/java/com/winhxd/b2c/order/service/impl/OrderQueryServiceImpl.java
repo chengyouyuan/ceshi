@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -308,6 +307,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     public OrderInfoDetailVO4Management getOrderDetail4Management(String orderNo) {
         if (StringUtils.isBlank(orderNo)) {
             throw new NullPointerException("订单编号不能为空");
+        }
+        String cacheStr = cache.get(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo);
+        if (StringUtils.isNoneBlank(cacheStr)) {
+            logger.info("订单 orderNo={} 命中缓存 订单信息查询结束", orderNo);
+            return JsonUtil.parseJSONObject(cacheStr, OrderInfoDetailVO4Management.class);
         }
         OrderInfoDetailVO4Management orderInfoDetailVO4Management = null;
         OrderInfoDetailVO orderInfoDetailVO = orderInfoMapper.selectOrderInfoByOrderNo(orderNo);

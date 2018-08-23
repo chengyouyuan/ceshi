@@ -77,4 +77,22 @@ public class PayTransfersForWxChangeDTO {
     /*    PayTransfersForWxChangeDTO(){
         super();
     }*/
+
+    @Override
+    public String toString() {
+        return "PayTransfersForWxChangeDTO{" +
+                "mchAppid='" + mchAppid + '\'' +
+                ", mchid='" + mchid + '\'' +
+                ", deviceInfo='" + deviceInfo + '\'' +
+                ", nonceStr='" + nonceStr + '\'' +
+                ", sign='" + sign + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", openid='" + openid + '\'' +
+                ", checkName='" + checkName + '\'' +
+                ", reUserName='" + reUserName + '\'' +
+                ", amount=" + amount +
+                ", desc='" + desc + '\'' +
+                ", spbillCreateIp='" + spbillCreateIp + '\'' +
+                '}';
+    }
 }

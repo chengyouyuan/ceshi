@@ -62,4 +62,19 @@ public class PayTransfersForWxBankDTO {
     /*    PayTransfersForWxBankDTO(){
         super();
     }*/
+
+    @Override
+    public String toString() {
+        return "PayTransfersForWxBankDTO{" +
+                "mchId='" + mchId + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", nonceStr='" + nonceStr + '\'' +
+                ", sign='" + sign + '\'' +
+                ", encBankNo='" + encBankNo + '\'' +
+                ", encTrueName='" + encTrueName + '\'' +
+                ", bankCode='" + bankCode + '\'' +
+                ", amount=" + amount +
+                ", desc='" + desc + '\'' +
+                '}';
+    }
 }

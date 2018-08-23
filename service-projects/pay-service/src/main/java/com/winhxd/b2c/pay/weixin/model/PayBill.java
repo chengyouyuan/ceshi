@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author mahongliang
+ */
 public class PayBill implements Serializable {
 	private static final long serialVersionUID = 1563170824986089800L;
 

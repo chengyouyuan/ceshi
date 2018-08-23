@@ -30,12 +30,18 @@ import java.util.Map;
 @Service
 public class WXPayApiImpl implements WXPayApi {
 	private static final Logger logger = LoggerFactory.getLogger(WXPayApiImpl.class);
-	//默认签名算法
+	/**
+	 * 默认签名算法
+	 */
 	private SignType signType = SignType.MD5;
-	//上报，agent
+	/**
+	 * 上报，agent
+	 */
     private boolean autoReport = false;
-    //沙箱环境
-    private boolean useSandbox = false;
+	/**
+	 * 沙箱环境
+	 */
+	private boolean useSandbox = false;
     
     @Autowired
     private WXPayRequest wxPayRequest;

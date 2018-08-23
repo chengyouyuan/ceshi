@@ -48,5 +48,13 @@ public class PayStatementDTO extends RequestBase{
 	public void setTarType(String tarType) {
 		this.tarType = tarType;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "PayStatementDTO{" +
+				"billDate='" + billDate + '\'' +
+				", billType='" + billType + '\'' +
+				", tarType='" + tarType + '\'' +
+				'}';
+	}
 }

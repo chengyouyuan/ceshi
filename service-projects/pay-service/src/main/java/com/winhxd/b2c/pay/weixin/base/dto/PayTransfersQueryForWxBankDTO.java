@@ -34,4 +34,13 @@ public class PayTransfersQueryForWxBankDTO {
      */
     private String sign;
 
+    @Override
+    public String toString() {
+        return "PayTransfersQueryForWxBankDTO{" +
+                "mchId='" + mchId + '\'' +
+                ", partnerTradeNo='" + partnerTradeNo + '\'' +
+                ", nonceStr='" + nonceStr + '\'' +
+                ", sign='" + sign + '\'' +
+                '}';
+    }
 }

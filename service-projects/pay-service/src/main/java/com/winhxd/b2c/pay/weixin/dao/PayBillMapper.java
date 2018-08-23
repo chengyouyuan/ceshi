@@ -4,10 +4,23 @@ import java.util.List;
 
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 
+/**
+ * @author mahongliang
+ */
 public interface PayBillMapper {
 
+    /**
+     * 插入
+     * @param record
+     * @return
+     */
     int insertSelective(PayBill record);
 
+    /**
+     * 更新
+     * @param record
+     * @return
+     */
     int updateByPrimaryKeySelective(PayBill record);
     
     /**

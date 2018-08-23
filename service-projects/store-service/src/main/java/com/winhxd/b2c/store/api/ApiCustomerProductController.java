@@ -8,9 +8,11 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.product.condition.CustomerSearchProductCondition;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuMsgVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
+import com.winhxd.b2c.common.domain.store.model.CustomerBrowseLog;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.ProductService;
+import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  *
@@ -40,6 +44,9 @@ public class ApiCustomerProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private StoreBrowseLogService storeBrowseLogService;
 
     @ApiOperation(value = "[未登录]小程序商品搜索接口", notes = "[未登录]小程序商品搜索接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -103,6 +110,11 @@ public class ApiCustomerProductController {
             logger.error("ApiProductController -> filtrateStoreProductList获取的参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
+        CustomerBrowseLog customerBrowseLog = new CustomerBrowseLog();
+        customerBrowseLog.setStoreCustomerId(condition.getStoreId());
+        customerBrowseLog.setCustomerId(currentCustomerUser.getCustomerId());
+        customerBrowseLog.setLoginDatetime(new Date());
+        storeBrowseLogService.saveBrowseLogLogin(customerBrowseLog);
         ResponseResult<ProductSkuMsgVO> responseResult = productService.filtrateProductList(condition, currentCustomerUser);
         logger.info("{} - [已登录]筛选列表初始化接口 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;

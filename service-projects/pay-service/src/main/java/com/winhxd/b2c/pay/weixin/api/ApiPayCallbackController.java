@@ -90,6 +90,7 @@ public class ApiPayCallbackController {
 			if(result) {
 				this.response(response, SUCCESS_RESPONSE);
 			} else {
+				logger.error("支付回调成功，回调业务系统返回失败，订单号：{}，支付流水号：{}", bill.getOutOrderNo(), bill.getOutTradeNo());
 				this.response(response, FAIL_RESPONSE);
 			}
 		} catch (Exception e) {

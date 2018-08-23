@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.service;
 
 import java.util.List;
 
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
@@ -55,14 +56,21 @@ public interface PayService {
 	OrderPayVO unifiedOrder(PayPreOrderCondition condition);
 	
 	/**
-	 * 退款
-	 * @author mahongliang
+	 * 
+	 * @author 刘寒宁
 	 * @date  2018年8月16日 上午10:04:54
-	 * @Description 
-	 * @param payRefund
+	 * @Description 退款事件处理
 	 * @return
 	 */
-//	PayRefundVO refundOrder(PayRefundCondition payRefund);
+	void refundOrder(String orderNo, OrderInfo order);
+	
+	/**
+	 * @author 刘寒宁
+	 * @date  2018年8月16日 上午10:04:54
+	 * @Description 订单完成事件处理
+	 * @return
+	 */
+	 void orderFinishHandler(String orderNo, OrderInfo orderInfo);
 	
 	/**
      * 微信提现至余额入口

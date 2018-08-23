@@ -410,7 +410,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (lock.tryLock()) {
             try {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
-                if (null == order || order.getStoreId().equals(store.getBusinessId())) {
+                if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
                     throw new BusinessException(BusinessCode.ORDER_DOES_NOT_EXIST, MessageFormat.format("订单不存在 订单号={0}", orderNo));
                 }
                 //判断是否支付成功,支付成功走退款逻辑，支付不成功走取消订单逻辑

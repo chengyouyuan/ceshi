@@ -23,11 +23,11 @@ public interface CustomerBrowseLogMapper {
     /**
      *  用户退出时查询记录的id
      *
-     * @param storeId 门店编码
+     * @param storeCustomerId 门店编码
      * @param customerId 用户编码
-     * @return id
+     * @return 进入记录
      */
-    CustomerBrowseLog selectIdForLoginOut(@Param("storeId") Long storeId, @Param("customerId") Long customerId);
+    CustomerBrowseLog selectForLoginOut(@Param("storeCustomerId") Long storeCustomerId, @Param("customerId") Long customerId);
 
     /**
      * 获取时间段内浏览人数

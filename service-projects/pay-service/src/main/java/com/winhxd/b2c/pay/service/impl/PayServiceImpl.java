@@ -694,22 +694,34 @@ public class PayServiceImpl implements PayService{
 		if(null == payTransfersToWxChangeVO){
 			logger.info(log+"--transfersService.transfersToChange返回结果为空");
 		}
-        PayWithdrawals payWithdrawals = new PayWithdrawals();
-        payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
-        if(payTransfersToWxChangeVO.isTransfersResult()){
-            payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
-        }else{
-            //是否需要用户重新申请提现流程
-            if(payTransfersToWxChangeVO.isAbleContinue()){
-                payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
-            }else{
-                payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
-            }
-        }
-        payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
-        payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
-        payWithdrawals.setTimeEnd(new Date());
-        int transfersResult = this.transfersPublic(payWithdrawals,log);
+		PayWithdrawals payWithdrawals = new PayWithdrawals();
+
+		if(payTransfersToWxChangeVO.isTransfersResult()){
+			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+		}else{
+			//是否需要用户重新申请提现流程
+			if(payTransfersToWxChangeVO.isAbleContinue()){
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+			}else{
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				//退回提现用户资金
+				List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
+				UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
+				condition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
+				condition.setStoreId(payWithdrawalsList.get(0).getStoreId());
+				condition.setWithdrawalsNo(payWithdrawalsList.get(0).getWithdrawalsNo());
+				condition.setMoney(payWithdrawalsList.get(0).getTotalFee());
+				this.updateStoreBankroll(condition);
+
+			}
+		}
+		//TODO 需要确认errorMessage
+		payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
+		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
+		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
+		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
+		payWithdrawals.setTimeEnd(new Date());
+		int transfersResult = this.transfersPublic(payWithdrawals,log);
 
 		return transfersResult;
 	}
@@ -778,6 +790,30 @@ public class PayServiceImpl implements PayService{
             logger.info(log+"--transfersService.transfersToChange返回结果为空");
         }
 
+		PayWithdrawals payWithdrawals = new PayWithdrawals();
+		if(payTransfersToWxBankVO.isTransfersResult()){
+			//提现到银行卡状态为微信处理中
+			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.HANDLE.getStatusCode());
+		}else{
+			//是否需要用户重新申请提现流程
+			if(payTransfersToWxBankVO.isAbleContinue()){
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+			}else{
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				//退回提现用户资金
+				List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
+
+				UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
+				condition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
+				condition.setStoreId(payWithdrawalsList.get(0).getStoreId());
+				condition.setWithdrawalsNo(payWithdrawalsList.get(0).getWithdrawalsNo());
+				condition.setMoney(payWithdrawalsList.get(0).getTotalFee());
+				this.updateStoreBankroll(condition);
+			}
+		}
+		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
+		payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
+		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
 		return 1;
 	}
 
@@ -878,11 +914,13 @@ public class PayServiceImpl implements PayService{
 			payWithdrawals.setCallbackCmmsAmt(BigDecimal.valueOf(resultForWxBank.getCmmsAmt()).divide(new BigDecimal(100)));
 			payWithdrawals.setTransactionId(resultForWxBank.getPaymentNo());
 			payWithdrawals.setTimeEnd(new Date());
+			//TODO 需要确认errorMessage
+			payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
 			}
 			this.transfersPublic(payWithdrawals,log);
 		}

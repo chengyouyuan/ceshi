@@ -13,7 +13,8 @@ public enum WithdrawalsStatusEnum {
 
     FAIL((short) 2, "提现失败"),
 
-    REAPPLY((short) 3, "无效");
+    REAPPLY((short) 3, "无效"),
+    HANDLE((short) 4, "处理中") ;
 
     private short statusCode;
     private String statusDesc;

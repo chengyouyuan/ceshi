@@ -13,6 +13,7 @@ import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.ReadyOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.service.OrderQueryService;
@@ -100,6 +101,25 @@ public class ApiShopCarController {
         List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
         result.setData(data);
         return result;
+    }
+
+    @ApiOperation(value = "查询预订单info", notes = "查询预订单info")
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空"),
+            @ApiResponse(code = BusinessCode.CODE_402017, message = "计算订单优惠金额失败"),
+            @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败")
+    })
+    @RequestMapping(value = "/api-order/order/4033/v1/findReadyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<ReadyOrderVO> findReadyOrder(@RequestBody ShopCarQueryCondition condition){
+        if (null == condition || null == condition.getStoreId()) {
+            logger.error("查询购物车异常{}  参数storeId为空");
+            throw new BusinessException(BusinessCode.CODE_402001);
+        }
+        ReadyOrderVO readyOrder = shopCarService.findReadyOrder(condition.getStoreId(), getCurrentCustomerId());
+        return new ResponseResult<>(readyOrder);
     }
 
     /**

@@ -14,8 +14,8 @@ import java.util.List;
 @ApiModel("购物车")
 @Data
 public class ShopCarVO {
-    @ApiModelProperty(value = "1购物车有商品信息下架")
-    private Byte prodStatus;
+    @ApiModelProperty(value = "0正常, 1购物车有商品信息下架")
+    private Byte prodStatus = 0;
     @ApiModelProperty(value = "购物车商品信息")
     private List<ShopCarProdInfoVO> shopCarts;
 }

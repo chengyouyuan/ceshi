@@ -511,7 +511,7 @@
     <sql id="Order_Info_List">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
+        pay_status, payment_serial_num, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">

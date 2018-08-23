@@ -26,7 +26,6 @@ public class MessageQueryAspect {
 
 	@AfterReturning(returning = "neteaseMsgVO", value = "@annotation(com.winhxd.b2c.message.support.annotation.MessageEnumConvertAnnotation)")
 	public void orderEnumConvert(NeteaseMsgVO neteaseMsgVO) {
-		logger.debug("对NeteaseMsgVO使用orderEnumConvert进行转换");
 		if (null != neteaseMsgVO) {
 			neteaseMsgVO.setMsgCategoryDesc(MsgCategoryEnum.getDescByCode(neteaseMsgVO.getMsgCategory()));
 			neteaseMsgVO.setMsgCategorySummary(MsgCategoryEnum.getSummaryByCode(neteaseMsgVO.getMsgCategory()));
@@ -35,7 +34,6 @@ public class MessageQueryAspect {
 
 	@AfterReturning(returning = "pagedList", value = "@annotation(com.winhxd.b2c.message.support.annotation.MessageEnumConvertAnnotation)")
 	public void orderEnumConvert(Object pagedList) {
-		logger.debug("对NeteaseMsgVO Paged使用orderEnumConvert进行转换");
 		if (pagedList instanceof PagedList) {
 			List objList = ((PagedList) pagedList).getData();
 			for (Iterator iterator = objList.iterator(); iterator.hasNext(); ) {

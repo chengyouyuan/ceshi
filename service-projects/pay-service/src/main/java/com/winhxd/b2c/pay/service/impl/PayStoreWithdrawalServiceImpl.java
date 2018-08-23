@@ -231,7 +231,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;
 		short  withdralType = condition.getWithdrawType();
-		if(withdralType == 0){
+		if(withdralType != PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode() && withdralType != PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			res = BusinessCode.CODE_610022;
 		}
 		
@@ -249,7 +249,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			res = BusinessCode.CODE_610034;
 		}
 		short withdrawType = condition.getWithdrawType();
-		if(withdrawType == 1){
+		if(withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()){
 			String openId = condition.getBuyerId();
 			if(StringUtils.isEmpty(openId)){
 				res = BusinessCode.CODE_610031;
@@ -263,7 +263,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(StringUtils.isEmpty(paymentAccount)){
 			res = BusinessCode.CODE_610012;
 		}
-		if(withdrawType == 2){
+		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			String swiftCode = condition.getSwiftCode();
 			if(StringUtils.isEmpty(swiftCode)){
 				res = BusinessCode.CODE_610029;
@@ -451,7 +451,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//返回当前账户钱包里的可提现金额
 		  StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeid);
 		  if(storeBankroll == null){
-			  withdrawalPage.setPresented_money(BigDecimal.valueOf(0l));
+			  withdrawalPage.setPresented_money(BigDecimal.valueOf(0L));
 		  }else{
 			  withdrawalPage.setPresented_money(storeBankroll.getPresentedMoney());
 		  }

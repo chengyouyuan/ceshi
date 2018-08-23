@@ -4,8 +4,11 @@ package com.winhxd.b2c.pay.service.impl;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.pay.dao.PayFinanceAccountDetailMapper;
 import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @Auther wangxiaoshun
@@ -18,6 +21,12 @@ public class PayFinanceAccountDetailServiceImpl implements PayFinanceAccountDeta
     PayFinanceAccountDetailMapper payFinanceAccountDetailMapper;
     @Override
     public int saveFinanceAccountDetail(PayFinanceAccountDetail condition) {
-        return payFinanceAccountDetailMapper.insertSelective(condition);
+        List<PayFinanceAccountDetail> payFinanceAccountDetails =  payFinanceAccountDetailMapper.selectByExample(condition);
+        if(CollectionUtils.isEmpty(payFinanceAccountDetails)){
+            return payFinanceAccountDetailMapper.insertSelective(condition);
+        }else{
+            condition.setId(payFinanceAccountDetails.get(0).getId());
+            return payFinanceAccountDetailMapper.updateByPrimaryKeySelective(condition);
+        }
     }
 }

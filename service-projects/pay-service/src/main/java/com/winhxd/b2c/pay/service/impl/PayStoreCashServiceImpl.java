@@ -17,6 +17,8 @@ import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
 import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,9 +138,18 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
 	@Override
 	public void savePayStoreTransactionRecord(PayStoreTransactionRecord payStoreTransactionRecord) {
 		if (payStoreTransactionRecord!=null) {
-			payStoreTransactionRecord.setCreated(new Date());
-			payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
-			payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+			//根据门店订单号和交易类型  查询交易记录
+			List<PayStoreTransactionRecord> records=payStoreTransactionRecordMapper.getPayStoreTransRecordByOrderNo(payStoreTransactionRecord.getOrderNo());
+			if (CollectionUtils.isEmpty(records)) {
+				payStoreTransactionRecord.setCreated(new Date());
+				payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
+				payStoreTransactionRecordMapper.insertSelective(payStoreTransactionRecord);
+			}else {
+				PayStoreTransactionRecord record=records.get(0);
+				record.setUpdated(new Date());
+				payStoreTransactionRecordMapper.updateByPrimaryKeySelective(record);
+				
+			}
 		}
 		
 	}

@@ -64,7 +64,7 @@ public class ThirdPartyVerifyTask {
                     try {
                         ResponseResult<Integer> responseResult = verifyServiceClient.thirdPartyVerifyAccounting(condition);
                         if (responseResult != null && responseResult.getCode() == 0) {
-                            updateCount += responseResult.getData();
+                            updateCount++;
                         } else {
                             throw new BusinessException(responseResult.getCode(), responseResult.getMessage());
                         }

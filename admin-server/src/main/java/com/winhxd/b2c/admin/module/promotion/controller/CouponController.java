@@ -29,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -576,6 +577,9 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 	/**
 	 * 参数校验
 	 */
+	if(couponGradeCondition==null){
+		throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+	}
 	if(StringUtils.isBlank(couponGradeCondition.getName())|| couponGradeCondition.getType()==null ||
 			couponGradeCondition.getReducedAmt()==null || couponGradeCondition.getReducedType()==null){
             throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
@@ -592,6 +596,14 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 		if(couponGradeCondition.getReducedType().equals(CouponGradeEnum.UP_TO_REDUCE_DISC.getCode())){
 			if(couponGradeCondition.getDiscountedMaxAmt()==null || couponGradeCondition.getDiscounted()==null){
 				throw new BusinessException(BusinessCode.CODE_500010,"必填参数为空");
+			}
+		}
+	}
+
+	if(couponGradeCondition.getReducedAmt()!=null && couponGradeCondition.getDiscountedAmt()!= null){
+		if(!BigDecimal.valueOf(0).equals(couponGradeCondition.getReducedAmt())){
+			if(couponGradeCondition.getDiscountedAmt().doubleValue()>couponGradeCondition.getReducedAmt().doubleValue()){
+				throw new BusinessException(BusinessCode.CODE_500015,"优惠金额不能大于满减金额");
 			}
 		}
 	}

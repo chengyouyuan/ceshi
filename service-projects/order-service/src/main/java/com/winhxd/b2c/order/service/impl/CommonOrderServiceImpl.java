@@ -1889,7 +1889,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     //【已退款】手机尾号8513黄小姐退款已到账
                     msgContent = "【已退款】手机尾号" + mobileStr + "顾客退款已到账";
                     neteaseMsg.setAudioType(0);
-                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_APPLY_REFUND.getTypeCode());
+                    neteaseMsg.setMsgCategory(MsgCategoryEnum.ORDER_REFUND.getTypeCode());
                     break;
                 default:
             }

@@ -40,7 +40,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 			res = valiWeixinCondition(condition);
 			if(res == 0){
 				// 将其他微信钱包的状态设置为0
-				payStoreWalletMapper.updateBatchStatus();
+				payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
 				PayStoreWallet payStoreWallet = new PayStoreWallet();
 				BeanUtils.copyProperties(condition, payStoreWallet);
 				LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
@@ -86,7 +86,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(62l);
+//    	currentStoreUser.setBusinessId(106l);
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());

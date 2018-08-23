@@ -30,9 +30,13 @@ public class CacheName {
      */
     public static final String CACHE_KEY_MODIFY_ORDER = "CACHE:KEY:MODIFY:ORDER:";
     /**
-     * 门店订单汇总信息KEY
+     * 门店当日订单汇总信息KEY
      */
-    public static final String CACHE_KEY_STORE_ORDER_SALESSUMMARY = "STORE:SALESSUMMARY:";
+    public static final String CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY = "STORE:SALESSUMMARY:INTRADAY:";
+    /**
+     * 门店当月30天内订单汇总信息KEY
+     */
+    public static final String CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY = "STORE:SALESSUMMARY:MONTH:";
     /**
      * 订单缓存
      */

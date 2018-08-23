@@ -32,6 +32,10 @@ public enum MsgCategoryEnum {
 	 */
 	ORDER_APPLY_REFUND((short) 5, "申", "申请退款"),
 	/**
+	 * 待自提
+	 */
+	WAIT_PICK_UP((short) 6, "待", "待自提"),
+	/**
 	 * 提现申请
 	 */
 	WITHDRAW_APPLY((short) 10, "提", "提现申请"),

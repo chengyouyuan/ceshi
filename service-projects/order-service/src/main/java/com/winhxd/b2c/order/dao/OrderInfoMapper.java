@@ -304,4 +304,15 @@ public interface OrderInfoMapper {
      * @return
      */
     int updateOrderStatusForReturnWaitSelfLifting(@Param("orderNo") String orderNo, @Param("storeId") Long storeId, @Param("reason") String reason);
+
+    /**
+     * 获取指定时间内 门店下单完成的用户id
+     * @author wangbin
+     * @date  2018年8月23日 下午3:33:22
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    List<Long> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
 }

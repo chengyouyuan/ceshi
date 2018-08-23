@@ -129,7 +129,6 @@ public class ApiCouponController{
 
     /**
      * 用户查询门店优惠券列表
-     * sjx
      * @param condition
      * @return
      */

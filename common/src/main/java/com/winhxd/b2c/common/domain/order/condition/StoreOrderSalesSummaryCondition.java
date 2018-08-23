@@ -14,12 +14,18 @@ import lombok.Data;
 @Data
 public class StoreOrderSalesSummaryCondition {
     
-    @ApiModelProperty(value = "查询开始区间")
-    private Date startDateTime;
-    
-    @ApiModelProperty(value = "查询开始区间")
-    private Date endDateTime;
+    /**
+     * 按天查询 汇总
+     */
+    public static final short INTRADAY_ORDER_SALES_QUERY_TYPE = 1;
+    /**
+     * 按月查询 汇总
+     */
+    public static final short MONTH_ORDER_SALES_QUERY_TYPE = 2;
 
     @ApiModelProperty(value = "门店Id")
-    public Long storeId;
+    private Long storeId;
+    
+    @ApiModelProperty(value = "查询范围：1 当天订单销售数据汇总，2=月售", required=true)
+    private Short queryPeriodType;
 }

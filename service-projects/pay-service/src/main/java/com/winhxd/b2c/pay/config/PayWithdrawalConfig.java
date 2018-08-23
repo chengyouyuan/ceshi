@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * PayWithDrawalConfig.java
  *
- * @Author zhanghaun
+ * @Author zhanghuan
  **/
 @Component
 @ConfigurationProperties(prefix="pay.withdrawal")

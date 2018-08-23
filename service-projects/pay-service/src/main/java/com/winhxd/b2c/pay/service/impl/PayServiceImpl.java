@@ -447,7 +447,10 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
-				totalMoney=storeBankroll.getTotalMoeny().add(totalMoney.abs());
+				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
+					//只有订单闭环才增加总的收入
+					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+				}
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
@@ -485,6 +488,7 @@ public class PayServiceImpl implements PayService{
 		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney();
 		String remarks="";
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
+			payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
 			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
 		}
 
@@ -509,7 +513,6 @@ public class PayServiceImpl implements PayService{
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());
-		payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedMoney(presentedMoney);
 		payStoreBankrollLog.setSettlementSettledMoney(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedFrozenMoney(presentedFrozenMoney);
@@ -611,8 +614,8 @@ public class PayServiceImpl implements PayService{
      * @param order
      * @return
      */
-	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
 	@Transactional
+	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
 		//验证订单支付参数
@@ -938,13 +941,14 @@ public class PayServiceImpl implements PayService{
 	private List<PayWithdrawals> getTransferToBankUnclearStatusWithdrawals(){
 		return payWithdrawalsMapper.selectTransferToBankUnclearStatusWithdrawals();
 	}
-	 /**
-     * 订单闭环，添加交易记录
-     *
+    /**
+     * @author liuhanning
+     * @date  2018年8月23日 下午5:47:47
+     * @Description 订单闭环，添加交易记录
      * @param orderNo
      * @param orderInfo
      */
-    @EventMessageListener(value = EventTypeHandler.PAY_STORE_TRANSACTION_RECORD_HANDLER, concurrency = "3-6")
+	@Override
     public void orderFinishHandler(String orderNo, OrderInfo orderInfo) {
         //计算门店资金
         //手续费

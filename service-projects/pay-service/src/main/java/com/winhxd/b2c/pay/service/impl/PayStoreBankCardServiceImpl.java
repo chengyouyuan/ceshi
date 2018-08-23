@@ -89,7 +89,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(73l);
+//    	currentStoreUser.setBusinessId(106l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){
@@ -123,10 +123,10 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
         	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
         	storeBankCard.setCreatedByName(condition.getBankUserName());
         	storeBankCard.setUpdatedByName(condition.getBankUserName());
-    		if(storBankCardInfo != null){
-    			Long id = storBankCardInfo.getId();
-    			storeBankCard.setId(id);
-    			storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
+    		if(storBankCardInfo != null && storBankCardInfo.getStoreId().equals(currentStoreUser.getBusinessId())){// 判断当前是否是同一个门店
+				Long id = storBankCardInfo.getId();
+				storeBankCard.setId(id);
+				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
     		}else{
     			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
     		}

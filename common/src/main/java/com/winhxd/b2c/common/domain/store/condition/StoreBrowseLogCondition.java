@@ -10,15 +10,12 @@ import lombok.Data;
  * @author liutong
  * @date 2018-08-11 18:48:35
  */
-@ApiModel("惠小店基础信息保存入参")
+@ApiModel("惠小店浏览门店进入退出时记录日志保存入参")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class StoreBrowseLogCondition extends ApiCondition {
 
     @ApiModelProperty(value = "门店用户主键id", required = true)
     private Long storeId;
-
-    @ApiModelProperty(value = "C端用户主键id", required = true)
-    private Long customerId;
 
 }

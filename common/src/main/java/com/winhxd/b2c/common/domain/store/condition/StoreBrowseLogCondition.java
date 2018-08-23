@@ -15,7 +15,10 @@ import lombok.Data;
 @Data
 public class StoreBrowseLogCondition extends ApiCondition {
 
-    @ApiModelProperty(value = "门店用户id", required = true)
-    private Long storeCustomerId;
+    @ApiModelProperty(value = "门店用户主键id", required = true)
+    private Long storeId;
+
+    @ApiModelProperty(value = "C端用户主键id", required = true)
+    private Long customerId;
 
 }

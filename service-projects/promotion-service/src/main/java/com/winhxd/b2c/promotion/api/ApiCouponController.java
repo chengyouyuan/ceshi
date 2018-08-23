@@ -172,20 +172,12 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5047/v1/getCouponInStoreGetedAndUsedPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> findCouponInStoreGetedAndUsedPage(@RequestBody CouponInStoreGetedAndUsedCodition codition){
-        StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
-        //Long storeId = 3L;
+        //StoreUser storeUser = UserContext.getCurrentStoreUser();
+        //Long storeId = storeUser.getBusinessId();
+        Long storeId = 84L;
         LOGGER.info("=/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage"+ "门店ID: "+ storeId);
-        Integer pageNo = 1 ;
-        Integer pageSize = 10;
-        if(codition.getPageNo()!=null){
-            pageNo = codition.getPageNo();
-        }
-        if(codition.getPageNo()!=null){
-            pageSize = codition.getPageNo();
-        }
         ResponseResult<PagedList<CouponInStoreGetedAndUsedVO>> result = new ResponseResult<>();
-        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,pageNo,pageSize);
+        PagedList<CouponInStoreGetedAndUsedVO> pages = couponService.findCouponInStoreGetedAndUsedPage(storeId,codition);
         result.setData(pages);
         LOGGER.info("/api-promotion/coupon/5047/v1/getCouponInStoreGetedAndUsedPage结果:"+result);
         return result;

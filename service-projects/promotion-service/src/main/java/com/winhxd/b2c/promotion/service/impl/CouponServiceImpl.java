@@ -880,8 +880,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize) {
-        Page page = PageHelper.startPage(pageNo, pageSize);
+    public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId,CouponInStoreGetedAndUsedCodition codition) {
+        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
@@ -907,8 +907,8 @@ public class CouponServiceImpl implements CouponService {
 
         List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
         pagedList.setData(finalList);
-        pagedList.setPageNo(pageNo);
-        pagedList.setPageSize(pageSize);
+        pagedList.setPageNo(codition.getPageNo());
+        pagedList.setPageSize(codition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }

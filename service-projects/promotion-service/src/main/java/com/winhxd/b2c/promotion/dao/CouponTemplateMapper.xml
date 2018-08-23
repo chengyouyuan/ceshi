@@ -455,7 +455,6 @@
   <resultMap id="couponGetedAndUsedResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
     <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
     <result column="storeId" jdbcType="BIGINT" property="storeId" />
-    <result column="applyId" jdbcType="BIGINT" property="applyId" />
     <result column="applyRuleType" jdbcType="SMALLINT" property="applyRuleType" />
     <result column="reduceType" jdbcType="SMALLINT" property="reduceType" />
     <result column="reduceAmt" jdbcType="DECIMAL" property="reduceAmt" />
@@ -469,28 +468,28 @@
 
  <!-- 获取门店优惠券使用情况 领取情况统计列表 -->
   <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.lang.Long" resultMap="couponGetedAndUsedResultMap">
-    SELECT
-    c.template_id as templeteId,
-    b.apply_rule_type as applyRuleType,
-    b.id as applyId,
-    h.reduced_type as reduceType,
-    (case WHEN h.reduced_amt is null then 0 else h.reduced_amt end) as reduceAmt,
-    (case WHEN h.cost is null then 0 else h.cost end) as cost,
-    (case WHEN h.discounted is null then 0 else 100-h.discounted end) as discounted,
-    (case WHEN h.discounted_max_amt is null then 0 else h.discounted_max_amt end) as maxAmt,
-    h.discounted_amt as discountedAmt ,
-    c.start_time as startTime,
-    c.end_time as endTime
-    FROM
-    coupon_template_send c
-    LEFT JOIN coupon_template a ON a.id = c.template_id
-    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id AND b.`status` = 1 AND a.`status` = 1
-    LEFT JOIN coupon_grade e on e.id = a.grade_id
-    LEFT JOIN coupon_grade_detail h on h.grade_id = e.id
-    LEFT JOIN coupon_activity_record d on d.template_id = c.template_id
-    and d.store_id = #{storeId} and d.send_id= c.id
-    WHERE 1=1
-    GROUP BY c.template_id
+      SELECT
+        a.store_id as storeId,
+        b.template_id as templeteId,
+        d.apply_rule_type as applyRuleType,
+        f.reduced_type as reduceType,
+          (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
+          (case WHEN f.cost is null then 0 else f.cost end) as cost,
+          (case WHEN f.discounted is null then 0 else 100-f.discounted end) as discounted,
+          (case WHEN f.discounted_max_amt is null then 0 else f.discounted_max_amt end) as maxAmt,
+          f.discounted_amt as discountedAmt,
+          b.start_time as startTime,
+          b.end_time as endTime
+      FROM
+      coupon_activity_store_customer a
+      LEFT JOIN coupon_activity_template b ON a.coupon_activity_template_id = b.id
+      LEFT JOIN coupon_template c on b.template_id = c.id AND c.`status` = 1
+      LEFT JOIN coupon_apply d ON c.apply_rule_id = d.id AND d.`status` = 1
+      LEFT JOIN coupon_grade e on e.id = c.grade_id
+      LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
+      WHERE
+          a.store_id = #{storeId}
+      GROUP BY b.template_id
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
@@ -508,12 +507,8 @@
     FROM
     coupon_template_send c
     LEFT JOIN coupon_template a ON a.id = c.template_id
-    LEFT JOIN coupon_apply b ON a.apply_rule_id = b.id AND b.`status` = 1 AND a.`status` = 1
-    LEFT JOIN coupon_grade e on e.id = a.grade_id
-    LEFT JOIN coupon_grade_detail h on h.grade_id = e.id
-    LEFT JOIN coupon_activity_record d on d.template_id = c.template_id
-    and d.store_id = #{storeId} and d.send_id= c.id
-    WHERE 1=1
+    LEFT JOIN coupon_activity_store_customer d on c.template_id = a.id
+    WHERE d.store_id = 84
     group by c.template_id
   </select>
 

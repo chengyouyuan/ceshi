@@ -14,10 +14,6 @@ public class RegexConstant {
      */
     public static final Pattern STORE_NAME_PATTERN = Pattern.compile("^[\\w-\u4e00-\u9fa5]{1,15}$");
     /**
-     * 提货地址
-     */
-    public static final Pattern STORE_ADDRESS_PATTERN = Pattern.compile("^[\\w-\u4e00-\u9fa5]{1,30}$");
-    /**
      * 联系人
      */
     public static final Pattern SHOPKEEPER_PATTERN = Pattern.compile("^[\\w-\u4e00-\u9fa5]{1,10}$");
@@ -25,4 +21,8 @@ public class RegexConstant {
      * 联系方式
      */
     public static final Pattern CONTACT_MOBILE_PATTERN = Pattern.compile("^1[3-9][0-9]\\d{8}$");
+    /**
+     * 提货地址
+     */
+    public static final Pattern STORE_ADDRESS_PATTERN = Pattern.compile("^[\\w-\u4e00-\u9fa5]{1,50}$");
 }

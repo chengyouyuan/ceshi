@@ -99,7 +99,7 @@ public final class BusinessCode {
 
     /**1025接口 店铺名称不能有特殊字符且长度不能超过15*/
     public static final int CODE_102501 = 102501;
-    /**1025接口 提货地址不能有特殊字符且长度不能超过30*/
+    /**1025接口 提货地址不能有特殊字符且长度不能超过50*/
     public static final int CODE_102502 = 102502;
     /**1025接口 联系人不能有特殊字符且长度不能超过10*/
     public static final int CODE_102503 = 102503;

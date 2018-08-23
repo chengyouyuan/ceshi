@@ -65,7 +65,7 @@ public class StatisticsService {
                    if(orderItemList!=null){
                        for(OrderItemVO o:orderItemList){
                            StoreProductStatistics spStatistics=new StoreProductStatistics();
-                           spStatistics.setStoreId(storeId);
+                           spStatistics.setStoreId(detail.getStoreId());
                            spStatistics.setCreated(new Date());
                            spStatistics.setOrderNo(orderNo);
                            spStatistics.setSkuCode(o.getSkuCode());

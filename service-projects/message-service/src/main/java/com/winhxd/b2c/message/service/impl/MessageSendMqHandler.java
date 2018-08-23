@@ -144,35 +144,6 @@ public class MessageSendMqHandler {
     }
 
     /**
-     * 根据消息类型获取模板id
-     * @param msgType
-     * @return
-     */
-    private String getTemplateId(short msgType) {
-        String templateId;
-        switch (msgType){
-            case 1:
-                templateId = storeConfirmOrderTid;
-                break;
-            case 2:
-                templateId = orderFinishTid;
-                break;
-            case 3:
-                templateId = orderCanceledTid;
-                break;
-            case 4:
-                templateId = paySuccessTid;
-                break;
-            case 5:
-                templateId = refundSuccessTid;
-                break;
-                default:
-                    templateId = "";
-        }
-        return templateId;
-    }
-
-    /**
      * 批量发送云信消息MQ消费
      * @param neteaseMsgDelayConditionJson
      */
@@ -356,4 +327,32 @@ public class MessageSendMqHandler {
         return BusinessCode.CODE_OK;
     }
 
+    /**
+     * 根据消息类型获取模板id
+     * @param msgType
+     * @return
+     */
+    private String getTemplateId(short msgType) {
+        String templateId;
+        switch (msgType){
+            case 1:
+                templateId = storeConfirmOrderTid;
+                break;
+            case 2:
+                templateId = orderFinishTid;
+                break;
+            case 3:
+                templateId = orderCanceledTid;
+                break;
+            case 4:
+                templateId = paySuccessTid;
+                break;
+            case 5:
+                templateId = refundSuccessTid;
+                break;
+            default:
+                templateId = "";
+        }
+        return templateId;
+    }
 }

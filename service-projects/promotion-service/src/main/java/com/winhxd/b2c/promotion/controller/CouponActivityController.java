@@ -143,12 +143,15 @@ public class CouponActivityController implements CouponActivityServiceClient {
         //}
 
         ResponseResult responseResult = new ResponseResult();
-        //判断活动时间是否冲突
-        Boolean flag = couponActivityService.getActivityDateClash(condition);
-        if(flag){
-            responseResult.setCode(BusinessCode.CODE_503002);
-            responseResult.setMessage("活动时间冲突");
-            return responseResult;
+        //判断活动时间是否冲突(推券&新人注册)
+        if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()
+                && condition.getCouponType() == CouponActivityEnum.NEW_USER.getCode()){
+            Boolean flag = couponActivityService.getActivityDateClash(condition);
+            if(flag){
+                responseResult.setCode(BusinessCode.CODE_503002);
+                responseResult.setMessage("活动时间冲突");
+                return responseResult;
+            }
         }
 
         couponActivityService.saveCouponActivity(condition);

@@ -45,26 +45,27 @@ public class VersionedRoundRobinRule extends AbstractLoadBalancerRule {
 
             if (allServers.size() > 1) {
                 String msVer = VersionContext.getVersion();
-                if (StringUtils.isNotBlank(msVer)) {
-                    List<Server> matchedServers = new ArrayList<>(allServers.size());
-                    List<Server> normalServers = new ArrayList<>(allServers.size());
-                    for (Server s : allServers) {
-                        if (s instanceof DiscoveryEnabledServer) {
-                            String ver = ((DiscoveryEnabledServer) s).getInstanceInfo().getMetadata().get(VersionContext.HEADER_NAME);
-                            if (StringUtils.isNotBlank(ver)) {
-                                if (msVer.equals(ver)) {
-                                    matchedServers.add(s);
-                                }
-                                continue;
+                if (msVer == null) {
+                    msVer = StringUtils.EMPTY;
+                }
+                List<Server> matchedServers = new ArrayList<>(allServers.size());
+                List<Server> normalServers = new ArrayList<>(allServers.size());
+                for (Server s : allServers) {
+                    if (s instanceof DiscoveryEnabledServer) {
+                        String ver = ((DiscoveryEnabledServer) s).getInstanceInfo().getMetadata().get(VersionContext.HEADER_NAME);
+                        if (StringUtils.isNotBlank(ver)) {
+                            if (msVer.equals(ver)) {
+                                matchedServers.add(s);
                             }
+                            continue;
                         }
-                        normalServers.add(s);
                     }
-                    if (!CollectionUtils.isEmpty(matchedServers)) {
-                        allServers = matchedServers;
-                    } else if (!CollectionUtils.isEmpty(normalServers)) {
-                        allServers = normalServers;
-                    }
+                    normalServers.add(s);
+                }
+                if (!CollectionUtils.isEmpty(matchedServers)) {
+                    allServers = matchedServers;
+                } else if (!CollectionUtils.isEmpty(normalServers)) {
+                    allServers = normalServers;
                 }
             }
 
@@ -102,8 +103,9 @@ public class VersionedRoundRobinRule extends AbstractLoadBalancerRule {
         for (; ; ) {
             int current = nextServerCyclicCounter.get();
             int next = (current + 1) % modulo;
-            if (nextServerCyclicCounter.compareAndSet(current, next))
+            if (nextServerCyclicCounter.compareAndSet(current, next)) {
                 return next;
+            }
         }
     }
 

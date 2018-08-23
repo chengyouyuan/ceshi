@@ -8,6 +8,8 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null
     time-zone: GMT+8
+  mvc:
+    locale: zh
   sleuth:
     sampler:
       probability: 0.0
@@ -44,3 +46,13 @@ eureka:
     lease-renewal-interval-in-seconds: 5
   client:
     registry-fetch-interval-seconds: 5
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
+
+ribbon:
+  ServerListRefreshInterval: 2000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+  OkToRetryOnAllOperations: false
+  ConnectTimeout: 2000
+  ReadTimeout: 10000

@@ -161,7 +161,7 @@ public class ApiOrderController {
     })
     @RequestMapping(value = "/4022/v1/handleOrderRefundByStore", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> handleOrderRefundByStore(@RequestBody OrderRefundStoreHandleCondition condition) {
-        String logTitle = "=/api-order/order/4022/v1/orderRefundByCustomer-B端退款订单处理接口=";
+        String logTitle = "=/api-order/order/4022/v1/handleOrderRefundByStore-B端退款订单处理接口=";
         LOGGER.info("{}--开始--{}", logTitle, condition);
         ResponseResult<Void> result = new ResponseResult<>();
         this.orderService.handleOrderRefundByStore(condition);

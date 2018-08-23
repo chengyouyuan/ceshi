@@ -64,7 +64,7 @@ public interface BackStageStoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/1041/v1/updateRegionCode",method = RequestMethod.POST)
-    ResponseResult<Integer> modifyStoreInfoRegionCode(BackStageModifyStoreCondition condition);
+    ResponseResult<Integer> modifyStoreInfoRegionCode(@RequestBody BackStageModifyStoreCondition condition);
     /**
      * 分页查询门店商品信息（带搜索）
     * @Title: findStoreProdManageList

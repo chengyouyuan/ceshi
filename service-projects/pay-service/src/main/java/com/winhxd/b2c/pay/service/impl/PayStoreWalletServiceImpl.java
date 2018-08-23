@@ -103,7 +103,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(1l);
+//    	currentStoreUser.setBusinessId(62l);
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
@@ -116,9 +116,9 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 				throw new BusinessException(BusinessCode.CODE_610019);
 			}
 		}else{
-			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
-			res = BusinessCode.CODE_610020;
-			throw new BusinessException(BusinessCode.CODE_610020);
+			LOGGER.info("业务异常："+BusinessCode.CODE_610016);
+			res = BusinessCode.CODE_610016;
+			throw new BusinessException(BusinessCode.CODE_610016);
 		} 
 		String openId = condition.getOpenid();
 		if(StringUtils.isEmpty(openId)){

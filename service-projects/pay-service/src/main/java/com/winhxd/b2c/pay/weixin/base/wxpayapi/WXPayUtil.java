@@ -100,7 +100,8 @@ public class WXPayUtil {
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
-        String output = writer.getBuffer().toString(); //.replaceAll("\n|\r", "");
+        //.replaceAll("\n|\r", "");
+        String output = writer.getBuffer().toString();
         try {
             writer.close();
         }

@@ -25,7 +25,9 @@ import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
@@ -59,6 +61,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	@Autowired
 	private StoreBankrollMapper storeBankrollMapper;
 	
+	@Autowired
+	private PayServiceImpl payServiceImpl;
+	
 	@Resource
 	private Cache redisClusterCache;
 	
@@ -75,15 +80,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		////////////////////////测试数据////////////////////////////////////
-//		Long businessId = 1l;
+//		Long businessId = 62l;
 		//////////////////////结束////////////////////////////////////////
+		int code = 0;
 		if(bankType == condition.getWithdrawType()){
 			ResponseResult<PayStoreUserInfoVO> bindBank = validStoreBindBank(businessId);
-			int code = bindBank.getCode();
-			result.setCode(code);
+			code = bindBank.getCode();
+			PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			if(code == 0){
 				PayStoreUserInfoVO data = bindBank.getData();
-				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
@@ -100,30 +105,39 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 } 
 		}else if(weixType == condition.getWithdrawType()){
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
-			 int code = bindAccount.getCode();
-			 result.setCode(code);
+			 code = bindAccount.getCode();
+			 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 			 if(code == 0){
-				 PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 				 PayStoreUserInfoVO data = bindAccount.getData();
 				 withdrawalPage.setPresented_money(data.getTotalFee());
 				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
 				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
-				 withdrawalPage.setMobile(data.getStoreMobile());
+//				 withdrawalPage.setMobile(data.getStoreMobile());
 				 withdrawalPage.setNick(data.getNick());
 				 withdrawalPage.setOpenid(data.getOpenid());
 				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 				 result.setData(withdrawalPage);
+			 } 
+		}
+		if(code > 0){
+			//返回当前账户钱包里的可提现金额
+			 ResponseResult<PayWithdrawalPageVO> withdrawMoney = getWithdrawMoney(businessId);
+			 if(withdrawMoney.getData() != null){
+				 result.setCode(0);
+				 result.setData(withdrawMoney.getData());
+				 LOGGER.info("当前用户没有绑定微信账号");
 			 }
 		}
 		return result;
 	}
+	
 
 	@Override
 	public ResponseResult<Integer> saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		///////////////测试数据//////////////////////////
-//		Long businessId = 1l;
+//		Long businessId = 62l;
 		//////////////////结束/////////////////////////
 		// 验证入参是否传入正确
 		int res = valiApplyWithDrawCondition(condition);
@@ -135,7 +149,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		PayWithdrawals payWithdrawal = new PayWithdrawals();
 		payWithdrawal.setStoreId(businessId);
-		// 生成提现订单号
+		// 生成提现单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
 		ResponseResult<PayStoreUserInfoVO> storeBindBank = validStoreBindBank(businessId);
 		PayStoreUserInfoVO data = storeBindBank.getData();
@@ -173,6 +187,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(weixType);
 			payWithdrawal.setBuyerId(condition.getBuyerId());
+			payWithdrawal.setPaymentAccount(condition.getBuyerId());
 			payWithdrawal.setName(condition.getNick());
 			payWithdrawal.setCreatedByName(condition.getNick());
 			payWithdrawal.setUpdatedByName(condition.getNick());
@@ -185,6 +200,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setUpdatedBy(businessId);
 		
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
+		// 更新账户金额
+		UpdateStoreBankRollCondition rollCondtion = new UpdateStoreBankRollCondition();
+		rollCondtion.setType(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode());
+		rollCondtion.setStoreId(businessId);
+		rollCondtion.setWithdrawalsNo(payWithdrawal.getWithdrawalsNo());
+		rollCondtion.setMoney(payWithdrawal.getTotalFee());
+		LOGGER.info("当前更新账户金额入参：--"+rollCondtion);
+		payServiceImpl.updateStoreBankroll(rollCondtion);
 		return result;
 	} 
 	
@@ -208,7 +231,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	private int valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
 		int res = 0;
 		short  withdralType = condition.getWithdrawType();
-		if(withdralType == 0){
+		if(withdralType != PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode() && withdralType != PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			res = BusinessCode.CODE_610022;
 		}
 		
@@ -226,7 +249,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			res = BusinessCode.CODE_610034;
 		}
 		short withdrawType = condition.getWithdrawType();
-		if(withdrawType == 1){
+		if(withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()){
 			String openId = condition.getBuyerId();
 			if(StringUtils.isEmpty(openId)){
 				res = BusinessCode.CODE_610031;
@@ -240,7 +263,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		if(StringUtils.isEmpty(paymentAccount)){
 			res = BusinessCode.CODE_610012;
 		}
-		if(withdrawType == 2){
+		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			String swiftCode = condition.getSwiftCode();
 			if(StringUtils.isEmpty(swiftCode)){
 				res = BusinessCode.CODE_610029;
@@ -249,12 +272,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(StringUtils.isEmpty(storeName)){
 				res = BusinessCode.CODE_610037;
 			}
+			String mobile = condition.getMobile();
+			if(StringUtils.isEmpty(mobile)){
+				res = BusinessCode.CODE_610015;
+			}
 		}
-		String mobile = condition.getMobile();
-		if(StringUtils.isEmpty(mobile)){
-			res = BusinessCode.CODE_610015;
-		}
-	 
 		return res;
 	}
 
@@ -263,12 +285,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		// 获取门店微信账户信息
 		List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreId(businessId);
-		// 获取门店资金信息
-		StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(businessId);
-		PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();
-		if(storeBankroll != null){
+		LOGGER.info("当前用户门店绑定微信的信息：----"+payStoreWallet);
+		if(payStoreWallet.size() > 0 && payStoreWallet.get(0) != null){
 			PayStoreWallet storeWallet = payStoreWallet.get(0);
-			if(payStoreWallet.size() > 0 && storeWallet != null){
+			// 获取门店资金信息
+			StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(businessId);
+			if(storeBankroll != null){
+				PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();
 				storeUserinfo.setFlowDirectionName(storeWallet.getNick());
 				storeUserinfo.setFlowDirectionType((short)1);
 				storeUserinfo.setOpenid(storeWallet.getOpenid());
@@ -279,12 +302,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				res.setData(storeUserinfo);
 				res.setCode(0);
 			}else{
-				res.setCode(BusinessCode.CODE_610026);
-				LOGGER.info("当前用户没有绑定微信账户");
+				res.setCode(BusinessCode.CODE_610038);
+				res.setMessage("门店当前没有可提现金额");
+				LOGGER.info("门店当前没有可提现金额");
 			}
 		}else{
-			res.setCode(BusinessCode.CODE_610027);
-			LOGGER.info("门店当前没有可提现的金额记录");
+			res.setCode(BusinessCode.CODE_610026);
+			res.setMessage("门店当前没有微信绑定记录");
+			LOGGER.info("门店当前没有微信绑定记录");
 		}
 		return res;
 	}
@@ -293,8 +318,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		ResponseResult<PayStoreUserInfoVO> res = new ResponseResult<PayStoreUserInfoVO>();
 		List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
 		LOGGER.info("当前用户绑定银行卡列表：----"+selectStorBankCardInfo);
-		if(selectStorBankCardInfo == null){
+		if(selectStorBankCardInfo.size() == 0){
 			res.setCode(BusinessCode.CODE_610025);
+			res.setMessage("当前用户没有绑定银行卡");
 			LOGGER.info("当前用户没有绑定银行卡");
 		}else{
 			res.setCode(0);
@@ -400,7 +426,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	    StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
 		// 写死门店id
-//		Long storeId = 1l;
+//		Long storeId = 62l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll != null){
         	//判断提现金额是否大于可提现金额
@@ -416,5 +442,24 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		vo.setCmmsAmt(cmms);
 		vo.setRealFee(totalFee.subtract(cmms));
 		return vo;
+	}
+	
+	// 查询当前账户可提现金额
+	public ResponseResult<PayWithdrawalPageVO> getWithdrawMoney(Long storeid){
+		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
+		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
+		//返回当前账户钱包里的可提现金额
+		  StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeid);
+		  if(storeBankroll == null){
+			  withdrawalPage.setPresented_money(BigDecimal.valueOf(0l));
+		  }else{
+			  withdrawalPage.setPresented_money(storeBankroll.getPresentedMoney());
+		  }
+		  withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
+		  withdrawalPage.setRate(payWithDrawalConfig.getRate());
+		  withdrawalPage.setUserAcountName("");
+		  LOGGER.info("当前用户可提现信息：---"+withdrawalPage);
+		  result.setData(withdrawalPage);
+		  return result;
 	}
 }

@@ -1,16 +1,18 @@
 package com.winhxd.b2c.common.config;
 
+import com.winhxd.b2c.common.config.support.ControllerChecker;
 import com.winhxd.b2c.common.context.support.ContextInitFilter;
 import com.winhxd.b2c.common.context.support.ContextRequestInterceptor;
 import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
 import com.winhxd.b2c.common.exception.support.BusinessDecoder;
 import com.winhxd.b2c.common.exception.support.ServiceHandlerExceptionResolver;
 import com.winhxd.b2c.common.mq.support.MessageQueueConfig;
-import com.winhxd.b2c.common.config.support.ControllerChecker;
 import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Scope;
 
 /**
  * 微服务通用配置类
@@ -54,8 +56,9 @@ public class MicroServiceConfig {
         return new BusinessDecoder(messageConverters);
     }
 
-//    @Bean
-//    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule(){
-//        return new VersionedZoneAvoidanceRule();
-//    }
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule() {
+        return new VersionedZoneAvoidanceRule();
+    }
 }

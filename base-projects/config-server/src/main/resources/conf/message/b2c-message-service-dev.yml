@@ -86,3 +86,18 @@ mandaoi:
   class: com.winchannel.sms.process.ManDaoInternationalSmsProcess
 pswd_cl_yy: Wo123456
 verification_url_yx: http://60.205.14.180:9000/HttpSmsMt
+
+##短信验证相关配置##
+security:
+  ip:
+    timeinterval: 0
+    maxtimes: 1000000
+    whitelist:
+      timeinterval: 0
+      maxtimes: 1000000
+  mobile:
+    timeinterval: 10000
+    maxtimes: 20
+    whitelist:
+      timeinterval: 0
+      maxtimes: 1000

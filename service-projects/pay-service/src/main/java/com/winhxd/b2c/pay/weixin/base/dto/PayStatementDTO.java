@@ -49,43 +49,12 @@ public class PayStatementDTO extends RequestBase{
 		this.tarType = tarType;
 	}
 
-	public enum StatementType {
-
-		/**
-		 * 返回当日所有订单信息，默认值
-		 */
-		ALL("ALL", "返回当日所有订单信息，默认值"),
-
-		/**
-		 * 返回当日成功支付的订单
-		 */
-		SUCCESS("SUCCESS", "返回当日成功支付的订单"),
-
-		/**
-		 * 返回当日退款订单
-		 */
-		REFUND("REFUND", "返回当日退款订单"),
-		
-		/**
-		 * 返回当日充值退款订单
-		 */
-		RECHARGE_REFUND("RECHARGE_REFUND", "返回当日充值退款订单");
-
-		private String text;
-		private String desc;
-
-		private StatementType(String text, String desc) {
-			this.text = text;
-			this.desc = desc;
-		}
-
-		public String getText() {
-			return text;
-		}
-
-		public String getDesc() {
-			return desc;
-		}
+	@Override
+	public String toString() {
+		return "PayStatementDTO{" +
+				"billDate='" + billDate + '\'' +
+				", billType='" + billType + '\'' +
+				", tarType='" + tarType + '\'' +
+				'}';
 	}
-	
 }

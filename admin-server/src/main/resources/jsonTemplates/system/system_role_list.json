@@ -61,7 +61,7 @@
               "static": {
                 "method": "update"
               },
-              "path": "",
+              "path": "/authorization/index",
               "configKey": ""
             }
           },
@@ -74,6 +74,10 @@
               "params": [
                 "id"
               ],
+              "confirm":{
+                "title": "确认提示",
+                "message":"确定删除吗?"
+              },
               "path": "/role/remove/{id}"
             }
           }
@@ -82,7 +86,7 @@
     ],
     "params": [
       {
-        "name": "ruleName",
+        "name": "roleName",
         "inputModel": "input",
         "title": "权限组名",
         "value": "",

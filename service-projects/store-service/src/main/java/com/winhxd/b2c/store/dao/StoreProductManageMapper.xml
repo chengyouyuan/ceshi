@@ -121,7 +121,7 @@
         <if test="condition.recommend != null">
             and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
-        <if test="condition.priceStatus != null">
+        <if test="condition.priceStatus != null and condition.priceStatus !=2">
         	<choose>
         		<!-- 设置价格 -->
         		<when test="condition.priceStatus==1">

@@ -125,8 +125,10 @@ public class VerifyService {
                             .setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
                     thirdPartyfee.setDetailMoney(fee.multiply(BigDecimal.valueOf(-1)));
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
-                    accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
-                    count++;
+                    if (BigDecimal.ZERO.compareTo(fee) == 0) {
+                        accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
+                        count++;
+                    }
                 }
                 if (!isHasRealPay) {
                     AccountingDetail realPay = new AccountingDetail();
@@ -210,19 +212,28 @@ public class VerifyService {
      */
     @Transactional
     public int thirdPartyVerifyAccounting(String orderNo) {
-        PayStatement payStatement = payStatementMapper.selectByOutOrderNo(orderNo);
-        if (payStatement == null) {
-            log.warn("没有查询到订单[{}]与支付平台对账信息", orderNo);
-            return 0;
-        }
         int updateCount = 0;
-        // 订单手续费
-        BigDecimal serviceFee = payStatement.getFee();
-        if (serviceFee != null && BigDecimal.ZERO.compareTo(serviceFee) != 0) {
-            accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
-            updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
-            if (updateCount > 0) {
-                log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
+        ResponseResult<OrderInfoDetailVO4Management> responseResult = orderServiceClient.getOrderDetail4Management(orderNo);
+        if (responseResult != null && responseResult.getCode() == 0) {
+            OrderInfoDetailVO4Management orderInfoDetailVO4Management = responseResult.getData();
+            if (orderInfoDetailVO4Management != null) {
+                OrderInfoDetailVO orderInfoDetailVO = orderInfoDetailVO4Management.getOrderInfoDetailVO();
+                if (orderInfoDetailVO != null) {
+                    PayStatement payStatement = payStatementMapper.selectByOutOrderNo(orderInfoDetailVO.getPaymentSerialNum());
+                    if (payStatement == null) {
+                        log.warn("没有查询到订单[{}]与支付平台对账信息", orderNo);
+                        return 0;
+                    }
+                    // 订单手续费
+                    BigDecimal serviceFee = payStatement.getFee();
+                    if (serviceFee != null && BigDecimal.ZERO.compareTo(serviceFee) != 0) {
+                        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
+                        updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
+                        if (updateCount > 0) {
+                            log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
+                        }
+                    }
+                }
             }
         }
         return updateCount;

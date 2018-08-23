@@ -48,36 +48,12 @@ public class PayFinancialBillDTO extends RequestBase {
 		this.tarType = tarType;
 	}
 
-	public enum SourceType {
-		/**
-		 * 对账单
-		 */
-		BASIC("Basic", "基本账户"),
-
-		/**
-		 * 对账单统计
-		 */
-		OPERATION("Operation", "运营账户"),
-
-		/**
-		 * 资金账单
-		 */
-		FEES("Fees", "手续费账户");
-
-		private String text;
-		private String desc;
-
-		private SourceType(String text, String desc) {
-			this.text = text;
-			this.desc = desc;
-		}
-
-		public String getText() {
-			return text;
-		}
-
-		public String getDesc() {
-			return desc;
-		}
+	@Override
+	public String toString() {
+		return "PayFinancialBillDTO{" +
+				"billDate='" + billDate + '\'' +
+				", accountType='" + accountType + '\'' +
+				", tarType='" + tarType + '\'' +
+				'}';
 	}
 }

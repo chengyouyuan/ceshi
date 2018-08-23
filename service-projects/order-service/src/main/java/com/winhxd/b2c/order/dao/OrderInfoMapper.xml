@@ -67,7 +67,7 @@
         order by created desc
     </select>
     <insert id="insert" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
-     keyColumn="id" useGeneratedKeys="true">
+            keyColumn="id" useGeneratedKeys="true">
         insert into order_info (id, order_no, customer_id,
         store_id, valuation_type, order_status,
         pickup_code, random_reduction_money, coupon_titles, coupon_hxd_money,
@@ -95,7 +95,7 @@
         #{createdByName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
-     keyColumn="id" useGeneratedKeys="true">
+            keyColumn="id" useGeneratedKeys="true">
         insert into order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -251,10 +251,10 @@
                 #{realPaymentMoney,jdbcType=DECIMAL},
             </if>
             <if test="skuQuantity != null">
-            	#{skuQuantity,jdbcType=INTEGER},
+                #{skuQuantity,jdbcType=INTEGER},
             </if>
             <if test="skuCategoryQuantity != null">
-            	#{skuCategoryQuantity,jdbcType=INTEGER},
+                #{skuCategoryQuantity,jdbcType=INTEGER},
             </if>
             <if test="payType != null">
                 #{payType,jdbcType=SMALLINT},
@@ -262,7 +262,7 @@
             <if test="payStatus != null">
                 #{payStatus,jdbcType=SMALLINT},
             </if>
-			<if test="paymentSerialNum != null">
+            <if test="paymentSerialNum != null">
                 #{paymentSerialNum,jdbcType=VARCHAR},
             </if>
             <if test="created != null">
@@ -364,10 +364,10 @@
                 real_payment_money = #{realPaymentMoney,jdbcType=DECIMAL},
             </if>
             <if test="skuQuantity != null">
-            	sku_quantity = #{skuQuantity,jdbcType=INTEGER},
+                sku_quantity = #{skuQuantity,jdbcType=INTEGER},
             </if>
             <if test="skuCategoryQuantity != null">
-            	sku_category_quantity = #{skuCategoryQuantity,jdbcType=INTEGER},
+                sku_category_quantity = #{skuCategoryQuantity,jdbcType=INTEGER},
             </if>
             <if test="payType != null">
                 pay_type = #{payType,jdbcType=SMALLINT},
@@ -480,7 +480,7 @@
   </update>
 
     <resultMap id="OrderInfoListResultMap" type="com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO" extends="BaseResultMap">
-    	<result column="discount_money" jdbcType="DECIMAL" property="discountMoney"/>
+        <result column="discount_money" jdbcType="DECIMAL" property="discountMoney"/>
         <collection property="orderItemVoList" ofType="com.winhxd.b2c.common.domain.order.vo.OrderItemVO">
             <id column="itemId" property="itemId"/>
             <result column="order_no" property="orderNo"/>
@@ -491,16 +491,16 @@
             <result column="skuDesc" property="skuDesc"/>
         </collection>
     </resultMap>
-    <resultMap id="orderIdResult" type="java.lang.Long" >
-	    <result column="id" property="orderId" jdbcType="BIGINT" />
-	</resultMap>
-	<sql id="order_info_list_orderBy">
+    <resultMap id="orderIdResult" type="java.lang.Long">
+        <result column="id" property="orderId" jdbcType="BIGINT"/>
+    </resultMap>
+    <sql id="order_info_list_orderBy">
 		order by info.created desc,info.order_no,item.sku_code
 	</sql>
-	<sql id="order_info_orderBy">
+    <sql id="order_info_orderBy">
 		order by info.created desc,info.order_no
 	</sql>
-	<sql id="order_item_column">
+    <sql id="order_item_column">
 		,item.id AS itemId
         ,item.sku_code AS skuCode
         ,item.amount AS amount
@@ -511,7 +511,7 @@
     <sql id="Order_Info_List">
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
-        pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
+        pay_status, payment_serial_num, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
         pickup_type, cancel_reason, remarks
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
@@ -524,7 +524,7 @@
     </select>
     <select id="listOrder4Management" resultMap="orderIdResult">
         <if test="condition.orderNo != null and condition.orderNo !=''">
-            <bind name="orderNo" value="condition.orderNo + '%'" />
+            <bind name="orderNo" value="condition.orderNo + '%'"/>
         </if>
         select
         id
@@ -535,7 +535,7 @@
         </if>
         <if test="condition.customerId != null">
             and customer_id = #{condition.customerId,jdbcType=BIGINT}
-        </if> 
+        </if>
         <if test="condition.dateInterval != null and condition.dateInterval.start != null">
             and created &gt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
         </if>
@@ -558,7 +558,7 @@
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
         </if>
         <if test="condition.regionCode != null and condition.regionCode.length > 0">
-            and region_code in 
+            and region_code in
             <foreach item="item" index="index" collection="condition.regionCode" open="(" separator="," close=")">
                 #{item}
             </foreach>
@@ -573,8 +573,8 @@
             and coupon_titles is null
         </if>
         <if test="condition.orderNos != null and condition.orderNos.length > 0">
-            and info.order_no in 
-        	<foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
+            and info.order_no in
+            <foreach item="item" index="index" collection="condition.orderNos" open="(" separator="," close=")">
                 #{item}
             </foreach>
         </if>
@@ -586,9 +586,9 @@
         <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
-        and info.id in 
-    	<foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
-                #{item}
+        and info.id in
+        <foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
+            #{item}
         </foreach>
         <include refid="order_info_list_orderBy"></include>
     </select>
@@ -618,10 +618,9 @@
         <include refid="order_item_column"></include>
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where 1=1
-        and info.id in 
-    	<foreach item="item" index="index" collection="orderIds" 
-                     open="(" separator="," close=")">
-                    #{item}
+        and info.id in
+        <foreach item="item" index="index" collection="orderIds" open="(" separator="," close=")">
+            #{item}
         </foreach>
         <include refid="order_info_list_orderBy"></include>
     </select>
@@ -654,7 +653,7 @@
         and pay_status = 1
         and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
         and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
-        and order_status not in (33, 77, 99)
+        and order_status not in (33, 66, 77, 99)
         group by store_id
     </select>
     <resultMap id="StoreOrderSalesSummaryMap1" type="com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO">
@@ -669,9 +668,11 @@
         	ifnull(sum(sku_category_quantity),0) skuCategoryQuantity
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
-        and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
-        and finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
-        and order_status = 22
+        and pay_status = 1
+        and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status not in (33, 66, 77, 99)
+        group by store_id
     </select>
     <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
         select count(*) from order_info info
@@ -714,11 +715,17 @@
     </update>
     <update id="updateOrderStatusForApplyRefund">
         update order_info
-       set order_status=33,apply_refund_datetime = now(),pickup_code=null
+        set order_status=#{orderStatus,jdbcType=SMALLINT},
+        updated = now(),
+        apply_refund_datetime = now()
+        <!--订单状态为退款中（门店同意退款）时把提货码置为空-->
+        <if test="orderStatus == 66">
+            ,pickup_code=null
+        </if>
         <if test="reason != null">
             ,cancel_reason = #{reason,jdbcType=VARCHAR}
         </if>
-       where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
+        where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
         <if test="customerId != null">
             and customer_id = #{customerId,jdbcType=BIGINT}
         </if>
@@ -744,6 +751,19 @@
         set accept_order_datetime = #{date,jdbcType=TIMESTAMP}
         where id=#{orderId,jdbcType=BIGINT}
     </update>
+    <update id="updateOrderStatusForReturnWaitSelfLifting">
+        update order_info
+        <!--订单状态为待自提-->
+        set order_status=9,
+        updated = now()
+        <if test="reason != null and reason !=''">
+            ,cancel_reason = #{reason,jdbcType=VARCHAR}
+        </if>
+        where order_no=#{orderNo,jdbcType=VARCHAR}
+        <if test="storeId != null">
+            and store_id = #{storeId,jdbcType=BIGINT}
+        </if>
+    </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>
         <result column="unreceivedNum" jdbcType="INTEGER" property="unreceivedNum"/>
@@ -764,7 +784,7 @@
 			sum(case when order_status=33 then 1 else 0 end) waitRefundNum,
 			sum(case when order_status=22 then 1 else 0 end) finishedNum,
 			sum(case when order_status=77 then 1 else 0 end) refundedNum,
-			sum(case when order_status=22 then 1 else 0 end) canceledNum,
+			sum(case when order_status=99 then 1 else 0 end) canceledNum,
 			sum(case when order_status=66 then 1 else 0 end) refundingNum,
 			store_id storeId
 		from
@@ -779,7 +799,7 @@
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.order_no = #{orderNo,jdbcType=VARCHAR}
         <if test="customerId != null">
-        and customer_id=#{customerId,jdbcType=BIGINT}
+            and customer_id=#{customerId,jdbcType=BIGINT}
         </if>
         <include refid="order_info_list_orderBy"></include>
     </select>
@@ -790,7 +810,7 @@
         from order_info info LEFT JOIN order_item item on item.order_no=info.order_no
         where info.order_no = #{orderNo,jdbcType=VARCHAR}
         <if test="storeId != null">
-        and store_id=#{storeId,jdbcType=BIGINT}
+            and store_id=#{storeId,jdbcType=BIGINT}
         </if>
         <include refid="order_info_list_orderBy"></include>
     </select>

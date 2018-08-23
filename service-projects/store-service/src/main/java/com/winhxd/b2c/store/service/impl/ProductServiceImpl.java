@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
         storeProductManageCondition.setPageNo(condition.getPageNo());
         storeProductManageCondition.setStoreId(condition.getStoreId());
         storeProductManageCondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-        storeProductManageCondition.setRecommend(condition.getRecommend());
+        storeProductManageCondition.setRecommend(condition.getRecommend() == null || condition.getRecommend() != null && condition.getRecommend() != 1 ? null : (short)1);
         storeProductManageCondition.setOrderBy(condition.getProductSortType());
         storeProductManageCondition.setDescAsc(condition.getProductSortType() != null && condition.getProductSortType().equals(1)
                 ? (byte)0 : (byte)1);
@@ -130,12 +130,16 @@ public class ProductServiceImpl implements ProductService {
             responseResult.getData().setRecommendFlag(1);
         }
 
+        PagedList<ProductSkuVO> productSkus = responseResult.getData().getProductSkus();
+        if (productSkus == null || productSkus.getData().isEmpty()){
+            return responseResult;
+        }
         //赋值商品价格
-        assignSellMoney(responseResult.getData().getProductSkus().getData(), storeProductManages);
+        assignSellMoney(productSkus.getData(), storeProductManages);
 
         if (currentCustomerUser != null){
             //查询商品购物车数量
-            assignSkuNum(responseResult.getData().getProductSkus().getData(), currentCustomerUser, condition);
+            assignSkuNum(productSkus.getData(), currentCustomerUser, condition);
         }
         return responseResult;
     }
@@ -153,11 +157,16 @@ public class ProductServiceImpl implements ProductService {
         //获取商品列表信息
         ProductConditionByPage productConditionByPage = buildProductConditionByPage(false, condition, storeProductManages);
         responseResult = productServiceClient.getProductSkusByPage(productConditionByPage);
+
+        PagedList<ProductSkuVO> productSkus = responseResult.getData();
+        if (productSkus == null || productSkus.getData().isEmpty()){
+            return responseResult;
+        }
         //价格赋值
-        assignSellMoney(responseResult.getData().getData(),storeProductManages);
+        assignSellMoney(productSkus.getData(),storeProductManages);
         if (currentCustomerUser != null){
             //查询商品购物车数量
-            assignSkuNum(responseResult.getData().getData(),currentCustomerUser,condition);
+            assignSkuNum(productSkus.getData(),currentCustomerUser,condition);
         }
         return responseResult;
     }

@@ -113,36 +113,26 @@
       {
         "name": "payTypeDesc",
         "title": "支付方式",
-        "inputModel": "select",
+        "inputModel": "text",
         "value": "",
-        "isHidden": false,
-        "options": [{
-          "value": "1",
-          "label": "微信在线付款"
-        }
-        ]
+        "isHidden": false
       },
       {
         "name": "pickupTypeDesc",
         "title": "提货方式",
-        "inputModel": "select",
+        "inputModel": "text",
         "value": "",
-        "isHidden": false,
-        "options": [{
-          "value": "1",
-          "label": "自提"
-        }
-        ]
+        "isHidden": false
       },
       {
-        "name": "storeStatusDesc",
+        "name": "storeStatus",
         "inputModel": "select",
         "title": "门店状态",
         "placeholder": "",
         "isHidden": false,
         "options": [
           {
-            "value": "1",
+            "value": 1,
             "label": "有效"
           },
           {

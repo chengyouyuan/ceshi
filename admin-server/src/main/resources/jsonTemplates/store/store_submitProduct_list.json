@@ -63,42 +63,7 @@
 	  {
         "name": "storeName",
         "title": "提报门店名称"
-      },
-      {
-        "name": "",
-        "title": "操作",
-        "type": "button",
-        "buttons": [
-          {
-            "name": "查看/审核",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "static": {
-                "method": "detail"
-              },
-              "path": "",
-              "configKey": "/template/module/store/store_prod_list_view.json"
-            }
-          },
-          {
-            "name": "去添加",
-            "icon": null,
-            "event": {
-              "type": "router",
-              "params": [
-                "id"
-              ],
-              "path": "",
-              "configKey": "/template/module/store/store_prod_list_view.json"
-            }
-          }
-          
-        ]
-        }
+      }
     ],
     "params": [
       {

@@ -1,11 +1,16 @@
 package com.winhxd.b2c.admin.module.pay.controller;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDecimal;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
+import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
@@ -31,6 +36,8 @@ public class VerifyController {
     private VerifyServiceClient verifyServiceClient;
 
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
     @RequestMapping("/verifyList")
     @ResponseBody
     public ResponseResult<?> verifyList(@RequestBody VerifySummaryListCondition condition) {
@@ -58,11 +65,16 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "账单结算", notes = "按汇总结算")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
     @RequestMapping("/verifyBySummary")
     @ResponseBody
     public ResponseResult<?> verifyBySummary(@RequestBody List<VerifySummaryCondition.StoreAndDateVO> list) {
         VerifySummaryCondition condition = new VerifySummaryCondition();
         for (VerifySummaryCondition.StoreAndDateVO vo : list) {
+            if (vo.getVerifyStatus().compareTo(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()) != 0) {
+                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+            }
             condition.getList().add(vo);
         }
         if (condition.getList().size() == 0) {
@@ -72,6 +84,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailList")
     @ResponseBody
     public ResponseResult<?> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
@@ -89,6 +103,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用明细结算", notes = "按明细结算")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/verifyByDetail")
     @ResponseBody
     public ResponseResult<?> verifyByDetail(@RequestBody List<Map<String, Object>> list) {
@@ -98,6 +114,14 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可结算的记录，请检查后重试");
+            }
+            Object thirdPartyVerifyStatus = map.get("thirdPartyVerifyStatus");
+            if (!String.valueOf(AccountingDetail.ThirdPartyVerifyStatusEnum.VERIFIED.getCode()).equals(String.valueOf(thirdPartyVerifyStatus))) {
+                throw new BusinessException(-1, "记录中包含微信未结算的记录，请检查后重试");
+            }
         }
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
@@ -106,6 +130,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailPause")
     @ResponseBody
     public ResponseResult<?> accountingDetailPause(@RequestBody List<Map<String, Object>> list) {
@@ -115,6 +141,10 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.NOT_VERIFIED.getCode()).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可暂缓的记录，请检查后重试");
+            }
         }
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
@@ -123,6 +153,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailRestore")
     @ResponseBody
     public ResponseResult<?> accountingDetailRestore(@RequestBody List<Map<String, Object>> list) {
@@ -132,6 +164,10 @@ public class VerifyController {
             if (id != null && NumberUtils.isCreatable(ObjectUtils.toString(id))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
             }
+            Object verifyStatus = map.get("verifyStatus");
+            if (!String.valueOf(AccountingDetail.VerifyStatusEnum.PAUSED.getCode()).equals(String.valueOf(verifyStatus))) {
+                throw new BusinessException(-1, "记录中包含不可恢复的记录，请检查后重试");
+            }
         }
         if (condition.getIds().size() == 0) {
             throw new BusinessException(-1, "请至少选择一条记录");
@@ -140,6 +176,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "门店提现申请列表查询")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
     @RequestMapping("/storeWithdrawList")
     @ResponseBody
     public ResponseResult<?> storeWithdrawList(@RequestBody PayWithdrawalsListCondition condition) {
@@ -179,6 +217,8 @@ public class VerifyController {
     }
 
     @ApiOperation(value = "批准门店提现申请")
+    @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
+    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
     @RequestMapping("/approveStoreWithdraw")
     @ResponseBody
     public ResponseResult<?> approveStoreWithdraw(@RequestBody List<Map<String, Object>> list) {
@@ -190,6 +230,10 @@ public class VerifyController {
                     && storeId != null && NumberUtils.isCreatable(ObjectUtils.toString(storeId))) {
                 condition.getIds().add(NumberUtils.createLong(ObjectUtils.toString(id)));
                 condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
+            }
+            Object callbackStatus = map.get("callbackStatus");
+            if (String.valueOf(1).equals(String.valueOf(callbackStatus)) || String.valueOf(3).equals(String.valueOf(callbackStatus))) {
+                throw new BusinessException(-1, "记录中包含不可提现的记录，请检查后重试");
             }
         }
         if (condition.getIds().size() == 0) {

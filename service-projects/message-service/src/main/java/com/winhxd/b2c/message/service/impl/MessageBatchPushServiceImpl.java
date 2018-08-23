@@ -17,10 +17,12 @@ import com.winhxd.b2c.message.dao.MessageNeteaseHistoryMapper;
 import com.winhxd.b2c.message.service.MessageBatchPushService;
 import com.winhxd.b2c.message.utils.NeteaseUtils;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,14 +66,17 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int addBatchPush(MessageBatchPush messageBatchPush) {
-        int id = messageBatchPushMapper.insertSelective(messageBatchPush);
-        messageBatchPush.setId(Long.parseLong(String.valueOf(id)));
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给所有门店推送云信消息，开始...消息配置id={}",id);
+        if (StringUtils.isEmpty(messageBatchPush.getMsgContent())){
+            LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，保存手动给门店推送消息出错，消息内容为空。");
+            throw new BusinessException(BusinessCode.CODE_703504);
+        }
+        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给所有门店推送云信消息，开始...消息配置{}");
         //获取所有门店云信账号
         List<MessageNeteaseAccount> messageNeteaseAccounts = messageNeteaseAccountMapper.selectAll();
         if (CollectionUtils.isEmpty(messageNeteaseAccounts)){
-            LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送消息出错，没有云信门店记录。");
+            LOGGER.error("MessageBatchPushServiceImpl ->addBatchPush，手动给门店推送消息出错，没有云信门店记录。");
             throw new BusinessException(BusinessCode.CODE_703502);
         }
         List<String> accids = new ArrayList<>();
@@ -87,6 +92,7 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
         if(timingPush == null){
             //立即发送
             messageSendUtils.sendNeteaseMsgBatch(neteaseMsgDelayCondition);
+            messageBatchPush.setLastPushTime(new Date());
         }else{
             //延迟发送
             int delayMilli = 0;
@@ -95,9 +101,8 @@ public class MessageBatchPushServiceImpl implements MessageBatchPushService {
             }
             messageSendUtils.sendNeteaseMsgDelay(neteaseMsgDelayCondition,delayMilli);
         }
-        messageBatchPush.setLastPushTime(new Date());
-        messageBatchPushMapper.updateByPrimaryKeySelective(messageBatchPush);
-        LOGGER.info("MessageBatchPushServiceImpl ->batchPushMessage，手动给门店推送云信消息，结束...消息配置id={}",id);
+        int id = messageBatchPushMapper.insert(messageBatchPush);
+        LOGGER.info("MessageBatchPushServiceImpl ->addBatchPush，手动给门店推送云信消息，结束...消息配置id={}",id);
         return id;
     }
 

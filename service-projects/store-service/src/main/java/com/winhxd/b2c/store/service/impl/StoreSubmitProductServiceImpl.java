@@ -48,6 +48,7 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 	            throw new BusinessException(BusinessCode.CODE_200004);
 			}
 			storeSubmitProduct.setCreated(new Date());
+			storeSubmitProduct.setStoreName(storeUserInfo.getStoreName());
 			storeSubmitProductMapper.insertSelective(storeSubmitProduct);
 		}else{
 			logger.error("StoreSubmitProductService ->saveStoreSubmitProduct参数异常,storeId:"+storeId+",StoreSubmitProduct:"+storeSubmitProduct);

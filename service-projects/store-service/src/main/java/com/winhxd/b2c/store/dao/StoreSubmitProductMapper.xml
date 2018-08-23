@@ -55,7 +55,7 @@
   </sql>
    <sql id="Simple_Column_List">
     id, store_id, prod_name, prod_code, prod_image1,
-    prod_status, audit_remark,sku_code
+    prod_status, audit_remark,sku_code, prod_info_voice, prod_info_text
   </sql>
   <sql id="BackStage_Column_List">
     sp.id, sp.store_id, u.store_name, sp.prod_name, sp.prod_code, sp.prod_image1, sp.prod_image2, sp.prod_image3,

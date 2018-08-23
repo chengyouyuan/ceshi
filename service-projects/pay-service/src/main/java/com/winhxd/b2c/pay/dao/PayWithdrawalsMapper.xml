@@ -15,6 +15,7 @@
     <result column="callback_status" jdbcType="SMALLINT" property="callbackStatus" />
     <result column="callback_reason" jdbcType="VARCHAR" property="callbackReason" />
     <result column="callback_cmms_amt" jdbcType="DECIMAL" property="callbackCmmsAmt" />
+    <result column="error_message" jdbcType="VARCHAR" property="errorMessage" />
     <result column="flow_direction_type" jdbcType="SMALLINT" property="flowDirectionType" />
     <result column="flow_direction_name" jdbcType="VARCHAR" property="flowDirectionName" />
     <result column="swift_code" jdbcType="VARCHAR" property="swiftCode" />
@@ -34,7 +35,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, store_id, withdrawals_no, withdrawals_transaction_no, total_fee, real_fee, cmms_amt, 
-    rate, audit_status, audit_desc, callback_status, callback_reason,callback_cmms_amt, flow_direction_type,
+    rate, audit_status, audit_desc, callback_status, callback_reason,error_message,callback_cmms_amt, flow_direction_type,
     flow_direction_name,swift_code, name, mobile, payment_account, created, created_by, created_by_name,
     updated_by, updated_by_name, updated, buyer_id, transaction_id, callback_money, time_end
   </sql>
@@ -52,7 +53,7 @@
     insert into pay_withdrawals (id, store_id, withdrawals_no, 
       withdrawals_transaction_no, total_fee, real_fee, 
       cmms_amt, rate, audit_status, 
-      audit_desc, callback_status, callback_reason, callback_cmms_amt,
+      audit_desc, callback_status, callback_reason,error_message, callback_cmms_amt,
       flow_direction_type, flow_direction_name,swift_code,
       name, mobile, payment_account, 
       created, created_by, created_by_name, 
@@ -62,7 +63,7 @@
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{withdrawalsNo,jdbcType=CHAR}, 
       #{withdrawalsTransactionNo,jdbcType=VARCHAR}, #{totalFee,jdbcType=DECIMAL}, #{realFee,jdbcType=DECIMAL}, 
       #{cmmsAmt,jdbcType=DECIMAL}, #{rate,jdbcType=DECIMAL}, #{auditStatus,jdbcType=SMALLINT}, 
-      #{auditDesc,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, #{callbackCmmsAmt,jdbcType=DECIMAL},
+      #{auditDesc,jdbcType=VARCHAR}, #{callbackStatus,jdbcType=SMALLINT}, #{callbackReason,jdbcType=VARCHAR}, #{errorMessage,jdbcType=VARCHAR}, #{callbackCmmsAmt,jdbcType=DECIMAL},
       #{flowDirectionType,jdbcType=SMALLINT}, #{flowDirectionName,jdbcType=VARCHAR}, #{swiftCode,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{paymentAccount,jdbcType=CHAR}, 
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
@@ -108,6 +109,9 @@
       </if>
       <if test="callbackReason != null">
         callback_reason,
+      </if>
+      <if test="errorMessage != null">
+        error_message,
       </if>
       <if test="callbackCmmsAmt != null">
         callback_cmms_amt,
@@ -198,6 +202,9 @@
       <if test="callbackReason != null">
         #{callbackReason,jdbcType=VARCHAR},
       </if>
+      <if test="errorMessage != null">
+        #{errorMessage,jdbcType=VARCHAR},
+      </if>
       <if test="callbackCmmsAmt != null">
         #{callbackCmmsAmt,jdbcType=DECIMAL},
       </if>
@@ -284,8 +291,8 @@
       <if test="callbackStatus != null">
         callback_status = #{callbackStatus,jdbcType=SMALLINT},
       </if>
-      <if test="callbackReason != null">
-        callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      <if test="errorMessage != null">
+        error_message = #{errorMessage,jdbcType=VARCHAR},
       </if>
       <if test="callbackCmmsAmt != null">
         callback_cmms_amt = #{callbackCmmsAmt,jdbcType=DECIMAL},
@@ -354,6 +361,7 @@
       audit_desc = #{auditDesc,jdbcType=VARCHAR},
       callback_status = #{callbackStatus,jdbcType=SMALLINT},
       callback_reason = #{callbackReason,jdbcType=VARCHAR},
+      error_message = #{errorMessage,jdbcType=VARCHAR},
       callback_cmms_amt = #{callbackCmmsAmt,jdbcType=DECIMAL},
       flow_direction_type = #{flowDirectionType,jdbcType=SMALLINT},
       flow_direction_name = #{flowDirectionName,jdbcType=VARCHAR},
@@ -520,6 +528,9 @@
       <if test="callbackReason != null">
       callback_reason = #{callbackReason,jdbcType=VARCHAR},
     </if>
+      <if test="errorMessage != null">
+        error_message = #{errorMessage,jdbcType=VARCHAR},
+      </if>
       <if test="callbackCmmsAmt != null">
         callback_cmms_amt = #{callbackCmmsAmt,jdbcType=DECIMAL},
       </if>
@@ -580,10 +591,10 @@
     from pay_withdrawals
     where withdrawals_no = #{withdrawalsNo}
   </select>
-  <select id="selectByWithdrawalsNo" resultMap="BaseResultMap">
+  <select id="selectTransferToBankUnclearStatusWithdrawals" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from pay_withdrawals
-    where audit_status = 1 AND callback_status = 1 AND flow_direction_type = 2
+    where audit_status = 1 AND callback_status = 4 AND flow_direction_type = 2
   </select>
 </mapper>

@@ -21,4 +21,10 @@ public class PayOrderQueryDTO extends RequestBase {
 		this.outTradeNo = outTradeNo;
 	}
 
+	@Override
+	public String toString() {
+		return "PayOrderQueryDTO{" +
+				"outTradeNo='" + outTradeNo + '\'' +
+				'}';
+	}
 }

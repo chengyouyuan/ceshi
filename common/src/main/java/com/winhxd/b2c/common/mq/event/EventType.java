@@ -1,9 +1,9 @@
 package com.winhxd.b2c.common.mq.event;
 
-import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.promotion.condition.OrderUntreadCouponCondition;
-
 import java.util.Objects;
+
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 
 /**
  * 事件类型
@@ -29,7 +29,12 @@ public enum EventType {
     /**
      * 订单取消事件
      */
-    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class);
+    EVENT_CUSTOMER_ORDER_CANCEL(OrderInfo.class),
+    
+    /**
+     * 下载账单事件
+     */
+    EVENT_DOWNLOAD_BILL(DownloadStatementCondition.class);
 
     private Class<?> eventObjectClass;
 

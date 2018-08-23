@@ -131,7 +131,7 @@ public class XmlUtil {
     public static Map<String, String> bean2MapUnderline2Hump(Object o) throws Exception {
     	Class<?> c = o.getClass();
     	Class<?> clazzTemp = c;
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>(16);
       //当父类为Object的时候说明到达了最上层的父类.
         while (clazzTemp != null && !clazzTemp.getName().equalsIgnoreCase(Object.class.getName())) {
             Field[] fields = clazzTemp.getDeclaredFields();
@@ -166,7 +166,7 @@ public class XmlUtil {
     public static Map<String, String> bean2Map(Object o) throws Exception {
     	Class<?> c = o.getClass();
     	Class<?> clazzTemp = c;
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>(16);
       //当父类为Object的时候说明到达了最上层的父类.
         while (clazzTemp != null && !clazzTemp.getName().equalsIgnoreCase(Object.class.getName())) {
             Field[] fields = clazzTemp.getDeclaredFields();
@@ -200,7 +200,7 @@ public class XmlUtil {
      */
     public static Map<String, String> xml2MapUnderline2Hump(String strXML) throws Exception {
     	Map<String, String> map = xmlToMap(strXML);
-    	Map<String, String> newMap = new HashMap<>();
+    	Map<String, String> newMap = new HashMap<>(16);
     	for (Map.Entry<String, String> entry : map.entrySet()) {
     		String key = entry.getKey();
     		//下划线转驼峰
@@ -220,7 +220,7 @@ public class XmlUtil {
      * @throws Exception
      */
     public static String map2XmlHump2Underline(Map<String, String> map) throws Exception {
-    	Map<String, String> newMap = new HashMap<>();
+    	Map<String, String> newMap = new HashMap<>(16);
     	for (Map.Entry<String, String> entry : map.entrySet()) {
     		String key = entry.getKey();
     		//下划线转驼峰
@@ -239,7 +239,7 @@ public class XmlUtil {
      */
     public static Map<String, String> xmlToMap(String strXML) throws Exception {
         try {
-            Map<String, String> data = new HashMap<String, String>();
+            Map<String, String> data = new HashMap<String, String>(16);
             DocumentBuilder documentBuilder = newDocumentBuilder();
             InputStream stream = new ByteArrayInputStream(strXML.getBytes("UTF-8"));
             Document doc = documentBuilder.parse(stream);
@@ -294,7 +294,8 @@ public class XmlUtil {
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
-        String output = writer.getBuffer().toString(); //.replaceAll("\n|\r", "");
+        //.replaceAll("\n|\r", "");
+        String output = writer.getBuffer().toString();
         try {
             writer.close();
         }

@@ -8,7 +8,6 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayRefundResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
-import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayRequest;
 import com.winhxd.b2c.pay.weixin.dao.PayRefundMapper;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
@@ -20,20 +19,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
 /**
- *
+ * 退款实现类
  * @author lizhonghua
  * @Description
  * @Date 2018年8月15日17:15:18
  */
 @Service
 public class WXRefundServiceImpl implements WXRefundService {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WXRefundServiceImpl.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WXRefundServiceImpl.class);
 
     @Autowired
     WXPayApi wxPayApi;
@@ -45,6 +42,25 @@ public class WXRefundServiceImpl implements WXRefundService {
     PayRefundMapper payRefundMapper;
 
     /**
+     * 退款成功
+     */
+    private static final String SUCCESS = "SUCCESS";
+    /**
+     * 退款关闭
+     */
+    private static final String REFUNDCLOSE = "REFUNDCLOSE";
+    /**
+     * 退款处理中
+     */
+    private static final String PROCESSING = "PROCESSING";
+    /**
+     * 退款异常
+     */
+    private static final String CHANGE = "CHANGE";
+
+
+
+    /**
      * 退款通知日期格式
      */
     private static final String WX_REFUND_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -54,7 +70,6 @@ public class WXRefundServiceImpl implements WXRefundService {
      */
     private static final BigDecimal UNITS = new BigDecimal("100");
 
-    @Transactional
     @Override
     public PayRefundVO refundOrder(PayRefundCondition condition){
         //方法返参
@@ -72,11 +87,11 @@ public class WXRefundServiceImpl implements WXRefundService {
                     payRefundVO = this.refunding(payRefund, condition);
                     break;
                 case 1:
-                    logger.info("退款已完成(1)，交易流水号是："+outTradeNo);
+                    LOGGER.info("退款已完成(1)，交易流水号是："+outTradeNo);
                     this.refunded();
                     break;
                 case 2:
-                    logger.info("退款已关闭(2)，交易流水号是："+outTradeNo);
+                    LOGGER.info("退款已关闭(2)，交易流水号是："+outTradeNo);
                     this.refundAlreadyClosed();
                 case 3:
                     payRefundVO = this.refundRetry(condition, payRefund);
@@ -88,7 +103,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                     break;
             }
         }catch (Exception e){
-            logger.error("退款时发生错误" + e.getMessage(), e);
+            LOGGER.error("退款时发生错误" + e.getMessage(), e);
             throw new BusinessException(BusinessCode.ORDER_REFUND_CLOSED);
         }
 
@@ -120,11 +135,11 @@ public class WXRefundServiceImpl implements WXRefundService {
             payRefund.setCallbackRefundAccount(payRefundResponseDTO.getRefundAccount());
             payRefund.setCallbackRefundRequestSource(payRefundResponseDTO.getRefundRequestSource());
             String refundStatus = payRefundResponseDTO.getRefundStatus();
-            if("SUCCESS".equals(refundStatus)){
+            if(SUCCESS.equals(refundStatus)){
                 payRefund.setCallbackRefundStatus((short)1);
-            }else if("REFUNDCLOSE".equals(refundStatus)){
+            }else if(REFUNDCLOSE.equals(refundStatus)){
                 payRefund.setCallbackRefundStatus((short)2);
-            }else if("CHANGE".equals(refundStatus)){
+            }else if(CHANGE.equals(refundStatus)){
                 payRefund.setCallbackRefundStatus((short)3);
             }
             payRefund.setCallbackReqInfo(reqInfo);
@@ -184,7 +199,6 @@ public class WXRefundServiceImpl implements WXRefundService {
         model.setRefundAmount(condition.getRefundAmount());
         model.setRefundFeeType(CurrencyEnum.CNY.getCode());
         model.setRefundDesc(condition.getRefundDesc());
-        //model.setRefundAccount();
         model.setNotifyUrl(payRefundDTO.getNotifyUrl());
         model.setOrderNo(condition.getOrderNo());
         model.setPayType((short)1);
@@ -249,13 +263,14 @@ public class WXRefundServiceImpl implements WXRefundService {
 
         //获取查询到的信息
         String returnCode = mapOut.get("return_code");
+        String resultCode = mapOut.get("result_code");
         //返回失败
         if (PayRefundResponseDTO.FAIL.equals(returnCode)){
             model.setErrorMessage(mapOut.get("return_msg"));
 
             payRefundVO.setStatus(false);
             payRefundVO.setErrorCodeDesc(mapOut.get("return_msg"));
-        }else if (PayRefundResponseDTO.FAIL.equals(mapOut.get("result_code"))){
+        }else if (PayRefundResponseDTO.FAIL.equals(resultCode)){
             //返回成功，但是接收失败
             model.setErrorCode(mapOut.get("err_code"));
             model.setErrorMessage(mapOut.get("err_code_des"));
@@ -276,16 +291,17 @@ public class WXRefundServiceImpl implements WXRefundService {
             String refundStatus = mapOut.get("refund_status_0");
             String refundRecvAccout0 = mapOut.get("refund_recv_accout_0");
             model.setCallbackRefundRecvAccout(refundRecvAccout0);
-            if ("PROCESSING".equals(refundStatus)){
+            if (PROCESSING.equals(refundStatus)){
                 model.setCallbackRefundStatus((short)0);
-            }else if("SUCCESS".equals(refundStatus)){
+            }else if(SUCCESS.equals(refundStatus)){
                 model.setCallbackRefundStatus((short)1);
-                if(mapOut.get("refund_success_time_0") != null){
-                    model.setCallbackSuccessTime(DateUtil.toDate(mapOut.get("refund_success_time_0"), WX_REFUND_DATE_FORMAT));
+                String successTime0 = mapOut.get("refund_success_time_0");
+                if(successTime0 != null){
+                    model.setCallbackSuccessTime(DateUtil.toDate(successTime0, WX_REFUND_DATE_FORMAT));
                 }
-            }else if("REFUNDCLOSE".equals(refundStatus)){
+            }else if(REFUNDCLOSE.equals(refundStatus)){
                 model.setCallbackRefundStatus((short)2);
-            }else if("CHANGE".equals(refundStatus)){
+            }else if(CHANGE.equals(refundStatus)){
                 model.setCallbackRefundStatus((short)3);
             }
 
@@ -300,7 +316,7 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @return
      */
     private void refunded(){
-        logger.info("退款已完成");
+        LOGGER.info("退款已完成");
         //throw new BusinessException(BusinessCode.ORDER_REFUND_FINISHED);
     }
 
@@ -309,7 +325,7 @@ public class WXRefundServiceImpl implements WXRefundService {
      * @return
      */
     private void refundAlreadyClosed(){
-        logger.info("退款已关闭");
+        LOGGER.info("退款已关闭");
         //throw new BusinessException(BusinessCode.ORDER_REFUND_CLOSED);
     }
 

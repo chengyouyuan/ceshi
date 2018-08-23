@@ -57,9 +57,9 @@ public class ApiNeteaseController {
 			LOGGER.error("ApiNeteaseController -> findNeteaseMsgBox请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		Long customerId = storeUser.getStoreCustomerId();
+		Long storeId = storeUser.getBusinessId();
 		ResponseResult<PagedList<NeteaseMsgVO>> result = new ResponseResult<>();
-		PagedList<NeteaseMsgVO> list = neteaseService.findNeteaseMsgBox(condition, customerId);
+		PagedList<NeteaseMsgVO> list = neteaseService.findNeteaseMsgBox(condition, storeId);
 		result.setData(list);
 		return result;
 	}
@@ -83,9 +83,9 @@ public class ApiNeteaseController {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		Long customerId = storeUser.getStoreCustomerId();
+		Long storeId = storeUser.getBusinessId();
 		ResponseResult<Void> result = new ResponseResult<>();
-		neteaseService.modifyNeteaseMsgReadStatus(condition, customerId);
+		neteaseService.modifyNeteaseMsgReadStatus(condition, storeId);
 		return result;
 	}
 }

@@ -81,7 +81,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			String accid = customerId + accidSuffix;
 			Map<String, Object> tokenMap = neteaseUtils.updateUserToken(accid, token);
 			if (SUCCESS_CODE.equals(String.valueOf(tokenMap.get(PARAM_CODE)))) {
-				neteaseAccountMapper.updateByCustomerId(customerId,accid,token);
+				neteaseAccountMapper.updateByCustomerId(customerId, accid, token);
 				saveAccount(neteaseAccountCondition, customerId, token, accid);
 				result.setAccid(accid);
 				result.setToken(token);
@@ -92,7 +92,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 				LOGGER.error("NeteaseServiceImpl ->createNeteaseAccount,云信账号更新失败，失败原因={}", tokenMap.get(PARAM_DESC));
 				throw new BusinessException(BusinessCode.CODE_701302);
 			}
-		}else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
+		} else if (ERROR_CODE.equals(codeMes) || desc.indexOf(ERROR_MSG) > 0) {
 			// 如果云信账号不存在，则创建
 			String token = GeneratePwd.generatePwd();
 			String accid = customerId + accidSuffix;
@@ -119,12 +119,12 @@ public class NeteaseServiceImpl implements NeteaseService {
 			throw new BusinessException(BusinessCode.CODE_701301);
 		}
 		MessageNeteaseAccount account = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
-		if(account == null){
-			LOGGER.error("消息服务 ->更新云信账号信息异常，NeteaseServiceImpl.updateNeteaseAccount(),云信用户不存在，customerId={}",customerId);
+		if (account == null) {
+			LOGGER.error("消息服务 ->更新云信账号信息异常，NeteaseServiceImpl.updateNeteaseAccount(),云信用户不存在，customerId={}", customerId);
 			throw new BusinessException(BusinessCode.CODE_701304);
 		}
 		//更新云信账户信息
-		Map<String, Object> infoMap = neteaseUtils.updateUserInfo(account.getAccid(), account.getName(),account.getIcon());
+		Map<String, Object> infoMap = neteaseUtils.updateUserInfo(account.getAccid(), account.getName(), account.getIcon());
 		String codeMes = String.valueOf(infoMap.get(PARAM_CODE));
 		if (SUCCESS_CODE.equals(codeMes)) {
 			//更新云信用户记录
@@ -132,7 +132,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 			account.setMobile(neteaseAccountCondition.getMobile());
 			account.setIcon(neteaseAccountCondition.getIcon());
 			neteaseAccountMapper.updateByPrimaryKey(account);
-		}else{
+		} else {
 			LOGGER.error("NeteaseServiceImpl ->updateNeteaseAccount,云信账号更新失败，customerId={}", customerId);
 			LOGGER.error("NeteaseServiceImpl ->updateNeteaseAccount,云信账号更新失败，失败原因={}", infoMap.get(PARAM_CODE));
 			throw new BusinessException(BusinessCode.CODE_701302);
@@ -141,9 +141,9 @@ public class NeteaseServiceImpl implements NeteaseService {
 
 	@Override
 	@MessageEnumConvertAnnotation
-	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long customerId) {
+	public PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition condition, Long storeId) {
 		String accid;
-		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(storeId);
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}
@@ -167,10 +167,10 @@ public class NeteaseServiceImpl implements NeteaseService {
 	}
 
 	@Override
-	public Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition condition, Long customerId) {
+	public Boolean modifyNeteaseMsgReadStatus(NeteaseMsgReadStatusCondition condition, Long storeId) {
 		Boolean result = false;
 		String accid;
-		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(customerId);
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(storeId);
 		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
 			throw new BusinessException(BusinessCode.CODE_701101);
 		}

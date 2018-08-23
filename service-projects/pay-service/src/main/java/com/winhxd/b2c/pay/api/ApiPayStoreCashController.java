@@ -12,6 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "ApiPay")
 @RequestMapping(value = "/api-pay/pay")
 public class ApiPayStoreCashController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreCashController.class);
     @Autowired
     private PayStoreCashService payStoreCashService;
 
@@ -34,7 +36,9 @@ public class ApiPayStoreCashController {
     @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @RequestMapping(value = "/6013/v1/getStoreBankrollByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(@RequestBody PayStoreCashCondition condition){
-        ResponseResult<StoreBankrollVO> result = payStoreCashService.getStoreBankrollByStoreId(condition);
+       LOGGER.info("资金提现首页参数:"+condition);
+       ResponseResult<StoreBankrollVO> result = payStoreCashService.getStoreBankrollByStoreId(condition);
+       LOGGER.info("资金提现首页结果:"+result);
        return result;
     }
 
@@ -44,7 +48,9 @@ public class ApiPayStoreCashController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @RequestMapping(value = "/6014/v1/getPayStoreTransRecordByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(@RequestBody PayStoreCashCondition condition){
+        LOGGER.info("门店交易记录收支明细:"+condition);
         ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = payStoreCashService.getPayStoreTransRecordByStoreId(condition);
+        LOGGER.info("门店交易记录收支明细结果:"+result);
         return result;
     }
 
@@ -57,7 +63,9 @@ public class ApiPayStoreCashController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
     @RequestMapping(value = "/6015/v1/getPayWithdrawalsByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(@RequestBody PayStoreCashCondition condition){
+        LOGGER.info("门店提现记录:"+condition);
         ResponseResult<PagedList<PayWithdrawalsVO>> result = payStoreCashService.getPayWithdrawalsByStoreId(condition);
+        LOGGER.info("门店提现记录结果:"+result);
         return result;
     }
 

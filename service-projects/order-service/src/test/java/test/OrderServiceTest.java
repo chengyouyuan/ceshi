@@ -26,6 +26,8 @@ import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
@@ -69,13 +71,13 @@ public class OrderServiceTest {
     
     @Test
     public void testGetStoreOrderSalesSummary() {
-        //支付成功清空门店订单销量统计cache
+        //鏀粯鎴愬姛娓呯┖闂ㄥ簵璁㈠崟閿�閲忕粺璁ache
 //        System.out.println(cache.del(OrderUtil.getStoreOrderSalesSummaryKey(0L)));
         long storeId = 0L;
-        //查询当天数据
-        //获取当天最后一秒
+        //鏌ヨ褰撳ぉ鏁版嵁
+        //鑾峰彇褰撳ぉ鏈�鍚庝竴绉�
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-        //获取当天开始第一秒
+        //鑾峰彇褰撳ぉ寮�濮嬬涓�绉�
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
@@ -144,6 +146,13 @@ public class OrderServiceTest {
     }
     
     @Test
+    public void testfindOrderByCustomerId() {
+        OrderQueryByCustomerCondition condition = new OrderQueryByCustomerCondition();
+        condition.setOrderNo("C18082217932063648");
+        orderQueryService.findOrderByCustomerId(condition);
+    }
+    
+    @Test
     public void testEventMessageSender() {
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo("C18081621219186610");
         eventMessageSender.send(EventType.EVENT_CUSTOMER_ORDER_PAY_SUCCESS, orderInfo.getOrderNo(), orderInfo);
@@ -156,7 +165,7 @@ public class OrderServiceTest {
         Long storeId = 12L;
         String storeMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_STORE, last4MobileNums);
         try {
-            // 发送云信
+            // 鍙戦�佷簯淇�
             String createdBy= "";
             int expiration = 0;
             int msgType = 0;
@@ -169,8 +178,8 @@ public class OrderServiceTest {
 //                throw new BusinessException(BusinessCode.CODE_1001);
 //            }
         } catch (Exception e) {
-            logger.error("订单待提货给门店:storeId={},发送消息:{},失败", storeId, storeMsg);
-            logger.error("订单待提货给门店发送消息失败：", e);
+            logger.error("璁㈠崟寰呮彁璐х粰闂ㄥ簵:storeId={},鍙戦�佹秷鎭�:{},澶辫触", storeId, storeMsg);
+            logger.error("璁㈠崟寰呮彁璐х粰闂ㄥ簵鍙戦�佹秷鎭け璐ワ細", e);
             throw e;
         }
     }
@@ -203,6 +212,13 @@ public class OrderServiceTest {
         condition.setOrderTotal(new BigDecimal("33"));
         condition.setStoreId(3L);
         orderService.orderPriceChange4Store(condition);
+    }
+    
+    @Test
+    public void testUpdateOrderRefundCallback(){
+        OrderRefundCallbackCondition condition = new OrderRefundCallbackCondition();
+        condition.setOrderNo("C18082219860675647");
+        orderService.updateOrderRefundCallback(condition);
     }
     
 }

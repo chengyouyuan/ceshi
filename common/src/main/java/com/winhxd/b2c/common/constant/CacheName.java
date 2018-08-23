@@ -46,6 +46,10 @@ public class CacheName {
      */
     public static final String CACHE_KEY_CUSTOMER_ORDER_REPEAT = "CACHE_KEY_CUSTOMER_ORDER_REPEAT";
     /**
+     * 用户加购物车防频繁操作
+     */
+    public static final String CACHE_KEY_CUSTOMER_SHOPCART_REPEAT = "CACHE_KEY_CUSTOMER_SHOPCART_REPEAT";
+    /**
      * C端用户验证码key
      */
     public static final String CUSTOMER_USER_SEND_VERIFICATION_CODE = "CUSTOMER:USER:SEND:VERIFICATION:CODE:";

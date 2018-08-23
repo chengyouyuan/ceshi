@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Scope;
  * @author lixiaodong
  */
 @Import({CommonConfig.class, MessageQueueConfig.class})
-@EnableHystrix
 public class MicroServiceConfig {
 
     /**

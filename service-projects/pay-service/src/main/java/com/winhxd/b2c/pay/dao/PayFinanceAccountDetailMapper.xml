@@ -564,7 +564,7 @@
             pay_withdrawals
     </select>
 
-    <select id="selectByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail" resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from pay_finance_account_detail

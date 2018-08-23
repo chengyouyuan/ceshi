@@ -447,7 +447,10 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
-				totalMoney=storeBankroll.getTotalMoeny().add(totalMoney.abs());
+				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
+					//只有订单闭环才增加总的收入
+					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+				}
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);

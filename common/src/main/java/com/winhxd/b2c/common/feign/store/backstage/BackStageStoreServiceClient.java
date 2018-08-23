@@ -1,5 +1,16 @@
 package com.winhxd.b2c.common.feign.store.backstage;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -11,17 +22,8 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCond
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
-import feign.hystrix.FallbackFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import feign.hystrix.FallbackFactory;
 
 /**
  *
@@ -130,6 +132,18 @@ public interface BackStageStoreServiceClient {
      */
     @RequestMapping(value = "/store/1055/v1/findStoreSubmitProd",method = RequestMethod.POST)
     ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition);
+    
+    /**
+     * 更新门店提报商品（审核和添加商品）
+    * @Title: modifyStoreSubmitProd 
+    * @Description: TODO 
+    * @param condition
+    * @return ResponseResult<Void>
+    * @author wuyuanbao
+    * @date 2018年8月23日下午2:49:58
+     */
+    @RequestMapping(value = "/store/1068/v1/modifyStoreSubmitProd",method = RequestMethod.POST)
+    ResponseResult<Void> modifyStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition);
 }
 /**
  * @Description: 熔断回调
@@ -210,4 +224,10 @@ class BackStageStoreServiceClientFallBack implements BackStageStoreServiceClient
 		logger.error("StoreServiceClientFallBack -> findStoreSubmitProd 报错，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
+
+    @Override
+    public ResponseResult<Void> modifyStoreSubmitProd(BackStageStoreSubmitProdCondition condition) {
+        logger.error("StoreServiceClientFallBack -> modifyStoreSubmitProd 报错，错误信息为{}",throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
 }

@@ -23,6 +23,8 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.model.StoreSubmitProduct;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreProdVO;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
@@ -262,5 +264,68 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 		}
 		return responseResult;
 	}
+
+    @Override
+    public ResponseResult<Void> modifyStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
+        ResponseResult<Void> responseResult = null;
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        //校验权限
+        if (adminUser == null) {
+            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
+            return responseResult;
+        }
+        
+        if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
+            //主键
+            Long id=condition.getId();
+            //状态
+            Short status=condition.getProdStatus();
+            //提报商品信息
+            StoreSubmitProduct ssp=storeSubmitProductService.findById(id);
+            if(ssp==null){
+                responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
+                return responseResult;
+            }
+            if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status||
+                    StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
+                ssp.setAuditRemark(condition.getAuditRemark());  
+            }else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
+                String skuCode=condition.getSkuCode(); 
+                if(StringUtils.isBlank(skuCode)){
+                    responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
+                    return responseResult;
+                }else{
+                    ProductCondition pCondition=new ProductCondition();
+                    pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+                    List<String> skuCodes=new ArrayList<>();
+                    skuCodes.add(skuCode);
+                    pCondition.setProductSkus(skuCodes);
+                    ResponseResult<List<ProductSkuVO>> pResult= productServiceClient.getProductSkus(pCondition);
+                    if(pResult!=null&&pResult.getCode()==0&&pResult.getData()!=null
+                            &&pResult.getData().size()>0){
+                        //查询对应的sku信息
+                        ProductSkuVO skuVO=pResult.getData().get(0);
+                        ssp.setSkuCode(skuVO.getSkuCode());
+                        ssp.setProdCode(skuVO.getProductCode());
+                        ssp.setSkuAttributeOption(skuVO.getSkuAttributeOption());
+                        ssp.setProdName(skuVO.getSkuName());
+                    }else{
+                        responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
+                        return responseResult;  
+                    }
+                }
+            }else{
+                //无该操作权限
+                responseResult = new ResponseResult<>(BusinessCode.CODE_1001);
+                return responseResult;  
+            }
+            
+            ssp.setProdStatus(status);
+            
+            storeSubmitProductService.modifyStoreSubmitProductByAdmin(adminUser, ssp);
+            //this.storeSubmitProductService.modifyStoreSubmitProductByAdmin(adminUser, storeSubmitProduct);
+        }
+        return responseResult;
+    }
 
 }

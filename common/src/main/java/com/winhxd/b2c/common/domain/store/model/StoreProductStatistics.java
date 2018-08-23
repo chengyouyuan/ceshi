@@ -30,6 +30,10 @@ public class StoreProductStatistics {
      * 浏览数量
      */
     private Integer browseNumber;
+    /**
+     * 订单编号
+     */
+    private String orderNo;
 
     private Long createdBy;
 
@@ -138,4 +142,13 @@ public class StoreProductStatistics {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+    
 }

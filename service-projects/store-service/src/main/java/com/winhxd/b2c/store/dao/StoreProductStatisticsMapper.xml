@@ -14,10 +14,11 @@
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
         <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName"/>
         <result column="updated" jdbcType="TIMESTAMP" property="updated"/>
+        <result column="order_no" jdbcType="CHAR" property="orderNo"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, store_id, prod_code, sku_code, quantity_sold_out, browse_number, created_by, created_by_name, 
-    created, updated_by, updated_by_name, updated
+    created, updated_by, updated_by_name, updated,order_no
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -33,12 +34,14 @@
     insert into store_product_statistics (id, store_id, prod_code, 
       sku_code, quantity_sold_out, browse_number, 
       created_by, created_by_name, created, 
-      updated_by, updated_by_name, updated
+      updated_by, updated_by_name, updated,
+      order_no
       )
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{prodCode,jdbcType=VARCHAR}, 
       #{skuCode,jdbcType=VARCHAR}, #{quantitySoldOut,jdbcType=INTEGER}, #{browseNumber,jdbcType=INTEGER}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
+      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP},
+      #{updated,jdbcType=CHAR}
       )
   </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreProductStatistics">
@@ -80,6 +83,10 @@
             <if test="updated != null">
                 updated,
             </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -117,6 +124,9 @@
             </if>
             <if test="updated != null">
                 #{updated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=CHAR},
             </if>
         </trim>
     </insert>
@@ -157,6 +167,9 @@
             <if test="updated != null">
                 updated = #{updated,jdbcType=TIMESTAMP},
             </if>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=CHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -172,7 +185,8 @@
       created = #{created,jdbcType=TIMESTAMP},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
-      updated = #{updated,jdbcType=TIMESTAMP}
+      updated = #{updated,jdbcType=TIMESTAMP},
+      order_no = #{orderNo,jdbcType=CHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

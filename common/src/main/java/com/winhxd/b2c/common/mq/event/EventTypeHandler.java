@@ -20,6 +20,11 @@ public enum EventTypeHandler {
      * 订单闭环，标记费用入账
      */
     ACCOUNTING_DETAIL_RECORDED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
+    
+    /**
+     * 订单闭环统计商品销售量信息
+     */
+    EVENT_STATISTICS_PROD_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
 
     /**
      * 订单闭环，添加交易记录
@@ -45,6 +50,7 @@ public enum EventTypeHandler {
      * 下载资金账单
      */
     EVENT_DOWNLOAD_FINANCIAL_BILL_HANDLER(EventType.EVENT_DOWNLOAD_BILL);
+   
 
     private EventType eventType;
 

@@ -134,4 +134,13 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 		
 	}
 
+    @Override
+    public StoreSubmitProduct findById(Long id) {
+       if(id==null){
+           logger.error("StoreSubmitProductService ->findById参数异常,id:"+id);
+           throw new BusinessException(BusinessCode.CODE_1007);  
+       }
+        return storeSubmitProductMapper.selectByPrimaryKey(id);
+    }
+
 }

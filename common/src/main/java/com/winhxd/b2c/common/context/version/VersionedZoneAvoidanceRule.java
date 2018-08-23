@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 根据版本优先选择微服务
@@ -20,6 +21,7 @@ public class VersionedZoneAvoidanceRule extends ZoneAvoidanceRule {
     private MyPredicate myPredicate;
 
     public VersionedZoneAvoidanceRule() {
+        super();
         myPredicate = new MyPredicate(super.getPredicate());
     }
 
@@ -43,8 +45,8 @@ public class VersionedZoneAvoidanceRule extends ZoneAvoidanceRule {
             }
 
             String msVer = VersionContext.getVersion();
-            if (StringUtils.isBlank(msVer)) {
-                return serverList;
+            if (msVer == null) {
+                msVer = StringUtils.EMPTY;
             }
 
             List<Server> matchedServers = new ArrayList<>(serverList.size());

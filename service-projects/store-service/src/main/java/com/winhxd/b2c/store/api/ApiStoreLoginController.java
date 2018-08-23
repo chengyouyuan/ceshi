@@ -130,14 +130,18 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 验证码错误");
 				throw new BusinessException(BusinessCode.CODE_100808);
 			}
+			if (StringUtils.isBlank(storeUserInfoCondition.getOpenid())) {
+				logger.info("{} - ,openid为空");
+				throw new BusinessException(BusinessCode.CODE_1007);
+			}
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
 			 */
 			if (db == null) {
-				logger.info("{} - , 您还不是惠下单用户快去注册吧");
-				result = new ResponseResult<>(BusinessCode.CODE_100822);
+				logger.info("{} - , 请求超时");
+				result = new ResponseResult<>(BusinessCode.CODE_100815);
 				return result;
 			} else {
 
@@ -441,7 +445,7 @@ public class ApiStoreLoginController {
 					 * 查询OpenId是否 已经绑定其他手机号
 					 */
 					if (StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenid())) {
-						logger.info("{} - ,openId为空");
+						logger.info("{} - ,openid为空");
 						throw new BusinessException(BusinessCode.CODE_1007);
 					}
 					open.setOpenid(storeSendVerificationCodeCondition.getOpenid());

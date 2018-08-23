@@ -187,6 +187,10 @@ public final class BusinessCode {
     public static final int CODE_402016 = 402016;
     /** 购物车:获取支付信息失败*/
     public static final int CODE_402015 = 402015;
+    /** 购物车:计算订单优惠金额失败*/
+    public static final int CODE_402017 = 402017;
+    /** 购物车:获取最优优惠券失败*/
+    public static final int CODE_402018 = 402018;
 
 
     /** 查询订单参数异常*/

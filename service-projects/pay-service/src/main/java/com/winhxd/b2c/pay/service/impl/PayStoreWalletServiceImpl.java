@@ -86,7 +86,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(62l);
+//    	currentStoreUser.setBusinessId(106l);
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());

@@ -71,13 +71,7 @@ public class OrderServiceController implements OrderServiceClient {
                 throw new BusinessException(BusinessCode.CODE_1002);
             }
             //查询当天数据
-            //获取当天最后一秒
-            long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-            //获取当天开始第一秒
-            long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
-            Date startDateTime = new Date(startSecond);
-            Date endDateTime = new Date(lastSecond);
-            result.setData(orderQueryService.getStoreOrderSalesSummary(storeUser.getBusinessId(), startDateTime, endDateTime));
+            result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeUser.getBusinessId()));
         } catch (BusinessException e) {
             logger.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
@@ -146,27 +140,17 @@ public class OrderServiceController implements OrderServiceClient {
     })
     public ResponseResult<StoreOrderSalesSummaryVO> queryStoreOrderSalesSummaryByDateTimePeriod(@RequestBody StoreOrderSalesSummaryCondition storeOrderSalesSummaryCondition) {
         String logTitle = "/order/4055/v1/queryStoreOrderSalesSummaryByDateTimePeriod/ 门店销售数据接口查询";
-        logger.info("{} 开始", logTitle);
+        logger.info("{} 开始:confition:{}", logTitle, storeOrderSalesSummaryCondition);
         ResponseResult<StoreOrderSalesSummaryVO> result = new ResponseResult<>();
         try {
             if (storeOrderSalesSummaryCondition == null) {
                 throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
             }
-            Date startDateTime;
-            Date endDateTime;
-            if (storeOrderSalesSummaryCondition.getStartDateTime() == null || storeOrderSalesSummaryCondition.getEndDateTime() == null) {
-                //查询当天数据
-                //获取当天最后一秒
-                long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
-                //获取当天开始第一秒
-                long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
-                startDateTime = new Date(startSecond);
-                endDateTime = new Date(lastSecond);
+            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == storeOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
+                result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             } else {
-                startDateTime = storeOrderSalesSummaryCondition.getStartDateTime();
-                endDateTime = storeOrderSalesSummaryCondition.getEndDateTime();
+                result.setData(orderQueryService.getStoreMonthOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             }
-            result.setData(orderQueryService.getStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), startDateTime, endDateTime));
         } catch (BusinessException e) {
             logger.error(logTitle + "=--异常" + e.getMessage(), e);
             result.setCode(e.getErrorCode());
@@ -176,7 +160,7 @@ public class OrderServiceController implements OrderServiceClient {
             result.setCode(BusinessCode.CODE_1001);
             throw e;
         }
-        logger.info("{} ", logTitle);
+        logger.info("{} 结束:confition:{};ret={}", logTitle, storeOrderSalesSummaryCondition, result.getData());
         return result;
     }
 

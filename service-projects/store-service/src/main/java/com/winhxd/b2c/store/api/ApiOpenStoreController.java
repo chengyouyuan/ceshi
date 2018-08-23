@@ -429,9 +429,8 @@ public class ApiOpenStoreController {
         }
         StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
         Date now = new Date();
-        condition.setEndDateTime(now);
-        condition.setStartDateTime(DateUtils.addMonths(now,-1));
         condition.setStoreId(storeId);
+        condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
         if(storeOrderSalesSummaryVO != null){
             return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
@@ -514,8 +513,7 @@ public class ApiOpenStoreController {
         Integer browseNum = storeBrowseLogService.getBrowseNum(storeCustomerId, startDatetime, endDatetime);
         StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
         todayCondition.setStoreId(businessId);
-        todayCondition.setStartDateTime(startDatetime);
-        todayCondition.setEndDateTime(endDatetime);
+        todayCondition.setQueryPeriodType(StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE);
         //营业额、下单人数、订单数
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
                 orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();

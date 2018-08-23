@@ -82,5 +82,4 @@ public class PayFinanceAccountDetailVO {
 	private BigDecimal companySupplementInMoney;
 	@ApiModelProperty("营收金额")
 	private BigDecimal revenueMoney;
-
 }

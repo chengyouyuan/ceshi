@@ -82,20 +82,6 @@ public final class BusinessCode {
     
     /**1015接口参数无效*/
     public static final int CODE_101501 = 101501;
-    
-    /**1024接口参数无效*/
-    public static final int CODE_102401 = 102401;
-    
-    /**1028接口参数无效*/
-    public static final int CODE_102801 = 102801;
-    
-    /**1031接口参数无效*/
-    public static final int CODE_103101 = 103101;
-    /**门店商品skuCode无效*/
-    public static final int CODE_103102 = 103102;
-    
-    /**1049接口参数无效*/
-    public static final int CODE_104901 = 104901;
 
     /**1022接口参数无效*/
     public static final int CODE_102201 = 102201;
@@ -107,7 +93,30 @@ public final class BusinessCode {
     public static final int CODE_102204 = 102204;
     /**1022接口 联系方式格式不正确*/
     public static final int CODE_102205 = 102205;
+
+    /**1024接口参数无效*/
+    public static final int CODE_102401 = 102401;
+
+    /**1025接口 店铺名称不能有特殊字符且长度不能超过15*/
+    public static final int CODE_102501 = 102501;
+    /**1025接口 提货地址不能有特殊字符且长度不能超过30*/
+    public static final int CODE_102502 = 102502;
+    /**1025接口 联系人不能有特殊字符且长度不能超过10*/
+    public static final int CODE_102503 = 102503;
+    /**1025接口 联系方式格式不正确*/
+    public static final int CODE_102504 = 102504;
+
+    /**1028接口参数无效*/
+    public static final int CODE_102801 = 102801;
     
+    /**1031接口参数无效*/
+    public static final int CODE_103101 = 103101;
+    /**门店商品skuCode无效*/
+    public static final int CODE_103102 = 103102;
+    
+    /**1049接口参数无效*/
+    public static final int CODE_104901 = 104901;
+
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
     /** 该微信号已绑定过其它账号 */

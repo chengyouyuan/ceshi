@@ -175,8 +175,6 @@ public final class BusinessCode {
     public static final int CODE_402008 = 402008;
     /**订单id参数为空*/
     public static final int CODE_402013 = 402013;
-    /** 购物车:商品下架或删除*/
-    public static final int CODE_402010 = 402010;
     /** 购物车:商品信息不存在或获取商品数量不正确*/
     public static final int CODE_402011 = 402011;
     /** 购物车:购物车商品价格有变动*/

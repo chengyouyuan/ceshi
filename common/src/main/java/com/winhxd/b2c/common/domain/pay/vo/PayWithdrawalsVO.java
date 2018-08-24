@@ -77,6 +77,7 @@ public class PayWithdrawalsVO {
     private Date updated;
     @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败")
     private Short callbackStatus;
+    private String callbackStatusName;
     @ApiModelProperty("原因")
     private String callbackReason;
     @ApiModelProperty("失败原因")
@@ -252,7 +253,7 @@ public class PayWithdrawalsVO {
     }
 
     public String getAuditStatusName() {
-        if (Short.valueOf("0").compareTo(auditStatus) == 0) {
+        if (auditStatus == null || Short.valueOf("0").compareTo(auditStatus) == 0) {
             auditStatusName = "未审核";
         }
         if (Short.valueOf("1").compareTo(auditStatus) == 0) {
@@ -278,6 +279,22 @@ public class PayWithdrawalsVO {
 
     public void setCallbackReason(String callbackReason) {
         this.callbackReason = callbackReason;
+    }
+
+    public String getCallbackStatusName() {
+        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "申请中";
+        }
+        if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现成功";
+        }
+        if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现失败";
+        }
+        if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现失败";
+        }
+        return callbackStatusName;
     }
 
     public String getIndex() {

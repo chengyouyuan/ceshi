@@ -17,7 +17,6 @@ import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.SendSMSTemplate;
-import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -196,6 +195,8 @@ public class ApiStoreLoginController {
 			cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 			storeUserInfo.setId(db.getId());
 			storeUserInfo.setStoreMobile(map.getStoreMobile());
+			storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+			storeUserInfo.setStorePicImg(map.getStorePicImg());
 			logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setAppLoginStatus((short)0);
@@ -271,6 +272,8 @@ public class ApiStoreLoginController {
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 					storeUserInfo.setAppLoginStatus((short)0);
+					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+					storeUserInfo.setStorePicImg(map.getStorePicImg());
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(db.getStoreCustomerId());
@@ -284,6 +287,7 @@ public class ApiStoreLoginController {
 					storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 					storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+					storeUserInfo.setStorePicImg(map.getStorePicImg());
 					storeUserInfo.setCreated(new Date());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
@@ -379,6 +383,8 @@ public class ApiStoreLoginController {
 					 */
 					info.setId(db.getId());
 					info.setStoreMobile(map.getStoreMobile());
+					info.setStoreRegionCode(map.getStoreRegionCode());
+					info.setStorePicImg(map.getStorePicImg());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
@@ -387,6 +393,7 @@ public class ApiStoreLoginController {
 					 */
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
+					info.setStorePicImg(map.getStorePicImg());
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setCreated(new Date());
 					info.setStoreMobile(map.getStoreMobile());
@@ -413,6 +420,7 @@ public class ApiStoreLoginController {
 					info.setStoreMobile(map.getStoreMobile());
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
+					info.setStorePicImg(map.getStorePicImg());
 					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setStoreStatus((short) 0);
 					info.setAppLoginStatus((short) 0);
@@ -426,6 +434,8 @@ public class ApiStoreLoginController {
 				else {
 					info.setId(db.getId());
 					info.setStoreMobile(map.getStoreMobile());
+					info.setStoreRegionCode(map.getStoreRegionCode());
+					info.setStorePicImg(map.getStorePicImg());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				}

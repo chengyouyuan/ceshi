@@ -6,7 +6,6 @@ import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.OrderServiceApplication;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +19,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Map;
 
 /**
  * @author pangjianhua

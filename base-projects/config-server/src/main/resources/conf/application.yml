@@ -1,9 +1,4 @@
 spring:
-  boot:
-    admin:
-      client:
-        instance:
-          prefer-ip: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null

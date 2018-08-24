@@ -1,5 +1,6 @@
 package com.winhxd.b2c.message.utils;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
@@ -11,7 +12,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,19 +173,19 @@ public class NeteaseUtils {
     }
 
     private String buildBodyJsonMsg(String msgContent) {
-        JSONObject bodyJson = new JSONObject();
+        ObjectNode bodyJson = JsonUtil.createObjectNode();
         bodyJson.put("type","txt");
         bodyJson.put("msg",msgContent);
-        return bodyJson.toJSONString();
+        return bodyJson.toString();
     }
 
     public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
-        JSONObject extJson = new JSONObject();
+        ObjectNode extJson = JsonUtil.createObjectNode();
         extJson.put("title",neteaseMsg.getMsgContent());
         extJson.put("pagetype",neteaseMsg.getPageType());
         extJson.put("audiotype", neteaseMsg.getAudioType());
         extJson.put("page", neteaseMsg.getTreeCode());
-        return extJson.toJSONString();
+        return extJson.toString();
     }
 
     public Map<String,Object> sendTxtMessage2Batch(String[] accids,String content){

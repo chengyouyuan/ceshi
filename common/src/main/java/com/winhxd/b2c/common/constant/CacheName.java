@@ -110,4 +110,9 @@ public class CacheName {
      * 领取优惠券
      */
     public static final String RECEIVE_COUPON = "RECEIVE:COUPON";
+    
+    /**
+     * 接口访问次数key
+     */
+    public static final String LIMIT_INTERFACE_ACCESS = "LIMIT:INTERFACE:ACCESS:";
 }

@@ -23,4 +23,11 @@ public interface CouponActivityRecordMapper {
      * @return
      */
     List<CouponActivityRecord> selectByExample(CouponActivityRecord example);
+
+    /**
+     * 根据活动查看领取记录
+     * @param activityId
+     * @return
+     */
+    List<CouponActivityRecord> selectRecordByActivityId(Long activityId);
 }

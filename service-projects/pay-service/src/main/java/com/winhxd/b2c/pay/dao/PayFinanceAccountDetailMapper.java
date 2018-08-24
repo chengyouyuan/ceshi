@@ -68,4 +68,10 @@ public interface PayFinanceAccountDetailMapper {
     BigDecimal getRevenueMoney();
 
 	List<PayFinanceAccountDetail> selectByExample(PayFinanceAccountDetail condition);
+
+	/**
+	 * 公司补充入账
+	 * @return
+	 */
+    BigDecimal getCompanySupplementInMoney();
 }

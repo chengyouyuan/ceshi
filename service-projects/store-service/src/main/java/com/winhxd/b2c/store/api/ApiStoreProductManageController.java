@@ -354,8 +354,43 @@ public class ApiStoreProductManageController {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 
         PagedList<StoreSubmitProductVO> pageList = storeSubmitProductService.findSimpelVOByCondition(condition);
-        if (pageList == null) {
+        
+        if (pageList == null||pageList.getData()==null) {
             pageList = new PagedList<>();
+        }else{
+            List<String> skuCodes=new ArrayList<>();
+             //查询状态是已添加的商品的信息
+            for(StoreSubmitProductVO sspVO:pageList.getData()){
+                //已添加商品
+                if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==sspVO.getProdStatus()){
+                    
+                    if(StringUtils.isNotBlank(sspVO.getSkuCode())){
+                        skuCodes.add(sspVO.getSkuCode());
+                    }else{
+                        System.out.println("查询不到"+sspVO);
+                    }
+                }
+            }
+            if(skuCodes.size()>0){
+                ProductCondition pCondition=new ProductCondition();
+                pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+                pCondition.setProductSkus(skuCodes);
+                ResponseResult<List<ProductSkuVO>>  pResult=productServiceClient.getProductSkus(pCondition);
+                if(pResult!=null&&BusinessCode.CODE_OK==pResult.getCode()&&pResult.getData()!=null){
+                    List<ProductSkuVO> pVOList=pResult.getData();
+                    for(ProductSkuVO p:pVOList){
+                        for(StoreSubmitProductVO sspVO:pageList.getData()){
+                            if(p.getSkuCode().equals(sspVO.getSkuCode())){
+                                sspVO.setSkuImage(p.getSkuImage());
+                                sspVO.setProdCode(p.getProductCode());
+                                sspVO.setProdName(p.getSkuName());
+                                sspVO.setSkuAttributeOption(p.getSkuAttributeOption());
+                            }
+                        }
+                        
+                    }
+                }
+            }
         }
         responseResult.setData(pageList);
         logger.info("B端门店提报商品列表接口返参为：{}", responseResult);
@@ -466,13 +501,26 @@ public class ApiStoreProductManageController {
             ResponseResult<List<ProductSkuVO>> prodResult = productServiceClient.getProductSkus(pCondition);
             if (prodResult.getCode() == 0 && prodResult.getData() != null) {
                 List<ProductSkuVO> psList = prodResult.getData();
-                if (psList.size() == simpleVOList.size()) {
-                    for (int i = 0; i < psList.size(); i++) {
-                        simpleVOList.get(i).setSkuName(psList.get(i).getSkuName());
-                        ;
-                        simpleVOList.get(i).setSkuImage(psList.get(i).getSkuImage());
+                List<StoreProdSimpleVO> invalidSkuCode = new ArrayList<>();
+                for (int i = 0; i < simpleVOList.size(); i++) {
+                    for (int j = 0; j < psList.size(); j++) {
+                        if (psList.get(j).getSkuCode().equals(simpleVOList.get(i).getSkuCode())) {
+                            simpleVOList.get(i).setSkuName(psList.get(j).getSkuName());
+                            simpleVOList.get(i).setSkuImage(psList.get(j).getSkuImage());
+                        }
                     }
+                    // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除
+                    if (StringUtils.isBlank(simpleVOList.get(i).getSkuName())) {
+                        invalidSkuCode.add(simpleVOList.get(i));
+                        System.out.println("查询不到skuCode:" + simpleVOList.get(i).getSkuCode() + "的信息。");
+                    }
+
                 }
+                if (invalidSkuCode.size() > 0) {
+                    // 移除
+                    simpleVOList.removeAll(invalidSkuCode);
+                }
+
             }
         }
 

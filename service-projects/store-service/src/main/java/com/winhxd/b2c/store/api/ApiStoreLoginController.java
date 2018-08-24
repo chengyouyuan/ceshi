@@ -17,7 +17,9 @@ import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.SendSMSTemplate;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
@@ -26,6 +28,7 @@ import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoSimpleVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreSendVerificationCodeCondition;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserLogoutCodeCondition;
 import com.winhxd.b2c.common.domain.system.login.model.StoreUserSimpleInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
@@ -135,12 +138,12 @@ public class ApiStoreLoginController {
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
 			open.setOpenid(storeUserInfoCondition.getOpenid());
-			db =  storeLoginService.getStoreUserInfo(open);
+			db = storeLoginService.getStoreUserInfo(open);
 			if (db != null) {
 				logger.info("{} - , 该微信号已绑定过其它账号 ");
 				result = new ResponseResult<>(BusinessCode.CODE_100810);
 				return result;
-			} 
+			}
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
@@ -159,6 +162,7 @@ public class ApiStoreLoginController {
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 				storeUserInfo.setId(db.getId());
+				storeUserInfo.setAppLoginStatus((short)0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -194,6 +198,7 @@ public class ApiStoreLoginController {
 			storeUserInfo.setStoreMobile(map.getStoreMobile());
 			logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+			storeUserInfo.setAppLoginStatus((short)0);
 			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
@@ -229,6 +234,7 @@ public class ApiStoreLoginController {
 				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setId(db.getId());
+				storeUserInfo.setAppLoginStatus((short)0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -264,6 +270,7 @@ public class ApiStoreLoginController {
 					storeUserInfo.setId(db.getId());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+					storeUserInfo.setAppLoginStatus((short)0);
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(db.getStoreCustomerId());
@@ -282,6 +289,7 @@ public class ApiStoreLoginController {
 					storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
 					storeUserInfo.setStoreStatus((short) 0);
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+					storeUserInfo.setAppLoginStatus((short) 0);
 					storeLoginService.saveStoreInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(map.getStoreCustomerId());
@@ -385,6 +393,7 @@ public class ApiStoreLoginController {
 					logger.info("微信头像：" + storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setStoreStatus((short) 0);
+					info.setAppLoginStatus((short) 0);
 					info.setToken(GeneratePwd.getRandomUUID());
 					storeLoginService.saveStoreInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
@@ -406,6 +415,7 @@ public class ApiStoreLoginController {
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setStoreStatus((short) 0);
+					info.setAppLoginStatus((short) 0);
 					info.setToken(GeneratePwd.getRandomUUID());
 					storeLoginService.saveStoreInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
@@ -460,4 +470,36 @@ public class ApiStoreLoginController {
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}
+	
+	/**
+	 * @author wufuyun
+	 * @date  2018年8月24日 下午1:29:59
+	 * @Description 惠小店app退出登录
+	 * @param storeUserLogoutCodeCondition
+	 * @return
+	 */
+	@ApiOperation(value = "惠小店app退出登录")
+	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+	@RequestMapping(value = "store/1010/v1/storeUserLogout", method = RequestMethod.POST)
+	public ResponseResult<Void> storeUserLogout(@RequestBody StoreUserLogoutCodeCondition storeUserLogoutCodeCondition){
+		ResponseResult<Void> result = new ResponseResult<>();
+		StoreUserInfo info = new StoreUserInfo();
+		logger.info("{} - 惠小店app退出登录, 参数：customerUserInfoCondition={}", "",
+				JsonUtil.toJSONString(storeUserLogoutCodeCondition));
+		if (null == storeUserLogoutCodeCondition) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+		StoreUser user = UserContext.getCurrentStoreUser();
+		if (null == user) {
+			logger.info("{} - 未取到用户登录信息", "", JsonUtil.toJSONString(user));
+			throw new BusinessException(BusinessCode.CODE_1002);
+		}
+		info.setId(user.getBusinessId());
+		info.setAppLoginStatus((short)1);
+		storeLoginService.modifyStoreUserInfo(info);
+		return result;
+	}
+	
 }

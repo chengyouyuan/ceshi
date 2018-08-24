@@ -102,6 +102,10 @@ public class ShopCarServiceImpl implements ShopCarService {
                     result.setAmount(condition.getAmount());
                     return shopCarMapper.updateByPrimaryKey(result);
                 }
+                // 非删除传值0   抛异常
+                if (INTEGER_ZERO.equals(condition.getAmount())) {
+                    throw new BusinessException(BusinessCode.CODE_402008);
+                }
                 Date current = new Date();
                 shopCar.setCreated(current);
                 shopCar.setCreatedBy(customerId);
@@ -245,7 +249,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         orderAvailableCouponCondition.setStoreId(storeId);
         ResponseResult<CouponVO> result = couponServiceClient.findDefaultCoupon(orderAvailableCouponCondition);
         if (null == result || result.getCode() != BusinessCode.CODE_OK ) {
-            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + result);
+            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + JsonUtil.toJSONString(result));
             throw new BusinessException(BusinessCode.CODE_402018);
         }
         return result.getData();

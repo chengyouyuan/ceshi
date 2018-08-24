@@ -86,7 +86,10 @@ public class StoreUserInfo implements Serializable {
      */
     private Short storeStatus;
     private String token;
-
+    /**
+     * app登录状态:0登录、1退出;
+     */
+    private Short appLoginStatus;
     public String getMiniProgramCodeUrl() {
         return miniProgramCodeUrl;
     }
@@ -289,6 +292,14 @@ public class StoreUserInfo implements Serializable {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public Short getAppLoginStatus() {
+		return appLoginStatus;
+	}
+
+	public void setAppLoginStatus(Short appLoginStatus) {
+		this.appLoginStatus = appLoginStatus;
 	}
     
 }

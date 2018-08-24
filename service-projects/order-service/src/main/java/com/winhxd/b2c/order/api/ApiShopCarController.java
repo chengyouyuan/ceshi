@@ -114,7 +114,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败"),
             @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架")
     })
-    @RequestMapping(value = "/api-order/order/4033/v1/findReadyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/api-order/order/4035/v1/findReadyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ReadyOrderVO> findReadyOrder(@RequestBody ShopCarQueryCondition condition){
         if (null == condition || null == condition.getStoreId()) {
             logger.error("ApiShopCarController{} -> findReadyOrder接口异常{}  参数storeId为空");

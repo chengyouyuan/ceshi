@@ -79,4 +79,8 @@ public class StoreUserInfoVO {
     @ApiModelProperty("支付方式（1、微信在线付款2、微信扫码付款，多个用逗号分隔）")
     private String payType;
 
+    /**门头照地址*/
+    @ApiModelProperty("门头照地址")
+    private String storePicImg;
+
 }

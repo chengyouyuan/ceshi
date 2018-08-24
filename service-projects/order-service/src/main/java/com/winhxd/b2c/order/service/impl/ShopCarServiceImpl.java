@@ -102,6 +102,10 @@ public class ShopCarServiceImpl implements ShopCarService {
                     result.setAmount(condition.getAmount());
                     return shopCarMapper.updateByPrimaryKey(result);
                 }
+                // 非删除传值0   抛异常
+                if (INTEGER_ZERO.equals(condition.getAmount())) {
+                    throw new BusinessException(BusinessCode.CODE_402008);
+                }
                 Date current = new Date();
                 shopCar.setCreated(current);
                 shopCar.setCreatedBy(customerId);

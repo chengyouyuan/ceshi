@@ -87,7 +87,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		////////////////////////测试数据////////////////////////////////////
-//		Long businessId = 106l;
+//		Long businessId = 60l;
 		//////////////////////结束////////////////////////////////////////
 		int code = 0;
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
@@ -114,15 +114,17 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			 ResponseResult<PayStoreUserInfoVO> bindAccount = validStoreBindAccount(businessId);
 			 code = bindAccount.getCode();
 			 PayStoreUserInfoVO data = bindAccount.getData();
-			 LOGGER.info("6108当前用户绑定微信账户信息："+data);
-			 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
-			 withdrawalPage.setNick(data.getNick());
-			 withdrawalPage.setOpenid(data.getOpenid());
-			 withdrawalPage.setRate(payWithDrawalConfig.getRate());
-			 if(code == 0){
-				 withdrawalPage.setPresented_money(data.getTotalFee());
-				 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
-			 } 
+			 if(data != null){
+				 LOGGER.info("6108当前用户绑定微信账户信息："+data);
+				 withdrawalPage.setUserAcountName(ACCOUNT_NAME+"("+data.getNick()+")");
+				 withdrawalPage.setNick(data.getNick());
+				 withdrawalPage.setOpenid(data.getOpenid());
+				 withdrawalPage.setRate(payWithDrawalConfig.getRate());
+				 if(code == 0){
+					 withdrawalPage.setPresented_money(data.getTotalFee());
+					 withdrawalPage.setTotal_moeny(payWithDrawalConfig.getMaxMoney());
+				 } 
+			 }
 		}
 		if(code > 0){
 			//返回当前账户钱包里的可提现金额

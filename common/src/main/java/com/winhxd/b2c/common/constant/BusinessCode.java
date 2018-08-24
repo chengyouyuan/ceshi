@@ -165,11 +165,11 @@ public final class BusinessCode {
 
     /** 购物车:门店ID为空*/
     public static final int CODE_402001 = 402001;
-    /** 购物车:自提地址为空*/
+    /** 购物车:请选择自提地址！*/
     public static final int CODE_402002 = 402002;
     /** 购物车:商品信息为空*/
     public static final int CODE_402004 = 402004;
-    /** 购物车:支付方式*/
+    /** 购物车:请选择支付方式！*/
     public static final int CODE_402006 = 402006;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;

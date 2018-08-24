@@ -34,7 +34,6 @@ public class MessageSendMqHandler {
      * @return
      */
 	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
-	@Transactional
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		payService.refundOrder(orderNo,order);
 	}

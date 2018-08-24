@@ -283,11 +283,13 @@ public class PayServiceImpl implements PayService{
 	    changeCondition.setStoreId(storeId);
 	    changeCondition.setType(condition.getType());
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
+			//由于订单闭环是由  监听事件触发，不适合抛异常
 			// 验证该订单是否已经做过此项操作
 			String orderNo=condition.getOrderNo();
 			if (StringUtils.isBlank(orderNo)) {
 				logger.info(log+"--订单闭环订单号为空");
-				throw new BusinessException(BusinessCode.CODE_600004);
+				return;
+//				throw new BusinessException(BusinessCode.CODE_600004);
 			}
 			//（待定）不知是否需要  验证订单状态
 			//验证该订单是否做过此项操作
@@ -296,7 +298,8 @@ public class PayServiceImpl implements PayService{
 			if (CollectionUtils.isNotEmpty(list)) {
 				//说明在订单闭环的时候  已经给用户添加过资金
 				logger.info(log+"--订单闭环计算用户资金重复--订单号"+orderNo);
-				throw new BusinessException(BusinessCode.CODE_600006);
+				return;
+//				throw new BusinessException(BusinessCode.CODE_600006);
 			}
 			 changeCondition.setOrderNo(orderNo);
 			 //待结算金额增加

@@ -47,6 +47,9 @@ public class CouponInStoreGetedAndUsedVO {
     private List<BrandVO> brands;
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
+    @ApiModelProperty(value = "是否过期")
+    private Short expire;
+
 
     public Long getTempleteId() {
         return templeteId;
@@ -183,5 +186,13 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setProducts(List<ProductSkuVO> products) {
         this.products = products;
+    }
+
+    public Short getExpire() {
+        return expire;
+    }
+
+    public void setExpire(Short expire) {
+        this.expire = expire;
     }
 }

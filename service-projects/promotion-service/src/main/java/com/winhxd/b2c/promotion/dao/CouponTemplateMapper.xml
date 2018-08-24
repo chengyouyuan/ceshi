@@ -457,6 +457,7 @@
     <result column="couponActivityId" jdbcType="BIGINT" property="couponActivityId" />
     <result column="applyId" jdbcType="BIGINT" property="applyId" />
     <result column="storeId" jdbcType="BIGINT" property="storeId" />
+    <result column="expire" jdbcType="SMALLINT" property="expire" />
     <result column="applyRuleType" jdbcType="SMALLINT" property="applyRuleType" />
     <result column="reduceType" jdbcType="SMALLINT" property="reduceType" />
     <result column="reduceAmt" jdbcType="DECIMAL" property="reduceAmt" />
@@ -477,6 +478,7 @@
         d.apply_rule_type as applyRuleType,
         f.reduced_type as reduceType,
         d.id as applyId,
+          (case WHEN b.end_time <![CDATA[ <= ]]> NOW() THEN 0 ELSE 1 end) expire,
           (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
           (case WHEN f.cost is null then 0 else f.cost end) as cost,
           (case WHEN f.discounted is null then 0 else 100-f.discounted end) as discounted,

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import com.winhxd.b2c.pay.service.VerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,10 @@ public class MessageSendMqHandler {
 	
 	@Autowired
 	private PayService payService;
-	
+
+    @Autowired
+    private VerifyService verifyService;
+
     /**
      * @author liuhanning
      * @date  2018年8月23日 下午5:40:23
@@ -38,4 +42,25 @@ public class MessageSendMqHandler {
 		payService.refundOrder(orderNo,order);
 	}
 
+    /**
+     * 订单支付成功，费用记账，未入账
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_SAVE_HANDLER, concurrency = "3-6")
+    public void orderPaySuccessAccountingHandler(String orderNo, OrderInfo orderInfo) {
+        verifyService.saveAccountingDetailsByOrderNo(orderInfo.getOrderNo());
+    }
+
+    /**
+     * 订单闭环，费用入账
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_RECORDED_HANDLER, concurrency = "3-6")
+    public void orderFinishAccountingHandler(String orderNo, OrderInfo orderInfo) {
+        verifyService.completeAccounting(orderInfo.getOrderNo());
+    }
 }

@@ -1,0 +1,24 @@
+server:
+  port: 1500
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: b2c-monitor-server
+  cloud:
+    config:
+      label: monitor
+      discovery:
+        enabled: true
+        service-id: b2c-config-server
+  boot:
+    admin:
+      context-path: admin
+#    admin:
+#      enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+turbine:

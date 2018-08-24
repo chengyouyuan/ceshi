@@ -67,7 +67,7 @@ public interface PayService {
 	/**
 	 * @author 刘寒宁
 	 * @date  2018年8月16日 上午10:04:54
-	 * @Description 订单完成事件处理
+	 * @Description 订单闭环，计算门店资金
 	 * @return
 	 */
 	 void orderFinishHandler(String orderNo, OrderInfo orderInfo);

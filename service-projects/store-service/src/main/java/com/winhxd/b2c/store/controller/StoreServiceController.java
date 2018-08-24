@@ -122,10 +122,6 @@ public class StoreServiceController implements StoreServiceClient {
 		
 		//查询结果不为空
 		if(CollectionUtils.isNotEmpty(storeProds)){
-			if(storeProds.size()!=skuCodes.size()){
-				result= new ResponseResult<>(BusinessCode.CODE_103102);
-				return result;
-			}
 			
 			ProductCondition prodCondition=new ProductCondition();
 			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);

@@ -1,0 +1,4 @@
+turbine:
+  app-config: b2c-gateway-server,b2c-admin-server,b2c-customer-service,b2c-message-service,b2c-order-service,b2c-pay-service,b2c-promotion-service,b2c-store-service,b2c-system-service,b2c-task-service
+  clusterNameExpression: new String("default")
+  combine-host-port: true

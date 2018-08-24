@@ -309,7 +309,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new NullPointerException("订单编号不能为空");
         }
         String cacheStr = cache.get(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo);
-        if (StringUtils.isNoneBlank(cacheStr)) {
+        if (StringUtils.isNotBlank(cacheStr)) {
             logger.info("订单 orderNo={} 命中缓存 订单信息查询结束", orderNo);
             return JsonUtil.parseJSONObject(cacheStr, OrderInfoDetailVO4Management.class);
         }

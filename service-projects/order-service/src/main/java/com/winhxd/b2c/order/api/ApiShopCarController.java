@@ -12,7 +12,7 @@ import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderMoneyVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.domain.pay.vo.ReadyOrderVO;
@@ -32,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -66,10 +64,12 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空"),
+            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架"),
             @ApiResponse(code = BusinessCode.CODE_402012, message = "购物车商品价格有变动")
     })
     @RequestMapping(value = "/api-order/order/4030/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
+        logger.info("ApiShopCarController{} -> saveShopCar接口入参："+JsonUtil.toJSONString(condition));
         if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
                 || null == condition.getAmount()) {
             logger.error("商品加购异常{}  参数错误");
@@ -91,18 +91,17 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
-            @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空")
+            @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空"),
+            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架")
     })
     @RequestMapping(value = "/api-order/order/4031/v1/find", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarQueryCondition condition){
-        ResponseResult<List<ShopCarProdInfoVO>> result = new ResponseResult<>();
+    public ResponseResult<ShopCarVO> findShopCar(@RequestBody ShopCarQueryCondition condition){
         if (null == condition || null == condition.getStoreId()) {
             logger.error("查询购物车异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
-        List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
-        result.setData(data);
-        return result;
+        ShopCarVO ShopCar = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
+        return new ResponseResult<>(ShopCar);
     }
 
     @ApiOperation(value = "查询预订单info", notes = "查询预订单info")
@@ -112,7 +111,8 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空"),
             @ApiResponse(code = BusinessCode.CODE_402017, message = "计算订单优惠金额失败"),
-            @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败")
+            @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败"),
+            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架")
     })
     @RequestMapping(value = "/api-order/order/4033/v1/findReadyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<ReadyOrderVO> findReadyOrder(@RequestBody ShopCarQueryCondition condition){
@@ -132,7 +132,8 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_1004, message = "账号无效"),
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空"),
             @ApiResponse(code = BusinessCode.CODE_402017, message = "计算订单优惠金额失败"),
-            @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败")
+            @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败"),
+            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架")
     })
     @RequestMapping(value = "/api-order/order/4034/v1/getOrderMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderMoneyVO> getOrderMoney(@RequestBody OrderMoneyCondition condition){

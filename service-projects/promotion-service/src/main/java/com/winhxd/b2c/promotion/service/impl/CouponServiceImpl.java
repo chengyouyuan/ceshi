@@ -7,7 +7,6 @@ import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartQueryCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
@@ -29,8 +28,6 @@ import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
-import com.winhxd.b2c.common.mq.MQHandler;
-import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.promotion.dao.*;
@@ -41,10 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Auther wangxiaoshun
@@ -316,7 +310,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
-        results.sort((a,b)->Integer.parseInt(a.getReceiveStatus())-Integer.parseInt(b.getReceiveStatus()));
+        couponVOS.sort((a,b)->Integer.parseInt(b.getReceiveStatus())-Integer.parseInt(a.getReceiveStatus()));
         return this.getCouponDetail(results);
     }
 
@@ -826,19 +820,17 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponKindsVo getStoreCouponKinds() {
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+        List<CouponVO> couponVOList = findStoreCouponList();
+        List templateIdList = new ArrayList();
+        for (int i = 0; i < couponVOList.size(); i++){
+            //优惠券是否可领取 0 已领取  1 可领取
+            if(couponVOList.get(i).getReceiveStatus().equals("1")){
+                templateIdList.add(couponVOList.get(i).getTemplateId());
+            }
         }
-        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
-        if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
-            logger.error("优惠券种类数：{}获取门店信息接口调用失败:code={}，用户查询门店优惠券列表异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
-            throw new BusinessException(result.getCode());
-        }
-        StoreUserInfoVO storeUserInfo = result.getData();
-        Integer couponKinds = couponMapper.getStoreCouponKinds(storeUserInfo.getId());
+        HashSet h = new HashSet(templateIdList);
         CouponKindsVo couponKindsVo = new CouponKindsVo();
-        couponKindsVo.setStoreCouponKinds(couponKinds);
+        couponKindsVo.setStoreCouponKinds(h.size());
         return couponKindsVo;
     }
 

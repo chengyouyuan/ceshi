@@ -246,4 +246,10 @@ public class OrderServiceTest {
         cache.hdel(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
     }
     
+    @Test
+    public void testcacheOrder(){
+        System.out.println(cache.set(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + "111", "111", "NX", "EX", 100));
+        orderQueryService.getOrderDetail4Management(111 + "");
+    }
+    
 }

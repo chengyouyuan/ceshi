@@ -5,12 +5,7 @@ spring:
   profiles:
     active: dev
   application:
-    name: registry-server
-    admin:
-      enabled: true
-  boot:
-    admin:
-      context-path: admin
+    name: b2c-registry-server
 
 eureka:
   instance:

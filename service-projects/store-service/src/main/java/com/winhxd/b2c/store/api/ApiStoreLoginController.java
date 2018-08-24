@@ -119,7 +119,6 @@ public class ApiStoreLoginController {
 		StoreUserInfo storeUserInfo = new StoreUserInfo();
 		StoreUser user = new StoreUser();
 		StoreUserInfoSimpleVO vo = new StoreUserInfoSimpleVO();
-		StoreUserInfo open = new StoreUserInfo();
 		/**
 		 * 微信验证码登录
 		 */
@@ -134,7 +133,7 @@ public class ApiStoreLoginController {
 				logger.info("{} - ,openid为空");
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
-			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
@@ -151,6 +150,7 @@ public class ApiStoreLoginController {
 				getNeteaseAcctInfo(db, vo);
 				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+				storeUserInfo.setOpenid(storeUserInfoCondition.getStoreMobile());
 				storeUserInfo.setId(db.getId());
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
@@ -390,7 +390,6 @@ public class ApiStoreLoginController {
 					/*
 					 * 插入数据库
 					 */
-					info.setOpenid(storeSendVerificationCodeCondition.getOpenid());
 					info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
@@ -474,96 +473,4 @@ public class ApiStoreLoginController {
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}
-
-	/**
-	 * @author wufuyun
-	 * @date 2018年8月6日 上午10:05:09
-	 * @Description 登录成功后查看惠小店产品有无未填写价格的商品提示
-	 * @param storeUserInfoCondition
-	 * @return
-	 */
-	/*
-	 * @ApiOperation(value = "登录成功查看惠小店有误未填写商品价格")
-	 * 
-	 * @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message =
-	 * "成功"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
-	 * 
-	 * @RequestMapping(value = "1010/v1/verificationProductPrice", method =
-	 * RequestMethod.POST) public ResponseResult<LoginCheckSellMoneyVO>
-	 * verificationProductPrice(
-	 * 
-	 * @RequestBody StoreUserInfoCondition storeUserInfoCondition) {
-	 * ResponseResult<LoginCheckSellMoneyVO> result = new ResponseResult<>();
-	 * try { if (null == storeUserInfoCondition) { return new
-	 * ResponseResult<>(BusinessCode.CODE_1007); }
-	 * ResponseResult<LoginCheckSellMoneyVO> loginCheckSellMoneyVO =
-	 * storeServiceClient .loginCheckSellMoney(1L); return
-	 * loginCheckSellMoneyVO; } catch (BusinessException e) { logger.
-	 * error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" +
-	 * e.getMessage(), e.getErrorCode()); result = new
-	 * ResponseResult<>(e.getErrorCode()); } catch (Exception e) { logger.
-	 * error("ApiStoreLoginController -> verificationProductPrice异常, 异常信息{}" +
-	 * e.getMessage(), e); result = new
-	 * ResponseResult<>(BusinessCode.CODE_1001); } return result; }
-	 * 
-	 *//**
-		 * @author wufuyun
-		 * @date 2018年8月6日 上午10:12:38
-		 * @Description 忘记密码
-		 * @param storeUserInfoCondition
-		 * @return
-		 */
-	/*
-	 * @ApiOperation(value = "忘记密码,修改密码")
-	 * 
-	 * @ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message =
-	 * "成功"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1021, message = "您的账号或者密码错误"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1005, message = "密码错误"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-	 * 
-	 * @ApiResponse(code = BusinessCode.CODE_1008, message = "验证码错误") })
-	 * 
-	 * @RequestMapping(value = "1011/v1/modifyPassword", method =
-	 * RequestMethod.POST) public ResponseResult<String>
-	 * modifyPassword(@RequestBody StoreUserInfoCondition
-	 * storeUserInfoCondition) { ResponseResult<String> result = new
-	 * ResponseResult<>(); StoreUserInfo storeUserInfo = new StoreUserInfo();
-	 * try { if (null == storeUserInfoCondition) { return new
-	 * ResponseResult<>(BusinessCode.CODE_1007); } String cacheVerificationCode
-	 * = cache.get(storeUserInfoCondition.getStoreMobile());
-	 *//**
-		 * 验证App端传过的验证码是否和服务器一致
-		 */
-	/*
-	 * logger.info("App 传过来的验证码：" + storeUserInfoCondition.getVerificationCode()
-	 * + "************服务端的验证码：" + cacheVerificationCode); if
-	 * (!cacheVerificationCode.equals(storeUserInfoCondition.getVerificationCode
-	 * ())) { result = new ResponseResult<>(BusinessCode.CODE_1008); }
-	 *//**
-		 * 设置密码和确认密码不一致
-		 *//*
-		 * if (!storeUserInfoCondition.getStorePassword().equals(
-		 * storeUserInfoCondition.getConfirmPassword())) { result = new
-		 * ResponseResult<>(BusinessCode.CODE_1005); } storeUserInfo.setId(1L);
-		 * storeUserInfo.setStorePassword(storeUserInfoCondition.
-		 * getStorePassword());
-		 * storeLoginService.modifyStoreUserInfo(storeUserInfo); return result;
-		 * } catch (BusinessException e) {
-		 * logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" +
-		 * e.getMessage(), e.getErrorCode()); result = new
-		 * ResponseResult<>(e.getErrorCode()); } catch (Exception e) {
-		 * logger.error("ApiStoreLoginController -> modifyPassword异常, 异常信息{}" +
-		 * e.getMessage(), e); result = new
-		 * ResponseResult<>(BusinessCode.CODE_1001); } return result; }
-		 */
 }

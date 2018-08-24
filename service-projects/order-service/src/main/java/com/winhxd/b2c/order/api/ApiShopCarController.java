@@ -69,6 +69,7 @@ public class ApiShopCarController {
     })
     @RequestMapping(value = "/api-order/order/4030/v1/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Long> saveShopCar(@RequestBody ShopCarCondition condition){
+        logger.info("ApiShopCarController{} -> saveShopCar接口入参："+JsonUtil.toJSONString(condition));
         if (null == condition || null == condition.getStoreId() || null == condition.getSkuCode()
                 || null == condition.getAmount()) {
             logger.error("商品加购异常{}  参数错误");

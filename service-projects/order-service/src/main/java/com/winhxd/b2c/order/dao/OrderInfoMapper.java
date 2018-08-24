@@ -316,7 +316,7 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    List<Map<String, Double>> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+    List<Map<String, Long>> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
 
     /**
      * 获取门店完成订单销售信息

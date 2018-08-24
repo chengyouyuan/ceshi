@@ -177,12 +177,12 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
             if (storeOrderSalesSummaryVO != null && storeOrderSalesSummaryVO.getCustomerNum() != null && storeOrderSalesSummaryVO.getCustomerNum() > 0 ) {
                 //获取当前下单的用户及所对应的订单数,并存入redis用于进行缓存计算
-                List<Map<String, Double>> customerOrderCountList = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
+                List<Map<String, Long>> customerOrderCountList = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
                 if (CollectionUtils.isNotEmpty(customerOrderCountList)) {
                     Map<String, Double> totalCustomerOrderCountMap = new HashMap<>(customerOrderCountList.size());
-                    for (Iterator<Map<String, Double>> iterator = customerOrderCountList.iterator(); iterator.hasNext();) {
-                        Map<String, Double> customerOrderCountMap = iterator.next();
-                        totalCustomerOrderCountMap.putAll(customerOrderCountMap);
+                    for (Iterator<Map<String, Long>> iterator = customerOrderCountList.iterator(); iterator.hasNext();) {
+                        Map<String, Long> customerOrderCountMap = iterator.next();
+                        totalCustomerOrderCountMap.put(customerOrderCountMap.get("key").toString(), customerOrderCountMap.get("value").doubleValue());
                     }
                     //先删除所有的redis数据
                     cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));

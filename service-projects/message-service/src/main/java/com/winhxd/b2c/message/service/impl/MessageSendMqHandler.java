@@ -305,7 +305,7 @@ public class MessageSendMqHandler {
         history.setToAccid(accid);
         history.setMsgType(Short.valueOf("0"));
         history.setMsgBody(neteaseMsg.getMsgContent());
-        history.setExtJson(NeteaseUtils.buildExtJsonMsg(neteaseMsg));
+        history.setExtJson(NeteaseUtils.buildExtJsonMsg4Save(neteaseMsg));
         history.setPageType(neteaseMsg.getPageType());
         history.setTreeCode(neteaseMsg.getTreeCode());
         history.setMsgCategory(neteaseMsg.getMsgCategory());

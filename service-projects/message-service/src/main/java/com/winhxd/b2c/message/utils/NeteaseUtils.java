@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -180,7 +181,7 @@ public class NeteaseUtils {
     }
 
     /**
-     * 发消息用，消息弹窗，需要msgId来处理已读未读
+     * 发单个消息用，消息弹窗，需要msgId来处理已读未读
      * @param neteaseMsg
      * @param msgId
      * @return
@@ -198,11 +199,27 @@ public class NeteaseUtils {
     }
 
     /**
+     * 批量推送消息用
+     * @param content
+     * @return
+     */
+    public static String buildExtJsonMsg4Batch(String content){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
+        ObjectNode extJson = JsonUtil.createObjectNode();
+        extJson.put("title",content);
+        extJson.put("pagetype",String.valueOf(MsgPageTypeEnum.NOTICE.getPageType()));
+        extJson.put("audiotype", String.valueOf("0"));
+        extJson.put("page", "");
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
+    }
+
+    /**
      * 保存用，组织参数
      * @param neteaseMsg
      * @return
      */
-    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
+    public static String buildExtJsonMsg4Save(NeteaseMsg neteaseMsg){
         ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
         ObjectNode extJson = JsonUtil.createObjectNode();
         extJson.put("title",neteaseMsg.getMsgContent());
@@ -215,6 +232,7 @@ public class NeteaseUtils {
 
     public Map<String,Object> sendTxtMessage2Batch(String[] accids,String content){
         String bodyMsg = buildBodyJsonMsg(content);
+        String extMsg = buildExtJsonMsg4Batch(content);
         //组织参数
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("fromAccid", NETEASE_PLATFORM_ADMIN));
@@ -222,6 +240,7 @@ public class NeteaseUtils {
         //type:0表示文本消息
         nvps.add(new BasicNameValuePair("type", "0"));
         nvps.add(new BasicNameValuePair("body", bodyMsg));
+        nvps.add(new BasicNameValuePair("ext", extMsg));
         return  sendHttpClientPost(SEND_BATCH_MSG_URL,nvps);
     }
 

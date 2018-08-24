@@ -367,7 +367,7 @@ public class ApiStoreProductManageController {
                     if(StringUtils.isNotBlank(sspVO.getSkuCode())){
                         skuCodes.add(sspVO.getSkuCode());
                     }else{
-                        System.out.println("查询不到"+sspVO);
+                        logger.info("查询不到"+sspVO);
                     }
                 }
             }
@@ -512,11 +512,14 @@ public class ApiStoreProductManageController {
                     // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除
                     if (StringUtils.isBlank(simpleVOList.get(i).getSkuName())) {
                         invalidSkuCode.add(simpleVOList.get(i));
-                        System.out.println("查询不到skuCode:" + simpleVOList.get(i).getSkuCode() + "的信息。");
+                        logger.info("查询不到skuCode:" + simpleVOList.get(i).getSkuCode() + "的信息。");
                     }
 
                 }
                 if (invalidSkuCode.size() > 0) {
+                    long oldNum=list.getTotalRows();
+                    long newNum=oldNum-invalidSkuCode.size();
+                    list.setTotalRows(newNum);
                     // 移除
                     simpleVOList.removeAll(invalidSkuCode);
                 }

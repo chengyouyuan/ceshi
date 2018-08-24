@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.system.login.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class StoreUserSimpleInfo implements Serializable {
     /**
@@ -19,6 +20,14 @@ public class StoreUserSimpleInfo implements Serializable {
      * 区域编码
      */
     private String storeRegionCode;
+    /**
+     * 门头照
+     */
+    private String storePicImg;
+    /**
+     * poiCode
+     */
+    private BigDecimal poiCode ;
 	public Long getStoreCustomerId() {
 		return storeCustomerId;
 	}
@@ -36,6 +45,18 @@ public class StoreUserSimpleInfo implements Serializable {
 	}
 	public void setStoreRegionCode(String storeRegionCode) {
 		this.storeRegionCode = storeRegionCode;
+	}
+	public String getStorePicImg() {
+		return storePicImg;
+	}
+	public void setStorePicImg(String storePicImg) {
+		this.storePicImg = storePicImg;
+	}
+	public BigDecimal getPoiCode() {
+		return poiCode;
+	}
+	public void setPoiCode(BigDecimal poiCode) {
+		this.poiCode = poiCode;
 	}
     
 }

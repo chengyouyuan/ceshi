@@ -2,7 +2,11 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -91,6 +95,9 @@ public class CouponServiceImpl implements CouponService {
     OrderServiceClient orderServiceClient;
     @Autowired
     ShopCartServiceClient shopCartServiceClient;
+    @Autowired
+    private Cache cache;
+    private static final int BACKROLL_LOCK_EXPIRES_TIME = 3000;
 
 
     @Override
@@ -342,74 +349,131 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean userReceiveCoupon(ReceiveCouponCondition condition) {
+        String lockKey = CacheName.RECEIVE_COUPON + condition.getCouponActivityId()+condition.getTemplateId();
+        Lock lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            CustomerUser customerUser = UserContext.getCurrentCustomerUser();
+            if (customerUser == null) {
+                throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+            }
 
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
+            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+            couponActivityTemplate.setCouponActivityId(condition.getCouponActivityId());
+            couponActivityTemplate.setTemplateId(condition.getTemplateId());
+            List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
+            if (couponActivityTemplates.isEmpty()) {
+                logger.error("CouponServiceImpl.userReceiveCoupon 不存在的优惠券");
+                throw new BusinessException(BusinessCode.CODE_500001);
+            }
+
+            List<CouponActivityStoreCustomer> couponActivityStoreCustomers = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplates.get(0).getId());
+
+            ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+            if (result == null || result.getCode() != BusinessCode.CODE_OK || result.getData() == null) {
+                logger.error("优惠券：{}获取门店信息接口调用失败:code={}，待领取优惠券异常！~", customerUser.getCustomerId(), result == null ? null : result.getCode());
+                throw new BusinessException(result.getCode());
+            }
+            StoreUserInfoVO storeUserInfo = result.getData();
+            //领取之前校验优惠券是否可领取
+            for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
+                //根据优惠券总数限制用户领取
+                if (activityTemplate.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))) {
+                    //获取某个优惠券领取总数量
+                    int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
+                    if (templateNum < activityTemplate.getCouponNum()) {
+                        //limitNum为空代表不限制用户领取数量
+                        if (activityTemplate.getCustomerVoucherLimitNum() == null) {
+                            //可领取
+                        } else {
+                            //获取某个优惠券用户领取的数量
+                            int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                            if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
+                                //不可领取
+                                return false;
+                            }
+                        }
+                    } else {
+                        // 优惠券已领完
+                        return false;
+                    }
+                } else if (activityTemplate.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))) {
+                    //根据每个门店可领取的优惠券数量限制用户领取
+                    //获取某个优惠券门店领取的数量
+                    int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());
+                    if (storeNum < activityTemplate.getCouponNum()) {
+                        //limitNum为空代表不限制用户领取数量
+                        if (activityTemplate.getCustomerVoucherLimitNum() == null) {
+                            //可领取
+                        } else {
+                            //获取某个优惠券用户领取的数量
+                            int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                            if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
+                                //不可领取
+                                return false;
+                            }
+                        }
+                    } else {
+                        // 当前门店优惠券已领完
+                        return false;
+                    }
+                }
+            }
+
+            CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
+            couponTemplateSend.setStatus(CouponActivityEnum.NOT_USE.getCode());
+            couponTemplateSend.setTemplateId(condition.getTemplateId());
+            couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
+            couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
+            couponTemplateSend.setCustomerId(customerUser.getCustomerId());
+            couponTemplateSend.setCustomerMobile("");
+            couponTemplateSend.setCount(1);
+            couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
+            couponTemplateSend.setCreated(new Date());
+            couponTemplateSend.setCreatedByName("");
+
+            if (couponActivityTemplates.get(0).getEffectiveDays() == null) {
+                couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
+                couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+
+                couponTemplateSend.setStartTime(calendar.getTime());
+
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.DATE, couponActivityTemplates.get(0).getEffectiveDays());
+                c.set(Calendar.HOUR_OF_DAY, 23);
+                c.set(Calendar.MINUTE, 59);
+                c.set(Calendar.SECOND, 59);
+                c.set(Calendar.MILLISECOND, 59);
+                couponTemplateSend.setEndTime(c.getTime());
+            }
+            couponTemplateSendMapper.insertSelective(couponTemplateSend);
+
+            CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
+            couponActivityRecord.setCouponActivityId(condition.getCouponActivityId());
+            couponActivityRecord.setCustomerId(customerUser.getCustomerId());
+            couponActivityRecord.setSendId(couponTemplateSend.getId());
+            couponActivityRecord.setTemplateId(condition.getTemplateId());
+            couponActivityRecord.setCreated(new Date());
+            couponActivityRecord.setCreatedBy(customerUser.getCustomerId());
+            couponActivityRecord.setCreatedByName("");
+            if (couponActivityStoreCustomers.isEmpty()) {
+                couponActivityRecord.setStoreId(null);
+            } else {
+                couponActivityRecord.setStoreId(couponActivityStoreCustomers.get(0).getStoreId());
+            }
+            couponActivityRecordMapper.insertSelective(couponActivityRecord);
+            return true;
+        }finally{
+            lock.unlock();
         }
-
-        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
-        couponActivityTemplate.setCouponActivityId(condition.getCouponActivityId());
-        couponActivityTemplate.setTemplateId(condition.getTemplateId());
-        List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
-        if(couponActivityTemplates.isEmpty()){
-            logger.error("CouponServiceImpl.userReceiveCoupon 不存在的优惠券");
-            throw new BusinessException(BusinessCode.CODE_500001);
-        }
-
-        List<CouponActivityStoreCustomer> couponActivityStoreCustomers = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplates.get(0).getId());
-
-        CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
-        couponTemplateSend.setStatus(CouponActivityEnum.NOT_USE.getCode());
-        couponTemplateSend.setTemplateId(condition.getTemplateId());
-        couponTemplateSend.setSource((int) CouponActivityEnum.SYSTEM.getCode());
-        couponTemplateSend.setSendRole((int) CouponActivityEnum.ORDINARY_USER.getCode());
-        couponTemplateSend.setCustomerId(customerUser.getCustomerId());
-        couponTemplateSend.setCustomerMobile("");
-        couponTemplateSend.setCount(1);
-        couponTemplateSend.setCreatedBy(customerUser.getCustomerId());
-        couponTemplateSend.setCreated(new Date());
-        couponTemplateSend.setCreatedByName("");
-
-        if(couponActivityTemplates.get(0).getEffectiveDays()==null){
-            couponTemplateSend.setStartTime(couponActivityTemplates.get(0).getStartTime());
-            couponTemplateSend.setEndTime(couponActivityTemplates.get(0).getEndTime());
-        }else{
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-
-            couponTemplateSend.setStartTime(calendar.getTime());
-
-            Calendar c = Calendar.getInstance();
-            c.setTime(new Date());
-            c.add(Calendar.DATE,couponActivityTemplates.get(0).getEffectiveDays());
-            c.set(Calendar.HOUR_OF_DAY, 23);
-            c.set(Calendar.MINUTE, 59);
-            c.set(Calendar.SECOND, 59);
-            c.set(Calendar.MILLISECOND, 59);
-            couponTemplateSend.setEndTime(c.getTime());
-        }
-        couponTemplateSendMapper.insertSelective(couponTemplateSend);
-
-        CouponActivityRecord couponActivityRecord = new CouponActivityRecord();
-        couponActivityRecord.setCouponActivityId(condition.getCouponActivityId());
-        couponActivityRecord.setCustomerId(customerUser.getCustomerId());
-        couponActivityRecord.setSendId(couponTemplateSend.getId());
-        couponActivityRecord.setTemplateId(condition.getTemplateId());
-        couponActivityRecord.setCreated(new Date());
-        couponActivityRecord.setCreatedBy(customerUser.getCustomerId());
-        couponActivityRecord.setCreatedByName("");
-        if(couponActivityStoreCustomers.isEmpty()){
-            couponActivityRecord.setStoreId(null);
-        }else{
-            couponActivityRecord.setStoreId(couponActivityStoreCustomers.get(0).getStoreId());
-        }
-        couponActivityRecordMapper.insertSelective(couponActivityRecord);
-        return true;
     }
 
     @Override
@@ -534,8 +598,10 @@ public class CouponServiceImpl implements CouponService {
             //计算订单总额
             BigDecimal amountPrice = new BigDecimal(0);
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
-                BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                amountPrice = amountPrice.add(productPrice);
+                if(couponProductCondition.getPrice()!=null&&couponProductCondition.getSkuNum()!=null){
+                    BigDecimal productPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
+                    amountPrice = amountPrice.add(productPrice);
+                }
             }
             BigDecimal discountAmount = this.computeAumont(couponTemplate.getGradeId(),amountPrice);
             couponDiscountVO.setDiscountAmount(discountAmount);
@@ -554,10 +620,11 @@ public class CouponServiceImpl implements CouponService {
             //遍历适用的品牌并计算金额
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
                 for(CouponApplyBrandList couponApplyBrandList : couponApplyBrandLists){
-
                     if(couponProductCondition.getBrandCode().equals(couponApplyBrandList.getBrandCode())&&couponProductCondition.getBrandBusinessCode().equals(couponApplyBrandList.getCompanyCode())){
-                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                        amountPrice = amountPrice.add(brandProductPrice);
+                        if(couponProductCondition.getPrice()!=null&&couponProductCondition.getSkuNum()!=null) {
+                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
+                            amountPrice = amountPrice.add(brandProductPrice);
+                        }
                     }
                 }
             }
@@ -580,8 +647,10 @@ public class CouponServiceImpl implements CouponService {
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
                 for(CouponApplyProductList couponApplyProductList : couponApplyProductLists){
                     if(couponProductCondition.getSkuCode().equals(couponApplyProductList.getSkuCode())){
-                        BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
-                        amountPrice = amountPrice.add(brandProductPrice);
+                        if(couponProductCondition.getPrice()!=null&&couponProductCondition.getSkuNum()!=null) {
+                            BigDecimal brandProductPrice = couponProductCondition.getPrice().multiply(BigDecimal.valueOf(couponProductCondition.getSkuNum()));
+                            amountPrice = amountPrice.add(brandProductPrice);
+                        }
                     }
                 }
             }
@@ -761,8 +830,10 @@ public class CouponServiceImpl implements CouponService {
                     //计算订单总额
                     BigDecimal amountPrice = new BigDecimal(0);
                     for(ShopCarProdInfoVO shopCarProdInfoVO: shopCarProdInfoVOS){
-                        BigDecimal productPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
-                        amountPrice = amountPrice.add(productPrice);
+                        if(shopCarProdInfoVO.getPrice()!=null&&shopCarProdInfoVO.getAmount()!=null){
+                            BigDecimal productPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
+                            amountPrice = amountPrice.add(productPrice);
+                        }
                     }
                     //订单金额大于等于满减金额优惠券可用
                     if(amountPrice.compareTo(couponVO.getReducedAmt())>=0){
@@ -780,8 +851,10 @@ public class CouponServiceImpl implements CouponService {
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 BigDecimal amountPrice = new BigDecimal(0);
                                 if (couponApplyProduct.getSkuCode().equals(shopCarProdInfoVO.getSkuCode())) {
-                                    BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
-                                    amountPrice = amountPrice.add(brandProductPrice);
+                                    if(shopCarProdInfoVO.getPrice()!=null&&shopCarProdInfoVO.getAmount()!=null){
+                                        BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
+                                        amountPrice = amountPrice.add(brandProductPrice);
+                                    }
                                     //商品金额大于等于满减金额优惠券可用
                                     if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
                                         couponVO.setAvailableStatus(1);
@@ -802,8 +875,10 @@ public class CouponServiceImpl implements CouponService {
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 BigDecimal amountPrice = new BigDecimal(0);
                                 if (couponApplyBrand.getBrandCode().equals(shopCarProdInfoVO.getBrandCode()) && couponApplyBrand.getCompanyCode().equals(shopCarProdInfoVO.getCompanyCode())) {
-                                    BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
-                                    amountPrice = amountPrice.add(brandProductPrice);
+                                    if(shopCarProdInfoVO.getPrice()!=null&&shopCarProdInfoVO.getAmount()!=null){
+                                        BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
+                                        amountPrice = amountPrice.add(brandProductPrice);
+                                    }
                                     //商品金额大于等于满减金额优惠券可用
                                     if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
                                         couponVO.setAvailableStatus(1);

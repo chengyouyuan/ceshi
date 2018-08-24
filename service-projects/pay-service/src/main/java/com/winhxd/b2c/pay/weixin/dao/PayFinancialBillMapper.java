@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.weixin.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 
@@ -14,7 +15,14 @@ public interface PayFinancialBillMapper {
      * @return
      */
     int deleteByPrimaryKey(Long id);
-
+    
+    /**
+     * 批量插入
+     * @param record
+     * @return
+     */
+    int insertBatch(List<PayFinancialBill> list);
+    
     /**
      * 插入全部
      * @param record

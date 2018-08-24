@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -821,16 +822,12 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList = findStoreCouponList();
-        List templateIdList = new ArrayList();
-        for (int i = 0; i < couponVOList.size(); i++){
-            //优惠券是否可领取 0 已领取  1 可领取
-            if(couponVOList.get(i).getReceiveStatus().equals("1")){
-                templateIdList.add(couponVOList.get(i).getTemplateId());
-            }
+        Integer count = 0;
+        if(!CollectionUtils.isEmpty(couponVOList)){
+            count = couponVOList.size();
         }
-        HashSet h = new HashSet(templateIdList);
         CouponKindsVo couponKindsVo = new CouponKindsVo();
-        couponKindsVo.setStoreCouponKinds(h.size());
+        couponKindsVo.setStoreCouponKinds(count);
         return couponKindsVo;
     }
 

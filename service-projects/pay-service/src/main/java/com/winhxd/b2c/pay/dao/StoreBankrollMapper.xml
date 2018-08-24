@@ -205,6 +205,7 @@
     <include refid="Base_Column_List" />
     from store_bankroll
     where store_id = #{storeId}
+    and status =1
     ORDER BY updated DESC,created DESC
   </select>
 

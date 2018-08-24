@@ -327,8 +327,9 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
             //状态是待退款和已付款的订单才能把状态置为已退款
-            if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode()
-                    && (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode())) {
+            boolean isChecked = order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() &&
+                    (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode());
+            if (isChecked) {
                 int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
                 if (result != 1) {
                     logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));

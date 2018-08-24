@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,6 +79,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
+        if(CollectionUtils.isEmpty(list)){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
         List<Long> storeIdList = new ArrayList<>();
         for (int j=0;j<list.size();j++){

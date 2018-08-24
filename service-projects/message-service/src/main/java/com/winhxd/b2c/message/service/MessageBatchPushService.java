@@ -18,7 +18,7 @@ public interface MessageBatchPushService {
      * @param messageBatchPush
      * @return
      */
-    int addBatchPush(MessageBatchPush messageBatchPush);
+    Long addBatchPush(MessageBatchPush messageBatchPush);
 
     /**
      * 后台消息管理，修改手动推送消息列表

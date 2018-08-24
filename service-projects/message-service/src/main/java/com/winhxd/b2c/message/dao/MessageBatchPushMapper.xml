@@ -23,7 +23,7 @@
     delete from message_batch_push
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into message_batch_push (id, msg_content, timing_push, 
       created, created_by, created_by_name, 
       last_push_time)
@@ -31,7 +31,7 @@
       #{created,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, 
       #{lastPushTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageBatchPush" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into message_batch_push
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

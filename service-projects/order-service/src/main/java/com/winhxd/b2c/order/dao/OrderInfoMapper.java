@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.dao;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -307,7 +308,7 @@ public interface OrderInfoMapper {
     int updateOrderStatusForReturnWaitSelfLifting(@Param("orderNo") String orderNo, @Param("storeId") Long storeId, @Param("reason") String reason);
 
     /**
-     * 获取指定时间内 门店下单完成的用户id
+     * 获取指定时间内 门店下单付款(未取消)的用户id，及订单数
      * @author wangbin
      * @date  2018年8月23日 下午3:33:22
      * @param storeId
@@ -315,7 +316,7 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    List<Long> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+    List<Map<String, Double>> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
 
     /**
      * 获取门店完成订单销售信息

@@ -20,4 +20,6 @@ public class SysRegionVO extends SysRegion {
     @ApiModelProperty(value = "区域完整名称")
     private String fullName;
 
+    @ApiModelProperty(value = "网页组件内容索引")
+    private String index;
 }

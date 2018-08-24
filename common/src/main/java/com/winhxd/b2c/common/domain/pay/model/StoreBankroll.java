@@ -15,8 +15,10 @@ public class StoreBankroll {
     private BigDecimal presentedFrozenMoney;
 
     private BigDecimal settlementSettledMoney;
-    
+
     private BigDecimal alreadyPresentedMoney;
+
+    private Short status;
 
     private Long createdBy;
 
@@ -78,6 +80,22 @@ public class StoreBankroll {
         this.settlementSettledMoney = settlementSettledMoney;
     }
 
+    public BigDecimal getAlreadyPresentedMoney() {
+        return alreadyPresentedMoney;
+    }
+
+    public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
+        this.alreadyPresentedMoney = alreadyPresentedMoney;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
+    }
+
     public Long getCreatedBy() {
         return createdBy;
     }
@@ -125,12 +143,4 @@ public class StoreBankroll {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
-
-	public BigDecimal getAlreadyPresentedMoney() {
-		return alreadyPresentedMoney;
-	}
-
-	public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
-		this.alreadyPresentedMoney = alreadyPresentedMoney;
-	}
 }

@@ -1,5 +1,7 @@
 package com.winhxd.b2c.common.domain.pay.model;
 
+import java.util.Date;
+
 public class PayStoreWallet {
     private Long id;
 
@@ -12,6 +14,14 @@ public class PayStoreWallet {
     private String name;
 
     private Short status;
+
+    private String mobile;
+
+    private String verificationCode;
+
+    private Date created;
+
+    private Date updated;
 
     public Long getId() {
         return id;
@@ -59,5 +69,37 @@ public class PayStoreWallet {
 
     public void setStatus(Short status) {
         this.status = status;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 }

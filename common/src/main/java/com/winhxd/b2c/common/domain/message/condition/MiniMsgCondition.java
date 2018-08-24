@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.message.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * @description
  */
 @Data
-public class MiniMsgCondition {
+public class MiniMsgCondition extends ApiCondition {
     @ApiModelProperty("消息接受人的openid")
     private String toUser;
 

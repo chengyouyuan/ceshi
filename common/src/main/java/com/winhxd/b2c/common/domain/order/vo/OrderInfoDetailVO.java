@@ -155,4 +155,6 @@ public class OrderInfoDetailVO implements Serializable {
     private String storeMobile;
     @ApiModelProperty(value = "商家名称", required = true)
     private String storeName;
+    @ApiModelProperty(value = "用户头像", required = true)
+    private String headImg;
 }

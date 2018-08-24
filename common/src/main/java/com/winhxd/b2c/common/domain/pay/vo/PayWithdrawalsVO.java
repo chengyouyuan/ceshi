@@ -79,6 +79,9 @@ public class PayWithdrawalsVO {
     private Short callbackStatus;
     @ApiModelProperty("原因")
     private String callbackReason;
+    @ApiModelProperty("失败原因")
+    private String errorMessage;
+
 
     public Long getId() {
         return id;
@@ -279,5 +282,13 @@ public class PayWithdrawalsVO {
 
     public String getIndex() {
         return String.valueOf(getId());
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

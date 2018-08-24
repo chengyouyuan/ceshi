@@ -180,7 +180,7 @@ public class CouponServiceImpl implements CouponService {
             }
         }
         //step3 返回数据
-        List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),1,null);
+        List<CouponVO> couponVOS = couponActivityMapper.selectNewUserCouponList(customerUser.getCustomerId(),CouponActivityEnum.NEW_USER.getCode());
 
         return this.getCouponDetail(couponVOS);
     }

@@ -2,11 +2,9 @@ package com.winhxd.b2c.admin.module.system.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
-import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
@@ -27,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @description 系统用户管理控制层
@@ -118,6 +114,8 @@ public class UserController {
         sysUser.setUpdatedBy(userInfo.getId());
         sysUser.setUpdatedByName(userInfo.getUsername());
 
+        // 清除操作的用户缓存
+        UserManager.delUserCache(sysUser.getId());
         return userServiceClient.modify(sysUser);
     }
 
@@ -145,6 +143,8 @@ public class UserController {
         passwordDTO.setUpdatedBy(userInfo.getId());
         passwordDTO.setUpdatedByName(userInfo.getUsername());
 
+        // 清除操作的用户缓存
+        UserManager.delUserCache(passwordDTO.getId());
         return userServiceClient.updatePassword(passwordDTO);
     }
 
@@ -216,6 +216,8 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
     public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
+        // 清除操作的用户缓存
+        UserManager.delUserCache(id);
         return userServiceClient.disabled(id);
     }
 
@@ -233,33 +235,9 @@ public class UserController {
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ENABLE})
     public ResponseResult<Void> enable(@PathVariable("id") Long id){
         logger.info("{} - 根据主键启用用户, 参数：id={}", MODULE_NAME, id);
+        // 清除操作的用户缓存
+        UserManager.delUserCache(id);
         return userServiceClient.enable(id);
-    }
-
-    @ApiOperation(value = "用户管理页面(样本功能)")
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
-    })
-    @GetMapping("/user/page")
-    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER})
-    @MenuAssign({MenuEnum.SYSTEM_MANAGEMENT_USER})
-    public ResponseResult<Map<String,Object>> page(){
-        logger.info("{} - 用户管理页面", MODULE_NAME);
-        ResponseResult<Map<String,Object>> result = new ResponseResult<>(BusinessCode.CODE_OK);
-        Map<String,Object> data = new HashMap<>(1);
-        Map<String,String> url = new HashMap<>(10);
-        url.put("list","/user/list");
-        url.put("add","/user/add");
-        url.put("edit","/user/edit");
-        url.put("get","/user/get/{id}");
-        url.put("editPassword","/user/updatePassword");
-        url.put("disabled","/user/disabled/{id}");
-        data.put("url",url);
-        result.setData(data);
-        return result;
     }
 
 }

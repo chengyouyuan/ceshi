@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 public class UserManager implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
+
+    @Resource
     private static Cache cache;
 
     /**
@@ -56,6 +60,17 @@ public class UserManager implements ApplicationListener<ContextRefreshedEvent> {
             }
         }
         return null;
+    }
+
+    /**
+     * 删除某个用户的缓存
+     *
+     * @param userId
+     */
+    public static void delUserCache(Long userId) {
+        String token = DigestUtils.md5DigestAsHex(userId.toString().getBytes());
+        String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
+        cache.del(cacheKey);
     }
 
     @Override

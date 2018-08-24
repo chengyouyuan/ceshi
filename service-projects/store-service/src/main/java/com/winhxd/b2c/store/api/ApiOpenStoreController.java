@@ -208,7 +208,7 @@ public class ApiOpenStoreController {
     public ResponseResult<Integer> modifyStoreBaseInfo(@RequestBody StoreBaseInfoCondition storeBaseInfoCondition) {
         logger.info("惠小店开店基础信息保存接口入参为：{}", storeBaseInfoCondition.toString());
         if (StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
-                StringUtils.isBlank(storeBaseInfoCondition.getShopOwnerImg()) || StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
+                StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
                 StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode()) || StringUtils.isBlank(storeBaseInfoCondition.getContactMobile())) {
             logger.warn("惠小店开店基础信息保存接口 modifyStoreBaseInfo,参数错误:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200005);
@@ -541,7 +541,12 @@ public class ApiOpenStoreController {
     private static String calculatePercent(BigDecimal a, BigDecimal b) {
         String result = "暂无对比数据";
         if (a.compareTo(BigDecimal.ZERO) != 0 && b.compareTo(BigDecimal.ZERO) != 0) {
-            result = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP).toBigInteger().toString() + "%";
+            BigDecimal percent = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP);
+            if (percent.compareTo(BigDecimal.ZERO) > 0) {
+                result = "+" + percent + "%";
+            } else {
+                result = percent + "%";
+            }
         }
         return result;
     }

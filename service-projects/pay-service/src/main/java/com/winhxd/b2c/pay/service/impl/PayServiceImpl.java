@@ -270,7 +270,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--金额为空");
 			throw new BusinessException(BusinessCode.CODE_600009);
 		}
-		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<0) {
+		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<=0) {
 			logger.info(log+"--金额有误");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}
@@ -462,20 +462,21 @@ public class PayServiceImpl implements PayService{
 			}else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
+					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
 					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+					storeBankroll.setTotalMoeny(totalMoney);
 				}
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
 				settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
 				
-				totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+				
 				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
 				presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
 				alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
 				settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 				
-				storeBankroll.setTotalMoeny(totalMoney);
 				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
 				storeBankroll.setPresentedMoney(presentedMoney);
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);

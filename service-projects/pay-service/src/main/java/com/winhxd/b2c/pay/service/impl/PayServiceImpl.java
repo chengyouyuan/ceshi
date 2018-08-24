@@ -536,6 +536,7 @@ public class PayServiceImpl implements PayService{
 		payStoreBankrollLog.setType(condition.getType());
 		payStoreBankrollLog.setCreated(new Date());
 		payStoreBankrollLog.setUpdated(new Date());
+		payStoreBankrollLog.setStatus(StatusEnums.EFFECTIVE.getCode());
 		payStoreBankrollLogMapper.insertSelective(payStoreBankrollLog);
 	}
 

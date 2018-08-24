@@ -101,6 +101,11 @@ public class StoreUserInfo implements Serializable {
     /**门店小程序码的地址*/
 
     private String miniProgramCodeUrl;
+
+    /**门店门头照地址*/
+
+    private String storePicImg;
+
     private static final long serialVersionUID = 1L;
 
     public String getStoreName() {
@@ -301,5 +306,12 @@ public class StoreUserInfo implements Serializable {
 	public void setAppLoginStatus(Short appLoginStatus) {
 		this.appLoginStatus = appLoginStatus;
 	}
-    
+
+    public String getStorePicImg() {
+        return storePicImg;
+    }
+
+    public void setStorePicImg(String storePicImg) {
+        this.storePicImg = storePicImg;
+    }
 }

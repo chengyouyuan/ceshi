@@ -40,7 +40,7 @@ public class MessageSendMqHandler {
     private static final String SUCCESS_CODE_0 = "0";
     private static final String SUCCESS_CODE_200 = "200";
     private static final String PARAM_CODE = "code";
-    private static final String PARAM_MSGID = "msgid";
+    private static final String PARAM_MSGID = "data.msgid";
     /**错误码，formid不正确，或者过期或已被使用*/
     private static final String[] ERR_CODE = {"41028","41029"};
 
@@ -165,7 +165,6 @@ public class MessageSendMqHandler {
         } else {
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，neteaseMsgDelayConditionJson={}", neteaseMsgDelayConditionJson);
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
-            //throw new BusinessException(BusinessCode.CODE_703503);
         }
     }
 

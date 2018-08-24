@@ -62,7 +62,7 @@
     </foreach>
   </select>
   <select id="selectBindingCustomer" resultMap="customerUserInfoVO1">
-      select cui.*  from customer_store_relation csr left join customer_user_info cui on cui.customer_id = csr.customer_id
+      select cui.*  from customer_store_relation csr  inner join customer_user_info cui on cui.customer_id = csr.customer_id
     <where>
       <if test="customerId != null">
         and cui.customer_id =  #{customerId,jdbcType=BIGINT}

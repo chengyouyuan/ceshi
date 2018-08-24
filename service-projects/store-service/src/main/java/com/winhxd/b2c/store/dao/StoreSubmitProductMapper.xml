@@ -29,7 +29,10 @@
     <result column="prod_image1" jdbcType="VARCHAR" property="prodImage1" />
     <result column="prod_status" jdbcType="SMALLINT" property="prodStatus" />
     <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="prod_info_voice" jdbcType="VARCHAR" property="prodInfoVoice" />
+    <result column="prod_info_text" jdbcType="VARCHAR" property="prodInfoText" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_attribute_option" jdbcType="VARCHAR" property="skuAttributeOption" />
   </resultMap>
    <resultMap id="BackStageResultMap" type="com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -55,7 +58,8 @@
   </sql>
    <sql id="Simple_Column_List">
     id, store_id, prod_name, prod_code, prod_image1,
-    prod_status, audit_remark,sku_code, prod_info_voice, prod_info_text
+    prod_status, audit_remark,sku_code, prod_info_voice, prod_info_text,
+    sku_attribute_option
   </sql>
   <sql id="BackStage_Column_List">
     sp.id, sp.store_id, u.store_name, sp.prod_name, sp.prod_code, sp.prod_image1, sp.prod_image2, sp.prod_image3,
@@ -97,7 +101,7 @@
   	
   </select>
   
-  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="BaseResultMap">
+  <select id="selectVoByCondition" parameterType="com.winhxd.b2c.common.domain.store.condition.StoreSubmitProductCondition" resultMap="SimpelResultMap">
   	select
   	<include refid="Simple_Column_List" />
   	from store_submit_product

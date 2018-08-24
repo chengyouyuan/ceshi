@@ -189,8 +189,8 @@ public class NeteaseUtils {
         ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
         ObjectNode extJson = JsonUtil.createObjectNode();
         extJson.put("title",neteaseMsg.getMsgContent());
-        extJson.put("pagetype",neteaseMsg.getPageType());
-        extJson.put("audiotype", neteaseMsg.getAudioType());
+        extJson.put("pagetype",String.valueOf(neteaseMsg.getPageType()));
+        extJson.put("audiotype", String.valueOf(neteaseMsg.getAudioType()));
         extJson.put("page", neteaseMsg.getTreeCode());
         extJson.put("msgId",msgId);
         extJsonMsg.put("extJsonMsg",extJson);

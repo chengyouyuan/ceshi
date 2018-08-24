@@ -28,7 +28,7 @@ public class StoreSubmitProductVO {
     @ApiModelProperty("商品code")
     private String prodCode;
     
-    @ApiModelProperty("商品图片1")
+    @ApiModelProperty("提报商品图片1")
     private String prodImage1;
 
     @ApiModelProperty("审核状态（0 待审核 ，1 审核通过 ，2 审核不通过，3 已添加）")
@@ -45,4 +45,10 @@ public class StoreSubmitProductVO {
     
     @ApiModelProperty("商品信息（文字）")
     private String prodInfoText;
+    
+    @ApiModelProperty("商品规格")
+    private String skuAttributeOption;
+    
+    @ApiModelProperty(value = "商品图片")
+    private String skuImage;
 }

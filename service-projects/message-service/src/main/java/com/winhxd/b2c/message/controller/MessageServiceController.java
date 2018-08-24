@@ -128,8 +128,8 @@ public class MessageServiceController implements MessageServiceClient {
     public ResponseResult<Long> addBatchPush(@RequestBody MessageBatchPush messageBatchPush) {
         ResponseResult<Long> result = new ResponseResult<>(BusinessCode.CODE_OK);
         try {
-            messageBatchPushService.addBatchPush(messageBatchPush);
-            result.setData(messageBatchPush.getId());
+            Long aLong = messageBatchPushService.addBatchPush(messageBatchPush);
+            result.setData(aLong);
         } catch (BusinessException be) {
             LOGGER.error("/message/7031/v1/addBatchPush,后台新增手动推送消息出错，异常信息为={}", be);
             result.setCode(be.getErrorCode());

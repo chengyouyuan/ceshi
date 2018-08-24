@@ -179,10 +179,10 @@ public class ApiOpenStoreController {
         storeBaseInfoVO.setContactMobile(storeUserInfo.getStoreMobile());
         if (!result.getData().isEmpty()) {
             Map<String, Object> map = result.getData();
-            storeBaseInfoVO.setStoreImg(Objects.toString(map.get("storeImg"), ""));
+            storeBaseInfoVO.setStoreImg(StringUtils.isBlank(storeUserInfo.getStorePicImg()) ? "" : storeUserInfo.getStorePicImg());
+            storeBaseInfoVO.setShopOwnerImg(StringUtils.isBlank(storeUserInfo.getShopOwnerImg()) ? "" : storeUserInfo.getShopOwnerImg());
             storeBaseInfoVO.setStoreName(Objects.toString(map.get("storeName"), ""));
             storeBaseInfoVO.setShopkeeper(Objects.toString(map.get("shopkeeper"), ""));
-            storeBaseInfoVO.setShopOwnerImg(StringUtils.isBlank(storeUserInfo.getShopOwnerImg()) ? Objects.toString(map.get("shopOwnerImg"), "") : storeUserInfo.getShopOwnerImg());
             storeBaseInfoVO.setProvince(Objects.toString(map.get("province"), ""));
             storeBaseInfoVO.setCity(Objects.toString(map.get("city"), ""));
             storeBaseInfoVO.setCounty(Objects.toString(map.get("county"), ""));

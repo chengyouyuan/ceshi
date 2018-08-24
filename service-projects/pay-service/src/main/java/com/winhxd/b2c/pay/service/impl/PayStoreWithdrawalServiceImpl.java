@@ -135,7 +135,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				withdrawalPage.setTotal_moeny(data.getTotal_moeny());
 				withdrawalPage.setRate(data.getRate());
 				result.setCode(0);
-				LOGGER.info("当前用户没有绑定微信账号");
 			 }
 		}
 		result.setData(withdrawalPage);

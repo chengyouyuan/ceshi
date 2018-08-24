@@ -33,6 +33,8 @@ import java.util.Map;
 public class MiniProgramUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(MiniProgramUtils.class);
     private static final String RETURN_NULL = "null";
+    private static final String ACCESS_TOKEN = "access_token";
+    private static final int SUCCESS_CODE = 200;
     /**
      * 小程序APPID
      */
@@ -134,8 +136,8 @@ public class MiniProgramUtils {
                 return null;
             }
             Map<String, Object> accessMap = JsonUtil.parseJSONObject(content);
-            if (accessMap != null && accessMap.get("access_token") != null){
-                token = String.valueOf(accessMap.get("access_token"));
+            if (accessMap != null && accessMap.get(ACCESS_TOKEN) != null){
+                token = String.valueOf(accessMap.get(ACCESS_TOKEN));
                 cache.set(CacheName.MESSAGE_MINI_ACCESS_TOKEN,token);
                 cache.expire(CacheName.MESSAGE_MINI_ACCESS_TOKEN,90 * 60);
             }
@@ -169,7 +171,7 @@ public class MiniProgramUtils {
             httpPost.setEntity(entity);
             // 执行请求
             response = client.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == SUCCESS_CODE) {
                 // 判断返回状态是否为200
                 content = EntityUtils.toString(response.getEntity(), "UTF-8");
             }

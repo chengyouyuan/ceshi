@@ -43,6 +43,28 @@
       #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
       #{billDate,jdbcType=DATE}, #{financialBillCountId,jdbcType=BIGINT})
   </insert>
+  
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into pay_financial_bill 
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+      accounting_time, wx_pay_no, 
+      swift_no, busi_name, busi_type, 
+      budget, budget_amount, account_balance, 
+      submit_by, remark, busi_credential_no, 
+      bill_date, financial_bill_count_id
+      </trim>
+    values
+    <foreach collection="list" item="item" index="index"  separator=",">
+        <trim prefix="(" suffix=")" suffixOverrides=","> 
+      #{accountingTime,jdbcType=TIMESTAMP}, #{wxPayNo,jdbcType=VARCHAR}, 
+      #{swiftNo,jdbcType=VARCHAR}, #{busiName,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, 
+      #{budget,jdbcType=VARCHAR}, #{budgetAmount,jdbcType=DECIMAL}, #{accountBalance,jdbcType=DECIMAL}, 
+      #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
+      #{billDate,jdbcType=DATE}, #{financialBillCountId,jdbcType=BIGINT}
+      </trim>
+    </foreach>
+  </insert>
+  
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinancialBill">
     insert into pay_financial_bill
     <trim prefix="(" suffix=")" suffixOverrides=",">

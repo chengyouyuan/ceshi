@@ -146,7 +146,7 @@ public class OrderServiceController implements OrderServiceClient {
             if (storeOrderSalesSummaryCondition == null) {
                 throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
             }
-            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == storeOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
+            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
                 result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             } else {
                 result.setData(orderQueryService.getStoreMonthOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));

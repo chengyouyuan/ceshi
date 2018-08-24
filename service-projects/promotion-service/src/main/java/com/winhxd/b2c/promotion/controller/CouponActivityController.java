@@ -15,7 +15,6 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
-import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,6 @@ import java.util.List;
  * @date 2018/8/6
  * @Description 优惠券活动相关入口
  */
-@Api(tags = "CouponActivity")
 @RestController
 public class CouponActivityController implements CouponActivityServiceClient {
 
@@ -44,6 +42,14 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @Autowired
     private StoreServiceClient storeServiceClient;
 
+    /**
+     *
+     *@Deccription 查询优惠券活动
+     *@Params  CouponActivityCondition
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/7
+     */
     @Override
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
@@ -52,20 +58,27 @@ public class CouponActivityController implements CouponActivityServiceClient {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询结束");
         return result;
     }
-
+    /**
+     *
+     *@Deccription 导入excel，返回小店信息
+     *@Params  List<CouponActivityImportStoreVO>
+     *@Return  ResponseResult
+     *@User  sjx
+     *@Date   2018/8/19
+     */
     @Override
     public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
         ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
-        List<Long> storeIdList = new ArrayList();
+        List<Long> storeIdList = new ArrayList<>();
         for (int j=0;j<list.size();j++){
             storeIdList.add(Long.valueOf(list.get(j).getStoreId()));
         }
         //list去重
-        HashSet h = new HashSet(storeIdList);
+        HashSet h = new HashSet<>(storeIdList);
         storeIdList.clear();
         storeIdList.addAll(h);
-        //调寒宁接口判断数据有效性
-        ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<>();
+        //调接口判断数据有效性
+        ResponseResult<List<StoreUserInfoVO>> responseResult = new ResponseResult<List<StoreUserInfoVO>>();
         StoreListByKeywordsCondition storeListByKeywordsCondition = new StoreListByKeywordsCondition();
         storeListByKeywordsCondition.setStoreIds(storeIdList);
         responseResult =  storeServiceClient.getStoreListByKeywords(storeListByKeywordsCondition);
@@ -142,7 +155,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         //    throw new BusinessException(BusinessCode.CODE_1007);
         //}
 
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
         //判断活动时间是否冲突(推券&新人注册)
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()
                 && condition.getCouponType() == CouponActivityEnum.NEW_USER.getCode()){
@@ -174,7 +187,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("优惠券活动查看&回显编辑页入参id: " +id);
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<CouponActivityVO> responseResult = new ResponseResult<>();
         CouponActivityVO couponActivityVO = couponActivityService.getCouponActivityById(id);
         if(couponActivityVO!=null){
             responseResult.setData(couponActivityVO);
@@ -249,7 +262,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
             }
         }
 
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<>();
         couponActivityService.updateCouponActivity(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         return responseResult;
@@ -269,7 +282,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("deleteCouponActivity--Id:" + condition.getId());
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<>();
         couponActivityService.deleteCouponActivity(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("删除成功");
@@ -291,7 +304,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
             throw new BusinessException(BusinessCode.CODE_1007);
         }
         logger.info("revocationActivityCoupon--Id:" + condition.getId());
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<>();
         couponActivityService.revocationActivityCoupon(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("撤销成功");
@@ -320,7 +333,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(condition.getActivityStatus()==CouponActivityEnum.ACTIVITY_OPEN.getCode()){
             condition.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
         }
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<>();
         couponActivityService.updateCouponActivityStatus(condition);
         responseResult.setCode(BusinessCode.CODE_OK);
         responseResult.setMessage("停止活动成功！");

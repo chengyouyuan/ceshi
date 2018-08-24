@@ -72,6 +72,38 @@
       #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{statementCountId,jdbcType=BIGINT}
       )
   </insert>
+  
+  <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into pay_statement 
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+      pay_time, appid, 
+      mch_id, sub_mch_id, device_id, 
+      wx_order_no, out_order_no, user_identity, 
+      pay_type, pay_status, bank_type, 
+      currency_type, total_amount, discount_amount, 
+      refund_start_time, refund_success_time, 
+      refund_wx_order_no, refund_out_order_no, refund_amount, 
+      refund_discount_amount, refund_type, refund_status, 
+      prod_name, mch_data, fee, 
+      rate, bill_date, statement_count_id
+      </trim>
+    values
+    <foreach collection="list" item="item" index="index"  separator=",">
+        <trim prefix="(" suffix=")" suffixOverrides=","> 
+       #{payTime,jdbcType=TIMESTAMP}, #{appid,jdbcType=VARCHAR}, 
+      #{mchId,jdbcType=VARCHAR}, #{subMchId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
+      #{wxOrderNo,jdbcType=VARCHAR}, #{outOrderNo,jdbcType=VARCHAR}, #{userIdentity,jdbcType=VARCHAR}, 
+      #{payType,jdbcType=VARCHAR}, #{payStatus,jdbcType=VARCHAR}, #{bankType,jdbcType=VARCHAR}, 
+      #{currencyType,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DECIMAL}, #{discountAmount,jdbcType=DECIMAL}, 
+      #{refundStartTime,jdbcType=TIMESTAMP}, #{refundSuccessTime,jdbcType=TIMESTAMP}, 
+      #{refundWxOrderNo,jdbcType=VARCHAR}, #{refundOutOrderNo,jdbcType=VARCHAR}, #{refundAmount,jdbcType=DECIMAL}, 
+      #{refundDiscountAmount,jdbcType=DECIMAL}, #{refundType,jdbcType=VARCHAR}, #{refundStatus,jdbcType=VARCHAR}, 
+      #{prodName,jdbcType=VARCHAR}, #{mchData,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, 
+      #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{statementCountId,jdbcType=BIGINT}
+      </trim>
+    </foreach>
+  </insert>
+  
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatement">
     insert into pay_statement
     <trim prefix="(" suffix=")" suffixOverrides=",">

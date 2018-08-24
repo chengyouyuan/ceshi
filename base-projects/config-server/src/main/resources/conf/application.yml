@@ -1,9 +1,4 @@
 spring:
-  boot:
-    admin:
-      client:
-        instance:
-          prefer-ip: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     default-property-inclusion: non_null
@@ -49,10 +44,9 @@ eureka:
 
 feign.hystrix.enabled: true
 
-hystrix.threadpool.default:
-  coreSize: 20
-  maximumSize: 200
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
+hystrix.command.default.execution.isolation.strategy: SEMAPHORE
+hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests: 200
 
 ribbon:
   ServerListRefreshInterval: 2000

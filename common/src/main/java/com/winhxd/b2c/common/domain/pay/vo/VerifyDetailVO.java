@@ -5,9 +5,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.UUID;
+
 @ApiModel("费用明细")
 @Data
 public class VerifyDetailVO extends AccountingDetail {
+
+    @ApiModelProperty("前端返回唯一标识")
+    private String index;
 
     @ApiModelProperty("费用类型")
     private String detailTypeName;
@@ -31,5 +36,9 @@ public class VerifyDetailVO extends AccountingDetail {
 
     public String getVerifyStatusName() {
         return VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    }
+
+    public String getIndex() {
+        return String.valueOf(getId());
     }
 }

@@ -1,6 +1,5 @@
 package com.winhxd.b2c.registry;
 
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -8,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @EnableEurekaServer
-@EnableAdminServer
 @SpringBootApplication
 public class RegistryServerApplication {
     private static final Logger log = LoggerFactory.getLogger(RegistryServerApplication.class);

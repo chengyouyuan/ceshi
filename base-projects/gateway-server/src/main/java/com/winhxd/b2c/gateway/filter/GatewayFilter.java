@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.support.ContextHelper;
+import com.winhxd.b2c.common.context.version.VersionContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
@@ -97,14 +98,22 @@ public class GatewayFilter implements GlobalFilter, Ordered {
             if (StringUtils.isBlank(tokenJson)) {
                 return error(exchange, response, BusinessCode.CODE_1002);
             }
+            ServerHttpRequest.Builder mutateRequest = request.mutate();
+            String msVer = request.getHeaders().getFirst(VersionContext.HEADER_NAME);
             if (grp.equals(AppConstant.GRP_CUSTOMER)) {
                 CustomerUser customerUser = ContextHelper.getHeaderObject(tokenJson, CustomerUser.class);
                 currentSpan.tag(ContextHelper.TRACER_API_CUSTOMER, customerUser.getCustomerId().toString());
+                if (StringUtils.isBlank(msVer) && StringUtils.isNotBlank(customerUser.getMsVer())) {
+                    mutateRequest.header(VersionContext.HEADER_NAME, customerUser.getMsVer());
+                }
             } else {
                 StoreUser storeUser = ContextHelper.getHeaderObject(tokenJson, StoreUser.class);
                 currentSpan.tag(ContextHelper.TRACER_API_STORE, storeUser.getStoreCustomerId().toString());
+                if (StringUtils.isBlank(msVer) && StringUtils.isNotBlank(storeUser.getMsVer())) {
+                    mutateRequest.header(VersionContext.HEADER_NAME, storeUser.getMsVer());
+                }
             }
-            requestBuilder = request.mutate().header(header, ContextHelper.encode(tokenJson));
+            requestBuilder = mutateRequest.header(header, ContextHelper.encode(tokenJson));
         }
 
         ServerHttpRequestDecorator requestDecorator = new ServerHttpRequestDecorator(requestBuilder == null ? request : requestBuilder.build()) {

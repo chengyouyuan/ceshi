@@ -175,8 +175,6 @@ public final class BusinessCode {
     public static final int CODE_402008 = 402008;
     /**订单id参数为空*/
     public static final int CODE_402013 = 402013;
-    /** 购物车:商品下架或删除*/
-    public static final int CODE_402010 = 402010;
     /** 购物车:商品信息不存在或获取商品数量不正确*/
     public static final int CODE_402011 = 402011;
     /** 购物车:购物车商品价格有变动*/
@@ -187,6 +185,12 @@ public final class BusinessCode {
     public static final int CODE_402016 = 402016;
     /** 购物车:获取支付信息失败*/
     public static final int CODE_402015 = 402015;
+    /** 购物车:计算订单优惠金额失败*/
+    public static final int CODE_402017 = 402017;
+    /** 购物车:获取最优优惠券失败*/
+    public static final int CODE_402018 = 402018;
+    /** 购物车:账号被锁定，请联系客服！*/
+    public static final int CODE_402019 = 402019;
 
 
     /** 查询订单参数异常*/
@@ -236,6 +240,9 @@ public final class BusinessCode {
 
     /** 优惠金额不能大于满减金额*/
     public static final int CODE_500015 = 500015;
+
+    /** 必填字段长度太长*/
+    public static final int CODE_500016 = 500016;
 
     /** 优惠券活动添加失败*/
     public static final int CODE_503001 = 503001;

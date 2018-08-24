@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.winhxd.b2c.pay.dao.StoreBankrollMapper">
-  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
+ <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="store_id" jdbcType="BIGINT" property="storeId" />
     <result column="total_moeny" jdbcType="DECIMAL" property="totalMoeny" />
@@ -9,6 +9,7 @@
     <result column="presented_frozen_money" jdbcType="DECIMAL" property="presentedFrozenMoney" />
     <result column="settlement_settled_money" jdbcType="DECIMAL" property="settlementSettledMoney" />
     <result column="already_presented_money" jdbcType="DECIMAL" property="alreadyPresentedMoney" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
     <result column="created" jdbcType="TIMESTAMP" property="created" />
@@ -17,10 +18,9 @@
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-     id, store_id,
-     if(isnull(total_moeny),0.00,total_moeny) as total_moeny,
-     presented_money, presented_frozen_money, settlement_settled_money, already_presented_money,
-    created_by, created_by_name, created, updated_by, updated_by_name, updated
+    id, store_id, total_moeny, presented_money, presented_frozen_money, settlement_settled_money, 
+    already_presented_money, status, created_by, created_by_name, created, updated_by, 
+    updated_by_name, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -34,16 +34,15 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
     insert into store_bankroll (id, store_id, total_moeny, 
-      presented_money, presented_frozen_money, settlement_settled_money, already_presented_money,
-      created_by, created_by_name, created, 
-      updated_by, updated_by_name, updated
-      )
+      presented_money, presented_frozen_money, settlement_settled_money, 
+      already_presented_money, status, created_by, 
+      created_by_name, created, updated_by, 
+      updated_by_name, updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{totalMoeny,jdbcType=DECIMAL}, 
-      #{presentedMoney,jdbcType=DECIMAL}, #{presentedFrozenMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL},
-      #{alreadyPresentedMoney,jdbcType=DECIMAL}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}
-      )
+      #{presentedMoney,jdbcType=DECIMAL}, #{presentedFrozenMoney,jdbcType=DECIMAL}, #{settlementSettledMoney,jdbcType=DECIMAL}, 
+      #{alreadyPresentedMoney,jdbcType=DECIMAL}, #{status,jdbcType=SMALLINT}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdByName,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
+      #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
     insert into store_bankroll
@@ -68,6 +67,9 @@
       </if>
       <if test="alreadyPresentedMoney != null">
         already_presented_money,
+      </if>
+      <if test="status != null">
+        status,
       </if>
       <if test="createdBy != null">
         created_by,
@@ -110,6 +112,9 @@
       <if test="alreadyPresentedMoney != null">
         #{alreadyPresentedMoney,jdbcType=DECIMAL},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
       <if test="createdBy != null">
         #{createdBy,jdbcType=BIGINT},
       </if>
@@ -151,6 +156,9 @@
       <if test="alreadyPresentedMoney != null">
         already_presented_money = #{alreadyPresentedMoney,jdbcType=DECIMAL},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
       <if test="createdBy != null">
         created_by = #{createdBy,jdbcType=BIGINT},
       </if>
@@ -180,6 +188,7 @@
       presented_frozen_money = #{presentedFrozenMoney,jdbcType=DECIMAL},
       settlement_settled_money = #{settlementSettledMoney,jdbcType=DECIMAL},
       already_presented_money = #{alreadyPresentedMoney,jdbcType=DECIMAL},
+      status = #{status,jdbcType=SMALLINT},
       created_by = #{createdBy,jdbcType=BIGINT},
       created_by_name = #{createdByName,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
@@ -196,6 +205,7 @@
     <include refid="Base_Column_List" />
     from store_bankroll
     where store_id = #{storeId}
+    and status =1
     ORDER BY updated DESC,created DESC
   </select>
 

@@ -49,6 +49,10 @@ public class UserContext {
         return acceptLanguage.get();
     }
 
+    public static void setCurrentAdminUser(AdminUser adminUser) {
+        currentAdminUser.set(adminUser);
+    }
+
     public static void initContext(Tracer tracer) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();

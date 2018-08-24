@@ -3,6 +3,7 @@ package com.winhxd.b2c.order.dao;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -98,7 +99,7 @@ public interface OrderInfoMapper {
     OrderInfoDetailVO selectOrderInfoByOrderNo(String orderNo);
 
     /**
-     * 获取门店销售汇总信息
+     * 获取门店已支付订单销售汇总信息
      *
      * @param storeId
      * @param startDateTime
@@ -110,6 +111,7 @@ public interface OrderInfoMapper {
     StoreOrderSalesSummaryVO getStoreOrderTurnover(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 
     /**
+     * 获取门店已支付订单门店信息统计
      * @param storeId
      * @param startDateTime
      * @param endDateTime
@@ -306,7 +308,7 @@ public interface OrderInfoMapper {
     int updateOrderStatusForReturnWaitSelfLifting(@Param("orderNo") String orderNo, @Param("storeId") Long storeId, @Param("reason") String reason);
 
     /**
-     * 获取指定时间内 门店下单完成的用户id
+     * 获取指定时间内 门店下单付款(未取消)的用户id，及订单数
      * @author wangbin
      * @date  2018年8月23日 下午3:33:22
      * @param storeId
@@ -314,5 +316,27 @@ public interface OrderInfoMapper {
      * @param endDateTime
      * @return
      */
-    List<Long> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+    List<Map<String, Double>> getStoreOrderDistinctCustomerIds(@Param("storeId")long storeId, @Param("startDateTime")Date startDateTime, @Param("endDateTime")Date endDateTime);
+
+    /**
+     * 获取门店完成订单销售信息
+     * @author wangbin
+     * @date  2018年8月24日 上午11:03:36
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreCompletedOrderTurnover(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+
+    /**
+     * 获取门店完成订单用户信息
+     * @author wangbin
+     * @date  2018年8月24日 上午11:03:50
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO getStoreCompletedOrderCustomerNum(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
 }

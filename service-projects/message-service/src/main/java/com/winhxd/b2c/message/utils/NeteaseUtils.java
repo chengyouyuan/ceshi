@@ -1,8 +1,10 @@
 package com.winhxd.b2c.message.utils;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsg;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
+import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
 import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -11,7 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,10 +156,10 @@ public class NeteaseUtils {
      * @param neteaseMsgCondition
      * @return
      */
-    public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition){
+    public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition,String msgId){
         String bodyMsg = buildBodyJsonMsg(neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         //扩展参数
-        String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg());
+        String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg(),msgId);
         //组织参数
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("from", NETEASE_PLATFORM_ADMIN));
@@ -173,23 +174,80 @@ public class NeteaseUtils {
     }
 
     private String buildBodyJsonMsg(String msgContent) {
-        JSONObject bodyJson = new JSONObject();
+        ObjectNode bodyJson = JsonUtil.createObjectNode();
         bodyJson.put("type","txt");
         bodyJson.put("msg",msgContent);
-        return bodyJson.toJSONString();
+        return bodyJson.toString();
     }
 
-    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
-        JSONObject extJson = new JSONObject();
+    /**
+     * 发单个消息用，消息弹窗，需要msgId来处理已读未读
+     * @param neteaseMsg
+     * @param msgId
+     * @return
+     */
+    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg,String msgId){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
+        ObjectNode extJson = JsonUtil.createObjectNode();
+        extJson.put("title",neteaseMsg.getMsgContent());
+        extJson.put("pagetype",String.valueOf(neteaseMsg.getPageType()));
+        extJson.put("audiotype", String.valueOf(neteaseMsg.getAudioType()));
+        extJson.put("page", neteaseMsg.getTreeCode());
+        extJson.put("msgId",msgId);
+        if(neteaseMsg.getAudioType() == 1 || neteaseMsg.getAudioType() == 2){
+            //文字转语音
+            extJson.put("transferAudio","1");
+        }else{
+            //不转语音
+            extJson.put("transferAudio","0");
+        }
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
+    }
+
+    /**
+     * 批量推送消息用
+     * @param content
+     * @return
+     */
+    public static String buildExtJsonMsg4Batch(String content){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
+        ObjectNode extJson = JsonUtil.createObjectNode();
+        extJson.put("title",content);
+        extJson.put("pagetype",String.valueOf(MsgPageTypeEnum.NOTICE.getPageType()));
+        extJson.put("audiotype", String.valueOf("0"));
+        extJson.put("page", "");
+        extJson.put("transferAudio","0");
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
+    }
+
+    /**
+     * 保存用，组织参数
+     * @param neteaseMsg
+     * @return
+     */
+    public static String buildExtJsonMsg4Save(NeteaseMsg neteaseMsg){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
+        ObjectNode extJson = JsonUtil.createObjectNode();
         extJson.put("title",neteaseMsg.getMsgContent());
         extJson.put("pagetype",neteaseMsg.getPageType());
         extJson.put("audiotype", neteaseMsg.getAudioType());
         extJson.put("page", neteaseMsg.getTreeCode());
-        return extJson.toJSONString();
+        if(neteaseMsg.getAudioType() == 1 || neteaseMsg.getAudioType() == 2){
+            //文字转语音
+            extJson.put("transferAudio","1");
+        }else{
+            //不转语音
+            extJson.put("transferAudio","0");
+        }
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
     }
 
     public Map<String,Object> sendTxtMessage2Batch(String[] accids,String content){
         String bodyMsg = buildBodyJsonMsg(content);
+        String extMsg = buildExtJsonMsg4Batch(content);
         //组织参数
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("fromAccid", NETEASE_PLATFORM_ADMIN));
@@ -197,6 +255,7 @@ public class NeteaseUtils {
         //type:0表示文本消息
         nvps.add(new BasicNameValuePair("type", "0"));
         nvps.add(new BasicNameValuePair("body", bodyMsg));
+        nvps.add(new BasicNameValuePair("ext", extMsg));
         return  sendHttpClientPost(SEND_BATCH_MSG_URL,nvps);
     }
 

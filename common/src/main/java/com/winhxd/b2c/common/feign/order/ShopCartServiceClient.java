@@ -3,8 +3,8 @@ package com.winhxd.b2c.common.feign.order;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCartQueryCondition;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.order.vo.ShopCartProductVO;
 import feign.hystrix.FallbackFactory;
@@ -28,7 +28,7 @@ public interface ShopCartServiceClient {
     ResponseResult<List<ShopCartProductVO>> queryShopCartBySelective(@RequestBody ShopCartProductCondition condition);
 
     @RequestMapping(value = "/order/4071/v1/findShopCar", method = RequestMethod.POST)
-    ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarQueryCondition condition);
+    ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCartQueryCondition condition);
 }
 @Component
 class ShopCartServiceClientFallback implements ShopCartServiceClient, FallbackFactory<ShopCartServiceClient> {
@@ -53,7 +53,7 @@ class ShopCartServiceClientFallback implements ShopCartServiceClient, FallbackFa
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
     @Override
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(ShopCarQueryCondition condition) {
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(ShopCartQueryCondition condition) {
         logger.error("OrderServiceFallback -> findShopCar", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

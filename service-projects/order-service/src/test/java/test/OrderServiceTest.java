@@ -246,4 +246,22 @@ public class OrderServiceTest {
         cache.hdel(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
     }
     
+    @Test
+    public void testcacheOrder(){
+        System.out.println(cache.set(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + "111", "111", "NX", "EX", 100));
+        orderQueryService.getOrderDetail4Management(111 + "");
+    }
+
+    @Test
+    public void testOrderRefundTimeOut1DayUnconfirmed(){
+        orderService.orderRefundTimeOut1DayUnconfirmed("C18082415701833084");
+    }
+    @Test
+    public void testOrderRefundTimeOut1HourUnconfirmed(){
+        orderService.orderRefundTimeOut1HourUnconfirmed("C18082415701833084");
+    }
+    @Test
+    public void testOrderRefundTimeOut3DaysUnconfirmed(){
+        orderService.orderRefundTimeOut3DaysUnconfirmed("C18082415701833084");
+    }
 }

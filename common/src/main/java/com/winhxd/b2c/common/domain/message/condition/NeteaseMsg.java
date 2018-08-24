@@ -30,6 +30,9 @@ public class NeteaseMsg {
     @ApiModelProperty("根据订单状态，播放手机端语音文件，0：不播放，1：用户下单，2：用户发起退款")
     private int audioType;
 
+    @ApiModelProperty("是否需要语音。1：转语音;0:不转语音。;")
+    private int transferAudio;
+
     @ApiModelProperty("0：在消息盒子中;1:不在消息盒子中;")
     private int msgType;
 

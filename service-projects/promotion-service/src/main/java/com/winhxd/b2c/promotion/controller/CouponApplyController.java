@@ -54,7 +54,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition) {
-        ResponseResult<Integer> responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int count = couponApplyService.updateCouponApplyToValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
@@ -90,7 +90,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<Integer> addCouponApply(@RequestBody CouponApplyCondition condition) {
-        ResponseResult<Integer> responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int flag = couponApplyService.addCouponApply(condition);
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);

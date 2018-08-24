@@ -109,7 +109,7 @@
               "path":"customer/user/1062/v1/removeBlackList",
               "confirm":{
                 "title": "确认提示",
-                "message":"确定要添加黑名单吗?"
+                "message":"确定要移出黑名单吗?"
               },
               "params": [
                 "customerId"

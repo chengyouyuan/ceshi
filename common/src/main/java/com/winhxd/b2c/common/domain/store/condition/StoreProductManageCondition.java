@@ -30,8 +30,8 @@ public class StoreProductManageCondition extends ApiCondition implements Seriali
 	@ApiModelProperty("商品id")
 	private String prodId;
 
-	@ApiModelProperty("是否推荐 0不推荐 1推荐")
-	private Short recommend;
+	@ApiModelProperty("是否推荐 0不推荐 1推荐 2全部，默认是2")
+	private Short recommend=2;
 
 	@ApiModelProperty("商品状态 0下架1上架2已删除")
 	private List<Short> prodStatus;

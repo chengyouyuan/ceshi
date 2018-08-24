@@ -57,12 +57,12 @@ public class StatisticsService {
            if(result!=null&&result.getCode()==BusinessCode.CODE_OK
                    &&result.getData()!=null){
                OrderInfoDetailVO4Management management= result.getData();
+               logger.error("获取订单信息："+management); 
                OrderInfoDetailVO detail= management.getOrderInfoDetailVO();
                if(detail!=null){
                    List<OrderItemVO> orderItemList=detail.getOrderItemVoList();
-                   Long storeId=orderInfo.getStoreId();
                    List<StoreProductStatistics> statisticsList=new ArrayList<>();
-                   if(orderItemList!=null){
+                   if(orderItemList!=null&&orderItemList.size()>0){
                        for(OrderItemVO o:orderItemList){
                            StoreProductStatistics spStatistics=new StoreProductStatistics();
                            spStatistics.setStoreId(detail.getStoreId());
@@ -76,10 +76,17 @@ public class StatisticsService {
                        //批量插入
                        if(statisticsList.size()>0){
                            storeProductStatisticsService.bathSaveStoreProductStatistics(statisticsList);
+                           logger.info("保存统计信息成功！"); 
                        }
+                   }else{
+                       logger.info("获取订单商品列表失败！");  
                    }
+               }else{
+                   logger.error("获取不到订单detail信息！"+detail); 
                }
   
+           }else{
+               logger.error("调用订单服务异常！"+result.getCode());  
            }
 
         }

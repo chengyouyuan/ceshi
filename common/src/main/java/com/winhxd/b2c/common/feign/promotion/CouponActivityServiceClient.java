@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -137,68 +138,73 @@ public interface CouponActivityServiceClient {
 }
 
 @Component
-class CouponActivityServiceFallback implements CouponActivityServiceClient {
+class CouponActivityServiceFallback implements FallbackFactory<CouponActivityServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(CouponActivityServiceFallback.class);
-    private Throwable throwable;
 
     @Override
-    public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> queryCouponActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+    public CouponActivityServiceClient create(Throwable throwable) {
+        return new CouponActivityServiceClient() {
 
-    @Override
-    public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
-        logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
-        return new ResponseResult<List<StoreUserInfoVO>>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> queryCouponActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {
-        logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
+                logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
+                return new ResponseResult<List<StoreUserInfoVO>>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
-        logger.error("CouponActivityServiceFallback -> getCouponActivityById", throwable);
-        return new ResponseResult<CouponActivityVO>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> addCouponActivity(CouponActivityAddCondition condition) {
+                logger.error("CouponActivityServiceFallback -> addCouponActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> updateCouponActivity(CouponActivityAddCondition condition) {
-        logger.error("CouponActivityServiceFallback -> updateCouponActivity", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<CouponActivityVO> getCouponActivityById(String id) {
+                logger.error("CouponActivityServiceFallback -> getCouponActivityById", throwable);
+                return new ResponseResult<CouponActivityVO>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> deleteCouponActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> deleteCouponActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> updateCouponActivity(CouponActivityAddCondition condition) {
+                logger.error("CouponActivityServiceFallback -> updateCouponActivity", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> revocationActivityCoupon(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> revocationActivityCoupon", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> deleteCouponActivity(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> deleteCouponActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<Integer> updateCouponActivityStatus(CouponActivityAddCondition condition) {
-        logger.error("CouponActivityServiceFallback -> updateCouponActivityStatus", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> revocationActivityCoupon(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> revocationActivityCoupon", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> queryCouponByActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
+            @Override
+            public ResponseResult<Integer> updateCouponActivityStatus(CouponActivityAddCondition condition) {
+                logger.error("CouponActivityServiceFallback -> updateCouponActivityStatus", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
 
-    @Override
-    public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
-        logger.error("CouponActivityServiceFallback -> queryStoreByActivity", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
+            @Override
+            public ResponseResult<PagedList<CouponActivityStoreVO>> queryCouponByActivity(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> queryCouponByActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> queryStoreByActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+        };
     }
 
 }

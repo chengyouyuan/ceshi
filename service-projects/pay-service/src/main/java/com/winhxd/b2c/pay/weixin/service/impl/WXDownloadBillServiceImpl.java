@@ -22,6 +22,7 @@ import com.winhxd.b2c.common.domain.pay.model.PayStatementCount;
 import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.pay.weixin.base.dto.PayBillDownloadResponseDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
@@ -39,9 +40,10 @@ import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
  * @author yuluyuan
  *
  * 2018年8月15日
+ * @param <E>
  */
 @Service
-public class WXDownloadBillServiceImpl implements WXDownloadBillService {
+public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 
     private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
     
@@ -192,8 +194,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					
 					//保存数据
 					//此处list过大需要分批次插入
+					List<PayStatement> arrayList = new ArrayList<PayStatement>();
+					int num = 0;
 					for (PayStatement payStatement : list) {
-						payStatementMapper.insertSelective(payStatement);
+						try {
+							arrayList.add(payStatement);
+							num++;
+							if (num % 20 == 0 || num == list.size()) {
+								payStatementMapper.insertBatch(arrayList);
+								arrayList.clear();
+							}
+						} catch (Exception e) {
+							logger.error("{},保存对账单失败：{}", sdf.format(billDate), e);
+							logger.error("保存对账单失败：" + JsonUtil.toJSONString(arrayList));
+						}
 					}
 					//业务成功，记录到记录表
 					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
@@ -473,8 +487,20 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 					
 					//保存数据
 					//此处list过大需要分批次插入
+					List<PayFinancialBill> arrayList = new ArrayList<PayFinancialBill>();
+					int num = 0;
 					for (PayFinancialBill payFinancialBill : list) {
-						payFinancialBillMapper.insertSelective(payFinancialBill);
+						try {
+							arrayList.add(payFinancialBill);
+							num++;
+							if (num % 20 == 0 || num == list.size()) {
+								payFinancialBillMapper.insertBatch(arrayList);
+								arrayList.clear();
+							}
+						} catch (Exception e) {
+							logger.error("{},保存资金账单失败：{}", sdf.format(billDate), e);
+							logger.error("保存资金账单失败：" + JsonUtil.toJSONString(arrayList));
+						}
 					}
 					//业务成功，记录到记录表
 					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());

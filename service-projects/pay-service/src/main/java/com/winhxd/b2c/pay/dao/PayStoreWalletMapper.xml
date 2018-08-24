@@ -8,9 +8,13 @@
     <result column="nick" jdbcType="VARCHAR" property="nick" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="mobile" jdbcType="CHAR" property="mobile" />
+    <result column="verification_code" jdbcType="VARCHAR" property="verificationCode" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, store_id, openid, nick, name, status
+    id, store_id, openid, nick, name, status, mobile, verification_code, created, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -24,11 +28,13 @@
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
     insert into pay_store_wallet (id, store_id, openid, 
-      nick, name, status
-      )
+      nick, name, status, 
+      mobile, verification_code, created, 
+      updated)
     values (#{id,jdbcType=BIGINT}, #{storeId,jdbcType=BIGINT}, #{openid,jdbcType=VARCHAR}, 
-      #{nick,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}
-      )
+      #{nick,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, 
+      #{mobile,jdbcType=CHAR}, #{verificationCode,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
     insert into pay_store_wallet
@@ -51,6 +57,18 @@
       <if test="status != null">
         status,
       </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="verificationCode != null">
+        verification_code,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -70,6 +88,18 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="verificationCode != null">
+        #{verificationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -91,7 +121,32 @@
       <if test="status != null">
         status = #{status,jdbcType=SMALLINT},
       </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=CHAR},
+      </if>
+      <if test="verificationCode != null">
+        verification_code = #{verificationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null">
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
     </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
+    update pay_store_wallet
+    set store_id = #{storeId,jdbcType=BIGINT},
+      openid = #{openid,jdbcType=VARCHAR},
+      nick = #{nick,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      mobile = #{mobile,jdbcType=CHAR},
+      verification_code = #{verificationCode,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   
@@ -103,15 +158,6 @@
     where status = 1 and store_id = #{storeId,jdbcType=BIGINT}
   </update>
   
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
-    update pay_store_wallet
-    set store_id = #{storeId,jdbcType=BIGINT},
-      openid = #{openid,jdbcType=VARCHAR},
-      nick = #{nick,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      status = #{status,jdbcType=SMALLINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
   <select id="selectByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

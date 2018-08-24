@@ -153,7 +153,7 @@ public class CouponController implements CouponServiceClient{
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
-	public ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
+	public ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody CouponInvestorAmountCondition condition) {
 		LOGGER.info("=/promotion/5046/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--开始--{}", condition);
 		ResponseResult<List<CouponInvestorAmountVO>> result = new ResponseResult<>();
 		List<CouponInvestorAmountVO>  couponInvestorAmountVOs = couponService.getCouponInvestorAmount(condition);

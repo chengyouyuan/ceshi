@@ -38,7 +38,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
-        ResponseResult<Integer> responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
             if(flag!=0){
              throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
@@ -74,7 +74,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition) {
-        ResponseResult<Integer> responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int count = couponGradeService.updateCouponGradeValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);

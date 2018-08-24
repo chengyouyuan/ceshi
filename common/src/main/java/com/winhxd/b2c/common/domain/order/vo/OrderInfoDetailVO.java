@@ -26,7 +26,7 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "下单用户ID", required = true)
     private Long customerId;
-    
+
     /**
      * 接单门店ID
      */
@@ -52,13 +52,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "提货码", required = true)
     private String pickupCode;
-    
+
     /**
      * 提货码
      */
     @ApiModelProperty(value = "所以用优惠券标题", required = true)
     private String couponTitles;
-    
+
     /**
      * 订单总金额
      */
@@ -74,13 +74,13 @@ public class OrderInfoDetailVO implements Serializable {
      */
     @ApiModelProperty(value = "订单实付金额", required = true)
     private BigDecimal realPaymentMoney;
-    
+
     @ApiModelProperty(value = "订单商品总数量", required = true)
     private Integer skuQuantity;
-    
+
     @ApiModelProperty(value = "订单商品种类数量", required = true)
     private Integer skuCategoryQuantity;
-    
+
     /**
      * 支付类型:1为微信扫码付款;2为微信在线支付;
      */
@@ -88,7 +88,7 @@ public class OrderInfoDetailVO implements Serializable {
     private Short payType;
     @ApiModelProperty(value = "支付类型描述", required = true)
     private String payTypeDesc;
-    
+
     @ApiModelProperty(value = "订单支付流水号", required = false)
     private String paymentSerialNum;
     /**
@@ -155,6 +155,6 @@ public class OrderInfoDetailVO implements Serializable {
     private String storeMobile;
     @ApiModelProperty(value = "商家名称", required = true)
     private String storeName;
-    @ApiModelProperty(value = "用户头像", required = true)
+    @ApiModelProperty(value = "用户头像")
     private String headImg;
 }

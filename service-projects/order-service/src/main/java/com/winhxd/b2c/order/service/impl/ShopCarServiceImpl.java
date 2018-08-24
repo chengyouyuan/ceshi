@@ -125,6 +125,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         ShopCarVO result = new ShopCarVO();
         List<ShopCar> shopCars = queryShopCars(customerId, storeId);
         if (CollectionUtils.isEmpty(shopCars)) {
+            result.setShopCarts(Collections.emptyList());
             return result;
         }
         // 商品详情

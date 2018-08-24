@@ -310,7 +310,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
-        couponVOS.sort((a,b)->Integer.parseInt(b.getReceiveStatus())-Integer.parseInt(a.getReceiveStatus()));
+        results.sort((a,b)->Integer.parseInt(b.getReceiveStatus())-Integer.parseInt(a.getReceiveStatus()));
         return this.getCouponDetail(results);
     }
 

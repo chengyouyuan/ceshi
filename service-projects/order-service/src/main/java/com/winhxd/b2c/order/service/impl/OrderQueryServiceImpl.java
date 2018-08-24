@@ -179,6 +179,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                         return p.toString();
                      }).collect(Collectors.toList());
                     cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                    cache.expire(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }
             }
             //设置到缓存

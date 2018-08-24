@@ -463,19 +463,20 @@ public class PayServiceImpl implements PayService{
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
 					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
+					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+					storeBankroll.setTotalMoeny(totalMoney);
 				}
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
 				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
 				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
 				settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
 				
-				totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+				
 				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
 				presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
 				alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
 				settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 				
-				storeBankroll.setTotalMoeny(totalMoney);
 				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
 				storeBankroll.setPresentedMoney(presentedMoney);
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);

@@ -903,7 +903,7 @@ public class CouponServiceImpl implements CouponService {
                 CouponInStoreGetedAndUsedVO vo = list.get(i);
                 if(countList!=null){
                     for(int j=0;j<countList.size();j++){
-                        if(vo.getTempleteId().equals(countList.get(j).getTempleteId())){
+                        if(vo.getCouponActivityId().equals(countList.get(j).getCouponActivityId()) && vo.getTempleteId().equals(countList.get(j).getTempleteId())){
                             vo.setTotalCount(countList.get(j).getTotalCount());
                             vo.setUsedCount(countList.get(j).getUsedCount());
                         }

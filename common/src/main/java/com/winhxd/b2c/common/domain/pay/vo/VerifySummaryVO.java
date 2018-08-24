@@ -4,11 +4,10 @@ import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
 
 @ApiModel("结算汇总")
 @Data
@@ -31,6 +30,8 @@ public class VerifySummaryVO {
 
     @ApiModelProperty("订单截止日")
     private Date lastRecordedTime;
+
+    private String verifyCode;
 
     @ApiModelProperty("操作时间")
     private Date operatedTime;
@@ -55,6 +56,11 @@ public class VerifySummaryVO {
     }
 
     public String getIndex() {
-        return UUID.randomUUID().toString();
+        String notNullVerifyCode = String.valueOf(getVerifyCode());
+        StringBuilder sb = new StringBuilder();
+        sb.append(getVerifyStatus());
+        sb.append(notNullVerifyCode);
+        sb.append(String.valueOf(getStoreId()));
+        return Base64.getEncoder().encodeToString(sb.toString().getBytes());
     }
 }

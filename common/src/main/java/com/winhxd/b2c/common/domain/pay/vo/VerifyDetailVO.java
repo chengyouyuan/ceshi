@@ -39,6 +39,6 @@ public class VerifyDetailVO extends AccountingDetail {
     }
 
     public String getIndex() {
-        return UUID.randomUUID().toString();
+        return String.valueOf(getId());
     }
 }

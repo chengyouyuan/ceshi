@@ -19,7 +19,6 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderAvailableCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
-import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -31,7 +30,6 @@ import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -236,7 +234,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         StoreUserInfoVO storeUserInfoVO = getStoreUserInfoVO(storeId);
         vo.setStoreAddress(storeUserInfoVO.getStoreAddress());
         vo.setPayType(storeUserInfoVO.getPayType());
-        vo.setCoupon(getDefaultCoupon(storeId));
+        vo.setCoupon(coupon);
         vo.setShopCarts(this.findShopCar(storeId, customerId).getShopCarts());
         return vo;
     }
@@ -247,7 +245,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         orderAvailableCouponCondition.setStoreId(storeId);
         ResponseResult<CouponVO> result = couponServiceClient.findDefaultCoupon(orderAvailableCouponCondition);
         if (null == result || result.getCode() != BusinessCode.CODE_OK ) {
-            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + result);
+            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + JsonUtil.toJSONString(result));
             throw new BusinessException(BusinessCode.CODE_402018);
         }
         return result.getData();

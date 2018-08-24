@@ -158,15 +158,6 @@
     where status = 1 and store_id = #{storeId,jdbcType=BIGINT}
   </update>
   
-  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStoreWallet">
-    update pay_store_wallet
-    set store_id = #{storeId,jdbcType=BIGINT},
-      openid = #{openid,jdbcType=VARCHAR},
-      nick = #{nick,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      status = #{status,jdbcType=SMALLINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
   <select id="selectByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

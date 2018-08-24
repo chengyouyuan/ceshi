@@ -1911,7 +1911,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() + 1);
                     storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()
                     ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
-                    cache.sadd(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), orderInfo.getCustomerId().toString());
+                    cache.zincrby(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), 1, orderInfo.getCustomerId().toString());
                 } else {
                     //取消进行 减少计算
                     storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() - orderInfo
@@ -1920,9 +1920,14 @@ public class CommonOrderServiceImpl implements OrderService {
                     storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() - 1);
                     storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().subtract(orderInfo.getOrderTotalMoney()
                     ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
-                    cache.srem(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), orderInfo.getCustomerId().toString());
+                    cache.zincrby(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), -1, orderInfo.getCustomerId().toString());
+                    Double score = cache.zscore(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), orderInfo.getCustomerId().toString());
+                    if (score != null && score.intValue() < 1) {
+                        //如果小于1表示该用户没有其他订单，直接删除该条缓存数据
+                        cache.zrem(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), orderInfo.getCustomerId().toString());
+                    }
                 }
-                storeOrderSalesSummaryVO.setCustomerNum(cache.scard(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId())).intValue());
+                storeOrderSalesSummaryVO.setCustomerNum(cache.zcard(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId())).intValue());
                 //设置到缓存
                 cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
             }

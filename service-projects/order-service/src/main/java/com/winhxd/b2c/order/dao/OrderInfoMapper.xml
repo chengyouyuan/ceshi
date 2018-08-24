@@ -699,12 +699,18 @@
         <include refid="orderFinishCondition"></include>
         group by store_id
     </select>
-    <select id="getStoreOrderDistinctCustomerIds" resultType="java.lang.Long">
+    <resultMap id="getCustOrderCount"   type="java.util.HashMap">  
+	    <result property="key" column="customerId" />  
+	    <result property="value" column="count" />  
+	</resultMap>  
+    <select id="getStoreOrderDistinctCustomerIds" resultMap="getCustOrderCount">
         select
-        	distinct customer_id
+   	        customer_id customerId, 
+			COUNT(*) count
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
         <include refid="orderPaidCondition"></include>
+        GROUP BY customer_id
     </select>
     <select id="getPickUpCodeByStoreId" resultType="java.lang.Boolean">
         select count(*) from order_info info

@@ -5,8 +5,11 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -173,15 +176,17 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             Date endDateTime = new Date(lastSecond);
             storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
             if (storeOrderSalesSummaryVO != null && storeOrderSalesSummaryVO.getCustomerNum() != null && storeOrderSalesSummaryVO.getCustomerNum() > 0 ) {
-                //获取当前下单的去重用户id
-                List<Long> distinctCustomerIds = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
-                if (CollectionUtils.isNotEmpty(distinctCustomerIds)) {
-                    List<String> strCustomerIds = distinctCustomerIds.stream().map(p -> {
-                        return p.toString();
-                     }).collect(Collectors.toList());
+                //获取当前下单的用户及所对应的订单数,并存入redis用于进行缓存计算
+                List<Map<String, Double>> customerOrderCountList = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
+                if (CollectionUtils.isNotEmpty(customerOrderCountList)) {
+                    Map<String, Double> totalCustomerOrderCountMap = new HashMap<>(customerOrderCountList.size());
+                    for (Iterator<Map<String, Double>> iterator = customerOrderCountList.iterator(); iterator.hasNext();) {
+                        Map<String, Double> customerOrderCountMap = iterator.next();
+                        totalCustomerOrderCountMap.putAll(customerOrderCountMap);
+                    }
                     //先删除所有的redis数据
                     cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));
-                    cache.sadd(OrderUtil.getStoreOrderCustomerIdSetField(storeId), strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                    cache.zadd(OrderUtil.getStoreOrderCustomerIdSetField(storeId), totalCustomerOrderCountMap);
                     cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }
             }

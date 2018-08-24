@@ -162,6 +162,7 @@ public class ApiStoreLoginController {
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 				storeUserInfo.setId(db.getId());
+				storeUserInfo.setAppLoginStatus((short)0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -197,6 +198,7 @@ public class ApiStoreLoginController {
 			storeUserInfo.setStoreMobile(map.getStoreMobile());
 			logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+			storeUserInfo.setAppLoginStatus((short)0);
 			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
@@ -232,6 +234,7 @@ public class ApiStoreLoginController {
 				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setId(db.getId());
+				storeUserInfo.setAppLoginStatus((short)0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -267,6 +270,7 @@ public class ApiStoreLoginController {
 					storeUserInfo.setId(db.getId());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+					storeUserInfo.setAppLoginStatus((short)0);
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(db.getStoreCustomerId());

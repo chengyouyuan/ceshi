@@ -6,7 +6,7 @@ package com.winhxd.b2c.common.context.version;
  * @author lixiaodong
  */
 public class VersionContext {
-    public static final String HEADER_NAME = "ms-ver";
+    public static final String HEADER_NAME = "msVer";
 
     private static ThreadLocal<String> version = new ThreadLocal<>();
 

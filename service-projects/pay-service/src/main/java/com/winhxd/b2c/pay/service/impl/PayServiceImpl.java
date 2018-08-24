@@ -458,6 +458,7 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
 				storeBankroll.setCreated(new Date());
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				storeBankroll.setStatus(StatusEnums.EFFECTIVE.getCode());
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {

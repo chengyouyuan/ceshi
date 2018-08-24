@@ -2,7 +2,9 @@ package com.winhxd.b2c.admin.module.system.controller;
 
 import com.winhxd.b2c.admin.common.context.UserManager;
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
@@ -38,6 +40,9 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private static final String MODULE_NAME = "系统用户管理";
+
+    @Resource
+    private static Cache cache;
 
     @Resource
     private UserServiceClient userServiceClient;
@@ -115,7 +120,7 @@ public class UserController {
         sysUser.setUpdatedByName(userInfo.getUsername());
 
         // 清除操作的用户缓存
-        UserManager.delUserCache(sysUser.getId());
+        delUserCache(sysUser.getId());
         return userServiceClient.modify(sysUser);
     }
 
@@ -144,7 +149,7 @@ public class UserController {
         passwordDTO.setUpdatedByName(userInfo.getUsername());
 
         // 清除操作的用户缓存
-        UserManager.delUserCache(passwordDTO.getId());
+        delUserCache(passwordDTO.getId());
         return userServiceClient.updatePassword(passwordDTO);
     }
 
@@ -217,7 +222,7 @@ public class UserController {
     public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
         // 清除操作的用户缓存
-        UserManager.delUserCache(id);
+        delUserCache(id);
         return userServiceClient.disabled(id);
     }
 
@@ -236,8 +241,18 @@ public class UserController {
     public ResponseResult<Void> enable(@PathVariable("id") Long id){
         logger.info("{} - 根据主键启用用户, 参数：id={}", MODULE_NAME, id);
         // 清除操作的用户缓存
-        UserManager.delUserCache(id);
+        delUserCache(id);
         return userServiceClient.enable(id);
     }
 
+    /**
+     * 删除某个用户的缓存
+     *
+     * @param userId
+     */
+    public static void delUserCache(Long userId) {
+        String token = DigestUtils.md5DigestAsHex(userId.toString().getBytes());
+        String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
+        cache.del(cacheKey);
+    }
 }

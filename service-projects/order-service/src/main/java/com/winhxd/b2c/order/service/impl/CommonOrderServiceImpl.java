@@ -92,8 +92,10 @@ import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.MQHandler;
 import com.winhxd.b2c.common.mq.StringMessageListener;
 import com.winhxd.b2c.common.mq.StringMessageSender;
+import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventMessageSender;
 import com.winhxd.b2c.common.mq.event.EventType;
+import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
@@ -1303,6 +1305,8 @@ public class CommonOrderServiceImpl implements OrderService {
 
         @Override
         public void run() {
+            //更新当天销量信息
+            calculateIntradaySalesSummaryAndCache(orderInfo, true);
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterPaySuccessProcess(orderInfo);
         }
@@ -1458,30 +1462,6 @@ public class CommonOrderServiceImpl implements OrderService {
                 }
             } catch (Exception e) {
                 logger.error("更新门店storeId={};月销售数据错误：", orderInfo.getStoreId().toString(), e);
-            } finally {
-                lock.unlock();
-            }
-            //2.更新当天销量信息
-            lockKey = CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + "LOCK" + orderInfo.getStoreId();
-            lock = new RedisLock(cache, lockKey, 50000);
-            try {
-                lock.lock();
-                String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "");
-                if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
-                    StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
-                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo
-                            .getSkuCategoryQuantity());
-                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
-                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() + 1);
-                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()
-                    ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
-                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds", orderInfo.getCustomerId().toString());
-                    storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds").intValue());
-                    //设置到缓存
-                    cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
-                }
-            } catch (Exception e) {
-                logger.error("更新门店storeId={};当日销售数据错误：", orderInfo.getStoreId().toString(), e);
             } finally {
                 lock.unlock();
             }
@@ -1908,4 +1888,73 @@ public class CommonOrderServiceImpl implements OrderService {
         }
     }
 
+    /**
+     * 用户付款、取消订单 统计订单销售数据
+     * @author wangbin
+     * @date  2018年8月24日 上午10:20:58
+     * @param orderInfo
+     * @param needAdd
+     */
+    private void calculateIntradaySalesSummaryAndCache(OrderInfo orderInfo, boolean needAdd) {
+        String lockKey;
+        Lock lock;
+        lockKey = CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + "LOCK" + orderInfo.getStoreId();
+        lock = new RedisLock(cache, lockKey, 50000);
+        try {
+            lock.lock();
+            String intradayOrderSalesSummaryStr = cache.hget(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "");
+            if (StringUtils.isNotBlank(intradayOrderSalesSummaryStr)) {
+                StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = JsonUtil.parseJSONObject(intradayOrderSalesSummaryStr, StoreOrderSalesSummaryVO.class);
+                if (needAdd) {
+                    //付款进行 增加计算
+                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() + orderInfo
+                            .getSkuCategoryQuantity());
+                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuQuantity() + orderInfo.getSkuQuantity());
+                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() + 1);
+                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()
+                    ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds", orderInfo.getCustomerId().toString());
+                } else {
+                    //取消进行 减少计算
+                    storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() - orderInfo
+                            .getSkuCategoryQuantity());
+                    storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuQuantity() - orderInfo.getSkuQuantity());
+                    storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() - 1);
+                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().subtract(orderInfo.getOrderTotalMoney()
+                    ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+                    cache.srem(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds", orderInfo.getCustomerId().toString());
+                }
+                storeOrderSalesSummaryVO.setCustomerNum(cache.scard(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + orderInfo.getStoreId() + ":customerIds").intValue());
+                //设置到缓存
+                cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, orderInfo.getStoreId() + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
+            }
+        } catch (Exception e) {
+            logger.error("更新门店storeId={};当日销售数据错误：", orderInfo.getStoreId().toString(), e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_SALES_SUMMERY_HANDLER)
+    public void refundOrder(String orderNo, OrderInfo order)  {
+        if (orderNo == null || order == null) {
+            return;
+        }
+        logger.info("订单：{} 取消,更新门店：{}订单销售数据开始：", orderNo, order.getStoreId());
+        if (order.getPayStatus() == null || order.getPayStatus().shortValue() != PayStatusEnum.PAID.getStatusCode()) {
+            logger.info("订单：{} 取消,未支付,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
+            return;
+        }
+        //获取当天最后一秒
+        long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+        //获取当天开始第一秒
+        long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
+        Date startDateTime = new Date(startSecond);
+        Date endDateTime = new Date(lastSecond);
+        if (order.getPayFinishDateTime() == null || order.getPayFinishDateTime().before(startDateTime) || order.getPayFinishDateTime().after(endDateTime)) {
+            logger.info("订单：{} 取消,非当天支付订单,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
+            return;
+        }
+        calculateIntradaySalesSummaryAndCache(order, false);
+    }
 }

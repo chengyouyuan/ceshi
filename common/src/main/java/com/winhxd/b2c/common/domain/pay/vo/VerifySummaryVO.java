@@ -4,13 +4,18 @@ import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
-@ApiModel("费用明细查询条件")
+@ApiModel("结算汇总")
 @Data
 public class VerifySummaryVO {
+
+    @ApiModelProperty("前端返回唯一标识")
+    private String index;
 
     @ApiModelProperty("门店ID")
     private Long storeId;
@@ -47,5 +52,9 @@ public class VerifySummaryVO {
 
     public String getVerifyStatusName() {
         return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    }
+
+    public String getIndex() {
+        return UUID.randomUUID().toString();
     }
 }

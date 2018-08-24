@@ -155,10 +155,10 @@ public class NeteaseUtils {
      * @param neteaseMsgCondition
      * @return
      */
-    public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition){
+    public Map<String,Object> sendTxtMessage2Person(String accid,NeteaseMsgCondition neteaseMsgCondition,String msgId){
         String bodyMsg = buildBodyJsonMsg(neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         //扩展参数
-        String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg());
+        String extMsg = buildExtJsonMsg(neteaseMsgCondition.getNeteaseMsg(),msgId);
         //组织参数
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("from", NETEASE_PLATFORM_ADMIN));
@@ -179,13 +179,38 @@ public class NeteaseUtils {
         return bodyJson.toString();
     }
 
-    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
+    /**
+     * 发消息用，消息弹窗，需要msgId来处理已读未读
+     * @param neteaseMsg
+     * @param msgId
+     * @return
+     */
+    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg,String msgId){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
         ObjectNode extJson = JsonUtil.createObjectNode();
         extJson.put("title",neteaseMsg.getMsgContent());
         extJson.put("pagetype",neteaseMsg.getPageType());
         extJson.put("audiotype", neteaseMsg.getAudioType());
         extJson.put("page", neteaseMsg.getTreeCode());
-        return extJson.toString();
+        extJson.put("msgId",msgId);
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
+    }
+
+    /**
+     * 保存用，组织参数
+     * @param neteaseMsg
+     * @return
+     */
+    public static String buildExtJsonMsg(NeteaseMsg neteaseMsg){
+        ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
+        ObjectNode extJson = JsonUtil.createObjectNode();
+        extJson.put("title",neteaseMsg.getMsgContent());
+        extJson.put("pagetype",neteaseMsg.getPageType());
+        extJson.put("audiotype", neteaseMsg.getAudioType());
+        extJson.put("page", neteaseMsg.getTreeCode());
+        extJsonMsg.put("extJsonMsg",extJson);
+        return extJsonMsg.toString();
     }
 
     public Map<String,Object> sendTxtMessage2Batch(String[] accids,String content){

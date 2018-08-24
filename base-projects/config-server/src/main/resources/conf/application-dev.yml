@@ -1,8 +1,4 @@
 spring:
-  boot:
-    admin:
-      client:
-        url: http://localhost:1111/admin/
   datasource:
     username: retail2C_user
     password: tNB9gLJ42hwguHLK

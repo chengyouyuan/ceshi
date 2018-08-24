@@ -219,7 +219,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             Date endDateTime = new Date(lastSecond);
             //取前30天开始日期
             startDateTime = DateUtils.addMonths(startDateTime, -1);
-            storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
+            storeOrderSalesSummaryVO = calculateStoreCompletedOrderSalesSummary(storeId, startDateTime, endDateTime);
             //设置到缓存
             cache.hset(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, storeId + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
             //当天有效
@@ -446,6 +446,20 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
         }
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO1 != null) {
+            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
+        }
+        storeOrderSalesSummaryVO.setStoreId(storeId);
+        return storeOrderSalesSummaryVO;
+    }
+    
+    private StoreOrderSalesSummaryVO calculateStoreCompletedOrderSalesSummary(long storeId, Date startDateTime,
+            Date endDateTime) {
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreCompletedOrderTurnover(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO == null) {
+            storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
+        }
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreCompletedOrderCustomerNum(storeId, startDateTime, endDateTime);
         if (storeOrderSalesSummaryVO1 != null) {
             BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
         }

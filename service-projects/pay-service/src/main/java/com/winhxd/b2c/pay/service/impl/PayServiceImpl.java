@@ -270,7 +270,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--金额为空");
 			throw new BusinessException(BusinessCode.CODE_600009);
 		}
-		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<0) {
+		if (condition.getMoney().compareTo(BigDecimal.valueOf(0))<=0) {
 			logger.info(log+"--金额有误");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}

@@ -24,6 +24,7 @@ public interface NeteaseService {
     /**
      * 获取云信消息盒子
      * @param neteaseMsgBoxCondition
+     * @param storeId
      * @return
      */
     PagedList<NeteaseMsgVO> findNeteaseMsgBox(NeteaseMsgBoxCondition neteaseMsgBoxCondition, Long storeId);

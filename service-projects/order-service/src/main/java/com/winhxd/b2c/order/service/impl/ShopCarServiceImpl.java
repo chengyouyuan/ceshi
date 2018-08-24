@@ -89,7 +89,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         try {
             if (lock.tryLock()) {
                 // 校验商品
-                checkShopCarProdInfo(condition, customerId);
+                checkSaveShopCarProdInfo(condition, customerId);
                 // 加购：存在则更新数量，不存在保存
                 ShopCar shopCar = new ShopCar();
                 // 获取当前用户信息
@@ -176,7 +176,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
                 logger.info(SHOP_CAR + READY_ORDER + "{}-> 校验购物车商品状态执行...");
-                checkShopCarProdInfo(shopCars, customerId);
+                checkReadyShopCarProdInfo(shopCars, customerId);
 
                 List<OrderItemCondition> items = new ArrayList<>(shopCars.size());
                 shopCars.stream().forEach( shopCar1 ->{
@@ -331,25 +331,24 @@ public class ShopCarServiceImpl implements ShopCarService {
         return skuCodes;
     }
 
-    private void checkShopCarProdInfo(List<ShopCar> shopCars, Long customerId){
-        List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId(), customerId);
+    private void checkReadyShopCarProdInfo(List<ShopCar> shopCars, Long customerId){
+        Long storeId = shopCars.get(0).getStoreId();
+        List<String> skuCodes = getSkuCodeListByShopCar(shopCars);
+        List<ShopCartProdVO> list = getShopCarProdVO(skuCodes, storeId, customerId);
         // 程序能走到这的一定是上架中的商品
-        /*for (ShopCartProdVO shopCarProdVO : list) {
-            if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
-        }*/
+        if (shopCars.size() != list.size()) {
+            List<String> collect = list.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
+            shopCars.remove(collect);
+            shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
+            logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
+            throw new BusinessException(BusinessCode.CODE_402011);
+        }
     }
 
-    private void checkShopCarProdInfo(ShopCarCondition condition ,Long customerId){
+    private void checkSaveShopCarProdInfo(ShopCarCondition condition ,Long customerId){
         List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId(), customerId);
         for (ShopCartProdVO shopCarProdVO : list) {
             // 程序能走到这的一定是上架中的商品
-            /*if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }*/
             if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())) {
                 BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
                 BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
@@ -365,6 +364,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         ResponseResult<List<ShopCartProdVO>> shopCarProds = storeServiceClient.findShopCarProd(skuCodes, storeId);
         if (null == shopCarProds || shopCarProds.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(shopCarProds.getData())) {
             if (CollectionUtils.isNotEmpty(skuCodes)) {
+                logger.info("ShopCarServiceImpl{} -> getShopCarProdVO接口异常：无效的skuCode:"+skuCodes);
                 shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             }
             logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常{} 商品信息不存在或被下架");

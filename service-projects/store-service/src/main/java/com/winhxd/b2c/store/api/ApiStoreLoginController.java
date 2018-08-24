@@ -157,7 +157,7 @@ public class ApiStoreLoginController {
 				getNeteaseAcctInfo(db, vo);
 				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-				storeUserInfo.setOpenid(storeUserInfoCondition.getStoreMobile());
+				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 				storeUserInfo.setId(db.getId());
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());

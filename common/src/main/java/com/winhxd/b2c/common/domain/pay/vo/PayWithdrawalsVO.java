@@ -286,10 +286,13 @@ public class PayWithdrawalsVO {
             callbackStatusName = "申请中";
         }
         if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "审核通过";
+            callbackStatusName = "提现成功";
         }
         if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "审核不通过";
+            callbackStatusName = "提现失败";
+        }
+        if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现失败";
         }
         return callbackStatusName;
     }

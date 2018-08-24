@@ -119,8 +119,9 @@ public class ApiStoreLoginController {
 		StoreUserInfo storeUserInfo = new StoreUserInfo();
 		StoreUser user = new StoreUser();
 		StoreUserInfoSimpleVO vo = new StoreUserInfoSimpleVO();
+		StoreUserInfo open = new StoreUserInfo();
 		/**
-		 * 微信验证码登录
+		 * 微信绑定账号
 		 */
 		if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
@@ -133,6 +134,13 @@ public class ApiStoreLoginController {
 				logger.info("{} - ,openid为空");
 				throw new BusinessException(BusinessCode.CODE_1007);
 			}
+			open.setOpenid(storeUserInfoCondition.getOpenid());
+			db =  storeLoginService.getStoreUserInfo(open);
+			if (db != null) {
+				logger.info("{} - , 该微信号已绑定过其它账号 ");
+				result = new ResponseResult<>(BusinessCode.CODE_100810);
+				return result;
+			} 
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
@@ -143,7 +151,6 @@ public class ApiStoreLoginController {
 				result = new ResponseResult<>(BusinessCode.CODE_100815);
 				return result;
 			} else {
-
 				/**
 				 * 调用云信服务获取用户信息
 				 */
@@ -352,7 +359,6 @@ public class ApiStoreLoginController {
 			 */
 			StoreUserInfo info = new StoreUserInfo();
 			StoreUserInfo db = new StoreUserInfo();
-			StoreUserInfo open = new StoreUserInfo();
 			/**
 			 * 如果是微信登录验证OpenId 是否绑定手机号是否与app传过来的一致
 			 */
@@ -360,9 +366,6 @@ public class ApiStoreLoginController {
 				info.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(info);
 				if (db != null) {
-					if (StringUtils.isBlank(db.getOpenid())) {
-						info.setOpenid(storeSendVerificationCodeCondition.getOpenid());
-					}
 					/**
 					 * 更新数据库
 					 */
@@ -371,22 +374,6 @@ public class ApiStoreLoginController {
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
-					/**
-					 * 查询OpenId是否 已经绑定其他手机号
-					 */
-					if (StringUtils.isBlank(storeSendVerificationCodeCondition.getOpenid())) {
-						logger.info("{} - ,openid为空");
-						throw new BusinessException(BusinessCode.CODE_1007);
-					}
-					open.setOpenid(storeSendVerificationCodeCondition.getOpenid());
-					db = storeLoginService.getStoreUserInfo(open);
-					/**
-					 * 如果可以查到。。证明该微信号绑定过其他账号
-					 */
-					if (null != db) {
-						logger.info("{} - , 该微信号已绑定过账号");
-						throw new BusinessException(BusinessCode.CODE_100910);
-					}
 					/*
 					 * 插入数据库
 					 */

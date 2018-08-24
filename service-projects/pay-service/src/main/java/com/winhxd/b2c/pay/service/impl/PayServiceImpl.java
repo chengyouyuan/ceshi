@@ -462,8 +462,8 @@ public class PayServiceImpl implements PayService{
 			}else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
-					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
 					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
+					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
 					storeBankroll.setTotalMoeny(totalMoney);
 				}
 				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);

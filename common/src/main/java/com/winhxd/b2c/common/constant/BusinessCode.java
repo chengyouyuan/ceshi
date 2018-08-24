@@ -189,6 +189,8 @@ public final class BusinessCode {
     public static final int CODE_402017 = 402017;
     /** 购物车:获取最优优惠券失败*/
     public static final int CODE_402018 = 402018;
+    /** 购物车:账号被锁定，请联系客服！*/
+    public static final int CODE_402019 = 402019;
 
 
     /** 查询订单参数异常*/
@@ -526,6 +528,10 @@ public final class BusinessCode {
     
     @ApiModelProperty("提现计算手续费 可提现金额不足")
     public static final int CODE_611104 = 611104;
+    
+    @ApiModelProperty("提现操作次数太多")
+    public static final int CODE_611105 = 611105;
+    
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

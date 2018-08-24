@@ -275,7 +275,6 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param orderNo 订单号
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
@@ -294,7 +293,6 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param orderNo 订单号
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
@@ -1701,7 +1699,7 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送云信--手机尾号8513顾客申请退款
                 String mobileStr = OrderUtil.getLast4Mobile(customerUserInfoVO.getCustomerMobile());
-                String msgContent = "【已取消】手机尾号" + mobileStr + "顾客申请退款";
+                String msgContent = "【申请退款】手机尾号" + mobileStr + "顾客申请退款";
                 NeteaseMsgCondition neteaseMsgCondition = new NeteaseMsgCondition();
                 neteaseMsgCondition.setCustomerId(orderInfo.getStoreId());
                 NeteaseMsg neteaseMsg = new NeteaseMsg();

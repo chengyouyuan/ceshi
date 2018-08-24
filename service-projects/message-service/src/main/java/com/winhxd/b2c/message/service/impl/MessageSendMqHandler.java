@@ -286,8 +286,8 @@ public class MessageSendMqHandler {
             history.setPageType(MsgPageTypeEnum.NOTICE.getPageType());
             history.setTreeCode(null);
             history.setMsgCategory(MsgCategoryEnum.HUI_NOTICE.getTypeCode());
-            //1：未读
-            history.setReadStatus("1");
+            //0：未读
+            history.setReadStatus("0");
             list.add(history);
         }
         messageNeteaseHistoryMapper.insertHistories(list);

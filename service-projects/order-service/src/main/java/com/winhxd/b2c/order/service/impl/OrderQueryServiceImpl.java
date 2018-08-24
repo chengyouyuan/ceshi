@@ -53,6 +53,7 @@ import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import com.winhxd.b2c.order.util.OrderUtil;
 
 /**
  * @author pangjianhua
@@ -178,8 +179,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                     List<String> strCustomerIds = distinctCustomerIds.stream().map(p -> {
                         return p.toString();
                      }).collect(Collectors.toList());
-                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", strCustomerIds.toArray(new String[strCustomerIds.size()]));
-                    cache.expire(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
+                    //先删除所有的redis数据
+                    cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));
+                    cache.sadd(OrderUtil.getStoreOrderCustomerIdSetField(storeId), strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                    cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }
             }
             //设置到缓存

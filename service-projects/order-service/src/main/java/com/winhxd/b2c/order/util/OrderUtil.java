@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
 import com.winhxd.b2c.common.domain.message.condition.MiniTemplateData;
@@ -42,6 +43,11 @@ public class OrderUtil {
     private OrderUtil() {
 
     }
+    
+    public static final String getStoreOrderCustomerIdSetField(long storeId) {
+        return CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds";
+    }
+    
 
     public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null) {

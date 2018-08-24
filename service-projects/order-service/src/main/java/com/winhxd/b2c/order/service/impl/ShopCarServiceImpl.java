@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.enums.CustomerUserEnum;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
@@ -167,6 +168,11 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Override
     public OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId) {
+        CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
+        if (!CustomerUserEnum.CUSTOMER_STATUS_NORMAL.getCode().equals(customerUserInfoVO.getStatus())) {
+            logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 账号被锁定：customerId=" + customerId);
+            throw new BusinessException(BusinessCode.CODE_402019);
+        }
         logger.info(SHOP_CAR + READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);

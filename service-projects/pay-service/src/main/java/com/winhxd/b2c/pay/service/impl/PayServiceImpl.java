@@ -458,6 +458,7 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
 				storeBankroll.setCreated(new Date());
 				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				storeBankroll.setStatus(StatusEnums.EFFECTIVE.getCode());
 				storeBankrollMapper.insertSelective(storeBankroll);
 			}else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
@@ -726,7 +727,12 @@ public class PayServiceImpl implements PayService{
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			// 发送云信
-			PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_SUCCESS_WITHDRWAL,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(payWithdrawals.getCreated());
+			int month=cal.get(Calendar.MONTH);
+			int day=cal.get(Calendar.DATE);
+			String notifyMsg = PayNotifyMsg.STORE_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+			PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
 		}else{
 			//是否需要用户重新申请提现流程
 			if(payTransfersToWxChangeVO.isAbleContinue()){
@@ -742,7 +748,12 @@ public class PayServiceImpl implements PayService{
 				this.updateStoreBankroll(condition);
 
 				// 发送云信
-				PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_FAIL_WITHDRWAL,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH);
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 		}
 		//TODO 需要确认errorMessage
@@ -839,7 +850,12 @@ public class PayServiceImpl implements PayService{
 				this.updateStoreBankroll(condition);
 
 				// 发送云信
-				PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH);
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
 			}
 		}
 		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
@@ -950,12 +966,22 @@ public class PayServiceImpl implements PayService{
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 				// 发送云信
-				PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH);
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
 
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
 				// 发送云信
-				PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH);
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 			this.transfersPublic(payWithdrawals,log);
 		}

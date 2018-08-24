@@ -17,6 +17,8 @@ public class CouponInStoreGetedAndUsedVO {
     private Long templeteId;
     @ApiModelProperty(value = "门店id")
     private Long storeId;
+    @ApiModelProperty(value = "活动id")
+    private Long couponActivityId;
     @ApiModelProperty(value = "领取数量")
     private Integer totalCount ;
     @ApiModelProperty(value = "使用数量")
@@ -60,6 +62,14 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
+    }
+
+    public Long getCouponActivityId() {
+        return couponActivityId;
+    }
+
+    public void setCouponActivityId(Long couponActivityId) {
+        this.couponActivityId = couponActivityId;
     }
 
     public Integer getTotalCount() {

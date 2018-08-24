@@ -6,11 +6,15 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.Date;
 
-@ApiModel("费用明细查询条件")
+@ApiModel("结算汇总")
 @Data
 public class VerifySummaryVO {
+
+    @ApiModelProperty("前端返回唯一标识")
+    private String index;
 
     @ApiModelProperty("门店ID")
     private Long storeId;
@@ -26,6 +30,8 @@ public class VerifySummaryVO {
 
     @ApiModelProperty("订单截止日")
     private Date lastRecordedTime;
+
+    private String verifyCode;
 
     @ApiModelProperty("操作时间")
     private Date operatedTime;
@@ -47,5 +53,14 @@ public class VerifySummaryVO {
 
     public String getVerifyStatusName() {
         return AccountingDetail.VerifyStatusEnum.getMemoOfCode(getVerifyStatus());
+    }
+
+    public String getIndex() {
+        String notNullVerifyCode = String.valueOf(getVerifyCode());
+        StringBuilder sb = new StringBuilder();
+        sb.append(getVerifyStatus());
+        sb.append(notNullVerifyCode);
+        sb.append(String.valueOf(getStoreId()));
+        return Base64.getEncoder().encodeToString(sb.toString().getBytes());
     }
 }

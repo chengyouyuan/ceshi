@@ -15,6 +15,9 @@ import java.util.Date;
 
 @ApiModel("门店提现记录")
 public class PayWithdrawalsVO {
+
+    @ApiModelProperty("前端返回唯一标识")
+    private String index;
     @ApiModelProperty("主键")
     private Long id;
     @ApiModelProperty("门店id")
@@ -272,5 +275,9 @@ public class PayWithdrawalsVO {
 
     public void setCallbackReason(String callbackReason) {
         this.callbackReason = callbackReason;
+    }
+
+    public String getIndex() {
+        return String.valueOf(getId());
     }
 }

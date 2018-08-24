@@ -64,7 +64,7 @@ public interface CouponServiceClient {
 
 @Component
 class CouponServiceFallback implements FallbackFactory<CouponServiceClient>{
-	private static final Logger logger = LoggerFactory.getLogger(CouponTemplateServiceFallback.class);
+	private static final Logger logger = LoggerFactory.getLogger(CouponServiceFallback.class);
     @Override
     public CouponServiceClient create(Throwable throwable) {
         return new CouponServiceClient() {
@@ -124,7 +124,7 @@ class CouponServiceFallback implements FallbackFactory<CouponServiceClient>{
 
             @Override
             public ResponseResult findDefaultCoupon(OrderAvailableCouponCondition condition) {
-                logger.error("CouponServiceClient -> findDefaultCouponByOrder", throwable);
+                logger.error("CouponServiceClient -> findDefaultCoupon", throwable);
                 return new ResponseResult<String>(BusinessCode.CODE_1001);
             }
         };

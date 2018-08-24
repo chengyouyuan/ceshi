@@ -25,7 +25,12 @@
     from coupon_activity_record
     where id = #{id,jdbcType=BIGINT}
   </select>
-
+<select id="selectRecordByActivityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from coupon_activity_record
+  where coupon_activity_id = #{activityId,jdbcType=BIGINT}
+</select>
   <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

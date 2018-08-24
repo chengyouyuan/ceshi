@@ -46,6 +46,11 @@ public enum EventTypeHandler {
     EVENT_CUSTOMER_ORDER_REFUND_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
     
     /**
+     * 订单取消退款订单销售信息汇总计算处理
+     */
+    EVENT_CUSTOMER_ORDER_REFUND_SALES_SUMMERY_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
+    
+    /**
      * 下载对账单
      */
     EVENT_DOWNLOAD_STATEMENT_HANDLER(EventType.EVENT_DOWNLOAD_BILL),

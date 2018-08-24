@@ -125,6 +125,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         ShopCarVO result = new ShopCarVO();
         List<ShopCar> shopCars = queryShopCars(customerId, storeId);
         if (CollectionUtils.isEmpty(shopCars)) {
+            result.setShopCarts(Collections.emptyList());
             return result;
         }
         // 商品详情
@@ -133,7 +134,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         if (skuCodes.size() != shopCarProdVOs.size()) {
             // 不相等的时候删掉多余的
             List<String> collect = shopCarProdVOs.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
-            skuCodes.remove(collect);
+            skuCodes.removeAll(collect);
             shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             result.setProdStatus(PROD_STATUS);
         }
@@ -338,7 +339,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         // 程序能走到这的一定是上架中的商品
         if (shopCars.size() != list.size()) {
             List<String> collect = list.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
-            shopCars.remove(collect);
+            shopCars.removeAll(collect);
             shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);

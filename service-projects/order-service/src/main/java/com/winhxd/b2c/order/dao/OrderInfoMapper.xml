@@ -650,6 +650,19 @@
         	store_id storeId
         from order_info
         where store_id = #{storeId,jdbcType=BIGINT}
+        and pay_status = 1
+        and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status not in (33, 66, 77, 99)
+        group by store_id
+    </select>
+    <select id="getStoreCompletedOrderTurnover" resultMap="StoreOrderSalesSummaryMap">
+        select
+        	ifnull(sum(order_total_money),0) turnover,
+        	ifnull(count(*),0) orderNum,
+        	store_id storeId
+        from order_info
+        where store_id = #{storeId,jdbcType=BIGINT}
         and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
         and finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
         and order_status=22
@@ -661,6 +674,19 @@
         <result column="skuCategoryQuantity" jdbcType="INTEGER" property="skuCategoryQuantity"/>
     </resultMap>
     <select id="getStoreOrderCustomerNum" resultMap="StoreOrderSalesSummaryMap1">
+        select
+        	ifnull(count(distinct customer_id),0) customerNum,
+        	ifnull(sum(sku_quantity),0) skuQuantity,
+        	ifnull(sum(sku_category_quantity),0) skuCategoryQuantity
+        from order_info
+        where store_id = #{storeId,jdbcType=BIGINT}
+        and pay_status = 1
+        and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
+        and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
+        and order_status not in (33, 66, 77, 99)
+        group by store_id
+    </select>
+    <select id="getStoreCompletedOrderCustomerNum" resultMap="StoreOrderSalesSummaryMap1">
         select
         	ifnull(count(distinct customer_id),0) customerNum,
         	ifnull(sum(sku_quantity),0) skuQuantity,

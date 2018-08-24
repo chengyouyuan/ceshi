@@ -29,6 +29,7 @@ import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
 import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.ReviewStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
@@ -161,6 +162,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		payWithdrawal.setStoreId(businessId);
 		// 生成提现单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());
+		// 先设置总金额，避免在当前用户没有任何账户的情况下金额为空
+		payWithdrawal.setTotalFee(BigDecimal.valueOf(0L));
 		if(bankType == condition.getWithdrawType()){
 			List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
 			BigDecimal totalFee = condition.getTotalFee();
@@ -214,7 +217,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setCreatedByName(condition.getNick());
 			payWithdrawal.setUpdatedByName(condition.getNick());
 		}
-		payWithdrawal.setAuditStatus((short)0);
+		payWithdrawal.setAuditStatus(ReviewStatusEnum.TO_AUDIT.getStatus());
 //		payWithdrawal.setAuditDesc(auditDesc);
 		payWithdrawal.setCreated(new Date());
 		payWithdrawal.setCreatedBy(businessId);
@@ -316,7 +319,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			// 获取门店资金信息
 			PayStoreUserInfoVO storeUserinfo = new PayStoreUserInfoVO();
 			storeUserinfo.setFlowDirectionName(storeWallet.getNick());
-			storeUserinfo.setFlowDirectionType((short)1);
+			storeUserinfo.setFlowDirectionType(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode());
 			storeUserinfo.setOpenid(storeWallet.getOpenid());
 			storeUserinfo.setNick(storeWallet.getNick());
 			storeUserinfo.setName(storeWallet.getName());

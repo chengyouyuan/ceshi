@@ -455,6 +455,7 @@
   <resultMap id="couponGetedAndUsedResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
     <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
     <result column="couponActivityId" jdbcType="BIGINT" property="couponActivityId" />
+    <result column="applyId" jdbcType="BIGINT" property="applyId" />
     <result column="storeId" jdbcType="BIGINT" property="storeId" />
     <result column="applyRuleType" jdbcType="SMALLINT" property="applyRuleType" />
     <result column="reduceType" jdbcType="SMALLINT" property="reduceType" />
@@ -475,6 +476,7 @@
         b.coupon_activity_id as couponActivityId,
         d.apply_rule_type as applyRuleType,
         f.reduced_type as reduceType,
+        d.id as applyId,
           (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
           (case WHEN f.cost is null then 0 else f.cost end) as cost,
           (case WHEN f.discounted is null then 0 else 100-f.discounted end) as discounted,

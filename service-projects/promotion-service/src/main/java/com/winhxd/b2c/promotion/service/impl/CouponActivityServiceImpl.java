@@ -9,17 +9,11 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddConditi
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.RevokeCouponCodition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivity;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityStoreCustomer;
-import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
+import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.promotion.dao.CouponActivityAreaMapper;
-import com.winhxd.b2c.promotion.dao.CouponActivityMapper;
-import com.winhxd.b2c.promotion.dao.CouponActivityStoreCustomerMapper;
-import com.winhxd.b2c.promotion.dao.CouponActivityTemplateMapper;
+import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +41,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityAreaMapper couponActivityAreaMapper;
     @Autowired
     private CouponService couponService;
+    @Autowired
+    private CouponActivityRecordMapper couponActivityRecordMapper;
 
     /**
      * 查询活动列表
@@ -421,9 +417,12 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         if(n==0){
             throw new BusinessException(BusinessCode.CODE_503501,"停止活动失败");
         }
+        List<CouponActivityRecord> recordList = couponActivityRecordMapper.selectRecordByActivityId(condition.getId());
         //撤销已发放的优惠券
         List<Long> longList = new ArrayList<>();
-        longList.add(condition.getId());
+        for (int i=0;i<recordList.size();i++){
+            longList.add(recordList.get(i).getSendId());
+        }
         RevokeCouponCodition couponCondition = new RevokeCouponCodition();
         couponCondition.setSendIds(longList);
         couponService.revokeCoupon(couponCondition);

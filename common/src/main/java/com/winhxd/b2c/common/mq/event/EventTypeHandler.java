@@ -30,6 +30,10 @@ public enum EventTypeHandler {
      * 订单闭环，添加交易记录
      */
     PAY_STORE_TRANSACTION_RECORD_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
+    /**
+     * 订单闭环，计算门店资金
+     */
+    PAY_STORE_BANKROLL_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
 
     /**
      * 订单取消退优惠券
@@ -40,6 +44,11 @@ public enum EventTypeHandler {
      * 订单取消退款
      */
     EVENT_CUSTOMER_ORDER_REFUND_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
+    
+    /**
+     * 订单取消退款订单销售信息汇总计算处理
+     */
+    EVENT_CUSTOMER_ORDER_REFUND_SALES_SUMMERY_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
     
     /**
      * 下载对账单

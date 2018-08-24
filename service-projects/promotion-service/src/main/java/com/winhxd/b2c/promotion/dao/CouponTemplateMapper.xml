@@ -454,6 +454,8 @@
 
   <resultMap id="couponGetedAndUsedResultMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
     <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
+    <result column="couponActivityId" jdbcType="BIGINT" property="couponActivityId" />
+    <result column="applyId" jdbcType="BIGINT" property="applyId" />
     <result column="storeId" jdbcType="BIGINT" property="storeId" />
     <result column="applyRuleType" jdbcType="SMALLINT" property="applyRuleType" />
     <result column="reduceType" jdbcType="SMALLINT" property="reduceType" />
@@ -471,8 +473,10 @@
       SELECT
         a.store_id as storeId,
         b.template_id as templeteId,
+        b.coupon_activity_id as couponActivityId,
         d.apply_rule_type as applyRuleType,
         f.reduced_type as reduceType,
+        d.id as applyId,
           (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
           (case WHEN f.cost is null then 0 else f.cost end) as cost,
           (case WHEN f.discounted is null then 0 else 100-f.discounted end) as discounted,
@@ -484,17 +488,19 @@
       coupon_activity_store_customer a
       LEFT JOIN coupon_activity_template b ON a.coupon_activity_template_id = b.id
       LEFT JOIN coupon_template c on b.template_id = c.id AND c.`status` = 1
+      LEFT JOIN coupon_activity h on h.id = b.coupon_activity_id
       LEFT JOIN coupon_apply d ON c.apply_rule_id = d.id AND d.`status` = 1
       LEFT JOIN coupon_grade e on e.id = c.grade_id
       LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
       WHERE
           a.store_id = #{storeId}
-      GROUP BY b.template_id
+      GROUP BY b.coupon_activity_id,b.template_id
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
   <resultMap id="couponGetedAndUsedCoutMap" type="com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO">
     <result column="templeteId" jdbcType="BIGINT" property="templeteId" />
+    <result column="couponActivityId" jdbcType="BIGINT" property="couponActivityId" />
     <result column="totalCount" jdbcType="INTEGER" property="totalCount" />
     <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
   </resultMap>
@@ -503,14 +509,16 @@
     SELECT
     count(1) as totalCount,
     sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
-    c.template_id as templeteId
+    e.coupon_activity_id as couponActivityId,
+    e.template_id as templeteId
     FROM
     coupon_activity_store_customer d
     LEFT JOIN coupon_activity_template e on e.id = d.coupon_activity_template_id
     LEFT JOIN coupon_template a ON a.id = e.template_id
     LEFT JOIN  coupon_template_send c ON c.template_id = a.id
+    LEFT JOIN coupon_activity h on h.id = e.coupon_activity_id
     WHERE d.store_id = #{storeId}
-    group by c.template_id
+    group by e.coupon_activity_id,e.template_id
   </select>
 
 

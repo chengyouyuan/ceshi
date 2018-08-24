@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.PayNotifyMsg;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
@@ -208,8 +210,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		
 		saveStoreWithdrawalInfo(businessId, payWithdrawal);
 		// 提下完成之后发送云信消息
-		 // 发送云信
-		PayUtil.newOrderSendMsg2Pay(messageServiceClient, businessId);
+		PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_APPLY_WITHDRWAL,MsgCategoryEnum.WITHDRAW_APPLY.getTypeCode(),businessId);
 		// 更新账户金额
 		UpdateStoreBankRollCondition rollCondtion = new UpdateStoreBankRollCondition();
 		rollCondtion.setType(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode());
@@ -306,7 +307,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			storeUserinfo.setOpenid(storeWallet.getOpenid());
 			storeUserinfo.setNick(storeWallet.getNick());
 			storeUserinfo.setName(storeWallet.getName());
-			
+			// 获取当前门店的资金信息
 			StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(businessId);
 			if(storeBankroll != null){
 				storeUserinfo.setTotalMoney(storeBankroll.getTotalMoeny());

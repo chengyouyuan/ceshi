@@ -2,7 +2,6 @@ package com.winhxd.b2c.pay.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
@@ -59,9 +58,6 @@ public class VerifyService {
 
     @Autowired
     private PayStatementMapper payStatementMapper;
-
-    @Autowired
-    private Cache cache;
 
     /**
      * 订单支付成功事件

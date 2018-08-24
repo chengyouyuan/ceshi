@@ -49,6 +49,8 @@ public class RegionController {
         for (SysRegion region:regionList) {
             SysRegionVO regionVO = new SysRegionVO();
             BeanUtils.copyProperties(region, regionVO);
+            //使用regioncode 作为前端组件唯一索引保存到index属性
+            regionVO.setIndex(regionVO.getRegionCode());
             regionVO.setFullName(String.format("%s%s%s%s%s",regionVO.getProvince(),regionVO.getCity(),region.getCounty(),region.getTown(),region.getVillage()));
             list.add(regionVO);
         }
@@ -71,6 +73,8 @@ public class RegionController {
         for (SysRegion region:regionList) {
             SysRegionVO regionVO=new SysRegionVO();
             BeanUtils.copyProperties(region, regionVO);
+            //使用regioncode 作为前端组件唯一索引保存到index属性
+            regionVO.setIndex(regionVO.getRegionCode());
             regionVO.setFullName(String.format("%s%s%s%s%s",regionVO.getProvince(),regionVO.getCity(),region.getCounty(),region.getTown(),region.getVillage()));
             list.add(regionVO);
         }

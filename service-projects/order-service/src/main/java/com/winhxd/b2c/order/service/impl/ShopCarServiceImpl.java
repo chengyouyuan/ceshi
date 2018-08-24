@@ -129,8 +129,12 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
         // 商品详情
         List<String> skuCodes = getSkuCodeListByShopCar(shopCars);
-        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(skuCodes, shopCars.get(0).getStoreId(), customerId);
+        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(skuCodes, storeId, customerId);
         if (skuCodes.size() != shopCarProdVOs.size()) {
+            // 不相等的时候删掉多余的
+            List<String> collect = shopCarProdVOs.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
+            skuCodes.remove(collect);
+            shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             result.setProdStatus(PROD_STATUS);
         }
         List<ShopCarProdInfoVO> list = new ArrayList<>();
@@ -363,7 +367,7 @@ public class ShopCarServiceImpl implements ShopCarService {
             if (CollectionUtils.isNotEmpty(skuCodes)) {
                 shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             }
-            logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常{} 商品信息不存在或被删除");
+            logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常{} 商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);
         }
         return shopCarProds.getData();

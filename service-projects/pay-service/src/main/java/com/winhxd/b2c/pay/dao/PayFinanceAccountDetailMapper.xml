@@ -563,7 +563,14 @@
         FROM
             pay_withdrawals
     </select>
-
+    <select id="getCompanySupplementInMoney" resultType="java.math.BigDecimal">
+        SELECT
+            SUM(budget_amount) AS companySupplementInMoney
+        FROM
+            pay_financial_bill
+        WHERE
+            busi_type = '扫码充值'
+    </select>
     <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />

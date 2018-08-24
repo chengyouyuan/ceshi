@@ -119,8 +119,12 @@ public class PayFinancialManagerServiceImpl implements PayFinancialManagerServic
 		}
 		payFinanceAccountDetailVO.setUseTodayCouponAllMoney(useTodayCouponAllMoney);
 		payFinanceAccountDetailVO.setUseCouponAllMoney(useCouponAllMoney);
-		//公司补充总入账,待定
-		payFinanceAccountDetailVO.setCompanySupplementInMoney(BigDecimal.valueOf(8888));
+		//公司补充总入账
+		BigDecimal companySupplementInMoney = payFinanceAccountDetailMapper.getCompanySupplementInMoney();
+		if(companySupplementInMoney == null){
+			companySupplementInMoney = BigDecimal.valueOf(0);
+		}
+		payFinanceAccountDetailVO.setCompanySupplementInMoney(companySupplementInMoney);
 		//营收金额
 		BigDecimal revenueMoney = payFinanceAccountDetailMapper.getRevenueMoney();
 		if(revenueMoney == null){

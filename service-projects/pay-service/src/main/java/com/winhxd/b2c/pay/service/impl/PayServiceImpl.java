@@ -424,7 +424,7 @@ public class PayServiceImpl implements PayService{
 	}
 	
 	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
-		String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + condition.getStoreId();
+		String lockKey = CacheName.BACKROLL_STORE + condition.getStoreId();
 		Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
 		try{
 			lock.lock();

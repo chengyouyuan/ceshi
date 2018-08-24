@@ -15,6 +15,9 @@ import java.util.Date;
 
 @ApiModel("门店提现记录")
 public class PayWithdrawalsVO {
+
+    @ApiModelProperty("前端返回唯一标识")
+    private String index;
     @ApiModelProperty("主键")
     private Long id;
     @ApiModelProperty("门店id")
@@ -74,8 +77,12 @@ public class PayWithdrawalsVO {
     private Date updated;
     @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败")
     private Short callbackStatus;
+    private String callbackStatusName;
     @ApiModelProperty("原因")
     private String callbackReason;
+    @ApiModelProperty("失败原因")
+    private String errorMessage;
+
 
     public Long getId() {
         return id;
@@ -246,7 +253,7 @@ public class PayWithdrawalsVO {
     }
 
     public String getAuditStatusName() {
-        if (Short.valueOf("0").compareTo(auditStatus) == 0) {
+        if (auditStatus == null || Short.valueOf("0").compareTo(auditStatus) == 0) {
             auditStatusName = "未审核";
         }
         if (Short.valueOf("1").compareTo(auditStatus) == 0) {
@@ -272,5 +279,33 @@ public class PayWithdrawalsVO {
 
     public void setCallbackReason(String callbackReason) {
         this.callbackReason = callbackReason;
+    }
+
+    public String getCallbackStatusName() {
+        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "申请中";
+        }
+        if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现成功";
+        }
+        if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现失败";
+        }
+        if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
+            callbackStatusName = "提现失败";
+        }
+        return callbackStatusName;
+    }
+
+    public String getIndex() {
+        return String.valueOf(getId());
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

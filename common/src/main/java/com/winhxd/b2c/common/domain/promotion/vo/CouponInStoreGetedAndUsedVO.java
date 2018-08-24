@@ -17,6 +17,8 @@ public class CouponInStoreGetedAndUsedVO {
     private Long templeteId;
     @ApiModelProperty(value = "门店id")
     private Long storeId;
+    @ApiModelProperty(value = "活动id")
+    private Long couponActivityId;
     @ApiModelProperty(value = "领取数量")
     private Integer totalCount ;
     @ApiModelProperty(value = "使用数量")
@@ -45,6 +47,9 @@ public class CouponInStoreGetedAndUsedVO {
     private List<BrandVO> brands;
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
+    @ApiModelProperty(value = "是否过期")
+    private Short expire;
+
 
     public Long getTempleteId() {
         return templeteId;
@@ -60,6 +65,14 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setStoreId(Long storeId) {
         this.storeId = storeId;
+    }
+
+    public Long getCouponActivityId() {
+        return couponActivityId;
+    }
+
+    public void setCouponActivityId(Long couponActivityId) {
+        this.couponActivityId = couponActivityId;
     }
 
     public Integer getTotalCount() {
@@ -173,5 +186,13 @@ public class CouponInStoreGetedAndUsedVO {
 
     public void setProducts(List<ProductSkuVO> products) {
         this.products = products;
+    }
+
+    public Short getExpire() {
+        return expire;
+    }
+
+    public void setExpire(Short expire) {
+        this.expire = expire;
     }
 }

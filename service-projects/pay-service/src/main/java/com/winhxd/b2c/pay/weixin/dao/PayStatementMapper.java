@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.weixin.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 
@@ -22,6 +23,13 @@ public interface PayStatementMapper {
 	 */
     int insert(PayStatement record);
 
+	/**
+	 * 批量插入
+	 * @param record
+	 * @return
+	 */
+	void insertBatch(List<PayStatement> arrayList);
+	
 	/**
 	 * 插入有值的字段
 	 * @param record

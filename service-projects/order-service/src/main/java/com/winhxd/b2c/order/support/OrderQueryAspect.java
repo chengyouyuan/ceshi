@@ -49,9 +49,10 @@ public class OrderQueryAspect {
     private static final String NICK_NAME = "nickName";
     private static final String CUSTOMER_MOBILE = "customerMobile";
     private static final String STORE_ID = "storeId";
-    public static final String STORE_MOBILE = "storeMobile";
-    public static final String STORE_NAME = "storeName";
-    public static final String ORDER_ITEMVO_LIST = "orderItemVoList";
+    private static final String STORE_MOBILE = "storeMobile";
+    private static final String STORE_NAME = "storeName";
+    private static final String ORDER_ITEMVO_LIST = "orderItemVoList";
+    private static final String HEAD_IMG = "headImg";
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryAspect.class);
 
     @Autowired
@@ -284,8 +285,7 @@ public class OrderQueryAspect {
                     CustomerUserInfoVO customerUserInfoVO1 = (CustomerUserInfoVO) iterator.next();
                     customerUserInfoVOMap.put(customerUserInfoVO1.getCustomerId(), customerUserInfoVO1);
                 }
-                for (int i = 0; i < objArr.length; i++) {
-                    Object obj = objArr[i];
+                for (Object obj : objArr) {
                     Field field = Arrays.asList(obj.getClass().getDeclaredFields()).stream().filter(f -> f.getName().equals(CUSTOMER_ID)).findFirst().orElse(null);
                     if (field != null) {
                         field.setAccessible(true);
@@ -294,6 +294,7 @@ public class OrderQueryAspect {
                             if (vo != null) {
                                 assembleInfos(obj, NICK_NAME, vo.getNickName());
                                 assembleInfos(obj, CUSTOMER_MOBILE, vo.getCustomerMobile());
+                                assembleInfos(obj, HEAD_IMG, vo.getHeadImg());
                             }
                         }
                     }

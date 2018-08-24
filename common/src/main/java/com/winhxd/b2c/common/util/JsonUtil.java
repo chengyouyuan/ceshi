@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -126,5 +128,13 @@ public class JsonUtil {
 
     private static JavaType getCollectionType(Class<?> collectionClass, Class<?> entityClass) {
         return mapper.getTypeFactory().constructParametricType(collectionClass, new Class[]{entityClass});
+    }
+
+    public static ObjectNode createObjectNode() {
+        return mapper.createObjectNode();
+    }
+
+    public static ArrayNode createArrayNode() {
+        return mapper.createArrayNode();
     }
 }

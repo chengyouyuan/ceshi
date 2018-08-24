@@ -53,31 +53,27 @@ public class PayUtil {
 		neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
 		return neteaseMsgCondition;
 }
-
     /**
-     * 门店提现成功云信消息发放
-     *
+     * 发送云信消息
      * @param messageServiceClient
+     * @param storeMsg
+     * @param categoryType
      * @param storeId
-     * @author zhanghuan
-     * @date 2018年8月16日 下午6:27:59
+     * @author wangxiaoshun
      */
-    public static void newOrderSendMsg2Pay(MessageSendUtils messageServiceClient, Long storeId) {
+    public static void sendMsg(MessageSendUtils messageServiceClient,String storeMsg,Short categoryType,Long storeId){
         try {
             // 发送云信
-            String storeMsg = PayNotifyMsg.STORE_APPLY_WITHDRWAL;
             String createdBy = "";
             int expiration = 0;
             int msgType = 0;
             int audioType = 0;
             short pageType = MsgPageTypeEnum.NOTICE.getPageType();
-            short categoryType = MsgCategoryEnum.WITHDRAW_APPLY.getTypeCode();
             NeteaseMsgCondition neteaseMsgCondition = PayUtil.genNeteaseMsgCondition(storeId, storeMsg, createdBy, expiration, msgType,
                     pageType, categoryType, audioType);
             messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
-            messageServiceClient.sendNeteaseMsg(neteaseMsgCondition);
         } catch (Exception e) {
-            logger.error("门店提现发送消息:storeId={},发送消息：{} 失败", storeId, PayNotifyMsg.STORE_APPLY_WITHDRWAL);
+            logger.error("门店提现发送消息:storeId={},发送消息：{} 失败", storeId, storeMsg);
             logger.error("门店提现发送消息失败：", e);
         }
     }

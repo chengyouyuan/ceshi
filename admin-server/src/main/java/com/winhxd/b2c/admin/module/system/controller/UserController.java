@@ -202,7 +202,7 @@ public class UserController {
         return new ResponseResult<>(false);
     }
 
-    @ApiOperation(value = "根据主键获取禁用用户")
+    @ApiOperation(value = "根据主键禁用用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户编号", required = true)
     })
@@ -212,11 +212,28 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
             @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
-    @DeleteMapping("/user/disabled/{id}")
+    @GetMapping("/user/disabled/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
     public ResponseResult<Void> disabled(@PathVariable("id") Long id){
-        logger.info("{} - 根据主键获取禁用用户, 参数：id={}", MODULE_NAME, id);
+        logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
         return userServiceClient.disabled(id);
+    }
+
+    @ApiOperation(value = "根据主键启用用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户编号", required = true)
+    })
+    @ApiResponses({
+            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
+            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+    })
+    @GetMapping("/user/enable/{id}")
+    @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_ENABLE})
+    public ResponseResult<Void> enable(@PathVariable("id") Long id){
+        logger.info("{} - 根据主键启用用户, 参数：id={}", MODULE_NAME, id);
+        return userServiceClient.enable(id);
     }
 
     @ApiOperation(value = "用户管理页面(样本功能)")

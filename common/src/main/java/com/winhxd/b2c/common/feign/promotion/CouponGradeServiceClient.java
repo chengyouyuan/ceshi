@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidConditio
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -84,40 +85,41 @@ public interface CouponGradeServiceClient {
 
 
 @Component
-class CouponGradeServiceClientFallback implements CouponGradeServiceClient{
+class CouponGradeServiceClientFallback implements FallbackFactory<CouponGradeServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(CouponGradeServiceClientFallback.class);
-    private Throwable throwable;
-
     @Override
-    public ResponseResult<Integer> addCouponGrade(CouponGradeCondition couponGradeCondition) {
-        logger.error("CouponGradeServiceClient -> addCouponGrade", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+    public CouponGradeServiceClient create(Throwable throwable) {
+        return new CouponGradeServiceClient() {
+            @Override
+            public ResponseResult<Integer> addCouponGrade(CouponGradeCondition couponGradeCondition) {
+                logger.error("CouponGradeServiceClient -> addCouponGrade", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<CouponGradeVO> viewCouponGradeDetail(String id) {
+                logger.error("CouponGradeServiceClient -> viewCouponGradeDetail", throwable);
+                return new ResponseResult<CouponGradeVO>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<Integer> updateCouponGradeValid(CouponSetToValidCondition condition) {
+                logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
+                return new ResponseResult<Integer>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
+                logger.error("CouponGradeServiceClient -> getCouponGradePage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
+                logger.error("CouponGradeServiceClient -> findGradeTempleteCountPage", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+        };
     }
-
-    @Override
-    public ResponseResult<CouponGradeVO> viewCouponGradeDetail(String id) {
-        logger.error("CouponGradeServiceClient -> viewCouponGradeDetail", throwable);
-        return new ResponseResult<CouponGradeVO>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<Integer> updateCouponGradeValid(CouponSetToValidCondition condition) {
-        logger.error("CouponGradeServiceClient -> updateCouponGradeValid", throwable);
-        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
-        logger.error("CouponGradeServiceClient -> getCouponGradePage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
-        logger.error("CouponGradeServiceClient -> findGradeTempleteCountPage", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
-
-
 }
 

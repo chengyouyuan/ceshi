@@ -40,7 +40,7 @@ public class MessageSendMqHandler {
     private static final String SUCCESS_CODE_0 = "0";
     private static final String SUCCESS_CODE_200 = "200";
     private static final String PARAM_CODE = "code";
-    private static final String PARAM_MSGID = "msgid";
+    private static final String PARAM_MSGID = "data.msgid";
     /**错误码，formid不正确，或者过期或已被使用*/
     private static final String[] ERR_CODE = {"41028","41029"};
 
@@ -165,7 +165,6 @@ public class MessageSendMqHandler {
         } else {
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，neteaseMsgDelayConditionJson={}", neteaseMsgDelayConditionJson);
             LOGGER.error("MessageBatchPushServiceImpl ->batchPushMessage,给B端门店手动推送云信消息出错，错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
-            //throw new BusinessException(BusinessCode.CODE_703503);
         }
     }
 
@@ -189,15 +188,18 @@ public class MessageSendMqHandler {
             LOGGER.error("消息服务 ->发送云信消息异常，MessageSendMqHandler.sendNeteaseMsg(),参数错误，云信用户不存在,customerId={}",neteaseMsgCondition.getCustomerId());
             return;
         }
+        int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
+        //在消息盒子中，则保存消息记录
+        String msgId = "";
+        if (msgType == 0){
+            MessageNeteaseHistory history = saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg());
+            msgId = String.valueOf(history.getId());
+        }
         //发送云信消息
-        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition);
+        Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition,msgId);
         if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
             //云信消息发送成功
-            int msgType = neteaseMsgCondition.getNeteaseMsg().getMsgType();
-            //在消息盒子中，则保存消息记录
-            if (msgType == 0){
-                saveNeteaseMsgHistory(account.getAccid(), neteaseMsgCondition.getNeteaseMsg(), String.valueOf(msgMap.get(PARAM_MSGID)));
-            }
+            LOGGER.info("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息成功 msg_id_server={}",String.valueOf(msgMap.get(PARAM_MSGID)));
         } else {
             LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         }
@@ -297,19 +299,19 @@ public class MessageSendMqHandler {
      * @param accid
      * @param neteaseMsg
      */
-    private void saveNeteaseMsgHistory(String accid, NeteaseMsg neteaseMsg, String msgIdServer) {
+    private MessageNeteaseHistory saveNeteaseMsgHistory(String accid, NeteaseMsg neteaseMsg) {
         MessageNeteaseHistory history = new MessageNeteaseHistory();
         history.setFromAccid(ACCID_ADMIN);
         history.setToAccid(accid);
         history.setMsgType(Short.valueOf("0"));
         history.setMsgBody(neteaseMsg.getMsgContent());
-        history.setExtJson(NeteaseUtils.buildExtJsonMsg(neteaseMsg));
+        history.setExtJson(NeteaseUtils.buildExtJsonMsg4Save(neteaseMsg));
         history.setPageType(neteaseMsg.getPageType());
         history.setTreeCode(neteaseMsg.getTreeCode());
         history.setMsgCategory(neteaseMsg.getMsgCategory());
-        history.setMsgIdServer(msgIdServer);
         history.setMsgTimeStamp(new Date());
         messageNeteaseHistoryMapper.insert(history);
+        return history;
     }
 
     /**

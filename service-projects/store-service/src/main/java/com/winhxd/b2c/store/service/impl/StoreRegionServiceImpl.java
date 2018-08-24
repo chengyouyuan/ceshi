@@ -142,20 +142,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         return result.getData();
     }
 
-    /**
-     *
-     * @author: wangbaokuo
-     * @date: 2018/8/10 10:31
-     * @return: 获取用户info
-     */
-    private void checkCurrentAdminUser() {
-        AdminUser adminUser = UserContext.getCurrentAdminUser();
-        if (null == adminUser) {
-            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
-            throw new BusinessException(BusinessCode.CODE_1004);
-        }
-    }
-
     @Override
     public StoreRegion getByRegionCode(String regionCode) {
         //查询省市县五级信息
@@ -180,4 +166,19 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         }
         return storeRegionMapper.selectByRegionCode(regionCodeList);
     }
+
+    /**
+     *
+     * @author: wangbaokuo
+     * @date: 2018/8/10 10:31
+     * @return: 校验info
+     */
+    private void checkCurrentAdminUser() {
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        if (null == adminUser) {
+            logger.error("获取当前用户信息异常{} UserContext.getCurrentAdminUser():" + UserContext.getCurrentAdminUser());
+            throw new BusinessException(BusinessCode.CODE_1004);
+        }
+    }
+
 }

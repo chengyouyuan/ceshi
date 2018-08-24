@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
+import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -116,7 +117,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
         	BeanUtils.copyProperties(condition, storeBankCard);
     		
         	storeBankCard.setStoreId(currentStoreUser.getBusinessId());
-        	storeBankCard.setStatus((short)1); 
+        	storeBankCard.setStatus(StatusEnums.EFFECTIVE.getCode()); 
         	storeBankCard.setCreated(new Date());
         	storeBankCard.setUpdated(new Date());
         	storeBankCard.setCreatedBy(currentStoreUser.getBusinessId());

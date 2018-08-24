@@ -396,6 +396,21 @@ public class CouponController {
 		   || condition.getPayType()==null 	){
            throw new BusinessException(BusinessCode.CODE_500010,"优惠券模板必填参数错误");
 		}
+
+		if(condition.getTitle().length()>50){
+			throw new BusinessException(BusinessCode.CODE_500016,"优惠券标题超过最大长度");
+		}
+		if(StringUtils.isNotBlank(condition.getExolian())){
+            if(condition.getExolian().length()>50){
+				throw new BusinessException(BusinessCode.CODE_500016,"优惠券说明超过最大长度");
+			}
+		}
+		if(StringUtils.isNotBlank(condition.getRemarks())){
+			if(condition.getRemarks().length()>200){
+				throw new BusinessException(BusinessCode.CODE_500016,"优惠券详细说明说明超过最大长度");
+			}
+		}
+
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
@@ -487,8 +502,15 @@ public class CouponController {
 			 throw new BusinessException(BusinessCode.CODE_500010,"新建出资方必填参数错误");
 		 }
 		 String name = detailData.get("name").toString();
+         if(name.length()>50){
+			 throw new BusinessException(BusinessCode.CODE_500016,"出资方名称超过最大长度");
+		 }
+
          if(detailData.get("remark")!=null){
 			 condition.setRemarks(detailData.get("remark").toString());
+			 if(detailData.get("remark").toString().length()>200){
+				 throw new BusinessException(BusinessCode.CODE_500016,"出资方备注超过最大长度");
+			 }
 		 }
 		ArrayList list  = (ArrayList)detailData.get("listDetail");
 		UserInfo userInfo = UserManager.getCurrentUser();
@@ -608,6 +630,15 @@ public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition 
 		}
 	}
 
+	if(couponGradeCondition.getName().length()>50){
+		throw new BusinessException(BusinessCode.CODE_500016,"坎级规则名称超过最大长度");
+	}
+	if(StringUtils.isNotBlank(couponGradeCondition.getRemarks())){
+		if(couponGradeCondition.getRemarks().length()>200){
+			throw new BusinessException(BusinessCode.CODE_500016,"坎级规则备注超过最大长度");
+		}
+	}
+
 	 UserInfo userInfo = UserManager.getCurrentUser();
 	 String userId = userInfo.getId()+"";
 	 String userName = userInfo.getUsername();
@@ -687,6 +718,15 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 				}
 			}
 		}
+		if(condition.getName().length()>50){
+			throw new BusinessException(BusinessCode.CODE_500016,"适用对象规则名称超过最大长度");
+		}
+		if(StringUtils.isNotBlank(condition.getRemarks())){
+			if(condition.getRemarks().length()>200){
+				throw new BusinessException(BusinessCode.CODE_500016,"适用对象规则备注超过最大长度");
+			}
+		}
+
 
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";

@@ -50,7 +50,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
         /**
          * 校验必填参数
          */
-        ResponseResult<Integer> responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int flag = couponTemplateService.saveCouponTemplate(couponTemplateCondition);
             if(flag == 0) {
                 responseResult.setCode(BusinessCode.CODE_OK);
@@ -80,15 +80,15 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
 
     /**
      *
-     *@Deccription  单个删除/批量删除（非物理删除）/ 设为无效
-     *@Params  ids  多个页面勾选的ID 用逗号","隔开
+     *@Deccription  设为无效
+     *@Params  condition
      *@Return  ResponseResult 删除是否成功
      *@User  wl
      *@Date   2018/8/6 20:39
      */
     @Override
     public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition) {
-        ResponseResult responseResult = new ResponseResult();
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
         Date updated = new Date();
         int count = couponTemplateService.updateCouponTemplateToValid(condition.getId(),condition.getUserId(),updated,condition.getUserName());
         if(count!=1){

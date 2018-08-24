@@ -122,7 +122,7 @@ public interface CouponService {
     List<CouponInvestorAmountVO> getCouponInvestorAmount(CouponInvestorAmountCondition condition);
 
 
-    PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, Integer pageNo, Integer pageSize);
+    PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId,CouponInStoreGetedAndUsedCodition codition);
 
     /**
      * 获取可用最优惠的优惠券

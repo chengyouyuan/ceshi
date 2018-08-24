@@ -1,11 +1,9 @@
 package com.winhxd.b2c.order.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.ShopCarQueryCondition;
 import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCartQueryCondition;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
 import com.winhxd.b2c.common.domain.order.vo.ShopCartProductVO;
@@ -43,22 +41,17 @@ public class ShopCartController implements ShopCartServiceClient {
     }
 
     @Override
-    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCarQueryCondition condition) {
+    public ResponseResult<List<ShopCarProdInfoVO>> findShopCar(@RequestBody ShopCartQueryCondition condition) {
         if (null == condition || null == condition.getStoreId()) {
             logger.error("查询购物车异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
-        List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
-        return new ResponseResult<>(data);
-    }
-
-    private Long getCurrentCustomerId(){
-        CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser || null == customerUser.getCustomerId() || 0 == customerUser.getCustomerId()) {
-            logger.error("获取当前用户信息异常{} UserContext.getCurrentCustomerUser():" + UserContext.getCurrentCustomerUser());
+        if (null == condition.getCustomerId()) {
+            logger.error("查询购物车异常{}  用户无效");
             throw new BusinessException(BusinessCode.CODE_1004);
         }
-        return customerUser.getCustomerId();
+        List<ShopCarProdInfoVO> data = shopCarService.findShopCar(condition.getStoreId(), condition.getCustomerId()).getShopCarts();
+        return new ResponseResult<>(data);
     }
 
 }

@@ -53,6 +53,7 @@ import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import com.winhxd.b2c.order.util.OrderUtil;
 
 /**
  * @author pangjianhua
@@ -178,7 +179,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                     List<String> strCustomerIds = distinctCustomerIds.stream().map(p -> {
                         return p.toString();
                      }).collect(Collectors.toList());
-                    cache.sadd(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds", strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                    //先删除所有的redis数据
+                    cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));
+                    cache.sadd(OrderUtil.getStoreOrderCustomerIdSetField(storeId), strCustomerIds.toArray(new String[strCustomerIds.size()]));
+                    cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }
             }
             //设置到缓存
@@ -219,7 +223,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             Date endDateTime = new Date(lastSecond);
             //取前30天开始日期
             startDateTime = DateUtils.addMonths(startDateTime, -1);
-            storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
+            storeOrderSalesSummaryVO = calculateStoreCompletedOrderSalesSummary(storeId, startDateTime, endDateTime);
             //设置到缓存
             cache.hset(CacheName.CACHE_KEY_STORE_ORDER_MONTH_SALESSUMMARY, storeId + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
             //当天有效
@@ -309,7 +313,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new NullPointerException("订单编号不能为空");
         }
         String cacheStr = cache.get(CacheName.CACHE_ORDER_INFO_4_MANAGEMENT + orderNo);
-        if (StringUtils.isNoneBlank(cacheStr)) {
+        if (StringUtils.isNotBlank(cacheStr)) {
             logger.info("订单 orderNo={} 命中缓存 订单信息查询结束", orderNo);
             return JsonUtil.parseJSONObject(cacheStr, OrderInfoDetailVO4Management.class);
         }
@@ -446,6 +450,20 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
         }
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreOrderCustomerNum(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO1 != null) {
+            BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
+        }
+        storeOrderSalesSummaryVO.setStoreId(storeId);
+        return storeOrderSalesSummaryVO;
+    }
+    
+    private StoreOrderSalesSummaryVO calculateStoreCompletedOrderSalesSummary(long storeId, Date startDateTime,
+            Date endDateTime) {
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreCompletedOrderTurnover(storeId, startDateTime, endDateTime);
+        if (storeOrderSalesSummaryVO == null) {
+            storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();
+        }
+        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO1 = orderInfoMapper.getStoreCompletedOrderCustomerNum(storeId, startDateTime, endDateTime);
         if (storeOrderSalesSummaryVO1 != null) {
             BeanUtils.copyProperties(storeOrderSalesSummaryVO1, storeOrderSalesSummaryVO, "turnover", "orderNum");
         }

@@ -134,10 +134,12 @@ public class ApiCustomerLoginController {
 				logger.info("{} - , 该微信号已被其他手机号绑定");
 				throw new BusinessException(BusinessCode.CODE_202110);
 			}
+			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken());
 			customerUserInfo.setCustomerId(db.getCustomerId());
+			customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
+			customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
 			customerUserInfo.setSessionKey(mini.getSessionKey());
 			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
-			cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN + db.getToken());
 			customerLoginService.updateCustomerInfo(customerUserInfo);
 			vo = new CustomerUserInfoSimpleVO();
 			vo.setCustomerMobile(db.getCustomerMobile());

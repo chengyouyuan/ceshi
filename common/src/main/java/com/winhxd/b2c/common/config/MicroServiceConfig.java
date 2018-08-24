@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 @Import({CommonConfig.class, MessageQueueConfig.class})
 @EnableHystrix
 public class MicroServiceConfig {
-
     /**
      * 统一异常处理
      */
@@ -32,20 +31,9 @@ public class MicroServiceConfig {
         return new ServiceHandlerExceptionResolver();
     }
 
-    /**
-     * 初始化当前用户信息
-     */
     @Bean
     public ContextInitFilter contextInitFilter() {
         return new ContextInitFilter();
-    }
-
-    /**
-     * 传递当前用户信息
-     */
-    @Bean
-    public ContextRequestInterceptor contextRequestInterceptor() {
-        return new ContextRequestInterceptor();
     }
 
     @Bean
@@ -56,11 +44,5 @@ public class MicroServiceConfig {
     @Bean
     public BusinessDecoder businessDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
         return new BusinessDecoder(messageConverters);
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public VersionedZoneAvoidanceRule versionedZoneAvoidanceRule() {
-        return new VersionedZoneAvoidanceRule();
     }
 }

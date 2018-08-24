@@ -26,13 +26,15 @@
         <result column="source" property="source" jdbcType="CHAR"/>
         <result column="store_status" property="storeStatus" jdbcType="SMALLINT"/>
         <result column="token" property="token" jdbcType="VARCHAR"/>
+        <result column="app_login_status" property="appLoginStatus" jdbcType="SMALLINT"/>
         <result column="mini_program_code_url" property="miniProgramCodeUrl" jdbcType="VARCHAR"/>
+        <result column="store_pic_img" property="storePicImg" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
     shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
-    store_status,token, mini_program_code_url
+    store_status,token, mini_program_code_url, app_login_status, store_pic_img
   </sql>
 
     <select id="selectStoreUserByIds" resultMap="BaseResultMap">
@@ -132,7 +134,7 @@
       lat, lon, openid, created, 
       created_by, created_by_name, updated, 
       updated_by, updated_by_name, source, 
-      store_status,token,mini_program_code_url)
+      store_status,token,mini_program_code_url,app_login_status)
     values (#{id,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{storeCustomerId,jdbcType=BIGINT}, 
       #{storeMobile,jdbcType=CHAR}, #{storeAddress,jdbcType=VARCHAR}, #{storeRegionCode,jdbcType=CHAR}, 
       #{storePassword,jdbcType=CHAR}, #{shopkeeper,jdbcType=VARCHAR}, #{shopOwnerImg,jdbcType=VARCHAR}, 
@@ -140,7 +142,7 @@
       #{lat,jdbcType=DOUBLE}, #{lon,jdbcType=DOUBLE}, #{openid,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
       #{createdBy,jdbcType=BIGINT}, #{createdByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, 
       #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR}, #{source,jdbcType=CHAR}, 
-      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR},#{miniProgramCodeUrl,jdbcType=VARCHAR})
+      #{storeStatus,jdbcType=SMALLINT},#{token,jdbcType=VARCHAR},#{miniProgramCodeUrl,jdbcType=VARCHAR},#{appLoginStatus,jdbcType=SMALLINT})
   </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreUserInfo"
             useGeneratedKeys="true" keyProperty="id">
@@ -221,6 +223,12 @@
             <if test="miniProgramCodeUrl != null">
                 mini_program_code_url,
             </if>
+            <if test="appLoginStatus != null">
+                app_login_status,
+            </if>
+            <if test="storePicImg != null">
+                store_pic_img,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -297,6 +305,12 @@
             </if>
             <if test="miniProgramCodeUrl != null">
                 #{miniProgramCodeUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="appLoginStatus != null">
+                #{appLoginStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="storePicImg != null">
+                #{storePicImg,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -376,6 +390,12 @@
             <if test="miniProgramCodeUrl != null">
                 mini_program_code_url = #{miniProgramCodeUrl,jdbcType=VARCHAR},
             </if>
+            <if test="appLoginStatus != null">
+                app_login_status = #{appLoginStatus,jdbcType=SMALLINT},
+            </if>
+            <if test="storePicImg != null">
+                store_pic_img = #{storePicImg,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -404,7 +424,9 @@
       source = #{source,jdbcType=CHAR},
       store_status = #{storeStatus,jdbcType=SMALLINT},
       token = #{token,jdbcType=VARCHAR},
-      mini_program_code_url = #{miniProgramCodeUrl,jdbcType=VARCHAR}
+      mini_program_code_url = #{miniProgramCodeUrl,jdbcType=VARCHAR},
+      app_login_status = #{appLoginStatus,jdbcType=SMALLINT},
+      store_pic_img = #{storePicImg,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateRegionCodeByCustomerId">

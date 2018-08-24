@@ -85,6 +85,7 @@ public class BackStageStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_102201, message = "参数无效！")})
     @PostMapping(value = "/1022/v1/modifyStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE_EDIT)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(condition.toString()));
         if (condition.getId() == null) {

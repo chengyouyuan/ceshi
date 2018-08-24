@@ -11,15 +11,22 @@ import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarVO;
+import com.winhxd.b2c.common.domain.pay.vo.OrderMoneyVO;
+import com.winhxd.b2c.common.domain.pay.vo.ReadyOrderVO;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponPreAmountCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
+import com.winhxd.b2c.common.domain.promotion.condition.OrderAvailableCouponCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
-import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -31,8 +38,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +53,10 @@ public class ShopCarServiceImpl implements ShopCarService {
     private static final Logger logger = LoggerFactory.getLogger(ShopCarServiceImpl.class);
 
     private static final String READY_ORDER = "预订单接口readyOrder";
+
+    private static final String SHOP_CAR = "ShopCarServiceImpl {} ";
+
+    private static final Byte PROD_STATUS = 1;
 
     private static final Integer INTEGER_ZERO = 0;
 
@@ -62,6 +73,9 @@ public class ShopCarServiceImpl implements ShopCarService {
     private CustomerServiceClient customerServiceClient;
 
     @Autowired
+    private CouponServiceClient couponServiceClient;
+
+    @Autowired
     private Cache cache;
 
     @Transactional(rollbackFor= {Exception.class})
@@ -73,7 +87,7 @@ public class ShopCarServiceImpl implements ShopCarService {
         try {
             if (lock.tryLock()) {
                 // 校验商品
-                checkShopCarProdInfo(condition);
+                checkSaveShopCarProdInfo(condition, customerId);
                 // 加购：存在则更新数量，不存在保存
                 ShopCar shopCar = new ShopCar();
                 // 获取当前用户信息
@@ -87,6 +101,10 @@ public class ShopCarServiceImpl implements ShopCarService {
                     }
                     result.setAmount(condition.getAmount());
                     return shopCarMapper.updateByPrimaryKey(result);
+                }
+                // 非删除传值0   抛异常
+                if (INTEGER_ZERO.equals(condition.getAmount())) {
+                    throw new BusinessException(BusinessCode.CODE_402008);
                 }
                 Date current = new Date();
                 shopCar.setCreated(current);
@@ -104,15 +122,25 @@ public class ShopCarServiceImpl implements ShopCarService {
     }
 
     @Override
-    public List<ShopCarProdInfoVO> findShopCar(Long storeId, Long customerId) {
+    public ShopCarVO findShopCar(Long storeId, Long customerId) {
         logger.info("findShopCar {}-> 查询购物车执行...");
-        List<ShopCarProdInfoVO> result = new ArrayList<>();
+        ShopCarVO result = new ShopCarVO();
         List<ShopCar> shopCars = queryShopCars(customerId, storeId);
         if (CollectionUtils.isEmpty(shopCars)) {
+            result.setShopCarts(Collections.emptyList());
             return result;
         }
         // 商品详情
-        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
+        List<String> skuCodes = getSkuCodeListByShopCar(shopCars);
+        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(skuCodes, storeId, customerId);
+        if (skuCodes.size() != shopCarProdVOs.size()) {
+            // 不相等的时候删掉多余的
+            List<String> collect = shopCarProdVOs.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
+            skuCodes.removeAll(collect);
+            shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
+            result.setProdStatus(PROD_STATUS);
+        }
+        List<ShopCarProdInfoVO> list = new ArrayList<>();
         ShopCarProdInfoVO shopCarProdInfoVO;
         for (ShopCar shopCar2 : shopCars){
             for (ShopCartProdVO shopCarProdVO : shopCarProdVOs){
@@ -123,10 +151,11 @@ public class ShopCarServiceImpl implements ShopCarService {
                     BeanUtils.copyProperties(shopCarProdVO, shopCarProdInfoVO);
                     shopCarProdInfoVO.setPrice(shopCarProdVO.getSellMoney());
                     shopCarProdInfoVO.setCompanyCode(shopCarProdVO.getCompanyCode());
-                    result.add(shopCarProdInfoVO);
+                    list.add(shopCarProdInfoVO);
                 }
             }
         }
+        result.setShopCarts(list);
         return result;
     }
 
@@ -138,7 +167,7 @@ public class ShopCarServiceImpl implements ShopCarService {
 
     @Override
     public OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId) {
-        logger.info(READY_ORDER + "{}-> 执行...");
+        logger.info(SHOP_CAR + READY_ORDER + "{}-> 执行...");
         String lockKey = CacheName.CACHE_KEY_CUSTOMER_ORDER_REPEAT + customerId;
         Lock lock = new RedisLock(cache, lockKey, 1000);
         try {
@@ -146,11 +175,11 @@ public class ShopCarServiceImpl implements ShopCarService {
                 // 后台去获取购物车信息
                 List<ShopCar> shopCars = queryShopCars(customerId, condition.getStoreId());
                 if (CollectionUtils.isEmpty(shopCars)) {
-                    logger.error(READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
+                    logger.error(SHOP_CAR + READY_ORDER + "{}-> 购物车信息shopCars:" + JsonUtil.toJSONString(shopCars));
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
-                logger.info(READY_ORDER + "{}-> 校验购物车商品状态执行...");
-                checkShopCarProdInfo(shopCars);
+                logger.info(SHOP_CAR + READY_ORDER + "{}-> 校验购物车商品状态执行...");
+                checkReadyShopCarProdInfo(shopCars, customerId);
 
                 List<OrderItemCondition> items = new ArrayList<>(shopCars.size());
                 shopCars.stream().forEach( shopCar1 ->{
@@ -164,9 +193,9 @@ public class ShopCarServiceImpl implements ShopCarService {
                 BeanUtils.copyProperties(condition, orderCreateCondition);
                 orderCreateCondition.setCustomerId(customerId);
                 orderCreateCondition.setOrderItemConditions(items);
-                logger.info(READY_ORDER + "{}-> 订单接口submitOrder开始...");
+                logger.info(SHOP_CAR + READY_ORDER + "{}-> 订单接口submitOrder开始...");
                 OrderInfo orderInfo = orderService.submitOrder(orderCreateCondition);
-                logger.info(READY_ORDER + "{}-> 订单接口submitOrder结束...");
+                logger.info(SHOP_CAR + READY_ORDER + "{}-> 订单接口submitOrder结束...");
                 // 保存成功删除此用户门店的购物车
                 shopCarMapper.deleteShopCarsByStoreId(shopCars.get(0));
                 this.removeShopCar(customerId);
@@ -189,6 +218,108 @@ public class ShopCarServiceImpl implements ShopCarService {
         return ret.getData().get(0);
     }
 
+    private StoreUserInfoVO getStoreUserInfoVO(Long storeId) {
+        ResponseResult<StoreUserInfoVO> ret = storeServiceClient.findStoreUserInfo(storeId);
+        if (ret == null || ret.getCode() != BusinessCode.CODE_OK || ret.getData() == null) {
+            throw new BusinessException(BusinessCode.WRONG_CUSTOMER_ID);
+        }
+        logger.info("storeId={} 获取用户信息成功，用户信息：{}", ret.getData());
+        return ret.getData();
+    }
+
+    @Override
+    public ReadyOrderVO findReadyOrder(Long storeId, Long customerId) {
+        ReadyOrderVO vo = new ReadyOrderVO();
+        logger.info(SHOP_CAR + "findReadyOrder{} -> 统计订单实付金额，优惠金额执行...");
+        CouponVO coupon = getDefaultCoupon(storeId);
+        OrderMoneyVO orderTotalMoney = this.getOrderMoney(storeId, customerId, coupon == null ? null : coupon.getSendId());
+        vo.setOrderMoney(orderTotalMoney);
+        logger.info(SHOP_CAR + "findReadyOrder{} -> 获取门店信息执行...");
+        StoreUserInfoVO storeUserInfoVO = getStoreUserInfoVO(storeId);
+        vo.setStoreAddress(storeUserInfoVO.getStoreAddress());
+        vo.setPayType(storeUserInfoVO.getPayType());
+        vo.setCoupon(coupon);
+        vo.setShopCarts(this.findShopCar(storeId, customerId).getShopCarts());
+        return vo;
+    }
+
+    private CouponVO getDefaultCoupon(Long storeId){
+        OrderAvailableCouponCondition orderAvailableCouponCondition = new OrderAvailableCouponCondition();
+        orderAvailableCouponCondition.setPayType(getStoreUserInfoVO(storeId).getPayType());
+        orderAvailableCouponCondition.setStoreId(storeId);
+        ResponseResult<CouponVO> result = couponServiceClient.findDefaultCoupon(orderAvailableCouponCondition);
+        if (null == result || result.getCode() != BusinessCode.CODE_OK ) {
+            logger.info(SHOP_CAR + "getDefaultCoupon接口异常{} -> CouponVO:" + JsonUtil.toJSONString(result));
+            throw new BusinessException(BusinessCode.CODE_402018);
+        }
+        return result.getData();
+    }
+
+    @Override
+    public OrderMoneyVO getOrderMoney(Long storeId, Long customerId, Long sendId){
+        OrderMoneyVO result = new OrderMoneyVO();
+        logger.info(SHOP_CAR + "getOrderMoney{} 执行...");
+        // 计算无优惠券时订单价格
+        List<ShopCar> shopCars = queryShopCars(customerId, storeId);
+        if (CollectionUtils.isEmpty(shopCars)) {
+            logger.info(SHOP_CAR + "getOrderMoney{} 购物车不存在商品，不计算价格：shopCars="+JsonUtil.toJSONString(shopCars));
+            return result;
+        }
+        List<ShopCartProdVO> shopCarProdVOs = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), storeId, customerId);
+        for(ShopCartProdVO vo : shopCarProdVOs) {
+            if (null == vo.getSellMoney()) {
+                logger.info(SHOP_CAR + "getOrderMoney{} 存在售卖价格为空的商品，不计算价格：skuCode="+vo.getSkuCode());
+                return result;
+            }
+        }
+        for(ShopCar shopCar : shopCars) {
+            for (ShopCartProdVO shopCartProdVO : shopCarProdVOs) {
+                if (shopCar.getSkuCode().equals(shopCartProdVO.getSkuCode())) {
+                    BigDecimal money = shopCartProdVO.getSellMoney().setScale(2, RoundingMode.HALF_UP);
+                    result.setOrderTotalMoney(result.getOrderTotalMoney().add(money.multiply(new BigDecimal(shopCar.getAmount()))));
+                }
+            }
+        }
+        // 减去优惠金额
+        if (null != sendId  && result.getOrderTotalMoney().compareTo(BigDecimal.ZERO) != 0) {
+            BigDecimal discountAmount = getDiscountAmount(Arrays.asList(sendId), findCouponProduct(storeId, customerId), getStoreUserInfoVO(storeId).getPayType());
+            result.setOrderTotalMoney(result.getOrderTotalMoney().subtract(discountAmount == null ? BigDecimal.ZERO : discountAmount));
+            result.setDiscountAmount(result.getDiscountAmount().add(discountAmount));
+        }
+        return result;
+    }
+
+    private List<CouponProductCondition> findCouponProduct(Long storeId, Long customerId){
+        List<ShopCarProdInfoVO> shopCars = this.findShopCar(storeId, customerId).getShopCarts();
+        if (CollectionUtils.isEmpty(shopCars)) {
+            return Collections.emptyList();
+        }
+        List<CouponProductCondition> result = new ArrayList<>(shopCars.size());
+        shopCars.stream().forEach(shopCar -> {
+            CouponProductCondition condition = new CouponProductCondition();
+            condition.setBrandBusinessCode(shopCar.getCompanyCode());
+            condition.setBrandCode(shopCar.getBrandCode());
+            condition.setPrice(shopCar.getPrice());
+            condition.setSkuCode(shopCar.getSkuCode());
+            condition.setSkuNum(shopCar.getAmount());
+            result.add(condition);
+        });
+        return result;
+    }
+
+    private BigDecimal getDiscountAmount(List<Long> sendIds, List<CouponProductCondition> products, String payType){
+        CouponPreAmountCondition couponPreAmountCondition = new CouponPreAmountCondition();
+        couponPreAmountCondition.setSendIds(sendIds);
+        couponPreAmountCondition.setProducts(products);
+        couponPreAmountCondition.setPayType(payType);
+        ResponseResult<CouponDiscountVO> result = couponServiceClient.couponDiscountAmount(couponPreAmountCondition);
+        if (null == result || result.getCode() != BusinessCode.CODE_OK || null == result.getData()) {
+            logger.info(SHOP_CAR + "getDiscountAmount{} 计算优惠金额失败 CouponDiscountVO:" + result);
+            throw new BusinessException(BusinessCode.CODE_402017);
+        }
+        return result.getData().getDiscountAmount();
+    }
+
     @Override
     public List<ShopCar> queryShopCartBySelective(ShopCartProductCondition condition) {
         return shopCarMapper.queryShopCartBySelective(condition);
@@ -203,23 +334,24 @@ public class ShopCarServiceImpl implements ShopCarService {
         return skuCodes;
     }
 
-    private void checkShopCarProdInfo(List<ShopCar> shopCars){
-        List<ShopCartProdVO> list = getShopCarProdVO(getSkuCodeListByShopCar(shopCars), shopCars.get(0).getStoreId());
-        for (ShopCartProdVO shopCarProdVO : list) {
-            if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
+    private void checkReadyShopCarProdInfo(List<ShopCar> shopCars, Long customerId){
+        Long storeId = shopCars.get(0).getStoreId();
+        List<String> skuCodes = getSkuCodeListByShopCar(shopCars);
+        List<ShopCartProdVO> list = getShopCarProdVO(skuCodes, storeId, customerId);
+        // 程序能走到这的一定是上架中的商品
+        if (shopCars.size() != list.size()) {
+            List<String> collect = list.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
+            shopCars.removeAll(collect);
+            shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
+            logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
+            throw new BusinessException(BusinessCode.CODE_402011);
         }
     }
 
-    private void checkShopCarProdInfo(ShopCarCondition condition){
-        List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId());
+    private void checkSaveShopCarProdInfo(ShopCarCondition condition ,Long customerId){
+        List<ShopCartProdVO> list = getShopCarProdVO(Arrays.asList(condition.getSkuCode()), condition.getStoreId(), customerId);
         for (ShopCartProdVO shopCarProdVO : list) {
-            if (!StoreProductStatusEnum.PUTAWAY.getStatusCode().equals(shopCarProdVO.getProdStatus())) {
-                logger.error("商品加购异常{}  购物车商品下架或已被删除！skuCode:" + shopCarProdVO.getSkuCode() + "sellMoney:" + shopCarProdVO.getSellMoney());
-                throw new BusinessException(BusinessCode.CODE_402010);
-            }
+            // 程序能走到这的一定是上架中的商品
             if (shopCarProdVO.getSkuCode().equals(condition.getSkuCode())) {
                 BigDecimal sellMoney = shopCarProdVO.getSellMoney() == null ? BigDecimal.ZERO : shopCarProdVO.getSellMoney();
                 BigDecimal price = condition.getPrice() == null ? BigDecimal.ZERO : condition.getPrice();
@@ -231,10 +363,14 @@ public class ShopCarServiceImpl implements ShopCarService {
         }
     }
 
-    private List<ShopCartProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId){
+    private List<ShopCartProdVO> getShopCarProdVO(List<String> skuCodes, Long storeId, Long customerId){
         ResponseResult<List<ShopCartProdVO>> shopCarProds = storeServiceClient.findShopCarProd(skuCodes, storeId);
-        if (CollectionUtils.isEmpty(shopCarProds.getData()) || skuCodes.size() != shopCarProds.getData().size()) {
-            logger.error("获取ShopCarProdVO异常{} -> 商品信息不存在或获取商品数量不正确");
+        if (null == shopCarProds || shopCarProds.getCode() != BusinessCode.CODE_OK || CollectionUtils.isEmpty(shopCarProds.getData())) {
+            if (CollectionUtils.isNotEmpty(skuCodes)) {
+                logger.info("ShopCarServiceImpl{} -> getShopCarProdVO接口异常：无效的skuCode:"+skuCodes);
+                shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
+            }
+            logger.error("ShopCarServiceImpl{} -> 获取ShopCarProdVO异常{} 商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);
         }
         return shopCarProds.getData();

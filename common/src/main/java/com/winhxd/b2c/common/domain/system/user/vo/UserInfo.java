@@ -41,4 +41,6 @@ public class UserInfo {
     @ApiModelProperty(value = "用户身份(1:超级管理员)")
     private Integer identity;
 
+    @ApiModelProperty(value = "用于指定微服务版本")
+    private String msVer;
 }

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -46,6 +47,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 				LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
 				//插入当前要绑定的微信钱包信息
 				payStoreWallet.setStatus((short)1);
+				payStoreWallet.setCreated(new Date());
 				//判断当前的微信账户是否存在
 				List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
 				if(list.size()>0){

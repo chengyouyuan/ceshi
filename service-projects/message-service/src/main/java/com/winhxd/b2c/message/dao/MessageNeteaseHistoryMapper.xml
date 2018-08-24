@@ -64,7 +64,7 @@
     delete from message_netease_history
     where id = #{id,jdbcType=BIGINT}
   </delete>
-    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    <insert id="insert" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into message_netease_history (from_accid, to_accid,
       msg_type, msg_body, msg_attach, 
       ext_json, page_type, tree_code, 
@@ -75,7 +75,7 @@
       #{msgTimeStamp,jdbcType=TIMESTAMP}, #{msgIdServer,jdbcType=VARCHAR}, #{readStatus,jdbcType=SMALLINT},
       #{msgCategory,jdbcType=SMALLINT})
   </insert>
-    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory">
+    <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into message_netease_history
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

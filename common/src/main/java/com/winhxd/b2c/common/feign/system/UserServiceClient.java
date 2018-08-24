@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+
 @FeignClient(value = ServiceName.SYSTEM_SERVICE, fallbackFactory = UserServiceClientFallback.class)
 public interface UserServiceClient {
 
@@ -82,72 +83,81 @@ public interface UserServiceClient {
     ResponseResult<SysUser> get(@PathVariable("id") Long id);
 
     /**
-     * 根据主键获取用户信息
+     * 根据主键禁用用户
      * @author zhangzhengyang
      * @date 2018/8/7
      * @param id
+     * @return
      */
     @RequestMapping(value = "/user/3006/v1/disabled/{id}", method = RequestMethod.PUT)
     ResponseResult<Void> disabled(@PathVariable("id") Long id);
 
+    /**
+     * 根据主键启用用户
+     * @author songkai
+     * @date 2018/8/23
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/user/3007/v1/enable/{id}", method = RequestMethod.PUT)
+    ResponseResult<Void> enable(@PathVariable("id") Long id);
+
 }
 
 @Component
-class UserServiceClientFallback implements UserServiceClient, FallbackFactory<UserServiceClient> {
+class UserServiceClientFallback implements FallbackFactory<UserServiceClient> {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceClientFallback.class);
-    private Throwable throwable;
-
-    public UserServiceClientFallback() {
-    }
-
-    private UserServiceClientFallback(Throwable throwable) {
-        this.throwable = throwable;
-    }
-
-    @Override
-    public ResponseResult<Long> save(SysUser sysUser) {
-        logger.error("UserServiceClientFallback -> save", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult modify(SysUser sysUser) {
-        logger.error("UserServiceClientFallback -> modify", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
-        logger.error("UserServiceClientFallback -> updatePassword", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<PagedList<SysUser>> find(SysUserCondition condition) {
-        logger.error("UserServiceClientFallback -> find", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<SysUser> getByAccount(String account) {
-        logger.error("UserServiceClientFallback -> getByUserCode", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult<SysUser> get(Long userId) {
-        logger.error("UserServiceClientFallback -> get", throwable);
-        return new ResponseResult<>(BusinessCode.CODE_1001);
-    }
-
-    @Override
-    public ResponseResult disabled(Long id) {
-        logger.error("UserServiceClientFallback -> disabled", throwable);
-        return new ResponseResult(BusinessCode.CODE_1001);
-    }
 
     @Override
     public UserServiceClient create(Throwable throwable) {
-        return new UserServiceClientFallback(throwable);
+        return  new UserServiceClient() {
+            @Override
+            public ResponseResult<Long> save(SysUser sysUser) {
+                logger.error("UserServiceClientFallback -> save", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult modify(SysUser sysUser) {
+                logger.error("UserServiceClientFallback -> modify", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult updatePassword(SysUserPasswordDTO sysUser) {
+                logger.error("UserServiceClientFallback -> updatePassword", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<PagedList<SysUser>> find(SysUserCondition condition) {
+                logger.error("UserServiceClientFallback -> find", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<SysUser> getByAccount(String account) {
+                logger.error("UserServiceClientFallback -> getByUserCode", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<SysUser> get(Long userId) {
+                logger.error("UserServiceClientFallback -> get", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult disabled(Long id) {
+                logger.error("UserServiceClientFallback -> disabled", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<Void> enable(Long id) {
+                logger.error("UserServiceClientFallback -> enable", throwable);
+                return new ResponseResult(BusinessCode.CODE_1001);
+            }
+        };
     }
 }

@@ -90,24 +90,23 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(106l);
+//    	currentStoreUser.setBusinessId(130l);
    ////////////////////////////////////////////////////
     
     	if(currentStoreUser != null){
     		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
     		System.out.print("验证码是否存在-----------"+exists);
-    		if(exists){
-    			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
-    			if(!verificationCode.equals(code)){
-    				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
-    				res = BusinessCode.CODE_610019;
-    				throw new BusinessException(BusinessCode.CODE_610019);
-    			}
-    		}else{
+    		if(!exists){
     			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
     			res = BusinessCode.CODE_610020;
     			throw new BusinessException(BusinessCode.CODE_610020);
-    		} 
+    		}
+    		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+2+"_"+currentStoreUser.getBusinessId());
+			if(!verificationCode.equals(code)){
+				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+				res = BusinessCode.CODE_610019;
+				throw new BusinessException(BusinessCode.CODE_610019);
+			}
     		
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
     		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);

@@ -71,7 +71,9 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
       */
     @Override
     public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id) {
-        ResponseResult<CouponInvestorVO> responseResult = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
+        ResponseResult<CouponInvestorVO> responseResult = new ResponseResult<CouponInvestorVO>();
+        CouponInvestorVO vo = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
+        responseResult.setData(vo);
         return responseResult;
     }
 
@@ -108,7 +110,9 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      */
     @Override
     public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(@RequestBody CouponInvestorCondition condition) {
-        ResponseResult<PagedList<CouponInvestorVO>> responseResult =  couponInvestorService.getCouponInvestorPage(condition);
+        ResponseResult<PagedList<CouponInvestorVO>> responseResult = new ResponseResult<PagedList<CouponInvestorVO>>();
+        PagedList<CouponInvestorVO> pagedList =  couponInvestorService.getCouponInvestorPage(condition);
+        responseResult.setData(pagedList);
         return responseResult;
     }
 
@@ -122,7 +126,9 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
      */
     @Override
     public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
-        ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult =  couponInvestorService.findInvertorTempleteCountPage(condition);
+        ResponseResult<PagedList<InvertorTempleteCountVO>> responseResult = new ResponseResult<PagedList<InvertorTempleteCountVO>>();
+        PagedList<InvertorTempleteCountVO> pagedList  =  couponInvestorService.findInvertorTempleteCountPage(condition);
+        responseResult.setData(pagedList);
         return responseResult;
     }
 

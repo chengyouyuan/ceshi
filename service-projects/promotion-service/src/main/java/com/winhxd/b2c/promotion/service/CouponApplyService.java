@@ -13,14 +13,43 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
  * @Description
  **/
 public interface CouponApplyService {
-    ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id,Short type);
-
+    /**
+     *
+     *@Deccription 查看适用对象详情
+     *@Params   id  type
+     *@Return CouponApplyVO
+     *@User  wl
+     *@Date   2018/8/25 10:36
+     */
+    CouponApplyVO viewCouponApplyDetail(long id,Short type);
+    /**
+     *
+     *@Deccription 适用对象设置无效
+     *@Params  id, userId, userName
+     *@Return
+     *@User  wl
+     *@Date   2018/8/25 10:43
+     */
     int updateCouponApplyToValid(long id, long userId, String userName);
+    /**
+     *
+     *@Deccription 适用对象分页查询
+     *@Params  condition
+     *@Return  PagedList<CouponApplyVO>
+     *@User  wl
+     *@Date   2018/8/25 10:44
+     */
+    PagedList<CouponApplyVO> findCouponApplyPage(CouponApplyCondition condition);
 
-    ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition);
-
-
+    /**
+     *
+     *@Deccription 添加适用对象
+     *@Params
+     *@Return
+     *@User  wl
+     *@Date   2018/8/25 10:44
+     */
     int addCouponApply(CouponApplyCondition condition);
 
-    ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition);
+    PagedList<ApplyTempleteCountVO> findApplyTempleteCountPage(RuleRealationCountCondition condition);
 }

@@ -157,7 +157,7 @@ public final class BusinessCode {
 
 
     /** 原密码输入错误 */
-    public static final int CODE_300021 = 302001;
+    public static final int CODE_302001 = 302001;
     /** 不可删除有成员的权限组 */
     public static final int CODE_301000 = 301000;
     /** 新密码与原密码相同 */
@@ -165,11 +165,11 @@ public final class BusinessCode {
 
     /** 购物车:门店ID为空*/
     public static final int CODE_402001 = 402001;
-    /** 购物车:自提地址为空*/
+    /** 购物车:请选择自提地址！*/
     public static final int CODE_402002 = 402002;
     /** 购物车:商品信息为空*/
     public static final int CODE_402004 = 402004;
-    /** 购物车:支付方式*/
+    /** 购物车:请选择支付方式！*/
     public static final int CODE_402006 = 402006;
     /** 购物车:参数错误*/
     public static final int CODE_402008 = 402008;
@@ -189,6 +189,8 @@ public final class BusinessCode {
     public static final int CODE_402017 = 402017;
     /** 购物车:获取最优优惠券失败*/
     public static final int CODE_402018 = 402018;
+    /** 购物车:账号被锁定，请联系客服！*/
+    public static final int CODE_402019 = 402019;
 
 
     /** 查询订单参数异常*/
@@ -417,6 +419,11 @@ public final class BusinessCode {
     public static final int CODE_610037 = 610037;
     @ApiModelProperty("当前门店没有可提现金额")
     public static final int CODE_610038 = 610038;
+    @ApiModelProperty("调用微信提现接口失败")
+    public static final int CODE_610039 = 610039;
+
+    @ApiModelProperty("未获取到门店信息")
+    public static final int CODE_610801 = 610801;
     
     
     @ApiModelProperty("订单支付  参数为空")
@@ -526,6 +533,10 @@ public final class BusinessCode {
     
     @ApiModelProperty("提现计算手续费 可提现金额不足")
     public static final int CODE_611104 = 611104;
+    
+    @ApiModelProperty("提现操作次数太多")
+    public static final int CODE_611105 = 611105;
+    
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

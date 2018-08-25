@@ -105,4 +105,14 @@ public class CacheName {
      * 门店资金流转
      */
     public static final String BACKROLL_STORE = "BACKROLL:STORE";
+
+    /**
+     * 领取优惠券
+     */
+    public static final String RECEIVE_COUPON = "RECEIVE:COUPON";
+    
+    /**
+     * 接口访问次数key
+     */
+    public static final String LIMIT_INTERFACE_ACCESS = "LIMIT:INTERFACE:ACCESS:";
 }

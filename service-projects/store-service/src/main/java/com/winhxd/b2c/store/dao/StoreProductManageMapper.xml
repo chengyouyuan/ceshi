@@ -118,7 +118,7 @@
         <if test="condition.storeId != null">
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
-        <if test="condition.recommend != null">
+        <if test="condition.recommend != null and condition.recommend !=2">
             and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
         <if test="condition.priceStatus != null and condition.priceStatus !=2">
@@ -148,9 +148,9 @@
   
   	<select id="countSkusByConditon"  
   			parameterType="com.winhxd.b2c.common.domain.store.condition.StoreProductManageCondition" 
-  			resultType="java.lang.Long">
+  			resultType="java.lang.String">
   		select
-  		 count(*)
+  		 prod.sku_code
   		from store_product_manage prod
   		where 1=1
   		<if test="condition.prodStatus != null">
@@ -162,10 +162,10 @@
         <if test="condition.storeId != null">
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
-        <if test="condition.recommend != null">
+        <if test="condition.recommend != null and condition.recommend !=2">
             and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
-        <if test="condition.priceStatus != null">
+        <if test="condition.priceStatus != null and condition.priceStatus !=2">
         	<choose>
         		<!-- 设置价格 -->
         		<when test="condition.priceStatus==1">
@@ -210,7 +210,7 @@
         <if test="condition.storeId != null">
             and prod.store_id=#{condition.storeId,jdbcType=BIGINT}
         </if>
-        <if test="condition.recommend != null">
+        <if test="condition.recommend != null and condition.recommend != 2">
             and prod.recommend=#{condition.recommend,jdbcType=SMALLINT}
         </if>
         group by prod.sku_code

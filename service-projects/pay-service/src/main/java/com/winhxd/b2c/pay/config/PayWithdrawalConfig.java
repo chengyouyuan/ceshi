@@ -16,6 +16,7 @@ public class PayWithdrawalConfig {
 	private BigDecimal cmmsamt;// 银行手续费
 	private BigDecimal rate;// 微信费率
 	private BigDecimal maxMoney;
+	private BigDecimal minMoney;
 	
 	public BigDecimal getCmmsamt() {
 		return cmmsamt;
@@ -34,6 +35,12 @@ public class PayWithdrawalConfig {
 	}
 	public void setMaxMoney(BigDecimal maxMoney) {
 		this.maxMoney = maxMoney;
+	}
+	public BigDecimal getMinMoney() {
+		return minMoney;
+	}
+	public void setMinMoney(BigDecimal minMoney) {
+		this.minMoney = minMoney;
 	}
 	
 }

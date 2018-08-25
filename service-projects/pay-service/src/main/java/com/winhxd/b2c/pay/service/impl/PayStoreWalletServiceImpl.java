@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,36 +38,35 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	public int savePayStoreWallet(PayStoreWalletCondition condition) {
 		int res = 0;
 		if(condition != null){
-			// 验证微信绑定入参
-			res = valiWeixinCondition(condition);
-			if(res == 0){
-				// 将其他微信钱包的状态设置为0
-				payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
-				PayStoreWallet payStoreWallet = new PayStoreWallet();
-				BeanUtils.copyProperties(condition, payStoreWallet);
-				LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
-				//插入当前要绑定的微信钱包信息
-				payStoreWallet.setStatus((short)1);
-				payStoreWallet.setCreated(new Date());
-				//判断当前的微信账户是否存在
-				List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
-				if(list.size()>0){
-					if(list.size() > 1){
-						LOGGER.info("当前微信账户有多个重复，请联系管理员");
-						res = BusinessCode.CODE_610021;
-						throw new BusinessException(res);
-					}
-					PayStoreWallet wallet = list.get(0);
-					Long id = wallet.getId();
-					payStoreWallet.setId(id);
-					payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
-				}else{
-					payStoreWalletMapper.insertSelective(payStoreWallet);
-				}
-			}
-		}else{
 			res = BusinessCode.CODE_610030;
 			throw new BusinessException(res);
+		}
+		// 验证微信绑定入参
+		res = valiWeixinCondition(condition);
+		if(res == 0){
+			// 将其他微信钱包的状态设置为0
+			payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
+			PayStoreWallet payStoreWallet = new PayStoreWallet();
+			BeanUtils.copyProperties(condition, payStoreWallet);
+			LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
+			//插入当前要绑定的微信钱包信息
+			payStoreWallet.setStatus((short)1);
+			payStoreWallet.setCreated(new Date());
+			//判断当前的微信账户是否存在
+			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
+			if(CollectionUtils.isEmpty(list)){
+				payStoreWalletMapper.insertSelective(payStoreWallet);
+			}else{
+				if(list.size() > 1){
+					LOGGER.info("当前微信账户有多个重复，请联系管理员");
+					res = BusinessCode.CODE_610021;
+					throw new BusinessException(res);
+				}
+				PayStoreWallet wallet = list.get(0);
+				Long id = wallet.getId();
+				payStoreWallet.setId(id);
+				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
+			}
 		}
 		return res;
 	}
@@ -95,18 +95,18 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		System.out.print("微信验证码是否存在-----------"+exists);
-		if(exists){
-			String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
-			if(!verificationCode.equals(code)){
-				LOGGER.info("业务异常："+BusinessCode.CODE_610019);
-				res = BusinessCode.CODE_610019;
-				throw new BusinessException(BusinessCode.CODE_610019);
-			}
-		}else{
+		if(!exists){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610016);
 			res = BusinessCode.CODE_610016;
 			throw new BusinessException(BusinessCode.CODE_610016);
-		} 
+		}
+		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
+		if(!verificationCode.equals(code)){
+			LOGGER.info("业务异常："+BusinessCode.CODE_610019);
+			res = BusinessCode.CODE_610019;
+			throw new BusinessException(BusinessCode.CODE_610019);
+		}
+		
 		String openId = condition.getOpenid();
 		if(StringUtils.isEmpty(openId)){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610031);

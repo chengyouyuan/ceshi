@@ -387,6 +387,6 @@
     select 
     <include refid="Base_Column_List" />
     from store_bank_card
-    where  #{storeId,jdbcType=BIGINT} and status = 1 
+    where  store_id = #{storeId,jdbcType=BIGINT} and status = 1 
   </select>
 </mapper>

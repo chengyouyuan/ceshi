@@ -472,7 +472,6 @@ public class VerifyService {
     @Transactional
     public int approveWithdrawals(ApproveStoreWithdrawalsCondition condition) {
         int count = 0;
-        Short auditStatus = condition.getAuditStatus();
         String auditDesc = condition.getAuditDesc();
         Long updatedBy = condition.getUpdatedBy();
         String updatedByName = condition.getUpdatedByName();
@@ -484,7 +483,7 @@ public class VerifyService {
             payWithdrawals.setUpdatedBy(updatedBy);
             payWithdrawals.setUpdatedByName(updatedByName);
             // 更新审核状态
-            payWithdrawals.setAuditStatus(auditStatus);
+            payWithdrawals.setAuditStatus((short) 1);
             payWithdrawals.setAuditDesc(auditDesc);
             payWithdrawalsMapper.updateByPrimaryKeySelective(payWithdrawals);
             // 门店提现

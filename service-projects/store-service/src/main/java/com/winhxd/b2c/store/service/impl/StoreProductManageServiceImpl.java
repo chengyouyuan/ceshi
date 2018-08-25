@@ -104,6 +104,9 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					spManage.setCreatedBy(storeId);
 					//店主名称
 					spManage.setCreatedByName(storeUserInfo.getShopkeeper());
+					spManage.setUpdated(new Date());
+					spManage.setUpdatedBy(storeId);
+					spManage.setUpdatedByName(storeUserInfo.getShopkeeper());
 					//保存门店商品管理信息
 					storeProductManageMapper.insert(spManage);
 

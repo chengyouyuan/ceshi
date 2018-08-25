@@ -724,7 +724,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_610039);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
-
+		logger.info("提现流水号:{},对象信息：",payTransfersToWxChangeVO.getPartnerTradeNo(),payTransfersToWxChangeVO.toString());
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			// 发送云信
@@ -751,7 +751,6 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 		}
-		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
 		payWithdrawals.setTimeEnd(new Date());
@@ -888,7 +887,7 @@ public class PayServiceImpl implements PayService{
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
 			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
-			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getRealFee());
+			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getTotalFee());
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
 			payTransfersToWxBankCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			payTransfersToWxBankCondition.setOperaterID(condition.getOperaterID());
@@ -905,8 +904,13 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
-			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
+			toWxBalanceCondition.setTotalAmount(payWithdrawals.getTotalFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
+			if(null == payWithdrawals.getSpbillCreateIp()){
+				toWxBalanceCondition.setSpbillCreateIp("127.0.0.1");
+			}else{
+				toWxBalanceCondition.setSpbillCreateIp(payWithdrawals.getSpbillCreateIp());
+			}
 			return this.transfersToChange(toWxBalanceCondition);
 		}
 	}

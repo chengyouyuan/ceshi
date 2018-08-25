@@ -102,11 +102,16 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info("请传入提现类型参数");
 			throw new BusinessException(BusinessCode.CODE_610022);
 		}
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
+		StoreUser storeUser=UserContext.getCurrentStoreUser();
 //		Long businessId = 130l;
+		if(storeUser==null){
+			LOGGER.info("未获取到门店数据");
+			throw new BusinessException(BusinessCode.CODE_610801);
+		}
+		Long businessId = storeUser.getBusinessId();
 		if(businessId==null){
 			LOGGER.info("未获取到门店数据");
-			throw new BusinessException(BusinessCode.CODE_601801);
+			throw new BusinessException(BusinessCode.CODE_610801);
 		}
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		if(bankType == condition.getWithdrawType()){

@@ -91,7 +91,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
      * @param billDate
      * @param condition
      */
-    @EventMessageListener(value = EventTypeHandler.EVENT_DOWNLOAD_STATEMENT_HANDLER, concurrency = "3-6")
+//    @EventMessageListener(value = EventTypeHandler.EVENT_DOWNLOAD_STATEMENT_HANDLER, concurrency = "3-6")
     public void downloadStatementHandler(String billDate, DownloadStatementCondition condition) {
     	this.downloadStatement(condition);
     }
@@ -102,7 +102,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
      * @param billDate
      * @param condition
      */
-    @EventMessageListener(value = EventTypeHandler.EVENT_DOWNLOAD_FINANCIAL_BILL_HANDLER, concurrency = "3-6")
+//    @EventMessageListener(value = EventTypeHandler.EVENT_DOWNLOAD_FINANCIAL_BILL_HANDLER, concurrency = "3-6")
     public void downloadFinancialBillHandler(String billDate, DownloadStatementCondition condition) {
     	this.downloadFundFlow(condition);
     }

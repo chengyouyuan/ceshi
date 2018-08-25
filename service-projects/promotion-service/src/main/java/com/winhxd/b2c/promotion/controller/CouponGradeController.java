@@ -60,7 +60,9 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
-        ResponseResult<CouponGradeVO> responseResult = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
+        ResponseResult<CouponGradeVO> responseResult = new ResponseResult<CouponGradeVO>();
+        CouponGradeVO vo = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
+        responseResult.setData(vo);
         return responseResult;
     }
 
@@ -95,7 +97,9 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(@RequestBody CouponGradeCondition condition) {
-        ResponseResult<PagedList<CouponGradeVO>> result = couponGradeService.getCouponGradePage(condition);
+        ResponseResult<PagedList<CouponGradeVO>> result = new ResponseResult<PagedList<CouponGradeVO>>();
+        PagedList<CouponGradeVO> pagedList = couponGradeService.getCouponGradePage(condition);
+        result.setData(pagedList);
         return result;
     }
 
@@ -109,7 +113,9 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
-        ResponseResult<PagedList<GradeTempleteCountVO>> result = couponGradeService.findGradeTempleteCountPage(condition);
+        ResponseResult<PagedList<GradeTempleteCountVO>> result = new ResponseResult<PagedList<GradeTempleteCountVO>>();
+        PagedList<GradeTempleteCountVO> pagedList = couponGradeService.findGradeTempleteCountPage(condition);
+        result.setData(pagedList);
         return result;
     }
 

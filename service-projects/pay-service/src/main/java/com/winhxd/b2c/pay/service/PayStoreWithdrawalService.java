@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
@@ -19,11 +18,11 @@ import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 public interface PayStoreWithdrawalService {
 	/**返回所有的提现方式
 	 * */
-	ResponseResult<List<PayWithdrawalsType>> getAllWithdrawalType();
+	List<PayWithdrawalsType> getAllWithdrawalType();
 	/**保存用户提现信息*/
-	ResponseResult<Integer> saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition);
+	void saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition);
 	/**进入提现页面*/
-	ResponseResult<PayWithdrawalPageVO> showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition);
+	PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition);
 	
 	/**
 	 * @author liuhanning

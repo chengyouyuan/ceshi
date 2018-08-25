@@ -36,4 +36,6 @@ public class PayWithdrawalPageVO {
     private String openid;
 	@ApiModelProperty("微信昵称")
     private String nick;
+	@ApiModelProperty("本次提现-单笔最小提现金额")
+	private BigDecimal minMoeny;
 }

@@ -245,11 +245,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
-        ResponseResult result = new ResponseResult();
-        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
-        result.setData(sum+"");
-        return result;
+    public Integer getCouponNumsByCustomerForStore(Long customerId) {
+        Integer sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        return sum;
     }
 
     /**
@@ -825,6 +823,7 @@ public class CouponServiceImpl implements CouponService {
             couponVO.setAvailableStatus(0);
             //支付方式
             if(couponVO.getPayType().equals(couponCondition.getPayType())){
+                logger.info("优惠券支付方式:{},订单支付方式:{},优惠券类型:{}",couponVO.getPayType(),couponCondition.getPayType(),couponVO.getApplyRuleType());
                 //通用券
                 if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()))){
                     //计算订单总额

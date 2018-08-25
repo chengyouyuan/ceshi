@@ -268,6 +268,7 @@ public class PayWithdrawalsVO {
     }
 
     public Short getCallbackStatus() {
+
         return callbackStatus;
     }
 
@@ -303,6 +304,15 @@ public class PayWithdrawalsVO {
     }
 
     public String getErrorMessage() {
+        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            errorMessage = "未处理";
+        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
+            errorMessage = "提现成功";
+        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            errorMessage = "提现失败";
+        } else {
+            errorMessage = "未处理";
+        }
         return errorMessage;
     }
 

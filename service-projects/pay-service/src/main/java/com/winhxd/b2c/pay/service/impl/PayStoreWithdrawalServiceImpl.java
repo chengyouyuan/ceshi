@@ -157,10 +157,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public void saveStorWithdrawalInfo(@RequestBody PayStoreApplyWithDrawCondition condition) {
 		ResponseResult<Integer> result = new ResponseResult<Integer>();
 
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-		///////////////测试数据//////////////////////////
-//		Long businessId = 130l;
-		//////////////////结束/////////////////////////
+		StoreUser storeUser=UserContext.getCurrentStoreUser();
+		if(storeUser==null||storeUser.getBusinessId()==null){
+			LOGGER.info("未获取到门店数据");
+			throw new BusinessException(BusinessCode.CODE_610901);
+		}
+		Long businessId = storeUser.getBusinessId();		
 		
 		// 加入redis控制访问频率
 		String limitTimeKey = CacheName.LIMIT_INTERFACE_ACCESS + businessId;
@@ -177,6 +179,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		short bankType = PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode();
 		short weixType= PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode();
 		PayWithdrawals payWithdrawal = new PayWithdrawals();
+		payWithdrawal.setSpbillCreateIp(condition.getSpbillCreateIp());
 		payWithdrawal.setStoreId(businessId);
 		// 生成提现单号
 		payWithdrawal.setWithdrawalsNo(generateWithdrawalsNo());

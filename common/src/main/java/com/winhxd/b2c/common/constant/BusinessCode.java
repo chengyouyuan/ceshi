@@ -424,6 +424,9 @@ public final class BusinessCode {
 
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610801 = 610801;
+   
+    @ApiModelProperty("未获取到门店信息")
+    public static final int CODE_610901 = 610901;
     
     
     @ApiModelProperty("订单支付  参数为空")

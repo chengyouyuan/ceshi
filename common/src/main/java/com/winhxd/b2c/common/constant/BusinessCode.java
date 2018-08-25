@@ -421,7 +421,7 @@ public final class BusinessCode {
     public static final int CODE_610038 = 610038;
     @ApiModelProperty("调用微信提现接口失败")
     public static final int CODE_610039 = 610039;
-
+    
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610801 = 610801;
    
@@ -540,6 +540,11 @@ public final class BusinessCode {
     @ApiModelProperty("提现操作次数太多")
     public static final int CODE_611105 = 611105;
     
+    @ApiModelProperty("提现金额输入有误")
+    public static final int CODE_611106 = 611106;
+    
+    @ApiModelProperty("提现金额应大于最小手续费1元")
+    public static final int CODE_611107 = 611107;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

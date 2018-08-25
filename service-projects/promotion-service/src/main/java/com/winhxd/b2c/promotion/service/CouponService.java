@@ -28,7 +28,7 @@ public interface CouponService {
      * @param customerId
      * @return
      */
-    ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId);
+    Integer getCouponNumsByCustomerForStore(Long customerId);
 
     /**
      * 待领取的优惠券列表

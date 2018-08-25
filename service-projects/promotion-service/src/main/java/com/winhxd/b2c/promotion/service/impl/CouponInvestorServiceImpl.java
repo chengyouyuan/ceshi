@@ -83,8 +83,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
     @Override
-    public ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition) {
-        ResponseResult<PagedList<CouponInvestorVO>> result= new ResponseResult<PagedList<CouponInvestorVO>>();
+    public PagedList<CouponInvestorVO> getCouponInvestorPage(CouponInvestorCondition condition) {
         PagedList<CouponInvestorVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponInvestorVO> couponInvestorList = couponInvestorMapper.getCouponInvestorPage(condition);
@@ -108,13 +107,11 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
     @Override
-    public ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
-        ResponseResult<PagedList<InvertorTempleteCountVO>> result= new ResponseResult<PagedList<InvertorTempleteCountVO>>();
+    public PagedList<InvertorTempleteCountVO> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
         PagedList<InvertorTempleteCountVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(condition.getId());
@@ -123,17 +120,14 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
 
     @Override
-    public ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id) {
+    public CouponInvestorVO getCouponInvestorDetailById(Long id) {
         CouponInvestorVO vo = couponInvestorMapper.selectCouponInvestorDetailById(id);
-        ResponseResult<CouponInvestorVO> result = new ResponseResult();
-        result.setData(vo);
-        return result;
+        return vo;
     }
 
     @Override

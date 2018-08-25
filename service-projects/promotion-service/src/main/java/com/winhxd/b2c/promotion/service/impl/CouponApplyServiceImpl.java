@@ -53,16 +53,13 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
 
     @Override
-    public ResponseResult<CouponApplyVO> viewCouponApplyDetail(long id,Short type) {
-        ResponseResult responseResult = new ResponseResult();
+    public CouponApplyVO viewCouponApplyDetail(long id,Short type) {
         CouponApplyVO vo = null;
         if(type.equals(CouponApplyEnum.COMMON_COUPON.getCode())){
             vo = couponApplyMapper.viewCouponApplyCommonDetail(id);
-            responseResult.setData(vo);
         }
         if(type.equals(CouponApplyEnum.BRAND_COUPON.getCode())){
             vo = couponApplyMapper.viewCouponApplyBrandDetail(id);
-
             List<CouponApplyBrandList> couponApplyBrandLists = vo.getCouponApplyBrandList();
             if(!couponApplyBrandLists.isEmpty()){
                 //组装请求的参数
@@ -101,7 +98,6 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                     }
                 }
             }
-            responseResult.setData(vo);
         }
 
 
@@ -134,11 +130,9 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
                 }
             }
-
-            responseResult.setData(vo);
         }
         System.out.print(vo.toString());
-        return responseResult;
+        return vo;
     }
 
     @Override
@@ -149,8 +143,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
-    public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(CouponApplyCondition condition) {
-        ResponseResult<PagedList<CouponApplyVO>> result= new ResponseResult<PagedList<CouponApplyVO>>();
+    public PagedList<CouponApplyVO> findCouponApplyPage(CouponApplyCondition condition) {
         PagedList<CouponApplyVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<CouponApplyVO> couponApplyList = couponApplyMapper.getCouponApplyPage(condition);
@@ -172,8 +165,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
     @Override
@@ -242,8 +234,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
-    public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
-        ResponseResult<PagedList<ApplyTempleteCountVO>> result= new ResponseResult<PagedList<ApplyTempleteCountVO>>();
+    public PagedList<ApplyTempleteCountVO> findApplyTempleteCountPage(RuleRealationCountCondition condition) {
         PagedList<ApplyTempleteCountVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<ApplyTempleteCountVO> couponApplyList = couponApplyMapper.findApplyTempleteCountPage(condition.getId());
@@ -252,8 +243,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
 

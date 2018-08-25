@@ -33,7 +33,9 @@ public class CouponController implements CouponServiceClient{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
 	public ResponseResult<String> getCouponNumsByCustomerForStore( @RequestParam("customerId")Long customerId) {
-		ResponseResult<String> result= couponService.getCouponNumsByCustomerForStore(customerId);
+		ResponseResult<String> result = new ResponseResult<String>();
+		Integer count= couponService.getCouponNumsByCustomerForStore(customerId);
+		result.setData(String.valueOf(count));
 		return result;
 	}
 

@@ -710,8 +710,7 @@ public class ApiStoreProductManageController {
         for (Map<String, Object> skuMap : skuDataMap) {
             skuData.add(String.valueOf(skuMap.get("prodSku")));
         }
-        cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
-        cache.expire(hxdSkuKey, 60 * 5);
+        cache.setex(hxdSkuKey, 60 * 5, JsonUtil.toJSONString(skuData));
         return skuData;
     }
 

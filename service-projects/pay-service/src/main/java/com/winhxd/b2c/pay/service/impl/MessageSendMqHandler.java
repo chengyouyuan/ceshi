@@ -37,7 +37,7 @@ public class MessageSendMqHandler {
      * @param order
      * @return
      */
-	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER)
+	@EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_HANDLER,concurrency = "3-6")
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		payService.refundOrder(orderNo,order);
 	}

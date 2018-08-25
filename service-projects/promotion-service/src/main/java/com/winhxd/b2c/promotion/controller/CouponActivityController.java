@@ -1,5 +1,7 @@
 package com.winhxd.b2c.promotion.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
@@ -19,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,7 +57,15 @@ public class CouponActivityController implements CouponActivityServiceClient {
     public ResponseResult<PagedList<CouponActivityVO>> queryCouponActivity(@RequestBody CouponActivityCondition condition) {
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询开始");
         ResponseResult<PagedList<CouponActivityVO>> result = new ResponseResult<PagedList<CouponActivityVO>>();
-        result = couponActivityService.findCouponActivity(condition);
+        PagedList<CouponActivityVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityVO> activity = couponActivityService.findCouponActivity(condition);
+        PageInfo<CouponActivityVO> pageInfo = new PageInfo<>(activity);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
         logger.info("/promotion/v1/queryCouponActivity/ 领券推券活动列表查询结束");
         return result;
     }
@@ -68,6 +79,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
      */
     @Override
     public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list) {
+        if(CollectionUtils.isEmpty(list)){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         ResponseResult<List<StoreUserInfoVO>> result = new ResponseResult<List<StoreUserInfoVO>>();
         List<Long> storeIdList = new ArrayList<>();
         for (int j=0;j<list.size();j++){
@@ -358,7 +372,15 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryCouponByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        result = couponActivityService.findCouponByActivity(condition);
+        PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityStoreVO> coupon = couponActivityService.findCouponByActivity(condition);
+        PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(coupon);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
         return result;
     }
 
@@ -380,7 +402,15 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         logger.info("queryStoreByActivity--Id:" + condition.getId());
         ResponseResult<PagedList<CouponActivityStoreVO>> result = new ResponseResult<PagedList<CouponActivityStoreVO>>();
-        result = couponActivityService.findStoreByActivity(condition);
+        PagedList<CouponActivityStoreVO> pagedList = new PagedList<>();
+        PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
+        List<CouponActivityStoreVO> store = couponActivityService.findStoreByActivity(condition);
+        PageInfo<CouponActivityStoreVO> pageInfo = new PageInfo<>(store);
+        pagedList.setData(pageInfo.getList());
+        pagedList.setPageNo(pageInfo.getPageNum());
+        pagedList.setPageSize(pageInfo.getPageSize());
+        pagedList.setTotalRows(pageInfo.getTotal());
+        result.setData(pagedList);
         return result;
     }
 }

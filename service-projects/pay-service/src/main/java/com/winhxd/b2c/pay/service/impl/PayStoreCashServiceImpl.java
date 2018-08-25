@@ -118,6 +118,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition) {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
+        //Long storeId = 64L;
         LOGGER.info("当前门店id"+storeId);
         ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
         PagedList<PayWithdrawalsVO> pagedList = new PagedList<>();

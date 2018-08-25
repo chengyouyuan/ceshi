@@ -56,7 +56,7 @@
   <select id="selectCustomerUserByIds" resultMap="customerUserInfoVO1">
     select *
     from customer_user_info
-    where status =1 and customer_id in
+    where customer_id in
     <foreach collection="ids" item="id" open="(" close=")" separator=",">
         #{id}
     </foreach>

@@ -49,13 +49,13 @@ public class TransfersTest {
      */
     @Test
     public void testTransfersToChange(){
-        //武富赟openID
+        //这个openId要是能提现成功就代表配置对了。
         String openID = "oRG410ZVY0fekVjjyoFV-U1w-Qnc";
         PayTransfersToWxChangeCondition changeCondition = new PayTransfersToWxChangeCondition();
-        changeCondition.setPartnerTradeNo("T18082517666324227");
+        changeCondition.setPartnerTradeNo("T18082519817485615");
         changeCondition.setAccountId(openID);
         changeCondition.setAccountName("大漠");
-        changeCondition.setTotalAmount(new BigDecimal("1.51"));
+        changeCondition.setTotalAmount(new BigDecimal("0.15"));
         changeCondition.setDesc("研发用户提现demo.");
         changeCondition.setSpbillCreateIp("106.38.97.194");
         changeCondition.setOperaterID("8");

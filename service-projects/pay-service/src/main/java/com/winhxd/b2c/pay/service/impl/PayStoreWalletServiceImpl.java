@@ -54,6 +54,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 					if(list.size() > 1){
 						LOGGER.info("当前微信账户有多个重复，请联系管理员");
 						res = BusinessCode.CODE_610021;
+						throw new BusinessException(res);
 					}
 					PayStoreWallet wallet = list.get(0);
 					Long id = wallet.getId();
@@ -65,6 +66,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 			}
 		}else{
 			res = BusinessCode.CODE_610030;
+			throw new BusinessException(res);
 		}
 		return res;
 	}

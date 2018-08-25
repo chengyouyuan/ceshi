@@ -21,6 +21,8 @@ public class OrderListForCustomerVO {
     private Short orderStatus;
     @ApiModelProperty(value = "订单总金额", required = true)
     private BigDecimal orderTotalMoney;
+    @ApiModelProperty(value = "订单实付金额", required = true)
+    private BigDecimal realPaymentMoney;
     @ApiModelProperty(value = "订单创建时间", required = true)
     private Date created;
 }

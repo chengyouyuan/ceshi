@@ -11,6 +11,7 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -65,5 +66,16 @@ public class UserManager {
                 }
             }
         }
+    }
+
+    /**
+     * 删除某个用户的缓存
+     *
+     * @param userId
+     */
+    public static void delUserCache(Long userId, Cache cache) {
+        String token = DigestUtils.md5DigestAsHex(userId.toString().getBytes());
+        String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
+        cache.del(cacheKey);
     }
 }

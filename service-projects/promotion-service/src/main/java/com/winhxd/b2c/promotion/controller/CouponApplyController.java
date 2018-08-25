@@ -39,7 +39,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
-        ResponseResult<CouponApplyVO> responseResult = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
+        ResponseResult<CouponApplyVO> responseResult = new ResponseResult<CouponApplyVO>();
+        CouponApplyVO vo = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
+        responseResult.setData(vo);
         return responseResult;
     }
 
@@ -76,7 +78,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<PagedList<CouponApplyVO>> findCouponApplyPage(@RequestBody CouponApplyCondition condition) {
-        ResponseResult<PagedList<CouponApplyVO>> result = couponApplyService.findCouponApplyPage(condition);
+        ResponseResult<PagedList<CouponApplyVO>> result = new ResponseResult<PagedList<CouponApplyVO>>();
+        PagedList<CouponApplyVO> pagedList = couponApplyService.findCouponApplyPage(condition);
+        result.setData(pagedList);
         return result;
     }
 
@@ -110,7 +114,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<PagedList<ApplyTempleteCountVO>> findApplyTempleteCountPage(@RequestBody RuleRealationCountCondition condition) {
-        ResponseResult<PagedList<ApplyTempleteCountVO>> result = couponApplyService.findApplyTempleteCountPage(condition);
+        ResponseResult<PagedList<ApplyTempleteCountVO>> result = new ResponseResult<PagedList<ApplyTempleteCountVO>>();
+        PagedList<ApplyTempleteCountVO> pagedList = couponApplyService.findApplyTempleteCountPage(condition);
+        result.setData(pagedList);
         return result;
     }
 }

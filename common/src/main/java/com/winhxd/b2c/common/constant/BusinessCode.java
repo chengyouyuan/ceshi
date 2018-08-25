@@ -157,7 +157,7 @@ public final class BusinessCode {
 
 
     /** 原密码输入错误 */
-    public static final int CODE_300021 = 302001;
+    public static final int CODE_302001 = 302001;
     /** 不可删除有成员的权限组 */
     public static final int CODE_301000 = 301000;
     /** 新密码与原密码相同 */

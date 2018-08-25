@@ -103,9 +103,9 @@ public class ApiPayStoreWithdrawalController {
 		@ApiResponse(code = BusinessCode.CODE_610038, message = "当前门店没有可提现金额")
 	})
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	private ResponseResult<Void> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
+	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
-		ResponseResult<Void> result=new ResponseResult<>();
+		ResponseResult<Integer> result=new ResponseResult<>();
 		payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
 		return result;
 	}

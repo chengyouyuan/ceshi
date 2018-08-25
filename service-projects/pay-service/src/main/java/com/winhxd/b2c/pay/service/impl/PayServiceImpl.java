@@ -724,7 +724,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_610039);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
-
+		logger.info("提现流水号:{},对象信息：",payTransfersToWxChangeVO.getPartnerTradeNo(),payTransfersToWxChangeVO.toString());
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			// 发送云信
@@ -751,7 +751,6 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 		}
-		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
 		payWithdrawals.setTimeEnd(new Date());

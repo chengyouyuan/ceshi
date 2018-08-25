@@ -41,7 +41,7 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
             if (StringUtils.isBlank(message)) {
                 message = businessException.getMessage();
             }
-            log.warn(getBusinessExceptionInfo(businessException));
+            log.warn(getBusinessExceptionInfo(currentSpan.context().traceIdString(), businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);
             currentSpan.error(ex);
@@ -66,9 +66,11 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         return findBusinessException(ex.getCause());
     }
 
-    private String getBusinessExceptionInfo(BusinessException e) {
+    private String getBusinessExceptionInfo(String traceId, BusinessException e) {
         StringBuilder str = new StringBuilder(200);
-        str.append("Controller业务异常:")
+        str.append("Controller业务异常,traceId=")
+                .append(traceId)
+                .append(":")
                 .append(e.getErrorCode())
                 .append(StringUtils.SPACE).append(e.getMessage());
         if (ArrayUtils.isNotEmpty(e.getStackTrace())) {

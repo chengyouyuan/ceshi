@@ -720,7 +720,8 @@ public class PayServiceImpl implements PayService{
 		PayTransfersToWxChangeVO payTransfersToWxChangeVO = transfersService.transfersToChange(toWxBalanceCondition);
 
 		if(null == payTransfersToWxChangeVO){
-			logger.info(log+"--transfersService.transfersToChange返回结果为空");
+			logger.error(log+"--transfersService.transfersToChange返回结果为空");
+			throw new BusinessException(BusinessCode.CODE_610039);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
 
@@ -820,7 +821,8 @@ public class PayServiceImpl implements PayService{
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
         if(null == payTransfersToWxBankVO){
-            logger.info(log+"--transfersService.transfersToChange返回结果为空");
+            logger.error(log+"--transfersService.transfersToChange返回结果为空");
+			throw new BusinessException(BusinessCode.CODE_610039);
         }
 
 		PayWithdrawals payWithdrawals = new PayWithdrawals();

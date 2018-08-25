@@ -222,6 +222,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setName(condition.getNick());
 			payWithdrawal.setCreatedByName(condition.getNick());
 			payWithdrawal.setUpdatedByName(condition.getNick());
+			
+			payWithdrawal.setCmmsAmt(BigDecimal.valueOf(0));
+			payWithdrawal.setRealFee(condition.getTotalFee());
+			payWithdrawal.setRate(BigDecimal.valueOf(0));
 		}
 		payWithdrawal.setAuditStatus(ReviewStatusEnum.TO_AUDIT.getStatus());
 //		payWithdrawal.setAuditDesc(auditDesc);

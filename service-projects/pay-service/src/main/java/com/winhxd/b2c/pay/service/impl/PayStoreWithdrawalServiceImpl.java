@@ -103,16 +103,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			throw new BusinessException(BusinessCode.CODE_610022);
 		}
 		StoreUser storeUser=UserContext.getCurrentStoreUser();
-//		Long businessId = 130l;
-		if(storeUser==null){
+		if(storeUser==null||storeUser.getBusinessId()==null){
 			LOGGER.info("未获取到门店数据");
 			throw new BusinessException(BusinessCode.CODE_610801);
 		}
 		Long businessId = storeUser.getBusinessId();
-		if(businessId==null){
-			LOGGER.info("未获取到门店数据");
-			throw new BusinessException(BusinessCode.CODE_610801);
-		}
+//		Long businessId = 130l;
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息
@@ -151,7 +147,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		 LOGGER.info("最大提现额度：---"+ payWithDrawalConfig.getMaxMoney());
 		 withdrawalPage.setRate(payWithDrawalConfig.getRate());
 		 withdrawalPage.setPresented_money(presentedMoney);
-		 
+		 withdrawalPage.setMinMoeny(payWithDrawalConfig.getMinMoney());
 		return withdrawalPage;
 	}
 	

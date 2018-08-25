@@ -63,6 +63,8 @@ public class PayWithdrawals {
     private BigDecimal callbackMoney;
 
     private Date timeEnd;
+    
+    private String spbillCreateIp;
 
     public Long getId() {
         return id;
@@ -303,4 +305,12 @@ public class PayWithdrawals {
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
     }
+
+	public String getSpbillCreateIp() {
+		return spbillCreateIp;
+	}
+
+	public void setSpbillCreateIp(String spbillCreateIp) {
+		this.spbillCreateIp = spbillCreateIp;
+	}
 }

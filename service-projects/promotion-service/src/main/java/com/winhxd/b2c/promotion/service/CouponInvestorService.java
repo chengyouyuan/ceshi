@@ -15,14 +15,53 @@ import com.winhxd.b2c.common.domain.promotion.vo.InvertorTempleteCountVO;
  **/
 public interface CouponInvestorService {
 
+    /**
+     *
+     *@Deccription 新建出资方
+     *@Params
+     *@Return
+     *@User  wl
+     *@Date   2018/8/25 10:59
+     */
     int saveCouponInvestor(CouponInvestorCondition condition);
 
-    ResponseResult<CouponInvestorVO> getCouponInvestorDetailById(Long id);
+    /**
+     *
+     *@Deccription 查看出资发详情
+     *@Params  id
+     *@Return
+     *@User  wl
+     *@Date   2018/8/25 10:58
+     */
+    CouponInvestorVO getCouponInvestorDetailById(Long id);
 
+    /**
+     *
+     *@Deccription 出资方设置无效
+     *@Params   id,userId,userName
+     *@Return
+     *@User  wl
+     *@Date   2018/8/25 10:59
+     */
     int updateCouponInvestorToValid(long id,long userId,String userName);
 
+   /**
+    *
+    *@Deccription  出资方分页查询
+    *@Params
+    *@Return
+    *@User  wl
+    *@Date   2018/8/25 10:56
+    */
+    PagedList<CouponInvestorVO> getCouponInvestorPage(CouponInvestorCondition condition);
 
-    ResponseResult<PagedList<CouponInvestorVO>> getCouponInvestorPage(CouponInvestorCondition condition);
-
-    ResponseResult<PagedList<InvertorTempleteCountVO>> findInvertorTempleteCountPage(RuleRealationCountCondition condition);
+    /**
+     *
+     *@Deccription 关联模板数量列表
+     *@Params condition
+     *@Return PagedList<InvertorTempleteCountVO>
+     *@User  wl
+     *@Date   2018/8/25 10:53
+     */
+    PagedList<InvertorTempleteCountVO> findInvertorTempleteCountPage(RuleRealationCountCondition condition);
 }

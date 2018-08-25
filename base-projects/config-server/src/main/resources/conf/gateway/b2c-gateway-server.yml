@@ -4,75 +4,58 @@ spring:
       probability: 1.0
   cloud:
     gateway:
-      default-filters:
-      - name: Hystrix
-        args:
-          name: fallbackcmd
-          fallbackUri: forward:/fallback
       routes:
+      # order-service
       - uri: lb://b2c-order-service
         predicates:
         - Path=/api-order/**
+        filters:
+        - name: Hystrix
+          args:
+            name: order-fallback
+            fallbackUri: forward:/fallback
+      # store-service
       - uri: lb://b2c-store-service
         predicates:
         - Path=/api-store/**
+        filters:
+        - name: Hystrix
+          args:
+            name: store-fallback
+            fallbackUri: forward:/fallback
+      # customer-service
       - uri: lb://b2c-customer-service
         predicates:
         - Path=/api-customer/**
+        filters:
+        - name: Hystrix
+          args:
+            name: customer-fallback
+            fallbackUri: forward:/fallback
+      # message-service
       - uri: lb://b2c-message-service
         predicates:
         - Path=/api-message/**
+        filters:
+        - name: Hystrix
+          args:
+            name: message-fallback
+            fallbackUri: forward:/fallback
+      # pay-service
       - uri: lb://b2c-pay-service
         predicates:
         - Path=/api-pay/**
+        filters:
+        - name: Hystrix
+          args:
+            name: pay-fallback
+            fallbackUri: forward:/fallback
+      # promotion-service
       - uri: lb://b2c-promotion-service
         predicates:
         - Path=/api-promotion/**
-#      - uri: lb://b2c-system-service
-#        predicates:
-#        - Path=/api-system/**
-#      - uri: lb://product-microservice
-#        predicates:
-#        - Path=/api-product/**
-#      - uri: lb://b2c-task-service
-#        predicates:
-#        - Path=/api-task/**
-
-#zuul:
-#  routes:
-#    api-orde:
-#      strip-prefix: false
-#      service-id: b2c-order-service
-#      path: /api-order/**
-#    api-store:
-#      strip-prefix: false
-#      service-id: b2c-store-service
-#      path: /api-store/**
-#    api-customer:
-#      strip-prefix: false
-#      service-id: b2c-customer-service
-#      path: /api-customer/**
-#    api-message:
-#      strip-prefix: false
-#      service-id: b2c-message-service
-#      path: /api-message/**
-#    api-pay:
-#      strip-prefix: false
-#      service-id: b2c-pay-service
-#      path: /api-pay/**
-#    api-promotion:
-#      strip-prefix: false
-#      service-id: b2c-promotion-service
-#      path: /api-promotion/**
-#    api-system:
-#      strip-prefix: false
-#      service-id: b2c-system-service
-#      path: /api-system/**
-#    api-product:
-#      strip-prefix: false
-#      service-id: product-microservice
-#      path: /api-product/**
-#    api-task:
-#      strip-prefix: false
-#      path: /api-task/**
-#      service-id: b2c-task-service
+        filters:
+        - name: Hystrix
+          args:
+            name: promotion-fallback
+            fallbackUri: forward:/fallback

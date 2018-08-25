@@ -44,8 +44,10 @@ eureka:
 
 feign.hystrix.enabled: false
 
+hystrix.command.default.execution.isolation.strategy: THREAD
+hystrix.threadpool.default.coreSize: 20
+hystrix.threadpool.default.maximumSize: 200
 hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
-hystrix.command.default.execution.isolation.strategy: SEMAPHORE
 hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests: 200
 
 ribbon:

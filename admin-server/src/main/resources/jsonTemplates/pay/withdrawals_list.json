@@ -92,7 +92,7 @@
         "title": "提款状态"
       },
       {
-        "name": "auditDesc",
+        "name": "callbackReason",
         "title": "备注"
       },
       {

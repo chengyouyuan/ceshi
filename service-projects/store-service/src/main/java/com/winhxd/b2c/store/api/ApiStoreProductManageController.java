@@ -698,8 +698,8 @@ public class ApiStoreProductManageController {
         if (null == storeCustomerId) {
             return null;
         }
-        String hxdSkuKey = CacheName.STORE_BUYED_HXDPROD_SKU + storeCustomerId;
         List<String> skuData = new ArrayList<>();
+        String hxdSkuKey = CacheName.STORE_BUYED_HXDPROD_SKU + storeCustomerId;
         if (StringUtils.isNotBlank(cache.get(hxdSkuKey))) {
             skuData = JsonUtil.parseJSONObject(cache.get(hxdSkuKey), List.class);
             return skuData;
@@ -711,7 +711,7 @@ public class ApiStoreProductManageController {
             skuData.add(String.valueOf(skuMap.get("prodSku")));
         }
         cache.set(hxdSkuKey, JsonUtil.toJSONString(skuData));
-        cache.expire(hxdSkuKey, 60 * 60 * 2);
+        cache.expire(hxdSkuKey, 60 * 5);
         return skuData;
     }
 

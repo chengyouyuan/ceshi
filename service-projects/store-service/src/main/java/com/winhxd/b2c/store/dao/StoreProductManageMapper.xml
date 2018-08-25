@@ -134,7 +134,7 @@
         	</choose>
             
         </if> 
-		order by prod.created desc
+		order by prod.updated desc
   </select>
   
  	<select id="selectBySkuCodeAndStoreId" resultMap="BaseResultMap">

@@ -278,15 +278,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			throw new BusinessException(res);
 		}
 		String totalFeeStr=totalFee.toString();
-//		if (totalFeeStr.indexOf(".")!=-1) {
-//			//最多支持两位小数
-//			String [] totalFeeArr=totalFeeStr.split(".");
-//			if (totalFeeArr[1].length()>2) {
-//				LOGGER.info("提现金额超过了两位小数");
-//				res = BusinessCode.CODE_610032;
-//				throw new BusinessException(res);
-//			}
-//		}
+		if (totalFeeStr.indexOf(".")!=-1) {
+			//最多支持两位小数
+			String [] totalFeeArr=totalFeeStr.split("\\.");
+			if (totalFeeArr!=null&&totalFeeArr[1].length()>2) {
+				LOGGER.info("提现金额超过了两位小数");
+				res = BusinessCode.CODE_610032;
+				throw new BusinessException(res);
+			}
+		}
 		short type = condition.getFlowDirectionType();
 		if(type == 0){
 			res = BusinessCode.CODE_610033;
@@ -477,13 +477,5 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		  withdrawalPage.setRate(payWithDrawalConfig.getRate());
 		  LOGGER.info("当前用户可提现信息：---"+withdrawalPage);
 		  return withdrawalPage;
-	}
-	public static void main(String[] args) {
-		String totalFeeStr="1.021";
-		String [] totalFeeArr=totalFeeStr.split(".");
-		if (totalFeeArr[1].length()>2) {
-			LOGGER.info("提现金额超过了两位小数");
-			System.out.println();
-		}
 	}
 }

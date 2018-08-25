@@ -887,7 +887,7 @@ public class PayServiceImpl implements PayService{
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
 			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
-			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getTotalFee());
+			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getRealFee());
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
 			payTransfersToWxBankCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			payTransfersToWxBankCondition.setOperaterID(condition.getOperaterID());
@@ -904,7 +904,7 @@ public class PayServiceImpl implements PayService{
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
-			toWxBalanceCondition.setTotalAmount(payWithdrawals.getTotalFee());
+			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
 			if(null == payWithdrawals.getSpbillCreateIp()){
 				toWxBalanceCondition.setSpbillCreateIp("127.0.0.1");

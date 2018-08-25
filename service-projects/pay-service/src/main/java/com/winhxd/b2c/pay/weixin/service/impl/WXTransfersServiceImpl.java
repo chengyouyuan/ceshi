@@ -134,7 +134,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     private PayTransfersForWxChangeDTO getReqParamForChange(PayTransfersToWxChangeCondition toWxBalanceCondition) throws Exception {
         PayTransfersForWxChangeDTO forWxChangeDTO = new PayTransfersForWxChangeDTO();
         //这里好像不对, 但又只能这样写
-        forWxChangeDTO.setMchAppid(payConfig.getAppID());
+        forWxChangeDTO.setMchAppid(payConfig.getMchAppID());
         forWxChangeDTO.setMchid(payConfig.getMchID());
         /**
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同

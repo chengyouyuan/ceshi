@@ -74,11 +74,6 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
-		if(condition.getWithdrawType() == 0){
-			result.setCode(BusinessCode.CODE_610022);
-			LOGGER.info("请传入提现类型参数");
-			return result;
-		}
 		LOGGER.info("/6108/v1/toWithdrawalPage-门店进入提现页面入参："+condition);
 		PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
 		result.setData(detail);
@@ -105,8 +100,9 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
+		ResponseResult<Integer> result=new ResponseResult<>();
 		payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
-		return null;
+		return result;
 	}
 	
 	@ApiOperation(value = "计算门店提现手续费", notes = "计算门店提现手续费")

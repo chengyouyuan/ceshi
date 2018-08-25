@@ -383,4 +383,10 @@
       </if>
     </trim>
   </insert>
+   <select id="selectByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_bank_card
+    where  #{storeId,jdbcType=BIGINT} and status = 1 
+  </select>
 </mapper>

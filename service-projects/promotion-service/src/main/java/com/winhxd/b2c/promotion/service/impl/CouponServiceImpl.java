@@ -245,11 +245,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
-        ResponseResult result = new ResponseResult();
-        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
-        result.setData(sum+"");
-        return result;
+    public Integer getCouponNumsByCustomerForStore(Long customerId) {
+        Integer sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        return sum;
     }
 
     /**

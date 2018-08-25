@@ -739,6 +739,7 @@ public class PayServiceImpl implements PayService{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
 				//退回提现用户资金
 				UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
 				condition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
@@ -756,8 +757,6 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 		}
-		//TODO 需要确认errorMessage
-		payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
@@ -839,6 +838,7 @@ public class PayServiceImpl implements PayService{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
 				//退回提现用户资金
 				List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
 
@@ -961,8 +961,6 @@ public class PayServiceImpl implements PayService{
 			payWithdrawals.setCallbackCmmsAmt(resultForWxBank.getCmmsAmt());
 			payWithdrawals.setTransactionId(resultForWxBank.getPaymentNo());
 			payWithdrawals.setTimeEnd(new Date());
-			//TODO 需要确认errorMessage
-			payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 				// 发送云信
@@ -974,6 +972,7 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
 
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
+				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
 				// 发送云信
 				Calendar cal = Calendar.getInstance();

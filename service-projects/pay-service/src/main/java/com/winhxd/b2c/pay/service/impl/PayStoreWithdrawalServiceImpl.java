@@ -102,26 +102,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info("请传入提现类型参数");
 			throw new BusinessException(BusinessCode.CODE_610022);
 		}
-<<<<<<< HEAD
-//		StoreUser storeUser=UserContext.getCurrentStoreUser();
-//		if(storeUser==null){
-//			LOGGER.info("未获取到门店数据");
-//			throw new BusinessException(BusinessCode.CODE_610801);
-//		}
-//		Long businessId = storeUser.getBusinessId();
-//		if(businessId==null){
-//			LOGGER.info("未获取到门店数据");
-//			throw new BusinessException(BusinessCode.CODE_610801);
-//		}
-		Long businessId = 130l;
-=======
-		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-//		Long businessId = 130l;
-		if(businessId==null){
+		StoreUser storeUser=UserContext.getCurrentStoreUser();
+		if(storeUser==null||storeUser.getBusinessId()==null){
 			LOGGER.info("未获取到门店数据");
-			throw new BusinessException(BusinessCode.CODE_601801);
+			throw new BusinessException(BusinessCode.CODE_610801);
 		}
->>>>>>> branch 'master' of git@192.168.1.101:retail2c/retail2c-backend.git
+		Long businessId = storeUser.getBusinessId();
+//		Long businessId = 130l;
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息

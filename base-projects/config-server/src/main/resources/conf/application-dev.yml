@@ -25,7 +25,7 @@ mq:
     address: 192.168.60.250:5672
     username: guest
     password: guest
-    virtual-host: /
+    virtual-host: huistore
   zipkin:
     address: 192.168.60.250:5672
     username: guest

@@ -195,7 +195,7 @@ public class NeteaseUtils {
         extJson.put("page", neteaseMsg.getTreeCode());
         extJson.put("msgId",msgId);
         LOGGER.debug("消息服务，发送云信消息，buildExtJsonMsg，neteaseMsg.getAudioType()={}",neteaseMsg.getAudioType());
-        if(neteaseMsg.getAudioType() == 1 || neteaseMsg.getAudioType() == 2){
+        if(neteaseMsg.getAudioType() == 1){
             //文字转语音
             extJson.put("transferaudio","1");
         }else{
@@ -236,7 +236,7 @@ public class NeteaseUtils {
         extJson.put("pagetype",neteaseMsg.getPageType());
         extJson.put("audiotype", neteaseMsg.getAudioType());
         extJson.put("page", neteaseMsg.getTreeCode());
-        if(neteaseMsg.getAudioType() == 1 || neteaseMsg.getAudioType() == 2){
+        if(neteaseMsg.getAudioType() == 1){
             //文字转语音
             extJson.put("transferaudio","1");
         }else{

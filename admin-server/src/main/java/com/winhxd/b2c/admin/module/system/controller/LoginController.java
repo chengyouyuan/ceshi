@@ -16,12 +16,14 @@ import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author zhangzhengyang
@@ -110,8 +111,8 @@ public class LoginController {
             return result;
         }
 
-        //随机生成token
-        String token = UUID.randomUUID().toString().replaceAll("-","");
+        // 根据用户ID进行MD5加密生成Token
+        String token = DigestUtils.md5DigestAsHex(sysUser.getId().toString().getBytes());
         String cacheKey = CacheName.CACHE_KEY_USER_TOKEN + token;
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(sysUser,userInfo);

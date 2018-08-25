@@ -285,7 +285,7 @@ public class PayWithdrawalsVO {
     }
 
     public String getCallbackStatusName() {
-        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
             callbackStatusName = "申请中";
         } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
             callbackStatusName = "提现成功";
@@ -294,7 +294,6 @@ public class PayWithdrawalsVO {
         } else if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
             callbackStatusName = "无效";
         } else {
-            callbackStatusName = "申请中";
         }
         return callbackStatusName;
     }
@@ -304,14 +303,13 @@ public class PayWithdrawalsVO {
     }
 
     public String getErrorMessage() {
-        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
             errorMessage = "未处理";
         } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
             errorMessage = "提现成功";
         } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
             errorMessage = "提现失败";
         } else {
-            errorMessage = "未处理";
         }
         return errorMessage;
     }

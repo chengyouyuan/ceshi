@@ -884,7 +884,7 @@ public class PayServiceImpl implements PayService{
 
 		if(payWithdrawals.getFlowDirectionType()== PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
-			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsTransactionNo());
+			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
 			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getRealFee());
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
@@ -899,7 +899,7 @@ public class PayServiceImpl implements PayService{
 			return this.transfersToBank(payTransfersToWxBankCondition);
 		}else{
 			PayTransfersToWxChangeCondition toWxBalanceCondition = new PayTransfersToWxChangeCondition();
-			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsTransactionNo());
+			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());

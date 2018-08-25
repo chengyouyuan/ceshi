@@ -74,11 +74,6 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
-		if(condition.getWithdrawType() == 0){
-			result.setCode(BusinessCode.CODE_610022);
-			LOGGER.info("请传入提现类型参数");
-			return result;
-		}
 		LOGGER.info("/6108/v1/toWithdrawalPage-门店进入提现页面入参："+condition);
 		PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
 		result.setData(detail);

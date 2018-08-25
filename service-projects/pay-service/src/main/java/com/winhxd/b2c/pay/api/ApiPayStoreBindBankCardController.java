@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
-import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
@@ -108,7 +107,7 @@ public class ApiPayStoreBindBankCardController {
     	// 获取当前门店id
     	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
     	//////////////////测试门店id//////////////////
-//    	Long businessId = 106l;
+//    	Long businessId = 130l;
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
@@ -140,7 +139,7 @@ public class ApiPayStoreBindBankCardController {
 		
 		/////////////////////////////// 测试数据
 //		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(106l);
+//		currentStoreUser.setBusinessId(130l);
 //		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
@@ -152,6 +151,7 @@ public class ApiPayStoreBindBankCardController {
 		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
 			result.setCode(BusinessCode.CODE_610018);
+			return result;
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
@@ -161,6 +161,7 @@ public class ApiPayStoreBindBankCardController {
 		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
 		if(res > 0){
 			result.setCode(res);
+			return result;
 		}else{
 			result.setData("验证码："+modileVerifyCode);
 			SMSCondition sMSCondition = new SMSCondition();

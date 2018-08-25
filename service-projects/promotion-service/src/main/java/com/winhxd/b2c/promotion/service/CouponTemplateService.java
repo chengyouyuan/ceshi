@@ -42,7 +42,7 @@ public interface CouponTemplateService {
      *@User  wl
      *@Date   2018/8/6 17:53
      */
-    ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition);
+    PagedList<CouponTemplateVO> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition);
     /**
      *
      *@Deccription 查看优惠券模板详情
@@ -51,7 +51,7 @@ public interface CouponTemplateService {
      *@User  wl
      *@Date   2018/8/6 20:45
      */
-    ResponseResult<CouponTemplateVO> viewCouponTemplateDetailById(String id);
+    CouponTemplateVO viewCouponTemplateDetailById(String id);
 
     /**
      *

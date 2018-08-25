@@ -74,7 +74,9 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
     @Override
     public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(@RequestBody CouponTemplateCondition couponTemplateCondition) {
         logger.info("优惠券模板列表findCouponTemplatePageByCondition  方法入参：info:" + JsonUtil.toJSONString(couponTemplateCondition));
-        ResponseResult<PagedList<CouponTemplateVO>> responseResult =  couponTemplateService.findCouponTemplatePageByCondition(couponTemplateCondition);
+        ResponseResult<PagedList<CouponTemplateVO>> responseResult = new ResponseResult<PagedList<CouponTemplateVO>>();
+        PagedList<CouponTemplateVO> pagedList =  couponTemplateService.findCouponTemplatePageByCondition(couponTemplateCondition);
+        responseResult.setData(pagedList);
         return responseResult;
     }
 
@@ -109,7 +111,9 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @Override
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id) {
-        ResponseResult<CouponTemplateVO> responseResult = couponTemplateService.viewCouponTemplateDetailById(id);
+        ResponseResult<CouponTemplateVO> responseResult = new ResponseResult<CouponTemplateVO>();
+        CouponTemplateVO vo = couponTemplateService.viewCouponTemplateDetailById(id);
+        responseResult.setData(vo);
         return responseResult;
     }
 

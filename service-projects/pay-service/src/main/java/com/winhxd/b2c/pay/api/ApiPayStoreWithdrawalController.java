@@ -47,8 +47,7 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6107/v1/getWithdrawalType", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PagedList<PayWithdrawalsTypeVO>> getStoreWithdrawalType(@RequestBody PayCondition condition){
 		ResponseResult<PagedList<PayWithdrawalsTypeVO>> result = new ResponseResult<PagedList<PayWithdrawalsTypeVO>>();
-		ResponseResult<List<PayWithdrawalsType>> allWithdrawalType = payStoreWithdrawalService.getAllWithdrawalType();
-		List<PayWithdrawalsType> data = allWithdrawalType.getData();
+		List<PayWithdrawalsType> data = payStoreWithdrawalService.getAllWithdrawalType();
 		if(data.size() > 0){
 			PagedList<PayWithdrawalsTypeVO> pagelistvo = new PagedList<PayWithdrawalsTypeVO>();
 			List<PayWithdrawalsTypeVO> listvo = new ArrayList<PayWithdrawalsTypeVO>();
@@ -60,7 +59,6 @@ public class ApiPayStoreWithdrawalController {
 			}
 			result.setData(pagelistvo);
 		}
-		result.setCode(allWithdrawalType.getCode());
 		return result;
 	}
 	
@@ -76,13 +74,9 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6108/v1/toWithdrawalPage", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
-		if(condition.getWithdrawType() != 0){
-			LOGGER.info("/6108/v1/toWithdrawalPage-门店进入提现页面入参："+condition);
-			result = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
-		}else{
-			result.setCode(BusinessCode.CODE_610022);
-			LOGGER.info("请传入提现类型参数");
-		}
+		LOGGER.info("/6108/v1/toWithdrawalPage-门店进入提现页面入参："+condition);
+		PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
+		result.setData(detail);
 		return result;
 	}
 	
@@ -106,8 +100,8 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
-		ResponseResult<Integer> result = new ResponseResult<Integer>();
-		result = payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
+		ResponseResult<Integer> result=new ResponseResult<>();
+		payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
 		return result;
 	}
 	

@@ -105,8 +105,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/6 18:29
      */
     @Override
-    public ResponseResult<PagedList<CouponTemplateVO>> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
-        ResponseResult<PagedList<CouponTemplateVO>> result= new ResponseResult<PagedList<CouponTemplateVO>>();
+    public PagedList<CouponTemplateVO> findCouponTemplatePageByCondition(CouponTemplateCondition couponTemplateCondition) {
+
         PagedList<CouponTemplateVO> pagedList = new PagedList<>();
         PageHelper.startPage(couponTemplateCondition.getPageNo(),couponTemplateCondition.getPageSize());
         List<CouponTemplateVO> couponTemplateVOList = couponTemplateMapper.getCouponTemplatePageByCondition(couponTemplateCondition);
@@ -115,13 +115,11 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
     @Override
-    public ResponseResult viewCouponTemplateDetailById(String id) {
-        ResponseResult responseResult = new ResponseResult();
+    public CouponTemplateVO viewCouponTemplateDetailById(String id) {
         CouponTemplateVO vo = new CouponTemplateVO();
         CouponTemplate couponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
         if(couponTemplate!=null){
@@ -140,8 +138,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
             vo.setCode(couponTemplate.getCode());
             vo.setRemarks(couponTemplate.getRemarks());
         }
-        responseResult.setData(vo);
-        return responseResult;
+
+        return vo;
     }
 
 

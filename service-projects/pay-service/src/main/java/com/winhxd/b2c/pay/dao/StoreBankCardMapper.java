@@ -1,5 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
+import java.util.List;
+
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
@@ -20,4 +22,6 @@ public interface StoreBankCardMapper {
 	StoreBankCardVO selectStorBankCardInfo(StoreBankCardCondition condition);
 
 	int insertStoreBankCardinfo(StoreBankCard condition);
+	
+	List<StoreBankCard> selectByStoreId(Long storeId);
 }

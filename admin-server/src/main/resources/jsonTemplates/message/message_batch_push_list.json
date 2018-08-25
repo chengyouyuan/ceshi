@@ -48,29 +48,6 @@
       {
         "name": "lastPushTime",
         "title": "最后推送时间"
-      },
-      {
-        "name": "",
-        "title": "操作",
-        "type": "button",
-        "buttons": [
-          {
-            "name": "删除",
-            "icon": null,
-            "event": {
-              "ajaxType": "get",
-              "type": "ajax",
-              "params": [
-                "id"
-              ],
-              "confirm":{
-                "title": "确认提示",
-                "message":"确定删除吗?"
-              },
-              "path": "/message/removeBatchPush/{id}"
-            }
-          }
-        ]
       }
     ],
     "params": [

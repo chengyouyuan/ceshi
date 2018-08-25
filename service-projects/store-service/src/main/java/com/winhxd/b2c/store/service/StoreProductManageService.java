@@ -51,7 +51,7 @@ public interface StoreProductManageService {
 	* @author wuyuanbao
 	* @date 2018年8月6日下午8:16:45
 	 */
-	int countSkusByConditon(StoreProductManageCondition condition);
+	List<String> countSkusByConditon(StoreProductManageCondition condition);
 	
 	/**
 	 * 商品上架操作（支持批量）

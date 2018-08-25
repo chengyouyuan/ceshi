@@ -5,8 +5,8 @@ package com.winhxd.b2c.common.domain.customer.enums;
  */
 public enum CustomerUserEnum {
 
-    CUSTOMER_STATUS_NORMAL(0, "有效"),
-    CUSTOMER_STATUS_INVALID(1, "无效");
+    CUSTOMER_STATUS_NORMAL(1, "有效"),
+    CUSTOMER_STATUS_INVALID(0, "无效");
 
     private Integer code;
     private String desc;

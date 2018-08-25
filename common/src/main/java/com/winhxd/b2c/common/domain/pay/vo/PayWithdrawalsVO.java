@@ -73,7 +73,6 @@ public class PayWithdrawalsVO {
     @Excel(name = "审核人", width = 30)
     private String updatedByName;
     @ApiModelProperty("修改时间")
-    @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date updated;
     @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败")
     private Short callbackStatus;
@@ -83,7 +82,9 @@ public class PayWithdrawalsVO {
     private String callbackReason;
     @ApiModelProperty("失败原因")
     private String errorMessage;
-
+    @ApiModelProperty("提款时间")
+    @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date timeEnd;
 
     public Long getId() {
         return id;
@@ -267,6 +268,7 @@ public class PayWithdrawalsVO {
     }
 
     public Short getCallbackStatus() {
+
         return callbackStatus;
     }
 
@@ -302,10 +304,27 @@ public class PayWithdrawalsVO {
     }
 
     public String getErrorMessage() {
+        if (callbackStatus == null || Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            errorMessage = "未处理";
+        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
+            errorMessage = "提现成功";
+        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            errorMessage = "提现失败";
+        } else {
+            errorMessage = "未处理";
+        }
         return errorMessage;
     }
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Date getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(Date timeEnd) {
+        this.timeEnd = timeEnd;
     }
 }

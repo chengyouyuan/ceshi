@@ -541,7 +541,12 @@ public class ApiOpenStoreController {
     private static String calculatePercent(BigDecimal a, BigDecimal b) {
         String result = "暂无对比数据";
         if (a.compareTo(BigDecimal.ZERO) != 0 && b.compareTo(BigDecimal.ZERO) != 0) {
-            result = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP).toBigInteger().toString() + "%";
+            BigDecimal percent = a.subtract(b).multiply(new BigDecimal(100)).divide(b, 2, RoundingMode.HALF_UP);
+            if (percent.compareTo(BigDecimal.ZERO) > 0) {
+                result = "+" + percent + "%";
+            } else {
+                result = percent + "%";
+            }
         }
         return result;
     }

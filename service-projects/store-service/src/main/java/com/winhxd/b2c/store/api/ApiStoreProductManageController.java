@@ -566,9 +566,31 @@ public class ApiStoreProductManageController {
         spmcondition.setPriceStatus((byte) 0);
         // 上架商品
         spmcondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
-        int count = storeProductManageService.countSkusByConditon(spmcondition);
+        List<String> skuCodes = storeProductManageService.countSkusByConditon(spmcondition);
+        logger.info("门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+skuCodes+",个数："+skuCodes.size());
+        int count=0;
+        List<String> validSkuCode=new ArrayList<>();
+        //调用商品接口查询商品是否skuCode存在
+        if(skuCodes.size()>0){
+            ProductCondition pCondition=new ProductCondition();
+            pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
+            pCondition.setProductSkus(skuCodes);
+            ResponseResult<List<ProductSkuVO>> pResult= productServiceClient.getProductSkus(pCondition);  
+            if(pResult!=null&&BusinessCode.CODE_OK==pResult.getCode()&&pResult.getData()!=null){
+                for(String skuCode:skuCodes){
+                    for(ProductSkuVO p:pResult.getData()){
+                        if(p.getSkuCode().equals(skuCode)){
+                            count=count+1;
+                            validSkuCode.add(skuCode);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        logger.info("最终有效门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+validSkuCode+",个数："+validSkuCode.size());
         // 设置是否有未设置价格的商品
-        if (count > 0) {
+        if (count >0) {
             vo.setCheckResult(true);
         } else {
             vo.setCheckResult(false);

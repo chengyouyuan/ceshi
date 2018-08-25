@@ -1,11 +1,11 @@
 package com.winhxd.b2c.promotion.service;
 
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+
+import java.util.List;
 
 /**
  *
@@ -19,7 +19,7 @@ public interface CouponActivityService {
      * @param condition
      * @return CouponActivityVO
      */
-    ResponseResult<PagedList<CouponActivityVO>> findCouponActivity(CouponActivityCondition condition);
+    List<CouponActivityVO> findCouponActivity(CouponActivityCondition condition);
     /**
      *
      *@Deccription 添加优惠券活动
@@ -79,7 +79,7 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/9
      */
-    ResponseResult<PagedList<CouponActivityStoreVO>> findCouponByActivity(CouponActivityCondition condition);
+    List<CouponActivityStoreVO> findCouponByActivity(CouponActivityCondition condition);
 
     /**
      *
@@ -89,7 +89,7 @@ public interface CouponActivityService {
      *@User  sjx
      *@Date   2018/8/9
      */
-    ResponseResult<PagedList<CouponActivityStoreVO>> findStoreByActivity(CouponActivityCondition condition);
+    List<CouponActivityStoreVO> findStoreByActivity(CouponActivityCondition condition);
 
     /**
      *

@@ -59,7 +59,7 @@ public class MessageNeteaseHistory {
      */
     private String msgIdServer;
     /**
-     * 消息是否已读(0:已读，1：未读)
+     * 消息是否已读(0:未读，1：已读)
      */
     private String readStatus;
 }

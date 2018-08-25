@@ -58,9 +58,9 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	}
 
 	@Override
-	public int countSkusByConditon(StoreProductManageCondition condition) {
+	public List<String> countSkusByConditon(StoreProductManageCondition condition) {
 		
-		return (int)storeProductManageMapper.countSkusByConditon(condition);
+		return storeProductManageMapper.countSkusByConditon(condition);
 	}
 
 

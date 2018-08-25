@@ -40,7 +40,6 @@ public class MessageSendMqHandler {
     private static final String SUCCESS_CODE_0 = "0";
     private static final String SUCCESS_CODE_200 = "200";
     private static final String PARAM_CODE = "code";
-    private static final String PARAM_MSGID = "data.msgid";
     /**错误码，formid不正确，或者过期或已被使用*/
     private static final String[] ERR_CODE = {"41028","41029"};
 
@@ -199,7 +198,7 @@ public class MessageSendMqHandler {
         Map<String, Object> msgMap = neteaseUtils.sendTxtMessage2Person(account.getAccid(), neteaseMsgCondition,msgId);
         if (SUCCESS_CODE_200.equals(String.valueOf(msgMap.get(PARAM_CODE)))) {
             //云信消息发送成功
-            LOGGER.info("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息成功 msg_id_server={}",String.valueOf(msgMap.get(PARAM_MSGID)));
+            LOGGER.info("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息成功 msgId={}",msgId);
         } else {
             LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         }
@@ -286,8 +285,8 @@ public class MessageSendMqHandler {
             history.setPageType(MsgPageTypeEnum.NOTICE.getPageType());
             history.setTreeCode(null);
             history.setMsgCategory(MsgCategoryEnum.HUI_NOTICE.getTypeCode());
-            //1：未读
-            history.setReadStatus("1");
+            //0：未读
+            history.setReadStatus("0");
             list.add(history);
         }
         messageNeteaseHistoryMapper.insertHistories(list);

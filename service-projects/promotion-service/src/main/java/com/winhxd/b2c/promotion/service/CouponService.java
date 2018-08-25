@@ -137,4 +137,10 @@ public interface CouponService {
      * @return
      */
     CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition);
+
+    /**
+     * 校验是否有新用户活动
+     * @return
+     */
+    Boolean verifyNewUserActivity();
 }

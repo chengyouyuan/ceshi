@@ -25,21 +25,21 @@ public interface PayFinanceAccountDetailMapper {
 
     int updateByPrimaryKey(PayFinanceAccountDetail record);
 
-	PayFinanceAccountDetailVO selectByStoreId(Long storeId);
+//	PayFinanceAccountDetailVO selectByStoreId(Long storeId);
 
-	List<PayFinanceAccountDetailVO> selectTotalInOutMoney(Long storeId);
+//	List<PayFinanceAccountDetailVO> selectTotalInOutMoney(Long storeId);
+//
+//	List<PayFinanceAccountDetailVO> selectTodayInMoney(Long storeId);
+//
+//	List<PayFinanceAccountDetailVO> selectTodayOutMoney(Long storeId);
 
-	List<PayFinanceAccountDetailVO> selectTodayInMoney(Long storeId);
+//	PayFinanceAccountDetailVO selectCouponUsedMoney(Long storeId);
+//
+//	PayFinanceAccountDetailVO selectTodayCouponUsedMoney(Long storeId);
 
-	List<PayFinanceAccountDetailVO> selectTodayOutMoney(Long storeId);
+//	List<OrderInfoFinancialInDetailVO> selectFinancialInDetail(OrderInfoFinancialInDetailCondition condition);
 
-	PayFinanceAccountDetailVO selectCouponUsedMoney(Long storeId);
-
-	PayFinanceAccountDetailVO selectTodayCouponUsedMoney(Long storeId);
-
-	List<OrderInfoFinancialInDetailVO> selectFinancialInDetail(OrderInfoFinancialInDetailCondition condition);
-
-	List<OrderInfoFinancialOutDetailVO> selectFinancialOutDetail(OrderInfoFinancialOutDetailCondition condition);
+//	List<OrderInfoFinancialOutDetailVO> selectFinancialOutDetail(OrderInfoFinancialOutDetailCondition condition);
 
 	/**
 	 * 提现数据

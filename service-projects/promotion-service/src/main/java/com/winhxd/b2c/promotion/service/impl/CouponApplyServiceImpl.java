@@ -180,8 +180,6 @@ public class CouponApplyServiceImpl implements CouponApplyService {
             couponApply.setRemarks(condition.getRemarks());
             couponApply.setCreatedBy(Long.parseLong(condition.getUserId()));
             couponApply.setCreatedByName(condition.getUserName());
-            //couponApply.setCreatedBy(100123L);
-            //couponApply.setCreatedByName("HAHA");
             couponApply.setCreated(new Date());
             long mainKey = couponApplyMapper.insertCouponApply(couponApply);
             if(mainKey==0){

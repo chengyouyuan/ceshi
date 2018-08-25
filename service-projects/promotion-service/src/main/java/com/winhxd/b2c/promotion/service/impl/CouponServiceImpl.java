@@ -245,11 +245,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId) {
-        ResponseResult result = new ResponseResult();
-        int sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
-        result.setData(sum+"");
-        return result;
+    public Integer getCouponNumsByCustomerForStore(Long customerId) {
+        Integer sum = couponTemplateSendMapper.getCouponNumsByCustomerForStore(customerId);
+        return sum;
     }
 
     /**
@@ -825,6 +823,7 @@ public class CouponServiceImpl implements CouponService {
             couponVO.setAvailableStatus(0);
             //支付方式
             if(couponVO.getPayType().equals(couponCondition.getPayType())){
+                logger.info("优惠券支付方式:{},订单支付方式:{},优惠券类型:{}",couponVO.getPayType(),couponCondition.getPayType(),couponVO.getApplyRuleType());
                 //通用券
                 if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()))){
                     //计算订单总额
@@ -1135,9 +1134,28 @@ public class CouponServiceImpl implements CouponService {
     }
 
 
+    @Override
+    public Boolean verifyNewUserActivity() {
+        //step1 查询符合
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+        couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
+        List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
+        if (couponActivities.isEmpty()) {
+            logger.info("不存在符合新用户注册的优惠券活动");
+            return false;
+        }
 
 
-
-
-
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        couponActivityTemplate.setCouponActivityId(couponActivities.get(0).getId());
+        List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
+        if (couponActivityTemplates.isEmpty()) {
+            logger.info("couponActivityTemplates->不存在符合新用户注册的优惠券活动");
+            return false;
+        }
+        return true;
+    }
 }

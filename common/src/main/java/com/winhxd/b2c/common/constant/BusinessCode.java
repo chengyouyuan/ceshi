@@ -157,7 +157,7 @@ public final class BusinessCode {
 
 
     /** 原密码输入错误 */
-    public static final int CODE_300021 = 302001;
+    public static final int CODE_302001 = 302001;
     /** 不可删除有成员的权限组 */
     public static final int CODE_301000 = 301000;
     /** 新密码与原密码相同 */
@@ -419,6 +419,14 @@ public final class BusinessCode {
     public static final int CODE_610037 = 610037;
     @ApiModelProperty("当前门店没有可提现金额")
     public static final int CODE_610038 = 610038;
+    @ApiModelProperty("调用微信提现接口失败")
+    public static final int CODE_610039 = 610039;
+
+    @ApiModelProperty("未获取到门店信息")
+    public static final int CODE_610801 = 610801;
+   
+    @ApiModelProperty("未获取到门店信息")
+    public static final int CODE_610901 = 610901;
     
     
     @ApiModelProperty("订单支付  参数为空")

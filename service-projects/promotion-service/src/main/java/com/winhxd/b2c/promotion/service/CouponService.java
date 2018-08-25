@@ -28,7 +28,7 @@ public interface CouponService {
      * @param customerId
      * @return
      */
-    ResponseResult<String> getCouponNumsByCustomerForStore(Long customerId);
+    Integer getCouponNumsByCustomerForStore(Long customerId);
 
     /**
      * 待领取的优惠券列表
@@ -137,4 +137,10 @@ public interface CouponService {
      * @return
      */
     CouponDiscountVO getCouponDiscountAmount(CouponAmountCondition couponCondition);
+
+    /**
+     * 校验是否有新用户活动
+     * @return
+     */
+    Boolean verifyNewUserActivity();
 }

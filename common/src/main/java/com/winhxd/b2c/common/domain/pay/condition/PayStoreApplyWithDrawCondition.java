@@ -40,4 +40,6 @@ public class PayStoreApplyWithDrawCondition extends ApiCondition {
     private String stroeName;
     @ApiModelProperty("手机号")
     private String mobile;
+    @ApiModelProperty("ip")
+    private String spbillCreateIp;
 }

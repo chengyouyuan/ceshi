@@ -720,10 +720,11 @@ public class PayServiceImpl implements PayService{
 		PayTransfersToWxChangeVO payTransfersToWxChangeVO = transfersService.transfersToChange(toWxBalanceCondition);
 
 		if(null == payTransfersToWxChangeVO){
-			logger.info(log+"--transfersService.transfersToChange返回结果为空");
+			logger.error(log+"--transfersService.transfersToChange返回结果为空");
+			throw new BusinessException(BusinessCode.CODE_610039);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
-
+		logger.info("提现流水号:{},对象信息：",payTransfersToWxChangeVO.getPartnerTradeNo(),payTransfersToWxChangeVO.toString());
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			// 发送云信
@@ -740,13 +741,6 @@ public class PayServiceImpl implements PayService{
 			}else{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
 				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
-				//退回提现用户资金
-				UpdateStoreBankRollCondition condition = new UpdateStoreBankRollCondition();
-				condition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
-				condition.setStoreId(payWithdrawalsList.get(0).getStoreId());
-				condition.setWithdrawalsNo(payWithdrawalsList.get(0).getWithdrawalsNo());
-				condition.setMoney(payWithdrawalsList.get(0).getTotalFee());
-				this.updateStoreBankroll(condition);
 
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
@@ -757,7 +751,6 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 			}
 		}
-		payWithdrawals.setWithdrawalsNo(payTransfersToWxChangeVO.getPartnerTradeNo());
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
 		payWithdrawals.setTimeEnd(new Date());
@@ -784,17 +777,19 @@ public class PayServiceImpl implements PayService{
 			if (payFinanceInsertResult<1) {
 				logger.info(log+"--订单出账明细表插入失败");
 			}
+
+			//step 3保存交易记录
+			PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
+			payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());
+			payStoreTransactionRecord.setType(StoreTransactionStatusEnum.TRANSFERS.getStatusCode());
+			payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
+			payStoreTransactionRecord.setStoreId(payWithdrawals.getStoreId());
+			payStoreTransactionRecord.setMoney(payWithdrawals.getTotalFee());
+			payStoreTransactionRecord.setCmmsAmt(payWithdrawals.getCmmsAmt());
+			payStoreTransactionRecord.setTransactionDate(payWithdrawals.getCreated());
+			payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
 		}
-        //step 3保存交易记录
-        PayStoreTransactionRecord payStoreTransactionRecord = new PayStoreTransactionRecord();
-		payStoreTransactionRecord.setOrderNo(payWithdrawals.getWithdrawalsNo());
-		payStoreTransactionRecord.setType(StoreTransactionStatusEnum.TRANSFERS.getStatusCode());
-		payStoreTransactionRecord.setStatus(StatusEnums.EFFECTIVE.getCode());
-        payStoreTransactionRecord.setStoreId(payWithdrawals.getStoreId());
-		payStoreTransactionRecord.setMoney(payWithdrawals.getTotalFee());
-		payStoreTransactionRecord.setCmmsAmt(payWithdrawals.getCmmsAmt());
-		payStoreTransactionRecord.setTransactionDate(payWithdrawals.getCreated());
-        payStoreCashService.savePayStoreTransactionRecord(payStoreTransactionRecord);
+
         //step4 门店资金变化
 		UpdateStoreBankRollCondition updateStoreBankRollCondition = new UpdateStoreBankRollCondition();
 		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
@@ -825,7 +820,8 @@ public class PayServiceImpl implements PayService{
 		}
 		PayTransfersToWxBankVO payTransfersToWxBankVO = transfersService.transfersToBank(toWxBankCondition);
         if(null == payTransfersToWxBankVO){
-            logger.info(log+"--transfersService.transfersToChange返回结果为空");
+            logger.error(log+"--transfersService.transfersToChange返回结果为空");
+			throw new BusinessException(BusinessCode.CODE_610039);
         }
 
 		PayWithdrawals payWithdrawals = new PayWithdrawals();
@@ -889,9 +885,9 @@ public class PayServiceImpl implements PayService{
 
 		if(payWithdrawals.getFlowDirectionType()== PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			PayTransfersToWxBankCondition payTransfersToWxBankCondition = new PayTransfersToWxBankCondition();
-			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsTransactionNo());
+			payTransfersToWxBankCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			payTransfersToWxBankCondition.setAccount(payWithdrawals.getPaymentAccount());
-			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getRealFee());
+			payTransfersToWxBankCondition.setTotalAmount(payWithdrawals.getTotalFee());
 			payTransfersToWxBankCondition.setAccountName(payWithdrawals.getName());
 			payTransfersToWxBankCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
 			payTransfersToWxBankCondition.setOperaterID(condition.getOperaterID());
@@ -904,12 +900,17 @@ public class PayServiceImpl implements PayService{
 			return this.transfersToBank(payTransfersToWxBankCondition);
 		}else{
 			PayTransfersToWxChangeCondition toWxBalanceCondition = new PayTransfersToWxChangeCondition();
-			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsTransactionNo());
+			toWxBalanceCondition.setPartnerTradeNo(payWithdrawals.getWithdrawalsNo());
 			toWxBalanceCondition.setOperaterID(condition.getOperaterID());
 			toWxBalanceCondition.setAccountId(payWithdrawals.getPaymentAccount());
 			toWxBalanceCondition.setDesc(payWithdrawals.getName()+"用户提现,用户手机号:"+payWithdrawals.getMobile());
-			toWxBalanceCondition.setTotalAmount(payWithdrawals.getRealFee());
+			toWxBalanceCondition.setTotalAmount(payWithdrawals.getTotalFee());
 			toWxBalanceCondition.setAccountName(payWithdrawals.getName());
+			if(null == payWithdrawals.getSpbillCreateIp()){
+				toWxBalanceCondition.setSpbillCreateIp("127.0.0.1");
+			}else{
+				toWxBalanceCondition.setSpbillCreateIp(payWithdrawals.getSpbillCreateIp());
+			}
 			return this.transfersToChange(toWxBalanceCondition);
 		}
 	}

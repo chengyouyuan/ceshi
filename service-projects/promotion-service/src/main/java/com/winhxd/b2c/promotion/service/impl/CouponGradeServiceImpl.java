@@ -38,11 +38,9 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     private CouponGradeDetailMapper couponGradeDetailMapper;
 
     @Override
-    public ResponseResult<CouponGradeVO> viewCouponGradeDetail(long id) {
-        ResponseResult responseResult = new ResponseResult();
+    public CouponGradeVO viewCouponGradeDetail(long id) {
         CouponGradeVO vo = couponGradeMapper.viewCouponGradeDetail(id);
-        responseResult.setData(vo);
-        return responseResult;
+        return vo;
     }
 
     @Override
@@ -95,7 +93,7 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     }
 
     @Override
-    public ResponseResult<PagedList<CouponGradeVO>> getCouponGradePage(CouponGradeCondition condition) {
+    public PagedList<CouponGradeVO> getCouponGradePage(CouponGradeCondition condition) {
         ResponseResult<PagedList<CouponGradeVO>> result= new ResponseResult<PagedList<CouponGradeVO>>();
         PagedList<CouponGradeVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -118,12 +116,11 @@ public class CouponGradeServiceImpl implements CouponGradeService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 
     @Override
-    public ResponseResult<PagedList<GradeTempleteCountVO>> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
+    public PagedList<GradeTempleteCountVO> findGradeTempleteCountPage(RuleRealationCountCondition condition) {
         ResponseResult<PagedList<GradeTempleteCountVO>> result= new ResponseResult<PagedList<GradeTempleteCountVO>>();
         PagedList<GradeTempleteCountVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
@@ -133,7 +130,6 @@ public class CouponGradeServiceImpl implements CouponGradeService {
         pagedList.setPageNo(pageInfo.getPageNum());
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
-        result.setData(pagedList);
-        return result;
+        return pagedList;
     }
 }

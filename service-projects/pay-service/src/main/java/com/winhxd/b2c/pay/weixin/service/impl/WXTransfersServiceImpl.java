@@ -48,9 +48,13 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
 
     /**
-     * 默认设置姓名强校验
+     * 设置姓名强校验
      */
     private static final String FORCE_CHECK = "FORCE_CHECK";
+    /**
+     * 默认设置不校验用户真实姓名
+     */
+    private static final String NO_CHECK = "NO_CHECK";
 
     /**
      * 分与元单位转换
@@ -112,7 +116,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         boolean res = //StringUtils.isBlank(toWxBalanceCondition.getMchAppid()) ||
                 StringUtils.isBlank(toWxBalanceCondition.getPartnerTradeNo())
                         || StringUtils.isBlank(toWxBalanceCondition.getAccountId())
-                        || StringUtils.isBlank(toWxBalanceCondition.getAccountName())
+//                        || StringUtils.isBlank(toWxBalanceCondition.getAccountName())
                         || null == toWxBalanceCondition.getTotalAmount()
                         || toWxBalanceCondition.getTotalAmount().doubleValue() <= 0d
                         || StringUtils.isBlank(toWxBalanceCondition.getDesc())
@@ -147,7 +151,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         forWxChangeDTO.setPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
         //openID在这里不需要主动获取
         forWxChangeDTO.setOpenid(toWxBalanceCondition.getAccountId());
-        forWxChangeDTO.setCheckName(FORCE_CHECK);
+        forWxChangeDTO.setCheckName(NO_CHECK);
         forWxChangeDTO.setReUserName(toWxBalanceCondition.getAccountName());
         forWxChangeDTO.setAmount(toWxBalanceCondition.getTotalAmount().multiply(UNITS).intValue());
         forWxChangeDTO.setDesc(toWxBalanceCondition.getDesc());

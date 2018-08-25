@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -232,7 +233,9 @@ public class VerifyController {
                 condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
             }
             Object callbackStatus = map.get("callbackStatus");
-            if (String.valueOf(1).equals(String.valueOf(callbackStatus)) || String.valueOf(3).equals(String.valueOf(callbackStatus))) {
+            if (StringUtils.isBlank(ObjectUtils.toString(callbackStatus))
+                    || String.valueOf(1).equals(ObjectUtils.toString(callbackStatus))
+                    || String.valueOf(3).equals(ObjectUtils.toString(callbackStatus))) {
                 throw new BusinessException(-1, "记录中包含不可提现的记录，请检查后重试");
             }
         }

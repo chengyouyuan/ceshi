@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.mq.support.zipkin;
 import com.winhxd.b2c.common.mq.support.MessageQueueProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,13 +19,13 @@ public class ZipkinRabbitConfig {
     @Value("${spring.zipkin.rabbitmq.queue:zipkin}")
     private String queue;
 
-    @Bean
+    @Bean(name = "zipkinMessageQueueProperties")
     @ConfigurationProperties(prefix = "mq.zipkin")
     public MessageQueueProperties zipkinMessageQueueProperties() {
         return new MessageQueueProperties();
     }
 
-    @Bean
+    @Bean(name = "zipkinCachingConnectionFactory")
     public CachingConnectionFactory zipkinCachingConnectionFactory(MessageQueueProperties zipkinMessageQueueProperties) {
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setAddresses(zipkinMessageQueueProperties.getAddress());
@@ -37,7 +38,9 @@ public class ZipkinRabbitConfig {
     }
 
     @Bean
-    public Sender rabbitSender(CachingConnectionFactory zipkinCachingConnectionFactory, MessageQueueProperties zipkinMessageQueueProperties) {
+    public Sender rabbitSender(
+            @Qualifier("zipkinCachingConnectionFactory") CachingConnectionFactory zipkinCachingConnectionFactory,
+            @Qualifier("zipkinMessageQueueProperties") MessageQueueProperties zipkinMessageQueueProperties) {
         return RabbitMQSender.newBuilder()
                 .connectionFactory(zipkinCachingConnectionFactory.getRabbitConnectionFactory())
                 .queue(this.queue)

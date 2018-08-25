@@ -58,8 +58,11 @@ public class YxSmsProcess {
 			yxtSmsProcess.saveSend(smsReturn.getSmsSupplier().getAccount(), smsSend.getContent(), smsSend.getTelephone(), smsReturn.getStatus().getStatusCode());
 			LOGGER.info("阅信短信发送失败,使用创蓝平台发送：" + smsReturn.getStatus().getStatusCode());
 			smsReturn = yxtSmsProcess.sendWithReturn(smsSend.getTelephone(), smsSend.getContent(), smsSend.getSupplyId());
+			LOGGER.info("创蓝短信发送结果：" + JsonUtil.toJSONString(smsReturn));
 		}
-		LOGGER.info("阅信短信发送失败,使用创蓝平台发送====" + JsonUtil.toJSONString(smsReturn));
+		else {
+			LOGGER.info("阅信短信发送结果：" + JsonUtil.toJSONString(smsReturn));
+		}
 		return smsReturn;
 	}
 

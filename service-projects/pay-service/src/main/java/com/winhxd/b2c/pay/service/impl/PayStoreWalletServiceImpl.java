@@ -37,7 +37,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	@Override
 	public int savePayStoreWallet(PayStoreWalletCondition condition) {
 		int res = 0;
-		if(condition != null){
+		if(condition == null){
 			res = BusinessCode.CODE_610030;
 			throw new BusinessException(res);
 		}

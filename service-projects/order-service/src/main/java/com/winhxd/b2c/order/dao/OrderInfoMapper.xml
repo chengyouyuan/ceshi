@@ -603,8 +603,11 @@
         id
         from order_info info
         where 1=1
-        <if test="condition.orderStatus != null">
+        <if test="condition.orderStatus != null and condition.orderStatus != 33">
             and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+        </if>
+        <if test="condition.orderStatus != null and condition.orderStatus == 33">
+            and (order_status = 33 or order_status = 66)
         </if>
         <if test="condition.pickupCode != null and condition.pickupCode !=''">
             and pickup_code = #{condition.pickupCode,jdbcType=VARCHAR}
@@ -819,11 +822,10 @@
 			sum(case when order_status=2 then 1 else 0 end) waitPayNum,
 			sum(case when order_status=3 then 1 else 0 end) unreceivedNum,
 			sum(case when order_status=9 then 1 else 0 end) waitSelfLiftingNum,
-			sum(case when order_status=33 then 1 else 0 end) waitRefundNum,
+			sum(case when order_status=33 or order_status=66 then 1 else 0 end) waitRefundNum,
 			sum(case when order_status=22 then 1 else 0 end) finishedNum,
 			sum(case when order_status=77 then 1 else 0 end) refundedNum,
 			sum(case when order_status=99 then 1 else 0 end) canceledNum,
-			sum(case when order_status=66 then 1 else 0 end) refundingNum,
 			store_id storeId
 		from
 			order_info

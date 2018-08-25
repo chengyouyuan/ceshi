@@ -50,15 +50,16 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
     @Qualifier("normalCachingConnectionFactory")
     private ConnectionFactory connectionFactory;
 
-    @Bean
+    @Bean(name = "normalMessageQueueProperties")
     @ConfigurationProperties(prefix = "mq.normal")
     public MessageQueueProperties normalMessageQueueProperties() {
         return new MessageQueueProperties();
     }
 
-    @Bean
+    @Bean(name = "normalCachingConnectionFactory")
     @Primary
-    public CachingConnectionFactory normalCachingConnectionFactory(MessageQueueProperties normalMessageQueueProperties) {
+    public CachingConnectionFactory normalCachingConnectionFactory(
+            @Qualifier("normalMessageQueueProperties") MessageQueueProperties normalMessageQueueProperties) {
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setPublisherConfirms(true);
         factory.setAddresses(normalMessageQueueProperties.getAddress());
@@ -72,14 +73,16 @@ public class MessageQueueConfig implements BeanPostProcessor, BeanFactoryAware {
 
     @Bean
     @Primary
-    public RabbitTemplate normalRabbitTemplate(CachingConnectionFactory normalCachingConnectionFactory) {
+    public RabbitTemplate normalRabbitTemplate(
+            @Qualifier("normalCachingConnectionFactory") CachingConnectionFactory normalCachingConnectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(normalCachingConnectionFactory);
         return rabbitTemplate;
     }
 
     @Bean
     @Primary
-    public RabbitAdmin normalRabbitAdmin(CachingConnectionFactory normalCachingConnectionFactory) {
+    public RabbitAdmin normalRabbitAdmin(
+            @Qualifier("normalCachingConnectionFactory") CachingConnectionFactory normalCachingConnectionFactory) {
         RabbitAdmin rabbitAdmin = new RabbitAdmin(normalCachingConnectionFactory);
         return rabbitAdmin;
     }

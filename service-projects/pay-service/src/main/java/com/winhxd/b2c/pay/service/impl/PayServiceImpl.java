@@ -716,7 +716,6 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--提现记录不存在");
 			throw new BusinessException(BusinessCode.CODE_600010);
 		}
-
 		PayTransfersToWxChangeVO payTransfersToWxChangeVO = transfersService.transfersToChange(toWxBalanceCondition);
 
 		if(null == payTransfersToWxChangeVO){
@@ -724,7 +723,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_610039);
 		}
 		PayWithdrawals payWithdrawals = payWithdrawalsList.get(0);
-		logger.info("提现流水号:{},对象信息：",payTransfersToWxChangeVO.getPartnerTradeNo(),payTransfersToWxChangeVO.toString());
+		logger.info("提现流水号111:{},对象信息：",payTransfersToWxChangeVO.toString());
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 			// 发送云信

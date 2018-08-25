@@ -1,13 +1,15 @@
 package test;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -32,7 +34,6 @@ import com.winhxd.b2c.common.domain.order.condition.OrderQueryByCustomerConditio
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.mq.MQDestination;
 import com.winhxd.b2c.common.mq.StringMessageSender;
@@ -74,12 +75,19 @@ public class OrderServiceTest {
     
     @Test
     public void testGetStoreOrderSalesSummary() {
-//        System.out.println(cache.del(OrderUtil.getStoreOrderSalesSummaryKey(0L)));
-        long storeId = 0L;
+        long storeId = 62L;
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59)).getTime();
         long startSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 0, 0, 0)).getTime();
         Date startDateTime = new Date(startSecond);
         Date endDateTime = new Date(lastSecond);
+        List<Map<String, Long>> datas = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
+        System.out.println(datas);
+        for (Iterator iterator = datas.iterator(); iterator.hasNext();) {
+            Map<String, Long> map = (Map<String, Long>) iterator.next();
+            System.out.println(map.get("key").toString());
+            System.out.println(map.get("value").doubleValue());
+            
+        }
 //        System.out.println(JsonUtil.toJSONString(orderQueryService.getStoreOrderSalesSummary(0, startDateTime, endDateTime)));
     }
     
@@ -244,6 +252,7 @@ public class OrderServiceTest {
 //        //设置到缓存
 //        cache.hset(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "", JsonUtil.toJSONString(storeOrderSalesSummaryVO));
         cache.hdel(CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY, 104L + "");
+        
     }
     
     @Test

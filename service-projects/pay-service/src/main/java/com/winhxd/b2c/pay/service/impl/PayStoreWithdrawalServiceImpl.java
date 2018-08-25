@@ -222,6 +222,10 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setName(condition.getNick());
 			payWithdrawal.setCreatedByName(condition.getNick());
 			payWithdrawal.setUpdatedByName(condition.getNick());
+			
+			payWithdrawal.setCmmsAmt(BigDecimal.valueOf(0));
+			payWithdrawal.setRealFee(condition.getTotalFee());
+			payWithdrawal.setRate(BigDecimal.valueOf(0));
 		}
 		payWithdrawal.setAuditStatus(ReviewStatusEnum.TO_AUDIT.getStatus());
 //		payWithdrawal.setAuditDesc(auditDesc);
@@ -280,8 +284,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		String totalFeeStr=totalFee.toString();
 		if (totalFeeStr.indexOf(".")!=-1) {
 			//最多支持两位小数
-			String [] totalFeeArr=totalFeeStr.split(".");
-			if (totalFeeArr[1].length()>2) {
+			String [] totalFeeArr=totalFeeStr.split("\\.");
+			if (totalFeeArr!=null&&totalFeeArr[1].length()>2) {
 				LOGGER.info("提现金额超过了两位小数");
 				res = BusinessCode.CODE_610032;
 				throw new BusinessException(res);

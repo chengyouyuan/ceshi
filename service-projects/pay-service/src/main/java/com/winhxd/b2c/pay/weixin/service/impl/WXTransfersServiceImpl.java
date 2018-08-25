@@ -90,7 +90,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             PayTransfersForWxChangeDTO wxChangeDTO = getReqParamForChange(toWxBalanceCondition);
             //处理微信请求及结果
             String respxml = wxPayApi.transferToChange(XmlUtil.bean2MapUnderline2Hump(wxChangeDTO));
-            System.out.println(respxml);
+            logger.info("微信转账结果11:"+respxml);
             PayTransfersToWxChangeResponseDTO responseDTO = XmlUtil.xml2Bean(respxml, PayTransfersToWxChangeResponseDTO.class);
             //准备返参
             toWxChangeVO = praseResultForChange(responseDTO);

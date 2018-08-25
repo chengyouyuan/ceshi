@@ -16,7 +16,6 @@ import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.feign.system.UserServiceClient;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -140,8 +139,8 @@ public class UserController {
 
         UserInfo userInfo = UserManager.getCurrentUser();
 
-        passwordDTO.setPassword(MD5Encoder.encode(passwordDTO.getPassword().getBytes()));
-        passwordDTO.setNewPassword(MD5Encoder.encode(passwordDTO.getNewPassword().getBytes()));
+        passwordDTO.setPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(passwordDTO.getPassword()).getBytes()));
+        passwordDTO.setNewPassword(DigestUtils.md5DigestAsHex(StringUtils.trim(passwordDTO.getNewPassword()).getBytes()));
 
         passwordDTO.setUpdated(Calendar.getInstance().getTime());
         passwordDTO.setUpdatedBy(userInfo.getId());

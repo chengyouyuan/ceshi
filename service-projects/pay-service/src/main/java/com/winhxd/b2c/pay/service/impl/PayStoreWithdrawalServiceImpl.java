@@ -468,6 +468,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		CalculationCmmsAmtVO vo=new CalculationCmmsAmtVO();
 		BigDecimal rate = payWithDrawalConfig.getRate();
 		BigDecimal cmms = countCmms(rate,totalFee);
+		if (withdrawType.equals(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode())) {
+			cmms=BigDecimal.valueOf(0);
+		}
 		vo.setCmmsAmt(cmms);
 		vo.setRealFee(totalFee.subtract(cmms));
 		return vo;

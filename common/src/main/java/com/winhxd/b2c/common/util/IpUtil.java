@@ -17,13 +17,13 @@ public class IpUtil {
         if (ServletRequestAttributes.class.isInstance(requestAttributes)) {
             HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
             ipAddress = request.getHeader("x-forwarded-for");
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (StringUtils.isBlank(ipAddress) || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getRemoteAddr();
             }
             if (ipAddress != null && ipAddress.indexOf(",") > 0) {

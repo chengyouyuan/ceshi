@@ -50,12 +50,12 @@ public class TransfersTest {
     @Test
     public void testTransfersToChange(){
         //武富赟openID
-        String openID = "ofTZZ5EVZ9WVpxbhVNPzvSVf8_KQ";
+        String openID = "oRG410ZVY0fekVjjyoFV-U1w-Qnc";
         PayTransfersToWxChangeCondition changeCondition = new PayTransfersToWxChangeCondition();
-        changeCondition.setPartnerTradeNo("T18082010527374800");
+        changeCondition.setPartnerTradeNo("T18082517666324227");
         changeCondition.setAccountId(openID);
-        changeCondition.setAccountName("武富赟");
-        changeCondition.setTotalAmount(new BigDecimal("1.00"));
+        changeCondition.setAccountName("大漠");
+        changeCondition.setTotalAmount(new BigDecimal("1.51"));
         changeCondition.setDesc("研发用户提现demo.");
         changeCondition.setSpbillCreateIp("106.38.97.194");
         changeCondition.setOperaterID("8");

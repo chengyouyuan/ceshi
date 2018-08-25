@@ -1134,9 +1134,28 @@ public class CouponServiceImpl implements CouponService {
     }
 
 
+    @Override
+    public Boolean verifyNewUserActivity() {
+        //step1 查询符合
+        CouponActivity couponActivity = new CouponActivity();
+        couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+        couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
+        couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
+        List<CouponActivity> couponActivities = couponActivityMapper.selectByExample(couponActivity);
+        if (couponActivities.isEmpty()) {
+            logger.info("不存在符合新用户注册的优惠券活动");
+            return false;
+        }
 
 
-
-
-
+        CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
+        couponActivityTemplate.setCouponActivityId(couponActivities.get(0).getId());
+        List<CouponActivityTemplate> couponActivityTemplates = couponActivityTemplateMapper.selectByExample(couponActivityTemplate);
+        if (couponActivityTemplates.isEmpty()) {
+            logger.info("couponActivityTemplates->不存在符合新用户注册的优惠券活动");
+            return false;
+        }
+        return true;
+    }
 }

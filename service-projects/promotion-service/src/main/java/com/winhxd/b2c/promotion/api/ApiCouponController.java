@@ -203,12 +203,26 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5057/v1/getCouponDiscountAmount", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<CouponDiscountVO> getCouponDiscountAmount(@RequestBody CouponAmountCondition couponCondition){
-        LOGGER.info("=/api-promotion/coupon//5057/v1/getCouponDiscountAmount");
+        LOGGER.info("=/api-promotion/coupon/5057/v1/getCouponDiscountAmount");
 
         ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
         CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition);
         result.setData(couponDiscountVO);
-        LOGGER.info("/api-promotion/coupon//5057/v1/getCouponDiscountAmount结果:"+result);
+        LOGGER.info("/api-promotion/coupon/5057/v1/getCouponDiscountAmount结果:"+result);
+        return result;
+    }
+
+    @ApiOperation(value = "C端校验是否有新用户活动", notes = "C端校验是否有新用户活动")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/security/5059/v1/verifyNewUserActivity", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<Boolean> verifyNewUserActivity(@RequestBody ApiCondition condition){
+        LOGGER.info("=/api-promotion/coupon/security/5059/v1/verifyNewUserActivity");
+
+        ResponseResult<Boolean> result = new ResponseResult<>();
+        result.setData(couponService.verifyNewUserActivity());
+        LOGGER.info("/api-promotion/coupon/security/5059/v1/verifyNewUserActivity结果:"+result);
         return result;
     }
 

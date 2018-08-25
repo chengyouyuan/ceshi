@@ -292,7 +292,7 @@ public class PayWithdrawalsVO {
         } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
             callbackStatusName = "提现失败";
         } else if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "提现失败";
+            callbackStatusName = "无效";
         } else {
             callbackStatusName = "申请中";
         }

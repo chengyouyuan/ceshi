@@ -163,6 +163,17 @@
     <include refid="Base_Column_List" />
     from pay_store_wallet 
     where store_id = #{storeId,jdbcType=BIGINT} and status=1
+    order by updated desc
+  </select>
+  <select id="selectByStoreIdAndOpenid" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_store_wallet 
+    where 
+    store_id = #{storeId,jdbcType=BIGINT} 
+    and openid = #{openid,jdbcType=VARCHAR}
+    and status=1
+    order by updated desc
   </select>
   
   <select id="selectByCondtion" resultMap="BaseResultMap">

@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -21,6 +22,8 @@ public interface PayStoreWalletMapper {
     int updateByPrimaryKey(PayStoreWallet record);
     
     List<PayStoreWallet> selectByStoreId(Long storeId);
+    
+    List<PayStoreWallet> selectByStoreIdAndOpenid(Map<String, Object> map);
     /**批量更新当前用户绑定的微信钱包的状态 置为0
      * @param storeId */
 	void updateBatchStatus(@Param("storeId") Long storeId);

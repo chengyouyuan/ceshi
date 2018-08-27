@@ -154,11 +154,11 @@ public class ApiCouponController{
     })
     @RequestMapping(value = "/5045/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody OrderAvailableCouponCondition couponCondition){
-        LOGGER.info("=/api-promotion/coupon/5009/v1/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}");
+        LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}");
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
         result.setData(pages);
-        LOGGER.info("=/api-promotion/coupon/5009/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
+        LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--结束 result={}", result);
         return result;
     }
 

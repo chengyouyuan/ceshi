@@ -375,10 +375,12 @@ public class CouponServiceImpl implements CouponService {
             StoreUserInfoVO storeUserInfo = result.getData();
             //领取之前校验优惠券是否可领取
             for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
+                logger.info("优惠券数量的限制类型{},数量{}",activityTemplate.getCouponNumType(),activityTemplate.getCouponNum());
                 //根据优惠券总数限制用户领取
                 if (activityTemplate.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))) {
                     //获取某个优惠券领取总数量
                     int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
+                    logger.info("优惠券总数{},已领取了{}张",activityTemplate.getCouponNum(),templateNum);
                     if (templateNum < activityTemplate.getCouponNum()) {
                         //limitNum为空代表不限制用户领取数量
                         if (activityTemplate.getCustomerVoucherLimitNum() == null) {
@@ -386,6 +388,7 @@ public class CouponServiceImpl implements CouponService {
                         } else {
                             //获取某个优惠券用户领取的数量
                             int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                            logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
                                 return false;
@@ -399,13 +402,16 @@ public class CouponServiceImpl implements CouponService {
                     //根据每个门店可领取的优惠券数量限制用户领取
                     //获取某个优惠券门店领取的数量
                     int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());
+                    logger.info("门店{}可领取{}张,已领取了{}张优惠券",storeUserInfo.getId(), activityTemplate.getCouponNum(),storeNum);
                     if (storeNum < activityTemplate.getCouponNum()) {
                         //limitNum为空代表不限制用户领取数量
+                        logger.info("每个用户可领取{}张",activityTemplate.getCustomerVoucherLimitNum());
                         if (activityTemplate.getCustomerVoucherLimitNum() == null) {
                             //可领取
                         } else {
                             //获取某个优惠券用户领取的数量
                             int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                            logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
                                 return false;

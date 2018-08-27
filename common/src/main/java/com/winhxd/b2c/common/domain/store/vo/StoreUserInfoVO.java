@@ -83,4 +83,7 @@ public class StoreUserInfoVO {
     @ApiModelProperty("门头照地址")
     private String storePicImg;
 
+    /** StoreStatusEnum*/
+    @ApiModelProperty("惠小店状态（0、未开店，1、有效，2、无效）")
+    private Short storeStatus;
 }

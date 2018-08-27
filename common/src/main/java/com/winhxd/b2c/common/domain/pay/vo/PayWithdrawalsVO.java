@@ -87,6 +87,9 @@ public class PayWithdrawalsVO {
     @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date timeEnd;
 
+    @ApiModelProperty("状态描述")
+    private String statusComments;
+
     public Long getId() {
         return id;
     }
@@ -318,7 +321,10 @@ public class PayWithdrawalsVO {
             errorMessage = "提现成功";
         } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
             errorMessage = "提现失败";
-        } else {
+        } else if(Short.valueOf("3").compareTo(callbackStatus) == 0){
+            errorMessage = "无效";
+        }else{
+            errorMessage = "处理中";
         }
         return errorMessage;
     }
@@ -333,5 +339,13 @@ public class PayWithdrawalsVO {
 
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public String getStatusComments() {
+        return statusComments;
+    }
+
+    public void setStatusComments(String statusComments) {
+        this.statusComments = statusComments;
     }
 }

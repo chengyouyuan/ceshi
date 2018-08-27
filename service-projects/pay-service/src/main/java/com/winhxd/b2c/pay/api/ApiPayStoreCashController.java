@@ -37,7 +37,9 @@ public class ApiPayStoreCashController {
     @RequestMapping(value = "/6013/v1/getStoreBankrollByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(@RequestBody PayStoreCashCondition condition){
        LOGGER.info("资金提现首页参数:"+condition);
-       ResponseResult<StoreBankrollVO> result = payStoreCashService.getStoreBankrollByStoreId(condition);
+       ResponseResult<StoreBankrollVO> result = new  ResponseResult<StoreBankrollVO>();
+       StoreBankrollVO vo = payStoreCashService.getStoreBankrollByStoreId(condition);
+       result.setData(vo);
        LOGGER.info("资金提现首页结果:"+result);
        return result;
     }
@@ -49,8 +51,10 @@ public class ApiPayStoreCashController {
     @RequestMapping(value = "/6014/v1/getPayStoreTransRecordByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(@RequestBody PayStoreCashCondition condition){
         LOGGER.info("门店交易记录收支明细:"+condition);
-        ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = payStoreCashService.getPayStoreTransRecordByStoreId(condition);
-        LOGGER.info("门店交易记录收支明细结果:"+result);
+        ResponseResult<PagedList<PayStoreTransactionRecordVO>> result = new ResponseResult<PagedList<PayStoreTransactionRecordVO>>();
+        PagedList<PayStoreTransactionRecordVO> pagedList = payStoreCashService.getPayStoreTransRecordByStoreId(condition);
+        LOGGER.info("门店交易记录收支明细结果:"+pagedList);
+        result.setData(pagedList);
         return result;
     }
 
@@ -64,7 +68,9 @@ public class ApiPayStoreCashController {
     @RequestMapping(value = "/6015/v1/getPayWithdrawalsByStoreId", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(@RequestBody PayStoreCashCondition condition){
         LOGGER.info("门店提现记录:"+condition);
-        ResponseResult<PagedList<PayWithdrawalsVO>> result = payStoreCashService.getPayWithdrawalsByStoreId(condition);
+        ResponseResult<PagedList<PayWithdrawalsVO>> result = new ResponseResult<PagedList<PayWithdrawalsVO>>();
+        PagedList<PayWithdrawalsVO> pagedList = payStoreCashService.getPayWithdrawalsByStoreId(condition);
+        result.setData(pagedList);
         LOGGER.info("门店提现记录结果:"+result);
         return result;
     }

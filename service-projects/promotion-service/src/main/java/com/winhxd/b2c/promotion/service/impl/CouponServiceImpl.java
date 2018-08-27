@@ -740,9 +740,11 @@ public class CouponServiceImpl implements CouponService {
         List<CouponVO> results = new ArrayList<>();
         for(CouponVO couponVO : couponVOS){
             //根据优惠券总数限制用户领取
+            logger.info("findStoreCouponList-优惠券数量的限制类型{},数量{}",couponVO.getCouponNumType(),couponVO.getCouponNum());
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))){
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(),couponVO.getTemplateId());
+                logger.info("findStoreCouponList-优惠券总数{},已领取了{}张",couponVO.getCouponNum(),templateNum);
                 if(templateNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null) {
@@ -750,6 +752,7 @@ public class CouponServiceImpl implements CouponService {
                     }else{
                         //获取某个优惠券用户领取的数量
                         int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                        logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{
@@ -767,6 +770,7 @@ public class CouponServiceImpl implements CouponService {
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))){
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getId());
+                logger.info("findStoreCouponList-门店{}可领取{}张,已领取了{}张优惠券",storeUserInfo.getId(),couponVO.getCouponNum(),storeNum);
                 if(storeNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null){
@@ -774,6 +778,7 @@ public class CouponServiceImpl implements CouponService {
                     }else{
                         //获取某个优惠券用户领取的数量
                         int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                        logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{

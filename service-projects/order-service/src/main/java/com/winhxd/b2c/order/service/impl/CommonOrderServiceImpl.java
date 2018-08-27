@@ -112,6 +112,7 @@ import com.winhxd.b2c.order.util.OrderUtil;
  */
 @Service
 public class CommonOrderServiceImpl implements OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
     private static final int MAX_ORDER_POSTFIX = 999999999;
     private static final String ORDER_BEING_MODIFIED = "订单正在修改中";
@@ -125,7 +126,12 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final String KEYWORD3 = "keyword3";
     private static final String KEYWORD2 = "keyword2";
     private static final String KEYWORD1 = "keyword1";
-    private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
+    /**一天后的时间间隔*/
+    private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS=172799998;
+    /**三天前一小时后的时间间隔*/
+    private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS=255600000;
+    /**三天后的时间间隔*/
+    private static final int ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS=259200000;
 
     private static final ThreadLocal<Map<String, ProductSkuVO>> SKU_INFO_MAP_THREADLOCAL = new ThreadLocal<>();
 
@@ -1720,17 +1726,21 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
+                if(customerUserInfoVO.getCustomerMobile().equals("15537071557")){
+                    //获取两天后的时间
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3*60*1000);
+                    //获取3天后-1小时
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5*60*1000);
+                    //发送3天后超时消息
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8*60*1000);
+                }else{
                 //获取两天后的时间
-                Calendar time2DaysAfter = Calendar.getInstance();
-                time2DaysAfter.add(Calendar.DATE, 2);
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 172799998);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS);
                 //获取3天后-1小时
-                Calendar time1HourAfter = Calendar.getInstance();
-                time1HourAfter.add(Calendar.DATE, 3);
-                long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 255600000);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS);
                 //发送3天后超时消息
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 259200000);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS);
+                }
                 logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
             } catch (Exception e) {
                 logger.error("C端申请退款发送消息失败orderNo={}", orderInfo.getOrderNo());

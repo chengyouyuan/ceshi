@@ -286,7 +286,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		
 		BigDecimal totalFee = condition.getTotalFee();
-		if(totalFee == null||NumberUtil.isPositiveDecimal(totalFee.toString())){
+		if(totalFee == null){//||!NumberUtil.isPositiveDecimal(totalFee.toString())
 			LOGGER.info("提现金额输入有误");
 			res = BusinessCode.CODE_610032;
 			throw new BusinessException(res);

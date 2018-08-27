@@ -401,8 +401,10 @@ public class ApiStoreLoginController {
 					 */
 					info.setId(db.getId());
 					info.setStoreMobile(map.getStoreMobile());
+					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
+					info.setUpdated(new Date());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
@@ -415,7 +417,6 @@ public class ApiStoreLoginController {
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setCreated(new Date());
 					info.setStoreMobile(map.getStoreMobile());
-					logger.info("微信头像：" + storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setStoreStatus((short) 0);
 					info.setAppLoginStatus((short) 0);
@@ -454,6 +455,7 @@ public class ApiStoreLoginController {
 					info.setStoreMobile(map.getStoreMobile());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
+					info.setUpdated(new Date());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				}

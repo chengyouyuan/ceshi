@@ -59,7 +59,7 @@ public class ContextHelper {
 
     public static String encode(String json) {
         try {
-            return URLEncoder.encode(json, "UTF-8");
+            return URLEncoder.encode(json, UTF_8);
         } catch (UnsupportedEncodingException e) {
             return "";
         }

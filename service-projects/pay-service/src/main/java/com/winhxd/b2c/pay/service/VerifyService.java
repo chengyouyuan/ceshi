@@ -97,7 +97,7 @@ public class VerifyService {
                             .setScale(WXCalculation.DECIMAL_NUMBER, WXCalculation.DECIMAL_CALCULATION);
                     thirdPartyfee.setDetailMoney(fee.multiply(BigDecimal.valueOf(-1)));
                     thirdPartyfee.setStoreId(orderInfoDetailVO.getStoreId());
-                    if (BigDecimal.ZERO.compareTo(fee) == 0) {
+                    if (BigDecimal.ZERO.compareTo(fee) != 0) {
                         accountingDetailMapper.insertAccountingDetail(thirdPartyfee);
                         count++;
                     }

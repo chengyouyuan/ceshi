@@ -303,4 +303,9 @@ public class StoreServiceImpl implements StoreService {
 		}
 		return storeUserInfoMapper.getStoreListByKeywords(condition);
 	}
+
+    @Override
+    public StoreUserInfo findByPrimaryKey(Long id) {
+        return storeUserInfoMapper.selectByPrimaryKey(id);
+    }
 }

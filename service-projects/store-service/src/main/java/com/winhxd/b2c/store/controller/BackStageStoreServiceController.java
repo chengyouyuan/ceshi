@@ -3,6 +3,9 @@ package com.winhxd.b2c.store.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,9 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	private ProductServiceClient productServiceClient;
 	@Autowired
 	private StoreSubmitProductService storeSubmitProductService;
+	@Autowired
+	private Cache cache;
+
     @Override
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeCondition) {
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = new ResponseResult<>();
@@ -71,6 +77,11 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
         StoreUserInfo storeUserInfo = new StoreUserInfo();
         BeanUtils.copyProperties(condition, storeUserInfo);
         storeService.updateByPrimaryKeySelective(storeUserInfo);
+        //如果是无效，清除缓存里的token
+        if (condition.getStoreStatus() != null && condition.getStoreStatus() == StoreStatusEnum.INVALID.getStatusCode()) {
+			storeUserInfo = storeService.findByPrimaryKey(condition.getId());
+        	cache.del(CacheName.STORE_USER_INFO_TOKEN + storeUserInfo.getToken());
+		}
         return new ResponseResult<>();
     }
 

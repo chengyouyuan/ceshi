@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
@@ -103,7 +104,7 @@ public class ApiOpenStoreController {
             return responseResult;
         }
         //是否开过小店，0未开店
-        if (storeUserInfo.getStoreStatus() == 0) {
+        if (storeUserInfo.getStoreStatus() == StoreStatusEnum.UN_OPEN.getStatusCode()) {
             openStoreVO.setStoreStatus((byte) 0);
             //未开店是否完善信息
             ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());

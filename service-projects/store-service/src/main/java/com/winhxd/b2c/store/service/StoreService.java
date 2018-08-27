@@ -137,4 +137,13 @@ public interface StoreService {
      * @return
      */
     List<StoreUserInfoVO> getStoreListByKeywords(StoreListByKeywordsCondition condition);
+
+    /**
+     * 根据id查询门店信息
+     * @param id 门店id
+     * @return StoreUserInfo 门店信息
+     * @author liutong
+     * @date 2018/8/27 14:09
+     */
+    StoreUserInfo findByPrimaryKey(Long id);
 }

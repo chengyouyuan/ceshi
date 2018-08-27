@@ -23,13 +23,6 @@
         "isHidden": false
       },
       {
-        "name": "storeName",
-        "title": "门店名称",
-        "inputModel": "input",
-        "value": "",
-        "isHidden": false
-      },
-      {
         "name": "province",
         "title": "省",
         "inputModel": "input",
@@ -65,8 +58,15 @@
         "isHidden": false
       },
       {
-        "name": "storeAddress",
-        "title": "提货地址",
+        "name": "payTypeDesc",
+        "title": "支付方式",
+        "inputModel": "text",
+        "value": "",
+        "isHidden": false
+      },
+      {
+        "name": "pickupTypeDesc",
+        "title": "提货方式",
         "inputModel": "text",
         "value": "",
         "isHidden": false
@@ -86,24 +86,33 @@
         "isHidden": false
       },
       {
-        "name": "payTypeDesc",
-        "title": "支付方式",
-        "inputModel": "text",
-        "value": "",
-        "isHidden": false
-      },
-      {
-        "name": "pickupTypeDesc",
-        "title": "提货方式",
-        "inputModel": "text",
-        "value": "",
-        "isHidden": false
-      },
-      {
-        "name": "storeStatusDesc",
+        "name": "storeStatus",
         "inputModel": "select",
         "title": "门店状态",
-        "placeholder": "",
+        "isHidden": false,
+        "options": [
+          {
+            "value": 1,
+            "label": "有效"
+          },
+          {
+            "label":"无效",
+            "value":2
+          }
+        ]
+      },
+      {
+        "name": "storeName",
+        "title": "门店名称",
+        "inputModel": "text",
+        "value": "",
+        "isHidden": false
+      },
+      {
+        "name": "storeAddress",
+        "title": "提货地址",
+        "inputModel": "text",
+        "value": "",
         "isHidden": false
       }
     ]

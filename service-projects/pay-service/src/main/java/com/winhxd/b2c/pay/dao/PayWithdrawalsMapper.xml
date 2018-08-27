@@ -440,7 +440,7 @@
 	audit_status,
 	audit_desc,
 	callback_status,
-  (case WHEN callback_status=0 then '未处理'
+  (case WHEN callback_status=0 then '申请中'
     WHEN callback_status=1 then '提现成功'
     WHEN callback_status=2 then '提现失败'
     WHEN callback_status=3 then '无效'

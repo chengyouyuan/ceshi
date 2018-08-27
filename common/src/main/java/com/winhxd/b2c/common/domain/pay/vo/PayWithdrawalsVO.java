@@ -312,19 +312,8 @@ public class PayWithdrawalsVO {
     }
 
     public String getErrorMessage() {
-        if (callbackStatus == null) {
-            return StringUtils.EMPTY;
-        }
-        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
-            errorMessage = "未处理";
-        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
-            errorMessage = "提现成功";
-        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            errorMessage = "提现失败";
-        } else if(Short.valueOf("3").compareTo(callbackStatus) == 0){
-            errorMessage = "无效";
-        }else{
-            errorMessage = "处理中";
+        if (errorMessage == null) {
+            errorMessage = StringUtils.EMPTY;
         }
         return errorMessage;
     }

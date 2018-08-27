@@ -90,16 +90,16 @@
     values
     <foreach collection="list" item="item" index="index"  separator=",">
         <trim prefix="(" suffix=")" suffixOverrides=","> 
-       #{payTime,jdbcType=TIMESTAMP}, #{appid,jdbcType=VARCHAR}, 
-      #{mchId,jdbcType=VARCHAR}, #{subMchId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
-      #{wxOrderNo,jdbcType=VARCHAR}, #{outOrderNo,jdbcType=VARCHAR}, #{userIdentity,jdbcType=VARCHAR}, 
-      #{payType,jdbcType=VARCHAR}, #{payStatus,jdbcType=VARCHAR}, #{bankType,jdbcType=VARCHAR}, 
-      #{currencyType,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DECIMAL}, #{discountAmount,jdbcType=DECIMAL}, 
-      #{refundStartTime,jdbcType=TIMESTAMP}, #{refundSuccessTime,jdbcType=TIMESTAMP}, 
-      #{refundWxOrderNo,jdbcType=VARCHAR}, #{refundOutOrderNo,jdbcType=VARCHAR}, #{refundAmount,jdbcType=DECIMAL}, 
-      #{refundDiscountAmount,jdbcType=DECIMAL}, #{refundType,jdbcType=VARCHAR}, #{refundStatus,jdbcType=VARCHAR}, 
-      #{prodName,jdbcType=VARCHAR}, #{mchData,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{statementCountId,jdbcType=BIGINT}
+       #{item.payTime,jdbcType=TIMESTAMP}, #{item.appid,jdbcType=VARCHAR}, 
+      #{item.mchId,jdbcType=VARCHAR}, #{item.subMchId,jdbcType=VARCHAR}, #{item.deviceId,jdbcType=VARCHAR}, 
+      #{item.wxOrderNo,jdbcType=VARCHAR}, #{item.outOrderNo,jdbcType=VARCHAR}, #{item.userIdentity,jdbcType=VARCHAR}, 
+      #{item.payType,jdbcType=VARCHAR}, #{item.payStatus,jdbcType=VARCHAR}, #{item.bankType,jdbcType=VARCHAR}, 
+      #{item.currencyType,jdbcType=VARCHAR}, #{item.totalAmount,jdbcType=DECIMAL}, #{item.discountAmount,jdbcType=DECIMAL}, 
+      #{item.refundStartTime,jdbcType=TIMESTAMP}, #{item.refundSuccessTime,jdbcType=TIMESTAMP}, 
+      #{item.refundWxOrderNo,jdbcType=VARCHAR}, #{item.refundOutOrderNo,jdbcType=VARCHAR}, #{item.refundAmount,jdbcType=DECIMAL}, 
+      #{item.refundDiscountAmount,jdbcType=DECIMAL}, #{item.refundType,jdbcType=VARCHAR}, #{item.refundStatus,jdbcType=VARCHAR}, 
+      #{item.prodName,jdbcType=VARCHAR}, #{item.mchData,jdbcType=VARCHAR}, #{item.fee,jdbcType=DECIMAL}, 
+      #{item.rate,jdbcType=REAL}, #{item.billDate,jdbcType=DATE}, #{item.statementCountId,jdbcType=BIGINT}
       </trim>
     </foreach>
   </insert>

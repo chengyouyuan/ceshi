@@ -60,4 +60,14 @@ public interface PayStatementDownloadRecordMapper {
 	 */
 	List<PayStatementDownloadRecord> selectByModel(
 			PayStatementDownloadRecord record);
+
+	/**
+	 * @Description 查询未下载成功过的账单记录
+	 * @author yuluyuan
+	 * @date 2018年8月27日 上午11:12:22
+	 * @param record
+	 * @return
+	 */
+	PayStatementDownloadRecord selectUnDownloadRecord(
+			PayStatementDownloadRecord record);
 }

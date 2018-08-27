@@ -78,7 +78,7 @@ public class DownLoadStatementTask {
      * @author yuluyuan
      * @date 2018年8月22日 下午4:27:54
      */
-//    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 10-23 * * ?")
     public void reDownLoadStatement() {
 		logger.info("开始检查之前失败的账单，当前时间={}", sdf.format(new Date()));
     	try {
@@ -86,10 +86,10 @@ public class DownLoadStatementTask {
     		//查询7天内所有失败过的账单
     		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
     		record.setBillDate1(DateUtils.addDays(new Date(), -7));
-			List<PayStatementDownloadRecord> list = downLoadStatementClient.findDownloadRecord(record).getData();
+			List<Date> list = downLoadStatementClient.findUnDownloadRecord(record).getData();
 			if (CollectionUtils.isNotEmpty(list)) {
 				for (int i = 0; i < list.size(); i++) {
-					Date billDate = list.get(i).getBillDate();
+					Date billDate = list.get(i);
 
 					DownloadStatementCondition condition = new DownloadStatementCondition();
 					condition.setBillDate(billDate);

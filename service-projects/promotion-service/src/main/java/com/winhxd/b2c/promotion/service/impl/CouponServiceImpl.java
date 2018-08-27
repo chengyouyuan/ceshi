@@ -377,7 +377,7 @@ public class CouponServiceImpl implements CouponService {
             for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
                 logger.info("优惠券数量的限制类型{},数量{}",activityTemplate.getCouponNumType(),activityTemplate.getCouponNum());
                 //根据优惠券总数限制用户领取
-                if (activityTemplate.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))) {
+                if (activityTemplate.getCouponNumType()==CouponActivityEnum.COUPON_SUM.getCode()) {
                     //获取某个优惠券领取总数量
                     int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
                     logger.info("优惠券总数{},已领取了{}张",activityTemplate.getCouponNum(),templateNum);
@@ -398,7 +398,7 @@ public class CouponServiceImpl implements CouponService {
                         // 优惠券已领完
                         return false;
                     }
-                } else if (activityTemplate.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))) {
+                } else if (activityTemplate.getCouponNumType()==CouponActivityEnum.STORE_NUM.getCode()) {
                     //根据每个门店可领取的优惠券数量限制用户领取
                     //获取某个优惠券门店领取的数量
                     int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());

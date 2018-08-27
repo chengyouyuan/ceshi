@@ -448,7 +448,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
      * @param endDateTime
      * @return
      */
-    private StoreOrderSalesSummaryVO calculateStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
+    @Override
+    public StoreOrderSalesSummaryVO calculateStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime) {
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderInfoMapper.getStoreOrderTurnover(storeId, startDateTime, endDateTime);
         if (storeOrderSalesSummaryVO == null) {
             storeOrderSalesSummaryVO = new StoreOrderSalesSummaryVO();

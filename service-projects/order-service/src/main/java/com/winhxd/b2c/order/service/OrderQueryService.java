@@ -136,4 +136,16 @@ public interface OrderQueryService {
      * @return
      */
     StoreOrderSalesSummaryVO getStoreMonthOrderSalesSummary(long storeId);
+
+    /**
+     * 查询指定时间段数据
+     * @author wangbin
+     * @date  2018年8月27日 下午4:14:35
+     * @Description 
+     * @param storeId
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    StoreOrderSalesSummaryVO calculateStoreOrderSalesSummary(long storeId, Date startDateTime, Date endDateTime);
 }

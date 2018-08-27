@@ -97,7 +97,7 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
            throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
         }
         responseResult.setCode(BusinessCode.CODE_OK);
-        responseResult.setMessage("修改成功");
+        responseResult.setMessage("设置成功");
         return responseResult;
     }
 

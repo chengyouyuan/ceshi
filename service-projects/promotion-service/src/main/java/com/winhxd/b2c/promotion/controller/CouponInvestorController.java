@@ -70,7 +70,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
     @Override
     public ResponseResult<CouponInvestorVO> viewCouponInvestorDetail(@RequestParam("id") String id) {
         ResponseResult<CouponInvestorVO> responseResult = new ResponseResult<CouponInvestorVO>();
-        CouponInvestorVO vo = couponInvestorService.getCouponInvestorDetailById(Long.parseLong(id));
+        CouponInvestorVO vo = couponInvestorService.getCouponInvestorDetailById(id);
         responseResult.setData(vo);
         return responseResult;
     }
@@ -90,7 +90,7 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             int count = couponInvestorService.updateCouponInvestorToValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("删除成功");
+                responseResult.setMessage("设置成功");
             }else {
                 throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
             }

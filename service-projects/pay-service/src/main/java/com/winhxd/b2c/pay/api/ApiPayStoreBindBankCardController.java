@@ -21,6 +21,7 @@ import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
@@ -53,7 +54,7 @@ public class ApiPayStoreBindBankCardController {
 	@Resource
 	private Cache redisClusterCache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 2*60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
 	
 	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -80,8 +81,8 @@ public class ApiPayStoreBindBankCardController {
     	result.setCode(res);
     	LOGGER.info("绑定银行卡返回值：-------"+res);
     	if(res > 0){
-    		result.setData(BusinessCode.CODE_610017);
     		LOGGER.info("B端绑定银行卡失败；");
+    		throw new BusinessException(BusinessCode.CODE_610017);
     	} 
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
@@ -113,8 +114,8 @@ public class ApiPayStoreBindBankCardController {
     	result.setCode(res);
     	LOGGER.info("绑定微信返回值：-------"+res);
     	if(res > 0){
-    		result.setData(BusinessCode.CODE_610017);
     		LOGGER.info("B端绑定微信失败；");
+    		throw new BusinessException(BusinessCode.CODE_610017);
     	} 
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
@@ -148,8 +149,7 @@ public class ApiPayStoreBindBankCardController {
 		//生成验证码
 		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
-			result.setCode(BusinessCode.CODE_610018);
-			return result;
+    		throw new BusinessException(BusinessCode.CODE_610018);
 		}else{
 			modileVerifyCode = GeneratePwd.generate4MobileCode();
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);

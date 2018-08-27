@@ -57,7 +57,10 @@ public class ApiCustomerLoginController {
 	MessageServiceClient messageServiceClient;
 	@Autowired
 	MessageSendUtils messageSendUtils;
-
+	/**
+	 * 小程序用户状态 0无效
+	 */
+	static final Integer HXD_STATUS0 = 0;
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月3日 下午1:31:45
@@ -71,7 +74,8 @@ public class ApiCustomerLoginController {
 			@ApiResponse(code = BusinessCode.CODE_202108, message = "验证码错误"),
 			@ApiResponse(code = BusinessCode.CODE_202110, message = "该微信号已绑定过其它账号"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
-			@ApiResponse(code = BusinessCode.CODE_202115, message = "网络请求超时") })
+			@ApiResponse(code = BusinessCode.CODE_202115, message = "网络请求超时"),
+			@ApiResponse(code = BusinessCode.CODE_202109, message = "您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。") })
 
 	@RequestMapping(value = "customer/security/2021/v1/weChatLogin", method = RequestMethod.POST)
 	public ResponseResult<CustomerUserInfoSimpleVO> weChatLogin(
@@ -130,6 +134,10 @@ public class ApiCustomerLoginController {
 					AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 			result.setData(vo);
 		} else {
+			if(HXD_STATUS0.equals(db.getStatus())){
+				logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
+				throw new BusinessException(BusinessCode.CODE_202109);
+			}
 			if (!db.getCustomerMobile().equals(customerUserInfoCondition.getCustomerMobile())) {
 				logger.info("{} - , 该微信号已被其他手机号绑定");
 				throw new BusinessException(BusinessCode.CODE_202110);
@@ -139,6 +147,7 @@ public class ApiCustomerLoginController {
 			customerUserInfo.setHeadImg(customerUserInfoCondition.getHeadImg());
 			customerUserInfo.setNickName(customerUserInfoCondition.getNickName());
 			customerUserInfo.setSessionKey(mini.getSessionKey());
+			customerUserInfo.setUpdated(new Date());
 			customerUserInfo.setToken(GeneratePwd.getRandomUUID());
 			customerLoginService.updateCustomerInfo(customerUserInfo);
 			vo = new CustomerUserInfoSimpleVO();

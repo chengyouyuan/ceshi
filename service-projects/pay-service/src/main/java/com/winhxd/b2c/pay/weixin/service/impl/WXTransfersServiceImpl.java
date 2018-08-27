@@ -82,7 +82,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Override
     public PayTransfersToWxChangeVO transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
-        PayTransfersToWxChangeVO toWxChangeVO = null;
+        PayTransfersToWxChangeVO toWxChangeVO = new PayTransfersToWxChangeVO();
         try {
             //必填验证
             checkNecessaryFieldForChange(toWxBalanceCondition);
@@ -183,7 +183,11 @@ public class WXTransfersServiceImpl implements WXTransfersService {
                 if(error.getCode().equals(errCode)){
                     toWxChangeVO.setTransfersResult(false);
                     toWxChangeVO.setAbleContinue(error.getAbleContinue());
-                    toWxChangeVO.setErrorDesc(error.getText());
+                    if(StringUtils.isNotBlank(responseDTO.getErrCodeDes())){
+                        toWxChangeVO.setErrorDesc(responseDTO.getErrCodeDes());
+                    } else {
+                        toWxChangeVO.setErrorDesc(error.getText());
+                    }
                     break;
                 }
             }
@@ -215,7 +219,10 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             toWxChangeVO.setTransfersResult(true);
             toWxChangeVO.setErrorDesc(null);
         } else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
-            toWxChangeVO.setErrorDesc(queryForWxChangeResponseDTO.getReason());
+            //以接口返参为准
+            if(StringUtils.isBlank(toWxChangeVO.getErrorDesc())){
+                toWxChangeVO.setErrorDesc(queryForWxChangeResponseDTO.getReason());
+            }
         } else if (PayTransfersStatus.PROCESSING.getCode().equals(transfersStatus)) {
             toWxChangeVO.setTransfersResult(true);
             toWxChangeVO.setAbleContinue(false);
@@ -309,7 +316,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Override
     public PayTransfersToWxBankVO transfersToBank(PayTransfersToWxBankCondition toWxBankCondition) {
-        PayTransfersToWxBankVO toWxBankVO = null;
+        PayTransfersToWxBankVO toWxBankVO = new PayTransfersToWxBankVO();
         try {
             //必填验证
             checkNecessaryFieldForBank(toWxBankCondition);
@@ -399,12 +406,18 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         String resultCode = responseDTO.getResultCode();
         if(TransfersToWxError.SUCCESS.getCode().equals(resultCode)){
             toWxBankVO.setTransfersResult(true);
+            toWxBankVO.setErrorDesc(TransfersToWxError.SUCCESS.getText());
+            toWxBankVO.setAbleContinue(false);
         } else {
             String errCode = responseDTO.getErrCode();
             for (TransfersToWxError error : TransfersToWxError.values()) {
                 if (error.getCode().equals(errCode)) {
                     toWxBankVO.setTransfersResult(error.getCode().equals(TransfersToWxError.SUCCESS.getCode()));
-                    toWxBankVO.setErrorDesc(error.getText());
+                    if(StringUtils.isNotBlank(responseDTO.getErrCodeDes())){
+                        toWxBankVO.setErrorDesc(responseDTO.getErrCodeDes());
+                    } else {
+                        toWxBankVO.setErrorDesc(error.getText());
+                    }
                     toWxBankVO.setAbleContinue(error.getAbleContinue());
                     break;
                 }
@@ -442,7 +455,10 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             toWxBankVO.setTransfersResult(true);
             toWxBankVO.setErrorDesc(null);
         } else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
-            toWxBankVO.setErrorDesc(queryToWxBankVO.getReason());
+            //以接口返参为准
+            if(StringUtils.isBlank(toWxBankVO.getErrorDesc())){
+                toWxBankVO.setErrorDesc(queryToWxBankVO.getReason());
+            }
         } else if (PayTransfersStatus.PROCESSING.getCode().equals(transfersStatus)) {
             toWxBankVO.setTransfersResult(true);
             toWxBankVO.setAbleContinue(false);

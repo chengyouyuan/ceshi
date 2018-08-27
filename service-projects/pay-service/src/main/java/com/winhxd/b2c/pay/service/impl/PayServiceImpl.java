@@ -954,8 +954,10 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--不存在转至银行卡状态为处理中的提现记录");
 			return 0;
 		}
+		int len = unclearStatus.size();
 		//确认结果,更新提现状态
-		for (PayWithdrawals payWithdrawals : unclearStatus){
+		for (int i = 0; i < len; i++){
+			PayWithdrawals payWithdrawals = unclearStatus.get(i);
 			PayTransfersQueryToWxBankVO resultForWxBank = wxTransfersService.getExactResultForWxBank(payWithdrawals.getWithdrawalsNo());
 			String transfersStatus = resultForWxBank.getStatus();
 			logger.info(log+"--提现流水号{},提现状态{}",payWithdrawals.getWithdrawalsNo(),transfersStatus);

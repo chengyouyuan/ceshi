@@ -271,7 +271,7 @@
         select
           <include refid="alias_Simple_Column_List"></include>
         from store_product_manage prod
-        LEFT JOIN  store_product_statistics  sps ON sps.store_id = prod.store_id AND sps.created BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND DATE_SUB(CURDATE(),INTERVAL -1 DAY)
+        LEFT JOIN  store_product_statistics  sps ON sps.store_id = prod.store_id AND sps.created BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND DATE_SUB(CURDATE(),INTERVAL -1 DAY) AND sps.sku_code = prod.sku_code
         where 1=1
         <if test="condition.prodStatus != null">
             and prod.prod_status in

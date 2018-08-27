@@ -471,7 +471,7 @@ public class CouponServiceImpl implements CouponService {
             if (couponActivityStoreCustomers.isEmpty()) {
                 couponActivityRecord.setStoreId(null);
             } else {
-                couponActivityRecord.setStoreId(couponActivityStoreCustomers.get(0).getStoreId());
+                couponActivityRecord.setStoreId(storeUserInfo.getId());
             }
             couponActivityRecordMapper.insertSelective(couponActivityRecord);
             return true;

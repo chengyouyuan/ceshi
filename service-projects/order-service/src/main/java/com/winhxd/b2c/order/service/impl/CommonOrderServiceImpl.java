@@ -378,6 +378,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderCancel(OrderInfo order, String cancelReason, Long operatorId, String operatorName, int type) {
         String orderNo = order.getOrderNo();
+        logger.info("取消订单-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         //判断是否支付成功,支付成功不让取消
         if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
@@ -406,6 +407,7 @@ public class CommonOrderServiceImpl implements OrderService {
             sendCancelEvent(order, cancelReason, operatorId, operatorName);
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
+            logger.info("取消订单-结束-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         }
     }
 
@@ -636,6 +638,7 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param operatorName 操作人姓名
      */
     private void orderApplyRefund(OrderInfo order, String cancelReason, Long operatorId, String operatorName) {
+        logger.info("订单退款-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
@@ -664,6 +667,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } else {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单退款用户退款不成功 订单号={0}", orderNo));
         }
+        logger.info("订单退款-结束-订单号={}", order.getOrderNo());
     }
 
     /**

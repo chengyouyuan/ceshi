@@ -484,8 +484,8 @@
           (case WHEN f.discounted is null then 0 else TRUNCATE((100-f.discounted)/10,2) end) as discounted,
           (case WHEN f.discounted_max_amt is null then 0 else f.discounted_max_amt end) as maxAmt,
           f.discounted_amt as discountedAmt,
-          b.start_time as startTime,
-          b.end_time as endTime
+          DATE_FORMAT(b.start_time,'%Y-%m-%d') as startTime,
+          DATE_FORMAT(b.end_time,'%Y-%m-%d') as endTime
       FROM
       coupon_activity_store_customer a
       LEFT JOIN coupon_activity_template b ON a.coupon_activity_template_id = b.id

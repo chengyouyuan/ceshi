@@ -1732,7 +1732,7 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                if (customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
+                if (customerUserInfoVO.getCustomerMobile().equals("13522928292")) {
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8 * 60 * 1000);

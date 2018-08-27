@@ -244,7 +244,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     || condition.getCouponActivityTemplateList().get(0).getStartTime() == null
                     || condition.getCouponActivityTemplateList().get(0).getEndTime() == null
                     || condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
-                    || condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
+                    || condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }

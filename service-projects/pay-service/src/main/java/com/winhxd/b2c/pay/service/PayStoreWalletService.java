@@ -4,5 +4,5 @@ import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 
 public interface PayStoreWalletService {
 	
-	int savePayStoreWallet(PayStoreWalletCondition condition);
+	void savePayStoreWallet(PayStoreWalletCondition condition);
 }

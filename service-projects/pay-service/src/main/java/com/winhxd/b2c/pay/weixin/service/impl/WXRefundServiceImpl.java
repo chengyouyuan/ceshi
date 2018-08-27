@@ -32,13 +32,13 @@ public class WXRefundServiceImpl implements WXRefundService {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(WXRefundServiceImpl.class);
 
     @Autowired
-    WXPayApi wxPayApi;
+    private WXPayApi wxPayApi;
 
     @Autowired
-    WXPayRequest wxPayRequest;
+    private WXPayRequest wxPayRequest;
     
     @Autowired
-    PayRefundMapper payRefundMapper;
+    private PayRefundMapper payRefundMapper;
 
     /**
      * 退款成功

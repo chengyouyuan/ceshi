@@ -681,17 +681,15 @@ public class CouponServiceImpl implements CouponService {
 
             //满减金额等于0 代表无门槛券
             if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
-                //总额大于等于满减金额,返回满减金额否则返回总额
-                return amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0 ? couponGradeDetail.getReducedAmt():amountPrice;
+                //总额大于等于优惠金额返回优惠金额否则返回总额
+                return amountPrice.compareTo(couponGradeDetail.getDiscountedAmt())>=0 ? couponGradeDetail.getDiscountedAmt():amountPrice;
             }
 
-            //总额大于等于满减金额
-            if(amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0){
-                return couponGradeDetail.getDiscountedAmt();
-            }
+            //总额大于等于满减金额满足使用条件返回优惠金额否则返回0
+            return amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0 ? couponGradeDetail.getDiscountedAmt():new BigDecimal(0);
         }else{
             //计算优惠金额
-            BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted());
+            BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted()).divide(new BigDecimal(100));
 
             //满减金额等于0 代表无门槛券
             if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){
@@ -706,7 +704,6 @@ public class CouponServiceImpl implements CouponService {
                 return discountAmount;
             }
         }
-        return new BigDecimal(0);
     }
 
     @Override

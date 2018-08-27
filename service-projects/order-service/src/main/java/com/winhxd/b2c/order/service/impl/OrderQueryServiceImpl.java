@@ -174,6 +174,8 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             Date startDateTime = new Date(startSecond);
             Date endDateTime = new Date(lastSecond);
             storeOrderSalesSummaryVO = calculateStoreOrderSalesSummary(storeId, startDateTime, endDateTime);
+            //先删除所有的redis门店当日下单用户数据
+            cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));
             if (storeOrderSalesSummaryVO != null && storeOrderSalesSummaryVO.getCustomerNum() != null && storeOrderSalesSummaryVO.getCustomerNum() > 0 ) {
                 //获取当前下单的用户及所对应的订单数,并存入redis用于进行缓存计算
                 List<Map<String, Long>> customerOrderCountList = orderInfoMapper.getStoreOrderDistinctCustomerIds(storeId, startDateTime, endDateTime);
@@ -183,8 +185,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                         Map<String, Long> customerOrderCountMap = iterator.next();
                         totalCustomerOrderCountMap.put(customerOrderCountMap.get("key").toString(), customerOrderCountMap.get("value").doubleValue());
                     }
-                    //先删除所有的redis数据
-                    cache.del(OrderUtil.getStoreOrderCustomerIdSetField(storeId));
                     cache.zadd(OrderUtil.getStoreOrderCustomerIdSetField(storeId), totalCustomerOrderCountMap);
                     cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(storeId), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 }

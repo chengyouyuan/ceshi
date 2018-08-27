@@ -1,9 +1,13 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +114,6 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
     		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);
-//    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(condition);
     		//绑定新的银行卡
     		StoreBankCard storeBankCard = new StoreBankCard();
         	BeanUtils.copyProperties(condition, storeBankCard);
@@ -123,13 +126,20 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
         	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
         	storeBankCard.setCreatedByName(condition.getBankUserName());
         	storeBankCard.setUpdatedByName(condition.getBankUserName());
-//    		if(storBankCardInfo != null && storBankCardInfo.getStoreId().equals(currentStoreUser.getBusinessId())){// 判断当前是否是同一个门店
-//				Long id = storBankCardInfo.getId();
-//				storeBankCard.setId(id);
-//				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
-//    		}else{
+        	
+        	Map<String, Object> map=new HashMap<>();
+			map.put("storeId", currentStoreUser.getBusinessId());
+			map.put("cardNumber", condition.getCardNumber());
+			map.put("swiftCode", condition.getSwiftCode());
+			List<StoreBankCard> bankCards = storeBankCardMapper.selectByStoreIdAndCardNumber(map);
+    		if(CollectionUtils.isNotEmpty(bankCards)){
+				Long id = bankCards.get(0).getId();
+				storeBankCard.setId(id);
+				storeBankCard.setUpdated(new Date());
+				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
+    		}else{
     			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
-//    		}
+    		}
     	}
 		return res;
 	}

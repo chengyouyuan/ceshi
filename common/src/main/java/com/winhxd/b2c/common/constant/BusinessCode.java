@@ -48,6 +48,8 @@ public final class BusinessCode {
     public static final int  CODE_103902 = 103902;
     /**  验证码错误 */
     public static final int  CODE_100808 = 100808;
+    /**  您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。 */
+    public static final int  CODE_100809 = 100809;
     /** 该微信号已绑定过其它账号 */
     public static final int  CODE_100810 = 100810;
     /**您的账号或者密码错误*/
@@ -119,6 +121,8 @@ public final class BusinessCode {
 
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
+    /**您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。*/
+    public static final int  CODE_202109 = 202109;
     /** 该微信号已绑定过其它账号 */
     public static final int  CODE_202110 = 202110;
     /**请求超时*/
@@ -191,6 +195,8 @@ public final class BusinessCode {
     public static final int CODE_402018 = 402018;
     /** 购物车:账号被锁定，请联系客服！*/
     public static final int CODE_402019 = 402019;
+    /** 购物车:门店账号无效，请联系门店！*/
+    public static final int CODE_402020 = 402020;
 
 
     /** 查询订单参数异常*/

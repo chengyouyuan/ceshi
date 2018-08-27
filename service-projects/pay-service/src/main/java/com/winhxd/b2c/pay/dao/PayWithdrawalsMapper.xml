@@ -427,9 +427,39 @@
 
   <!-- 根据门店id查询提现列表信息 -->
   <select id="getPayWithdrawalsByStoreId" parameterType="java.lang.Long" resultMap="voResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from pay_withdrawals
+   SELECT
+	id,
+	store_id,
+	withdrawals_no,
+	withdrawals_transaction_no,
+	total_fee,
+	real_fee,
+	cmms_amt,
+	rate,
+	audit_status,
+	audit_desc,
+	callback_status,
+	callback_reason,
+	error_message,
+	callback_cmms_amt,
+	flow_direction_type,
+	flow_direction_name,
+	swift_code,
+	NAME,
+	mobile,
+	payment_account,
+	created,
+	created_by,
+	created_by_name,
+	updated_by,
+	updated_by_name,
+	updated,
+	buyer_id,
+	transaction_id,
+	callback_money,
+	time_end,
+	spbill_create_ip
+    FROM pay_withdrawals
     where store_id = #{storeId}
   </select>
 

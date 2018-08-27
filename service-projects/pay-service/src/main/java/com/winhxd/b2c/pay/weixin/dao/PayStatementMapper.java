@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.model.PayStatement;
 
+import feign.Param;
+
 /**
  * @author yuluyuan
  */
@@ -28,7 +30,7 @@ public interface PayStatementMapper {
 	 * @param record
 	 * @return
 	 */
-	void insertBatch(List<PayStatement> arrayList);
+	void insertBatch(@Param("list") List<PayStatement> list);
 	
 	/**
 	 * 插入有值的字段

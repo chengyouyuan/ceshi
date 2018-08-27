@@ -29,9 +29,9 @@ public class TransferToBankStatusCheckTask {
     public void queryAndConfirmTransferToBankStatus() throws Exception {
         ResponseResult<Integer> result = payServiceClient.confirmTransferToBankStatus();
         if(BusinessCode.CODE_1001 == result.getCode()){
-            logger.error("PayTransferServiceClientFallBack:confirmTransferToBankStatus called failed.");
+            logger.error("PayServiceClient:confirmTransferToBankStatus called failed.");
         } else {
-            logger.info("PayTransferServiceClientFallBack:confirmTransferToBankStatus called finished, "
+            logger.info("PayServiceClient:confirmTransferToBankStatus called finished, "
                     + result.getData() + " rows updated.");
         }
     }

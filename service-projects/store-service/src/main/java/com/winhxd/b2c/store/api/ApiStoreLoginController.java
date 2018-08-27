@@ -56,9 +56,9 @@ public class ApiStoreLoginController {
 	private static final Logger logger = LoggerFactory.getLogger(ApiStoreLoginController.class);
 
 	/**
-	 * 惠小店状态 1有效
+	 * 惠小店状态 0开店、1有效、2无效
 	 */
-	static final Short HXD_STATUS1 = 1;
+	static final Short HXD_STATUS2 = 2;
 	/**
 	 * 微信登录
 	 */
@@ -107,7 +107,8 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
 			@ApiResponse(code = BusinessCode.CODE_100819, message = "您还没有绑定惠下单账号"),
-			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧") })
+			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧"),
+			@ApiResponse(code = BusinessCode.CODE_100809, message = "您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。") })
 	@RequestMapping(value = "store/security/1008/v1/storeLogin", method = RequestMethod.POST)
 	public ResponseResult<StoreUserInfoSimpleVO> storeLogin(
 			@RequestBody StoreUserInfoCondition storeUserInfoCondition) {
@@ -153,6 +154,10 @@ public class ApiStoreLoginController {
 				result = new ResponseResult<>(BusinessCode.CODE_100815);
 				return result;
 			} else {
+				if (HXD_STATUS2.equals(db.getStoreStatus())) {
+					logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
+					throw new BusinessException(BusinessCode.CODE_100809);
+				}
 				/**
 				 * 调用云信服务获取用户信息
 				 */
@@ -161,7 +166,7 @@ public class ApiStoreLoginController {
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 				storeUserInfo.setId(db.getId());
-				storeUserInfo.setAppLoginStatus((short)0);
+				storeUserInfo.setAppLoginStatus((short) 0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -181,6 +186,11 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 您还没有绑定惠下单账号");
 				throw new BusinessException(BusinessCode.CODE_100819);
 			}
+			if (HXD_STATUS2.equals(db.getStoreStatus())) {
+				logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
+				throw new BusinessException(BusinessCode.CODE_100809);
+			}
+
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
 					.getStoreUserInfoByCustomerId(db.getStoreCustomerId());
 			StoreUserSimpleInfo map = object.getData();
@@ -199,7 +209,7 @@ public class ApiStoreLoginController {
 			storeUserInfo.setStorePicImg(map.getStorePicImg());
 			logger.info("头像:" + storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
-			storeUserInfo.setAppLoginStatus((short)0);
+			storeUserInfo.setAppLoginStatus((short) 0);
 			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
@@ -228,6 +238,10 @@ public class ApiStoreLoginController {
 				logger.info("{} - , 您还不是惠下单用户快去注册吧");
 				throw new BusinessException(BusinessCode.CODE_100822);
 			} else {
+				if (HXD_STATUS2.equals(db.getStoreStatus())) {
+					logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
+					throw new BusinessException(BusinessCode.CODE_100809);
+				}
 				/**
 				 * 调用云信服务获取用户信息
 				 */
@@ -235,7 +249,7 @@ public class ApiStoreLoginController {
 				cache.del(CacheName.STORE_USER_INFO_TOKEN + db.getToken());
 				storeUserInfo.setToken(GeneratePwd.getRandomUUID());
 				storeUserInfo.setId(db.getId());
-				storeUserInfo.setAppLoginStatus((short)0);
+				storeUserInfo.setAppLoginStatus((short) 0);
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
@@ -260,6 +274,10 @@ public class ApiStoreLoginController {
 				storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
 				db = storeLoginService.getStoreUserInfo(storeUserInfo);
 				if (db != null) {
+					if (HXD_STATUS2.equals(db.getStoreStatus())) {
+						logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
+						throw new BusinessException(BusinessCode.CODE_100809);
+					}
 					/**
 					 * 调用云信服务获取用户信息
 					 */
@@ -271,7 +289,7 @@ public class ApiStoreLoginController {
 					storeUserInfo.setId(db.getId());
 					storeUserInfo.setStoreMobile(map.getStoreMobile());
 					storeUserInfo.setToken(GeneratePwd.getRandomUUID());
-					storeUserInfo.setAppLoginStatus((short)0);
+					storeUserInfo.setAppLoginStatus((short) 0);
 					storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
 					storeUserInfo.setStorePicImg(map.getStorePicImg());
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
@@ -383,8 +401,10 @@ public class ApiStoreLoginController {
 					 */
 					info.setId(db.getId());
 					info.setStoreMobile(map.getStoreMobile());
+					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
+					info.setUpdated(new Date());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
@@ -397,7 +417,6 @@ public class ApiStoreLoginController {
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setCreated(new Date());
 					info.setStoreMobile(map.getStoreMobile());
-					logger.info("微信头像：" + storeSendVerificationCodeCondition.getShopOwnerImg());
 					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
 					info.setStoreStatus((short) 0);
 					info.setAppLoginStatus((short) 0);
@@ -436,6 +455,7 @@ public class ApiStoreLoginController {
 					info.setStoreMobile(map.getStoreMobile());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
+					info.setUpdated(new Date());
 					storeLoginService.modifyStoreUserInfo(info);
 					result = sendVerificationCode(map.getStoreMobile());
 				}
@@ -480,10 +500,10 @@ public class ApiStoreLoginController {
 		logger.info(storeMobile + ":发送的内容为:" + content);
 		return result;
 	}
-	
+
 	/**
 	 * @author wufuyun
-	 * @date  2018年8月24日 下午1:29:59
+	 * @date 2018年8月24日 下午1:29:59
 	 * @Description 惠小店app退出登录
 	 * @param storeUserLogoutCodeCondition
 	 * @return
@@ -491,9 +511,10 @@ public class ApiStoreLoginController {
 	@ApiOperation(value = "惠小店app退出登录")
 	@ApiResponses({ @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效")})
+			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@RequestMapping(value = "store/1010/v1/storeUserLogout", method = RequestMethod.POST)
-	public ResponseResult<Void> storeUserLogout(@RequestBody StoreUserLogoutCodeCondition storeUserLogoutCodeCondition){
+	public ResponseResult<Void> storeUserLogout(
+			@RequestBody StoreUserLogoutCodeCondition storeUserLogoutCodeCondition) {
 		ResponseResult<Void> result = new ResponseResult<>();
 		StoreUserInfo info = new StoreUserInfo();
 		logger.info("{} - 惠小店app退出登录, 参数：customerUserInfoCondition={}", "",
@@ -507,9 +528,9 @@ public class ApiStoreLoginController {
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
 		info.setId(user.getBusinessId());
-		info.setAppLoginStatus((short)1);
+		info.setAppLoginStatus((short) 1);
 		storeLoginService.modifyStoreUserInfo(info);
 		return result;
 	}
-	
+
 }

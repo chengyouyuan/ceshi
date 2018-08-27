@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.feign.promotion.CouponApplyServiceClient;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +40,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
+        if(StringUtils.isBlank(id) || type == null){
+           throw new BusinessException(BusinessCode.CODE_500010,"必填参数错误");
+        }
         ResponseResult<CouponApplyVO> responseResult = new ResponseResult<CouponApplyVO>();
         CouponApplyVO vo = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
         responseResult.setData(vo);
@@ -60,7 +64,7 @@ public class CouponApplyController implements CouponApplyServiceClient {
             int count = couponApplyService.updateCouponApplyToValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("删除成功");
+                responseResult.setMessage("设置成功");
             }else {
                 throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
             }

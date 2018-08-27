@@ -3,14 +3,9 @@ server:
 
 spring:
   profiles:
-    active: native,dev
+    active: dev
   application:
     name: b2c-config-server
-  boot:
-    admin:
-      client:
-        instance:
-          prefer-ip: true
 
 eureka:
   instance:
@@ -19,7 +14,6 @@ eureka:
     lease-renewal-interval-in-seconds: 5
   client:
     registry-fetch-interval-seconds: 5
-
 
 management:
   endpoints:

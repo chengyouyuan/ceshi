@@ -2,6 +2,8 @@ package com.winhxd.b2c.customer.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.customer.model.CustomerUserInfo;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
@@ -25,6 +27,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerUserInfoMapper customerUserInfoMapper;
 
+    @Autowired
+    private Cache cache;
+
     @Override
     public PagedList<CustomerUserInfoVO> findCustomerPageInfo(BackStageCustomerInfoCondition condition) {
         PagedList<CustomerUserInfoVO> pagedList = new PagedList<>();
@@ -43,7 +48,16 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerUserInfo record = new CustomerUserInfo();
         record.setCustomerId(condition.getCustomerId());
         record.setStatus(condition.getStatus());
-        return customerUserInfoMapper.updateByPrimaryKeySelective(record);
+        int line =  customerUserInfoMapper.updateByPrimaryKeySelective(record);
+        //如果是添加黑名单则需要把token设置无效
+        if(line == 1 && condition.getStatus() == 0){
+            //如果加入黑名单成功直接将token值为无效
+            CustomerUserInfo customerUserInfo = customerUserInfoMapper.selectByPrimaryKey(condition.getCustomerId());
+            if(customerUserInfo != null){
+                cache.del(CacheName.CUSTOMER_USER_INFO_TOKEN + customerUserInfo.getToken());
+            }
+        }
+        return line;
     }
 
     @Override

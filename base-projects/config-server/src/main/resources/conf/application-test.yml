@@ -1,14 +1,14 @@
 spring:
   datasource:
-    username: retail2C_user
-    password: tNB9gLJ42hwguHLK
-    url: jdbc:mysql://192.168.60.115:3306/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.60.115:8066/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
 
 # 云平台REST服务配置
 RETAIL-REST-SERVICE:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://192.168.60.242:8202/
+    listOfServers: http://192.168.60.241:8202/
 
 # 缓存配置
 redis:

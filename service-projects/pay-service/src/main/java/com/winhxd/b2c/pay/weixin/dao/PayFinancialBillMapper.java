@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 
+import feign.Param;
+
 /**
  * @author yuluyuan
  */
@@ -21,7 +23,7 @@ public interface PayFinancialBillMapper {
      * @param record
      * @return
      */
-    int insertBatch(List<PayFinancialBill> list);
+    int insertBatch(@Param("list") List<PayFinancialBill> list);
     
     /**
      * 插入全部

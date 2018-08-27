@@ -22,7 +22,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:30
      */
-    ResponseResult<StoreBankrollVO> getStoreBankrollByStoreId(PayStoreCashCondition condition);
+    StoreBankrollVO getStoreBankrollByStoreId(PayStoreCashCondition condition);
     /**
      *
      *@Deccription 门店交易记录收支明细
@@ -31,7 +31,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:31
      */
-    ResponseResult<PagedList<PayStoreTransactionRecordVO>> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition);
+    PagedList<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(PayStoreCashCondition condition);
 
     /**
      *
@@ -41,7 +41,7 @@ public interface PayStoreCashService {
      *@User  wl
      *@Date   2018/8/22 9:31
      */
-    ResponseResult<PagedList<PayWithdrawalsVO>> getPayWithdrawalsByStoreId(PayStoreCashCondition condition);
+    PagedList<PayWithdrawalsVO> getPayWithdrawalsByStoreId(PayStoreCashCondition condition);
     
     
     /**

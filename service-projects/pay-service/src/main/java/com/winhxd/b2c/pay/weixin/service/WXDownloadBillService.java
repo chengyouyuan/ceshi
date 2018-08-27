@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.weixin.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
@@ -36,15 +37,13 @@ public interface WXDownloadBillService {
     String downloadFundFlow(DownloadStatementCondition condition);
 
 	/**
-	 * 根据model条件查询数据
-	 * @Description 根据model条件查询数据
+	 * @Description 查询未下载账单记录表
 	 * @author yuluyuan
 	 * @date 2018年8月20日 下午2:15:01
 	 * @param record
 	 * @return
 	 */
-	List<PayStatementDownloadRecord> findDownloadRecord(
-			PayStatementDownloadRecord record);
+	List<Date> findUnDownloadRecord(PayStatementDownloadRecord record);
 
 	/**
 	 * 根据订单号查询成功支付的对账单

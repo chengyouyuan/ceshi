@@ -176,7 +176,6 @@ public class ApiOpenStoreController {
         }
         ResponseResult<Map<String, Object>> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
         StoreBaseInfoVO storeBaseInfoVO = new StoreBaseInfoVO();
-        storeBaseInfoVO.setContactMobile(storeUserInfo.getStoreMobile());
         if (!result.getData().isEmpty()) {
             Map<String, Object> map = result.getData();
             storeBaseInfoVO.setStoreImg(StringUtils.isBlank(storeUserInfo.getStorePicImg()) ? "" : storeUserInfo.getStorePicImg());
@@ -188,6 +187,17 @@ public class ApiOpenStoreController {
             storeBaseInfoVO.setCounty(Objects.toString(map.get("county"), ""));
             storeBaseInfoVO.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
             storeBaseInfoVO.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
+            //先更新门店信息，再返回给前端展示
+            StoreUserInfo storeUserInfoUpdate = new StoreUserInfo();
+            storeUserInfoUpdate.setId(storeUserInfo.getId());
+            storeUserInfoUpdate.setStoreName(Objects.toString(map.get("storeName"), ""));
+            storeUserInfoUpdate.setShopkeeper(Objects.toString(map.get("shopkeeper"), ""));
+            storeUserInfoUpdate.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
+            storeUserInfoUpdate.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
+            storeUserInfoUpdate.setLon(Double.parseDouble(Objects.toString(map.get("longitude"), "0")));
+            storeUserInfoUpdate.setLat(Double.parseDouble(Objects.toString(map.get("latitude"), "0")));
+            storeUserInfoUpdate.setContactMobile(storeUserInfo.getStoreMobile());
+            storeService.updateByPrimaryKeySelective(storeUserInfoUpdate);
         } else {
             responseResult.setCode(BusinessCode.CODE_1001);
             responseResult.setMessage(StringUtils.isBlank(result.getMessage()) ? "请求发送失败" : result.getMessage());
@@ -198,7 +208,7 @@ public class ApiOpenStoreController {
         return responseResult;
     }
 
-    @ApiOperation(value = "惠小店开店基础信息保存接口", notes = "惠小店开店基础信息保存接口")
+    @ApiOperation(value = "惠小店开店基础信息保存接口，暂时不用", notes = "惠小店开店基础信息保存接口，暂时不用")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
@@ -208,8 +218,7 @@ public class ApiOpenStoreController {
     public ResponseResult<Integer> modifyStoreBaseInfo(@RequestBody StoreBaseInfoCondition storeBaseInfoCondition) {
         logger.info("惠小店开店基础信息保存接口入参为：{}", storeBaseInfoCondition.toString());
         if (StringUtils.isBlank(storeBaseInfoCondition.getStoreAddress()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreName()) ||
-                StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) ||
-                StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode()) || StringUtils.isBlank(storeBaseInfoCondition.getContactMobile())) {
+                StringUtils.isBlank(storeBaseInfoCondition.getShopkeeper()) || StringUtils.isBlank(storeBaseInfoCondition.getStoreRegionCode())) {
             logger.warn("惠小店开店基础信息保存接口 modifyStoreBaseInfo,参数错误:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200005);
         }

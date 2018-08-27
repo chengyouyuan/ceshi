@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: prod,prod1
+
+eureka:
+  instance:
+    hostname: registry1.huistore
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://registry2.huistore:${server.port}/eureka/
+

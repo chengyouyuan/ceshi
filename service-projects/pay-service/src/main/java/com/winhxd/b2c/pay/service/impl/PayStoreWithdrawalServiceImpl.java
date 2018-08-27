@@ -280,13 +280,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		int res= 0;
 		short  withdralType = condition.getWithdrawType();
 		if(withdralType != PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode() && withdralType != PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
-			LOGGER.info("体现类型为空");
+			LOGGER.info("提现类型为空");
 			res = BusinessCode.CODE_610022;
 			throw new BusinessException(res);
 		}
 		
 		BigDecimal totalFee = condition.getTotalFee();
-		if(totalFee == null||!NumberUtil.isPositiveDecimal(totalFee.toString())){
+		if(totalFee == null||(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString()))){//||!NumberUtil.isPositiveDecimal(totalFee.toString())
 			LOGGER.info("提现金额输入有误");
 			res = BusinessCode.CODE_610032;
 			throw new BusinessException(res);
@@ -301,6 +301,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				throw new BusinessException(res);
 			}
 		}
+		
+		//最小手续费
+		BigDecimal min = new BigDecimal(1);
+		if (totalFee.compareTo(min)<=0) {
+			LOGGER.info("提现金额输入有误");
+			throw new BusinessException(BusinessCode.CODE_611107);
+		}
+		
 		short type = condition.getFlowDirectionType();
 		if(type == 0){
 			res = BusinessCode.CODE_610033;
@@ -438,7 +446,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info(log+"提现金额为空");
 			throw new BusinessException(BusinessCode.CODE_611103);
 		}
-		if(totalFee == null||!NumberUtil.isPositiveDecimal(totalFee.toString())){
+		if(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString())){
 			LOGGER.info("提现金额输入有误");
 			throw new BusinessException(BusinessCode.CODE_611106);
 		}

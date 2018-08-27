@@ -286,7 +286,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		
 		BigDecimal totalFee = condition.getTotalFee();
-		if(totalFee == null){//||!NumberUtil.isPositiveDecimal(totalFee.toString())
+		if(totalFee == null||(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString()))){//||!NumberUtil.isPositiveDecimal(totalFee.toString())
 			LOGGER.info("提现金额输入有误");
 			res = BusinessCode.CODE_610032;
 			throw new BusinessException(res);
@@ -446,7 +446,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info(log+"提现金额为空");
 			throw new BusinessException(BusinessCode.CODE_611103);
 		}
-		if(totalFee == null||!NumberUtil.isPositiveDecimal(totalFee.toString())){
+		if(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString())){
 			LOGGER.info("提现金额输入有误");
 			throw new BusinessException(BusinessCode.CODE_611106);
 		}

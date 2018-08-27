@@ -714,6 +714,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 throw new BusinessException(BusinessCode.WRONG_ORDERNO);
             }
         }
+        //设置订单 接单时间
+        Date confirmDate = new Date();
+        orderInfo.setAcceptOrderDatetime(confirmDate);
         //调用订单接单业务流转接口
         getOrderHandler(orderInfo.getValuationType()).orderInfoConfirmProcess(orderInfo);
         //注册确认订单成功相关操作

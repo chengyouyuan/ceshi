@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.domain.pay.vo;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -258,16 +259,19 @@ public class PayWithdrawalsVO {
     }
 
     public String getAuditStatusName() {
-        if (auditStatus == null || Short.valueOf("0").compareTo(auditStatus) == 0) {
-            auditStatusName = "未审核";
-        } else if (Short.valueOf("1").compareTo(auditStatus) == 0) {
-            auditStatusName = "审核通过";
-        } else if (Short.valueOf("2").compareTo(auditStatus) == 0) {
-            auditStatusName = "审核不通过";
-        } else {
-            auditStatusName = "未审核";
+        if (auditStatus == null) {
+            return StringUtils.EMPTY;
         }
-        return auditStatusName;
+        if (Short.valueOf("0").compareTo(auditStatus) == 0) {
+            return "未审核";
+        }
+        if (Short.valueOf("1").compareTo(auditStatus) == 0) {
+            return "审核通过";
+        }
+        if (Short.valueOf("2").compareTo(auditStatus) == 0) {
+            return "审核不通过";
+        }
+        return StringUtils.EMPTY;
     }
 
     public Short getCallbackStatus() {
@@ -288,17 +292,19 @@ public class PayWithdrawalsVO {
     }
 
     public String getCallbackStatusName() {
-        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "申请中";
-        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "提现成功";
-        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "提现失败";
-        } else if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
-            callbackStatusName = "无效";
-        } else {
+        if (callbackStatus == null) {
+            return StringUtils.EMPTY;
         }
-        return callbackStatusName;
+        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            return "申请中";
+        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
+            return "提现成功";
+        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            return "提现失败";
+        } else if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
+            return "无效";
+        }
+        return StringUtils.EMPTY;
     }
 
     public String getIndex() {
@@ -306,6 +312,9 @@ public class PayWithdrawalsVO {
     }
 
     public String getErrorMessage() {
+        if (callbackStatus == null) {
+            return StringUtils.EMPTY;
+        }
         if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
             errorMessage = "未处理";
         } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {

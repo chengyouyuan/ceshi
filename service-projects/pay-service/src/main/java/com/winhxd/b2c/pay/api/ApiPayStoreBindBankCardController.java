@@ -110,13 +110,7 @@ public class ApiPayStoreBindBankCardController {
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
-    	Integer res = payStoreWalletMapperService.savePayStoreWallet(condition);
-    	result.setCode(res);
-    	LOGGER.info("绑定微信返回值：-------"+res);
-    	if(res > 0){
-    		LOGGER.info("B端绑定微信失败；");
-    		throw new BusinessException(BusinessCode.CODE_610017);
-    	} 
+    	payStoreWalletMapperService.savePayStoreWallet(condition);
         LOGGER.info("{}=--结束 result={}", logTitle, result);
         return result;
     }
@@ -143,7 +137,7 @@ public class ApiPayStoreBindBankCardController {
 		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确
-		int res = vaildatVerifiCode(condition);
+		vaildatVerifiCode(condition);
 		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
 		//生成验证码
@@ -157,31 +151,26 @@ public class ApiPayStoreBindBankCardController {
 		// 将验证码存放到redis中
 		redisClusterCache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
 		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
-		if(res > 0){
-			result.setCode(res);
-			return result;
-		}else{
-			result.setData("验证码："+modileVerifyCode);
-			SMSCondition sMSCondition = new SMSCondition();
-			sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
-			sMSCondition.setMobile(condition.getMobile());
-			messageSendUtils.sendSms(sMSCondition);
-		}
+		result.setData("验证码："+modileVerifyCode);
+		SMSCondition sMSCondition = new SMSCondition();
+		sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
+		sMSCondition.setMobile(condition.getMobile());
+		messageSendUtils.sendSms(sMSCondition);
 		LOGGER.info("{}=--结束 result={}", logTitle, result);
 		return result;
 	}
 
-	private int vaildatVerifiCode(VerifiCodeCondtion condition) {
-		int res = 0;
+	private void vaildatVerifiCode(VerifiCodeCondtion condition) {
 		String mobile = condition.getMobile();
 		if(StringUtils.isEmpty(mobile)){
-			res = BusinessCode.CODE_610015;
+			LOGGER.info("手机号为空");
+			throw new BusinessException(BusinessCode.CODE_610015);
 		}
 		short withdrawType = condition.getWithdrawType();
 		if(withdrawType == 0){
-			res = BusinessCode.CODE_610022;
+			LOGGER.info("请传入提现类型");
+			throw new BusinessException(BusinessCode.CODE_610022);
 		}
-		return res;
 	}
 	
 }

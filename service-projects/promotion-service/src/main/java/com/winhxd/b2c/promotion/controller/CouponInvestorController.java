@@ -53,8 +53,6 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
             responseResult.setCode(flag);
             if(flag==0){
                   responseResult.setMessage("添加成功");
-            }else {
-                  responseResult.setMessage("服务器内部错误");
             }
             return responseResult;
       }

@@ -40,11 +40,8 @@ public class CouponApplyController implements CouponApplyServiceClient {
      */
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
-        if(StringUtils.isBlank(id) || type == null){
-           throw new BusinessException(BusinessCode.CODE_500010,"必填参数错误");
-        }
         ResponseResult<CouponApplyVO> responseResult = new ResponseResult<CouponApplyVO>();
-        CouponApplyVO vo = couponApplyService.viewCouponApplyDetail(Long.parseLong(id),type);
+        CouponApplyVO vo = couponApplyService.viewCouponApplyDetail(id,type);
         responseResult.setData(vo);
         return responseResult;
     }

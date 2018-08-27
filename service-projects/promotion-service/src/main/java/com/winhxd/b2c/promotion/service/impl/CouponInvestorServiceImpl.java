@@ -20,6 +20,8 @@ import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,7 @@ import java.util.*;
  **/
 @Service
 public class CouponInvestorServiceImpl implements CouponInvestorService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CouponInvestorServiceImpl.class);
     @Autowired
     private CouponInvestorMapper couponInvestorMapper;
     @Autowired
@@ -44,6 +47,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     @Transactional
     public int saveCouponInvestor( CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
+        LOGGER.info("添加出资方参数"+condition.toString());
         List deatils = condition.getDetails();
         int flag = 0 ;
                 CouponInvestor couponInvestor = new CouponInvestor();

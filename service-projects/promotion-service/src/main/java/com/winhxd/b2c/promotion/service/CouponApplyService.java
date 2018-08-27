@@ -21,7 +21,7 @@ public interface CouponApplyService {
      *@User  wl
      *@Date   2018/8/25 10:36
      */
-    CouponApplyVO viewCouponApplyDetail(long id,Short type);
+    CouponApplyVO viewCouponApplyDetail(String id,Short type);
     /**
      *
      *@Deccription 适用对象设置无效
@@ -30,7 +30,7 @@ public interface CouponApplyService {
      *@User  wl
      *@Date   2018/8/25 10:43
      */
-    int updateCouponApplyToValid(long id, long userId, String userName);
+    int updateCouponApplyToValid(Long id, Long userId, String userName);
     /**
      *
      *@Deccription 适用对象分页查询

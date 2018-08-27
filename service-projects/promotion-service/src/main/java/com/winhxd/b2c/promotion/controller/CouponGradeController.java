@@ -40,9 +40,6 @@ public class CouponGradeController implements CouponGradeServiceClient {
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
             int flag = couponGradeService.addCouponGrade(couponGradeCondition);
-            if(flag!=0){
-             throw new BusinessException(BusinessCode.CODE_500003,"坎级规则添加异常");
-            }
             if(flag==0){
                 responseResult.setCode(BusinessCode.CODE_OK);
                 responseResult.setMessage("添加成功");
@@ -61,7 +58,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @Override
     public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
         ResponseResult<CouponGradeVO> responseResult = new ResponseResult<CouponGradeVO>();
-        CouponGradeVO vo = couponGradeService.viewCouponGradeDetail(Long.parseLong(id));
+        CouponGradeVO vo = couponGradeService.viewCouponGradeDetail(id);
         responseResult.setData(vo);
         return responseResult;
     }
@@ -80,9 +77,7 @@ public class CouponGradeController implements CouponGradeServiceClient {
             int count = couponGradeService.updateCouponGradeValid(condition.getId(),condition.getUserId(),condition.getUserName());
             if(count>0){
                 responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("删除成功");
-            }else {
-                throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
+                responseResult.setMessage("设置成功");
             }
         return responseResult;
     }

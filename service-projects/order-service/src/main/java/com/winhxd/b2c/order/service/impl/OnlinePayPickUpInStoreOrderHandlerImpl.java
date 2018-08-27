@@ -149,9 +149,6 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
         String oldOrderJson = JsonUtil.toJSONString(orderInfo);
-        //设置订单 接单时间
-        Date confirmDate = new Date();
-        orderInfo.setAcceptOrderDatetime(confirmDate);
         logger.info("{},orderNo={} 确认订单后业务处理开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         orderStatusChange(orderInfo, OrderStatusEnum.UNRECEIVED.getStatusCode(), OrderStatusEnum.WAIT_SELF_LIFTING.getStatusCode());
         String pickUpCode = orderQueryService.getPickUpCode(orderInfo.getStoreId());
@@ -232,6 +229,9 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         }
         //如果是确认订单，则更新订单确认时间
         if (expectedStatusCode.shortValue() == OrderStatusEnum.UNRECEIVED.getStatusCode()) {
+            if (orderInfo.getAcceptOrderDatetime() == null) {
+                orderInfo.setAcceptOrderDatetime(new Date());
+            }
             orderInfoMapper.updateOrderConfirmDate(orderInfo.getAcceptOrderDatetime(), orderInfo.getId());
         }
         int changeNum = orderInfoMapper.updateOrderStatus(expectedStatusCode, newStatusCode, orderInfo.getId());

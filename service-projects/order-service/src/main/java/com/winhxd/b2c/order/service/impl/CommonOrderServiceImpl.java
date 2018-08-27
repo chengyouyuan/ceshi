@@ -532,6 +532,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
                     throw new BusinessException(BusinessCode.WRONG_ORDERNO, MessageFormat.format("门店处理用户退款订单查询失败orderNo={0}", orderNo));
                 }
+                if (order.getOrderStatus() != OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
+                    throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, MessageFormat.format("门店处理用户退款订单状态异常orderNo={0}，status={1}", orderNo, order.getOrderStatus()));
+                }
                 if (agree == 1) {
                     logger.info("门店处理退款申请-门店同意退款-操作订单开始-订单号={}", orderNo);
                     orderApplyRefund(order, "门店同意退款", storeVO.getId(), storeVO.getShopkeeper());
@@ -1732,8 +1735,8 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                if (customerUserInfoVO.getCustomerMobile().equals("13522928292")||customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
-                    logger.info("C端申请退款-MQ延时消息开始-orderNo={},mobile={}", orderNo,customerUserInfoVO.getCustomerMobile());
+                if (customerUserInfoVO.getCustomerMobile().equals("13522928292") || customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
+                    logger.info("C端申请退款-MQ延时消息开始-orderNo={},mobile={}", orderNo, customerUserInfoVO.getCustomerMobile());
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8 * 60 * 1000);

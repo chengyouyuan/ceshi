@@ -423,6 +423,7 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
+    <result column="time_end" jdbcType="TIMESTAMP" property="timeEnd" />
   </resultMap>
 
   <!-- 根据门店id查询提现列表信息 -->

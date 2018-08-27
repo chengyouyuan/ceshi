@@ -190,12 +190,12 @@ public class ApiOpenStoreController {
             //先更新门店信息，再返回给前端展示
             StoreUserInfo storeUserInfoUpdate = new StoreUserInfo();
             storeUserInfoUpdate.setId(storeUserInfo.getId());
-            storeUserInfoUpdate.setStoreName(Objects.toString(map.get("storeName")));
-            storeUserInfoUpdate.setShopkeeper(Objects.toString(map.get("shopkeeper")));
-            storeUserInfoUpdate.setStoreAddress(Objects.toString(map.get("storeAddress")));
-            storeUserInfoUpdate.setStoreRegionCode(Objects.toString(map.get("storeRegionCode")));
-            storeUserInfoUpdate.setLon(Double.parseDouble(Objects.toString(map.get("longitude"))));
-            storeUserInfoUpdate.setLat(Double.parseDouble(Objects.toString(map.get("latitude"))));
+            storeUserInfoUpdate.setStoreName(Objects.toString(map.get("storeName"), ""));
+            storeUserInfoUpdate.setShopkeeper(Objects.toString(map.get("shopkeeper"), ""));
+            storeUserInfoUpdate.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
+            storeUserInfoUpdate.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
+            storeUserInfoUpdate.setLon(Double.parseDouble(Objects.toString(map.get("longitude"), "0")));
+            storeUserInfoUpdate.setLat(Double.parseDouble(Objects.toString(map.get("latitude"), "0")));
             storeUserInfoUpdate.setContactMobile(storeUserInfo.getStoreMobile());
             storeService.updateByPrimaryKeySelective(storeUserInfoUpdate);
         } else {

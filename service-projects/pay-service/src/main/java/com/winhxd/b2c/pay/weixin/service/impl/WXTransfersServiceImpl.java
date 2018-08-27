@@ -18,6 +18,7 @@ import com.winhxd.b2c.pay.weixin.constant.TransfersToWxError;
 import com.winhxd.b2c.pay.weixin.dao.PayTransfersMapper;
 import com.winhxd.b2c.pay.weixin.model.PayTransfers;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
+import com.winhxd.b2c.pay.weixin.util.DateUtil;
 import com.winhxd.b2c.pay.weixin.util.XmlUtil;
 import com.winhxd.b2c.pay.weixin.util.rsa.GetRSA;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -69,7 +70,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     /**
      * wx返回标准时间格式转换
      */
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     private WXPayApi wxPayApi;
@@ -196,7 +197,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         BeanUtils.copyProperties(responseDTO, toWxChangeVO);
         //设置日期
         if(StringUtils.isNotBlank(responseDTO.getPaymentTime())){
-            toWxChangeVO.setPaymentTime(DATE_FORMAT.parse(responseDTO.getPaymentTime()));
+            toWxChangeVO.setPaymentTime(DateUtil.toDate(responseDTO.getPaymentTime(),DATE_FORMAT));
         }
         return toWxChangeVO;
     }
@@ -301,7 +302,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setDesc(wxChangeDTO.getDesc());
         record.setSpbillCreateIp(wxChangeDTO.getSpbillCreateIp());
         if(StringUtils.isNotBlank(responseDTO.getPaymentTime())){
-            record.setTimeEnd(DATE_FORMAT.parse(responseDTO.getPaymentTime()));
+            record.setTimeEnd(DateUtil.toDate(responseDTO.getPaymentTime(),DATE_FORMAT));
         }
         record.setStatus((short)(toWxChangeVO.isTransfersResult() ? 1 : 0));
         if(0 == record.getStatus()) {

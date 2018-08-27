@@ -153,7 +153,7 @@ public class ApiPayCallbackController {
 	 */
 	private String wxCallbackParser(HttpServletRequest request) {
 		String resqXml = null;
-        try(InputStream is = request.getInputStream();){
+        try(InputStream is = request.getInputStream()){
     		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     		StringBuilder sb = new StringBuilder();
         	String line = null;

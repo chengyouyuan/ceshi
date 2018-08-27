@@ -16,7 +16,6 @@ import com.winhxd.b2c.pay.weixin.util.DateUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -80,7 +79,7 @@ public class WXRefundServiceImpl implements WXRefundService {
             PayRefund payRefund = payRefundMapper.selectByOutTradeNo(outTradeNo);
             Integer switchStatus = -1;
             if (payRefund != null) {
-                switchStatus = new Integer(payRefund.getCallbackRefundStatus());
+                switchStatus = Integer.valueOf(payRefund.getCallbackRefundStatus());
             }
             switch (switchStatus) {
                 case 0:
@@ -93,6 +92,7 @@ public class WXRefundServiceImpl implements WXRefundService {
                 case 2:
                     LOGGER.info("退款已关闭(2)，交易流水号是："+outTradeNo);
                     this.refundAlreadyClosed();
+                    break;
                 case 3:
                     payRefundVO = this.refundRetry(condition, payRefund);
                     break;

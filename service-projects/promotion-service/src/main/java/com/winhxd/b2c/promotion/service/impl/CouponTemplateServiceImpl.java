@@ -161,7 +161,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      *@Date   2018/8/6 20:39
      */
     @Override
-    @Transactional
     public int updateCouponTemplateToValid(Long id, Long updatedBy, Date updated, String updatedByName) {
         logger.info("模板设置无效参数id:"+id+" updatedBy:"+updatedBy+" updated"+updated+" updatedByName:"+updatedByName);
         if(id==null || updatedBy==null ||updated==null || StringUtils.isBlank(updatedByName)){

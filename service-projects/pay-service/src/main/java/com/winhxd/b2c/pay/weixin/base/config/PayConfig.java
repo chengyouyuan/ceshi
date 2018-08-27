@@ -61,6 +61,18 @@ public class PayConfig{
     @Value("${DOMAIN.CALLBACK_DOMAIN_URL}${WX.REFUND_NOTIFY_URL}")
     private String refundNotifyUrl;
 
+    /***
+     * 门店appID
+     */
+    @Value("${WX.STORE_APP.APP_ID}")
+    private String storeAppID;
+
+    /***
+     * 门店appSecret
+     */
+    @Value("${WX.STORE_APP.APP_SECRET}")
+    private String storeAppSecret;
+
     /**
      * RSA加密公钥
      */
@@ -137,4 +149,11 @@ public class PayConfig{
 		return refundNotifyUrl;
 	}
 
+    public String getStoreAppID() {
+        return storeAppID;
+    }
+
+    public String getStoreAppSecret() {
+        return storeAppSecret;
+    }
 }

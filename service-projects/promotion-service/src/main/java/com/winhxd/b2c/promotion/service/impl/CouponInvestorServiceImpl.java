@@ -99,7 +99,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                 CouponInvestorVO vo = tempList.get(i);
                 TempleteRelationCountVO templeteRelationCountVO = couponInvestorMapper.getRelationCouponInvCount(vo.getId());
                 if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
                 }else{
                     vo.setRelTempleteCount(String.valueOf(0));
                 }
@@ -142,7 +142,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
-    @Transactional
     public int updateCouponInvestorToValid(Long id,Long userId,String userName) {
         LOGGER.info("出资方设置无效参数id:"+id+" userId:"+userId+" userName:"+userName);
         if(id==null || userId==null || StringUtils.isBlank(userName)){

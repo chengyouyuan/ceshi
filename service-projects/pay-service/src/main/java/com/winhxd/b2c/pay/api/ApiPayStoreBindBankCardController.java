@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,11 +102,10 @@ public class ApiPayStoreBindBankCardController {
         String logTitle = "/api-pay/pay/6110/v1/bindWeixiAccount-B端绑定微信账户";
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
-    	BeanUtils.copyProperties(condition, condition);
     	// 获取当前门店id
     	Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
     	//////////////////测试门店id//////////////////
-//    	Long businessId = 130l;
+//    	Long businessId = 84l;
     	///////////////////////////////////////////
     	condition.setStoreId(businessId);
     	LOGGER.info("B端绑定微信参数payStoreWallet----"+condition);
@@ -139,7 +137,7 @@ public class ApiPayStoreBindBankCardController {
 		
 		/////////////////////////////// 测试数据
 //		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(130l);
+//		currentStoreUser.setBusinessId(84l);
 //		Long businessId = currentStoreUser.getBusinessId();
 		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();

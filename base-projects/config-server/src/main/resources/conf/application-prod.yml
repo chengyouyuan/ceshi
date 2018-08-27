@@ -9,6 +9,19 @@ RETAIL-REST-SERVICE:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
     listOfServers: http://app.retail:8202/
+    
+# 商品中心REST服务配置
+sku-microservice:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://app.retail:8202/
+    
+# 商品中心 品牌商REST服务配置
+user-service:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://app.retail:8202/
+    
 
 # 缓存配置
 redis:

@@ -10,11 +10,17 @@ RETAIL-REST-SERVICE:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
     listOfServers: http://192.168.60.241:8202/
 
-# 云平台REST服务配置
-product-microservice:
+# 商品中心REST服务配置
+sku-microservice:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
     listOfServers: http://192.168.60.241:6111/
+
+# 商品中心 品牌商REST服务配置
+user-service:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://192.168.60.241:7777/
 
 # 缓存配置
 redis:

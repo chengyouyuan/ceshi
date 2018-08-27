@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.domain.pay.vo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
@@ -295,14 +296,10 @@ public class PayWithdrawalsVO {
         if (callbackStatus == null) {
             return StringUtils.EMPTY;
         }
-        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
-            return "申请中";
-        } else if (Short.valueOf("1").compareTo(callbackStatus) == 0) {
-            return "提现成功";
-        } else if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            return "提现失败";
-        } else if (Short.valueOf("3").compareTo(callbackStatus) == 0) {
-            return "无效";
+        for (WithdrawalsStatusEnum status : WithdrawalsStatusEnum.values()) {
+            if (callbackStatus.compareTo(status.getStatusCode()) == 0) {
+                return status.getStatusDesc();
+            }
         }
         return StringUtils.EMPTY;
     }

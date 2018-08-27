@@ -440,7 +440,7 @@ public class VerifyService {
             PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         }
         Page<PayWithdrawalsVO> page = payWithdrawalsMapper.selectPayWithdrawalsListByCondition(condition);
-        if (page.getTotal() > 0) {
+        if (page.getTotal() > 0 || (condition.getIsQueryAll() && page.size() > 0)) {
             Set<Long> storeSet = new HashSet<>();
             for (PayWithdrawalsVO vo : page.getResult()) {
                 if (!storeSet.contains(vo.getStoreId())) {

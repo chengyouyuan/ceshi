@@ -228,8 +228,10 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
-            if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
+            if (!CollectionUtils.isEmpty(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList())){
+                if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
+                    throw new BusinessException(BusinessCode.CODE_1007);
+                }
             }
         }
         //推券
@@ -244,7 +246,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     || condition.getCouponActivityTemplateList().get(0).getStartTime() == null
                     || condition.getCouponActivityTemplateList().get(0).getEndTime() == null
                     || condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
-                    || condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
+                    || condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }

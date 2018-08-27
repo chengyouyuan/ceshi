@@ -12,7 +12,10 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponTemplateMapper;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,7 @@ import java.util.UUID;
  **/
 @Service
 public class CouponTemplateServiceImpl implements CouponTemplateService {
+    private static final Logger logger = LoggerFactory.getLogger(CouponTemplateServiceImpl.class);
      @Autowired
      private CouponTemplateMapper couponTemplateMapper;
     /**
@@ -43,6 +47,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     @Override
     @Transactional
     public int saveCouponTemplate(CouponTemplateCondition couponTemplateCondition) {
+        logger.info("添加优惠券模板参数:"+couponTemplateCondition.toString());
         int flag = 0;
         CouponTemplate couponTemplate = new CouponTemplate();
         couponTemplate.setTitle(couponTemplateCondition.getTitle());
@@ -120,6 +125,10 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
     @Override
     public CouponTemplateVO viewCouponTemplateDetailById(String id) {
+        logger.info("模板详情查看id:"+id);
+        if(StringUtils.isBlank(id)){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         CouponTemplateVO vo = new CouponTemplateVO();
         CouponTemplate couponTemplate = couponTemplateMapper.selectCouponTemplateById(Long.parseLong(id));
         if(couponTemplate!=null){
@@ -154,6 +163,10 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
     @Override
     @Transactional
     public int updateCouponTemplateToValid(Long id, Long updatedBy, Date updated, String updatedByName) {
+        logger.info("模板设置无效参数id:"+id+" updatedBy:"+updatedBy+" updated"+updated+" updatedByName:"+updatedByName);
+        if(id==null || updatedBy==null ||updated==null || StringUtils.isBlank(updatedByName)){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
        return couponTemplateMapper.updateCouponTemplateToValid(id,updatedBy,updated,updatedByName);
     }
 

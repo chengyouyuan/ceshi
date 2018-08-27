@@ -22,15 +22,15 @@ public interface CouponGradeMapper {
 
     int updateByPrimaryKey(CouponGrade record);
 
-    CouponGradeVO viewCouponGradeDetail(@Param("id") long id);
+    CouponGradeVO viewCouponGradeDetail(@Param("id") Long id);
 
-    int updateCouponGradeValid(@Param("id")long id,@Param("userId") long userId,@Param("userName") String userName);
+    int updateCouponGradeValid(@Param("id")Long id,@Param("userId") Long userId,@Param("userName") String userName);
 
     long insertCouponGrade( CouponGrade couponGrade);
 
     List<CouponGradeVO> getCouponGradePage(@Param("condition")CouponGradeCondition condition);
 
-    List<GradeTempleteCountVO> getGradeTempleteCountPage(@Param("gradeId") long gradeId);
+    List<GradeTempleteCountVO> getGradeTempleteCountPage(@Param("gradeId") Long gradeId);
 
     TempleteRelationCountVO getRelationCouponGradeCount(@Param("id") Long id);
 

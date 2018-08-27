@@ -23,7 +23,7 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("主键")
     private Long id;
     @ApiModelProperty("门店id")
-    @Excel(name = "门店ID", width = 30)
+    @Excel(name = "门店ID", width = 10)
     private Long storeId;
     @ApiModelProperty("门店名称")
     @Excel(name = "门店名称", width = 30)
@@ -47,7 +47,6 @@ public class PayWithdrawalsVO {
     @Excel(name = "审核状态", width = 30)
     private String auditStatusName;
     @ApiModelProperty("原因")
-    @Excel(name = "原因", width = 30)
     private String auditDesc;
     @ApiModelProperty("流向类型 1微信 2银行卡")
     private Short flowDirectionType;
@@ -61,7 +60,7 @@ public class PayWithdrawalsVO {
     @Excel(name = "手机号", width = 30)
     private String mobile;
     @ApiModelProperty("流向账户")
-    @Excel(name = "付款账户", width = 30)
+    @Excel(name = "付款账户", width = 50)
     private String paymentAccount;
     @ApiModelProperty("创建时间")
     private Date created;
@@ -81,6 +80,7 @@ public class PayWithdrawalsVO {
     @Excel(name = "提现状态", width = 30)
     private String callbackStatusName;
     @ApiModelProperty("原因")
+    @Excel(name = "备注", width = 30)
     private String callbackReason;
     @ApiModelProperty("失败原因")
     private String errorMessage;

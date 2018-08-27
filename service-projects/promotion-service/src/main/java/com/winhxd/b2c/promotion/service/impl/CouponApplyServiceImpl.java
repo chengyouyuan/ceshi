@@ -21,6 +21,9 @@ import com.winhxd.b2c.common.feign.company.CompanyServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,7 @@ import java.util.List;
  **/
 @Service
 public class CouponApplyServiceImpl implements CouponApplyService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CouponApplyServiceImpl.class);
      @Autowired
      private CouponApplyMapper couponApplyMapper;
      @Autowired
@@ -53,13 +57,17 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
 
     @Override
-    public CouponApplyVO viewCouponApplyDetail(long id,Short type) {
+    public CouponApplyVO viewCouponApplyDetail(String id,Short type) {
+        LOGGER.info("适用对象详情查看参数id:"+id+" type:"+type);
+        if(StringUtils.isBlank(id) ||type==null ){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         CouponApplyVO vo = null;
         if(type.equals(CouponApplyEnum.COMMON_COUPON.getCode())){
-            vo = couponApplyMapper.viewCouponApplyCommonDetail(id);
+            vo = couponApplyMapper.viewCouponApplyCommonDetail(Long.parseLong(id));
         }
         if(type.equals(CouponApplyEnum.BRAND_COUPON.getCode())){
-            vo = couponApplyMapper.viewCouponApplyBrandDetail(id);
+            vo = couponApplyMapper.viewCouponApplyBrandDetail(Long.parseLong(id));
             List<CouponApplyBrandList> couponApplyBrandLists = vo.getCouponApplyBrandList();
             if(!couponApplyBrandLists.isEmpty()){
                 //组装请求的参数
@@ -103,7 +111,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
 
         if(type.equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
-            vo = couponApplyMapper.viewCouponApplyProdDetail(id);
+            vo = couponApplyMapper.viewCouponApplyProdDetail(Long.parseLong(id));
             List<CouponApplyProductList> couponApplyProductLists = vo.getCouponApplyProductList();
             if(!couponApplyProductLists.isEmpty()){
                 //组装请求的参数
@@ -137,7 +145,11 @@ public class CouponApplyServiceImpl implements CouponApplyService {
 
     @Override
     @Transactional
-    public int updateCouponApplyToValid(long id, long userId, String userName) {
+    public int updateCouponApplyToValid(Long id, Long userId, String userName) {
+        LOGGER.info("适用对象规则设置无效参数id:"+id+" userId:"+userId+" userName"+userName);
+        if(id==null || userId==null || StringUtils.isBlank(userName)){
+           throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         int count = couponApplyMapper.updateCouponGradeValid(id,userId,userName);
         return count;
     }
@@ -171,6 +183,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     @Override
     @Transactional
     public int addCouponApply(CouponApplyCondition condition) {
+        LOGGER.info("添加适用对象参数:"+condition.toString());
         int flag = 0;
             CouponApply couponApply = new CouponApply();
             couponApply.setApplyRuleType(condition.getApplyRuleType());

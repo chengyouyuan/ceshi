@@ -36,81 +36,70 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 	private Cache redisClusterCache;
 
 	@Override
-	public int savePayStoreWallet(PayStoreWalletCondition condition) {
-		int res = 0;
+	public void savePayStoreWallet(PayStoreWalletCondition condition) {
 		if(condition == null){
-			res = BusinessCode.CODE_610030;
-			throw new BusinessException(res);
+			LOGGER.info("参数为空");
+			throw new BusinessException(BusinessCode.CODE_610030);
 		}
 		// 验证微信绑定入参
-		res = valiWeixinCondition(condition);
-		if(res == 0){
-			// 将其他微信钱包的状态设置为0
-			payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
-			PayStoreWallet payStoreWallet = new PayStoreWallet();
-			BeanUtils.copyProperties(condition, payStoreWallet);
-			LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
-			//插入当前要绑定的微信钱包信息
-			payStoreWallet.setStatus(StatusEnums.EFFECTIVE.getCode());
-			payStoreWallet.setCreated(new Date());
+		valiWeixinCondition(condition);
+		// 将其他微信钱包的状态设置为0
+		payStoreWalletMapper.updateBatchStatus(condition.getStoreId());
+		PayStoreWallet payStoreWallet = new PayStoreWallet();
+		BeanUtils.copyProperties(condition, payStoreWallet);
+		LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
+		//插入当前要绑定的微信钱包信息
+		payStoreWallet.setStatus(StatusEnums.EFFECTIVE.getCode());
+		payStoreWallet.setCreated(new Date());
+		payStoreWallet.setUpdated(new Date());
+		//判断当前的微信账户是否存在
+		List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
+		if(CollectionUtils.isEmpty(list)){
+			payStoreWalletMapper.insertSelective(payStoreWallet);
+		}else{
+			PayStoreWallet wallet = list.get(0);
+			Long id = wallet.getId();
+			payStoreWallet.setId(id);
 			payStoreWallet.setUpdated(new Date());
-			//判断当前的微信账户是否存在
-			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
-			if(CollectionUtils.isEmpty(list)){
-				payStoreWalletMapper.insertSelective(payStoreWallet);
-			}else{
-				PayStoreWallet wallet = list.get(0);
-				Long id = wallet.getId();
-				payStoreWallet.setId(id);
-				payStoreWallet.setUpdated(new Date());
-				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
-			}
+			payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
 		}
-		return res;
 	}
 	
 	//验证微信绑定入参
-	public int valiWeixinCondition(PayStoreWalletCondition condition){
-		int res = 0;
+	public void valiWeixinCondition(PayStoreWalletCondition condition){
 		String mobile = condition.getMobile();
 		if(StringUtils.isEmpty(mobile)){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610015);
-			res = BusinessCode.CODE_610015;
 			throw new BusinessException(BusinessCode.CODE_610015);
 		}
 		String verificationCode = condition.getVerificationCode();
     	if(StringUtils.isEmpty(verificationCode)){
     		LOGGER.info("业务异常："+BusinessCode.CODE_610016);
-    		res = BusinessCode.CODE_610016;
     		throw new BusinessException(BusinessCode.CODE_610016);
     	}
     	
     	StoreUser currentStoreUser = UserContext.getCurrentStoreUser();
     ///////////////////测试假数据///////////////////////
 //    	StoreUser currentStoreUser = new StoreUser();
-//    	currentStoreUser.setBusinessId(106l);
+//    	currentStoreUser.setBusinessId(84l);
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		System.out.print("微信验证码是否存在-----------"+exists);
 		if(!exists){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610016);
-			res = BusinessCode.CODE_610016;
 			throw new BusinessException(BusinessCode.CODE_610016);
 		}
 		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		if(!verificationCode.equals(code)){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610019);
-			res = BusinessCode.CODE_610019;
 			throw new BusinessException(BusinessCode.CODE_610019);
 		}
 		
 		String openId = condition.getOpenid();
 		if(StringUtils.isEmpty(openId)){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610031);
-			res = BusinessCode.CODE_610031;
 			throw new BusinessException(BusinessCode.CODE_610031);
 		}
-		return res;
     }
 }

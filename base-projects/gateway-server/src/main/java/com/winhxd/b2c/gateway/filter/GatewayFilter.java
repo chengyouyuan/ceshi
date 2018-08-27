@@ -108,7 +108,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                 }
             } else {
                 StoreUser storeUser = ContextHelper.getHeaderObject(tokenJson, StoreUser.class);
-                currentSpan.tag(ContextHelper.TRACER_API_STORE, storeUser.getStoreCustomerId().toString());
+                currentSpan.tag(ContextHelper.TRACER_API_STORE, storeUser.getBusinessId().toString());
                 if (StringUtils.isBlank(msVer) && StringUtils.isNotBlank(storeUser.getMsVer())) {
                     mutateRequest.header(VersionContext.HEADER_NAME, storeUser.getMsVer());
                 }
@@ -152,7 +152,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                                 currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
                                 if (!ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
                                     ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
-                                    if (result != null) {
+                                    if (result != null && result.getCode() != 0) {
                                         currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
                                     }
                                 }

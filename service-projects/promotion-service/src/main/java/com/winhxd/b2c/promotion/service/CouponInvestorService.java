@@ -33,7 +33,7 @@ public interface CouponInvestorService {
      *@User  wl
      *@Date   2018/8/25 10:58
      */
-    CouponInvestorVO getCouponInvestorDetailById(Long id);
+    CouponInvestorVO getCouponInvestorDetailById(String id);
 
     /**
      *
@@ -43,7 +43,7 @@ public interface CouponInvestorService {
      *@User  wl
      *@Date   2018/8/25 10:59
      */
-    int updateCouponInvestorToValid(long id,long userId,String userName);
+    int updateCouponInvestorToValid(Long id,Long userId,String userName);
 
    /**
     *

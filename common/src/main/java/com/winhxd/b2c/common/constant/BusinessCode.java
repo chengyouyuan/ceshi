@@ -48,6 +48,8 @@ public final class BusinessCode {
     public static final int  CODE_103902 = 103902;
     /**  验证码错误 */
     public static final int  CODE_100808 = 100808;
+    /**  您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。 */
+    public static final int  CODE_100809 = 100809;
     /** 该微信号已绑定过其它账号 */
     public static final int  CODE_100810 = 100810;
     /**您的账号或者密码错误*/
@@ -119,6 +121,8 @@ public final class BusinessCode {
 
     /**验证码错误 */
     public static final int  CODE_202108 = 202108;
+    /**您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。*/
+    public static final int  CODE_202109 = 202109;
     /** 该微信号已绑定过其它账号 */
     public static final int  CODE_202110 = 202110;
     /**请求超时*/

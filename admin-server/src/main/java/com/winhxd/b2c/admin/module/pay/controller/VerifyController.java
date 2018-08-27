@@ -233,9 +233,9 @@ public class VerifyController {
                 condition.getStoreIds().add(NumberUtils.createLong(ObjectUtils.toString(storeId)));
             }
             Object callbackStatus = map.get("callbackStatus");
-            if (StringUtils.isBlank(ObjectUtils.toString(callbackStatus))
-                    || String.valueOf(1).equals(ObjectUtils.toString(callbackStatus))
-                    || String.valueOf(3).equals(ObjectUtils.toString(callbackStatus))) {
+            if (!(StringUtils.isBlank(ObjectUtils.toString(callbackStatus))
+                    || String.valueOf(0).equals(ObjectUtils.toString(callbackStatus))
+                    || String.valueOf(2).equals(ObjectUtils.toString(callbackStatus)))) {
                 throw new BusinessException(-1, "记录中包含不可提现的记录，请检查后重试");
             }
         }

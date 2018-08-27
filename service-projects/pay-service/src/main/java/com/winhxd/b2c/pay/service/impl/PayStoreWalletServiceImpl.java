@@ -55,20 +55,16 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 			payStoreWallet.setCreated(new Date());
 			payStoreWallet.setUpdated(new Date());
 			//判断当前的微信账户是否存在
-//			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
-//			if(CollectionUtils.isEmpty(list)){
+			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
+			if(CollectionUtils.isEmpty(list)){
 				payStoreWalletMapper.insertSelective(payStoreWallet);
-//			}else{
-//				if(list.size() > 1){
-//					LOGGER.info("当前微信账户有多个重复，请联系管理员");
-//					res = BusinessCode.CODE_610021;
-//					throw new BusinessException(res);
-//				}
-//				PayStoreWallet wallet = list.get(0);
-//				Long id = wallet.getId();
-//				payStoreWallet.setId(id);
-//				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
-//			}
+			}else{
+				PayStoreWallet wallet = list.get(0);
+				Long id = wallet.getId();
+				payStoreWallet.setId(id);
+				payStoreWallet.setUpdated(new Date());
+				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
+			}
 		}
 		return res;
 	}

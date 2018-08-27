@@ -88,9 +88,6 @@ public class PayWithdrawalsVO {
     @Excel(name = "提款时间", width = 30, exportFormat = "yyyy-MM-dd HH:mm:ss")
     private Date timeEnd;
 
-    @ApiModelProperty("状态描述")
-    private String statusComments;
-
     public Long getId() {
         return id;
     }
@@ -276,7 +273,15 @@ public class PayWithdrawalsVO {
     }
 
     public Short getCallbackStatus() {
-
+        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
+            callbackStatus = 0;
+        }
+        if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
+            callbackStatus = 0;
+        }
+        if (Short.valueOf("4").compareTo(callbackStatus) == 0) {
+            callbackStatus = 0;
+        }
         return callbackStatus;
     }
 
@@ -327,11 +332,4 @@ public class PayWithdrawalsVO {
         this.timeEnd = timeEnd;
     }
 
-    public String getStatusComments() {
-        return statusComments;
-    }
-
-    public void setStatusComments(String statusComments) {
-        this.statusComments = statusComments;
-    }
 }

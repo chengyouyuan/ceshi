@@ -423,7 +423,6 @@
     <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
     <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
     <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-    <result column="status_comments" jdbcType="VARCHAR" property="statusComments" />
   </resultMap>
 
   <!-- 根据门店id查询提现列表信息 -->
@@ -440,11 +439,6 @@
 	audit_status,
 	audit_desc,
 	callback_status,
-  (case WHEN callback_status=0 then '申请中'
-    WHEN callback_status=1 then '提现成功'
-    WHEN callback_status=2 then '提现失败'
-    WHEN callback_status=3 then '无效'
-    WHEN callback_status=4 then '处理中' end) AS status_comments,
 	callback_reason,
 	error_message,
 	callback_cmms_amt,

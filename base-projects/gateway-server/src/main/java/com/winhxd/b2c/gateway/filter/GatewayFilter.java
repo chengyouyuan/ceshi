@@ -152,7 +152,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                                 currentSpan.tag(ContextHelper.TRACER_API_RESPONSE, repJson);
                                 if (!ContextHelper.PATH_TAG_COOPERATION.equals(pathTag)) {
                                     ResponseResult result = JsonUtil.tryParseJSONObject(repJson, ResponseResult.class);
-                                    if (result != null) {
+                                    if (result != null && result.getCode() != 0) {
                                         currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(result.getCode()));
                                     }
                                 }

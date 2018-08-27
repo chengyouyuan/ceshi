@@ -388,5 +388,16 @@
     <include refid="Base_Column_List" />
     from store_bank_card
     where  store_id = #{storeId,jdbcType=BIGINT} and status = 1 
+    order by updated desc
+  </select>
+  <select id="selectByStoreIdAndCardNumber" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_bank_card
+    where  
+    store_id = #{storeId,jdbcType=BIGINT} 
+    and card_number = #{cardNumber,jdbcType=VARCHAR} 
+    and swift_code = #{swiftCode,jdbcType=VARCHAR} 
+    and status = 1 
   </select>
 </mapper>

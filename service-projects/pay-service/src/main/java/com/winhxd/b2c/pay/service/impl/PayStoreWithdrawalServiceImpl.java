@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -108,7 +110,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			throw new BusinessException(BusinessCode.CODE_610801);
 		}
 		Long businessId = storeUser.getBusinessId();
-//		Long businessId = 130l;
+//		Long businessId = 89L;
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息
@@ -187,9 +189,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		getWithdrawMoney(businessId,totalFee);
 		payWithdrawal.setTotalFee(totalFee);
 		if(bankType == condition.getWithdrawType()){
-			List<PayStoreUserInfoVO> selectStorBankCardInfo = payWithdrawalsMapper.getStorBankCardInfo(businessId);
-			if(CollectionUtils.isEmpty(selectStorBankCardInfo)){
-				LOGGER.info("当前用户没有绑定银行卡");
+			//验证银行卡是否和门店绑定
+			Map<String, Object> map=new HashMap<>();
+			map.put("storeId", businessId);
+			map.put("cardNumber", condition.getPaymentAccount());
+			map.put("swiftCode", condition.getSwiftCode());
+			List<StoreBankCard> bankCards = storeBankCardMapper.selectByStoreIdAndCardNumber(map);
+			if(CollectionUtils.isEmpty(bankCards)){
+				LOGGER.info("参数错误：门店和银行卡不匹配");
 				throw new BusinessException(BusinessCode.CODE_610025);
 			} 
 			
@@ -210,9 +217,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setCreatedByName(condition.getStroeName());
 			payWithdrawal.setUpdatedByName(condition.getStroeName());
 		}else if(weixType == condition.getWithdrawType()){
-			List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreId(businessId);
-			if(payStoreWallet.size() == 0){
-				result.setMessage("门店当前没有微信绑定记录");
+			Map<String, Object> map=new HashMap<>();
+			map.put("storeId", businessId);
+			map.put("openid", condition.getBuyerId());
+			List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreIdAndOpenid(map);
+			if(CollectionUtils.isEmpty(payStoreWallet)){
+				result.setMessage("参数错误：门店和微信钱包不匹配");
 				throw new BusinessException(BusinessCode.CODE_610026);
 			}
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());

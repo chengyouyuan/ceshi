@@ -110,11 +110,11 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
     		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);
-    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(condition);
-    		
-        	StoreBankCard storeBankCard = new StoreBankCard();
+//    		StoreBankCardVO storBankCardInfo = storeBankCardMapper.selectStorBankCardInfo(condition);
+    		//绑定新的银行卡
+    		StoreBankCard storeBankCard = new StoreBankCard();
         	BeanUtils.copyProperties(condition, storeBankCard);
-    		
+        	
         	storeBankCard.setStoreId(currentStoreUser.getBusinessId());
         	storeBankCard.setStatus(StatusEnums.EFFECTIVE.getCode()); 
         	storeBankCard.setCreated(new Date());
@@ -123,13 +123,13 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
         	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
         	storeBankCard.setCreatedByName(condition.getBankUserName());
         	storeBankCard.setUpdatedByName(condition.getBankUserName());
-    		if(storBankCardInfo != null && storBankCardInfo.getStoreId().equals(currentStoreUser.getBusinessId())){// 判断当前是否是同一个门店
-				Long id = storBankCardInfo.getId();
-				storeBankCard.setId(id);
-				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
-    		}else{
+//    		if(storBankCardInfo != null && storBankCardInfo.getStoreId().equals(currentStoreUser.getBusinessId())){// 判断当前是否是同一个门店
+//				Long id = storBankCardInfo.getId();
+//				storeBankCard.setId(id);
+//				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
+//    		}else{
     			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
-    		}
+//    		}
     	}
 		return res;
 	}

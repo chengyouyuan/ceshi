@@ -19,6 +19,7 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
+import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
@@ -50,23 +51,24 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 			BeanUtils.copyProperties(condition, payStoreWallet);
 			LOGGER.info("绑定微信支付钱包入参：---"+payStoreWallet);
 			//插入当前要绑定的微信钱包信息
-			payStoreWallet.setStatus((short)1);
+			payStoreWallet.setStatus(StatusEnums.EFFECTIVE.getCode());
 			payStoreWallet.setCreated(new Date());
+			payStoreWallet.setUpdated(new Date());
 			//判断当前的微信账户是否存在
-			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
-			if(CollectionUtils.isEmpty(list)){
+//			List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
+//			if(CollectionUtils.isEmpty(list)){
 				payStoreWalletMapper.insertSelective(payStoreWallet);
-			}else{
-				if(list.size() > 1){
-					LOGGER.info("当前微信账户有多个重复，请联系管理员");
-					res = BusinessCode.CODE_610021;
-					throw new BusinessException(res);
-				}
-				PayStoreWallet wallet = list.get(0);
-				Long id = wallet.getId();
-				payStoreWallet.setId(id);
-				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
-			}
+//			}else{
+//				if(list.size() > 1){
+//					LOGGER.info("当前微信账户有多个重复，请联系管理员");
+//					res = BusinessCode.CODE_610021;
+//					throw new BusinessException(res);
+//				}
+//				PayStoreWallet wallet = list.get(0);
+//				Long id = wallet.getId();
+//				payStoreWallet.setId(id);
+//				payStoreWalletMapper.updateByPrimaryKeySelective(payStoreWallet);
+//			}
 		}
 		return res;
 	}

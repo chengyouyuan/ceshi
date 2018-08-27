@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
@@ -24,4 +25,13 @@ public interface StoreBankCardMapper {
 	int insertStoreBankCardinfo(StoreBankCard condition);
 	
 	List<StoreBankCard> selectByStoreId(Long storeId);
+	
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月27日 上午1:22:15
+	 * @Description 根据银行卡号、代码、门店id获取绑定信息
+	 * @param map
+	 * @return
+	 */
+	List<StoreBankCard> selectByStoreIdAndCardNumber(Map<String, Object> map);
 }

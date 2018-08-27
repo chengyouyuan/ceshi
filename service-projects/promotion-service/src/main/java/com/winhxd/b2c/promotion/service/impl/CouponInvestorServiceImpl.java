@@ -116,6 +116,9 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
     @Override
     public PagedList<InvertorTempleteCountVO> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
+        if(condition.getId()==null){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         PagedList<InvertorTempleteCountVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(condition.getId());
@@ -129,14 +132,22 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
 
     @Override
-    public CouponInvestorVO getCouponInvestorDetailById(Long id) {
-        CouponInvestorVO vo = couponInvestorMapper.selectCouponInvestorDetailById(id);
+    public CouponInvestorVO getCouponInvestorDetailById(String id) {
+        LOGGER.info("查看出资方详情参数id:"+id);
+        if(StringUtils.isBlank(id)){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
+        CouponInvestorVO vo = couponInvestorMapper.selectCouponInvestorDetailById(Long.parseLong(id));
         return vo;
     }
 
     @Override
     @Transactional
-    public int updateCouponInvestorToValid(long id,long userId,String userName) {
+    public int updateCouponInvestorToValid(Long id,Long userId,String userName) {
+        LOGGER.info("出资方设置无效参数id:"+id+" userId:"+userId+" userName:"+userName);
+        if(id==null || userId==null || StringUtils.isBlank(userName)){
+            throw  new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;
     }

@@ -70,7 +70,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     /**
      * wx返回标准时间格式转换
      */
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_FORMAT ="yyyy-MM-dd HH:mm:ss";
 
     @Autowired
     private WXPayApi wxPayApi;
@@ -197,7 +197,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         BeanUtils.copyProperties(responseDTO, toWxChangeVO);
         //设置日期
         if(StringUtils.isNotBlank(responseDTO.getPaymentTime())){
-            toWxChangeVO.setPaymentTime(DateUtil.toDate(responseDTO.getPaymentTime(),DATE_FORMAT));
+            toWxChangeVO.setPaymentTime(DateUtil.toDate(responseDTO.getPaymentTime(), DATE_FORMAT));
         }
         return toWxChangeVO;
     }
@@ -302,7 +302,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setDesc(wxChangeDTO.getDesc());
         record.setSpbillCreateIp(wxChangeDTO.getSpbillCreateIp());
         if(StringUtils.isNotBlank(responseDTO.getPaymentTime())){
-            record.setTimeEnd(DateUtil.toDate(responseDTO.getPaymentTime(),DATE_FORMAT));
+            record.setTimeEnd(DateUtil.toDate(responseDTO.getPaymentTime(), DATE_FORMAT));
         }
         record.setStatus((short)(toWxChangeVO.isTransfersResult() ? 1 : 0));
         if(0 == record.getStatus()) {
@@ -442,10 +442,10 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      */
     private PayTransfersToWxBankVO confirmTransfersToWxBankResult(PayTransfersToWxBankVO toWxBankVO, PayTransfersForWxBankDTO wxBankDTO)  throws Exception{
         PayTransfersQueryToWxBankVO queryToWxBankVO = getExactResultForWxBank(wxBankDTO.getPartnerTradeNo());
-        if (null == queryToWxBankVO) {
+        /*if (null == queryToWxBankVO) {
             logger.error("Transfers result query failed, partnerTradeNo : " + toWxBankVO.getPartnerTradeNo());
             return toWxBankVO;
-        }
+        }*/
         //获得查询结果, 开始处理返参
         if(StringUtils.isNotBlank(queryToWxBankVO.getResultCode()) &&
                 PayTransfersStatus.FAIL.getCode().equals(queryToWxBankVO.getResultCode())){
@@ -526,11 +526,11 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setChannel(TransfersChannelType.WXBBANK.getCode());
         record.setChannelCode(wxBankDTO.getBankCode());
         //转账至wx银行卡是返参中包含金额信息, 以返参中金额信息为准
-        record.setTotalFee(responseDTO.getAmount() == null ? 0 : responseDTO.getAmount());
+        record.setTotalFee(responseDTO.getAmount() == null ? Integer.valueOf(0) : responseDTO.getAmount());
         record.setTotalAmount(new BigDecimal(responseDTO.getAmount() == null ? 0 : responseDTO.getAmount()).
                 divide(UNITS).setScale(2,RoundingMode.HALF_UP));
 
-        record.setCmmsFee(responseDTO.getCmmsAmt() == null ? 0 : responseDTO.getCmmsAmt());
+        record.setCmmsFee(responseDTO.getCmmsAmt() == null ? Integer.valueOf(0) : responseDTO.getCmmsAmt());
         record.setCmmsAmount(new BigDecimal(responseDTO.getCmmsAmt() == null ? 0 : responseDTO.getCmmsAmt()).
                 divide(UNITS).setScale(2,RoundingMode.HALF_UP));
 
@@ -559,11 +559,11 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         System.out.println(wxPay.publicKey(sortedMap));*/
 
         //System.out.println(new BigDecimal("1001").divide(UNITS).setScale(2, RoundingMode.HALF_UP).doubleValue());
-        RequestBase preOrderDTO = new PayPreOrderDTO();
+        /*RequestBase preOrderDTO = new PayPreOrderDTO();
         Class<? extends RequestBase> clazz = preOrderDTO.getClass();
         Field[] fields = clazz.getDeclaredFields();
         Field[] fields2 = clazz.getFields();
-        System.out.println(fields.length);
+        System.out.println(fields.length);*/
     }
 
 }

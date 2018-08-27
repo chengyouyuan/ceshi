@@ -228,8 +228,10 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
-            if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
+            if (!CollectionUtils.isEmpty(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList())){
+                if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
+                    throw new BusinessException(BusinessCode.CODE_1007);
+                }
             }
         }
         //推券

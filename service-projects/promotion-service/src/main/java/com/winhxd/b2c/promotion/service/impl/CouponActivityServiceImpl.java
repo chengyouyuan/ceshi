@@ -415,6 +415,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             throw new BusinessException(BusinessCode.CODE_503501,"停止活动失败");
         }
         List<CouponActivityRecord> recordList = couponActivityRecordMapper.selectRecordByActivityId(condition.getId());
+        if (CollectionUtils.isEmpty(recordList)){
+            throw new BusinessException(BusinessCode.CODE_503401,"撤销活动优惠券失败");
+        }
         //撤销已发放的优惠券
         List<Long> longList = new ArrayList<>();
         for (int i=0;i<recordList.size();i++){

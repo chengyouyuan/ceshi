@@ -1915,6 +1915,9 @@ public class CommonOrderServiceImpl implements OrderService {
                     storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().add(orderInfo.getOrderTotalMoney()
                     ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                     cache.zincrby(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), 1, orderInfo.getCustomerId().toString());
+                    //获取当天最后一秒
+                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+                    cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 } else {
                     //取消进行 减少计算
                     storeOrderSalesSummaryVO.setSkuCategoryQuantity(storeOrderSalesSummaryVO.getSkuCategoryQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuCategoryQuantity() - orderInfo

@@ -311,6 +311,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
+        logger.info("退款回调-开始-orderNo={}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -344,6 +345,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("退款回调-结束-orderNo={}", orderNo);
         return callbackResult;
     }
 

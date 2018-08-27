@@ -15,10 +15,8 @@ spring:
   boot:
     admin:
       context-path: admin
-#    admin:
-#      enabled: true
 
-eureka:
-  instance:
-    prefer-ip-address: true
 turbine:
+  app-config: b2c-gateway-server
+  clusterNameExpression: new String("default")
+  combine-host-port: true

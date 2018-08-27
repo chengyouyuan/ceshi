@@ -1,4 +1,0 @@
-turbine:
-  app-config: b2c-gateway-server
-  clusterNameExpression: new String("default")
-  combine-host-port: true

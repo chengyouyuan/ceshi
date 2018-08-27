@@ -20,7 +20,7 @@ WX:
   PAY_NOTIFY_URL: /api-pay/unifiedorder/openapi/3410/v1/callback
   # 退款回调配置
   REFUND_NOTIFY_URL: /api-pay/refund/openapi/3420/v1/callback
-  # RSA公钥 java中需转换为PKCS#8格式
+  # RSA公钥 用户转账至银行卡对用户名和银行卡号进行加密(PKCS#8格式)
   PUBLIC_KEY: MIIBCgKCAQEA5Z5HxqgDyvfxtPLCh6aDmf88GRRU5yx3eNd/ygOuPpM/54MaKWYD\rBkbMjTBFo/AubH6USoEEKoj6mIe9nG4WfeRX5PezMmm9lizVE6yaL0HGTEeTVbkI\rnvzJ2k3QF6MMIVv44KFaiZwS8LyKYtHwgsSjQH2ByxFaDAyAfTNLS9XDe3hLg7LY\rZDDmuE3AiWjw2F+cE7cDmiH8X+WMPzIQkCnbjgiJ5Evf7HSR4UEHk2G/tIBDX6g1\rgm6AKsc9yd0Uauyr0/CuZmG3QHx0Yd2zGVMT8ZW6mmtG4aN6Ec1eJim1nJPAbYkg\rgNRaLCYJQ9H+JCvvhVA0YE4XNSvSEp5FswIDAQAB
 
 # 提现限额配置

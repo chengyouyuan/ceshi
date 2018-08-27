@@ -229,14 +229,20 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
         //优惠券信息
         List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectTemplateByActivityId(couponActivity.getId());
-        couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
+        if (!CollectionUtils.isEmpty(couponActivityTemplateList)){
+            couponActivityVO.setCouponActivityTemplateList(couponActivityTemplateList);
+        }
         //区域信息
         List<CouponActivityArea> couponActivityAreaList = couponActivityAreaMapper.selectAreaByActivityId(couponActivity.getId());
-        couponActivityVO.setCouponActivityAreaList(couponActivityAreaList);
+        if (!CollectionUtils.isEmpty(couponActivityAreaList)){
+            couponActivityVO.setCouponActivityAreaList(couponActivityAreaList);
+        }
         //门店或用户信息
         for(int i = 0 ; i < couponActivityTemplateList.size() ; i++) {
             couponActivityStoreCustomerList = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplateList.get(i).getId());
-            couponActivityVO.getCouponActivityTemplateList().get(i).setCouponActivityStoreCustomerList(couponActivityStoreCustomerList);
+            if (!CollectionUtils.isEmpty(couponActivityStoreCustomerList)){
+                couponActivityVO.getCouponActivityTemplateList().get(i).setCouponActivityStoreCustomerList(couponActivityStoreCustomerList);
+            }
         }
         return couponActivityVO;
     }

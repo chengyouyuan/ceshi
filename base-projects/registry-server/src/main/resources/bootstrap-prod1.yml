@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    active: prod,prod1
-
 eureka:
   instance:
     hostname: registry1.huistore

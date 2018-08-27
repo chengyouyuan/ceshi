@@ -19,6 +19,13 @@
         <module>monitor-server</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>b2c-${project.artifactId}</finalName>
         <plugins>

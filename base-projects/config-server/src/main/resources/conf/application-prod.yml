@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://db.huistore:8066/retail2C?useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+
+# 云平台REST服务配置
+RETAIL-REST-SERVICE:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: http://app.retail:8202/
+
+# 缓存配置
+redis:
+  cluster:
+    jedisClusterNode: rediscluster1.huistore:7000,rediscluster2.huistore:7001,rediscluster3.huistore:7000,rediscluster4.huistore:7001,rediscluster5.huistore:7000,rediscluster6.huistore:7001
+    maxTotal: 500
+    maxIdle: 5000
+    maxWaitMillis: 10000
+    testOnBorrow: true
+
+# 消息队列配置
+mq:
+  normal:
+    address: rmq1.huistore:5672,rmq2.huistore:5672,rmq3.huistore:5672
+    username: guest
+    password: guest
+    virtual-host: huistore
+  zipkin:
+    address: rmq1.huistore:5672,rmq2.huistore:5672,rmq3.huistore:5672
+    username: guest
+    password: guest
+    virtual-host: zipkin

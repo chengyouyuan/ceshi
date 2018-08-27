@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: native,dev
+    active: native,prod
   cloud:
     config:
       server:
@@ -10,4 +10,4 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://registry1.huistore:1111/eureka/,http://registry2.huistore:1111/eureka/

@@ -12,7 +12,3 @@ spring:
       discovery:
         enabled: true
         service-id: b2c-config-server
-
-eureka:
-  instance:
-    prefer-ip-address: true

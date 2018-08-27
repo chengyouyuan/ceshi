@@ -20,6 +20,7 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponProductCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.OrderAvailableCouponCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
@@ -169,6 +170,11 @@ public class ShopCarServiceImpl implements ShopCarService {
     @Override
     public OrderInfo readyOrder(ReadyShopCarCondition condition, Long customerId) {
         CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
+        StoreUserInfoVO storeUserInfoVO = getStoreUserInfoVO(condition.getStoreId());
+        if (StoreStatusEnum.VALID.getStatusCode() != storeUserInfoVO.getStoreStatus()) {
+            logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 门店账号无效：storeId=" + condition.getStoreId());
+            throw new BusinessException(BusinessCode.CODE_402020);
+        }
         if (!CustomerUserEnum.CUSTOMER_STATUS_NORMAL.getCode().equals(customerUserInfoVO.getStatus())) {
             logger.info("ShopCarServiceImpl{} -> readyOrder接口异常{} 账号被锁定：customerId=" + customerId);
             throw new BusinessException(BusinessCode.CODE_402019);

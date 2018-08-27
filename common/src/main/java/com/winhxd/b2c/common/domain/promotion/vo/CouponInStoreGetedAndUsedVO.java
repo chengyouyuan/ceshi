@@ -36,9 +36,9 @@ public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "优惠最大限额")
     private Float maxAmt;
     @ApiModelProperty(value = "有效期开始时间")
-    private Date startTime;
+    private String startTime;
     @ApiModelProperty(value = "有效期结束时间")
-    private Date endTime;
+    private String endTime;
     @ApiModelProperty(value = "适用对象类型")
     private Short applyRuleType;
     @ApiModelProperty(value = "适用对象类型")
@@ -140,19 +140,19 @@ public class CouponInStoreGetedAndUsedVO {
         this.maxAmt = maxAmt;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

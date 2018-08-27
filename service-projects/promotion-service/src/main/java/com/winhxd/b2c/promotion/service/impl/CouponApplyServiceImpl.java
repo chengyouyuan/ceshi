@@ -144,7 +144,6 @@ public class CouponApplyServiceImpl implements CouponApplyService {
     }
 
     @Override
-    @Transactional
     public int updateCouponApplyToValid(Long id, Long userId, String userName) {
         LOGGER.info("适用对象规则设置无效参数id:"+id+" userId:"+userId+" userName"+userName);
         if(id==null || userId==null || StringUtils.isBlank(userName)){
@@ -165,7 +164,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                 CouponApplyVO vo = couponApplyList.get(i);
                 TempleteRelationCountVO templeteRelationCountVO = couponApplyMapper.getRelationCouponApplyCount(vo.getId());
                 if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
                 }else{
                     vo.setRelTempleteCount(String.valueOf(0));
                 }
@@ -213,7 +212,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                             for(int i=0;i<list.size();i++){
                                 CouponApplyBrandList couponApplyBrandList = list.get(i);
                                 couponApplyBrandList.setApplyBrandId(couponApplyBrand.getId());
-                                couponApplyBrandList.setStatus((short)1);
+                                couponApplyBrandList.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
                                 couponApplyBrandListMapper.insert(couponApplyBrandList);
                             }
                         }
@@ -234,7 +233,7 @@ public class CouponApplyServiceImpl implements CouponApplyService {
                             for(int i=0;i<list.size();i++){
                                 CouponApplyProductList couponApplyProductList = list.get(i);
                                 couponApplyProductList.setApplyProductId(couponApplyProduct.getId());
-                                couponApplyProductList.setStatus((short)1);
+                                couponApplyProductList.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
                                 couponApplyProductListMapper.insert(couponApplyProductList);
                             }
                         }

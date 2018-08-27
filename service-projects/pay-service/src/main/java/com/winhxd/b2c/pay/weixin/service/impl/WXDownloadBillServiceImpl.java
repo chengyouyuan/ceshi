@@ -61,12 +61,12 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
     /**
      * 微信入参时间格式
      */
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     
     /**
      * 微信返回的时间格式
      */
-    SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     @Autowired
     private WXPayApi wXPayApi;

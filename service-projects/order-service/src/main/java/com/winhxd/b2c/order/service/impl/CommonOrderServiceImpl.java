@@ -1723,14 +1723,14 @@ public class CommonOrderServiceImpl implements OrderService {
                 //获取两天后的时间
                 Calendar time2DaysAfter = Calendar.getInstance();
                 time2DaysAfter.add(Calendar.DATE, 2);
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) time2DaysAfter.getTimeInMillis());
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, (int) (time2DaysAfter.getTimeInMillis() - System.currentTimeMillis()));
                 //获取3天后-1小时
                 Calendar time1HourAfter = Calendar.getInstance();
                 time1HourAfter.add(Calendar.DATE, 3);
                 long hour1mills = time1HourAfter.getTimeInMillis() - 60 * 60 * 1000;
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) hour1mills);
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, (int) (hour1mills - System.currentTimeMillis()));
                 //发送3天后超时消息
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, (int) time1HourAfter.getTimeInMillis());
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, (int) (time1HourAfter.getTimeInMillis() - System.currentTimeMillis()));
                 logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
             } catch (Exception e) {
                 logger.error("C端申请退款发送消息失败orderNo={}", orderInfo.getOrderNo());
@@ -1891,10 +1891,11 @@ public class CommonOrderServiceImpl implements OrderService {
 
     /**
      * 用户付款、取消订单 统计订单销售数据
-     * @author wangbin
-     * @date  2018年8月24日 上午10:20:58
+     *
      * @param orderInfo
      * @param needAdd
+     * @author wangbin
+     * @date 2018年8月24日 上午10:20:58
      */
     private void calculateIntradaySalesSummaryAndCache(OrderInfo orderInfo, boolean needAdd) {
         String lockKey;
@@ -1921,7 +1922,8 @@ public class CommonOrderServiceImpl implements OrderService {
                             .getSkuCategoryQuantity());
                     storeOrderSalesSummaryVO.setSkuQuantity(storeOrderSalesSummaryVO.getSkuQuantity() == null ? 0 : storeOrderSalesSummaryVO.getSkuQuantity() - orderInfo.getSkuQuantity());
                     storeOrderSalesSummaryVO.setOrderNum(storeOrderSalesSummaryVO.getOrderNum() == null ? 0 : storeOrderSalesSummaryVO.getOrderNum() - 1);
-                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().subtract(orderInfo.getOrderTotalMoney()
+                    storeOrderSalesSummaryVO.setTurnover(storeOrderSalesSummaryVO.getTurnover() == null ? BigDecimal.ZERO : storeOrderSalesSummaryVO.getTurnover().subtract(orderInfo
+                            .getOrderTotalMoney()
                     ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                     cache.zincrby(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), -1, orderInfo.getCustomerId().toString());
                     Double score = cache.zscore(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), orderInfo.getCustomerId().toString());
@@ -1942,7 +1944,7 @@ public class CommonOrderServiceImpl implements OrderService {
     }
 
     @EventMessageListener(value = EventTypeHandler.EVENT_CUSTOMER_ORDER_REFUND_SALES_SUMMERY_HANDLER)
-    public void refundOrder(String orderNo, OrderInfo order)  {
+    public void refundOrder(String orderNo, OrderInfo order) {
         if (orderNo == null || order == null) {
             return;
         }

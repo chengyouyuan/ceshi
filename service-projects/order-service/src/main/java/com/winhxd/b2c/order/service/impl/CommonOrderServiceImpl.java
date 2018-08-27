@@ -126,12 +126,18 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final String KEYWORD3 = "keyword3";
     private static final String KEYWORD2 = "keyword2";
     private static final String KEYWORD1 = "keyword1";
-    /**一天后的时间间隔*/
-    private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS=172799998;
-    /**三天前一小时后的时间间隔*/
-    private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS=255600000;
-    /**三天后的时间间隔*/
-    private static final int ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS=259200000;
+    /**
+     * 一天后的时间间隔
+     */
+    private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS = 172799998;
+    /**
+     * 三天前一小时后的时间间隔
+     */
+    private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS = 255600000;
+    /**
+     * 三天后的时间间隔
+     */
+    private static final int ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS = 259200000;
 
     private static final ThreadLocal<Map<String, ProductSkuVO>> SKU_INFO_MAP_THREADLOCAL = new ThreadLocal<>();
 
@@ -352,7 +358,7 @@ public class CommonOrderServiceImpl implements OrderService {
                     registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                 }
             } else {
-                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}", orderNo));
+                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}-orderStatus={1}", orderNo, order.getOrderStatus()));
                 callbackResult = false;
             }
         } finally {
@@ -1726,20 +1732,17 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                if(customerUserInfoVO.getCustomerMobile().equals("15537071557")){
+                if (customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3 * 60 * 1000);
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5 * 60 * 1000);
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8 * 60 * 1000);
+                } else {
                     //获取两天后的时间
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3*60*1000);
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS);
                     //获取3天后-1小时
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5*60*1000);
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS);
                     //发送3天后超时消息
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8*60*1000);
-                }else{
-                //获取两天后的时间
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS);
-                //获取3天后-1小时
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS);
-                //发送3天后超时消息
-                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS);
+                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS);
                 }
                 logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
             } catch (Exception e) {
@@ -1927,7 +1930,8 @@ public class CommonOrderServiceImpl implements OrderService {
                     ).setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                     cache.zincrby(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), 1, orderInfo.getCustomerId().toString());
                     //获取当天最后一秒
-                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
+                    long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999))
+                            .getTime();
                     cache.expire(OrderUtil.getStoreOrderCustomerIdSetField(orderInfo.getStoreId()), Integer.valueOf(DurationFormatUtils.formatDuration(lastSecond - System.currentTimeMillis(), "s")));
                 } else {
                     //取消进行 减少计算

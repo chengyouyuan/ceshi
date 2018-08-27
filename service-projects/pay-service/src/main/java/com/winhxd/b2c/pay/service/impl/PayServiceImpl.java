@@ -114,7 +114,6 @@ public class PayServiceImpl implements PayService{
 	@Transactional
 	public Boolean callbackOrderPay(PayBill condition) {
 		String log=logLabel+"支付回调callbackOrderPay";
-		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
 //			throw new BusinessException(BusinessCode.CODE_600101);
@@ -126,6 +125,7 @@ public class PayServiceImpl implements PayService{
 			return false;
 		}
 		log+="--订单号--"+condition.getOutOrderNo();
+		logger.info(log+"--支付开始");
 		//判断支付成功之后更新订单信息
 		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
 			// 判断订单是否更新成功
@@ -172,7 +172,7 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--订单支付流更新失败");
 //			throw new BusinessException(BusinessCode.CODE_600301);
 		}
-
+		logger.info(log+"--支付结束");
 		return true;
 	}
 
@@ -181,7 +181,6 @@ public class PayServiceImpl implements PayService{
 	@Transactional
 	public Boolean callbackOrderRefund(PayRefund condition) {
 		String log=logLabel+"退款回调callbackOrderRefund";
-		logger.info(log+"--开始");
 		if (condition==null) {
 			logger.info(log+"--参数为空");
 //			throw new BusinessException(BusinessCode.CODE_600101);
@@ -193,6 +192,7 @@ public class PayServiceImpl implements PayService{
 			return false;
 		}
         log+="--订单号--"+condition.getOrderNo();
+        logger.info(log+"--开始退款回调");
 		//插入流水数据
 		PayRefundPayment payRefundPayment=new PayRefundPayment();
 		payRefundPayment.setRefundTransactionNo(condition.getOutRefundNo());
@@ -218,21 +218,6 @@ public class PayServiceImpl implements PayService{
 		}
 		//根据退款状态  判断是否更新订单状态
 		if(1 == condition.getCallbackRefundStatus()){
-			//更新订单状态
-			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
-			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
-			try {
-				ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
-				if (callbackResult.getCode()!=BusinessCode.CODE_OK&&!callbackResult.getData()) {
-					//订单更新失败
-					logger.info(log+"--订单更新失败");
-					return false;
-				}
-			} catch (Exception e) {
-				logger.error(log+"--订单更新失败",e);
-				return false;
-			}
-
 			//出账明细表 pay_finance_account_detail
 			PayFinanceAccountDetail payFinanceAccountDetail = new PayFinanceAccountDetail();
 			payFinanceAccountDetail.setOrderNo(condition.getOrderNo());
@@ -244,9 +229,23 @@ public class PayServiceImpl implements PayService{
 			if (payFinanceInsertResult<1) {
 				logger.info(log+"--订单出账明细表插入失败");
 			}
-
+			//更新订单状态
+			OrderRefundCallbackCondition orderRefundCallbackCondition=new OrderRefundCallbackCondition();
+			orderRefundCallbackCondition.setOrderNo(condition.getOrderNo());
+			try {
+				ResponseResult<Boolean> callbackResult=orderServiceClient.updateOrderRefundCallback(orderRefundCallbackCondition);
+				if (callbackResult.getCode()!=BusinessCode.CODE_OK&&!callbackResult.getData()) {
+					//订单更新失败
+					logger.info(log+"--订单更新失败");
+					return false;
+				}
+				logger.info(log+"--订单更新状态"+callbackResult.getData());
+			} catch (Exception e) {
+				logger.error(log+"--订单更新失败",e);
+				return false;
+			}
 		}
-
+		logger.info(log+"--结束退款回调");
 		return true;
 	}
 
@@ -616,9 +615,8 @@ public class PayServiceImpl implements PayService{
 			vo.setSignType(signType);
 			vo.setTimeStamp(timeStamp);
 			vo.setAppid(appid);
-			logger.info("------payvo----"+vo.toString());
 		}
-		
+		logger.info(log+"--结束");
 		return vo;
 	}
     /**
@@ -682,20 +680,27 @@ public class PayServiceImpl implements PayService{
 		payRefund.setCreatedByName(order.getUpdatedByName());
 		payRefund.setRefundDesc(order.getCancelReason());
 		PayRefundVO vo=refundService.refundOrder(payRefund);
-		if (vo!=null) {
+		if (vo!=null&&StringUtils.isNotBlank(vo.getOutRefundNo())) {
 			//插入退款流水信息
-			PayRefundPayment payRefundPayment=new PayRefundPayment();
-			payRefundPayment.setOrderNo(orderNo);
-			payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
-			payRefundPayment.setRefundNo(orderNo);
-			payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
-			payRefundPayment.setRefundFee(payRefund.getRefundAmount());
-			payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
-			payRefundPayment.setCreated(new Date());
-			payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
-			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
-			payRefundPaymentMapper.insertSelective(payRefundPayment);
+			//判断是否有退款流水记录，有就不插入
+			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(vo.getOutRefundNo());
+			if (payRefundPayment==null) {
+				logger.info(log+"--插入退款流水");
+				payRefundPayment=new PayRefundPayment();
+				payRefundPayment.setOrderNo(orderNo);
+				payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
+				payRefundPayment.setRefundNo(orderNo);
+				payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
+				payRefundPayment.setRefundFee(payRefund.getRefundAmount());
+				payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
+				payRefundPayment.setCreated(new Date());
+				payRefundPayment.setUpdated(new Date());
+				payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
+				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+				payRefundPaymentMapper.insertSelective(payRefundPayment);
+			}		
 		}
+		logger.info(log+"--结束");
 	}
 
 	@Override

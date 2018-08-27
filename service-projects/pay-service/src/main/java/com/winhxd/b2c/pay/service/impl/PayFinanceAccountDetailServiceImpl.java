@@ -8,6 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class PayFinanceAccountDetailServiceImpl implements PayFinanceAccountDeta
             return payFinanceAccountDetailMapper.insertSelective(condition);
         }else{
             condition.setId(payFinanceAccountDetails.get(0).getId());
+            condition.setUpdated(new Date());
             return payFinanceAccountDetailMapper.updateByPrimaryKeySelective(condition);
         }
     }

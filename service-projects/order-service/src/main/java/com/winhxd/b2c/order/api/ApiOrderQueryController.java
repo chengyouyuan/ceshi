@@ -33,7 +33,6 @@ import com.winhxd.b2c.common.domain.order.vo.OrderItemVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderListForCustomerVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderListItemForCustomerVO;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.order.service.OrderQueryService;
 

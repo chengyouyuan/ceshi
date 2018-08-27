@@ -56,11 +56,11 @@
     values
     <foreach collection="list" item="item" index="index"  separator=",">
         <trim prefix="(" suffix=")" suffixOverrides=","> 
-      #{accountingTime,jdbcType=TIMESTAMP}, #{wxPayNo,jdbcType=VARCHAR}, 
-      #{swiftNo,jdbcType=VARCHAR}, #{busiName,jdbcType=VARCHAR}, #{busiType,jdbcType=VARCHAR}, 
-      #{budget,jdbcType=VARCHAR}, #{budgetAmount,jdbcType=DECIMAL}, #{accountBalance,jdbcType=DECIMAL}, 
-      #{submitBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{busiCredentialNo,jdbcType=VARCHAR}, 
-      #{billDate,jdbcType=DATE}, #{financialBillCountId,jdbcType=BIGINT}
+      #{item.accountingTime,jdbcType=TIMESTAMP}, #{item.wxPayNo,jdbcType=VARCHAR}, 
+      #{item.swiftNo,jdbcType=VARCHAR}, #{item.busiName,jdbcType=VARCHAR}, #{item.busiType,jdbcType=VARCHAR}, 
+      #{item.budget,jdbcType=VARCHAR}, #{item.budgetAmount,jdbcType=DECIMAL}, #{item.accountBalance,jdbcType=DECIMAL}, 
+      #{item.submitBy,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.busiCredentialNo,jdbcType=VARCHAR}, 
+      #{item.billDate,jdbcType=DATE}, #{item.financialBillCountId,jdbcType=BIGINT}
       </trim>
     </foreach>
   </insert>

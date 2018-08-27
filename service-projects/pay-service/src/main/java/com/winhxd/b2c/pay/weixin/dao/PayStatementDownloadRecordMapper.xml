@@ -131,6 +131,21 @@
        AND status = #{status,jdbcType=INTEGER}
       </if>
     </where>
+      <if test="billDate != null">
+        GROUP BY bill_date
+      </if>
+  </select>
+  
+  <select id="selectUnDownloadRecord" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from pay_statement_download_record
+	where bill_date = #{billDate,jdbcType=DATE} and status = 0
+	and
+	NOT EXISTS
+	(SELECT * FROM pay_statement_download_record where bill_date = #{billDate,jdbcType=DATE}
+	and status = 1)
+	GROUP BY bill_date
   </select>
   
 </mapper>

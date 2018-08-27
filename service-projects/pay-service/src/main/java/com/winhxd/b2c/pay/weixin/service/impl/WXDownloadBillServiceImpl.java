@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -205,8 +206,10 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 								arrayList.clear();
 							}
 						} catch (Exception e) {
+							this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 							logger.error("{},保存对账单失败：{}", sdf.format(billDate), e);
 							logger.error("保存对账单失败：" + JsonUtil.toJSONString(arrayList));
+							throw new Exception(e);
 						}
 					}
 					//业务成功，记录到记录表
@@ -223,7 +226,6 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 			
 			logger.info(responseDTO.toString());
 		} catch (Exception e) {
-			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 			logger.error("内部错误，下载对账单失败");
 			payStatementMapper.deleteByBillDate(billDate);
 			payStatementCountMapper.deleteByBillDate(billDate);
@@ -232,7 +234,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
-	private void dealStatementCountData(Date billDate, PayStatementCount payStatementCount) {
+	private void dealStatementCountData(Date billDate, PayStatementCount payStatementCount) throws Exception{
 
 		try {
 			payStatementCountMapper.insertSelective(payStatementCount);
@@ -240,6 +242,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 			//插入数据失败，记录到记录表
 			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 			logger.error("内部错误，插入对账单统计数据失败", e);
+			throw new Exception(e);
 		}
 
 		//业务成功，记录到记录表
@@ -498,8 +501,10 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 								arrayList.clear();
 							}
 						} catch (Exception e) {
+							this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 							logger.error("{},保存资金账单失败：{}", sdf.format(billDate), e);
 							logger.error("保存资金账单失败：" + JsonUtil.toJSONString(arrayList));
+							throw new Exception(e);
 						}
 					}
 					//业务成功，记录到记录表
@@ -514,14 +519,13 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 			}
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e);
-			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 			payFinancialBillMapper.deleteByBillDate(billDate);
 			payFinancialBillCountMapper.deleteByBillDate(billDate);
 		}
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
-	private void dealFinancialBillCountData(Date billDate,PayFinancialBillCount payFinancialBillCount) {
+	private void dealFinancialBillCountData(Date billDate,PayFinancialBillCount payFinancialBillCount) throws Exception{
 
 		try {
 			payFinancialBillCountMapper.insertSelective(payFinancialBillCount);
@@ -529,6 +533,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 
 			logger.error("资金账单统计数据插入失败", e);
+			throw new Exception(e);
 		}
 
 		//业务成功，记录到记录表
@@ -593,9 +598,40 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 	}
 	
 	@Override
-	public List<PayStatementDownloadRecord> findDownloadRecord(
-			PayStatementDownloadRecord record) {
-		return payStatementDownloadRecordMapper.selectByModel(record);
+	public List<Date> findUnDownloadRecord(PayStatementDownloadRecord record) {
+		//获取前X天的时间List
+		List<Date> dateList = this.getBeforeXDateList(new Date(), 7);
+		List<Date> list = new ArrayList<Date>();
+		for (int i = 0; i < dateList.size(); i++) {
+			record.setBillDate(dateList.get(i));
+			PayStatementDownloadRecord selectUnDownloadRecord = payStatementDownloadRecordMapper.selectUnDownloadRecord(record);
+			if (selectUnDownloadRecord != null) {
+				list.add(selectUnDownloadRecord.getBillDate());
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * @Description 获取前X天的时间List
+	 * @author yuluyuan
+	 * @date 2018年8月27日 上午11:36:22
+	 * @param date
+	 * @return
+	 */
+	private List<Date> getBeforeXDateList(Date date, int x) {
+		List<Date> dateList = new ArrayList<Date>();
+		Calendar cal1 = Calendar.getInstance();
+		cal1.setTime(DateUtils.addDays(date, -x));
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(date);
+		
+		while(cal2.after(cal1)){
+			dateList.add(cal1.getTime());
+			cal1.add(Calendar.DAY_OF_MONTH, 1);  
+		}
+		
+		return dateList;
 	}
 
 	@Override

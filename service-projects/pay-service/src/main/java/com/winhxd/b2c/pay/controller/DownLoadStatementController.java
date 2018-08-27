@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -60,13 +61,13 @@ public class DownLoadStatementController implements DownLoadStatementClient {
 	}
 	
 	@Override
-	@ApiOperation(value = "查询账单记录表", notes = "查询账单记录表")
+	@ApiOperation(value = "查询未下载账单记录表", notes = "查询未下载账单记录表")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
 		@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
-	public ResponseResult<List<PayStatementDownloadRecord>> findDownloadRecord(@RequestBody PayStatementDownloadRecord record) {
+	public ResponseResult<List<Date>> findUnDownloadRecord(@RequestBody PayStatementDownloadRecord record) {
 		logger.info("/6157/v1/findDownloadRecord 查询账单记录表");
-		ResponseResult<List<PayStatementDownloadRecord>> result = new ResponseResult<>();
-		List<PayStatementDownloadRecord> list = wXDownloadBillService.findDownloadRecord(record);
+		ResponseResult<List<Date>> result = new ResponseResult<>();
+		List<Date> list = wXDownloadBillService.findUnDownloadRecord(record);
 		result.setData(list);
 		return result;
 	}

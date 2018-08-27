@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.feign.pay;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,8 +30,8 @@ public interface DownLoadStatementClient {
 	@PostMapping(value = "/pay/6156/v1/downloadFundFlow", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseResult<String> downloadFundFlow(@RequestBody DownloadStatementCondition condition);
 	
-	@PostMapping(value = "/pay/6157/v1/findDownloadRecord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	ResponseResult<List<PayStatementDownloadRecord>> findDownloadRecord(@RequestBody PayStatementDownloadRecord record);
+	@PostMapping(value = "/pay/6157/v1/findUnDownloadRecord", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	ResponseResult<List<Date>> findUnDownloadRecord(@RequestBody PayStatementDownloadRecord record);
 	
 	@PostMapping(value = "/pay/6158/v1/getPayStatementByOutOrderNo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	ResponseResult<PayStatement> getPayStatementByOutOrderNo(@RequestParam("outOrderNo") String outOrderNo);
@@ -68,9 +69,9 @@ class DownLoadStatementClientFallback implements DownLoadStatementClient, Fallba
 	}
 
 	@Override
-	public ResponseResult<List<PayStatementDownloadRecord>> findDownloadRecord(
+	public ResponseResult<List<Date>> findUnDownloadRecord(
 			PayStatementDownloadRecord record) {
-		logger.error("DownLoadStatementClient -> findDownloadRecord", throwable);
+		logger.error("DownLoadStatementClient -> findUnDownloadRecord", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
 

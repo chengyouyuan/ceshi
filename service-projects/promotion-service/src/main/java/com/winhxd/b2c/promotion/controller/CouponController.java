@@ -31,10 +31,13 @@ public class CouponController implements CouponServiceClient{
 	@Override
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
+    @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")})
 	public ResponseResult<String> getCouponNumsByCustomerForStore( @RequestParam("customerId")Long customerId) {
 		ResponseResult<String> result = new ResponseResult<String>();
 		Integer count= couponService.getCouponNumsByCustomerForStore(customerId);
+		if(count==null){
+			count = 0;
+		}
 		result.setData(String.valueOf(count));
 		return result;
 	}

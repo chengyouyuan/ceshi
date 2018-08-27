@@ -88,7 +88,7 @@ public class BackStageStoreController {
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE_EDIT)
     public ResponseResult<Integer> modifyStoreInfo(@RequestBody BackStageModifyStoreCondition condition) {
         logger.info("编辑门店保存接口入参为：{}", JsonUtil.toJSONString(condition.toString()));
-        if (condition.getId() == null) {
+        if (condition.getId() == null || condition.getStoreStatus() == null) {
             logger.error("编辑门店保存接口，参数错误");
             throw new BusinessException(BusinessCode.CODE_102201, "参数无效");
         }

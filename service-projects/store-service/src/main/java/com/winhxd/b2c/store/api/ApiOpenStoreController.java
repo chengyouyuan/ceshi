@@ -14,6 +14,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
+import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
@@ -103,7 +104,7 @@ public class ApiOpenStoreController {
             return responseResult;
         }
         //是否开过小店，0未开店
-        if (storeUserInfo.getStoreStatus() == 0) {
+        if (storeUserInfo.getStoreStatus() == StoreStatusEnum.UN_OPEN.getStatusCode()) {
             openStoreVO.setStoreStatus((byte) 0);
             //未开店是否完善信息
             ResponseResult<List<Integer>> noPerfectResult = storeHxdServiceClient.getStorePerfectInfo(storeCustomerId.toString());
@@ -291,7 +292,7 @@ public class ApiOpenStoreController {
      * 匹配门店配置和全部配置的关系状态
      *
      * @param storeType 门店的多个配置类型
-     * @param type 待匹配类型
+     * @param type      待匹配类型
      * @return 列表
      */
     private StoreEnumObject typeMatch(String storeType, short type, StoreEnumObject storeEnumObject) {
@@ -322,7 +323,7 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
-        if (StringUtils.isBlank(storeBusinessInfoCondition.getPickupType())|| StringUtils.isBlank(storeBusinessInfoCondition.getPayType())) {
+        if (StringUtils.isBlank(storeBusinessInfoCondition.getPickupType()) || StringUtils.isBlank(storeBusinessInfoCondition.getPayType())) {
             logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误");
             throw new BusinessException(BusinessCode.CODE_200006);
         }
@@ -377,8 +378,7 @@ public class ApiOpenStoreController {
         Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
         logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
-        Date currentDate = new Date();
-        StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate);
+        StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, null, null, false);
         storeManageInfoVO.setBusinessId(businessId);
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
         responseResult.setData(storeManageInfoVO);
@@ -388,18 +388,19 @@ public class ApiOpenStoreController {
 
     @ApiOperation(value = "根据门店的id查询门店的信息[C端在没有登录时通过storeId查询信息，不会校验token]")
     @PostMapping(value = "/security/1056/v1/findStoreInfoByStoreId")
-    public ResponseResult<StoreUserInfoVO> findStoreInfoByStoreId(@RequestBody StoreUserInfoCondition condition){
+    public ResponseResult<StoreUserInfoVO> findStoreInfoByStoreId(@RequestBody StoreUserInfoCondition condition) {
         ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
-        if(condition.getId() == null){
+        if (condition.getId() == null) {
             throw new BusinessException(BusinessCode.CODE_200002);
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfo(condition.getId());
-        if(storeUserInfoVO != null){
+        if (storeUserInfoVO != null) {
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
         }
         responseResult.setData(storeUserInfoVO);
         return responseResult;
     }
+
     /**
      * @return 门店信息
      * @author chengyy
@@ -412,7 +413,7 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-       if (customerUser == null) {
+        if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
@@ -424,16 +425,17 @@ public class ApiOpenStoreController {
         return result;
 
     }
+
     /**
+     * @param
+     * @return
+     * @throws
      * @author chengyy
      * @date 2018/8/15 13:34
      * @Description 根据门店id查询月销售量
-     * @param
-     * @return
-     * @exception
      */
-    public Integer  queryMonthlySkuQuantity(Long storeId){
-        if(storeId == null){
+    public Integer queryMonthlySkuQuantity(Long storeId) {
+        if (storeId == null) {
             return null;
         }
         StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
@@ -441,7 +443,7 @@ public class ApiOpenStoreController {
         condition.setStoreId(storeId);
         condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
-        if(storeOrderSalesSummaryVO != null){
+        if (storeOrderSalesSummaryVO != null) {
             return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
         }
         return null;
@@ -495,9 +497,9 @@ public class ApiOpenStoreController {
         Date yesterdayEndTime = DateUtils.addDays(currentDate, -1);
         Date yesterdayBeginTime = DateUtils.addDays(beginTime, -1);
         //今日的
-        StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, beginTime, currentDate);
+        StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, null, null, false);
         //昨日的
-        StoreManageInfoVO yesterdayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, yesterdayBeginTime, yesterdayEndTime);
+        StoreManageInfoVO yesterdayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, yesterdayBeginTime, yesterdayEndTime, true);
         //对比昨日百分比
         todayInfo.setTurnoverCompare(calculatePercent(todayInfo.getTurnover(), yesterdayInfo.getTurnover()));
         todayInfo.setBrowseNumCompare(calculatePercent(new BigDecimal(todayInfo.getBrowseNum()), new BigDecimal(yesterdayInfo.getBrowseNum())));
@@ -515,14 +517,22 @@ public class ApiOpenStoreController {
      * @param storeCustomerId 门店用户id
      * @param startDatetime   开始时间
      * @param endDatetime     结束时间
+     * @param flag            是否查询昨日
      * @return
      */
-    private StoreManageInfoVO getStoreSummaryInfo(Long businessId, Long storeCustomerId, Date startDatetime, Date endDatetime) {
+    private StoreManageInfoVO getStoreSummaryInfo(Long businessId, Long storeCustomerId, Date startDatetime, Date endDatetime, boolean flag) {
         //浏览人数
         Integer browseNum = storeBrowseLogService.getBrowseNum(storeCustomerId, startDatetime, endDatetime);
         StoreOrderSalesSummaryCondition todayCondition = new StoreOrderSalesSummaryCondition();
-        todayCondition.setStoreId(businessId);
-        todayCondition.setQueryPeriodType(StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE);
+        if (flag) {
+            todayCondition.setStoreId(businessId);
+            todayCondition.setQueryPeriodType(StoreOrderSalesSummaryCondition.TIME_PERIOD_ORDER_SALES_QUERY_TYPE);
+            todayCondition.setStartDateTime(startDatetime);
+            todayCondition.setEndDateTime(endDatetime);
+        } else {
+            todayCondition.setStoreId(businessId);
+            todayCondition.setQueryPeriodType(StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE);
+        }
         //营业额、下单人数、订单数
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO =
                 orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(todayCondition).getData();

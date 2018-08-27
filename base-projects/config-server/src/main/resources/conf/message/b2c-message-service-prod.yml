@@ -1,0 +1,18 @@
+##小程序配置##
+wechat:
+  share:
+    appid: wxb40a580ceb422253
+    secret: fe2efabcc2f2ca5191b5c51111926738
+  miniProgram:
+    msgTemplate:
+      storeConfirmOrder: kVACGrV0rJkLoUn6hBmO-xR4z-yjXQRmWXhtX8oqi58
+      orderFinish: IchPYYj5s-MAo4KBNXXnrNQi0MivK1D6NDzu0cRjTuc
+      orderCanceled: KE5tGL0BN2THXDCUveNehnSVNlRU9Tjlf-vZ8-cMZlg
+      paySuccess: aOr2P2x2Md7sWdvqIU0tjeWAKxGt-XXt_mkM8-Ywc8I
+      refundSuccess: lrCYVD8BDO9-hdHSXSnl7fAplIdLsiXRguYGGbRS2wU
+
+#云信配置##
+netease:
+  appKey: a2c42afe0c36d0d3ad5a48af8c083bd7
+  appSecret: b3c4f1968f0d
+  accidSuffix: _message_prod

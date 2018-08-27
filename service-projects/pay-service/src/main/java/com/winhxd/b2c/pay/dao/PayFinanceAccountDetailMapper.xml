@@ -241,6 +241,8 @@
             ) AS revenueMoney
         FROM
             pay_withdrawals
+        WHERE
+            callback_status = 1
     </select>
     <select id="getCompanySupplementInMoney" resultType="java.math.BigDecimal">
         SELECT
@@ -249,6 +251,7 @@
             pay_financial_bill
         WHERE
             busi_type = '扫码充值'
+            OR busi_type = '网银充值'
     </select>
     <select id="selectByExample" parameterType="com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail" resultMap="BaseResultMap">
         select

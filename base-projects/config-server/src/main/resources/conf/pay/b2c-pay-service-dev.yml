@@ -10,7 +10,7 @@ WX:
   APP_ID: wxdbbbd5e596ab6f4d
   # 商户号
   MCH_ID: 1467361502
-  # API 密钥
+  # 支付API密钥
   KEY: u29K8cDc48zhF0hKlQ3pd1tiamkZpRoS
   # 证书路径
   CERT_PATH: D:\apiclient_cert.p12
@@ -20,14 +20,14 @@ WX:
   PAY_NOTIFY_URL: /api-pay/unifiedorder/openapi/3410/v1/callback
   # 退款回调配置
   REFUND_NOTIFY_URL: /api-pay/refund/openapi/3420/v1/callback
-  # RSA公钥 java中需转换为PKCS#8格式
+  # RSA公钥 用户转账至银行卡对用户名和银行卡号进行加密(PKCS#8格式)
   PUBLIC_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyNmqAxl/ggCjInh2SsnH\r2RiH7COLppUKZ4Lq6jDctQIgxykETFjcZ6azuiqDBvFJLD9NuHBlko1hfBDIMP78\r8EEkp0IPi+EwWWWutMr4lQOln05JVDyDYNTelA/lLPQa3sevD9/GBrf10lxiWCI6\rqCqstDliZ3BrCuZvKjjUFQ9WW3Lhk0wbs6IngbmUqnSgcb/Gn98XJBHHgH8TgsVb\rXbK2EuLHKVMuOkWp39ZqJ1yJi0rhhoyLQ38kk8GfI+mFUXXeh37kZhlzcp28+Equ\r0iV3lKX/L5kFOAAbQ62Ee+DNRIxw9i6nCkQSB+0BNwRpazNiXCeoRiUCr5gj74zQ\rhQIDAQAB
 
-
-  
-pay: 
+# 提现限额配置
+pay:
   withdrawal: 
     rate: 0.001
     #提现的最大金额
-    maxmoney: 20000  
+    maxmoney: 20000
+    #提现的最小金额
     minmoney: 0

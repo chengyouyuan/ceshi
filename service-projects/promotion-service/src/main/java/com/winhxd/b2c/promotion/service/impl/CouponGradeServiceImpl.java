@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
@@ -18,10 +19,14 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponGradeDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponGradeMapper;
 import com.winhxd.b2c.promotion.service.CouponGradeService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,27 +37,40 @@ import java.util.List;
  **/
 @Service
 public class CouponGradeServiceImpl implements CouponGradeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CouponGradeServiceImpl.class);
      @Autowired
      private CouponGradeMapper couponGradeMapper;
     @Autowired
     private CouponGradeDetailMapper couponGradeDetailMapper;
 
     @Override
-    public CouponGradeVO viewCouponGradeDetail(long id) {
-        CouponGradeVO vo = couponGradeMapper.viewCouponGradeDetail(id);
+    public CouponGradeVO viewCouponGradeDetail(String id) {
+        LOGGER.info("查看详情参数id:"+id);
+        if(StringUtils.isBlank(id)){
+            throw new BusinessException(BusinessCode.CODE_500010,"必填参数错误");
+        }
+        CouponGradeVO vo = couponGradeMapper.viewCouponGradeDetail(Long.parseLong(id));
         return vo;
     }
 
     @Override
     @Transactional
-    public int updateCouponGradeValid(long id,long userId,String userName) {
+    public int updateCouponGradeValid(Long id,Long userId,String userName) {
+        LOGGER.info("坎级规则设置无效参数 id:"+id+" userId:"+ userId+" userName:"+userName);
+        if(id==null || userId==null || StringUtils.isBlank(userName)){
+            throw  new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
         int count = couponGradeMapper.updateCouponGradeValid(id,userId,userName);
+        if(count<=0){
+            throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
+        }
         return count;
     }
 
     @Override
     @Transactional
     public int addCouponGrade(CouponGradeCondition condition) {
+        LOGGER.info("添加坎级规则参数"+condition.toString());
         int flag = 0;
             CouponGrade couponGrade = new CouponGrade();
             couponGrade.setCode(condition.getCode());

@@ -21,7 +21,7 @@ public interface CouponGradeService {
      *@User  wl
      *@Date   2018/8/25 10:23
      */
-    CouponGradeVO viewCouponGradeDetail(long id);
+    CouponGradeVO viewCouponGradeDetail(String id);
     /**
      *
      *@Deccription 设置无效
@@ -30,7 +30,7 @@ public interface CouponGradeService {
      *@User  wl
      *@Date   2018/8/25 10:24
      */
-    int updateCouponGradeValid(long id,long userId,String userName);
+    int updateCouponGradeValid(Long id,Long userId,String userName);
     /**
      *
      *@Deccription  添加坎级规则

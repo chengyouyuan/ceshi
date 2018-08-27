@@ -129,10 +129,10 @@
         "inputModel": "select",
         "title": "审核状态",
         "options": [ {
-          "label": "未处理",
+          "label": "未审核",
           "value": "0"
         }, {
-          "label": "已审核",
+          "label": "审核通过",
           "value": "1"
         } ]
       },
@@ -141,14 +141,20 @@
         "inputModel": "select",
         "title": "提款状态",
         "options": [ {
-          "label": "未提款",
+          "label": "申请中",
           "value": "0"
         }, {
-          "label": "已提款",
+          "label": "处理中",
+          "value": "4"
+        }, {
+          "label": "提现成功",
           "value": "1"
         }, {
           "label": "提款失败",
           "value": "2"
+        }, {
+          "label": "无效",
+          "value": "3"
         } ]
       }
     ]

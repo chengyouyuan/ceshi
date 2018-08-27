@@ -22,10 +22,20 @@ public class StoreOrderSalesSummaryCondition {
      * 按月查询 汇总
      */
     public static final short MONTH_ORDER_SALES_QUERY_TYPE = 2;
+    /**
+     * 按时间段查询 汇总
+     */
+    public static final short TIME_PERIOD_ORDER_SALES_QUERY_TYPE = 3;
 
     @ApiModelProperty(value = "门店Id")
     private Long storeId;
     
-    @ApiModelProperty(value = "查询范围：1 当天订单销售数据汇总，2=月售", required=true)
+    @ApiModelProperty(value = "查询范围：1 当天订单销售数据汇总，2=月售, 3=按时间段", required=true)
     private Short queryPeriodType;
+    
+    @ApiModelProperty(value = "查询开始区间")
+    private Date startDateTime;
+    
+    @ApiModelProperty(value = "查询开始区间")
+    private Date endDateTime;
 }

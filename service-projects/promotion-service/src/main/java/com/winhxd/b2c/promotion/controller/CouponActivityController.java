@@ -114,61 +114,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @Override
     public ResponseResult<Integer> addCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
-        if(null == condition){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        if(null == condition.getType()){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        //领券
-        if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
-            if (StringUtils.isBlank(condition.getName()) && condition.getCouponActivityTemplateList() == null
-                    && StringUtils.isBlank(condition.getExolian()) && StringUtils.isBlank(condition.getRemarks())
-                    && condition.getActivityStart()==null && condition.getActivityEnd() == null) {
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if(condition.getCouponActivityTemplateList().get(0).getCouponNumType() == null
-                    && condition.getCouponActivityTemplateList().get(0).getCouponNum() == null
-                    && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == null
-                    && condition.getCouponActivityTemplateList().get(0).getStartTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEndTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getTemplateId() == null ){
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if(condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()
-                    && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-        }
-        //推券
-        if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
-            if (StringUtils.isBlank(condition.getName()) && condition.getCouponActivityTemplateList() == null
-                    && StringUtils.isBlank(condition.getExolian()) && StringUtils.isBlank(condition.getRemarks())
-                    && condition.getCouponType() == null && condition.getActivityStart() == null
-                    && condition.getActivityEnd() == null) {
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-            if(condition.getCouponActivityTemplateList().get(0).getTemplateId() == null
-                    && condition.getCouponActivityTemplateList().get(0).getStartTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEndTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
-                    && condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
-            }
-        }
-        //区域信息验证
-        //导入没有区域信息
-        //if(condition.getCouponActivityAreaList() == null){
-        //    throw new BusinessException(BusinessCode.CODE_1007);
-        //}
-        //if(condition.getCouponActivityAreaList().get(0).getRegionCode() == null
-        //        && condition.getCouponActivityAreaList().get(0).getRegionName() == null){
-        //    throw new BusinessException(BusinessCode.CODE_1007);
-        //}
-
+        addOrUpdateVerifyParam(condition);
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
         //判断活动时间是否冲突(推券&新人注册)
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()
@@ -223,6 +169,20 @@ public class CouponActivityController implements CouponActivityServiceClient {
     @Override
     public ResponseResult<Integer> updateCouponActivity(@RequestBody CouponActivityAddCondition condition) {
         //判断必填参数
+        addOrUpdateVerifyParam(condition);
+
+        ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
+        //判断活动时间是否冲突(推券&新人注册)
+        if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()
+                && condition.getCouponType() == CouponActivityEnum.NEW_USER.getCode()){
+            Boolean flag = couponActivityService.getActivityDateClash(condition);
+            if(flag){
+                responseResult.setCode(BusinessCode.CODE_503002);
+                responseResult.setMessage("活动时间冲突");
+                return responseResult;
+            }
+        }
+
         //活动有效期内不允许修改活动！！
         Date activityStart = condition.getActivityStart();
         Date activityEnd = condition.getActivityEnd();
@@ -230,6 +190,19 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(now.before(activityStart) && now.after(activityEnd)){
             throw new BusinessException(BusinessCode.CODE_1003);
         }
+
+        couponActivityService.updateCouponActivity(condition);
+        responseResult.setCode(BusinessCode.CODE_OK);
+        return responseResult;
+    }
+
+    /**
+     * 新增和修改方法验证参数
+     * @param condition
+     * @return
+     */
+    public void addOrUpdateVerifyParam (CouponActivityAddCondition condition){
+        //判断必填参数
         if(null == condition){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
@@ -238,48 +211,46 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
         //领券
         if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
-            if (StringUtils.isBlank(condition.getName()) && condition.getCouponActivityTemplateList() == null
-                    && StringUtils.isBlank(condition.getExolian()) && StringUtils.isBlank(condition.getRemarks())
-                    && condition.getActivityStart()==null && condition.getActivityEnd() == null) {
+            if (StringUtils.isBlank(condition.getName()) || condition.getCouponActivityTemplateList() == null
+                    || StringUtils.isBlank(condition.getExolian()) || StringUtils.isBlank(condition.getRemarks())
+                    || condition.getActivityStart()==null || condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if(condition.getCouponActivityTemplateList().get(0).getCouponNumType() == null
-                    && condition.getCouponActivityTemplateList().get(0).getCouponNum() == null
-                    && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == null
-                    && condition.getCouponActivityTemplateList().get(0).getStartTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEndTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getTemplateId() == null ){
+                    || condition.getCouponActivityTemplateList().get(0).getCouponNum() == null
+                    || condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == null
+                    || condition.getCouponActivityTemplateList().get(0).getStartTime() == null
+                    || condition.getCouponActivityTemplateList().get(0).getEndTime() == null
+                    || condition.getCouponActivityTemplateList().get(0).getTemplateId() == null ){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if(condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()
                     && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
-            if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
-                throw new BusinessException(BusinessCode.CODE_1007);
+            if (!CollectionUtils.isEmpty(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList())){
+                if(condition.getCouponActivityTemplateList().get(0).getCouponActivityStoreCustomerList().get(0).getStoreId() == null){
+                    throw new BusinessException(BusinessCode.CODE_1007);
+                }
             }
         }
         //推券
         if(condition.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
-            if (StringUtils.isBlank(condition.getName()) && condition.getCouponActivityTemplateList() == null
-                    && StringUtils.isBlank(condition.getExolian()) && StringUtils.isBlank(condition.getRemarks())
-                    && condition.getCouponType() == null && condition.getActivityStart() == null
-                    && condition.getActivityEnd() == null) {
+            if (StringUtils.isBlank(condition.getName()) || condition.getCouponActivityTemplateList() == null
+                    || StringUtils.isBlank(condition.getExolian()) || StringUtils.isBlank(condition.getRemarks())
+                    || condition.getCouponType() == null || condition.getActivityStart() == null
+                    || condition.getActivityEnd() == null) {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if(condition.getCouponActivityTemplateList().get(0).getTemplateId() == null
-                    && condition.getCouponActivityTemplateList().get(0).getStartTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEndTime() == null
-                    && condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
-                    && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
+                    || condition.getCouponActivityTemplateList().get(0).getStartTime() == null
+                    || condition.getCouponActivityTemplateList().get(0).getEndTime() == null
+                    || condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
+                    || condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
         }
 
-        ResponseResult<Integer> responseResult = new ResponseResult<>();
-        couponActivityService.updateCouponActivity(condition);
-        responseResult.setCode(BusinessCode.CODE_OK);
-        return responseResult;
     }
 
     /**

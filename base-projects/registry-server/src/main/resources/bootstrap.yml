@@ -14,3 +14,8 @@ eureka:
     # 清理间隔（单位毫秒，默认是60*1000）
     eviction-interval-timer-in-ms: 3000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

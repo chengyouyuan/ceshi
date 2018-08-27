@@ -148,6 +148,8 @@ public class OrderServiceController implements OrderServiceClient {
             }
             if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
                 result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
+            } else if (storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.TIME_PERIOD_ORDER_SALES_QUERY_TYPE) {
+                result.setData(orderQueryService.calculateStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), storeOrderSalesSummaryCondition.getStartDateTime(), storeOrderSalesSummaryCondition.getEndDateTime()));
             } else {
                 result.setData(orderQueryService.getStoreMonthOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             }

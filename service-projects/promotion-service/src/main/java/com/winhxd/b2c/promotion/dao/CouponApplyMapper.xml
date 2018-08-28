@@ -178,21 +178,7 @@
 
 
 
-  <resultMap id="BaseResultMap2" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
-    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-    <result column="apply_rule_type" jdbcType="SMALLINT" property="applyRuleType" />
-    <result column="status" jdbcType="SMALLINT" property="status" />
-    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
-    <result column="created_by_name" jdbcType="VARCHAR" property="createdByName" />
-    <result column="created" jdbcType="TIMESTAMP" property="created" />
-    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
-    <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName" />
-    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
-    <result column="rel_templete_count" jdbcType="VARCHAR" property="relTempleteCount" />
-    <result column="apply_rule_name" jdbcType="VARCHAR" property="applyRuleName" />
+  <resultMap id="BaseResultMap2" type="com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO" extends="BaseResultMap">
   </resultMap>
 
   <select id="viewCouponApplyCommonDetail" parameterType="java.lang.Long" resultMap="BaseResultMap2">

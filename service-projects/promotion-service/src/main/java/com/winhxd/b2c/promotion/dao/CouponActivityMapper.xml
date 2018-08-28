@@ -301,10 +301,10 @@
       AND ca.created_by_name = #{condition.createdByName}
     </if>
     <if test="condition.dateInterval != null and condition.dateInterval.start != null">
-      AND ca.created &lt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
+      AND ca.created &gt;= #{condition.dateInterval.start,jdbcType=TIMESTAMP}
     </if>
     <if test="condition.dateInterval != null and condition.dateInterval.end != null">
-      AND ca.created &gt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
+      AND ca.created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
     </if>
     ORDER BY ca.created DESC
   </select>

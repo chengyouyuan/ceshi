@@ -111,7 +111,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS = 172799998;
     /**
-     * 三天前一小时后的时间间隔
+     * 三天后前一小时后的时间间隔
      */
     private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS = 255600000;
     /**
@@ -243,6 +243,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut3DaysUnconfirmed(String orderNo) {
+        logger.info("申请退款订单3天未确认开始-订单号：{}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -259,6 +260,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("申请退款订单3天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -269,6 +271,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1天未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1天未确认操作", orderNo);
@@ -277,6 +280,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(2, order);
         }
+        logger.info("申请退款订单1天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -287,6 +291,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1小时未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1小时未确认操作", orderNo);
@@ -295,6 +300,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(1, order);
         }
+        logger.info("申请退款订单1小时未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -311,6 +317,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
+        logger.info("退款回调-开始-orderNo={}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -344,6 +351,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("退款回调-结束-orderNo={}", orderNo);
         return callbackResult;
     }
 
@@ -376,13 +384,13 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderCancel(OrderInfo order, String cancelReason, Long operatorId, String operatorName, int type) {
         String orderNo = order.getOrderNo();
+        logger.info("取消订单-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         //判断是否支付成功,支付成功不让取消
         if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
         }
         Short status = order.getOrderStatus();
-        if (OrderStatusEnum.CANCELED.getStatusCode() == status || OrderStatusEnum.FINISHED.getStatusCode() == status || OrderStatusEnum.WAIT_REFUND.getStatusCode() == status
-                || OrderStatusEnum.REFUNDING.getStatusCode() == status) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus()) > -1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单状态不匹配，不能取消 订单号={0}", orderNo));
         }
         //设置提货码置为null、取消原因、取消状态等
@@ -405,6 +413,7 @@ public class CommonOrderServiceImpl implements OrderService {
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
         }
+        logger.info("取消订单-结束-订单号={}", order.getOrderNo());
     }
 
     /**
@@ -634,12 +643,12 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param operatorName 操作人姓名
      */
     private void orderApplyRefund(OrderInfo order, String cancelReason, Long operatorId, String operatorName) {
+        logger.info("订单退款-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
         Short orderStatus = order.getOrderStatus();
-        if (orderStatus.equals(OrderStatusEnum.FINISHED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDING.getStatusCode())
-                || orderStatus.equals(OrderStatusEnum.CANCELED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotRefund(), orderStatus) > -1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, MessageFormat.format("订单状态不允许退款orderNo={0}", order.getOrderNo()));
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
@@ -662,6 +671,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } else {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单退款用户退款不成功 订单号={0}", orderNo));
         }
+        logger.info("订单退款-结束-订单号={}", order.getOrderNo());
     }
 
     /**
@@ -1304,6 +1314,7 @@ public class CommonOrderServiceImpl implements OrderService {
         @Override
         public void run() {
             //更新当天销量信息
+            logger.info("订单：{} 支付,更新门店：{}订单销售数据", orderInfo.getOrderNo(), orderInfo.getStoreId());
             calculateIntradaySalesSummaryAndCache(orderInfo, true);
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterPaySuccessProcess(orderInfo);

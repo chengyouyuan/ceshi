@@ -440,12 +440,11 @@ public class ApiOpenStoreController {
             return null;
         }
         StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
-        Date now = new Date();
         condition.setStoreId(storeId);
         condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
-        if (storeOrderSalesSummaryVO != null) {
-            return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
+        if(storeOrderSalesSummaryVO != null) {
+            return storeOrderSalesSummaryVO.getSkuQuantity();
         }
         return null;
     }

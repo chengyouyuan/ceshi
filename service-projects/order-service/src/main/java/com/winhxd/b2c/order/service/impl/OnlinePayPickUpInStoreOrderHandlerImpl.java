@@ -103,7 +103,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
         orderChangeLogService.orderChange(orderInfo.getOrderNo(), oldOrderJson, newOrderJson, OrderStatusEnum.SUBMITTED.getStatusCode(),
                 OrderStatusEnum.WAIT_PAY.getStatusCode(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 OrderStatusEnum.WAIT_PAY.getStatusDes(), MainPointEnum.MAIN);
-        logger.info("{},orderNo={} 支付成功后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
+        logger.info("{},orderNo={} 创建成功后业务处理结束", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         
     }
 

@@ -90,6 +90,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
         LOGGER.info("当前门店id"+storeId);
+        //Long storeId= 84L;
         PagedList<PayStoreTransactionRecordVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<PayStoreTransactionRecordVO> voList = payStoreTransactionRecordMapper.getPayStoreTransRecordByStoreId(storeId);

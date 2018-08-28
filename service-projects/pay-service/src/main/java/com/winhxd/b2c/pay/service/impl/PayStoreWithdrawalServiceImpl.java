@@ -261,7 +261,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	// 计算手续费率
 	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
-		BigDecimal cmms = totalFee.multiply(rate);
+		BigDecimal cmms = totalFee.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
 		// 计算手续费
 		BigDecimal mix = new BigDecimal(1);
 	    BigDecimal max = new BigDecimal(25);

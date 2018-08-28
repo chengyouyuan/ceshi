@@ -24,6 +24,8 @@ public enum PayTransfersStatus {
      */
     PROCESSING("PROCESSING", "处理中"),
 
+    BANK_FAIL("PROCESSING", "银行退票"),
+
     /**
      * 失败(用于判断resultCode状态)
      */

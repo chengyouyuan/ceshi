@@ -25,7 +25,11 @@ public enum StoreBankRollOpearateEnums {
 	/**
 	 * 提现失败
 	 */
-	WITHDRAWALS_FAIL(6,"提现失败");
+	WITHDRAWALS_FAIL(6,"提现失败"),
+	/**
+	 * 提现失败
+	 */
+	BANK_FAIL(7,"银行退票");
 	
 	private Integer code;
 	private String desc;

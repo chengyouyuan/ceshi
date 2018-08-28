@@ -799,9 +799,10 @@ public class PayServiceImpl implements PayService{
 		UpdateStoreBankRollCondition updateStoreBankRollCondition = new UpdateStoreBankRollCondition();
 		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
 			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode());
-		}
-		if(WithdrawalsStatusEnum.REAPPLY.getStatusCode() == payWithdrawals.getCallbackStatus()){
+		}else if(WithdrawalsStatusEnum.REAPPLY.getStatusCode() == payWithdrawals.getCallbackStatus()){
 			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
+		}else if(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.BANK_FAIL.getCode());
 		}
 		updateStoreBankRollCondition.setStoreId(payWithdrawals.getStoreId());
 		updateStoreBankRollCondition.setWithdrawalsNo(payWithdrawals.getWithdrawalsNo());
@@ -985,6 +986,20 @@ public class PayServiceImpl implements PayService{
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				if(resultForWxBank.getPaySuccTime()!=null){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
+				}
+				// 发送云信
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+			}else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
+				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode());
 				if(resultForWxBank.getPaySuccTime()!=null){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));

@@ -1,7 +1,6 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,9 +42,10 @@ import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
@@ -93,6 +93,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	private MessageSendUtils messageServiceClient;
 	
 	@Autowired
+	private StoreServiceClient storeServiceClient;
+	@Autowired
 	private Cache cache;
 	
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
@@ -110,8 +112,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			throw new BusinessException(BusinessCode.CODE_610801);
 		}
 		Long businessId = storeUser.getBusinessId();
-//		Long businessId = 89L;
 		PayWithdrawalPageVO withdrawalPage = new PayWithdrawalPageVO();
+		// 返回手机号参数
+		ResponseResult<StoreUserInfoVO> findStoreUserInfo = storeServiceClient.findStoreUserInfo(businessId);
+		String storeMobile = "";
+		if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
+			storeMobile = findStoreUserInfo.getData().getStoreMobile();
+		}
+		withdrawalPage.setMobile(storeMobile);
 		if(bankType == condition.getWithdrawType()){
 			//获取绑定银行卡信息
 			List<StoreBankCard> bankCards = storeBankCardMapper.selectByStoreId(businessId);
@@ -123,7 +131,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				 withdrawalPage.setBankName(bankCard.getBankName());
 				 withdrawalPage.setBankUserName(bankCard.getBankUserName());
 				 withdrawalPage.setCardNumber(bankCard.getCardNumber());
-				 withdrawalPage.setMobile(bankCard.getMobile());
+//				 withdrawalPage.setMobile(bankCard.getMobile());
 				 withdrawalPage.setSwiftCode(bankCard.getSwiftCode()); 
 			}
 			
@@ -261,7 +269,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	// 计算手续费率
 	public BigDecimal countCmms(BigDecimal rate,BigDecimal totalFee){
-		BigDecimal cmms = totalFee.multiply(rate);
+		BigDecimal cmms = totalFee.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
 		// 计算手续费
 		BigDecimal mix = new BigDecimal(1);
 	    BigDecimal max = new BigDecimal(25);

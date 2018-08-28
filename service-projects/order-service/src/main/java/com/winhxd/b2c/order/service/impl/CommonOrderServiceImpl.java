@@ -111,7 +111,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS = 172799998;
     /**
-     * 三天前一小时后的时间间隔
+     * 三天后前一小时后的时间间隔
      */
     private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS = 255600000;
     /**

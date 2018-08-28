@@ -384,8 +384,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
         }
         Short status = order.getOrderStatus();
-        if (OrderStatusEnum.CANCELED.getStatusCode() == status || OrderStatusEnum.FINISHED.getStatusCode() == status || OrderStatusEnum.WAIT_REFUND.getStatusCode() == status
-                || OrderStatusEnum.REFUNDING.getStatusCode() == status) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus().shortValue()) > -1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单状态不匹配，不能取消 订单号={0}", orderNo));
         }
         //设置提货码置为null、取消原因、取消状态等
@@ -643,8 +642,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
         Short orderStatus = order.getOrderStatus();
-        if (orderStatus.equals(OrderStatusEnum.FINISHED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDING.getStatusCode())
-                || orderStatus.equals(OrderStatusEnum.CANCELED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), orderStatus.shortValue()) > -1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, MessageFormat.format("订单状态不允许退款orderNo={0}", order.getOrderNo()));
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
@@ -1310,6 +1308,7 @@ public class CommonOrderServiceImpl implements OrderService {
         @Override
         public void run() {
             //更新当天销量信息
+            logger.info("订单：{} 支付,更新门店：{}订单销售数据", orderInfo.getOrderNo(), orderInfo.getStoreId());
             calculateIntradaySalesSummaryAndCache(orderInfo, true);
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterPaySuccessProcess(orderInfo);
@@ -1960,6 +1959,10 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单：{} 取消,更新门店：{}订单销售数据开始：", orderNo, order.getStoreId());
         if (order.getPayStatus() == null || order.getPayStatus().shortValue() != PayStatusEnum.PAID.getStatusCode()) {
             logger.info("订单：{} 取消,未支付,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
+            return;
+        }
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus().shortValue()) > -1) {
+            logger.info("订单：{} 当前状态不可以取消，不进行退款逻辑计算，滤过", orderNo, order.getStoreId());
             return;
         }
         //获取当天最后一秒

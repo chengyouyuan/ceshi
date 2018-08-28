@@ -101,4 +101,11 @@ public enum OrderStatusEnum {
         Arrays.sort(status);
         return status;
     }
+    
+    public static short[] statusCannotCancel() {
+        short[] status = new short[] { FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode(),
+                WAIT_REFUND.getStatusCode(), REFUNDING.getStatusCode() };
+        Arrays.sort(status);
+        return status;
+    }
 }

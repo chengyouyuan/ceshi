@@ -273,15 +273,6 @@ public class PayWithdrawalsVO {
     }
 
     public Short getCallbackStatus() {
-        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
-        if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
-        if (Short.valueOf("4").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
         return callbackStatus;
     }
 

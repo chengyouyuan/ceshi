@@ -378,7 +378,8 @@ public class ApiOpenStoreController {
         Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
         logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
-        StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, null, null, false);
+        Date currentDate = new Date();
+        StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate, false);
         storeManageInfoVO.setBusinessId(businessId);
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
         responseResult.setData(storeManageInfoVO);
@@ -439,12 +440,11 @@ public class ApiOpenStoreController {
             return null;
         }
         StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
-        Date now = new Date();
         condition.setStoreId(storeId);
         condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
         StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
-        if (storeOrderSalesSummaryVO != null) {
-            return storeOrderSalesSummaryVO.getSkuCategoryQuantity();
+        if(storeOrderSalesSummaryVO != null) {
+            return storeOrderSalesSummaryVO.getSkuQuantity();
         }
         return null;
     }
@@ -497,7 +497,7 @@ public class ApiOpenStoreController {
         Date yesterdayEndTime = DateUtils.addDays(currentDate, -1);
         Date yesterdayBeginTime = DateUtils.addDays(beginTime, -1);
         //今日的
-        StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, null, null, false);
+        StoreManageInfoVO todayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, beginTime, currentDate, false);
         //昨日的
         StoreManageInfoVO yesterdayInfo = this.getStoreSummaryInfo(businessId, storeCustomerId, yesterdayBeginTime, yesterdayEndTime, true);
         //对比昨日百分比

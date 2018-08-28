@@ -22,6 +22,10 @@ WX:
   REFUND_NOTIFY_URL: /api-pay/refund/openapi/3420/v1/callback
   # RSA公钥 用户转账至银行卡对用户名和银行卡号进行加密(PKCS#8格式)
   PUBLIC_KEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyNmqAxl/ggCjInh2SsnH\r2RiH7COLppUKZ4Lq6jDctQIgxykETFjcZ6azuiqDBvFJLD9NuHBlko1hfBDIMP78\r8EEkp0IPi+EwWWWutMr4lQOln05JVDyDYNTelA/lLPQa3sevD9/GBrf10lxiWCI6\rqCqstDliZ3BrCuZvKjjUFQ9WW3Lhk0wbs6IngbmUqnSgcb/Gn98XJBHHgH8TgsVb\rXbK2EuLHKVMuOkWp39ZqJ1yJi0rhhoyLQ38kk8GfI+mFUXXeh37kZhlzcp28+Equ\r0iV3lKX/L5kFOAAbQ62Ee+DNRIxw9i6nCkQSB+0BNwRpazNiXCeoRiUCr5gj74zQ\rhQIDAQAB
+  #门店app配置信息
+  STORE_APP:
+    APP_ID: wxbf33e7ecgbd8cdf2
+    APP_SECRET: 5c3e4e58814d5a924c95dbda7e02b6aa
 
 # 提现限额配置
 pay:

@@ -407,4 +407,12 @@
     where refund_transaction_no = #{refundTransactionNo,jdbcType=VARCHAR}
   </update>
   
+  
+  <!-- 自定义sql -->
+  <select id="selectByRefundTransactionNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pay_refund_payment
+    where  refund_transaction_no = #{refundTransactionNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

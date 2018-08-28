@@ -16,4 +16,13 @@ public interface PayRefundPaymentMapper {
     int updateByPrimaryKey(PayRefundPayment record);
 
     int updateByRefundTransactionNoSelective(PayRefundPayment record);
+
+    /**
+     * @author liuhanning
+     * @date  2018年8月27日 下午8:37:31
+     * @Description 根据退款流水号查询 退款
+     * @param id
+     * @return
+     */
+    PayRefundPayment selectByRefundTransactionNo(String refundTransactionNo);
 }

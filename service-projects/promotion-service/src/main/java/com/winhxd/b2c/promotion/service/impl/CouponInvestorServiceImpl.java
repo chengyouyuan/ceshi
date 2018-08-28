@@ -48,7 +48,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     public int saveCouponInvestor( CouponInvestorCondition condition) {
         // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
         LOGGER.info("添加出资方参数"+condition.toString());
-        List deatils = condition.getDetails();
+        List<LinkedHashMap<String,Object>> deatils = condition.getDetails();
         int flag = 0 ;
                 CouponInvestor couponInvestor = new CouponInvestor();
                 couponInvestor.setCode(condition.getCode());
@@ -70,10 +70,18 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                     if(map.get("companyCode")!=null){
                         detail.setIds(map.get("companyCode").toString());
                     }
-                    detail.setInvestorId(couponInvestor.getId());
-                    detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
-                    detail.setPercent(Float.parseFloat(map.get("percent").toString()));
-                    detail.setNames(map.get("names").toString());
+                    if(couponInvestor.getId()!=null){
+                        detail.setInvestorId(couponInvestor.getId());
+                    }
+                    if(map.get("investor_type")!=null){
+                        detail.setInvestorType(Short.parseShort(map.get("investor_type").toString()));
+                    }
+                    if(map.get("percent")!=null){
+                        detail.setPercent(Float.parseFloat(map.get("percent").toString()));
+                    }
+                    if(map.get("names")!=null){
+                      detail.setNames(map.get("names").toString());
+                    }
                     int n = couponInvestorDetailMapper.insert(detail);
                     if(n==0){
                         throw new BusinessException(BusinessCode.CODE_500006,"添加出资方规则失败");
@@ -99,7 +107,7 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
                 CouponInvestorVO vo = tempList.get(i);
                 TempleteRelationCountVO templeteRelationCountVO = couponInvestorMapper.getRelationCouponInvCount(vo.getId());
                 if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
                 }else{
                     vo.setRelTempleteCount(String.valueOf(0));
                 }
@@ -142,7 +150,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
     }
 
     @Override
-    @Transactional
     public int updateCouponInvestorToValid(Long id,Long userId,String userName) {
         LOGGER.info("出资方设置无效参数id:"+id+" userId:"+userId+" userName:"+userName);
         if(id==null || userId==null || StringUtils.isBlank(userName)){

@@ -1,39 +1,5 @@
 package com.winhxd.b2c.order.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
@@ -53,19 +19,8 @@ import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
 import com.winhxd.b2c.common.domain.message.enums.MiniMsgTypeEnum;
 import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
-import com.winhxd.b2c.common.domain.order.enums.OrderStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
-import com.winhxd.b2c.common.domain.order.enums.PayTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.PickUpTypeEnum;
-import com.winhxd.b2c.common.domain.order.enums.ValuationTypeEnum;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.enums.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.OrderItem;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
@@ -106,6 +61,31 @@ import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.util.OrderUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author wangbin
@@ -131,7 +111,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private static final int ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS = 172799998;
     /**
-     * 三天前一小时后的时间间隔
+     * 三天后前一小时后的时间间隔
      */
     private static final int ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS = 255600000;
     /**
@@ -263,6 +243,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut3DaysUnconfirmed(String orderNo) {
+        logger.info("申请退款订单3天未确认开始-订单号：{}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -279,6 +260,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("申请退款订单3天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -289,6 +271,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1天未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1天未确认操作", orderNo);
@@ -297,6 +280,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(2, order);
         }
+        logger.info("申请退款订单1天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -307,6 +291,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1小时未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1小时未确认操作", orderNo);
@@ -315,6 +300,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(1, order);
         }
+        logger.info("申请退款订单1小时未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -331,6 +317,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderNo)) {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
         }
+        logger.info("退款回调-开始-orderNo={}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -364,6 +351,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("退款回调-结束-orderNo={}", orderNo);
         return callbackResult;
     }
 
@@ -396,11 +384,13 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     private void orderCancel(OrderInfo order, String cancelReason, Long operatorId, String operatorName, int type) {
         String orderNo = order.getOrderNo();
+        logger.info("取消订单-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         //判断是否支付成功,支付成功不让取消
         if (PayStatusEnum.PAID.getStatusCode() == order.getPayStatus()) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
         }
-        if (OrderStatusEnum.CANCELED.getStatusCode() == order.getOrderStatus() || OrderStatusEnum.FINISHED.getStatusCode() == order.getOrderStatus()) {
+        Short status = order.getOrderStatus();
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus()) > -1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单状态不匹配，不能取消 订单号={0}", orderNo));
         }
         //设置提货码置为null、取消原因、取消状态等
@@ -423,6 +413,7 @@ public class CommonOrderServiceImpl implements OrderService {
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
         }
+        logger.info("取消订单-结束-订单号={}", order.getOrderNo());
     }
 
     /**
@@ -531,6 +522,9 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
                 if (null == order || !order.getStoreId().equals(store.getBusinessId())) {
                     throw new BusinessException(BusinessCode.WRONG_ORDERNO, MessageFormat.format("门店处理用户退款订单查询失败orderNo={0}", orderNo));
+                }
+                if (order.getOrderStatus() != OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
+                    throw new BusinessException(BusinessCode.ORDER_REFUND_STATUS_ERROR, MessageFormat.format("门店处理用户退款订单状态异常orderNo={0}，status={1}", orderNo, order.getOrderStatus()));
                 }
                 if (agree == 1) {
                     logger.info("门店处理退款申请-门店同意退款-操作订单开始-订单号={}", orderNo);
@@ -649,12 +643,12 @@ public class CommonOrderServiceImpl implements OrderService {
      * @param operatorName 操作人姓名
      */
     private void orderApplyRefund(OrderInfo order, String cancelReason, Long operatorId, String operatorName) {
+        logger.info("订单退款-开始-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         if (order.getPayStatus().equals(PayStatusEnum.UNPAID.getStatusCode())) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
         Short orderStatus = order.getOrderStatus();
-        if (orderStatus.equals(OrderStatusEnum.FINISHED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDING.getStatusCode())
-                || orderStatus.equals(OrderStatusEnum.CANCELED.getStatusCode()) || orderStatus.equals(OrderStatusEnum.REFUNDED.getStatusCode())) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotRefund(), orderStatus) > -1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, MessageFormat.format("订单状态不允许退款orderNo={0}", order.getOrderNo()));
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;
@@ -677,6 +671,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } else {
             throw new BusinessException(BusinessCode.ORDER_STATUS_CHANGE_FAILURE, MessageFormat.format("订单退款用户退款不成功 订单号={0}", orderNo));
         }
+        logger.info("订单退款-结束-订单号={}", order.getOrderNo());
     }
 
     /**
@@ -1319,6 +1314,7 @@ public class CommonOrderServiceImpl implements OrderService {
         @Override
         public void run() {
             //更新当天销量信息
+            logger.info("订单：{} 支付,更新门店：{}订单销售数据", orderInfo.getOrderNo(), orderInfo.getStoreId());
             calculateIntradaySalesSummaryAndCache(orderInfo, true);
             getOrderHandler(orderInfo.getValuationType())
                     .orderInfoAfterPaySuccessProcess(orderInfo);
@@ -1732,8 +1728,8 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                if (customerUserInfoVO.getCustomerMobile().equals("13522928292")||customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
-                    logger.info("C端申请退款-MQ延时消息开始-orderNo={},mobile={}", orderNo,customerUserInfoVO.getCustomerMobile());
+                if (customerUserInfoVO.getCustomerMobile().equals("13522928292") || customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
+                    logger.info("C端申请退款-MQ延时消息开始-orderNo={},mobile={}", orderNo, customerUserInfoVO.getCustomerMobile());
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5 * 60 * 1000);
                     stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8 * 60 * 1000);

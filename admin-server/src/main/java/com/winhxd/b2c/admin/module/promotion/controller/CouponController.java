@@ -726,13 +726,11 @@ public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToVa
 				throw new BusinessException(BusinessCode.CODE_500016,"适用对象规则备注超过最大长度");
 			}
 		}
-
-
+		String code  = "WS_SYDX"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
+		condition.setCode(code);
 		UserInfo userInfo = UserManager.getCurrentUser();
 		String userId = userInfo.getId()+"";
 		String userName = userInfo.getUsername();
-		String code  = "WS_SYDX"+this.getTimeStr()+"_"+(int)((Math.random()*9+1)*10000);
-		condition.setCode(code);
 		condition.setUserId(userId);
 		condition.setUserName(userName);
 		ResponseResult<Integer> responseResult = couponApplyServiceClient.addCouponApply(condition);

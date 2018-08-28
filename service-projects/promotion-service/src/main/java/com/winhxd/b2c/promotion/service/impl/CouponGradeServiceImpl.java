@@ -54,7 +54,6 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     }
 
     @Override
-    @Transactional
     public int updateCouponGradeValid(Long id,Long userId,String userName) {
         LOGGER.info("坎级规则设置无效参数 id:"+id+" userId:"+ userId+" userName:"+userName);
         if(id==null || userId==null || StringUtils.isBlank(userName)){
@@ -122,7 +121,7 @@ public class CouponGradeServiceImpl implements CouponGradeService {
                 CouponGradeVO vo = couponGradeList.get(i);
                 TempleteRelationCountVO templeteRelationCountVO = couponGradeMapper.getRelationCouponGradeCount(vo.getId());
                 if(templeteRelationCountVO!=null){
-                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()));
+                    vo.setRelTempleteCount(String.valueOf(templeteRelationCountVO.getRelTempleteCount()==null?0:templeteRelationCountVO.getRelTempleteCount()));
                 }else{
                     vo.setRelTempleteCount(String.valueOf(0));
                 }

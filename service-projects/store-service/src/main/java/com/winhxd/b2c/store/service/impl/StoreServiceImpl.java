@@ -221,8 +221,6 @@ public class StoreServiceImpl implements StoreService {
         if(null == stageStoreVO){
             return;
         }
-        // 状态
-        stageStoreVO = this.changeStatusDesc(stageStoreVO);
         //取货方式
         if (StringUtils.isNotBlank(stageStoreVO.getPickupType())) {
             String typeDesc = Arrays.stream(stageStoreVO.getPickupType().split(","))

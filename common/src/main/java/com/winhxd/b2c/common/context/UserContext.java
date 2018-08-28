@@ -90,8 +90,8 @@ public class UserContext {
             currentStoreUser.remove();
         } else {
             currentStoreUser.set(storeUser);
-            if (storeUser.getStoreCustomerId() != null) {
-                span.tag(ContextHelper.TRACER_API_STORE, storeUser.getStoreCustomerId().toString());
+            if (storeUser.getBusinessId() != null) {
+                span.tag(ContextHelper.TRACER_API_STORE, storeUser.getBusinessId().toString());
             }
         }
         if (customerUser == null) {

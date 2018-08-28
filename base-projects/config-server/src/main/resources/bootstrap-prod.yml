@@ -5,7 +5,7 @@ spring:
     config:
       server:
         native:
-          searchLocations: classpath:/conf/
+          searchLocations: file:/opt/www/configs/spring_cloud/conf/
 
 eureka:
   client:

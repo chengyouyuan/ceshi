@@ -38,12 +38,12 @@ public class MiniProgramUtils {
     /**
      * 小程序APPID
      */
-    @Value("${wechat.miniProgram.appid}")
+    @Value("${wechat.share.appid}")
     private String appid;
     /**
      * 小程序SECRET
      */
-    @Value("${wechat.miniProgram.secret}")
+    @Value("${wechat.share.secret}")
     private String secret;
     /**
      * 授权（必填）获取openid

@@ -108,7 +108,7 @@ public class GatewayFilter implements GlobalFilter, Ordered {
                 }
             } else {
                 StoreUser storeUser = ContextHelper.getHeaderObject(tokenJson, StoreUser.class);
-                currentSpan.tag(ContextHelper.TRACER_API_STORE, storeUser.getStoreCustomerId().toString());
+                currentSpan.tag(ContextHelper.TRACER_API_STORE, storeUser.getBusinessId().toString());
                 if (StringUtils.isBlank(msVer) && StringUtils.isNotBlank(storeUser.getMsVer())) {
                     mutateRequest.header(VersionContext.HEADER_NAME, storeUser.getMsVer());
                 }

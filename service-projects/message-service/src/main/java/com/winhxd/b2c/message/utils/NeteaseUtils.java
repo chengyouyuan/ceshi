@@ -173,8 +173,15 @@ public class NeteaseUtils {
         Map<String, Object> extJsonMsg = JsonUtil.parseJSONObject(String.valueOf(extMsg.get("extJsonMsg")));
         extJsonMsg.put("sessionId",NETEASE_PLATFORM_ADMIN);
         nvps.add(new BasicNameValuePair("payload", JsonUtil.toJSONString(extJsonMsg)));
+        nvps.add(new BasicNameValuePair("option", buildOptionJson()));
         LOGGER.info("NeteaseUtils sendTxtMessage2Person   ^^^^^^^^^   发送云信消息 请求参数"+nvps.toString());
         return  sendHttpClientPost(SEND_MSG_URL,nvps);
+    }
+
+    private String buildOptionJson(){
+        ObjectNode optionJson = JsonUtil.createObjectNode();
+        optionJson.put("needPushNick","false");
+        return optionJson.toString();
     }
 
     private String buildBodyJsonMsg(String msgContent) {
@@ -198,7 +205,6 @@ public class NeteaseUtils {
         extJson.put("audiotype", String.valueOf(neteaseMsg.getAudioType()));
         extJson.put("page", neteaseMsg.getTreeCode());
         extJson.put("msgId",msgId);
-        LOGGER.debug("消息服务，发送云信消息，buildExtJsonMsg，neteaseMsg.getAudioType()={}",neteaseMsg.getAudioType());
         if(neteaseMsg.getAudioType() == 1){
             //文字转语音
             extJson.put("transferaudio","1");
@@ -206,7 +212,6 @@ public class NeteaseUtils {
             //不转语音
             extJson.put("transferaudio","0");
         }
-        LOGGER.debug("消息服务，发送云信消息，buildExtJsonMsg，extJson={}",extJson.toString());
         extJsonMsg.put("extJsonMsg",extJson);
         return extJsonMsg;
     }
@@ -265,6 +270,7 @@ public class NeteaseUtils {
         Map<String, Object> extJsonMsg = JsonUtil.parseJSONObject(String.valueOf(extMsg.get("extJsonMsg")));
         extJsonMsg.put("sessionId",NETEASE_PLATFORM_ADMIN);
         nvps.add(new BasicNameValuePair("payload", JsonUtil.toJSONString(extJsonMsg)));
+        nvps.add(new BasicNameValuePair("option", buildOptionJson()));
         LOGGER.info("NeteaseUtils sendTxtMessage2Batch   ^^^^^^^^^   发送云信消息 请求参数"+nvps.toString());
         return  sendHttpClientPost(SEND_BATCH_MSG_URL,nvps);
     }

@@ -1967,10 +1967,6 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.info("订单：{} 取消,未支付,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
             return;
         }
-        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus().shortValue()) > -1) {
-            logger.info("订单：{} 当前状态不可以取消，不进行退款逻辑计算，滤过", orderNo, order.getStoreId());
-            return;
-        }
         //获取当天最后一秒
         long lastSecond = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), 23, 59, 59, 999999999)).getTime();
         //获取当天开始第一秒

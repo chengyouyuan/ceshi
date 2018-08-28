@@ -60,14 +60,14 @@
       {
         "name": "payTypeDesc",
         "title": "支付方式",
-        "inputModel": "text",
+        "inputModel": "input",
         "value": "",
         "isHidden": false
       },
       {
         "name": "pickupTypeDesc",
         "title": "提货方式",
-        "inputModel": "text",
+        "inputModel": "input",
         "value": "",
         "isHidden": false
       },

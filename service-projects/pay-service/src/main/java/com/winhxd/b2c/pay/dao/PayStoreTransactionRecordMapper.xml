@@ -209,6 +209,7 @@
     <include refid="Base_Column_List" />
     from pay_store_transaction_record
     where store_id = #{storeId}
+    and type = 1
     ORDER BY transaction_date DESC ,created DESC
   </select>
   <select id="getPayStoreTransRecordByOrderNo"  resultMap="BaseResultMap">

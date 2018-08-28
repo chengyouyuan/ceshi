@@ -407,7 +407,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         String resultCode = responseDTO.getResultCode();
         if(TransfersToWxError.SUCCESS.getCode().equals(resultCode)){
             toWxBankVO.setTransfersResult(true);
-            //toWxBankVO.setErrorDesc(TransfersToWxError.SUCCESS.getText());
+            toWxBankVO.setErrorDesc(TransfersToWxError.SUCCESS.getText());
             toWxBankVO.setAbleContinue(false);
         } else {
             String errCode = responseDTO.getErrCode();

@@ -123,20 +123,66 @@
     <result column="real_verify" property="realVerify"></result>
   </resultMap>
 
-  <select id="selectVerifyList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
+  <select id="selectVerifyingList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
     select
       d.store_id, d.verify_status,
-      max(d.recorded_time) as last_recorded_time,
+      date_format(max(d.recorded_time), '%Y-%m-%d') as last_recorded_time,
+      sum(case when d.detail_type = 1 then d.detail_money else 0 end) as real_pay,
+      sum(case when d.detail_type = 2 then d.detail_money else 0 end) as third_party_fee,
+      sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discount,
+      sum(case when d.verify_status = 1 then d.detail_money else 0 end) as real_verify
+    from pay_accounting_detail d
+    where d.order_complete_status = 1
+    and d.third_party_verify_status = 1
+    and d.verify_status = 0
+    <if test="verifyStatus != null">
+      and d.verify_status = #{verifyStatus}
+    </if>
+    <if test="storeId != null">
+      and d.store_id = #{storeId}
+    </if>
+    <if test="recordedDateStart != null">
+      and d.recorded_time &gt;= date_format(#{recordedDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="recordedDateEnd != null">
+      and d.recorded_time &lt; date_add(date_format(#{recordedDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
+    <if test="verifyDateStart != null">
+      and d.verify_time &gt;= date_format(#{verifyDateStart}, '%Y-%m-%d')
+    </if>
+    <if test="verifyDateEnd != null">
+      and d.verify_time &lt; date_add(date_format(#{verifyDateEnd}, '%Y-%m-%d'), interval 1 day)
+    </if>
+    group by d.store_id
+    having 1 = 1
+    <if test="realPayMoneyStart != null">
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &gt;= #{realPayMoneyStart}
+    </if>
+    <if test="realPayMoneyEnd != null">
+      and sum(case when d.detail_type = 1 then d.detail_money else 0 end) &lt;= #{realPayMoneyEnd}
+    </if>
+    <if test="realVerifyMoneyStart != null">
+      and sum(d.detail_money) &gt;= #{realVerifyMoneyStart}
+    </if>
+    <if test="realVerifyMoneyEnd != null">
+      and sum(d.detail_money) &lt; #{realVerifyMoneyEnd}
+    </if>
+  </select>
+
+  <select id="selectVerifiedList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
+    select
+      d.store_id, d.verify_status,
+      date_format(max(d.recorded_time), '%Y-%m-%d') as last_recorded_time,
       h.verify_code, h.operated_time, h.operated_by_name,
       sum(case when d.detail_type = 1 then d.detail_money else 0 end) as real_pay,
       sum(case when d.detail_type = 2 then d.detail_money else 0 end) as third_party_fee,
       sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discount,
-      sum(d.detail_money) as real_verify
+      sum(case when d.verify_status = 1 then d.detail_money else 0 end) as real_verify
     from pay_accounting_detail d
     left join pay_verify_history h on h.verify_code = d.verify_code
     where d.order_complete_status = 1
     and d.third_party_verify_status = 1
-    and d.verify_status in (0, 1)
+    and d.verify_status = 1
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>

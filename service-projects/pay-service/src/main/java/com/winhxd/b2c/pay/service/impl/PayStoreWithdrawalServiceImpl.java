@@ -286,7 +286,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		
 		BigDecimal totalFee = condition.getTotalFee();
-		if(totalFee == null||(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString()))){//||!NumberUtil.isPositiveDecimal(totalFee.toString())
+		if(totalFee == null||(!NumberUtil.isPositiveDecimal(totalFee.toString())&&!NumberUtil.isPositiveInteger(totalFee.toString()))){
 			LOGGER.info("提现金额输入有误");
 			res = BusinessCode.CODE_610032;
 			throw new BusinessException(res);
@@ -300,13 +300,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				res = BusinessCode.CODE_610032;
 				throw new BusinessException(res);
 			}
-		}
-		
-		//最小手续费
-		BigDecimal min = new BigDecimal(1);
-		if (totalFee.compareTo(min)<=0) {
-			LOGGER.info("提现金额输入有误");
-			throw new BusinessException(BusinessCode.CODE_611107);
 		}
 		
 		short type = condition.getFlowDirectionType();
@@ -353,6 +346,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			if(StringUtils.isEmpty(mobile)){
 				res = BusinessCode.CODE_610015;
 				throw new BusinessException(res);
+			}
+			//最小手续费
+			BigDecimal min = new BigDecimal(1);
+			if (totalFee.compareTo(min)<=0) {
+				LOGGER.info("提现金额输入有误");
+				throw new BusinessException(BusinessCode.CODE_611107);
 			}
 		}
 	}
@@ -459,11 +458,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				throw new BusinessException(BusinessCode.CODE_611106);
 			}
 		}
-		//最小手续费
-		BigDecimal min = new BigDecimal(1);
-		if (totalFee.compareTo(min)<=0) {
-			LOGGER.info("提现金额输入有误");
-			throw new BusinessException(BusinessCode.CODE_611107);
+		if (withdrawType.equals(PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode())) {
+			//最小手续费
+			BigDecimal min = new BigDecimal(1);
+			if (totalFee.compareTo(min)<=0) {
+				LOGGER.info("提现金额输入有误");
+				throw new BusinessException(BusinessCode.CODE_611107);
+			}
+			
 		}
 		
 		LOGGER.info(log+"参数为--"+condition.toString());
@@ -488,7 +490,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		BigDecimal cmms = countCmms(rate,totalFee);
 		if (withdrawType.equals(PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode())) {
 			cmms=BigDecimal.valueOf(0);
-		}
+		} 
 		vo.setCmmsAmt(cmms);
 		vo.setRealFee(totalFee.subtract(cmms));
 		return vo;

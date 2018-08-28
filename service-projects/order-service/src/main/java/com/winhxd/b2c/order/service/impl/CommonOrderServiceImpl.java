@@ -406,8 +406,8 @@ public class CommonOrderServiceImpl implements OrderService {
             sendCancelEvent(order, cancelReason, operatorId, operatorName);
             //取消订单成功事务提交后相关事件
             registerProcessAfterTransSuccess(new OrderCancelCompleteProcessRunnable(order, type), null);
-            logger.info("取消订单-结束-订单号={},cancelReason={}", order.getOrderNo(), cancelReason);
         }
+        logger.info("取消订单-结束-订单号={}", order.getOrderNo());
     }
 
     /**

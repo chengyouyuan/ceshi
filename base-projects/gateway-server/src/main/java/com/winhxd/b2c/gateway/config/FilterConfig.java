@@ -3,8 +3,10 @@ package com.winhxd.b2c.gateway.config;
 import brave.http.HttpAdapter;
 import brave.http.HttpSampler;
 import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cloud.sleuth.instrument.web.ClientSampler;
+import org.springframework.cloud.sleuth.instrument.web.ServerSampler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -20,11 +22,23 @@ public class FilterConfig {
     }
 
     @Bean(name = ClientSampler.NAME)
-    public HttpSampler skipHttpSampler() {
+    public HttpSampler sleuthClientSampler() {
         HttpSampler httpSampler = new HttpSampler() {
             @Override
             public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
                 return false;
+            }
+        };
+        return httpSampler;
+    }
+
+    @Bean(name = ServerSampler.NAME)
+    public HttpSampler sleuthServerSampler() {
+        HttpSampler httpSampler = new HttpSampler() {
+            @Override
+            public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
+                String path = httpAdapter.path(req);
+                return !(StringUtils.isBlank(path) || path.equals("/") || path.startsWith("/actuator"));
             }
         };
         return httpSampler;

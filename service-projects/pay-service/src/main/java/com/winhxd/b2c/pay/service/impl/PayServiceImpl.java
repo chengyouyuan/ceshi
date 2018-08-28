@@ -2,21 +2,12 @@ package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.winhxd.b2c.common.constant.PayNotifyMsg;
-import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
-import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgCondition;
-import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
-import com.winhxd.b2c.common.domain.message.enums.MsgPageTypeEnum;
-import com.winhxd.b2c.common.domain.pay.condition.*;
-import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
-import com.winhxd.b2c.common.domain.pay.enums.*;
-import com.winhxd.b2c.common.domain.pay.vo.*;
-import com.winhxd.b2c.common.util.MessageSendUtils;
-import com.winhxd.b2c.pay.util.PayUtil;
-import com.winhxd.b2c.pay.weixin.base.dto.PayTransfersQueryForWxBankResponseDTO;
-import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,14 +21,34 @@ import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
+import com.winhxd.b2c.common.constant.PayNotifyMsg;
+import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsCondition;
+import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
+import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
+import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
+import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
+import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
+import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
+import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
+import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
@@ -46,10 +57,15 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
 import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersQueryToWxBankVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
-import com.winhxd.b2c.common.mq.event.EventMessageListener;
-import com.winhxd.b2c.common.mq.event.EventTypeHandler;
+import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
@@ -59,13 +75,13 @@ import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
 import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
+import com.winhxd.b2c.pay.util.PayUtil;
+import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import com.winhxd.b2c.pay.weixin.model.PayBill;
 import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
-
-import javax.annotation.Resource;
 
 @Service
 public class PayServiceImpl implements PayService{
@@ -282,6 +298,7 @@ public class PayServiceImpl implements PayService{
 		StoreBankrollChangeCondition changeCondition=new StoreBankrollChangeCondition();
 	    changeCondition.setStoreId(storeId);
 	    changeCondition.setType(condition.getType());
+	    //订单闭环
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
 			//由于订单闭环是由  监听事件触发，不适合抛异常
 			// 验证该订单是否已经做过此项操作
@@ -289,7 +306,6 @@ public class PayServiceImpl implements PayService{
 			if (StringUtils.isBlank(orderNo)) {
 				logger.info(log+"--订单闭环订单号为空");
 				return;
-//				throw new BusinessException(BusinessCode.CODE_600004);
 			}
 			//（待定）不知是否需要  验证订单状态
 			//验证该订单是否做过此项操作
@@ -299,14 +315,13 @@ public class PayServiceImpl implements PayService{
 				//说明在订单闭环的时候  已经给用户添加过资金
 				logger.info(log+"--订单闭环计算用户资金重复--订单号"+orderNo);
 				return;
-//				throw new BusinessException(BusinessCode.CODE_600006);
 			}
 			 changeCondition.setOrderNo(orderNo);
 			 //待结算金额增加
 			 changeCondition.setSettlementSettledMoney(condition.getMoney());
 			 flag=true;
 		}
-
+		//审核结算
 		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
           //验证订单信息
 			String orderNo=condition.getOrderNo();
@@ -327,7 +342,7 @@ public class PayServiceImpl implements PayService{
 			if (CollectionUtils.isNotEmpty(list)) {
 				//说明在订单闭环的时候  已经给用户添加过资金
 				logger.info(log+"--结算审核计算用户资金重复--订单号"+orderNo+"费用类型"+moneyType);
-				throw new BusinessException(BusinessCode.CODE_600008);
+				throw new BusinessException(BusinessCode.CODE_600006);
 			}
 			 changeCondition.setOrderNo(orderNo);
 			 changeCondition.setMoneyType(moneyType);
@@ -339,21 +354,12 @@ public class PayServiceImpl implements PayService{
 		
 			
 		}
-
+        //提现申请
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode().equals(condition.getType())){
 			//todo 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isBlank(withdrawalsNo)) {
-				logger.info(log+"--提现申请提现单号为空");
-				throw new BusinessException(BusinessCode.CODE_600005);
-			}
-			map.put("withdrawalsNo",withdrawalsNo);
-			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
-			if (CollectionUtils.isNotEmpty(list)) {
-				//说明在订单闭环的时候  已经给用户添加过资金
-				logger.info(log+"--提现申请计算用户资金重复--提现单号"+withdrawalsNo);
-				throw new BusinessException(BusinessCode.CODE_600011);
-			}
+			
+			storeBankrollVerifyWithdrawalsNo(log+"提现申请",withdrawalsNo,map);
 			 
 			 changeCondition.setWithdrawalsNo(withdrawalsNo);
 			 //可提现金额减少(因为用户资金变化都是add，这里需要传负数)
@@ -363,20 +369,13 @@ public class PayServiceImpl implements PayService{
 			 flag=true;
 			
 		}
+		//提现审核不通过
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_AUDIT_NOT_PASS.getCode().equals(condition.getType())){
 			// 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isBlank(withdrawalsNo)) {
-				logger.info(log+"--提现审核不通过 提现单号为空");
-				throw new BusinessException(BusinessCode.CODE_600005);
-			}
-			map.put("withdrawalsNo",withdrawalsNo);
-			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
-			if (CollectionUtils.isNotEmpty(list)) {
-				//说明已经做过此操作
-				logger.info(log+"--提现审核不通过计算用户资金重复--提现单号"+withdrawalsNo);
-				throw new BusinessException(BusinessCode.CODE_600012);
-			}
+			
+			storeBankrollVerifyWithdrawalsNo(log+"提现审核不通过",withdrawalsNo,map);
+			
 			changeCondition.setWithdrawalsNo(withdrawalsNo);
 			//可提现金额增加
 			changeCondition.setPresentedMoney(condition.getMoney());
@@ -388,17 +387,9 @@ public class PayServiceImpl implements PayService{
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
 			// 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isBlank(withdrawalsNo)) {
-				logger.info(log+"--提现失败 提现单号为空");
-				throw new BusinessException(BusinessCode.CODE_600005);
-			}
-			map.put("withdrawalsNo",withdrawalsNo);
-			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
-			if (CollectionUtils.isNotEmpty(list)) {
-				//说明已经做过此操作
-				logger.info(log+"--提现失败计算用户资金重复--提现单号"+withdrawalsNo);
-				throw new BusinessException(BusinessCode.CODE_600013);
-			}
+			
+			storeBankrollVerifyWithdrawalsNo(log+"提现失败",withdrawalsNo,map);
+			
 			changeCondition.setWithdrawalsNo(withdrawalsNo);
 			//可提现金额增加
 			changeCondition.setPresentedMoney(condition.getMoney());
@@ -407,21 +398,13 @@ public class PayServiceImpl implements PayService{
 			flag=true;
 		}
 		
-
+        //
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode().equals(condition.getType())){
-			//todo 验证该订单是否做过此项操作
+			// 验证该订单是否做过此项操作
 			String withdrawalsNo=condition.getWithdrawalsNo();
-			if (StringUtils.isBlank(withdrawalsNo)) {
-				logger.info(log+"--提现单号为空");
-				throw new BusinessException(BusinessCode.CODE_600005);
-			}
-			map.put("withdrawalsNo",withdrawalsNo);
-			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
-			if (CollectionUtils.isNotEmpty(list)) {
-				//说明在提现审核的时候  已经给用户添加过资金
-				logger.info(log+"--提现审核计算用户资金重复--提现单号"+withdrawalsNo);
-				throw new BusinessException(BusinessCode.CODE_600008);
-			}
+			
+			storeBankrollVerifyWithdrawalsNo(log+"提现成功",withdrawalsNo,map);
+			
 			 changeCondition.setWithdrawalsNo(withdrawalsNo);
 			 //冻结金额减少(因为用户资金变化都是add，这里需要传负数)
 			 changeCondition.setPresentedFrozenMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
@@ -430,10 +413,39 @@ public class PayServiceImpl implements PayService{
 			 flag=true;
 			
 		}
+		//银行退票
+		if(StoreBankRollOpearateEnums.BANK_FAIL.getCode().equals(condition.getType())){
+			// 验证该订单是否做过此项操作
+			String withdrawalsNo=condition.getWithdrawalsNo();
+			
+			storeBankrollVerifyWithdrawalsNo(log+"银行退票",withdrawalsNo,map);
+			
+			changeCondition.setWithdrawalsNo(withdrawalsNo);
+			//可提现金额增加
+			changeCondition.setPresentedMoney(condition.getMoney());
+			//已提现金额减少(因为用户资金变化都是add，这里需要传负数)
+			changeCondition.setAlreadyPresentedMoney(condition.getMoney().multiply(BigDecimal.valueOf(-1)));
+			flag=true;
+			
+		}
 		if (flag) {
 			storeBankrollChange(changeCondition);
 		}
 		
+	}
+	
+	public void storeBankrollVerifyWithdrawalsNo(String log,String withdrawalsNo,Map<String, Object> map) {
+		if (StringUtils.isBlank(withdrawalsNo)) {
+			logger.info(log+"--提现单号为空");
+			throw new BusinessException(BusinessCode.CODE_600005);
+		}
+		map.put("withdrawalsNo",withdrawalsNo);
+		List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
+		if (CollectionUtils.isNotEmpty(list)) {
+			//请勿重复给用户变化资金
+			logger.info(log+"--计算用户资金重复--提现单号"+withdrawalsNo);
+			throw new BusinessException(BusinessCode.CODE_600006);
+		}
 	}
 	
 	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
@@ -525,6 +537,9 @@ public class PayServiceImpl implements PayService{
 		
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
 			remarks = "提现失败:提现冻结金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
+		}
+		if(StoreBankRollOpearateEnums.BANK_FAIL.getCode().equals(condition.getType())){
+			remarks = "提现失败:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());

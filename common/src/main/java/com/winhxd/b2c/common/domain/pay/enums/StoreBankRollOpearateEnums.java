@@ -23,11 +23,11 @@ public enum StoreBankRollOpearateEnums {
 	 */
 	WITHDRAWALS_AUDIT_NOT_PASS(5,"提现审核不通过"),
 	/**
-	 * 提现失败
+	 * 提现失败（对应提现表里面的状态3 无效（提现失败，不可以再次请求微信转账接口））
 	 */
 	WITHDRAWALS_FAIL(6,"提现失败"),
 	/**
-	 * 提现失败
+	 * 银行退票(提现数据状态由成功流转至退票,退票时付款金额和手续费会自动退还)
 	 */
 	BANK_FAIL(7,"银行退票");
 	

@@ -14,7 +14,7 @@ RETAIL-REST-SERVICE:
 sku-microservice:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://192.168.60.241:6111/
+    listOfServers: http://192.168.60.241:6112/
 
 # 商品中心 品牌商REST服务配置
 user-service:

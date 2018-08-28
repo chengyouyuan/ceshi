@@ -384,7 +384,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单已支付成功不能取消，请走退款接口 订单号={0}", orderNo));
         }
         Short status = order.getOrderStatus();
-        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus().shortValue()) > -1) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus()) > -1) {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("订单状态不匹配，不能取消 订单号={0}", orderNo));
         }
         //设置提货码置为null、取消原因、取消状态等
@@ -642,7 +642,7 @@ public class CommonOrderServiceImpl implements OrderService {
             throw new BusinessException(BusinessCode.WRONG_ORDER_STATUS, MessageFormat.format("未支付的订单不允许退款orderNo={0}", order.getOrderNo()));
         }
         Short orderStatus = order.getOrderStatus();
-        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), orderStatus.shortValue()) > -1) {
+        if (Arrays.binarySearch(OrderStatusEnum.statusCannotRefund(), orderStatus) > -1) {
             throw new BusinessException(BusinessCode.ORDER_ALREADY_PAID, MessageFormat.format("订单状态不允许退款orderNo={0}", order.getOrderNo()));
         }
         String reason = StringUtils.isBlank(cancelReason) ? order.getCancelReason() : cancelReason;

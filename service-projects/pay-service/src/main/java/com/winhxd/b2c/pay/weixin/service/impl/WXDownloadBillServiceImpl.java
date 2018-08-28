@@ -46,7 +46,7 @@ import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
 @Service
 public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 
-    private static final Logger logger = LoggerFactory.getLogger(WXTransfersServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(WXDownloadBillServiceImpl.class);
     
     /**
      * 微信侧返回数据的分隔符
@@ -110,10 +110,12 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 	
 	@Override
 	public String downloadStatement(DownloadStatementCondition condition) {
+		
 		Date billDate = condition.getBillDate();
 		if (billDate == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
+		logger.info("开始下载对账单====：{}", sdf1.format(billDate));
 
 		//某天资金账单已下载,则不再重复下载
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
@@ -132,7 +134,7 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		
 		try {
 			PayBillDownloadResponseDTO responseDTO = wXPayApi.downloadBill(dto);
-			logger.info("资金账单下载返回数据：{}", String.valueOf(responseDTO));
+			logger.info("对账单下载返回数据：{}", String.valueOf(responseDTO));
 			
 			//通信失败，则记录失败原因到记录表
 			if (WXPayConstants.FAIL.equals(responseDTO.getReturnCode())) {
@@ -415,7 +417,8 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		if (condition.getBillDate() == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
-		
+
+		logger.info("开始下载资金账单====：{}", sdf1.format(billDate));
 		//某天资金账单已下载,则不再重复下载
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);

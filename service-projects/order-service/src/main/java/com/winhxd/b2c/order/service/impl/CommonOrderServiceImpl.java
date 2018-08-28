@@ -243,6 +243,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut3DaysUnconfirmed(String orderNo) {
+        logger.info("申请退款订单3天未确认开始-订单号：{}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         try {
@@ -259,6 +260,7 @@ public class CommonOrderServiceImpl implements OrderService {
         } finally {
             lock.unlock();
         }
+        logger.info("申请退款订单3天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -269,6 +271,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1DayUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1天未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1天未确认操作", orderNo);
@@ -277,6 +280,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(2, order);
         }
+        logger.info("申请退款订单1天未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -287,6 +291,7 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @StringMessageListener(value = MQHandler.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_HANDLER)
     public void orderRefundTimeOut1HourUnconfirmed(String orderNo) {
+        logger.info("申请退款订单1小时未确认开始-订单号：{}", orderNo);
         OrderInfo order = orderInfoMapper.selectByOrderNo(orderNo);
         if (null == order) {
             logger.info("订单号：{}未查询到相应订单，无法执行C端申请退款订单剩1小时未确认操作", orderNo);
@@ -295,6 +300,7 @@ public class CommonOrderServiceImpl implements OrderService {
         if (order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() && order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode()) {
             sendMsgToStore(1, order);
         }
+        logger.info("申请退款订单1小时未确认结束-订单号：{}", orderNo);
     }
 
     /**
@@ -1959,10 +1965,6 @@ public class CommonOrderServiceImpl implements OrderService {
         logger.info("订单：{} 取消,更新门店：{}订单销售数据开始：", orderNo, order.getStoreId());
         if (order.getPayStatus() == null || order.getPayStatus().shortValue() != PayStatusEnum.PAID.getStatusCode()) {
             logger.info("订单：{} 取消,未支付,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
-            return;
-        }
-        if (Arrays.binarySearch(OrderStatusEnum.statusCannotCancel(), order.getOrderStatus().shortValue()) > -1) {
-            logger.info("订单：{} 当前状态不可以取消，不进行退款逻辑计算，滤过", orderNo, order.getStoreId());
             return;
         }
         //获取当天最后一秒

@@ -237,7 +237,7 @@ public class VerifyService {
     public Page<VerifySummaryVO> findVerifyList(VerifySummaryListCondition condition) {
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
         Page<VerifySummaryVO> page;
-        if (AccountingDetail.VerifyStatusEnum.VERIFIED.getCode() == condition.getVerifyStatus()) {
+        if (condition.getVerifyStatus() != null && AccountingDetail.VerifyStatusEnum.VERIFIED.getCode() == condition.getVerifyStatus()) {
             page = accountingDetailMapper.selectVerifiedList(condition);
         } else {
             page = accountingDetailMapper.selectVerifyingList(condition);

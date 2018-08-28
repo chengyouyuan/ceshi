@@ -1,6 +1,7 @@
 package com.winhxd.b2c.pay.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.winhxd.b2c.common.constant.PayNotifyMsg;
@@ -757,7 +758,7 @@ public class PayServiceImpl implements PayService{
 		}
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
 		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
-		payWithdrawals.setTimeEnd(new Date());
+		payWithdrawals.setTimeEnd(payTransfersToWxChangeVO.getPaymentTime());
 		int transfersResult = this.transfersPublic(payWithdrawals,log);
 
 		return transfersResult;
@@ -969,9 +970,10 @@ public class PayServiceImpl implements PayService{
 			payWithdrawals.setCallbackReason(resultForWxBank.getReason());
 			payWithdrawals.setCallbackCmmsAmt(resultForWxBank.getCmmsAmt());
 			payWithdrawals.setTransactionId(resultForWxBank.getPaymentNo());
-			payWithdrawals.setTimeEnd(new Date());
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());
@@ -983,6 +985,10 @@ public class PayServiceImpl implements PayService{
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				if(resultForWxBank.getPaySuccTime()!=null){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
+				}
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());

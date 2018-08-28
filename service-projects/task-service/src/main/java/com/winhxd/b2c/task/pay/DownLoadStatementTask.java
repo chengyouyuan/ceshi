@@ -101,6 +101,8 @@ public class DownLoadStatementTask {
 					logger.info("发送下载账单事件结束-日期={}", dateFormat.format(condition.getBillDate()));
 
 				}
+			}else{
+				logger.info("前7天内没有失败的账单，当前时间={}", sdf.format(new Date()));
 			}
     	} catch (Exception ex) {
     		logger.error("发送下载账单事件失败！", ex);

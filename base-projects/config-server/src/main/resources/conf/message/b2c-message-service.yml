@@ -18,7 +18,7 @@ wechat:
     webpageUrl: https://xxxxx
     userName: gh_353d7980e3f8
     path: pages/index/store
-    title: 惠下单惠小店
+    title: 进店领券享优惠！欢迎光临
     description: 进店领券享优惠！欢迎光临
     transaction: transaction
   miniProgram:

@@ -194,13 +194,13 @@ public class WechatShareServiceImpl implements WechatShareService {
     public MiniProgramConfigVO getMiniProgramConfigVO(Long storeUserId) {
         MiniProgramConfigVO miniProgramConfigVO = new MiniProgramConfigVO();
         miniProgramConfigVO.setPath(path+"/storeId="+storeUserId);
-        miniProgramConfigVO.setTitle(title);
         miniProgramConfigVO.setUserName(userName);
         StoreUserInfoVO storeUserInfoVO = storeServiceClient.findStoreUserInfo(storeUserId).getData();
         if(storeUserInfoVO != null){
-            description = description+storeUserInfoVO.getStoreName();
+            title = title+storeUserInfoVO.getStoreName();
         }
         miniProgramConfigVO.setDescription(description);
+        miniProgramConfigVO.setTitle(title);
         miniProgramConfigVO.setTransaction(transaction);
         miniProgramConfigVO.setWebPageUrl("http://www.hxd.com");
         return miniProgramConfigVO;

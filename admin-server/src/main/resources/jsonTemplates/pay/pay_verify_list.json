@@ -89,6 +89,7 @@
         "name": "verifyStatus",
         "inputModel": "select",
         "title": "结算状态",
+        "value": "0",
         "options": [ {
           "label": "已结算",
           "value": "1"

@@ -103,7 +103,7 @@
       },
       {
         "name": "verifyTime",
-        "title": "实际结算时间"
+        "title": "操作时间"
       },
       {
         "name": "operatedByName",

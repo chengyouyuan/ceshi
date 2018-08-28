@@ -80,12 +80,20 @@ public interface AccountingDetailMapper {
     Page<VerifyDetailVO> selectAccountingDetailList(VerifyDetailListCondition condition);
 
     /**
-     * 查询结算汇总
+     * 查询结算汇总，未结算
      *
      * @param condition
      * @return
      */
-    Page<VerifySummaryVO> selectVerifyList(VerifySummaryListCondition condition);
+    Page<VerifySummaryVO> selectVerifyingList(VerifySummaryListCondition condition);
+
+    /**
+     * 查询结算汇总，已结算
+     *
+     * @param condition
+     * @return
+     */
+    Page<VerifySummaryVO> selectVerifiedList(VerifySummaryListCondition condition);
 
     /**
      * 按订单更新费用明细更新订单费用状态为完成

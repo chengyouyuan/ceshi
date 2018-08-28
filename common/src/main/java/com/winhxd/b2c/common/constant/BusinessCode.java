@@ -494,14 +494,12 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化  提现单号为空")
     public static final int CODE_600005 = 600005;
     
-    @ApiModelProperty("门店资金变化  订单闭环计算用户资金重复")
+    @ApiModelProperty("门店资金变化  计算用户资金重复")
     public static final int CODE_600006 = 600006;
     
     @ApiModelProperty("门店资金变化  结算审核费用类型为空")
     public static final int CODE_600007 = 600007;
     
-    @ApiModelProperty("门店资金变化  结算审核计算用户资金重复")
-    public static final int CODE_600008 = 600008;
     
     @ApiModelProperty("门店资金变化 金额为空")
     public static final int CODE_600009 = 600009;
@@ -509,14 +507,6 @@ public final class BusinessCode {
     @ApiModelProperty("门店资金变化 金额有误")
     public static final int CODE_600010 = 600010;
     
-    @ApiModelProperty("门店资金变化  提现申请计算用户资金重复")
-    public static final int CODE_600011 = 600011;
-    
-    @ApiModelProperty("门店资金变化  提现审核不通过计算用户资金重复")
-    public static final int CODE_600012 = 600012;
-    
-    @ApiModelProperty("门店资金变化  提现失败计算用户资金重复")
-    public static final int CODE_600013 = 600013;
     
     
     @ApiModelProperty("获取门店绑定钱包  未获取到门店信息")

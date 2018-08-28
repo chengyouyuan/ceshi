@@ -1728,19 +1728,12 @@ public class CommonOrderServiceImpl implements OrderService {
             try {
                 //发送MQ延时消息
                 logger.info("C端申请退款-MQ延时消息开始-订单号={}", orderNo);
-                if (customerUserInfoVO.getCustomerMobile().equals("13522928292") || customerUserInfoVO.getCustomerMobile().equals("15503838227")) {
-                    logger.info("C端申请退款-MQ延时消息开始-orderNo={},mobile={}", orderNo, customerUserInfoVO.getCustomerMobile());
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, 3 * 60 * 1000);
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, 5 * 60 * 1000);
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, 8 * 60 * 1000);
-                } else {
-                    //获取两天后的时间
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS);
-                    //获取3天后-1小时
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS);
-                    //发送3天后超时消息
-                    stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS);
-                }
+                //获取两天后的时间
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_DAY_UNCONFIRMED_DELAY_MILLISECONDS);
+                //获取3天后-1小时
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_1_HOUR_UNCONFIRMED_DELAY_MILLISECONDS);
+                //发送3天后超时消息
+                stringMessageSender.send(MQDestination.ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED, orderNo, ORDER_REFUND_TIMEOUT_3_DAYS_UNCONFIRMED_DELAY_MILLISECONDS);
                 logger.info("C端申请退款-MQ延时消息结束-订单号={}", orderNo);
             } catch (Exception e) {
                 logger.error("C端申请退款发送消息失败orderNo={}", orderInfo.getOrderNo());

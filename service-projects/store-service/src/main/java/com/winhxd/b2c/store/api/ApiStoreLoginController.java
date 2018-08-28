@@ -264,6 +264,11 @@ public class ApiStoreLoginController {
 		else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 
+			if (StringUtils.isBlank(storeUserInfoCondition.getStorePassword())
+					|| StringUtils.isBlank(storeUserInfoCondition.getStoreMobile())) {
+				logger.info("{} - , 您的账号或者密码错误");
+				throw new BusinessException(BusinessCode.CODE_100821);
+			}
 			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient.getStoreUserInfo(
 					storeUserInfoCondition.getStoreMobile(), storeUserInfoCondition.getStorePassword());
 			StoreUserSimpleInfo map = object.getData();

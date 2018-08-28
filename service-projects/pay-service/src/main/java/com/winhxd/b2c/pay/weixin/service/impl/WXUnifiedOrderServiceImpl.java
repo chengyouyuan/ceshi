@@ -87,7 +87,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setBankType(payPreOrderCallbackDTO.getBankType());
 		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
 		if(payPreOrderCallbackDTO.getSettlementTotalFee() != null) {
-			bill.setSettlementTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(new BigDecimal(0.01)));
+			bill.setSettlementTotalAmount(BigDecimal.valueOf(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(BigDecimal.valueOf(0.01)));
 		}
 		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
 		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
@@ -97,7 +97,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
 		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
 		if(payPreOrderCallbackDTO.getTotalFee() != null) {
-			bill.setCallbackTotalAmount(new BigDecimal(payPreOrderCallbackDTO.getTotalFee()).multiply(new BigDecimal(0.01)));
+			bill.setCallbackTotalAmount(BigDecimal.valueOf(payPreOrderCallbackDTO.getTotalFee()).multiply(BigDecimal.valueOf(0.01)));
 		}
 		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
 		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
@@ -188,8 +188,9 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 		//查询响应错误
 		if(payPreOrderCallbackDTO == null || 
 				PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getReturnCode())) {
-			logger.error("主动查询{}返回错误：{}", outTradeNo, payPreOrderCallbackDTO.getReturnMsg());
-			throw new BusinessException(BusinessCode.CODE_3400910, payPreOrderCallbackDTO.getReturnMsg());
+			String returnMsg = payPreOrderCallbackDTO == null ? "" : payPreOrderCallbackDTO.getReturnMsg();
+			logger.error("主动查询{}返回错误：{}", outTradeNo, returnMsg);
+			throw new BusinessException(BusinessCode.CODE_3400910, returnMsg);
 		}
 		//查询支付失败
 		if(PayPreOrderCallbackDTO.FAIL.equals(payPreOrderCallbackDTO.getResultCode())) {
@@ -352,7 +353,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	 * @author mahongliang
 	 * @date  2018年8月18日 下午6:27:29
 	 * @Description 
-	 * @param PayPreOrderCondition		外部调用入参
+	 * @param condition		外部调用入参
 	 * @param payPreOrderDTO			调用微信api入参
 	 * @param payPreOrderResponseDTO	调用微信api反参
 	 * @return

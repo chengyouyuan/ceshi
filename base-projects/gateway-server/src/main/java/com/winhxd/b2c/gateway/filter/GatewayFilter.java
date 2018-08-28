@@ -190,6 +190,9 @@ public class GatewayFilter implements GlobalFilter, Ordered {
     private Mono<Void> error(ServerWebExchange exchange, ServerHttpResponse response, int businessCode) {
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
         Locale locale = resolver.resolveLocaleContext(exchange).getLocale();
+        if (locale == null) {
+            locale = Locale.CHINESE;
+        }
         ResponseResult result = new ResponseResult();
         result.setCode(businessCode);
         result.setMessage(messageSource.getMessage(String.valueOf(businessCode), null, locale));

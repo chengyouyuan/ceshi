@@ -439,7 +439,12 @@
 	rate,
 	audit_status,
 	audit_desc,
-	callback_status,
+	  (case WHEN callback_status=0 THEN 0
+        WHEN callback_status=2 THEN 0
+        WHEN callback_status=4 THEN 0
+        WHEN callback_status=1 THEN 1
+        WHEN callback_status=3 THEN 3
+      END) as callback_status,
 	callback_reason,
 	error_message,
 	callback_cmms_amt,

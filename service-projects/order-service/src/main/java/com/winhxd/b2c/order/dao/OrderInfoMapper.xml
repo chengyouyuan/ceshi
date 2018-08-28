@@ -650,7 +650,7 @@
     	and pay_status = 1
         and pay_finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}
         and pay_finish_datetime &lt;= #{endDateTime,jdbcType=TIMESTAMP}
-        and order_status not in (33, 66, 77, 99)
+        and order_status not in (66, 77, 99)
     </sql>
     <sql id="orderFinishCondition">
     	and finish_datetime &gt;= #{startDateTime,jdbcType=TIMESTAMP}

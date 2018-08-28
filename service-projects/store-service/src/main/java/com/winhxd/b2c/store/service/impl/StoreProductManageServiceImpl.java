@@ -124,7 +124,7 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 					//店主名称
 					spManage.setUpdatedByName(storeUserInfo.getShopkeeper());
 					//更新
-					storeProductManageMapper.updateByPrimaryKeySelective(spManage);
+					storeProductManageMapper.updateByPrimaryKey(spManage);
 				}
 			}
 

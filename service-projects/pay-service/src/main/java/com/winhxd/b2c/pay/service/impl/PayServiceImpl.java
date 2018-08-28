@@ -539,7 +539,7 @@ public class PayServiceImpl implements PayService{
 			remarks = "提现失败:提现冻结金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		if(StoreBankRollOpearateEnums.BANK_FAIL.getCode().equals(condition.getType())){
-			remarks = "提现失败:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
+			remarks = "银行退票:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());

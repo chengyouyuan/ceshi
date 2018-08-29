@@ -207,6 +207,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		BigDecimal totalFee = condition.getTotalFee();
 		getWithdrawMoney(businessId,totalFee);
 		payWithdrawal.setTotalFee(totalFee);
+		payWithdrawal.setMobile(condition.getMobile());
 		if(bankType == condition.getWithdrawType()){
 			//验证银行卡是否和门店绑定
 			Map<String, Object> map=new HashMap<>();
@@ -221,7 +222,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
-			payWithdrawal.setMobile(condition.getMobile());
 			BigDecimal rate = payWithDrawalConfig.getRate();
 			BigDecimal cmms = countCmms(rate,totalFee);
 			payWithdrawal.setCmmsAmt(cmms);
@@ -350,6 +350,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			res = BusinessCode.CODE_610012;
 			throw new BusinessException(res);
 		}
+		
+		String mobile = condition.getMobile();
+		if(StringUtils.isEmpty(mobile)){
+			res = BusinessCode.CODE_610015;
+			throw new BusinessException(res);
+		}
+		
 		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			String swiftCode = condition.getSwiftCode();
 			if(StringUtils.isEmpty(swiftCode)){
@@ -359,11 +366,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			String storeName = condition.getStroeName();
 			if(StringUtils.isEmpty(storeName)){
 				res = BusinessCode.CODE_610037;
-				throw new BusinessException(res);
-			}
-			String mobile = condition.getMobile();
-			if(StringUtils.isEmpty(mobile)){
-				res = BusinessCode.CODE_610015;
 				throw new BusinessException(res);
 			}
 			//最小手续费

@@ -96,7 +96,8 @@ public class ApiPayStoreWithdrawalController {
 		@ApiResponse(code = BusinessCode.CODE_610012, message = "银行卡卡号为空"),
 		@ApiResponse(code = BusinessCode.CODE_610015, message = "手机号为空"),
 		@ApiResponse(code = BusinessCode.CODE_610038, message = "当前门店没有可提现金额"),
-		@ApiResponse(code = BusinessCode.CODE_610026, message = "参数错误：门店和微信钱包不匹配")
+		@ApiResponse(code = BusinessCode.CODE_610026, message = "参数错误：门店和微信钱包不匹配"),
+		@ApiResponse(code = BusinessCode.CODE_610902, message = "今天提现次数已达上限")
 	})
 	@PostMapping(value = "/6109/v1/withdrawal", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){

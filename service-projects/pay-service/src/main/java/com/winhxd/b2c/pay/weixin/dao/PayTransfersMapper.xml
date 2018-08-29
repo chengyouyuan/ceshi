@@ -351,11 +351,15 @@
       created_by_name = #{createdByName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectTOP1TransfersByPartnerTradeNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectTOP1TransfersByPartnerTradeNoAndPaymentNo" resultMap="BaseResultMap">
     SELECT
       <include refid="Base_Column_List" />
     FROM pay_transfers
-    WHERE partner_trade_no = #{partnerTradeNo,jdbcType=VARCHAR}
+    WHERE 1=1
+    AND partner_trade_no = #{partnerTradeNo,jdbcType=VARCHAR}
+    <if test="paymentNo != null and paymentNo != ''">
+      transaction_id = #{paymentNo, jdbcType=VARCHAR}
+    </if>
     ORDER BY created DESC
     LIMIT 1
   </select>

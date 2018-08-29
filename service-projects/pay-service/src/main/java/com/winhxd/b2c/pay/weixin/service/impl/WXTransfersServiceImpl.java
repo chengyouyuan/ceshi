@@ -141,7 +141,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
          * DeviceInfo&NonceStr, 如果不是第一次进行请求,则须和前一次相同
          */
         PayTransfers records =
-                payTransfersMapper.selectTOP1TransfersByPartnerTradeNo(toWxBalanceCondition.getPartnerTradeNo());
+                payTransfersMapper.selectTOP1TransfersByPartnerTradeNoAndPaymentNo(toWxBalanceCondition.getPartnerTradeNo(), "");
         if(null == records){
             forWxChangeDTO.setDeviceInfo(toWxBalanceCondition.getDeviceInfo());
             forWxChangeDTO.setNonceStr(WXPayUtil.generateNonceStr());
@@ -373,7 +373,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
          * NonceStr, 如果不是第一次进行请求,则须和前一次相同
          */
         PayTransfers records =
-                payTransfersMapper.selectTOP1TransfersByPartnerTradeNo(toWxBankCondition.getPartnerTradeNo());
+                payTransfersMapper.selectTOP1TransfersByPartnerTradeNoAndPaymentNo(toWxBankCondition.getPartnerTradeNo(), "");
         if(null == records){
             forWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         } else {
@@ -538,7 +538,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setRealAmount(record.getTotalAmount().subtract(record.getCmmsAmount()));
         //设置其他
         record.setDesc(wxBankDTO.getDesc());
-        record.setStatus((short)(toWxBankVO.isTransfersResult() ? 1 : 0));
+        //转账到银行卡默认置位处理中
+        record.setStatus((short)(toWxBankVO.isTransfersResult() ? 2 : 0));
         if(0 == record.getStatus()) {
             record.setErrorCode(responseDTO.getErrCode());
             record.setErrorMsg(toWxBankVO.getErrorDesc());
@@ -547,6 +548,25 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         record.setCreatedBy(toWxBankCondition.getOperaterID());
         record.setCreated(new Date(System.currentTimeMillis()));
         payTransfersMapper.insertSelective(record);
+    }
+
+    @Override
+    public void modifyTransfersToBankStatus(PayTransfersQueryToWxBankVO resultForWxBank) {
+        PayTransfers payTransfers = payTransfersMapper.selectTOP1TransfersByPartnerTradeNoAndPaymentNo(
+                resultForWxBank.getPartnerTradeNo(), resultForWxBank.getPaymentNo());
+        payTransfers.setTimeEnd(DateUtil.toDate(resultForWxBank.getPaySuccTime(), DATE_FORMAT));
+        String transfersStatus = resultForWxBank.getStatus();
+        if(PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)){
+            payTransfers.setStatus((short) 1);
+        } else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
+            payTransfers.setStatus((short) 0);
+            payTransfers.setErrorMsg(resultForWxBank.getReason());
+        } else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
+            payTransfers.setStatus((short) 0);
+            payTransfers.setErrorCode(TransfersToWxError.BANK_FAIL.getCode());
+            payTransfers.setErrorMsg(resultForWxBank.getReason());
+        }
+        payTransfersMapper.updateByPrimaryKeySelective(payTransfers);
     }
 
     public static void main(String[] args) throws Exception {

@@ -35,6 +35,7 @@ public enum TransfersToWxError {
     V2_ACCOUNT_SIMPLE_BAN("V2_ACCOUNT_SIMPLE_BAN", "无法给非实名用户付款", false),
     PARAM_IS_NOT_UTF8("PARAM_IS_NOT_UTF8", "请求参数中包含非utf8编码字符", false),
     SENDNUM_LIMIT("SENDNUM_LIMIT", "该用户今日付款次数超过限制,如有需要请登录微信支付商户平台更改API安全配置", true),
+    BANK_FAIL("BANK_FAIL", "银行退票，订单状态由付款成功流转至退票,退票时付款金额和手续费会自动退还", false),
     SUCCESS("SUCCESS", "微信侧受理成功", false);
 
     private String code;

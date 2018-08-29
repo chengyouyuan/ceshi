@@ -744,6 +744,33 @@ public class PayServiceImpl implements PayService{
 		logger.info("提现流水号111:{},对象信息：",payTransfersToWxChangeVO.toString());
 		if(payTransfersToWxChangeVO.isTransfersResult()){
 			payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
+		}else{
+			//是否需要用户重新申请提现流程
+			if(payTransfersToWxChangeVO.isAbleContinue()){
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
+			}else{
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
+			}
+		}
+		//C端展示提现失败原因
+		if(payTransfersToWxChangeVO.getErrorCode()!=null){
+			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+				payWithdrawals.setErrorMessage("当日累积限额超过2万，请重新提现。");
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())){
+				payWithdrawals.setErrorMessage("请至微信实名认证后再次提现");
+
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())){
+				//TODO 提示文案信息
+				payWithdrawals.setErrorMessage("");
+			}
+		}
+
+		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
+		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
+		payWithdrawals.setTimeEnd(payTransfersToWxChangeVO.getPaymentTime());
+		int transfersResult = this.transfersPublic(payWithdrawals,log);
+		//成功发送云信
+		if(payTransfersToWxChangeVO.isTransfersResult()){
 			// 发送云信
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(payWithdrawals.getCreated());
@@ -751,13 +778,18 @@ public class PayServiceImpl implements PayService{
 			int day=cal.get(Calendar.DATE);
 			String notifyMsg = PayNotifyMsg.STORE_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 			PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
-		}else{
-			//是否需要用户重新申请提现流程
-			if(payTransfersToWxChangeVO.isAbleContinue()){
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
-			}else{
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
-
+		}
+		//失败根据code发送云信
+		if(payTransfersToWxChangeVO.getErrorCode()!=null){
+			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+				// 发送云信
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_MONEY_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())){
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());
@@ -765,25 +797,11 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())){
+				//TODO 发送云信
 			}
 		}
-		//C端展示提现失败原因
-		if(payTransfersToWxChangeVO.getErrorCode()!=null&&payTransfersToWxChangeVO.getErrorDesc()!=null){
-			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&payTransfersToWxChangeVO.getErrorDesc().indexOf("银行卡")>=0){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
-			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
-			}
-		}
-		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
-		payWithdrawals.setTransactionId(payTransfersToWxChangeVO.getPaymentNo());
-		payWithdrawals.setTimeEnd(payTransfersToWxChangeVO.getPaymentTime());
-		int transfersResult = this.transfersPublic(payWithdrawals,log);
 
 		return transfersResult;
 	}
@@ -876,36 +894,45 @@ public class PayServiceImpl implements PayService{
 					condition.setWithdrawalsNo(payWithdrawalsList.get(0).getWithdrawalsNo());
 					condition.setMoney(payWithdrawalsList.get(0).getTotalFee());
 					this.updateStoreBankroll(condition);
-					
-					// 发送云信
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(payWithdrawalsList.get(0).getCreated());
-					int month=cal.get(Calendar.MONTH)+1;
-					int day=cal.get(Calendar.DATE);
-					String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
-					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
 				}
 			}
 		}
 		//C端展示提现失败原因
-		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null){
-			if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡")>=0){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
-			}else if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
-			}else if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
-				//TODO 文案待确定
-				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
+		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null) {
+			if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡") >= 0) {
+				payWithdrawals.setErrorMessage("银行卡信息有误，请重新填写。");
+			} else if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
+				payWithdrawals.setErrorMessage("当日累积限额超过5万，请重新提现。");
+
 			}
 		}
-
 
 
 		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
 		payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
 		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
+
+		//提现失败根据code发送云信
+		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null) {
+			List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
+			if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode()) && payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡") >= 0) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawalsList.get(0).getCreated());
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
+			} else if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawalsList.get(0).getCreated());
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_MONEY_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
+
+			}
+		}
+
 		return 1;
 	}
 
@@ -1018,13 +1045,6 @@ public class PayServiceImpl implements PayService{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
-				// 发送云信
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(payWithdrawals.getCreated());
-				int month=cal.get(Calendar.MONTH)+1;
-				int day=cal.get(Calendar.DATE);
-				String notifyMsg = PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
-				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
 				doesModify = true;
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
@@ -1047,7 +1067,7 @@ public class PayServiceImpl implements PayService{
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				}
-				// 发送云信
+				//TODO 银行退票是否发送云信，文案内容
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawals.getCreated());
 				int month=cal.get(Calendar.MONTH)+1;
@@ -1060,19 +1080,43 @@ public class PayServiceImpl implements PayService{
 			//C端展示提现失败原因
 			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
 				if(resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&resultForWxBank.getErrCodeDes().indexOf("银行卡")>=0){
-					//TODO 文案待确定
-					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
+					payWithdrawals.setErrorMessage("银行卡信息有误，请重新填写。");
 				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
-					//TODO 文案待确定
-					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
-				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
-					//TODO 文案待确定
-					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
+					payWithdrawals.setErrorMessage("当日累积限额超过5万，请重新提现。");
 				}
 			}
 			if(doesModify){
 				this.transfersPublic(payWithdrawals,log);
 				wxTransfersService.modifyTransfersToBankStatus(resultForWxBank);
+			}
+			//提现成功发送云信
+			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(payWithdrawals.getCreated());
+				int month=cal.get(Calendar.MONTH)+1;
+				int day=cal.get(Calendar.DATE);
+				String notifyMsg = PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
+			}
+			//提现失败根据code发送云信
+			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
+				if(resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&resultForWxBank.getErrCodeDes().indexOf("银行卡")>=0){
+					// 发送云信
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(payWithdrawals.getCreated());
+					int month=cal.get(Calendar.MONTH)+1;
+					int day=cal.get(Calendar.DATE);
+					String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(payWithdrawals.getCreated());
+					int month=cal.get(Calendar.MONTH)+1;
+					int day=cal.get(Calendar.DATE);
+					String notifyMsg = PayNotifyMsg.STORE_MONEY_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
+					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+
+				}
 			}
 		}
 		return 1;

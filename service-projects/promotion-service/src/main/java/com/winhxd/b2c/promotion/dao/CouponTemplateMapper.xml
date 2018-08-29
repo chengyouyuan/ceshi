@@ -496,7 +496,9 @@
       LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
       WHERE
           a.store_id = #{storeId}
+          and h.activity_status= 1
       GROUP BY b.coupon_activity_id,b.template_id
+      ORDER BY expire DESC,startTime DESC
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
@@ -520,6 +522,7 @@
     LEFT JOIN  coupon_template_send c ON c.template_id = a.id
     LEFT JOIN coupon_activity h on h.id = e.coupon_activity_id
     WHERE d.store_id = #{storeId}
+          and h.activity_status= 1
     group by e.coupon_activity_id,e.template_id
   </select>
 

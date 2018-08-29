@@ -96,7 +96,7 @@
         "title": "备注"
       },
       {
-        "name": "operatedByName",
+        "name": "updatedByName",
         "title": "操作人员"
       }
     ],

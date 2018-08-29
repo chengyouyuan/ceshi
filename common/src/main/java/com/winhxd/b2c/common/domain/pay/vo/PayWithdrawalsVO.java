@@ -71,7 +71,7 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("修改人id")
     private Long updatedBy;
     @ApiModelProperty("修改人名称")
-    @Excel(name = "审核人", width = 30)
+    @Excel(name = "操作人", width = 30)
     private String updatedByName;
     @ApiModelProperty("修改时间")
     private Date updated;
@@ -273,15 +273,6 @@ public class PayWithdrawalsVO {
     }
 
     public Short getCallbackStatus() {
-        if (Short.valueOf("0").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
-        if (Short.valueOf("2").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
-        if (Short.valueOf("4").compareTo(callbackStatus) == 0) {
-            callbackStatus = 0;
-        }
         return callbackStatus;
     }
 

@@ -30,11 +30,15 @@ public class MessageHelper {
     }
 
     private Locale getLocale() {
+        Locale locale = null;
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
-            return localeResolver.resolveLocale(((ServletRequestAttributes) requestAttributes).getRequest());
+            locale = localeResolver.resolveLocale(((ServletRequestAttributes) requestAttributes).getRequest());
         }
-        return null;
+        if (locale == null) {
+            locale = Locale.CHINESE;
+        }
+        return locale;
     }
 
     public String getMessage(String code, Object... args) {

@@ -97,7 +97,7 @@
         },
         {
           "id": "5_2",
-          "menuName": "待结算金额审核",
+          "menuName": "结算审核",
           "path": "",
           "configKey": "/template/module/pay/pay_verify_list.json"
         },

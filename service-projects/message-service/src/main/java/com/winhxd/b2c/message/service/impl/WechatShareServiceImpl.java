@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.util.*;
 
@@ -165,7 +166,7 @@ public class WechatShareServiceImpl implements WechatShareService {
         try {
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(params), "UTF-8"));
             response = client.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
                 //将返回的图片数据上传保存到CDN
                 String fileName = UUID.randomUUID().toString().replace("-", "") + ".png";
                 //上传图片
@@ -192,15 +193,16 @@ public class WechatShareServiceImpl implements WechatShareService {
 
     @Override
     public MiniProgramConfigVO getMiniProgramConfigVO(Long storeUserId) {
+        String tempTitle = title;
         MiniProgramConfigVO miniProgramConfigVO = new MiniProgramConfigVO();
         miniProgramConfigVO.setPath(path+"/storeId="+storeUserId);
-        miniProgramConfigVO.setTitle(title);
         miniProgramConfigVO.setUserName(userName);
         StoreUserInfoVO storeUserInfoVO = storeServiceClient.findStoreUserInfo(storeUserId).getData();
         if(storeUserInfoVO != null){
-            description = description+storeUserInfoVO.getStoreName();
+            tempTitle = tempTitle+storeUserInfoVO.getStoreName();
         }
         miniProgramConfigVO.setDescription(description);
+        miniProgramConfigVO.setTitle(tempTitle);
         miniProgramConfigVO.setTransaction(transaction);
         miniProgramConfigVO.setWebPageUrl("http://www.hxd.com");
         return miniProgramConfigVO;

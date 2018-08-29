@@ -63,4 +63,15 @@ public class MessageSendMqHandler {
     public void orderFinishAccountingHandler(String orderNo, OrderInfo orderInfo) {
         verifyService.completeAccounting(orderInfo.getOrderNo());
     }
+
+    /**
+     * 订单取消，删除订单费用明细(物理删除)
+     *
+     * @param orderNo
+     * @param orderInfo
+     */
+    @EventMessageListener(value = EventTypeHandler.ACCOUNTING_DETAIL_CANCEL_HANDLER, concurrency = "3-6")
+    public void orderCancelAccountingHandler(String orderNo, OrderInfo orderInfo) {
+        verifyService.removeAccountingDetailByOrderNo(orderInfo.getOrderNo());
+    }
 }

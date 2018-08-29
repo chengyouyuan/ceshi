@@ -58,7 +58,7 @@ public class AccountingDetail {
     @ApiModelProperty("门店ID")
     private Long storeId;
 
-    @ApiModelProperty("订单是否完成：0-未完成；1-已完成")
+    @ApiModelProperty("订单是否完成：0-未完成；1-已完成；-1-取消")
     private Integer orderCompleteStatus;
 
     @ApiModelProperty("入账时间")

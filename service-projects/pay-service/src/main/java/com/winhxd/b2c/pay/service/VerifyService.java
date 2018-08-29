@@ -168,6 +168,16 @@ public class VerifyService {
     }
 
     /**
+     * 订单取消，删除订单费用明细(物理删除)
+     *
+     * @param orderNo
+     * @return
+     */
+    public int removeAccountingDetailByOrderNo(String orderNo) {
+        return accountingDetailMapper.deleteAccountingDetailByOrderNo(orderNo);
+    }
+
+    /**
      * 查询未标记支付平台已结算的费用订单号，不包含当天的订单数据
      *
      * @return

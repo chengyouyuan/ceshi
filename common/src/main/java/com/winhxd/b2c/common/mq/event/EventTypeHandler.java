@@ -20,6 +20,11 @@ public enum EventTypeHandler {
      * 订单闭环，标记费用入账
      */
     ACCOUNTING_DETAIL_RECORDED_HANDLER(EventType.EVENT_CUSTOMER_ORDER_FINISHED),
+
+    /**
+     * 订单取消，删除订单费用明细(物理删除)
+     */
+    ACCOUNTING_DETAIL_CANCEL_HANDLER(EventType.EVENT_CUSTOMER_ORDER_CANCEL),
     
     /**
      * 订单闭环统计商品销售量信息

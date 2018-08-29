@@ -100,8 +100,8 @@ public class ApiShopCarController {
             logger.error("查询购物车异常{}  参数storeId为空");
             throw new BusinessException(BusinessCode.CODE_402001);
         }
-        ShopCarVO ShopCar = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
-        return new ResponseResult<>(ShopCar);
+        ShopCarVO shopCar = shopCarService.findShopCar(condition.getStoreId(), getCurrentCustomerId());
+        return new ResponseResult<>(shopCar);
     }
 
     @ApiOperation(value = "查询预订单info", notes = "查询预订单info")

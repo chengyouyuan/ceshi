@@ -167,7 +167,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	/**验证当前用户的提现次数*/
 	public void validWithdrawCount(Long storeId){
-		int maxcount = payWithDrawalConfig.getMaxcount();
+		int maxcount = payWithDrawalConfig.getMaxCount();
 		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
 		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
 			LOGGER.info("您本日提现已达3次");

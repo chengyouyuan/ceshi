@@ -28,6 +28,7 @@ import com.winhxd.b2c.common.constant.PayNotifyMsg;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
@@ -97,6 +98,9 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	@Autowired
 	private Cache cache;
 	
+	@Autowired
+	MessageSendUtils messageSendUtils;
+	
 	/**判断当前用户是否绑定了微信或者银行卡，如果绑定过了则返回页面回显信息*/
 	@Override
 	public PayWithdrawalPageVO showPayWithdrawalDetail(PayStoreApplyWithDrawCondition condition) {
@@ -161,6 +165,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return withdrawalPage;
 	}
 	
+	/**验证当前用户的提现次数*/
+	public void validWithdrawCount(Long storeId){
+		int maxcount = payWithDrawalConfig.getMaxcount();
+		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
+		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
+			LOGGER.info("提现超过3次：您本日提现已达3次");
+			throw new BusinessException(BusinessCode.CODE_610902);
+		}
+	}
 
 	@Override
 	@Transactional
@@ -183,6 +196,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			cache.set(limitTimeKey, String.valueOf(1));
 			cache.expire(limitTimeKey, 3);
 		}
+		// 验证提现次数
+		validWithdrawCount(businessId);
 		
 		// 验证入参是否传入正确
 		valiApplyWithDrawCondition(condition);
@@ -196,6 +211,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		BigDecimal totalFee = condition.getTotalFee();
 		getWithdrawMoney(businessId,totalFee);
 		payWithdrawal.setTotalFee(totalFee);
+		payWithdrawal.setMobile(condition.getMobile());
 		if(bankType == condition.getWithdrawType()){
 			//验证银行卡是否和门店绑定
 			Map<String, Object> map=new HashMap<>();
@@ -210,7 +226,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			
 			payWithdrawal.setFlowDirectionName(condition.getFlowDirectionName());
 			payWithdrawal.setFlowDirectionType(bankType);
-			payWithdrawal.setMobile(condition.getMobile());
 			BigDecimal rate = payWithDrawalConfig.getRate();
 			BigDecimal cmms = countCmms(rate,totalFee);
 			payWithdrawal.setCmmsAmt(cmms);
@@ -265,6 +280,12 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		
 		// 提下完成之后发送云信消息
 		PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_APPLY_WITHDRWAL,MsgCategoryEnum.WITHDRAW_APPLY.getTypeCode(),businessId);
+		
+		// 发送端新消息
+		SMSCondition sMSCondition = new SMSCondition();
+		sMSCondition.setContent(PayNotifyMsg.STORE_APPLY_WITHDRWAL);
+		sMSCondition.setMobile(condition.getMobile());
+		messageSendUtils.sendSms(sMSCondition);
 	} 
 	
 	// 计算手续费率
@@ -339,6 +360,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			res = BusinessCode.CODE_610012;
 			throw new BusinessException(res);
 		}
+		
+		String mobile = condition.getMobile();
+		if(StringUtils.isEmpty(mobile)){
+			res = BusinessCode.CODE_610015;
+			throw new BusinessException(res);
+		}
+		
 		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
 			String swiftCode = condition.getSwiftCode();
 			if(StringUtils.isEmpty(swiftCode)){
@@ -350,17 +378,19 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				res = BusinessCode.CODE_610037;
 				throw new BusinessException(res);
 			}
-			String mobile = condition.getMobile();
-			if(StringUtils.isEmpty(mobile)){
-				res = BusinessCode.CODE_610015;
-				throw new BusinessException(res);
-			}
-			//最小手续费
-			BigDecimal min = new BigDecimal(1);
-			if (totalFee.compareTo(min)<=0) {
-				LOGGER.info("提现金额输入有误");
-				throw new BusinessException(BusinessCode.CODE_611107);
-			}
+			
+		}
+		//最小手续费
+		BigDecimal min = new BigDecimal(1);
+		if (totalFee.compareTo(min)<=0) {
+			LOGGER.info("低于最低值1元：提现金额须大于1元");
+			throw new BusinessException(BusinessCode.CODE_611107);
+		}
+		// 最大提现额度
+		BigDecimal max = payWithDrawalConfig.getMaxMoney();
+		if (totalFee.compareTo(max)>0) {
+			LOGGER.info("高于最大2万：单笔提现须小于2万元");
+			throw new BusinessException(BusinessCode.CODE_611108);
 		}
 	}
 

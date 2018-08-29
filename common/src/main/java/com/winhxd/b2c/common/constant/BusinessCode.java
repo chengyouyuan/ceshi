@@ -252,6 +252,9 @@ public final class BusinessCode {
     /** 必填字段长度太长*/
     public static final int CODE_500016 = 500016;
 
+    /** 优惠券已领完*/
+    public static final int CODE_500017 = 500017;
+
     /** 优惠券活动添加失败*/
     public static final int CODE_503001 = 503001;
     /** 优惠券活动添加时时间冲突*/
@@ -391,7 +394,7 @@ public final class BusinessCode {
     public static final int CODE_610018 = 610018;
     @ApiModelProperty("验证码输入不正确")
     public static final int CODE_610019 = 610019;
-    @ApiModelProperty("请先获取验证码")
+    @ApiModelProperty("验证码已失效")
     public static final int CODE_610020 = 610020;
     @ApiModelProperty("查询结果有误，请联系管理员")
     public static final int CODE_610021 = 610021;
@@ -437,6 +440,8 @@ public final class BusinessCode {
    
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610901 = 610901;
+    @ApiModelProperty("提现超过3次：您本日提现已达3次")
+    public static final int CODE_610902 = 610902;
     
     
     @ApiModelProperty("订单支付  参数为空")
@@ -543,8 +548,11 @@ public final class BusinessCode {
     @ApiModelProperty("提现金额输入有误")
     public static final int CODE_611106 = 611106;
     
-    @ApiModelProperty("提现金额应大于最小手续费1元")
+    @ApiModelProperty("低于最低值1元：提现金额须大于1元")
     public static final int CODE_611107 = 611107;
+    
+    @ApiModelProperty("高于最大2万：单笔提现须小于2万元")
+    public static final int CODE_611108 = 611108;
 
     @ApiModelProperty("云信账户异常")
     public static final int CODE_701101 = 701101;

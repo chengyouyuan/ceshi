@@ -93,7 +93,8 @@ public class ApiCouponController{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_4010001, message = "用户不存在"),
-            @ApiResponse(code = BusinessCode.CODE_500001, message = "不存在符合的优惠券活动")
+            @ApiResponse(code = BusinessCode.CODE_500001, message = "不存在符合的优惠券活动"),
+            @ApiResponse(code = BusinessCode.CODE_500017, message = "优惠券已领完")
     })
     @RequestMapping(value = "/5004/v1/userReceiveCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {

@@ -87,8 +87,8 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		System.out.print("微信验证码是否存在-----------"+exists);
 		if(!exists){
-			LOGGER.info("业务异常："+BusinessCode.CODE_610016);
-			throw new BusinessException(BusinessCode.CODE_610016);
+			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
+			throw new BusinessException(BusinessCode.CODE_610020);
 		}
 		String code = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
 		if(!verificationCode.equals(code)){

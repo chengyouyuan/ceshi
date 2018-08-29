@@ -323,30 +323,35 @@ public class CommonOrderServiceImpl implements OrderService {
         try {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
-            //状态是待退款和已付款的订单才能把状态置为已退款
-            boolean isChecked = order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() &&
-                    (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode());
-            if (isChecked) {
-                int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
-                if (result != 1) {
-                    logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
-                    callbackResult = false;
-                } else {
-                    logger.info("退款回调-添加流转日志开始-订单号={}", orderNo);
-                    Short oldStatus = order.getOrderStatus();
-                    String oldOrderJsonString = JsonUtil.toJSONString(order);
-                    order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
-                    String newOrderJsonString = JsonUtil.toJSONString(order);
-                    //添加订单流转日志
-                    orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
-                            order.getOrderStatus(), order.getCreatedBy(), "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
-                    logger.info("退款回调-添加流转日志结束-发送消息开始-订单号={}", orderNo);
-                    //订单退款成功事务提交后相关事件
-                    registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
-                }
+            if (order.getOrderStatus() == OrderStatusEnum.REFUNDED.getStatusCode()) {
+                logger.info("退款回调-订单状态为已退款-orderNo={}", orderNo);
+                callbackResult = true;
             } else {
-                logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}-orderStatus={1}", orderNo, order.getOrderStatus()));
-                callbackResult = false;
+                //状态是待退款和已付款的订单才能把状态置为已退款
+                boolean isChecked = order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() &&
+                        (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode());
+                if (isChecked) {
+                    int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
+                    if (result != 1) {
+                        logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-订单号={0}", orderNo));
+                        callbackResult = false;
+                    } else {
+                        logger.info("退款回调-添加流转日志开始-订单号={}", orderNo);
+                        Short oldStatus = order.getOrderStatus();
+                        String oldOrderJsonString = JsonUtil.toJSONString(order);
+                        order.setOrderStatus(OrderStatusEnum.REFUNDED.getStatusCode());
+                        String newOrderJsonString = JsonUtil.toJSONString(order);
+                        //添加订单流转日志
+                        orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
+                                order.getOrderStatus(), order.getCreatedBy(), "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
+                        logger.info("退款回调-添加流转日志结束-发送消息开始-订单号={}", orderNo);
+                        //订单退款成功事务提交后相关事件
+                        registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
+                    }
+                } else {
+                    logger.info(MessageFormat.format("退款回调-订单设置状态为已退款失败-原因：订单状态不匹配-订单号={0}-orderStatus={1}", orderNo, order.getOrderStatus()));
+                    callbackResult = false;
+                }
             }
         } finally {
             lock.unlock();

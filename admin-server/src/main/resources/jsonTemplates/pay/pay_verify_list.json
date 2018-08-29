@@ -57,7 +57,7 @@
       },
       {
         "name": "operatedTime",
-        "title": "核销日"
+        "title": "核销时间"
       },
       {
         "name": "realPay",

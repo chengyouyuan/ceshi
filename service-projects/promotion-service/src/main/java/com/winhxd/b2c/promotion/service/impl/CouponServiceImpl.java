@@ -2,6 +2,7 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -373,56 +374,11 @@ public class CouponServiceImpl implements CouponService {
                 throw new BusinessException(result.getCode());
             }
             StoreUserInfoVO storeUserInfo = result.getData();
-            //领取之前校验优惠券是否可领取
-            for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
-                logger.info("优惠券数量的限制类型{},数量{}",activityTemplate.getCouponNumType(),activityTemplate.getCouponNum());
-                //根据优惠券总数限制用户领取
-                if (activityTemplate.getCouponNumType()==CouponActivityEnum.COUPON_SUM.getCode()) {
-                    //获取某个优惠券领取总数量
-                    int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
-                    logger.info("优惠券总数{},已领取了{}张",activityTemplate.getCouponNum(),templateNum);
-                    if (templateNum < activityTemplate.getCouponNum()) {
-                        //limitNum为空代表不限制用户领取数量
-                        if (activityTemplate.getCustomerVoucherLimitNum() == null) {
-                            //可领取
-                        } else {
-                            //获取某个优惠券用户领取的数量
-                            int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
-                            logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
-                            if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
-                                //不可领取
-                                return false;
-                            }
-                        }
-                    } else {
-                        // 优惠券已领完
-                        return false;
-                    }
-                } else if (activityTemplate.getCouponNumType()==CouponActivityEnum.STORE_NUM.getCode()) {
-                    //根据每个门店可领取的优惠券数量限制用户领取
-                    //获取某个优惠券门店领取的数量
-                    int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());
-                    logger.info("门店{}可领取{}张,已领取了{}张优惠券",storeUserInfo.getId(), activityTemplate.getCouponNum(),storeNum);
-                    if (storeNum < activityTemplate.getCouponNum()) {
-                        //limitNum为空代表不限制用户领取数量
-                        logger.info("每个用户可领取{}张",activityTemplate.getCustomerVoucherLimitNum());
-                        if (activityTemplate.getCustomerVoucherLimitNum() == null) {
-                            //可领取
-                        } else {
-                            //获取某个优惠券用户领取的数量
-                            int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
-                            logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
-                            if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
-                                //不可领取
-                                return false;
-                            }
-                        }
-                    } else {
-                        // 当前门店优惠券已领完
-                        return false;
-                    }
-                }
+            //领取之前校验是否可领取
+            if(!this.checkReceiptStatus(couponActivityTemplates,storeUserInfo,customerUser)){
+                throw new BusinessException(BusinessCode.CODE_500017);
             }
+
 
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
             couponTemplateSend.setStatus(CouponActivityEnum.NOT_USE.getCode());
@@ -474,6 +430,10 @@ public class CouponServiceImpl implements CouponService {
                 couponActivityRecord.setStoreId(storeUserInfo.getId());
             }
             couponActivityRecordMapper.insertSelective(couponActivityRecord);
+            //领完之后校验是否下次可领取
+            if(!this.checkReceiptStatus(couponActivityTemplates,storeUserInfo,customerUser)){
+                return false;
+            }
             return true;
         }finally{
             lock.unlock();
@@ -794,6 +754,7 @@ public class CouponServiceImpl implements CouponService {
             }
             results.add(couponVO);
         }
+        results.sort((a,b)->Integer.parseInt(b.getReceiveStatus())-Integer.parseInt(a.getReceiveStatus()));
         return this.getCouponDetail(results);
     }
 
@@ -914,8 +875,11 @@ public class CouponServiceImpl implements CouponService {
     public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList = findStoreCouponList();
         Integer count = 0;
-        if(!CollectionUtils.isEmpty(couponVOList)){
-            count = couponVOList.size();
+        for (int i = 0; i < couponVOList.size(); i++){
+            //优惠券是否可领取 0 已领取  1 可领取
+            if(couponVOList.get(i).getReceiveStatus().equals("1")){
+                count++;
+            }
         }
         CouponKindsVo couponKindsVo = new CouponKindsVo();
         couponKindsVo.setStoreCouponKinds(count);
@@ -1174,5 +1138,68 @@ public class CouponServiceImpl implements CouponService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 校验优惠券是否可领取
+     * @return
+     * @param couponActivityTemplates
+     * @param storeUserInfo
+     * @param customerUser
+     */
+    public Boolean checkReceiptStatus(List<CouponActivityTemplate> couponActivityTemplates, StoreUserInfoVO storeUserInfo, CustomerUser customerUser){
+        //领取之前校验优惠券是否可领取
+        for (CouponActivityTemplate activityTemplate : couponActivityTemplates) {
+            logger.info("优惠券数量的限制类型{},数量{}",activityTemplate.getCouponNumType(),activityTemplate.getCouponNum());
+            //根据优惠券总数限制用户领取
+            if (activityTemplate.getCouponNumType()==CouponActivityEnum.COUPON_SUM.getCode()) {
+                //获取某个优惠券领取总数量
+                int templateNum = couponMapper.getCouponNumByTemplateId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId());
+                logger.info("优惠券总数{},已领取了{}张",activityTemplate.getCouponNum(),templateNum);
+                if (templateNum < activityTemplate.getCouponNum()) {
+                    //limitNum为空代表不限制用户领取数量
+                    if (activityTemplate.getCustomerVoucherLimitNum() == null) {
+                        //可领取
+                        return true;
+                    } else {
+                        //获取某个优惠券用户领取的数量
+                        int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                        logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
+                        if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
+                            //不可领取
+                            return false;
+                        }
+                    }
+                }else{
+                    // 优惠券已领完
+                    return false;
+                }
+            }else if(activityTemplate.getCouponNumType()==CouponActivityEnum.STORE_NUM.getCode()) {
+                //根据每个门店可领取的优惠券数量限制用户领取
+                //获取某个优惠券门店领取的数量
+                int storeNum = couponMapper.getCouponNumByStoreId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), storeUserInfo.getId());
+                logger.info("门店{}可领取{}张,已领取了{}张优惠券",storeUserInfo.getId(), activityTemplate.getCouponNum(),storeNum);
+                if (storeNum < activityTemplate.getCouponNum()) {
+                    //limitNum为空代表不限制用户领取数量
+                    logger.info("每个用户可领取{}张",activityTemplate.getCustomerVoucherLimitNum());
+                    if(activityTemplate.getCustomerVoucherLimitNum() == null) {
+                        //可领取
+                        return true;
+                    }else{
+                        //获取某个优惠券用户领取的数量
+                        int userNum = couponMapper.getCouponNumByCustomerId(activityTemplate.getCouponActivityId(), activityTemplate.getTemplateId(), customerUser.getCustomerId());
+                        logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
+                        if(userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
+                            //不可领取
+                           return false;
+                        }
+                    }
+                }else{
+                    // 当前门店优惠券已领完
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }

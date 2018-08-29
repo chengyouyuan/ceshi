@@ -473,13 +473,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info(log+"参数为空");
 			throw new BusinessException(BusinessCode.CODE_611101);
 		}
-		Short withdrawType=condition.getWithdrawType();
-		BigDecimal totalFee=condition.getTotalFee();
-		
-		//获取门店资金信息
 	    StoreUser storeUser = UserContext.getCurrentStoreUser();
+        if(storeUser==null||storeUser.getBusinessId()==null){
+			LOGGER.info("未获取到门店数据");
+			throw new BusinessException(BusinessCode.CODE_610801);
+		}
         Long storeId = storeUser.getBusinessId();
-        
+        Short withdrawType=condition.getWithdrawType();
+        BigDecimal totalFee=condition.getTotalFee();
 		// 验证提现次数
         validWithdrawCount(storeId);
 		if (withdrawType==null) {
@@ -518,8 +519,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		
 		LOGGER.info(log+"参数为--"+condition.toString());
 		
-		// 写死门店id
-//		Long storeId = 130l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll == null||storeBankroll.getStoreId()==null){
         	LOGGER.info(log+"可提现金额不足");

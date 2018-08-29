@@ -35,12 +35,9 @@ public class ServiceHandlerExceptionResolver implements HandlerExceptionResolver
         BusinessException businessException = findBusinessException(ex);
         if (businessException != null) {
             code = businessException.getErrorCode();
-            message = MessageHelper.getInstance().getMessage(String.valueOf(code), StringUtils.EMPTY);
+            message = MessageHelper.getInstance().getMessage(String.valueOf(code), "ERROR:" + code);
             currentSpan.error(businessException);
             currentSpan.tag(ContextHelper.TRACER_API_RESULT, String.valueOf(businessException.getErrorCode()));
-            if (StringUtils.isBlank(message)) {
-                message = businessException.getMessage();
-            }
             log.warn(getBusinessExceptionInfo(currentSpan.context().traceIdString(), businessException));
         } else {
             String stackTrace = ExceptionUtils.getStackTrace(ex);

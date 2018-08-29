@@ -391,12 +391,12 @@ public class CouponServiceImpl implements CouponService {
                             logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
-                                return false;
+                                throw new BusinessException(BusinessCode.CODE_500017);
                             }
                         }
                     } else {
                         // 优惠券已领完
-                        return false;
+                        throw new BusinessException(BusinessCode.CODE_500017);
                     }
                 } else if (activityTemplate.getCouponNumType()==CouponActivityEnum.STORE_NUM.getCode()) {
                     //根据每个门店可领取的优惠券数量限制用户领取
@@ -414,12 +414,12 @@ public class CouponServiceImpl implements CouponService {
                             logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
-                                return false;
+                                throw new BusinessException(BusinessCode.CODE_500017);
                             }
                         }
                     } else {
                         // 当前门店优惠券已领完
-                        return false;
+                        throw new BusinessException(BusinessCode.CODE_500017);
                     }
                 }
             }
@@ -757,13 +757,11 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
-                            continue;
                         }
                     }
                 }else{
                     // 优惠券已领完
                     couponVO.setReceiveStatus("0");
-                    continue;
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
@@ -783,17 +781,16 @@ public class CouponServiceImpl implements CouponService {
                             couponVO.setReceiveStatus("1");
                         }else{
                             couponVO.setReceiveStatus("0");
-                            continue;
                         }
                     }
                 }else{
                     // 当前门店优惠券已领完
                     couponVO.setReceiveStatus("0");
-                    continue;
                 }
             }
             results.add(couponVO);
         }
+        results.sort((a,b)->Integer.parseInt(b.getReceiveStatus())-Integer.parseInt(a.getReceiveStatus()));
         return this.getCouponDetail(results);
     }
 
@@ -914,8 +911,11 @@ public class CouponServiceImpl implements CouponService {
     public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList = findStoreCouponList();
         Integer count = 0;
-        if(!CollectionUtils.isEmpty(couponVOList)){
-            count = couponVOList.size();
+        for (int i = 0; i < couponVOList.size(); i++){
+            //优惠券是否可领取 0 已领取  1 可领取
+            if(couponVOList.get(i).getReceiveStatus().equals("1")){
+                count++;
+            }
         }
         CouponKindsVo couponKindsVo = new CouponKindsVo();
         couponKindsVo.setStoreCouponKinds(count);

@@ -391,12 +391,12 @@ public class CouponServiceImpl implements CouponService {
                             logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
-                                return false;
+                                throw new BusinessException(BusinessCode.CODE_500017);
                             }
                         }
                     } else {
                         // 优惠券已领完
-                        return false;
+                        throw new BusinessException(BusinessCode.CODE_500017);
                     }
                 } else if (activityTemplate.getCouponNumType()==CouponActivityEnum.STORE_NUM.getCode()) {
                     //根据每个门店可领取的优惠券数量限制用户领取
@@ -414,12 +414,12 @@ public class CouponServiceImpl implements CouponService {
                             logger.info("用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),activityTemplate.getCustomerVoucherLimitNum(),userNum);
                             if (userNum >= activityTemplate.getCustomerVoucherLimitNum()) {
                                 //不可领取
-                                return false;
+                                throw new BusinessException(BusinessCode.CODE_500017);
                             }
                         }
                     } else {
                         // 当前门店优惠券已领完
-                        return false;
+                        throw new BusinessException(BusinessCode.CODE_500017);
                     }
                 }
             }

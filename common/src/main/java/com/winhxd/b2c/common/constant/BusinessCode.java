@@ -252,6 +252,9 @@ public final class BusinessCode {
     /** 必填字段长度太长*/
     public static final int CODE_500016 = 500016;
 
+    /** 优惠券已领完*/
+    public static final int CODE_500017 = 500017;
+
     /** 优惠券活动添加失败*/
     public static final int CODE_503001 = 503001;
     /** 优惠券活动添加时时间冲突*/

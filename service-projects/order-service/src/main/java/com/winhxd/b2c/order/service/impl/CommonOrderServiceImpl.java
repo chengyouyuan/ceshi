@@ -1188,11 +1188,17 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderItem orderItem = iterator.next();
                 ShopCartProdVO cartProdVO = storeProdVOMap.get(orderItem.getSkuCode());
                 if (cartProdVO != null) {
+                    orderItem.setPrice(cartProdVO.getSellMoney());
+                }
+            }
+            for (Iterator<OrderItem> iterator = items.iterator(); iterator.hasNext(); ) {
+                OrderItem orderItem = iterator.next();
+                ShopCartProdVO cartProdVO = storeProdVOMap.get(orderItem.getSkuCode());
+                if (cartProdVO != null) {
                     BigDecimal price = cartProdVO.getSellMoney();
                     if (price == null) {
                         return null;
                     }
-                    orderItem.setPrice(price);
                     orderTotal = orderTotal.add(price.multiply(new BigDecimal(orderItem.getAmount()))
                             .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
                 } else {

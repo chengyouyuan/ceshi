@@ -539,7 +539,7 @@ public class PayServiceImpl implements PayService{
 			remarks = "提现失败:提现冻结金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		if(StoreBankRollOpearateEnums.BANK_FAIL.getCode().equals(condition.getType())){
-			remarks = "提现失败:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
+			remarks = "银行退票:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());
@@ -759,7 +759,7 @@ public class PayServiceImpl implements PayService{
 			if(payTransfersToWxChangeVO.isAbleContinue()){
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
 
 				// 发送云信
@@ -812,18 +812,19 @@ public class PayServiceImpl implements PayService{
 
         //step4 门店资金变化
 		UpdateStoreBankRollCondition updateStoreBankRollCondition = new UpdateStoreBankRollCondition();
-		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
-			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode());
-		}else if(WithdrawalsStatusEnum.REAPPLY.getStatusCode() == payWithdrawals.getCallbackStatus()){
-			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
-		}else if(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode() == payWithdrawals.getCallbackStatus()){
-			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.BANK_FAIL.getCode());
-		}
 		updateStoreBankRollCondition.setStoreId(payWithdrawals.getStoreId());
 		updateStoreBankRollCondition.setWithdrawalsNo(payWithdrawals.getWithdrawalsNo());
 		updateStoreBankRollCondition.setMoney(payWithdrawals.getTotalFee());
-		this.updateStoreBankroll(updateStoreBankRollCondition);
-
+		if(WithdrawalsStatusEnum.SUCCESS.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode());
+			this.updateStoreBankroll(updateStoreBankRollCondition);
+		}else if(WithdrawalsStatusEnum.INVALID.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode());
+			this.updateStoreBankroll(updateStoreBankRollCondition);
+		}else if(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode() == payWithdrawals.getCallbackStatus()){
+			updateStoreBankRollCondition.setType(StoreBankRollOpearateEnums.BANK_FAIL.getCode());
+			this.updateStoreBankroll(updateStoreBankRollCondition);
+		}
         return payWithdrawalsResult ;
     }
 
@@ -854,7 +855,7 @@ public class PayServiceImpl implements PayService{
 			if(payTransfersToWxBankVO.isAbleContinue()){
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
 				//退回提现用户资金
 				List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
@@ -901,7 +902,7 @@ public class PayServiceImpl implements PayService{
 			throw new BusinessException(BusinessCode.CODE_600310);
 		}
 		//无效需要用户重新发起申请
-		if(payWithdrawals.getCallbackStatus()!=null && payWithdrawals.getCallbackStatus() == WithdrawalsStatusEnum.REAPPLY.getStatusCode()){
+		if(payWithdrawals.getCallbackStatus()!=null && payWithdrawals.getCallbackStatus() == WithdrawalsStatusEnum.INVALID.getStatusCode()){
 			logger.error(log+"流水号{}审核失败,请重新发起申请",payWithdrawals.getWithdrawalsNo());
 			throw new BusinessException(BusinessCode.CODE_600311);
 		}
@@ -1000,7 +1001,7 @@ public class PayServiceImpl implements PayService{
 
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
-				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.REAPPLY.getStatusCode());
+				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 				if(resultForWxBank.getPaySuccTime()!=null){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));

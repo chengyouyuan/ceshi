@@ -71,7 +71,7 @@ public class PayWithdrawalsVO {
     @ApiModelProperty("修改人id")
     private Long updatedBy;
     @ApiModelProperty("修改人名称")
-    @Excel(name = "审核人", width = 30)
+    @Excel(name = "操作人", width = 30)
     private String updatedByName;
     @ApiModelProperty("修改时间")
     private Date updated;

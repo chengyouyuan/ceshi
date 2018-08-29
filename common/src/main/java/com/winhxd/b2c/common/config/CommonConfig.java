@@ -6,8 +6,10 @@ import com.winhxd.b2c.common.cache.redis.RedisClusterCacheAutoConfiguration;
 import com.winhxd.b2c.common.context.support.ContextRequestInterceptor;
 import com.winhxd.b2c.common.context.version.VersionedZoneAvoidanceRule;
 import com.winhxd.b2c.common.i18n.MessageHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cloud.sleuth.instrument.web.ClientSampler;
+import org.springframework.cloud.sleuth.instrument.web.ServerSampler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
@@ -25,11 +27,23 @@ public class CommonConfig {
     }
 
     @Bean(name = ClientSampler.NAME)
-    public HttpSampler skipHttpSampler() {
+    public HttpSampler sleuthClientSampler() {
         HttpSampler httpSampler = new HttpSampler() {
             @Override
             public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
                 return false;
+            }
+        };
+        return httpSampler;
+    }
+
+    @Bean(name = ServerSampler.NAME)
+    public HttpSampler sleuthServerSampler() {
+        HttpSampler httpSampler = new HttpSampler() {
+            @Override
+            public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
+                String path = httpAdapter.path(req);
+                return !(StringUtils.isBlank(path) || path.equals("/") || path.startsWith("/actuator"));
             }
         };
         return httpSampler;

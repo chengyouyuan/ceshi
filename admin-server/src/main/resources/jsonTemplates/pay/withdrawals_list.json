@@ -96,7 +96,7 @@
         "title": "备注"
       },
       {
-        "name": "operatedByName",
+        "name": "updatedByName",
         "title": "操作人员"
       }
     ],
@@ -152,6 +152,9 @@
         }, {
           "label": "提款失败",
           "value": "2"
+        }, {
+          "label": "银行退票",
+          "value": "5"
         }, {
           "label": "无效",
           "value": "3"

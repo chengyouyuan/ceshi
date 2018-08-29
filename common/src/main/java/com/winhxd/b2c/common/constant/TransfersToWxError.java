@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay.weixin.constant;
+package com.winhxd.b2c.common.constant;
 
 /**
  * TransfersToWxError
@@ -24,6 +24,7 @@ public enum TransfersToWxError {
     SEND_FAILED("SEND_FAILED", "付款错误",false),
     NAME_MISMATCH("NAME_MISMATCH", "姓名校验出错", false),//
     SIGNERROR("SIGNERROR", "签名错误", false),
+    SIGN_ERROR("SIGN_ERROR", "签名错误", false),
     XML_ERROR("XML_ERROR", "Post内容出错", false),
     AMOUNT_LIMIT("AMOUNT_LIMIT", "超额;已达到今日付款金额上限或已达到今日银行卡收款金额上限", true),
     MONEY_LIMIT("MONEY_LIMIT", "已经达到今日付款总额上限/已达到付款给此用户额度上限",true),
@@ -32,6 +33,7 @@ public enum TransfersToWxError {
     NOTENOUGH("NOTENOUGH", "账号余额不足", true),
     FREQUENCY_LIMITED("FREQUENCY_LIMITED", "超过每分钟600次的频率限制", true),
     CA_ERROR("CA_ERROR", "商户API证书校验出错", true),
+    FREQ_LIMIT("FREQ_LIMIT", "超过频率限制，请稍后再试。", true),
     V2_ACCOUNT_SIMPLE_BAN("V2_ACCOUNT_SIMPLE_BAN", "无法给非实名用户付款", false),//
     PARAM_IS_NOT_UTF8("PARAM_IS_NOT_UTF8", "请求参数中包含非utf8编码字符", false),
     SENDNUM_LIMIT("SENDNUM_LIMIT", "该用户今日付款次数超过限制,如有需要请登录微信支付商户平台更改API安全配置", true),

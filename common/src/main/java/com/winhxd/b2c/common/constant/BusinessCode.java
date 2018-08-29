@@ -437,6 +437,8 @@ public final class BusinessCode {
    
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610901 = 610901;
+    @ApiModelProperty("今天提现次数已达上限")
+    public static final int CODE_610902 = 610902;
     
     
     @ApiModelProperty("订单支付  参数为空")

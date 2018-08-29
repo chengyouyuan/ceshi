@@ -161,6 +161,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		return withdrawalPage;
 	}
 	
+	/**验证当前用户的提现次数*/
+	public void validWithdrawCount(Long storeId){
+		int maxcount = payWithDrawalConfig.getMaxcount();
+		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
+		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
+			LOGGER.info("今天的提现次数已达上限");
+			throw new BusinessException(BusinessCode.CODE_610902);
+		}
+	}
 
 	@Override
 	@Transactional
@@ -183,6 +192,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			cache.set(limitTimeKey, String.valueOf(1));
 			cache.expire(limitTimeKey, 3);
 		}
+		// 验证提现次数
+		validWithdrawCount(businessId);
 		
 		// 验证入参是否传入正确
 		valiApplyWithDrawCondition(condition);

@@ -39,4 +39,8 @@ public interface PayWithdrawalsMapper {
      * @return
      */
     List<PayWithdrawals> selectTransferToBankUnclearStatusWithdrawals();
+
+    /**查询当前门店提现的次数
+     * */
+	List<PayWithdrawals> selectWithdrawCount(@Param("storeId") Long storeId);
 }

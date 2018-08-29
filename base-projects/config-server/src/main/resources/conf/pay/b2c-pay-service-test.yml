@@ -35,3 +35,5 @@ pay:
     maxmoney: 20000
     #提现的最小金额
     minmoney: 0
+    #提现最大次数
+    maxcount: 3

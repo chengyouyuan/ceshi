@@ -653,4 +653,12 @@
     from pay_withdrawals
     where audit_status = 1 AND callback_status = 4 AND flow_direction_type = 2
   </select>
+  
+  <select id="selectWithdrawCount" parameterType="java.lang.Long" resultMap="BaseResultMap">
+ 	select
+    <include refid="Base_Column_List" />
+    from pay_withdrawals
+    where to_days(created)=to_days(now())
+     and store_id = #{storeId,jdbcType=BIGINT} and callback_status in (0,2,4)
+  </select>
 </mapper>

@@ -527,6 +527,9 @@
     <if test="storeId != null">
       and store_id = #{storeId}
     </if>
+    <if test="mobile != null and mobile != ''">
+      and mobile = #{mobile}
+    </if>
     <if test="auditStatus != null">
       and audit_status = #{auditStatus}
     </if>

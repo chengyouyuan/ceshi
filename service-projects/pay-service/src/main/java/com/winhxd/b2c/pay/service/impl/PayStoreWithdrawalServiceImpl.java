@@ -381,7 +381,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			
 		}
 		//最小手续费
-		BigDecimal min = new BigDecimal(1);
+		BigDecimal min = payWithDrawalConfig.getMinMoney();
 		if (totalFee.compareTo(min)<=0) {
 			LOGGER.info("提现金额须大于1元");
 			throw new BusinessException(BusinessCode.CODE_611107);
@@ -475,6 +475,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		}
 		Short withdrawType=condition.getWithdrawType();
 		BigDecimal totalFee=condition.getTotalFee();
+		
+		//获取门店资金信息
+	    StoreUser storeUser = UserContext.getCurrentStoreUser();
+        Long storeId = storeUser.getBusinessId();
+        
+		// 验证提现次数
+        validWithdrawCount(storeId);
 		if (withdrawType==null) {
 			LOGGER.info(log+"提现类型为空");
 			throw new BusinessException(BusinessCode.CODE_611102);
@@ -496,20 +503,21 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				throw new BusinessException(BusinessCode.CODE_611106);
 			}
 		}
-		if (withdrawType.equals(PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode())) {
-			//最小手续费
-			BigDecimal min = new BigDecimal(1);
-			if (totalFee.compareTo(min)<=0) {
-				LOGGER.info("提现金额输入有误");
-				throw new BusinessException(BusinessCode.CODE_611107);
-			}
-			
+		//最小手续费
+		BigDecimal min = payWithDrawalConfig.getMinMoney();
+		if (totalFee.compareTo(min)<=0) {
+			LOGGER.info("提现金额须大于1元");
+			throw new BusinessException(BusinessCode.CODE_611107);
+		}
+		// 最大提现额度
+		BigDecimal max = payWithDrawalConfig.getMaxMoney();
+		if (totalFee.compareTo(max)>0) {
+			LOGGER.info("单笔提现须小于2万元");
+			throw new BusinessException(BusinessCode.CODE_611108);
 		}
 		
 		LOGGER.info(log+"参数为--"+condition.toString());
-		//获取门店资金信息
-	    StoreUser storeUser = UserContext.getCurrentStoreUser();
-        Long storeId = storeUser.getBusinessId();
+		
 		// 写死门店id
 //		Long storeId = 130l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);

@@ -133,7 +133,8 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402001, message = "参数storeId为空"),
             @ApiResponse(code = BusinessCode.CODE_402017, message = "计算订单优惠金额失败"),
             @ApiResponse(code = BusinessCode.CODE_402018, message = "获取最优优惠券失败"),
-            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架")
+            @ApiResponse(code = BusinessCode.CODE_402011, message = "商品信息不存在或被下架"),
+            @ApiResponse(code = BusinessCode.CODE_402021, message = "订单异常，请联系门店！")
     })
     @RequestMapping(value = "/api-order/order/4034/v1/getOrderMoney", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OrderMoneyVO> getOrderMoney(@RequestBody OrderMoneyCondition condition){

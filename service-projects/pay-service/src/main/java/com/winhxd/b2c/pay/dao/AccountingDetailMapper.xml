@@ -287,4 +287,15 @@
     <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
   </update>
 
+  <delete id="deleteAccountingDetailByOrderNo">
+    delete from pay_accounting_detail
+    where order_no = #{orderNo}
+  </delete>
+
+  <update id="updateAccountingDetailLogicDeletedByOrderNo">
+    update pay_accounting_detail
+    set order_complete_status = -1
+    where order_no = #{orderNo}
+  </update>
+
 </mapper>

@@ -54,7 +54,7 @@ public class ApiPayStoreBindBankCardController {
 	@Resource
 	private Cache redisClusterCache;
 	
-	private static final int MOBILEVERIFICATIONCODE = 60;// 验证码有效时间
+	private static final int MOBILEVERIFICATIONCODE = 5*60;// 验证码有效时间
 	
 	@ApiOperation(value = "B端绑定银行卡", notes = "B端绑定银行卡")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -67,7 +67,7 @@ public class ApiPayStoreBindBankCardController {
             @ApiResponse(code = BusinessCode.CODE_610016, message = "验证码为空"),
             @ApiResponse(code = BusinessCode.CODE_610017, message = "B端绑定银行卡失败"),
             @ApiResponse(code = BusinessCode.CODE_610019, message = "验证码输入不正确"),
-            @ApiResponse(code = BusinessCode.CODE_610020, message = "请先获取验证码"),
+            @ApiResponse(code = BusinessCode.CODE_610020, message = "验证码已失效"),
             @ApiResponse(code = BusinessCode.CODE_610024, message = "当前要绑定的银行卡已经存在"),
             @ApiResponse(code = BusinessCode.CODE_610029, message = "请输入银行swiftcode")
     })

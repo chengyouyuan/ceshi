@@ -21,6 +21,7 @@ import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreWalletCondition;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.condition.VerifiCodeCondtion;
+import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.MessageSendUtils;
@@ -138,7 +139,8 @@ public class ApiPayStoreBindBankCardController {
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确
 		vaildatVerifiCode(condition);
-		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId);
+		short withdrawType = condition.getWithdrawType();
+		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId);
 		LOGGER.info("验证码生成前:------"+modileVerifyCode);
 		//生成验证码
 		if(modileVerifyCode != null){
@@ -149,11 +151,15 @@ public class ApiPayStoreBindBankCardController {
 			LOGGER.info("验证码生成后:------"+modileVerifyCode);
 		} 
 		// 将验证码存放到redis中
-		redisClusterCache.set(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, modileVerifyCode);
-		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+condition.getWithdrawType()+"_"+businessId, MOBILEVERIFICATIONCODE);
+		redisClusterCache.set(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId, modileVerifyCode);
+		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId, MOBILEVERIFICATIONCODE);
 		result.setData("验证码："+modileVerifyCode);
 		SMSCondition sMSCondition = new SMSCondition();
-		sMSCondition.setContent("您的手机验证码："+ modileVerifyCode+";有效时间2分钟");
+		if(withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()){
+			sMSCondition.setContent("【惠下单】"+ modileVerifyCode+"（惠小店验证码，您正在进行银行卡绑定，5分钟有效，请勿泄漏给他人）");
+		}else if(withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()){
+			sMSCondition.setContent("【惠下单】"+ modileVerifyCode+"（惠小店验证码，您正在授权微信提现账号，5分钟有效，请勿泄漏给他人）");
+		}
 		sMSCondition.setMobile(condition.getMobile());
 		messageSendUtils.sendSms(sMSCondition);
 		LOGGER.info("{}=--结束 result={}", logTitle, result);

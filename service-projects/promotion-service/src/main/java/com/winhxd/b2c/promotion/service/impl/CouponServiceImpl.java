@@ -911,8 +911,11 @@ public class CouponServiceImpl implements CouponService {
     public CouponKindsVo getStoreCouponKinds() {
         List<CouponVO> couponVOList = findStoreCouponList();
         Integer count = 0;
-        if(!CollectionUtils.isEmpty(couponVOList)){
-            count = couponVOList.size();
+        for (int i = 0; i < couponVOList.size(); i++){
+            //优惠券是否可领取 0 已领取  1 可领取
+            if(couponVOList.get(i).getReceiveStatus().equals("1")){
+                count++;
+            }
         }
         CouponKindsVo couponKindsVo = new CouponKindsVo();
         couponKindsVo.setStoreCouponKinds(count);

@@ -51,9 +51,12 @@ public interface PayTransfersMapper {
 
     /**
      * 根据提现流水号获得提现记录
-     * @param partnerTradeNo 提现流水号
+     * @param partnerTradeNo 商户订单号
+     * @param partnerTradeNo 微信企业付款单号
      * @return 记录
      */
-    PayTransfers selectTOP1TransfersByPartnerTradeNo(@Param(value = "partnerTradeNo") String partnerTradeNo);
+    PayTransfers selectTOP1TransfersByPartnerTradeNoAndPaymentNo(
+            @Param(value = "partnerTradeNo") String partnerTradeNo,
+            @Param(value = "paymentNo") String paymentNo);
 
 }

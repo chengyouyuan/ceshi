@@ -107,7 +107,7 @@ public class TransfersTest {
         //请求查询接口参数
         PayTransfersQueryForWxBankDTO queryForWxBankDTO = new PayTransfersQueryForWxBankDTO();
         queryForWxBankDTO.setMchId(payConfig.getMchID());
-        queryForWxBankDTO.setPartnerTradeNo("T18081717643679377");
+        queryForWxBankDTO.setPartnerTradeNo("T18082815813873658");
         queryForWxBankDTO.setNonceStr(WXPayUtil.generateNonceStr());
         //处理签名
         queryForWxBankDTO.setSign(WXPayUtil.generateSignature(BeanAndXmlUtil.beanToSortedMap(queryForWxBankDTO), payConfig.getKey()));

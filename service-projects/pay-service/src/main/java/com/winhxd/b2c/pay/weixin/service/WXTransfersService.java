@@ -40,4 +40,10 @@ public interface WXTransfersService {
      */
     PayTransfersQueryToWxBankVO getExactResultForWxBank(String partnerTradeNo) throws Exception;
 
+    /**
+     * 修改转账到银行卡状态
+     * @param payTransfersQueryToWxBankVO 查询微信接口返参
+     */
+    void modifyTransfersToBankStatus(PayTransfersQueryToWxBankVO payTransfersQueryToWxBankVO);
+
 }

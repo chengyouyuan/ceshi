@@ -125,7 +125,7 @@ public class PayTransfers {
     private Date timeEnd;
 
     /**
-     * 返回状态码,0:失败,1:成功
+     * 返回状态码,0:失败,1:成功,2:处理中(针对于提现到银行卡)
      */
     private Short status;
 

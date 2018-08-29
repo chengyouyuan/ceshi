@@ -987,6 +987,8 @@ public class PayServiceImpl implements PayService{
 			payWithdrawals.setCallbackReason(resultForWxBank.getReason());
 			payWithdrawals.setCallbackCmmsAmt(resultForWxBank.getCmmsAmt());
 			payWithdrawals.setTransactionId(resultForWxBank.getPaymentNo());
+			//是否修改
+			boolean doesModify = false;
 			if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.SUCCESS.getStatusCode());
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -998,7 +1000,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
-
+				doesModify = true;
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
@@ -1013,6 +1015,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				doesModify = true;
 			}else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.BANK_FAIL.getStatusCode());
@@ -1027,8 +1030,12 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				doesModify = true;
 			}
-			this.transfersPublic(payWithdrawals,log);
+			if(doesModify){
+				this.transfersPublic(payWithdrawals,log);
+				wxTransfersService.modifyTransfersToBankStatus(resultForWxBank);
+			}
 		}
 		return 1;
 	}

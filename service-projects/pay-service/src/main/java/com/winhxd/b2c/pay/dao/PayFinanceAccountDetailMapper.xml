@@ -185,7 +185,7 @@
        AND pfad.`status` = 1
        AND pfad.out_type = 1
        <if test="isToday == 'today'" >
-        AND to_days(pw.created) = to_days(now())
+        AND to_days(pw.time_end) = to_days(now())
        </if>
    </select>
    <select id="getRefund" parameterType="java.lang.String" resultMap="PayFinancialSummary">

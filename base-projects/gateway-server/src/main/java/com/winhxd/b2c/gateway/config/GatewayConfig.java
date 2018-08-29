@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Scope;
 
 
 @Configuration
-public class FilterConfig {
+public class GatewayConfig {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -38,7 +38,7 @@ public class FilterConfig {
             @Override
             public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
                 String path = httpAdapter.path(req);
-                return !(StringUtils.isBlank(path) || path.equals("/") || path.startsWith("/actuator"));
+                return StringUtils.isNotBlank(path) && path.startsWith("/api-");
             }
         };
         return httpSampler;

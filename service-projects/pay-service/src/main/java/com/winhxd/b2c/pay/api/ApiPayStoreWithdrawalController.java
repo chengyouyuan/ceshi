@@ -23,6 +23,7 @@ import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
 import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsTypeVO;
+import com.winhxd.b2c.common.util.IpUtil;
 import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
 
 import io.swagger.annotations.Api;
@@ -105,6 +106,8 @@ public class ApiPayStoreWithdrawalController {
 	private ResponseResult<Integer> payStoreWithdrawal(@RequestBody PayStoreApplyWithDrawCondition condition){
 		LOGGER.info("/6109/v1/withdrawal-门店提现到微信或者银行卡："+condition);
 		ResponseResult<Integer> result=new ResponseResult<>();
+		String ip=IpUtil.getIpAddr();
+		condition.setSpbillCreateIp(ip);
 		payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
 		return result;
 	}

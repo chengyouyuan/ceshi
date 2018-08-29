@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.domain.store.enums.StoreProductStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.feign.order.ShopCartServiceClient;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
+import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.ProductService;
 import com.winhxd.b2c.store.service.StoreProductManageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,9 +130,8 @@ public class ProductServiceImpl implements ProductService {
         if (productConditionByPage.getRecommendSkus() != null && productConditionByPage.getRecommendSkus().size() > 0){
             responseResult.getData().setRecommendFlag(1);
         }
-
         PagedList<ProductSkuVO> productSkus = responseResult.getData().getProductSkus();
-        if (productSkus == null || productSkus.getData().isEmpty()){
+        if (productSkus == null || productSkus.getData() == null || productSkus.getData().isEmpty()){
             return responseResult;
         }
         //赋值商品价格

@@ -33,6 +33,7 @@ public class UserManager {
     }
 
     public static void initUser(HttpServletRequest request, Cache cache) {
+        currentUser.remove();
         VersionContext.clean();
         String msVer = request.getHeader(VersionContext.HEADER_NAME);
         if (StringUtils.isNotBlank(msVer)) {

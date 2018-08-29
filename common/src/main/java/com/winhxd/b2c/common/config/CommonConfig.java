@@ -37,18 +37,6 @@ public class CommonConfig {
         return httpSampler;
     }
 
-    @Bean(name = ServerSampler.NAME)
-    public HttpSampler sleuthServerSampler() {
-        HttpSampler httpSampler = new HttpSampler() {
-            @Override
-            public <Req> Boolean trySample(HttpAdapter<Req, ?> httpAdapter, Req req) {
-                String path = httpAdapter.path(req);
-                return !(StringUtils.isBlank(path) || path.equals("/") || path.startsWith("/actuator"));
-            }
-        };
-        return httpSampler;
-    }
-
     @Bean
     public ContextRequestInterceptor contextRequestInterceptor() {
         return new ContextRequestInterceptor();

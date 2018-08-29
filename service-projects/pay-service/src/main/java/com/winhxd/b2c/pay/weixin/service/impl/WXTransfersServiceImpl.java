@@ -14,7 +14,7 @@ import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayUtil;
 import com.winhxd.b2c.pay.weixin.constant.PayTransfersStatus;
 import com.winhxd.b2c.pay.weixin.constant.TransfersChannelType;
-import com.winhxd.b2c.pay.weixin.constant.TransfersToWxError;
+import com.winhxd.b2c.common.constant.TransfersToWxError;
 import com.winhxd.b2c.pay.weixin.dao.PayTransfersMapper;
 import com.winhxd.b2c.pay.weixin.model.PayTransfers;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
@@ -29,11 +29,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -97,7 +95,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
             toWxChangeVO = praseResultForChange(responseDTO);
             //错误情况下调用查询确认转账情况
             if(!toWxChangeVO.isTransfersResult()){
-                //调用查询接口确认转账详情(由于处理中状态存在, 该方法最多尝试3次查询)
+                //调用查询接口确认转账详情
                 toWxChangeVO = confirmTransfersToWxChangeResult(toWxChangeVO, wxChangeDTO);
             }
             //保存请求流水
@@ -193,6 +191,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
                 }
             }
         }
+        toWxChangeVO.setErrorCode(responseDTO.getErrCode());
         //设置其他信息(同名属性)
         BeanUtils.copyProperties(responseDTO, toWxChangeVO);
         //设置日期
@@ -209,11 +208,14 @@ public class WXTransfersServiceImpl implements WXTransfersService {
      * @throws Exception
      */
     private PayTransfersToWxChangeVO confirmTransfersToWxChangeResult(PayTransfersToWxChangeVO toWxChangeVO, PayTransfersForWxChangeDTO wxChangeDTO)  throws Exception{
+        //(由于处理中状态存在, 该方法最多尝试3次查询)
         PayTransfersQueryForWxChangeResponseDTO queryForWxChangeResponseDTO = getExactResultForWxChange(wxChangeDTO.getPartnerTradeNo(), 3);
         if (null == queryForWxChangeResponseDTO) {
             logger.error("Transfers result query failed, partnerTradeNo : " + toWxChangeVO.getPartnerTradeNo());
             return toWxChangeVO;
         }
+        //以查询结果为准
+        toWxChangeVO.setErrorCode(queryForWxChangeResponseDTO.getErrCode());
         //获得查询结果, 开始处理返参
         String transfersStatus = queryForWxChangeResponseDTO.getStatus();
         if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
@@ -424,6 +426,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
                 }
             }
         }
+        toWxBankVO.setErrorCode(responseDTO.getErrCode());
         //设置其他信息(同名属性)
         BeanUtils.copyProperties(responseDTO, toWxBankVO);
         //设置金额及手续费信息
@@ -451,6 +454,8 @@ public class WXTransfersServiceImpl implements WXTransfersService {
                 PayTransfersStatus.FAIL.getCode().equals(queryToWxBankVO.getResultCode())){
             return toWxBankVO;
         }
+        //以查询结果返回的错误码为准
+        toWxBankVO.setErrorCode(queryToWxBankVO.getErrCode());
         String transfersStatus = queryToWxBankVO.getStatus();
         if (PayTransfersStatus.SUCCESS.getCode().equals(transfersStatus)) {
             toWxBankVO.setTransfersResult(true);
@@ -467,6 +472,7 @@ public class WXTransfersServiceImpl implements WXTransfersService {
         } else {
             logger.error("Transfers query result return UNKNOW STATUS, partnerTradeNo : " + toWxBankVO.getPartnerTradeNo());
         }
+
         return toWxBankVO;
     }
 

@@ -168,6 +168,18 @@ public class VerifyService {
     }
 
     /**
+     * 订单取消，删除订单费用明细(逻辑删除)
+     *
+     * @param orderNo
+     * @return
+     */
+    public int removeAccountingDetailByOrderNo(String orderNo) {
+        int updateCount = accountingDetailMapper.updateAccountingDetailLogicDeletedByOrderNo(orderNo);
+        log.info("订单[{}]取消，逻辑删除记账费用明细，共[{}]条记录", orderNo, updateCount);
+        return updateCount;
+    }
+
+    /**
      * 查询未标记支付平台已结算的费用订单号，不包含当天的订单数据
      *
      * @return
@@ -497,6 +509,7 @@ public class VerifyService {
             toWxBankCondition.setOperaterID(String.valueOf(condition.getUpdatedBy()));
             payService.transfersPatrent(toWxBankCondition);
             count++;
+            log.info("批准门店提现申请，记录ID[{}]", id);
         }
         return count;
     }

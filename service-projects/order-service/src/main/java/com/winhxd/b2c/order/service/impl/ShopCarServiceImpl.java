@@ -298,6 +298,11 @@ public class ShopCarServiceImpl implements ShopCarService {
             result.setOrderTotalMoney(result.getOrderTotalMoney().subtract(discountAmount == null ? BigDecimal.ZERO : discountAmount));
             result.setDiscountAmount(result.getDiscountAmount().add(discountAmount));
         }
+        if (result.getOrderTotalMoney().compareTo(BigDecimal.ZERO) == -1) {
+            // 防止负金额
+            logger.error("ShopCarServiceImpl{} -> getOrderMoney异常{} 订单金额不正确：orderTotalMoney:"+result.getOrderTotalMoney()+";customerId:"+customerId+";storeId:"+storeId+";sendId:"+sendId);
+            throw new BusinessException(BusinessCode.CODE_402021);
+        }
         return result;
     }
 

@@ -38,6 +38,9 @@ public class PayTransfersToWxChangeVO {
     @ApiModelProperty("处理结果")
     private boolean transfersResult;
 
+    @ApiModelProperty("错误代码")
+    private String errorCode;
+
     @ApiModelProperty("是否可以继续, 为true表示该申请可以继续使用")
     private boolean ableContinue;
 

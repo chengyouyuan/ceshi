@@ -197,6 +197,8 @@ public final class BusinessCode {
     public static final int CODE_402019 = 402019;
     /** 购物车:门店账号无效，请联系门店！*/
     public static final int CODE_402020 = 402020;
+    /** 购物车:订单异常，请联系门店！*/
+    public static final int CODE_402021 = 402021;
 
 
     /** 查询订单参数异常*/

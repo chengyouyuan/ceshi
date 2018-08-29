@@ -158,4 +158,20 @@ public interface AccountingDetailMapper {
      */
     int updateAccountingDetailVerifyStatusByDetailId(@Param("verifyCode") String verifyCode,
                                                      @Param("ids") List<Long> ids);
+
+    /**
+     * 按订单号删除费用明细，物理删除
+     *
+     * @param orderNo
+     * @return
+     */
+    int deleteAccountingDetailByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 按订单号删除费用明细，逻辑删除
+     *
+     * @param orderNo
+     * @return
+     */
+    int updateAccountingDetailLogicDeletedByOrderNo(@Param("orderNo") String orderNo);
 }

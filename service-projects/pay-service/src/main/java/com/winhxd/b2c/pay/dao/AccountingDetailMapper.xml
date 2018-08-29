@@ -126,7 +126,7 @@
   <select id="selectVerifyingList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
     select
       d.store_id, d.verify_status,
-      date_format(max(d.recorded_time), '%Y-%m-%d') as last_recorded_time,
+      max(d.recorded_time) as last_recorded_time,
       sum(case when d.detail_type = 1 then d.detail_money else 0 end) as real_pay,
       sum(case when d.detail_type = 2 then d.detail_money else 0 end) as third_party_fee,
       sum(case when d.detail_type = 3 then d.detail_money else 0 end) as discount,
@@ -172,7 +172,7 @@
   <select id="selectVerifiedList" resultMap="VerifySummaryVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifySummaryListCondition">
     select
       d.store_id, d.verify_status,
-      date_format(max(d.recorded_time), '%Y-%m-%d') as last_recorded_time,
+      max(d.recorded_time) as last_recorded_time,
       h.verify_code, h.operated_time, h.operated_by_name,
       sum(case when d.detail_type = 1 then d.detail_money else 0 end) as real_pay,
       sum(case when d.detail_type = 2 then d.detail_money else 0 end) as third_party_fee,

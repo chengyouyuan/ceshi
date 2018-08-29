@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.pay.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,6 +30,7 @@ public class VerifySummaryVO {
     private String verifyStatusName;
 
     @ApiModelProperty("订单截止日")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date lastRecordedTime;
 
     private String verifyCode;

@@ -170,7 +170,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		int maxcount = payWithDrawalConfig.getMaxcount();
 		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
 		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
-			LOGGER.info("提现超过3次：您本日提现已达3次");
+			LOGGER.info("您本日提现已达3次");
 			throw new BusinessException(BusinessCode.CODE_610902);
 		}
 	}
@@ -383,13 +383,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//最小手续费
 		BigDecimal min = new BigDecimal(1);
 		if (totalFee.compareTo(min)<=0) {
-			LOGGER.info("低于最低值1元：提现金额须大于1元");
+			LOGGER.info("提现金额须大于1元");
 			throw new BusinessException(BusinessCode.CODE_611107);
 		}
 		// 最大提现额度
 		BigDecimal max = payWithDrawalConfig.getMaxMoney();
 		if (totalFee.compareTo(max)>0) {
-			LOGGER.info("高于最大2万：单笔提现须小于2万元");
+			LOGGER.info("单笔提现须小于2万元");
 			throw new BusinessException(BusinessCode.CODE_611108);
 		}
 	}

@@ -440,7 +440,7 @@ public final class BusinessCode {
    
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610901 = 610901;
-    @ApiModelProperty("提现超过3次：您本日提现已达3次")
+    @ApiModelProperty("您本日提现已达3次")
     public static final int CODE_610902 = 610902;
     
     
@@ -548,10 +548,10 @@ public final class BusinessCode {
     @ApiModelProperty("提现金额输入有误")
     public static final int CODE_611106 = 611106;
     
-    @ApiModelProperty("低于最低值1元：提现金额须大于1元")
+    @ApiModelProperty("提现金额须大于1元")
     public static final int CODE_611107 = 611107;
     
-    @ApiModelProperty("高于最大2万：单笔提现须小于2万元")
+    @ApiModelProperty("单笔提现须小于2万元")
     public static final int CODE_611108 = 611108;
 
     @ApiModelProperty("云信账户异常")

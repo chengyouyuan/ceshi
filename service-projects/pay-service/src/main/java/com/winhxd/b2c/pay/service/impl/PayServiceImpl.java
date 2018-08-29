@@ -778,6 +778,7 @@ public class PayServiceImpl implements PayService{
 			int day=cal.get(Calendar.DATE);
 			String notifyMsg = PayNotifyMsg.STORE_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 			PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
+			PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 		}
 		//失败根据code发送云信
 		if(payTransfersToWxChangeVO.getErrorCode()!=null){
@@ -789,6 +790,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_MONEY_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.V2_ACCOUNT_SIMPLE_BAN.getCode())){
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
@@ -797,7 +799,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
-
+				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())){
 				//TODO 发送云信
 			}
@@ -922,6 +924,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
+				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawalsList.get(0).getMobile(),notifyMsg);
 			} else if (payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(payWithdrawalsList.get(0).getCreated());
@@ -929,7 +932,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_MONEY_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawalsList.get(0).getStoreId());
-
+				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawalsList.get(0).getMobile(),notifyMsg);
 			}
 		}
 
@@ -1052,13 +1055,6 @@ public class PayServiceImpl implements PayService{
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				}
-				// 发送云信
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(payWithdrawals.getCreated());
-				int month=cal.get(Calendar.MONTH)+1;
-				int day=cal.get(Calendar.DATE);
-				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
-				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 				doesModify = true;
 			}else if (PayTransfersStatus.BANK_FAIL.getCode().equals(transfersStatus)) {
 				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
@@ -1090,6 +1086,7 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_BANK_SUCCESS_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
+				PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 			}
 			//提现失败根据code发送云信
 			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
@@ -1101,6 +1098,7 @@ public class PayServiceImpl implements PayService{
 					int day=cal.get(Calendar.DATE);
 					String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+					PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
 					Calendar cal = Calendar.getInstance();
 					cal.setTime(payWithdrawals.getCreated());
@@ -1108,7 +1106,7 @@ public class PayServiceImpl implements PayService{
 					int day=cal.get(Calendar.DATE);
 					String notifyMsg = PayNotifyMsg.STORE_MONEY_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 					PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
-
+					PayUtil.sendSmsMsg(messageServiceClient,payWithdrawals.getMobile(),notifyMsg);
 				}
 			}
 		}

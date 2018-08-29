@@ -652,7 +652,7 @@ public class CouponServiceImpl implements CouponService {
             return amountPrice.compareTo(couponGradeDetail.getReducedAmt())>=0 ? couponGradeDetail.getDiscountedAmt():new BigDecimal(0);
         }else{
             //计算优惠金额
-            BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted()).divide(new BigDecimal(100));
+            BigDecimal discountAmount = amountPrice.multiply(couponGradeDetail.getDiscounted()).divide(new BigDecimal(100)).setScale(2,BigDecimal.ROUND_HALF_UP);
 
             //满减金额等于0 代表无门槛券
             if(couponGradeDetail.getReducedAmt().compareTo(BigDecimal.valueOf(0))==0){

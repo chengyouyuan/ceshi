@@ -1067,13 +1067,6 @@ public class PayServiceImpl implements PayService{
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					payWithdrawals.setTimeEnd(sdf.parse(resultForWxBank.getPaySuccTime()));
 				}
-				//TODO 银行退票是否发送云信，文案内容
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(payWithdrawals.getCreated());
-				int month=cal.get(Calendar.MONTH)+1;
-				int day=cal.get(Calendar.DATE);
-				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
-				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 				doesModify = true;
 			}
 

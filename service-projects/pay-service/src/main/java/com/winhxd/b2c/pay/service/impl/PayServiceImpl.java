@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.pay.weixin.constant.TransfersToWxError;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -760,7 +761,6 @@ public class PayServiceImpl implements PayService{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
-				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
 
 				// 发送云信
 				Calendar cal = Calendar.getInstance();
@@ -769,6 +769,19 @@ public class PayServiceImpl implements PayService{
 				int day=cal.get(Calendar.DATE);
 				String notifyMsg = PayNotifyMsg.STORE_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
+			}
+		}
+		//C端展示提现失败原因
+		if(payTransfersToWxChangeVO.getErrorCode()!=null&&payTransfersToWxChangeVO.getErrorDesc()!=null){
+			if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&payTransfersToWxChangeVO.getErrorDesc().indexOf("银行卡")>=0){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
+			}else if(payTransfersToWxChangeVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxChangeVO.getErrorDesc());
 			}
 		}
 		payWithdrawals.setCallbackReason(payTransfersToWxChangeVO.getErrorDesc());
@@ -856,7 +869,7 @@ public class PayServiceImpl implements PayService{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.FAIL.getStatusCode());
 			}else{
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
-				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
+
 				//退回提现用户资金
 				List<PayWithdrawals> payWithdrawalsList = payWithdrawalsMapper.selectByWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
 
@@ -878,6 +891,22 @@ public class PayServiceImpl implements PayService{
 				}
 			}
 		}
+		//C端展示提现失败原因
+		if(payTransfersToWxBankVO.getErrorCode()!=null&&payTransfersToWxBankVO.getErrorDesc()!=null){
+			if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&payTransfersToWxBankVO.getErrorDesc().indexOf("银行卡")>=0){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
+			}else if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
+			}else if(payTransfersToWxBankVO.getErrorCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+				//TODO 文案待确定
+				payWithdrawals.setErrorMessage(payTransfersToWxBankVO.getErrorDesc());
+			}
+		}
+
+
+
 		payWithdrawals.setCallbackReason(payTransfersToWxBankVO.getErrorDesc());
 		payWithdrawals.setWithdrawalsNo(payTransfersToWxBankVO.getPartnerTradeNo());
 		payWithdrawalsMapper.updateByWithdrawalsNoSelective(payWithdrawals);
@@ -1002,7 +1031,6 @@ public class PayServiceImpl implements PayService{
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_SUCCESS.getTypeCode(),payWithdrawals.getStoreId());
 				doesModify = true;
 			} else if (PayTransfersStatus.FAILED.getCode().equals(transfersStatus)) {
-				payWithdrawals.setErrorMessage(resultForWxBank.getReason());
 				payWithdrawals.setCallbackStatus(WithdrawalsStatusEnum.INVALID.getStatusCode());
 				if(resultForWxBank.getPaySuccTime()!=null){
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1031,6 +1059,20 @@ public class PayServiceImpl implements PayService{
 				String notifyMsg = PayNotifyMsg.STORE_BANK_FAIL_WITHDRWAL.replace("mm",String.valueOf(month)).replace("dd",String.valueOf(day));
 				PayUtil.sendMsg(messageServiceClient,notifyMsg,MsgCategoryEnum.WITHDRAW_FAIL.getTypeCode(),payWithdrawals.getStoreId());
 				doesModify = true;
+			}
+
+			//C端展示提现失败原因
+			if(resultForWxBank.getErrCode()!=null&&resultForWxBank.getErrCodeDes()!=null){
+				if(resultForWxBank.getErrCode().equals(TransfersToWxError.PARAM_ERROR.getCode())&&resultForWxBank.getErrCodeDes().indexOf("银行卡")>=0){
+					//TODO 文案待确定
+					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
+				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.AMOUNT_LIMIT.getCode())){
+					//TODO 文案待确定
+					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
+				}else if(resultForWxBank.getErrCode().equals(TransfersToWxError.MONEY_LIMIT.getCode())){
+					//TODO 文案待确定
+					payWithdrawals.setErrorMessage(resultForWxBank.getErrCodeDes());
+				}
 			}
 			if(doesModify){
 				this.transfersPublic(payWithdrawals,log);

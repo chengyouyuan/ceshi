@@ -65,7 +65,7 @@ public class MessageSendMqHandler {
     }
 
     /**
-     * 订单取消，删除订单费用明细(物理删除)
+     * 订单取消，删除订单费用明细(逻辑删除)
      *
      * @param orderNo
      * @param orderInfo

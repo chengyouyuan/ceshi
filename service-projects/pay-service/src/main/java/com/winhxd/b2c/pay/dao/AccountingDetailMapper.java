@@ -166,4 +166,12 @@ public interface AccountingDetailMapper {
      * @return
      */
     int deleteAccountingDetailByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
+     * 按订单号删除费用明细，逻辑删除
+     *
+     * @param orderNo
+     * @return
+     */
+    int updateAccountingDetailLogicDeletedByOrderNo(@Param("orderNo") String orderNo);
 }

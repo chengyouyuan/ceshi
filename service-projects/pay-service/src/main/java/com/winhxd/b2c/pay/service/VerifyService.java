@@ -168,13 +168,15 @@ public class VerifyService {
     }
 
     /**
-     * 订单取消，删除订单费用明细(物理删除)
+     * 订单取消，删除订单费用明细(逻辑删除)
      *
      * @param orderNo
      * @return
      */
     public int removeAccountingDetailByOrderNo(String orderNo) {
-        return accountingDetailMapper.deleteAccountingDetailByOrderNo(orderNo);
+        int updateCount = accountingDetailMapper.updateAccountingDetailLogicDeletedByOrderNo(orderNo);
+        log.info("订单[{}]取消，逻辑删除记账费用明细，共[{}]条记录", orderNo, updateCount);
+        return updateCount;
     }
 
     /**
@@ -507,6 +509,7 @@ public class VerifyService {
             toWxBankCondition.setOperaterID(String.valueOf(condition.getUpdatedBy()));
             payService.transfersPatrent(toWxBankCondition);
             count++;
+            log.info("批准门店提现申请，记录ID[{}]", id);
         }
         return count;
     }

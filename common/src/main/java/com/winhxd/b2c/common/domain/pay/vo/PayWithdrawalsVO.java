@@ -75,7 +75,7 @@ public class PayWithdrawalsVO {
     private String updatedByName;
     @ApiModelProperty("修改时间")
     private Date updated;
-    @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败")
+    @ApiModelProperty("回调状态 0.申请中，1.提现成功，2提现失败(可以再次请求微信转账接口) ,3无效 ,4处理中,5银行退票")
     private Short callbackStatus;
     @Excel(name = "提现状态", width = 30)
     private String callbackStatusName;

@@ -222,20 +222,20 @@
         <if test="type == 'todayInMoney'" >
           AND pad.detail_type = '1'
           AND to_days(pad.insert_time) = to_days(now())
-          AND (AND pad.order_complete_status = '0' OR pad.order_complete_status = '1')
+          AND ( pad.order_complete_status = '0' OR pad.order_complete_status = '1')
         </if>
         <if test="type == 'allInMoney'" >
             AND pad.detail_type = '1'
-            AND (AND pad.order_complete_status = '0' OR pad.order_complete_status = '1')
+            AND ( pad.order_complete_status = '0' OR pad.order_complete_status = '1')
         </if>
         <if test="type == 'useTodayCouponAllMoney'" >
             AND pad.detail_type = '3'
             AND to_days(pad.insert_time) = to_days(now())
-            AND (AND pad.order_complete_status = '0' OR pad.order_complete_status = '1')
+            AND ( pad.order_complete_status = '0' OR pad.order_complete_status = '1')
         </if>
         <if test="type == 'useCouponAllMoney'" >
             AND pad.detail_type = '3'
-            AND (AND pad.order_complete_status = '0' OR pad.order_complete_status = '1')
+            AND ( pad.order_complete_status = '0' OR pad.order_complete_status = '1')
         </if>
     </select>
     <select id="getRevenueMoney" resultType="java.math.BigDecimal">

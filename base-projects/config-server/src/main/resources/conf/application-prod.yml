@@ -14,13 +14,13 @@ RETAIL-REST-SERVICE:
 sku-microservice:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://sku.retail:6111/
+    listOfServers: http://sku.retail/
     
 # 商品中心 品牌商REST服务配置
 user-service:
   ribbon:
     NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
-    listOfServers: http://user.retail:7777/
+    listOfServers: http://user.retail/
     
 
 # 缓存配置

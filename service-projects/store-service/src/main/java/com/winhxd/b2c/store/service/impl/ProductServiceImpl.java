@@ -130,8 +130,9 @@ public class ProductServiceImpl implements ProductService {
         if (productConditionByPage.getRecommendSkus() != null && productConditionByPage.getRecommendSkus().size() > 0){
             responseResult.getData().setRecommendFlag(1);
         }
+
         PagedList<ProductSkuVO> productSkus = responseResult.getData().getProductSkus();
-        if (productSkus == null || productSkus.getData() == null || productSkus.getData().isEmpty()){
+        if (productSkus == null || productSkus.getData().isEmpty()){
             return responseResult;
         }
         //赋值商品价格

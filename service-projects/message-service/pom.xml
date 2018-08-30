@@ -10,12 +10,4 @@
     <artifactId>message-service</artifactId>
     <packaging>jar</packaging>
 
-    <dependencies>
-       <dependency>
-            <groupId>emayclient</groupId>
-            <artifactId>emayclient</artifactId>
-            <version>4.3.2</version>
-        </dependency>
-    </dependencies>
-
 </project>

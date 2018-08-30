@@ -25,6 +25,7 @@ import java.util.List;
  */
 @Component
 public class HttpClientUtil implements ApplicationContextAware {
+    private static final int SUCCESS_CODE = 200;
     private ApplicationContext applicationContext;
 
     public CloseableHttpClient getHttpClient(){
@@ -54,7 +55,7 @@ public class HttpClientUtil implements ApplicationContextAware {
             // 执行请求
             response = getHttpClient().execute(httpGet);
             // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == SUCCESS_CODE) {
                 content = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
                 return content;
             }
@@ -104,7 +105,7 @@ public class HttpClientUtil implements ApplicationContextAware {
             // 执行请求
             response = getHttpClient().execute(httpPost);
             // 判断返回状态是否为200
-            if (response.getStatusLine().getStatusCode() == 200) {
+            if (response.getStatusLine().getStatusCode() == SUCCESS_CODE) {
                 content = EntityUtils.toString(response.getEntity(), ContextHelper.UTF_8);
             }
         } finally {

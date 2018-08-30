@@ -225,20 +225,17 @@ public class WechatShareServiceImpl implements WechatShareService {
         String token = null;
         try {
             String content = httpClientUtil.doGet(tokenUrl, params);
-            if (StringUtils.isEmpty(content)) {
-                return null;
+            if (!StringUtils.isEmpty(content)) {
+                JsonNode node = objectMapper.readTree(content);
+                token = node.get("access_token").asText();
             }
-            JsonNode node = objectMapper.readTree(content);
-            token = node.get("access_token").asText();
-            return token;
         } catch (URISyntaxException e) {
             logger.error("WechatShareServiceImpl ->getToken获取token是请求的url地址错误tokenUrl={}", tokenUrl);
             e.printStackTrace();
         } catch (IOException e) {
             logger.error("WechatShareServiceImpl ->getToken获取token是请求网络错误msg={}", e);
             e.printStackTrace();
-        } finally {
-            return token;
         }
+        return token;
     }
 }

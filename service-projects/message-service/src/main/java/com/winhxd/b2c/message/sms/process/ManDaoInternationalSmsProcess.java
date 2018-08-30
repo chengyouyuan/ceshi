@@ -1,30 +1,25 @@
 package com.winhxd.b2c.message.sms.process;
 
-import com.winhxd.b2c.common.context.support.ContextHelper;
 import com.winhxd.b2c.common.domain.message.model.MessageSmsHistory;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.winhxd.b2c.message.utils.HttpClientUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
 public class ManDaoInternationalSmsProcess extends BaseSmsProcess {
 
+	@Autowired
+	private HttpClientUtil httpClientUtil;
+
 	@Override
-	public int sendMessage(MessageSmsHistory smsSend) {
-		try {
-			Client client = new Client();
-			return client.sendMessage(smsSend.getTelephone(), smsSend.getContent());
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return -1;
+	public int sendMessage(MessageSmsHistory smsSend) throws IOException, URISyntaxException {
+		Client client = new Client();
+		return client.sendMessage(smsSend.getTelephone(), smsSend.getContent());
 	}
 
 	class Client {
@@ -67,22 +62,14 @@ public class ManDaoInternationalSmsProcess extends BaseSmsProcess {
 			}
 		}
 
-		public int sendMessage(String telephone, String smsContent) {
-			HttpClient httpclient = new DefaultHttpClient();
+		public int sendMessage(String telephone, String smsContent) throws IOException, URISyntaxException {
+			int resReturn = -1;
 			serviceURL = serviceURL + "?sn=" + sn + "&pwd=" + pwd + "&mobile=" + telephone + "&content=" + smsContent + "&ext=1&stime=&rrid=";
-			HttpGet httpPost = new HttpGet(serviceURL);
-			httpPost.getParams().setParameter("http.protocol.content-charset", ContextHelper.UTF_8);
-			try {
-				HttpResponse httpResponse = httpclient.execute(httpPost);
-				if (httpResponse.getStatusLine().getStatusCode() == 200) {
-					return 0;
-				}
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			String result = httpClientUtil.doGet(serviceURL);
+			if (result == null) {
+				resReturn = 0;
 			}
-			return -1;
+			return resReturn;
 		}
 
 	}

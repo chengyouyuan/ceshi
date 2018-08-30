@@ -67,7 +67,7 @@ public class BeanAndXmlUtil {
         Class<?> cls = obj.getClass();
         List<Field> fields = new ArrayList<>() ;
         //当父类为null的时候说明到达了最上层的父类(Object类).
-        while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
+        while (cls != null && !"java.lang.object".equals(cls.getName().toLowerCase())) {
         	fields.addAll(Arrays.asList(cls .getDeclaredFields()));
         	//得到父类,然后赋给自己
         	cls = cls.getSuperclass(); 
@@ -184,7 +184,7 @@ public class BeanAndXmlUtil {
         Class clazz = obj.getClass();
         List<Field> fields = new ArrayList<>() ;
         //当父类为null的时候说明到达了最上层的父类(Object类).
-        while (clazz != null && !clazz.getName().toLowerCase().equals("java.lang.object")) {
+        while (clazz != null && !"java.lang.object".equals(clazz.getName().toLowerCase())) {
         	fields.addAll(Arrays.asList(clazz .getDeclaredFields()));
         	//得到父类,然后赋给自己
         	clazz = clazz.getSuperclass(); 
@@ -219,7 +219,7 @@ public class BeanAndXmlUtil {
         Class<? extends Object> clazz = obj.getClass();
         List<Field> fields = new ArrayList<>() ;
         //当父类为null的时候说明到达了最上层的父类(Object类).
-        while (clazz != null && !clazz.getName().toLowerCase().equals("java.lang.object")) {
+        while (clazz != null && !"java.lang.object".equals(clazz.getName().toLowerCase())) {
         	fields.addAll(Arrays.asList(clazz .getDeclaredFields()));
         	//得到父类,然后赋给自己
         	clazz = clazz.getSuperclass(); 

@@ -40,10 +40,10 @@ public class YxtSmsProcess {
 
 	private final Logger logger = LoggerFactory.getLogger(YxtSmsProcess.class);
 	private static AtomicInteger counter = new AtomicInteger(1);
-	/**
-	 * 轮询因子
-	 */
-	private static final int POLL_FACTOR = 2;
+//	/**
+//	 * 轮询因子
+//	 */
+//	private static final int POLL_FACTOR = 2;
 	/**
 	 * 国际短信判断
 	 */
@@ -101,19 +101,19 @@ public class YxtSmsProcess {
 	 */
 	public SmsReturn sendMessage(MessageSmsHistory smsSend) {
 		SmsReturn smsReturn;
-		int index = counter.incrementAndGet() % 2;
-		if (index < 0) {
-			index = -index;
-		}
-
+//		int index = counter.incrementAndGet() % 2;
+//		if (index < 0) {
+//			index = -index;
+//		}
 		if (smsSend.getSendType() != SmsTypeEnum.VOICE.getType() && smsSend.getSendType() != SmsTypeEnum.INTERNATIONAL.getType()) {
 			smsSend.setContent(smsSend.getContent());
 		}
 
 		/**
-		 * 营销短信使用创蓝平台，验证码短信在创蓝和阅信轮询
+		 * 营销短信使用创蓝平台
+		 * index % POLL_FACTOR == 0 || 移除随机发送验证码   验证码优先使用阅信发送  阅信发送失败再使用创蓝补发
 		 */
-		if (index % POLL_FACTOR == 0 || !smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION) || smsSend.getSendType() == SmsTypeEnum.INTERNATIONAL.getType()) {
+		if (!smsSend.getContent().contains(SmsConstant.FLAG_VERIFICATION) || smsSend.getSendType() == SmsTypeEnum.INTERNATIONAL.getType()) {
 			smsReturn = clSend(smsSend);
 		} else {
 			smsReturn = yxSmsProcess.sendMessage(smsSend);

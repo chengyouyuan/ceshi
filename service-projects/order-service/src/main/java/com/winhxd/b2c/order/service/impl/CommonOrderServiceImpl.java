@@ -344,7 +344,7 @@ public class CommonOrderServiceImpl implements OrderService {
                         //添加订单流转日志
                         orderChangeLogService.orderChange(orderNo, oldOrderJsonString, newOrderJsonString, oldStatus,
                                 order.getOrderStatus(), order.getCreatedBy(), "sys", "系统申请退款回调成功", MainPointEnum.MAIN);
-                        logger.info("退款回调-添加流转日志结束-发送消息开始-订单号={}", orderNo);
+                        logger.info("退款回调-添加流转日志结束-订单号={}", orderNo);
                         //订单退款成功事务提交后相关事件
                         registerProcessAfterTransSuccess(new OrderRefundCompleteProcessRunnable(order, 1), null);
                     }

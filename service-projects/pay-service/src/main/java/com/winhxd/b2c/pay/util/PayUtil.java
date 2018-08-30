@@ -1,5 +1,6 @@
 package com.winhxd.b2c.pay.util;
 
+import com.winhxd.b2c.common.domain.message.condition.SMSCondition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,13 @@ public class PayUtil {
 		neteaseMsgCondition.setNeteaseMsg(neteaseMsg);
 		return neteaseMsgCondition;
 }
+
+    public static SMSCondition getSmsMsgCondition(String mobile, String content) {
+        SMSCondition smsCondition = new SMSCondition();
+        smsCondition.setMobile(mobile);
+        smsCondition.setContent(content);
+        return smsCondition;
+    }
     /**
      * 发送云信消息
      * @param messageServiceClient
@@ -75,6 +83,23 @@ public class PayUtil {
         } catch (Exception e) {
             logger.error("门店提现发送消息:storeId={},发送消息：{} 失败", storeId, storeMsg);
             logger.error("门店提现发送消息失败：", e);
+        }
+    }
+
+    /**
+     * 发送端信消息
+     * @param messageServiceClient
+     * @param mobile
+     * @param content
+     * @author wangxiaoshun
+     */
+    public static void sendSmsMsg(MessageSendUtils messageServiceClient,String mobile,String content){
+        try {
+            SMSCondition smsCondition = PayUtil.getSmsMsgCondition(mobile, content);
+            messageServiceClient.sendSms(smsCondition);
+        } catch (Exception e) {
+            logger.error("门店提现发送短信:mobile={},发送消息：{} 失败", mobile, content);
+            logger.error("门店提现发送消短信失败：", e);
         }
     }
 }

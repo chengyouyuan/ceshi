@@ -200,6 +200,7 @@ public class MessageSendMqHandler {
             //云信消息发送成功
             LOGGER.info("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息成功 msgId={}",msgId);
         } else {
+            LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 错误码={}", String.valueOf(msgMap.get(PARAM_CODE)));
             LOGGER.error("NeteaseServiceImpl ->sendNeteaseMsg,给B端用户发云信消息出错 neteaseMsgCondition={}", neteaseMsgCondition.getCustomerId() + "," + neteaseMsgCondition.getNeteaseMsg().getMsgContent());
         }
     }

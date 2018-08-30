@@ -17,7 +17,7 @@ public class PayWithdrawalConfig {
 	private BigDecimal rate;// 微信费率
 	private BigDecimal maxMoney;
 	private BigDecimal minMoney;
-	private int maxcount;
+	private int maxCount;
 	
 	public BigDecimal getCmmsamt() {
 		return cmmsamt;
@@ -43,11 +43,11 @@ public class PayWithdrawalConfig {
 	public void setMinMoney(BigDecimal minMoney) {
 		this.minMoney = minMoney;
 	}
-	public int getMaxcount() {
-		return maxcount;
+	public int getMaxCount() {
+		return maxCount;
 	}
-	public void setMaxcount(int maxcount) {
-		this.maxcount = maxcount;
+	public void setMaxCount(int maxCount) {
+		this.maxCount = maxCount;
 	}
 	
 }

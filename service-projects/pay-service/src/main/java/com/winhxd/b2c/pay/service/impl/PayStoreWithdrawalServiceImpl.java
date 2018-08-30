@@ -167,7 +167,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	
 	/**验证当前用户的提现次数*/
 	public void validWithdrawCount(Long storeId){
-		int maxcount = payWithDrawalConfig.getMaxcount();
+		int maxcount = payWithDrawalConfig.getMaxCount();
 		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
 		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
 			LOGGER.info("您本日提现已达3次");
@@ -281,11 +281,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		// 提下完成之后发送云信消息
 		PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_APPLY_WITHDRWAL,MsgCategoryEnum.WITHDRAW_APPLY.getTypeCode(),businessId);
 		
-		// 发送端新消息
-		SMSCondition sMSCondition = new SMSCondition();
-		sMSCondition.setContent(PayNotifyMsg.STORE_APPLY_WITHDRWAL);
-		sMSCondition.setMobile(condition.getMobile());
-		messageSendUtils.sendSms(sMSCondition);
+		// 发送短信消息
+		PayUtil.sendSmsMsg(messageSendUtils,condition.getMobile(),PayNotifyMsg.STORE_APPLY_WITHDRWAL);
 	} 
 	
 	// 计算手续费率
@@ -473,13 +470,14 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info(log+"参数为空");
 			throw new BusinessException(BusinessCode.CODE_611101);
 		}
-		Short withdrawType=condition.getWithdrawType();
-		BigDecimal totalFee=condition.getTotalFee();
-		
-		//获取门店资金信息
 	    StoreUser storeUser = UserContext.getCurrentStoreUser();
+        if(storeUser==null||storeUser.getBusinessId()==null){
+			LOGGER.info("未获取到门店数据");
+			throw new BusinessException(BusinessCode.CODE_610801);
+		}
         Long storeId = storeUser.getBusinessId();
-        
+        Short withdrawType=condition.getWithdrawType();
+        BigDecimal totalFee=condition.getTotalFee();
 		// 验证提现次数
         validWithdrawCount(storeId);
 		if (withdrawType==null) {
@@ -518,8 +516,6 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		
 		LOGGER.info(log+"参数为--"+condition.toString());
 		
-		// 写死门店id
-//		Long storeId = 130l;
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll == null||storeBankroll.getStoreId()==null){
         	LOGGER.info(log+"可提现金额不足");

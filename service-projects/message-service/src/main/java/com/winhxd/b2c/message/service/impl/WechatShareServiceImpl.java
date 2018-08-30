@@ -2,11 +2,8 @@ package com.winhxd.b2c.message.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.model.BaseImageFile;
 import com.winhxd.b2c.common.domain.message.vo.MiniProgramConfigVO;
-import com.winhxd.b2c.common.domain.store.vo.ProductImageVO;
 import com.winhxd.b2c.common.domain.store.vo.QRCodeInfoVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
@@ -162,6 +159,11 @@ public class WechatShareServiceImpl implements WechatShareService {
         params.put("width", width);
         params.put("auto_color", autoColor);
         params.put("is_hyaline",isHyaline);
+        Map<String,Object> line_color = new HashMap<>();
+        line_color.put("r", 0);
+        line_color.put("g", 0);
+        line_color.put("b", 0);
+        params.put("line_color", line_color);
         CloseableHttpResponse response = null;
         try {
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(params), "UTF-8"));

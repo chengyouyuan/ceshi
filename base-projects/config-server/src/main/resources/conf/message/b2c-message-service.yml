@@ -12,7 +12,7 @@ wechat:
     codeUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
     pageUrl: pages/index/store
     width: 430
-    autoColor: true
+    autoColor: false
     isHyaline: true
   config:
     webpageUrl: https://xxxxx

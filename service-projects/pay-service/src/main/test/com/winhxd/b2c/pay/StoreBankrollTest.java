@@ -51,7 +51,7 @@ public class StoreBankrollTest {
     	UpdateStoreBankRollCondition condition=new UpdateStoreBankRollCondition();
     	condition.setStoreId(999L);
     	condition.setMoney(BigDecimal.valueOf(2.56));
-    	condition.setType(7);
+    	condition.setType(1);
     	condition.setMoneyType((short)1);
     	condition.setOrderNo("123qwe11");
     	condition.setWithdrawalsNo("12345wer12");

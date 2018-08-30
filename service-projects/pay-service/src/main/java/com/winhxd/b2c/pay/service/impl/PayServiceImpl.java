@@ -426,6 +426,7 @@ public class PayServiceImpl implements PayService{
 			
 		}
 		if (flag) {
+			changeCondition.setMoney(condition.getMoney());
 			storeBankrollChange(changeCondition);
 		}
 		
@@ -494,53 +495,62 @@ public class PayServiceImpl implements PayService{
 				storeBankroll.setUpdated(new Date());
 				storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
 			}
+			//加入资金流转日志
+			condition.setTotalMoeny(storeBankroll.getTotalMoeny());
+			condition.setPresentedFrozenMoney(presentedFrozenMoney);
+			condition.setPresentedMoney(presentedMoney);
+			condition.setSettlementSettledMoney(settlementSettledMoney);
+			condition.setAlreadyPresentedMoney(alreadyPresentedMoney);
+			saveStoreBankRollLog(condition);
 		}finally{
 			lock.unlock();
 		}
 		
-		//加入资金流转日志
-		saveStoreBankRollLog(condition);
+		
 		
 	}
 
 	public void saveStoreBankRollLog(StoreBankrollChangeCondition condition) {
 		
 		PayStoreBankrollLog payStoreBankrollLog = new PayStoreBankrollLog();
+		BigDecimal totalMoney=condition.getTotalMoeny();
 		BigDecimal presentedMoney=condition.getPresentedMoney();
 		BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney();
 		BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney();
 		BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney();
+		BigDecimal money=condition.getMoney();
 		String remarks="";
 		if(StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())){
-			payStoreBankrollLog.setTotalMoeny(settlementSettledMoney);
-			 remarks = "订单完成:总收入增加"+settlementSettledMoney +"元,待结算金额增加"+settlementSettledMoney+"元";
+			
+			 remarks = "订单完成:总收入增加"+money +"元,待结算金额增加"+money+"元";
 		}
 
 		if(StoreBankRollOpearateEnums.SETTLEMENT_AUDIT.getCode().equals(condition.getType())){
-			 remarks = "结算审核：待结算减少"+settlementSettledMoney +"元,可提现金额增加"+presentedMoney+"元";
+			 remarks = "结算审核：待结算减少"+money +"元,可提现金额增加"+money+"元";
 		}
 
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_APPLY.getCode().equals(condition.getType())){
-			 remarks = "提现申请:可提现金额减少"+presentedMoney +"元,提现冻结金额增加"+presentedFrozenMoney+"元";
+			 remarks = "提现申请:可提现金额减少"+money +"元,提现冻结金额增加"+money+"元";
 		}
 
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_SUCCESS.getCode().equals(condition.getType())){
-			 remarks = "提现成功:提现冻结金额减少"+presentedFrozenMoney +"元,已提现金额增加"+alreadyPresentedMoney+"元";
+			 remarks = "提现成功:提现冻结金额减少"+money +"元,已提现金额增加"+money+"元";
 		}
 
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_AUDIT_NOT_PASS.getCode().equals(condition.getType())){
-			remarks = "提现审核不通过:提现冻结金额减少"+presentedFrozenMoney +"元,可提现提现金额增加"+presentedMoney+"元";
+			remarks = "提现审核不通过:提现冻结金额减少"+money +"元,可提现提现金额增加"+money+"元";
 		}
 		
 		if(StoreBankRollOpearateEnums.WITHDRAWALS_FAIL.getCode().equals(condition.getType())){
-			remarks = "提现失败:提现冻结金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
+			remarks = "提现失败:提现冻结金额减少"+money +"元,可提现金额增加"+money+"元";
 		}
 		if(StoreBankRollOpearateEnums.BANK_FAIL.getCode().equals(condition.getType())){
-			remarks = "银行退票:已提现金额减少"+presentedFrozenMoney +"元,可提现金额增加"+presentedMoney+"元";
+			remarks = "银行退票:已提现金额减少"+money +"元,可提现金额增加"+money+"元";
 		}
 		payStoreBankrollLog.setOrderNo(condition.getOrderNo());
 		payStoreBankrollLog.setStoreId(condition.getStoreId());
 		payStoreBankrollLog.setPresentedMoney(presentedMoney);
+		payStoreBankrollLog.setTotalMoeny(totalMoney);
 		payStoreBankrollLog.setSettlementSettledMoney(settlementSettledMoney);
 		payStoreBankrollLog.setPresentedFrozenMoney(presentedFrozenMoney);
 		payStoreBankrollLog.setAlreadyPresentedMoney(alreadyPresentedMoney);

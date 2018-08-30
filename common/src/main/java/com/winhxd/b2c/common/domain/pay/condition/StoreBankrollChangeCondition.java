@@ -11,8 +11,11 @@ public class StoreBankrollChangeCondition {
 	private Long storeId;
 
 
+	@ApiModelProperty("门店总收入")
+    private BigDecimal totalMoeny;
+	
 	@ApiModelProperty("门店可提现金额")
-    private BigDecimal presentedMoney;
+	private BigDecimal presentedMoney;
 
 	@ApiModelProperty("冻结金额")
     private BigDecimal presentedFrozenMoney;
@@ -37,5 +40,8 @@ public class StoreBankrollChangeCondition {
     
     @ApiModelProperty("提现单号")
     private String withdrawalsNo;
+    
+    @ApiModelProperty("变化金额")
+    private BigDecimal money;
     
 }

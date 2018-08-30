@@ -281,11 +281,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		// 提下完成之后发送云信消息
 		PayUtil.sendMsg(messageServiceClient,PayNotifyMsg.STORE_APPLY_WITHDRWAL,MsgCategoryEnum.WITHDRAW_APPLY.getTypeCode(),businessId);
 		
-		// 发送端新消息
-		SMSCondition sMSCondition = new SMSCondition();
-		sMSCondition.setContent(PayNotifyMsg.STORE_APPLY_WITHDRWAL);
-		sMSCondition.setMobile(condition.getMobile());
-		messageSendUtils.sendSms(sMSCondition);
+		// 发送短信消息
+		PayUtil.sendSmsMsg(messageSendUtils,condition.getMobile(),PayNotifyMsg.STORE_APPLY_WITHDRWAL);
 	} 
 	
 	// 计算手续费率

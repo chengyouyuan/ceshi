@@ -32,7 +32,7 @@ public enum OrderStatusEnum {
     /**
      * 待自提（已确认）
      */
-    WAIT_SELF_LIFTING((short) 9, "订单待提取，取货码：{0}", "待自提(已确认)"),
+    WAIT_SELF_LIFTING((short) 9, "订单待提取，取货码：{0}", "待自提"),
     /**
      * 已完成
      */

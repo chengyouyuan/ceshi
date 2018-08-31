@@ -1,6 +1,5 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +18,6 @@ public class VerifySummaryCondition implements Serializable {
 
         private Long storeId;
 
-        @JsonFormat(pattern = "yyyy-MM-dd")
         private Date lastRecordedTime;
 
         private Integer verifyStatus;

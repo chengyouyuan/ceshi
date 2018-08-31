@@ -466,6 +466,7 @@ public class PayServiceImpl implements PayService{
 	
 	public void storeBankrollChange(StoreBankrollChangeCondition condition) {
 		String lockKey = CacheName.BACKROLL_STORE + condition.getStoreId();
+		logger.info(logLabel+"门店资金变化参数--"+condition.toString());
 		Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
 		try{
 			lock.lock();

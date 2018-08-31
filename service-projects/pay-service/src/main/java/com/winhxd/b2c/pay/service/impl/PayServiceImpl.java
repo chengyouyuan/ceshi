@@ -46,6 +46,8 @@ import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
 import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
 import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
+import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
+import com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
 import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
 import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
@@ -63,6 +65,8 @@ import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.MessageSendUtils;
+import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
+import com.winhxd.b2c.pay.dao.PayAccountingDetailMapper;
 import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
 import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
@@ -116,6 +120,9 @@ public class PayServiceImpl implements PayService{
 	private WXTransfersService wxTransfersService;
 	@Autowired
 	private MessageSendUtils messageServiceClient;
+	
+	@Autowired
+	private AccountingDetailMapper accountingDetailMapper;
 
 	@Autowired
     private Cache cache;
@@ -304,7 +311,7 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--订单闭环订单号为空");
 				return;
 			}
-			//（待定）不知是否需要  验证订单状态
+			//验证订单是否有效
 			//验证该订单是否做过此项操作
 			map.put("orderNo",orderNo);
 			List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
@@ -331,7 +338,12 @@ public class PayServiceImpl implements PayService{
 				logger.info(log+"--结算审核费用类型为空");
 				throw new BusinessException(BusinessCode.CODE_600007);
 			}
-			
+			//验证结算数据
+			List<AccountingDetail>  accountingDetails=accountingDetailMapper.selectAccountingDetailListByOrderNo(orderNo);
+			if (CollectionUtils.isEmpty(accountingDetails)) {
+				logger.info(log+"--结算审核数据无效");
+				throw new BusinessException(BusinessCode.CODE_600008);
+			}
 			//验证该订单是否做过此项操作
 			map.put("orderNo",orderNo);
 			map.put("moneyType", moneyType);
@@ -437,6 +449,12 @@ public class PayServiceImpl implements PayService{
 			logger.info(log+"--提现单号为空");
 			throw new BusinessException(BusinessCode.CODE_600005);
 		}
+		//验证提现数据是否有效
+		List<PayWithdrawals> withdrawals=payWithdrawalsMapper.selectByWithdrawalsNo(withdrawalsNo);
+		if (CollectionUtils.isEmpty(withdrawals)) {
+			logger.info(log+"--提现数据无效");
+			throw new BusinessException(BusinessCode.CODE_600011);
+		}
 		map.put("withdrawalsNo",withdrawalsNo);
 		List<PayStoreBankrollLog> list=payStoreBankrollLogMapper.selectListByNoAndType(map);
 		if (CollectionUtils.isNotEmpty(list)) {
@@ -457,6 +475,10 @@ public class PayServiceImpl implements PayService{
 			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
 			BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
 			
+			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
+			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
+			alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
+			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 			
 			BigDecimal totalMoney=settlementSettledMoney;
 			if (storeBankroll==null) {

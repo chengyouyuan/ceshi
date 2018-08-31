@@ -506,6 +506,12 @@ public final class BusinessCode {
     
     @ApiModelProperty("门店资金变化  结算审核费用类型为空")
     public static final int CODE_600007 = 600007;
+   
+    @ApiModelProperty("门店资金变化  结算审核数据无效")
+    public static final int CODE_600008 = 600008;
+    
+    @ApiModelProperty("门店资金变化  提现数据无效")
+    public static final int CODE_600011 = 600011;
     
     
     @ApiModelProperty("门店资金变化 金额为空")

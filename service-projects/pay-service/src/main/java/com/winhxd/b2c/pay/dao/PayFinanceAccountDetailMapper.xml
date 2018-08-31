@@ -204,7 +204,69 @@
    </select>
     <select id="getIncome" parameterType="java.lang.String" resultType="java.math.BigDecimal">
         SELECT
-            SUM(pad.detail_money) todayAdvancesReceived
+        <if test="type == 'useTodayCouponAllMoney' or type == 'useCouponAllMoney'" >
+          SUM(pad.detail_money) todayAdvancesReceived
+        </if>
+        <if test="type == 'todayPreMoney'" >
+            (
+            IFNULL(SUM(pad.detail_money),0) + (
+            SELECT
+            IFNULL(SUM(detail_money),0)
+            FROM
+            pay_accounting_detail
+            WHERE
+            1 = 1
+            AND detail_type = '2'
+            AND order_complete_status = '0'
+            AND to_days(insert_time) = to_days(now())
+            )
+            ) todayAdvancesReceived
+        </if>
+        <if test="type == 'todayRealMoney'" >
+            (
+            IFNULL(SUM(pad.detail_money),0) + (
+            SELECT
+            IFNULL(SUM(detail_money),0)
+            FROM
+            pay_accounting_detail
+            WHERE
+            1 = 1
+            AND detail_type = '2'
+            AND order_complete_status = '1'
+            AND to_days(insert_time) = to_days(now())
+            )
+            ) todayAdvancesReceived
+        </if>
+        <if test="type == 'todayInMoney'" >
+            (
+            IFNULL(SUM(pad.detail_money), 0) + (
+            SELECT
+            IFNULL(SUM(detail_money), 0)
+            FROM
+            pay_accounting_detail
+            WHERE
+            1 = 1
+            AND detail_type = '2'
+            AND to_days(insert_time) = to_days(now())
+            AND ( order_complete_status = '0' OR order_complete_status = '1' )
+            )
+            ) todayAdvancesReceived
+        </if>
+        <if test="type == 'allInMoney'" >
+            (
+            IFNULL(SUM(pad.detail_money), 0) + (
+            SELECT
+            IFNULL(SUM(detail_money), 0)
+            FROM
+            pay_accounting_detail
+            WHERE
+            1 = 1
+            AND detail_type = '2'
+            AND ( order_complete_status = '0' OR order_complete_status = '1' )
+            )
+            ) todayAdvancesReceived
+        </if>
+
         FROM
             pay_accounting_detail pad
         WHERE

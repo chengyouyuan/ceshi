@@ -336,6 +336,7 @@ public class VerifyService {
                     verifyCode, vo.getStoreId(), vo.getLastRecordedTime());
             updatedCount += count;
         }
+        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔费用(货款、促销费)", verifyCode, updatedCount);
         notifyStoreMoneyVerify(verifyCode);
         return updatedCount;
     }
@@ -360,8 +361,12 @@ public class VerifyService {
         verifyHistory.setOperatedByName(operatedByName);
         accountingDetailMapper.insertVerifyHistory(verifyHistory);
         int updatedCount = accountingDetailMapper.updateAccountingDetailVerifyStatusByDetailId(verifyCode, ids);
+        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔费用(货款、促销费)", verifyCode, updatedCount);
+        List<String> orderNos = accountingDetailMapper.selectVerifiedPaymentOrderNoListByVerifyCode(verifyCode);
+        int feeUpdateCount = accountingDetailMapper.updateAccountingDetailServiceFeeOfPaymentVerifyStatusByVerifyCode(verifyCode, orderNos);
+        log.info("门店资金结算-核销批次[{}}，共结算[{}]笔费用(手续费)", verifyCode, updatedCount);
         notifyStoreMoneyVerify(verifyCode);
-        return updatedCount;
+        return updatedCount + feeUpdateCount;
     }
 
     /**

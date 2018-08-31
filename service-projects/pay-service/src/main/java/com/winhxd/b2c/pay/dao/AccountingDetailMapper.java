@@ -160,6 +160,23 @@ public interface AccountingDetailMapper {
                                                      @Param("ids") List<Long> ids);
 
     /**
+     * 按核销批次查询已结算货款订单号
+     *
+     * @param verifyCode
+     * @return
+     */
+    List<String> selectVerifiedPaymentOrderNoListByVerifyCode(@Param("verifyCode") String verifyCode);
+
+    /**
+     * 按核销批次更新对应订单支付平台手续费费用明细状态
+     *
+     * @param verifyCode
+     * @return
+     */
+    int updateAccountingDetailServiceFeeOfPaymentVerifyStatusByVerifyCode(@Param("verifyCode") String verifyCode,
+                                                                          @Param("orderNos") List<String> orderNos);
+
+    /**
      * 按订单号删除费用明细，物理删除
      *
      * @param orderNo

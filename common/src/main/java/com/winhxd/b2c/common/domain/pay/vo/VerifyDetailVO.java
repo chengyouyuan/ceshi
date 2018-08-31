@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @ApiModel("费用明细")
@@ -25,6 +26,9 @@ public class VerifyDetailVO extends AccountingDetail {
 
     @ApiModelProperty("结算状态")
     private String verifyStatusName;
+
+    @ApiModelProperty("支付平台手续费")
+    private BigDecimal thirdPartyFeeMoney;
 
     public String getDetailTypeName() {
         return DetailTypeEnum.getMemoOfCode(getDetailType());

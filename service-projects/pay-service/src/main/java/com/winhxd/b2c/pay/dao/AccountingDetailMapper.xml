@@ -28,6 +28,7 @@
     <result column="insert_time" property="insertTime"></result>
     <result column="third_party_verify_status" property="thirdPartyVerifyStatus"></result>
     <result column="third_party_verify_time" property="thirdPartyVerifyTime"></result>
+    <result column="third_party_fee_money" property="thirdPartyFeeMoney"></result>
     <result column="verify_status" property="verifyStatus"></result>
     <result column="verify_code" property="verifyCode"></result>
     <result column="verify_time" property="verifyTime"></result>
@@ -80,9 +81,11 @@
   </select>
 
   <select id="selectAccountingDetailList" resultMap="VerifyDetailVOMap" parameterType="com.winhxd.b2c.common.domain.pay.condition.VerifyDetailListCondition">
-    select *
+    select d.*, case when d.detail_type = 1 then fee.detail_money else null end as third_party_fee_money
     from pay_accounting_detail d
+    left join pay_accounting_detail fee on fee.order_no = d.order_no and fee.detail_type = 2
     where d.order_complete_status = 1
+    and d.detail_type &lt;&gt; 2
     <if test="verifyStatus != null">
       and d.verify_status = #{verifyStatus}
     </if>
@@ -263,10 +266,10 @@
       d.operated_time = h.operated_time,
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
-    where d.verify_status &lt;&gt; 1
+    where h.verify_code = #{verifyCode}
+    and d.verify_status = 0
     and d.third_party_verify_status = 1
     and d.order_complete_status = 1
-    and h.verify_code = #{verifyCode}
     and d.store_id = #{storeId}
     and d.recorded_time &lt; date_add(date_format(#{dateBefore}, '%Y-%m-%d'), interval 1 day)
   </update>
@@ -279,12 +282,39 @@
       d.operated_time = h.operated_time,
       d.operated_by = h.operated_by,
       d.operated_by_name = h.operated_by_name
-    where d.verify_status &lt;&gt; 1
+    where h.verify_code = #{verifyCode}
+    and (case when h.verify_status = 1 and d.verify_status = 0 then 1
+              when h.verify_status &lt;&gt; 1 and d.verify_status &lt;&gt; 1 then 1 else 0 end) = 1
     and (case when h.verify_status = 1 then d.third_party_verify_status else 1 end) = 1
     and (case when h.verify_status = 1 then d.order_complete_status else 1 end) = 1
-    and h.verify_code = #{verifyCode}
     and d.id in
     <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+  </update>
+
+  <select id="selectVerifiedPaymentOrderNoListByVerifyCode" resultType="string">
+    select d.order_no as orderNo
+    from pay_accounting_detail d
+    where d.verify_code = #{verifyCode}
+    and d.verify_status = 1
+    and d.detail_type = 1
+    group by d.order_no
+  </select>
+
+  <update id="updateAccountingDetailServiceFeeOfPaymentVerifyStatusByVerifyCode">
+    update pay_accounting_detail d, pay_verify_history h set
+      d.verify_status = h.verify_status,
+      d.verify_code = h.verify_code,
+      d.verify_time = h.operated_time,
+      d.operated_time = h.operated_time,
+      d.operated_by = h.operated_by,
+      d.operated_by_name = h.operated_by_name
+    where h.verify_code = #{verifyCode}
+    and d.verify_status = 0
+    and d.third_party_verify_status = 1
+    and d.order_complete_status = 1
+    and d.detail_type = 2
+    and d.order_no in
+    <foreach collection="orderNos" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
   </update>
 
   <delete id="deleteAccountingDetailByOrderNo">

@@ -187,7 +187,7 @@ public class NeteaseUtils {
     private String buildBodyJsonMsg(String msgContent) {
         ObjectNode bodyJson = JsonUtil.createObjectNode();
         bodyJson.put("type","txt");
-        bodyJson.put("msg",msgContent);
+        bodyJson.put("msg",msgContent == null ? "" : msgContent);
         return bodyJson.toString();
     }
 
@@ -200,11 +200,11 @@ public class NeteaseUtils {
     public static ObjectNode buildExtJsonMsg(NeteaseMsg neteaseMsg,String msgId){
         ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
         ObjectNode extJson = JsonUtil.createObjectNode();
-        extJson.put("title",neteaseMsg.getMsgContent());
+        extJson.put("title",neteaseMsg.getMsgContent() == null ? "" : neteaseMsg.getMsgContent());
         extJson.put("pagetype",String.valueOf(neteaseMsg.getPageType()));
         extJson.put("audiotype", String.valueOf(neteaseMsg.getAudioType()));
-        extJson.put("page", neteaseMsg.getTreeCode());
-        extJson.put("msgId",msgId);
+        extJson.put("page", neteaseMsg.getTreeCode() == null ? "" : neteaseMsg.getTreeCode());
+        extJson.put("msgId",msgId == null ? "" : msgId);
         if(neteaseMsg.getAudioType() == 1){
             //文字转语音
             extJson.put("transferaudio","1");
@@ -241,10 +241,10 @@ public class NeteaseUtils {
     public static String buildExtJsonMsg4Save(NeteaseMsg neteaseMsg){
         ObjectNode extJsonMsg =  JsonUtil.createObjectNode();
         ObjectNode extJson = JsonUtil.createObjectNode();
-        extJson.put("title",neteaseMsg.getMsgContent());
-        extJson.put("pagetype",neteaseMsg.getPageType());
-        extJson.put("audiotype", neteaseMsg.getAudioType());
-        extJson.put("page", neteaseMsg.getTreeCode());
+        extJson.put("title",neteaseMsg.getMsgContent() == null ? "" : neteaseMsg.getMsgContent());
+        extJson.put("pagetype",String.valueOf(neteaseMsg.getPageType()));
+        extJson.put("audiotype", String.valueOf(neteaseMsg.getAudioType()));
+        extJson.put("page", neteaseMsg.getTreeCode() == null ? "" : neteaseMsg.getTreeCode());
         if(neteaseMsg.getAudioType() == 1){
             //文字转语音
             extJson.put("transferaudio","1");

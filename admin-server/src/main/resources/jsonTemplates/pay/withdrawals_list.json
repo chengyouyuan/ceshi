@@ -141,7 +141,7 @@
         "inputModel": "select",
         "title": "提款状态",
         "options": [ {
-          "label": "申请中",
+          "label": "未处理",
           "value": "0"
         }, {
           "label": "处理中",

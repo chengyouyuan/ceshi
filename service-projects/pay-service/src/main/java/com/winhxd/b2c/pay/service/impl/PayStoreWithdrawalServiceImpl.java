@@ -545,7 +545,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 		//返回当前账户钱包里的可提现金额
 		  StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeid);
 		  if(storeBankroll != null){
-			  if(storeBankroll.getTotalMoeny().compareTo(BigDecimal.valueOf(0L)) == 0){
+			  if(storeBankroll.getPresentedMoney().compareTo(BigDecimal.valueOf(0L)) <= 0){
 				  LOGGER.info("账户没有可提现资金");
 				  throw new BusinessException(BusinessCode.CODE_610038);
 			  }

@@ -175,8 +175,8 @@
    
    <select id="getWithdrawals" parameterType="java.lang.String" resultMap="PayFinancialSummary">
        SELECT
-       SUM(pw.real_fee) AS realFee,
-       SUM(pw.cmms_amt) AS cmmsAmt
+       SUM(pw.total_fee) AS realFee,
+       SUM(pw.callback_cmms_amt) AS cmmsAmt
        FROM
        pay_finance_account_detail pfad
        LEFT JOIN pay_withdrawals pw ON pw.withdrawals_no = pfad.order_no

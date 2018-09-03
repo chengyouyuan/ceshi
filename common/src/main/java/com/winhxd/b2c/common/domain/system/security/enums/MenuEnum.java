@@ -14,17 +14,17 @@ public enum MenuEnum {
     PRODUCT_MANAGEMENT_SUBMIT("门店提报商品管理", PRODUCT_MANAGEMENT, "/template/module/store/store_submitProduct_list.json", PermissionEnum.PROD_MANAGEMENT_SUBMIT),
 
     /**
-     * 店铺管理
+     * 门店管理
      */
-    STORE_MANAGEMENT("店铺管理", PermissionEnum.STORE_MANAGEMENT),
-    STORE_MANAGEMENT_LIST("店铺管理", STORE_MANAGEMENT, "/template/module/store/store_user_list.json", PermissionEnum.STORE_MANAGEMENT),
-    STORE_MANAGEMENT_REGION("店铺测试区域管理", STORE_MANAGEMENT, "/template/module/store/store_region_list.json", PermissionEnum.STORE_MANAGEMENT_REGION),
+    STORE_MANAGEMENT("门店管理", PermissionEnum.STORE_MANAGEMENT),
+    STORE_MANAGEMENT_LIST("门店管理", STORE_MANAGEMENT, "/template/module/store/store_user_list.json", PermissionEnum.STORE_MANAGEMENT),
+    STORE_MANAGEMENT_REGION("门店测试区域管理", STORE_MANAGEMENT, "/template/module/store/store_region_list.json", PermissionEnum.STORE_MANAGEMENT_REGION),
 
     /**
      * 顾客管理
      */
     CUSTOMER_MANAGEMENT("顾客管理", PermissionEnum.CUSTOMER_MANAGEMENT),
-    CUSTOMER_MANAGEMENT_LIST("顾客管理", CUSTOMER_MANAGEMENT, "/template/module/store/store_user_list.json", PermissionEnum.CUSTOMER_MANAGEMENT),
+    CUSTOMER_MANAGEMENT_LIST("顾客管理", CUSTOMER_MANAGEMENT, "/template/module/customer/customer_list.json", PermissionEnum.CUSTOMER_MANAGEMENT),
 
 
     /**

@@ -175,7 +175,7 @@ public class NeteaseUtils {
         nvps.add(new BasicNameValuePair("payload", JsonUtil.toJSONString(extJsonMsg)));
         nvps.add(new BasicNameValuePair("option", buildOptionJson()));
         LOGGER.info("NeteaseUtils sendTxtMessage2Person   ^^^^^^^^^   发送云信消息 请求参数"+nvps.toString());
-        return  sendHttpClientPost(SEND_MSG_URL,nvps);
+        return sendHttpClientPost(SEND_MSG_URL,nvps);
     }
 
     private String buildOptionJson(){

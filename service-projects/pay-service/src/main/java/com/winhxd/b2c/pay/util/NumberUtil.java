@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class NumberUtil {
 
 	private static boolean isMatch(String regex, String orginal) {
-		if (orginal == null || orginal.trim().equals("")) {
+		if (orginal == null || "".equals(orginal.trim())) {
 			return false;
 		}
 		Pattern pattern = Pattern.compile(regex);

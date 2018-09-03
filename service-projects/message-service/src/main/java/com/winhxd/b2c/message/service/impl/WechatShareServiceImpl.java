@@ -159,11 +159,11 @@ public class WechatShareServiceImpl implements WechatShareService {
         params.put("width", width);
         params.put("auto_color", autoColor);
         params.put("is_hyaline",isHyaline);
-        Map<String,Object> line_color = new HashMap<>();
-        line_color.put("r", 0);
-        line_color.put("g", 0);
-        line_color.put("b", 0);
-        params.put("line_color", line_color);
+        Map<String,Object> lineColor = new HashMap<>();
+        lineColor.put("r", 0);
+        lineColor.put("g", 0);
+        lineColor.put("b", 0);
+        params.put("line_color", lineColor);
         CloseableHttpResponse response = null;
         try {
             httpPost.setEntity(new StringEntity(objectMapper.writeValueAsString(params), "UTF-8"));

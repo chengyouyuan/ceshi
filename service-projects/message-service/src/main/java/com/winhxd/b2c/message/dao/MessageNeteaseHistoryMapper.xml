@@ -231,6 +231,12 @@
                 #{msgId}
             </foreach>
         </if>
+        <if test="startTime != null and startTime != ''">
+            and msg_time > #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and #{endTime,jdbcType=TIMESTAMP} > msg_time
+        </if>
     </update>
     <insert id="insertHistories" parameterType="java.util.List">
         insert into message_netease_history (

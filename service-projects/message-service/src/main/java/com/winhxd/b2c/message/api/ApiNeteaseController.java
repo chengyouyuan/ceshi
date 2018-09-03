@@ -73,19 +73,20 @@ public class ApiNeteaseController {
 			@ApiResponse(code = BusinessCode.CODE_701101, message = "云信账户异常")
 	})
 	@RequestMapping(value = "netease/7010/v1/modifyNeteaseMsgReadStatus", method = RequestMethod.POST)
-	public ResponseResult<Void> modifyNeteaseMsgReadStatus(@RequestBody NeteaseMsgReadStatusCondition condition) {
+	public ResponseResult<Boolean> modifyNeteaseMsgReadStatus(@RequestBody NeteaseMsgReadStatusCondition condition) {
 		StoreUser storeUser = UserContext.getCurrentStoreUser();
 		if (storeUser == null || storeUser.getStoreCustomerId() == null) {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus当前用户登录的凭证无效 ");
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		if (condition == null || condition.getAllRead() == null) {
+		if (condition == null || condition.getAllRead() == null || condition.getTimeType() == null) {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}
 		Long storeId = storeUser.getBusinessId();
-		ResponseResult<Void> result = new ResponseResult<>();
-		neteaseService.modifyNeteaseMsgReadStatus(condition, storeId);
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		boolean modifySuccess = neteaseService.modifyNeteaseMsgReadStatus(condition, storeId);
+		result.setData(modifySuccess);
 		return result;
 	}
 }

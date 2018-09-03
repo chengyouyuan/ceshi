@@ -1,7 +1,6 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
-import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.RegexConstant;
 import com.winhxd.b2c.common.domain.PagedList;
@@ -13,7 +12,6 @@ import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
-import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
@@ -58,7 +56,6 @@ public class BackStageStoreController {
     })
     @PostMapping(value = "/1020/v1/findStoreList")
     @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
-    @MenuAssign(MenuEnum.STORE_MANAGEMENT_LIST)
     public ResponseResult<PagedList<BackStageStoreVO>> findStoreList(@RequestBody BackStageStoreInfoCondition storeInfoCondition) {
         logger.info("{} - 门店账户列表, 参数：storeInfoCondition={}", MODULE_NAME, storeInfoCondition.toString());
         ResponseResult<PagedList<BackStageStoreVO>> responseResult = backStageStoreServiceClient.findStoreList(storeInfoCondition);

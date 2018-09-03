@@ -1,5 +1,18 @@
 package com.winhxd.b2c.admin.module.store.controller;
 
+import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
+import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
+import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
+import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,23 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
-import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreSubmitProdCondition;
-import com.winhxd.b2c.common.domain.store.enums.StoreSubmitProductStatusEnum;
-import com.winhxd.b2c.common.domain.store.vo.BackStageStoreSubmitProdVO;
-import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
-import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
-import com.winhxd.b2c.common.feign.store.backstage.BackStageStoreServiceClient;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * 后台提报商品controller
@@ -47,7 +43,6 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1052/v1/findStoreSubmitProdList",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
-	@MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
 	public ResponseResult<PagedList<BackStageStoreSubmitProdVO>> findStoreSubmitProdList(
 			@RequestBody BackStageStoreSubmitProdCondition condition) {
 		ResponseResult<PagedList<BackStageStoreSubmitProdVO>> result=new ResponseResult<>();
@@ -62,7 +57,6 @@ public class StoreSubmitProductController {
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
 	@PostMapping(value = "/store/1053/v1/findStoreSubmitProd/{id}",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
-	@MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
 	public ResponseResult<BackStageStoreSubmitProdVO> findStoreSubmitProd(@PathVariable("id") Long id) {
 		BackStageStoreSubmitProdCondition condition=new BackStageStoreSubmitProdCondition();
 		condition.setId(id);
@@ -78,7 +72,6 @@ public class StoreSubmitProductController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
     @PostMapping(value = "/store/1066/v1/auditStoreSubmitProd",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission({PermissionEnum.PROD_MANAGEMENT_SUBMIT})
-    @MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
     public ResponseResult<Void> auditStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> result=new ResponseResult<>();
         result=backStageStoreServiceClient.modifyStoreSubmitProd(condition);
@@ -92,7 +85,6 @@ public class StoreSubmitProductController {
             @ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效") })
     @PostMapping(value = "/store/1067/v1/addProdStoreSubmitProd", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CheckPermission({ PermissionEnum.PROD_MANAGEMENT_SUBMIT })
-    @MenuAssign(MenuEnum.PRODUCT_MANAGEMENT_SUBMIT)
     public ResponseResult<Void> addProdStoreSubmitProd(@RequestBody BackStageStoreSubmitProdCondition condition) {
         ResponseResult<Void> result = new ResponseResult<>();
         condition.setProdStatus(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode());

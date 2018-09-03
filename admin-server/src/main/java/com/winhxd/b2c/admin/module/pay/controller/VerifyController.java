@@ -1,7 +1,6 @@
 package com.winhxd.b2c.admin.module.pay.controller;
 
 import com.winhxd.b2c.admin.common.security.annotation.CheckPermission;
-import com.winhxd.b2c.admin.common.security.annotation.MenuAssign;
 import com.winhxd.b2c.admin.utils.ExcelUtils;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.*;
@@ -9,7 +8,6 @@ import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDate;
 import com.winhxd.b2c.common.domain.pay.vo.DoubleDecimal;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
-import com.winhxd.b2c.common.domain.system.security.enums.MenuEnum;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.VerifyServiceClient;
@@ -38,7 +36,6 @@ public class VerifyController {
 
     @ApiOperation(value = "结算列表查询", notes = "按门店汇总")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
     @RequestMapping("/verifyList")
     @ResponseBody
     public ResponseResult<?> verifyList(@RequestBody VerifySummaryListCondition condition) {
@@ -67,7 +64,6 @@ public class VerifyController {
 
     @ApiOperation(value = "账单结算", notes = "按汇总结算")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_SUMMARY_LIST)
     @RequestMapping("/verifyBySummary")
     @ResponseBody
     public ResponseResult<?> verifyBySummary(@RequestBody List<VerifySummaryCondition.StoreAndDateVO> list) {
@@ -86,7 +82,6 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细列表查询", notes = "按明细显示")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailList")
     @ResponseBody
     public ResponseResult<?> accountingDetailList(@RequestBody VerifyDetailListCondition condition) {
@@ -105,7 +100,6 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细结算", notes = "按明细结算")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/verifyByDetail")
     @ResponseBody
     public ResponseResult<?> verifyByDetail(@RequestBody List<Map<String, Object>> list) {
@@ -132,7 +126,6 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细暂缓", notes = "暂缓后，需要执行恢复才可以继续结算")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailPause")
     @ResponseBody
     public ResponseResult<?> accountingDetailPause(@RequestBody List<Map<String, Object>> list) {
@@ -155,7 +148,6 @@ public class VerifyController {
 
     @ApiOperation(value = "费用明细暂缓恢复", notes = "重新加入到待结算账单中")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_DETAIL_LIST)
     @RequestMapping("/accountingDetailRestore")
     @ResponseBody
     public ResponseResult<?> accountingDetailRestore(@RequestBody List<Map<String, Object>> list) {
@@ -178,7 +170,6 @@ public class VerifyController {
 
     @ApiOperation(value = "门店提现申请列表查询")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
     @RequestMapping("/storeWithdrawList")
     @ResponseBody
     public ResponseResult<?> storeWithdrawList(@RequestBody PayWithdrawalsListCondition condition) {
@@ -219,7 +210,6 @@ public class VerifyController {
 
     @ApiOperation(value = "批准门店提现申请")
     @CheckPermission(PermissionEnum.VERIFY_MANAGEMENT_VERIFY)
-    @MenuAssign(MenuEnum.VERIFY_MANAGEMENT_WITHDRAWALS_LIST)
     @RequestMapping("/approveStoreWithdraw")
     @ResponseBody
     public ResponseResult<?> approveStoreWithdraw(@RequestBody List<Map<String, Object>> list) {

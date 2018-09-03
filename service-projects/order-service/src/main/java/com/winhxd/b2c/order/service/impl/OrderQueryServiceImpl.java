@@ -63,7 +63,9 @@ import com.winhxd.b2c.order.util.OrderUtil;
  */
 @Service
 public class OrderQueryServiceImpl implements OrderQueryService {
+
     private static final String DEFAULT_IP = "127.0.0.1";
+    
 
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
 
@@ -77,6 +79,11 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     
     @Autowired
     private PayServiceClient payServiceClient;
+    
+    /**
+     * 禁止使用信用卡支付
+     */
+    private static final String PAYMENT_NO_CREDIT = "no_credit";
 
     /**
      * 根据用户ID查询所有订单
@@ -408,6 +415,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 payPreOrderCondition.setPayType(orderInfoDetailVO.getPayType());
                 payPreOrderCondition.setSpbillCreateIp(spbillCreateIp);
                 payPreOrderCondition.setTotalAmount(orderInfoDetailVO.getRealPaymentMoney());
+                payPreOrderCondition.setLimitPay(PAYMENT_NO_CREDIT);
                 ResponseResult<OrderPayVO> responseResult = payServiceClient.orderPay(payPreOrderCondition);
                 if (responseResult == null || responseResult.getCode() != BusinessCode.CODE_OK || responseResult.getData() == null) {
                 	logger.info("----------------AAAAAAAAA--");

@@ -268,13 +268,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		record.setBillType(billType);
 		record.setErrCode(WXPayConstants.FAIL);
 		record.setErrCodeDes(returnMsg);
-		// 当日没有对账单视为下载成功
-		if (PayBillDownloadResponseDTO.NO_BILL_EXIST.equals(returnMsg)
-				|| PayBillDownloadResponseDTO.FINANCIAL_NO_BILL_EXIST.equals(returnMsg)) {
-			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
-		} else {
-			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
-		}
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -296,7 +290,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		record.setBillType(billType);
 		record.setErrCode(errCode);
 		record.setErrCodeDes(errCodeDes);
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		// 当日没有对账单视为下载成功
+		if (PayBillDownloadResponseDTO.NO_BILL_EXIST.equals(errCodeDes)
+				|| PayBillDownloadResponseDTO.FINANCIAL_NO_BILL_EXIST.equals(errCode)) {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		} else {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		}
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}

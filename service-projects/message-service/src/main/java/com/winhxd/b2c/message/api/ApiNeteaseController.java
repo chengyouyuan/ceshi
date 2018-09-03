@@ -79,7 +79,13 @@ public class ApiNeteaseController {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus当前用户登录的凭证无效 ");
 			throw new BusinessException(BusinessCode.CODE_1002);
 		}
-		if (condition == null || condition.getAllRead() == null || condition.getTimeType() == null) {
+		/**
+		 * 全部已读时必须要传 区分是当天还是历史的时间类型 timeType
+		 */
+		boolean paramsInvalid = condition == null ||
+								condition.getAllRead() == null ||
+								(condition.getAllRead() == 1 && condition.getTimeType() == null);
+		if (paramsInvalid) {
 			LOGGER.error("ApiNeteaseController -> modifyNeteaseMsgReadStatus请求参数无效 ");
 			throw new BusinessException(BusinessCode.CODE_1007);
 		}

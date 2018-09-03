@@ -22,7 +22,9 @@ import io.swagger.annotations.Api;
 @Api(tags = "ApiPay")
 @RestController
 public class PayController implements PayServiceClient {
+
 	
+
 	@Autowired
 	private PayService payService;
 	

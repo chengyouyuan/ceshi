@@ -44,7 +44,7 @@ import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
  * @param <E>
  */
 @Service
-public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
+public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 
     private static final Logger logger = LoggerFactory.getLogger(WXDownloadBillServiceImpl.class);
     
@@ -268,7 +268,13 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		record.setBillType(billType);
 		record.setErrCode(WXPayConstants.FAIL);
 		record.setErrCodeDes(returnMsg);
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		// 当日没有对账单视为下载成功
+		if (PayBillDownloadResponseDTO.NO_BILL_EXIST.equals(returnMsg)
+				|| PayBillDownloadResponseDTO.FINANCIAL_NO_BILL_EXIST.equals(returnMsg)) {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		} else {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		}
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}

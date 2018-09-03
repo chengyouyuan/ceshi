@@ -9,17 +9,35 @@ import java.util.List;
  * @author lixiaodong
  */
 public class MenuNode {
+
+    private String id;
+    private String menuName;
     private String path;
-    private String method;
-    private String name;
+    private String configKey;
     private List<MenuNode> children;
+    private PermissionEnum[] permissions;
+
+    private String method;
     @JsonIgnore
     private MenuNode parent;
-    private PermissionEnum[] permissions;
-    private String menu;
-
     @JsonIgnore
     private boolean hasAuthenticated;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
 
     public String getPath() {
         return path;
@@ -29,20 +47,12 @@ public class MenuNode {
         this.path = path;
     }
 
-    public String getMethod() {
-        return method;
+    public String getConfigKey() {
+        return configKey;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setConfigKey(String configKey) {
+        this.configKey = configKey;
     }
 
     public List<MenuNode> getChildren() {
@@ -61,14 +71,6 @@ public class MenuNode {
         this.permissions = permissions;
     }
 
-    public String getMenu() {
-        return menu;
-    }
-
-    public void setMenu(String menu) {
-        this.menu = menu;
-    }
-
     public MenuNode getParent() {
         return parent;
     }
@@ -85,4 +87,11 @@ public class MenuNode {
         this.hasAuthenticated = hasAuthenticated;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
 }

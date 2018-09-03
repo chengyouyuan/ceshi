@@ -7,7 +7,7 @@ package com.winhxd.b2c.common.domain.pay.enums;
  */
 public enum WithdrawalsStatusEnum {
 
-    APPLY((short) 0, "申请中"),
+    APPLY((short) 0, "未处理"),
 
     SUCCESS((short) 1, "提现成功"),
 

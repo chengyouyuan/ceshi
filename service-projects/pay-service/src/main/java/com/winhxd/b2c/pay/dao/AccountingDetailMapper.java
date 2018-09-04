@@ -105,6 +105,14 @@ public interface AccountingDetailMapper {
     int updateAccountingDetailCompletedByComplete(@Param("orderNo") String orderNo, @Param("recordedTime") Date recordedTime);
 
     /**
+     * 查询订单货款金额
+     *
+     * @param orderNo
+     * @return
+     */
+    BigDecimal selectAccountingDetailPaymentByOrderNo(@Param("orderNo") String orderNo);
+
+    /**
      * 查询订单支付手续费
      *
      * @param orderNo
@@ -122,12 +130,13 @@ public interface AccountingDetailMapper {
     int updateAccountingDetailServiceFeeByThirdParty(@Param("orderNo") String orderNo, @Param("detailMoney") BigDecimal detailMoney);
 
     /**
-     * 按订单更新费用明细与第三方平台结算状态为已结算
+     * 按订单更新费用明细与第三方平台结算状态
      *
      * @param orderNo
+     * @param thirdPartyVerifyStatus
      * @return
      */
-    int updateAccountingDetailVerifiedByThirdParty(@Param("orderNo") String orderNo);
+    int updateAccountingDetailByThirdParty(@Param("orderNo") String orderNo, @Param("thirdPartyVerifyStatus") Integer thirdPartyVerifyStatus);
 
     /**
      * 插入结算历史

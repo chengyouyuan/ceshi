@@ -72,7 +72,7 @@ public class AccountingDetail {
      */
     public enum ThirdPartyVerifyStatusEnum {
 
-        NOT_VERIFIED(0, "未结算"), VERIFIED(1, "已结算");
+        NOT_ACCEPT(-1, "对账异常"), NOT_VERIFIED(0, "未结算"), VERIFIED(1, "已结算");
 
         private int code;
         private String memo;

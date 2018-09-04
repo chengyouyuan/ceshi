@@ -141,11 +141,12 @@
 	<include refid="Base_Column_List" />
 	from pay_statement_download_record
 	where bill_date = #{billDate,jdbcType=DATE} and status = 0
-	and
-	NOT EXISTS
-	(SELECT * FROM pay_statement_download_record where bill_date = #{billDate,jdbcType=DATE}
-	and status = 1)
-	GROUP BY bill_date
+	and bill_type
+	NOT IN
+	(SELECT bill_type FROM pay_statement_download_record where bill_date = #{billDate,jdbcType=DATE}
+	and status = 1 GROUP BY bill_type)
+	GROUP BY bill_type
+
   </select>
   
 </mapper>

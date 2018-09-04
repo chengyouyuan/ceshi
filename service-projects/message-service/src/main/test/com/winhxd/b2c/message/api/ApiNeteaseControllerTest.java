@@ -29,7 +29,9 @@ public class ApiNeteaseControllerTest {
 	public void modifyNeteaseMsgReadStatus() {
 		NeteaseMsgReadStatusCondition condition = new NeteaseMsgReadStatusCondition();
 		condition.setAllRead((short) 1);
-		condition.setTimeType((short) 1);
-		boolean modifySuccess = neteaseService.modifyNeteaseMsgReadStatus(condition, 16L);
+		//Long[] ids = {89L, 108L};
+		condition.setTimeType((short)0);
+//		condition.setMsgIds(ids);
+		boolean modifySuccess = neteaseService.modifyNeteaseMsgReadStatus(condition, 17L);
 	}
 }

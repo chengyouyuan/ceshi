@@ -22,7 +22,7 @@ public class NeteaseMsgReadStatusCondition extends ApiCondition {
 	 * 多个消息 msgId
 	 */
 	@ApiModelProperty("消息ID列表")
-	private List<Long> msgIds;
+	private Long[] msgIds;
 
 	/**
 	 * 全部已读

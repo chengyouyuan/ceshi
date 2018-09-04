@@ -176,12 +176,17 @@ public class NeteaseServiceImpl implements NeteaseService {
 		}
 		accid = neteaseAccount.getAccid();
 		condition.setAccid(accid);
-		Date currentDate = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		if (TIME_TYPE_TODAY.equals(condition.getTimeType())) {
-			condition.setStartTime(formatter.format(currentDate));
-		} else {
-			condition.setEndTime(formatter.format(currentDate));
+		/**
+		 * 当全部已读的时候需要设置时间段
+		 */
+		if (condition.getAllRead() == 1) {
+			Date currentDate = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			if (TIME_TYPE_TODAY.equals(condition.getTimeType())) {
+				condition.setStartTime(formatter.format(currentDate));
+			} else {
+				condition.setEndTime(formatter.format(currentDate));
+			}
 		}
 		int updateCount = neteaseHistoryMapper.updateReadStatusByCondition(condition);
 		if (updateCount > 0) {

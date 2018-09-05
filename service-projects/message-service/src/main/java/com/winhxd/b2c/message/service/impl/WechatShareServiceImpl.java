@@ -155,7 +155,7 @@ public class WechatShareServiceImpl implements WechatShareService {
         httpPost.addHeader("Content-Type", "application/json");
         Map params = new HashMap<>();
         params.put("scene", "storeUserId=" + storeUserId);
-        params.put("path", pageUrl);
+        params.put("page", pageUrl);
         params.put("width", width);
         params.put("auto_color", autoColor);
         params.put("is_hyaline",isHyaline);

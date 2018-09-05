@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.condition.SysUserCondition;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserDTO;
 import com.winhxd.b2c.common.domain.system.user.dto.SysUserPasswordDTO;
+import com.winhxd.b2c.common.domain.system.user.enums.UserIdentityEnum;
 import com.winhxd.b2c.common.domain.system.user.enums.UserStatusEnum;
 import com.winhxd.b2c.common.domain.system.user.model.SysUser;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
@@ -213,12 +214,20 @@ public class UserController {
             @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
+            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
+            @ApiResponse(code = BusinessCode.CODE_1015, message = "操作被禁止"),
     })
     @GetMapping("/user/disabled/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_USER_DELETE})
     public ResponseResult<Void> disabled(@PathVariable("id") Long id){
         logger.info("{} - 根据主键禁用用户, 参数：id={}", MODULE_NAME, id);
+
+        SysUser sysUser = userServiceClient.get(id).getData();
+        if (null != sysUser.getIdentity() && sysUser.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
+            logger.warn("{} - 操作被禁止", MODULE_NAME);
+            return new ResponseResult(BusinessCode.CODE_1015);
+        }
+
         // 清除操作的用户缓存
         UserManager.delUserCache(id, cache);
         return userServiceClient.disabled(id);

@@ -28,6 +28,8 @@ public final class BusinessCode {
     public static final int CODE_1013 = 1013;
     /**token参数为空*/
     public static final int CODE_1014 = 1014;
+    /**操作被禁止*/
+    public static final int CODE_1015 = 1015;
     /**上传图片格式不正确**/
     public static final int CODE_100016 = 100016;
     /**上传图片是失败**/

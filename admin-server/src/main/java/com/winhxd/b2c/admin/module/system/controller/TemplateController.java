@@ -8,6 +8,7 @@ import com.winhxd.b2c.admin.utils.jsonTemplates.JsonTemplatesUtils;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
+import com.winhxd.b2c.common.domain.system.user.enums.UserIdentityEnum;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -74,28 +75,38 @@ public class TemplateController {
         //获取完整树结构菜单
         List<MenuNode> menuNodeList = MenuManager.getMenuNodeList();
 
+        //根据标记构建有权限的菜单树结构
+        List<MenuNode> newMenuNodeList = null;
+
         //获取当前用户
         UserInfo userInfo = UserManager.getCurrentUser();
 
-        //拿到用户的权限字符串列表
-        List<String> permissions = userInfo.getPermissions();
+        if (null != userInfo.getIdentity() && userInfo.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
+            // 超级管理员显示所有菜单
+            newMenuNodeList = menuNodeList;
+        } else {
 
-        //根据权限字符串列表组装权限枚举列表
-        List<PermissionEnum> permissionEnumList = new ArrayList<>(permissions.size());
-        for(String permission : permissions){
-            permissionEnumList.add(PermissionEnum.valueOf(permission));
+            //拿到用户的权限字符串列表
+            List<String> permissions = userInfo.getPermissions();
+
+            //根据权限字符串列表组装权限枚举列表
+            List<PermissionEnum> permissionEnumList = new ArrayList<>(permissions.size());
+            for(String permission : permissions){
+                permissionEnumList.add(PermissionEnum.valueOf(permission));
+            }
+            if(CollectionUtils.isEmpty(menuNodeList) || CollectionUtils.isEmpty(permissions)){
+                LOGGER.info("{} - 获取菜单失败, 参数：userInfo={}", MODULE_NAME, userInfo);
+                return new ResponseResult<>(BusinessCode.CODE_1003);
+            }
+
+            //检查有权限的菜单并做标记
+            checkPermission(menuNodeList,permissionEnumList);
+
+            //根据标记构建有权限的菜单树结构
+            newMenuNodeList = new ArrayList<>();
+            getNewMenuNode(menuNodeList, newMenuNodeList);
+
         }
-        if(CollectionUtils.isEmpty(menuNodeList) || CollectionUtils.isEmpty(permissions)){
-            LOGGER.info("{} - 获取菜单失败, 参数：userInfo={}", MODULE_NAME, userInfo);
-            return new ResponseResult<>(BusinessCode.CODE_1003);
-        }
-
-        //检查有权限的菜单并做标记
-        checkPermission(menuNodeList,permissionEnumList);
-
-        //根据标记构建有权限的菜单树结构
-        List<MenuNode> newMenuNodeList = new ArrayList<>();
-        getNewMenuNode(menuNodeList, newMenuNodeList);
 
         Map<String, Object> templateMap = new HashMap<>(5);
         templateMap.put("token", userInfo.getToken());

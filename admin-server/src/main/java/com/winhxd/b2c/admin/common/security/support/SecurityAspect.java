@@ -36,11 +36,9 @@ public class SecurityAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
-        if (null != userInfo.getIdentity()) {
-            if (userInfo.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
-                // 超级管理员不进行权限校验
-                return joinPoint.proceed();
-            }
+        if (null != userInfo.getIdentity() && userInfo.getIdentity().intValue() == UserIdentityEnum.SUPER_ADMIN.getIdentity()) {
+            // 超级管理员不进行权限校验
+            return joinPoint.proceed();
 
         }
         // 用户权限列表

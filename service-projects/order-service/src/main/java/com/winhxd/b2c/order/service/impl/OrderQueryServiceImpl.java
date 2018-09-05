@@ -50,6 +50,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
+import com.winhxd.b2c.common.util.IpUtil;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.OrderInfoMapper;
 import com.winhxd.b2c.order.service.OrderChangeLogService;
@@ -384,7 +385,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
             throw new BusinessException(BusinessCode.ORDER_NO_EMPTY);
         }
         if (StringUtils.isBlank(spbillCreateIp)) {
-            spbillCreateIp = DEFAULT_IP;
+            spbillCreateIp = StringUtils.isNotBlank(IpUtil.getIpAddr()) ? IpUtil.getIpAddr() : DEFAULT_IP;
         }
         if (customerId == null || StringUtils.isBlank(openid)) {
             throw new BusinessException(BusinessCode.CUSTOMER_ID_EMPTY);

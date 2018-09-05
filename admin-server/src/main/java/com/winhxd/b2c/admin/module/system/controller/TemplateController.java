@@ -76,7 +76,7 @@ public class TemplateController {
         List<MenuNode> menuNodeList = MenuManager.getMenuNodeList();
 
         //根据标记构建有权限的菜单树结构
-        List<MenuNode> newMenuNodeList = null;
+        List<MenuNode> newMenuNodeList;
 
         //获取当前用户
         UserInfo userInfo = UserManager.getCurrentUser();

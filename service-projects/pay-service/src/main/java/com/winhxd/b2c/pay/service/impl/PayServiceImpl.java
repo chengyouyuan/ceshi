@@ -147,26 +147,6 @@ public class PayServiceImpl implements PayService{
 		}
 		log+="--订单号--"+condition.getOutOrderNo();
 		logger.info(log+"--支付开始");
-		//判断支付成功之后更新订单信息
-		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
-			// 判断订单是否更新成功
-			try {
-				ResponseResult<Void> orderResult=	orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
-				if (orderResult==null) {
-					logger.info(log+"订单更新返回结果为空 ");
-					return false;
-				}
-				if (orderResult.getCode()==BusinessCode.CODE_OK||orderResult.getCode()==BusinessCode.ORDER_ALREADY_PAID) {
-					return true;
-				}
-			} catch (Exception e) {
-				logger.error(log+"订单更新失败",e);
-				return false;
-			}
-			
-			
-		}
-
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
 		payOrderPayment.setOrderTransactionNo(condition.getOutTradeNo());
@@ -191,8 +171,28 @@ public class PayServiceImpl implements PayService{
 		if (insertResult<1) {
 			//订单更新失败
 			logger.info(log+"--订单支付流更新失败");
-//			throw new BusinessException(BusinessCode.CODE_600301);
+//					throw new BusinessException(BusinessCode.CODE_600301);
 		}
+		//判断支付成功之后更新订单信息
+		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
+			// 判断订单是否更新成功
+			try {
+				ResponseResult<Void> orderResult=	orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
+				if (orderResult==null) {
+					logger.info(log+"订单更新返回结果为空 ");
+					return false;
+				}
+				if (orderResult.getCode()==BusinessCode.ORDER_ALREADY_PAID) {
+					return true;
+				}
+			} catch (Exception e) {
+				logger.error(log+"订单更新失败",e);
+				return false;
+			}
+			
+			
+		}
+
 		logger.info(log+"--支付结束");
 		return true;
 	}

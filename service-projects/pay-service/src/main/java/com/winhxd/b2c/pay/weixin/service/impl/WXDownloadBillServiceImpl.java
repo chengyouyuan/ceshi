@@ -54,6 +54,11 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
     private static final String DATA_SEPARATE = "`";
     
     /**
+     * 微信侧返回数据的分隔符
+     */
+    private static final String SEPARATE = ",`";
+    
+    /**
      * 对账单下载异常
      */
     private static final String ERROR_CODE_6155 = "6155";
@@ -336,64 +341,64 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 */
 	private PayStatement assemblePayStatement(String everyData, String billType, Date billDate) throws ParseException {
 		//把数据放入bean中
-		String[] everyDataArray = everyData.split(",");
+		String[] everyDataArray = everyData.split(SEPARATE, -1);
 		PayStatement statement = new PayStatement();
 		statement.setPayTime(sdf1.parse(replaceSeparate(everyDataArray[0])));
-		statement.setAppid(replaceSeparate(replaceSeparate(everyDataArray[1])));
-		statement.setMchId(replaceSeparate(everyDataArray[2]));
-		statement.setSubMchId(replaceSeparate(everyDataArray[3]));
-		statement.setDeviceId(replaceSeparate(everyDataArray[4]));
-		statement.setWxOrderNo(replaceSeparate(everyDataArray[5]));
-		statement.setOutOrderNo(replaceSeparate(everyDataArray[6]));
-		statement.setUserIdentity(replaceSeparate(everyDataArray[7]));
-		statement.setPayType(replaceSeparate(everyDataArray[8]));
-		statement.setPayStatus(replaceSeparate(everyDataArray[9]));
-		statement.setBankType(replaceSeparate(everyDataArray[10]));
-		statement.setCurrencyType(replaceSeparate(everyDataArray[11]));
-		statement.setTotalAmount(new BigDecimal(replaceSeparate(everyDataArray[12])));
-		statement.setDiscountAmount(new BigDecimal(replaceSeparate(everyDataArray[13])));
+		statement.setAppid(everyDataArray[1]);
+		statement.setMchId(everyDataArray[2]);
+		statement.setSubMchId(everyDataArray[3]);
+		statement.setDeviceId(everyDataArray[4]);
+		statement.setWxOrderNo(everyDataArray[5]);
+		statement.setOutOrderNo(everyDataArray[6]);
+		statement.setUserIdentity(everyDataArray[7]);
+		statement.setPayType(everyDataArray[8]);
+		statement.setPayStatus(everyDataArray[9]);
+		statement.setBankType(everyDataArray[10]);
+		statement.setCurrencyType(everyDataArray[11]);
+		statement.setTotalAmount(new BigDecimal(everyDataArray[12]));
+		statement.setDiscountAmount(new BigDecimal(everyDataArray[13]));
 		
 		statement.setBillDate(billDate);
 		
 		if (DownloadStatementCondition.StatementType.ALL.getText().equals(billType)) {
 			//微信退款单号,商户退款单号,退款金额,代金券或立减优惠退款金额，退款类型，退款状态,商品名称,商户数据包,手续费,费率
-			statement.setRefundWxOrderNo(replaceSeparate(everyDataArray[14]));
-			statement.setRefundOutOrderNo(replaceSeparate(everyDataArray[15]));
-			statement.setRefundAmount(new BigDecimal(replaceSeparate(everyDataArray[16])));
-			statement.setRefundDiscountAmount(new BigDecimal(replaceSeparate(everyDataArray[17])));
-			statement.setRefundType(replaceSeparate(everyDataArray[18]));
-			statement.setRefundStatus(replaceSeparate(everyDataArray[19]));
-			statement.setProdName(replaceSeparate(everyDataArray[20]));
-			statement.setMchData(replaceSeparate(everyDataArray[21]));
-			statement.setFee(new BigDecimal(replaceSeparate(everyDataArray[22])));
+			statement.setRefundWxOrderNo(everyDataArray[14]);
+			statement.setRefundOutOrderNo(everyDataArray[15]);
+			statement.setRefundAmount(new BigDecimal(everyDataArray[16]));
+			statement.setRefundDiscountAmount(new BigDecimal(everyDataArray[17]));
+			statement.setRefundType(everyDataArray[18]);
+			statement.setRefundStatus(everyDataArray[19]);
+			statement.setProdName(everyDataArray[20]);
+			statement.setMchData(everyDataArray[21]);
+			statement.setFee(new BigDecimal(everyDataArray[22]));
 			//费率保存时，去掉百分号，值除以100后存入
-			String rate = replaceSeparate(everyDataArray[23].replace("%", ""));
+			String rate = everyDataArray[23].replace("%", "");
 			statement.setRate(Float.valueOf(rate) / 100);
 			
 		} else if (DownloadStatementCondition.StatementType.SUCCESS.getText().equals(billType)) {
 			//商品名称,商户数据包,手续费,费率
-			statement.setProdName(replaceSeparate(everyDataArray[14]));
-			statement.setMchData(replaceSeparate(everyDataArray[15]));
-			statement.setFee(new BigDecimal(replaceSeparate(everyDataArray[16])));
+			statement.setProdName(everyDataArray[14]);
+			statement.setMchData(everyDataArray[15]);
+			statement.setFee(new BigDecimal(everyDataArray[16]));
 			//费率保存时，去掉百分号，值除以100后存入
-			String rate = replaceSeparate(everyDataArray[17].replace("%", ""));
+			String rate = everyDataArray[17].replace("%", "");
 			statement.setRate(Float.valueOf(rate) / 100);
 			
 		} else if (DownloadStatementCondition.StatementType.REFUND.getText().equals(billType)) {
 			//退款申请时间,退款成功时间,微信退款单号,商户退款单号,退款金额,代金券或立减优惠退款金额,退款类型,退款状态,商品名称,商户数据包,手续费,费率
-			statement.setrefundStartTime(sdf1.parse(replaceSeparate(everyDataArray[14])));
-			statement.setRefundSuccessTime(sdf1.parse(replaceSeparate(everyDataArray[15])));
-			statement.setRefundWxOrderNo(replaceSeparate(everyDataArray[16]));
-			statement.setRefundOutOrderNo(replaceSeparate(everyDataArray[17]));
-			statement.setRefundAmount(new BigDecimal(replaceSeparate(everyDataArray[18])));
-			statement.setRefundDiscountAmount(new BigDecimal(replaceSeparate(everyDataArray[19])));
-			statement.setRefundType(replaceSeparate(everyDataArray[20]));
-			statement.setRefundStatus(replaceSeparate(everyDataArray[21]));
-			statement.setProdName(replaceSeparate(everyDataArray[22]));
-			statement.setMchData(replaceSeparate(everyDataArray[23]));
-			statement.setFee(new BigDecimal(replaceSeparate(everyDataArray[24])));
+			statement.setrefundStartTime(sdf1.parse(everyDataArray[14]));
+			statement.setRefundSuccessTime(sdf1.parse(everyDataArray[15]));
+			statement.setRefundWxOrderNo(everyDataArray[16]);
+			statement.setRefundOutOrderNo(everyDataArray[17]);
+			statement.setRefundAmount(new BigDecimal(everyDataArray[18]));
+			statement.setRefundDiscountAmount(new BigDecimal(everyDataArray[19]));
+			statement.setRefundType(everyDataArray[20]);
+			statement.setRefundStatus(everyDataArray[21]);
+			statement.setProdName(everyDataArray[22]);
+			statement.setMchData(everyDataArray[23]);
+			statement.setFee(new BigDecimal(everyDataArray[24]));
 			//费率保存时，去掉百分号，值除以100后存入
-			String rate = replaceSeparate(everyDataArray[25].replace("%", ""));
+			String rate = everyDataArray[25].replace("%", "");
 			statement.setRate(Float.valueOf(rate) / 100);
 		}
 		return statement;
@@ -410,13 +415,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 */
 	private PayStatementCount assemblePayStatementCount(String everyData, Date billDate) {
 		//把数据放入bean中
-		String[] totalDataArray = everyData.split(",");
+		String[] totalDataArray = everyData.split(SEPARATE, -1);
 		PayStatementCount statementCount = new PayStatementCount();
 		statementCount.setPayNumCount(Integer.valueOf(replaceSeparate(totalDataArray[0])));
-		statementCount.setPayAmountCount(new BigDecimal(replaceSeparate(totalDataArray[1])));
-		statementCount.setRefundAmountCount(new BigDecimal(replaceSeparate(totalDataArray[2])));
-		statementCount.setRefundDiscountCount(new BigDecimal(replaceSeparate(totalDataArray[3])));
-		statementCount.setFeeCount(new BigDecimal(replaceSeparate(totalDataArray[4])));
+		statementCount.setPayAmountCount(new BigDecimal(totalDataArray[1]));
+		statementCount.setRefundAmountCount(new BigDecimal(totalDataArray[2]));
+		statementCount.setRefundDiscountCount(new BigDecimal(totalDataArray[3]));
+		statementCount.setFeeCount(new BigDecimal(totalDataArray[4]));
 		statementCount.setBillDate(billDate);
 		return statementCount;
 	}
@@ -559,21 +564,21 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			String accountType, Date billDate) throws ParseException {
 		//把数据放入bean中
 
-		String[] everyDataArray = everyData.split(",");
+		String[] everyDataArray = everyData.split(SEPARATE, -1);
 		
 		PayFinancialBill financialBill = new PayFinancialBill();
 		if (DownloadStatementCondition.SourceType.BASIC.getText().equals(accountType)) {
 			financialBill.setAccountingTime(sdf1.parse(replaceSeparate(everyDataArray[0])));
-			financialBill.setWxPayNo(replaceSeparate(everyDataArray[1]));
-			financialBill.setSwiftNo(replaceSeparate(everyDataArray[2]));
-			financialBill.setBusiName(replaceSeparate(everyDataArray[3]));
-			financialBill.setBusiType(replaceSeparate(everyDataArray[4]));
-			financialBill.setBudget(replaceSeparate(everyDataArray[5]));
-			financialBill.setBudgetAmount(new BigDecimal(replaceSeparate(everyDataArray[6])));
-			financialBill.setAccountBalance(new BigDecimal(replaceSeparate(everyDataArray[7])));
-			financialBill.setSubmitBy(replaceSeparate(everyDataArray[8]));
-			financialBill.setRemark(replaceSeparate(everyDataArray[9]));
-			financialBill.setBusiCredentialNo(replaceSeparate(everyDataArray[10]));
+			financialBill.setWxPayNo(everyDataArray[1]);
+			financialBill.setSwiftNo(everyDataArray[2]);
+			financialBill.setBusiName(everyDataArray[3]);
+			financialBill.setBusiType(everyDataArray[4]);
+			financialBill.setBudget(everyDataArray[5]);
+			financialBill.setBudgetAmount(new BigDecimal(everyDataArray[6]));
+			financialBill.setAccountBalance(new BigDecimal(everyDataArray[7]));
+			financialBill.setSubmitBy(everyDataArray[8]);
+			financialBill.setRemark(everyDataArray[9]);
+			financialBill.setBusiCredentialNo(everyDataArray[10]);
 			financialBill.setBillDate(billDate);
 			
 		} else if (DownloadStatementCondition.SourceType.OPERATION.getText().equals(accountType)) {
@@ -587,13 +592,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	private PayFinancialBillCount assemblePayFinancialBillCount(
 			String everyData, Date billDate) {
 		//把数据放入bean中
-		String[] totalDataArray = everyData.split(",");
+		String[] totalDataArray = everyData.split(SEPARATE, -1);
 		PayFinancialBillCount financialBillCount = new PayFinancialBillCount();
 		financialBillCount.setFinancialSwiftNumCount(new BigDecimal(replaceSeparate(totalDataArray[0])));
-		financialBillCount.setIncomeNumCount(new BigDecimal(replaceSeparate(totalDataArray[1])));
-		financialBillCount.setIncomeAmountCount(new BigDecimal(replaceSeparate(totalDataArray[2])));
-		financialBillCount.setExpenditureNumCount(new BigDecimal(replaceSeparate(totalDataArray[3])));
-		financialBillCount.setExpenditureAmountCount(new BigDecimal(replaceSeparate(totalDataArray[4])));
+		financialBillCount.setIncomeNumCount(new BigDecimal(totalDataArray[1]));
+		financialBillCount.setIncomeAmountCount(new BigDecimal(totalDataArray[2]));
+		financialBillCount.setExpenditureNumCount(new BigDecimal(totalDataArray[3]));
+		financialBillCount.setExpenditureAmountCount(new BigDecimal(totalDataArray[4]));
 		financialBillCount.setBillDate(billDate);
 		return financialBillCount;
 	}

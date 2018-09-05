@@ -55,7 +55,7 @@ public class PayBillDownloadResponseDTO extends ResponseBase{
 	/**
 	 * 账单不存在,请检查当前商户号在指定日期内是否有成功的交易。
 	 */
-	public static final String NO_BILL_EXIST = "NO Bill Exist";
+	public static final String NO_BILL_EXIST = "No Bill Exist";
 	/**
 	 * 账单未生成,请先检查当前商户号在指定日期内是否有成功的交易，如指定日期有交易则表示账单正在生成中，请在上午10点以后再下载。
 	 */

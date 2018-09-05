@@ -31,9 +31,9 @@ public class PayStatementDownloadRecord {
     private Date billDate;
     
     /**
-     * 与账单日期作比较，例：billDate1 < billDate
+     * 前X天失败的订单
      */
-    private Date billDate1;
+    private Integer failedDays;
 
 	/**
 	 * 错误代码
@@ -74,12 +74,12 @@ public class PayStatementDownloadRecord {
         this.billDate = billDate;
     }
 
-    public Date getBillDate1() {
-		return billDate1;
+    public Integer getFailedDays() {
+		return failedDays;
 	}
 
-	public void setBillDate1(Date billDate1) {
-		this.billDate1 = billDate1;
+	public void setFailedDays(Integer failedDays) {
+		this.failedDays = failedDays;
 	}
 
 	public String getErrCode() {

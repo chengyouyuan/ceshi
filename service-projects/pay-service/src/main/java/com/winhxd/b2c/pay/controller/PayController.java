@@ -15,6 +15,7 @@ import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 import com.winhxd.b2c.common.feign.pay.PayServiceClient;
+import com.winhxd.b2c.common.util.IpUtil;
 import com.winhxd.b2c.pay.service.PayService;
 
 import io.swagger.annotations.Api;
@@ -22,7 +23,9 @@ import io.swagger.annotations.Api;
 @Api(tags = "ApiPay")
 @RestController
 public class PayController implements PayServiceClient {
-	
+   
+
+
 	@Autowired
 	private PayService payService;
 	
@@ -35,6 +38,8 @@ public class PayController implements PayServiceClient {
 	 */
 	@Override
 	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition){
+		String ip=IpUtil.getIpAddr();
+		condition.setSpbillCreateIp(ip);
 		OrderPayVO vo = payService.unifiedOrder(condition);
 		ResponseResult<OrderPayVO> result=new ResponseResult<>();
 		result.setData(vo);

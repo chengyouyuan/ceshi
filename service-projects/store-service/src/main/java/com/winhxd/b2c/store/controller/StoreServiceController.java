@@ -152,6 +152,9 @@ public class StoreServiceController implements StoreServiceClient {
 				        spManage=spm;
 				    }
 				}
+				if (spManage == null) {
+                    continue;
+                }
 				spVO.setSkuCode(current.getSkuCode());
 				spVO.setSkuImage(current.getSkuImage());
 				spVO.setProdStatus(spManage.getProdStatus());

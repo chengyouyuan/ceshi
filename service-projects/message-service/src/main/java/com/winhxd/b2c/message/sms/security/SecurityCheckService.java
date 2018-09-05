@@ -195,12 +195,10 @@ public class SecurityCheckService {
 			String[] arrayMobile = mobile.split(SecurityConstant.SPLIT);// 手机号码数组
 
 			for (int i = 0; i < arrayMobile.length; i++) {
-
 				mobileKey = CacheName.MESSAGE_SMS_SEND_VERIFICATION_CODE + arrayMobile[i];
 				mobileInfo = cache.get(mobileKey);// 获取手机发送短信情况
 
 				if (StringUtils.isNotEmpty(mobileInfo)) {
-
 					mobileTimes = Integer.parseInt(mobileInfo.split(SecurityConstant.SPLIT)[0]);// 发送次数
 					lastDate = mobileInfo.split(SecurityConstant.SPLIT)[2];
 

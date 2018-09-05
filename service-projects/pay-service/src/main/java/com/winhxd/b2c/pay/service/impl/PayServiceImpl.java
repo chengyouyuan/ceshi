@@ -147,26 +147,6 @@ public class PayServiceImpl implements PayService{
 		}
 		log+="--订单号--"+condition.getOutOrderNo();
 		logger.info(log+"--支付开始");
-		//判断支付成功之后更新订单信息
-		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
-			// 判断订单是否更新成功
-			try {
-				ResponseResult<Void> orderResult=	orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
-				if (orderResult==null) {
-					logger.info(log+"订单更新返回结果为空 ");
-					return false;
-				}
-				if (orderResult.getCode()==BusinessCode.CODE_OK||orderResult.getCode()==BusinessCode.ORDER_ALREADY_PAID) {
-					return true;
-				}
-			} catch (Exception e) {
-				logger.error(log+"订单更新失败",e);
-				return false;
-			}
-			
-			
-		}
-
 		// 更新流水号
 		PayOrderPayment payOrderPayment=new PayOrderPayment();
 		payOrderPayment.setOrderTransactionNo(condition.getOutTradeNo());
@@ -191,8 +171,50 @@ public class PayServiceImpl implements PayService{
 		if (insertResult<1) {
 			//订单更新失败
 			logger.info(log+"--订单支付流更新失败");
-//			throw new BusinessException(BusinessCode.CODE_600301);
+//					throw new BusinessException(BusinessCode.CODE_600301);
 		}
+		//判断支付成功之后更新订单信息
+		if(PayStatusEnums.PAY_SUCCESS.getCode().equals(condition.getStatus())){
+			// 判断订单是否更新成功
+			try {
+				ResponseResult<Void> orderResult=	orderServiceClient.orderPaySuccessNotify(condition.getOutOrderNo(),condition.getOutTradeNo());
+				if (orderResult==null) {
+					logger.info(log+"订单更新返回结果为空 ");
+					return false;
+				}
+				if (orderResult.getCode()==BusinessCode.ORDER_ALREADY_PAID) {
+					return true;
+				}
+			}catch(BusinessException e){
+				if (BusinessCode.ORDER_ALREADY_PAID==e.getErrorCode()) {
+					return true;
+				}else {
+					logger.error(log+"BusinessException订单更新失败",e);
+					return false;
+				}
+			}catch (RuntimeException e) {
+				Throwable ex=e.getCause();
+				if (ex == null) {
+					logger.error(log+"Throwable订单更新失败",e);
+		            return false;
+		        }
+		        if (ex instanceof BusinessException) {
+		            BusinessException businessException=(BusinessException)ex;
+		            if (BusinessCode.ORDER_ALREADY_PAID==businessException.getErrorCode()) {
+						return true;
+					}else {
+						logger.error(log+"Throwable--BusinessException订单更新失败",e);
+						return false;
+					}
+		        }
+			} catch (Exception e) {
+				logger.error(log+"订单更新失败",e);
+				return false;
+			}
+			
+			
+		}
+
 		logger.info(log+"--支付结束");
 		return true;
 	}
@@ -476,10 +498,10 @@ public class PayServiceImpl implements PayService{
 			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
 			BigDecimal alreadyPresentedMoney=condition.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0):condition.getAlreadyPresentedMoney();
 			
-			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
-			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
-			alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
-			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
+//			presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
+//			presentedMoney=presentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedMoney;
+//			alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
+//			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 			
 			BigDecimal totalMoney=settlementSettledMoney;
 			if (storeBankroll==null) {

@@ -1,6 +1,8 @@
 package com.winhxd.b2c.common.domain.order.condition;
 
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: wangbaokuo
@@ -45,5 +48,8 @@ public class ReadyShopCarCondition extends ApiCondition {
 
     @ApiModelProperty(value = "设备号", required = false)
     private String deviceInfo;
+    
+    @ApiModelProperty(value = "购物车商品Info", required = true)
+    private List<ShopCarProdInfoVO> shopCarts;
 
 }

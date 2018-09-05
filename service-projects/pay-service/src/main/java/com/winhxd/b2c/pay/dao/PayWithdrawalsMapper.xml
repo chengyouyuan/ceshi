@@ -469,6 +469,7 @@
 	spbill_create_ip
     FROM pay_withdrawals
     where store_id = #{storeId}
+    order BY created DESC
   </select>
 
   <resultMap id="storeUserinfoVo" type="com.winhxd.b2c.common.domain.pay.vo.PayStoreUserInfoVO">

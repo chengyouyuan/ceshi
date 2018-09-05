@@ -44,7 +44,7 @@ import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
  * @param <E>
  */
 @Service
-public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
+public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 
     private static final Logger logger = LoggerFactory.getLogger(WXDownloadBillServiceImpl.class);
     
@@ -268,7 +268,12 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		record.setBillType(billType);
 		record.setErrCode(WXPayConstants.FAIL);
 		record.setErrCodeDes(returnMsg);
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		// 当日没有对账单视为下载成功
+		if (PayBillDownloadResponseDTO.NO_BILL_EXIST.equals(returnMsg)) {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		} else {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		}
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -290,7 +295,12 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 		record.setBillType(billType);
 		record.setErrCode(errCode);
 		record.setErrCodeDes(errCodeDes);
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		// 当日没有对账单视为下载成功
+		if (PayBillDownloadResponseDTO.FINANCIAL_NO_BILL_EXIST.equals(errCode)) {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		} else {
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		}
 		//保存记录表
 		payStatementDownloadRecordMapper.insertSelective(record);
 	}
@@ -603,13 +613,13 @@ public class WXDownloadBillServiceImpl<E> implements WXDownloadBillService {
 	@Override
 	public List<Date> findUnDownloadRecord(PayStatementDownloadRecord record) {
 		//获取前X天的时间List
-		List<Date> dateList = this.getBeforeXDateList(new Date(), 7);
+		List<Date> dateList = this.getBeforeXDateList(new Date(), record.getFailedDays());
 		List<Date> list = new ArrayList<Date>();
 		for (int i = 0; i < dateList.size(); i++) {
 			record.setBillDate(dateList.get(i));
-			PayStatementDownloadRecord selectUnDownloadRecord = payStatementDownloadRecordMapper.selectUnDownloadRecord(record);
-			if (selectUnDownloadRecord != null) {
-				list.add(selectUnDownloadRecord.getBillDate());
+			List<PayStatementDownloadRecord> recordList = payStatementDownloadRecordMapper.selectUnDownloadRecord(record);
+			if (CollectionUtils.isNotEmpty(recordList)) {
+				list.add(recordList.get(0).getBillDate());
 			}
 		}
 		return list;

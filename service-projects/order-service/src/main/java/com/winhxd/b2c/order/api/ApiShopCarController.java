@@ -1,5 +1,14 @@
 package com.winhxd.b2c.order.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.UserContext;
@@ -20,18 +29,11 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.ShopCarService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author: wangbaokuo
@@ -163,6 +165,7 @@ public class ApiShopCarController {
             @ApiResponse(code = BusinessCode.CODE_402001, message = "门店ID为空"),
             @ApiResponse(code = BusinessCode.CODE_402002, message = "自提地址为空"),
             @ApiResponse(code = BusinessCode.CODE_402004, message = "商品信息为空"),
+            @ApiResponse(code = BusinessCode.CODE_402012, message = "商品价格有变动"),
             @ApiResponse(code = BusinessCode.CODE_402006, message = "支付类型为空")
     })
     @RequestMapping(value = "/api-order/order/4032/v1/readyOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -231,6 +234,10 @@ public class ApiShopCarController {
         if (null == condition.getPayType()){
             logger.error("商品加购异常{}  参数payType为空");
             throw new BusinessException(BusinessCode.CODE_402006);
+        }
+        if (condition.getShopCarts() == null || condition.getShopCarts().isEmpty()) {
+            logger.error("商品加购异常{}  提交订单商品信息为空");
+            throw new BusinessException(BusinessCode.CODE_402004);
         }
     }
     /**

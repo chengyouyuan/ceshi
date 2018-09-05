@@ -13,6 +13,6 @@ wechat:
 
 #云信配置##
 netease:
-  appKey: 6fe22febac816a1607a55ed3cdabd03f
-  appSecret: 20d6bb5ecaad
+  appKey: 48656624b3544540adfd978b97c1d10d
+  appSecret: 7c1f0a13563e
   accidSuffix: _message_uat

@@ -208,6 +208,20 @@ public class VerifyService {
                         log.warn("没有查询到订单[{}]与支付平台对账信息", orderNo);
                         return 0;
                     }
+                    // 货款、手续费对账，如果不一致，标记订单费用结算异常
+                    boolean isAccept = true;
+                    // 货款
+                    BigDecimal totalAmount = payStatement.getTotalAmount();
+                    BigDecimal payment = accountingDetailMapper.selectAccountingDetailPaymentByOrderNo(orderNo);
+                    if (payment == null) {
+                        log.warn("没有查询到订单[{}]的货款信息", orderNo);
+                    } else {
+                        // 支付平台对账单中交易金额与用户实付金额不一致时，标记订单费用结算异常
+                        if (payment.compareTo(totalAmount) != 0) {
+                            log.warn("订单[{}]货款对账不一致", orderNo);
+                            isAccept = false;
+                        }
+                    }
                     // 订单手续费
                     BigDecimal serviceFee = payStatement.getFee();
                     if (BigDecimal.ZERO.compareTo(serviceFee) != 0) {
@@ -225,12 +239,24 @@ public class VerifyService {
                             } else {
                                 thirdPartyfee.setOrderCompleteStatus(0);
                             }
+                            thirdPartyfee.setThirdPartyVerifyStatus(AccountingDetail.ThirdPartyVerifyStatusEnum.NOT_ACCEPT.getCode());
                             accountingDetailMapper.insertAccountingDetailServiceFee(thirdPartyfee);
+                            log.warn("订单[{}]手续费对账不一致，平台计算手续费为0", orderNo);
+                            isAccept = false;
+                        } else {
+                            // 支付平台账单手续费与惠小店平台计算手续费不一致时，标记订单费用结算异常
+                            if (computeServiceFee.compareTo(serviceFee) == 0) {
+                                log.warn("订单[{}]手续费对账不一致", orderNo);
+                                isAccept = false;
+                            }
                         }
-                        accountingDetailMapper.updateAccountingDetailServiceFeeByThirdParty(
-                                orderNo, serviceFee.multiply(BigDecimal.valueOf(-1)));
                     }
-                    updateCount = accountingDetailMapper.updateAccountingDetailVerifiedByThirdParty(orderNo);
+                    if (isAccept) {
+                        updateCount = accountingDetailMapper.updateAccountingDetailByThirdParty(orderNo, AccountingDetail.ThirdPartyVerifyStatusEnum.VERIFIED.getCode());
+                    } else {
+                        accountingDetailMapper.updateAccountingDetailByThirdParty(orderNo, AccountingDetail.ThirdPartyVerifyStatusEnum.NOT_ACCEPT.getCode());
+                        log.warn("订单[{}]费用对账不一致，标记订单费用状态为[{}]", orderNo, AccountingDetail.ThirdPartyVerifyStatusEnum.NOT_ACCEPT.getMemo());
+                    }
                     if (updateCount > 0) {
                         log.info("订单[{}]与支付平台结算，手续费[{}]，共更新[{}]条费用明细", orderNo, serviceFee, updateCount);
                     }

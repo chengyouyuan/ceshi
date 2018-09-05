@@ -1440,7 +1440,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 String customerMsg = OrderNotifyMsg.ORDER_COMPLETE_MSG_4_CUSTOMER;
                 String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
                         "...";
-                String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+                String orderTotal = OrderUtil.genRealPayMoney(orderInfo.getOrderTotalMoney());
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
                 MiniTemplateData data1 = new MiniTemplateData();
@@ -1578,7 +1578,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
                 String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
                         "...";
-                String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+                String orderTotal = OrderUtil.genRealPayMoney(orderInfo.getOrderTotalMoney());
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
                 MiniTemplateData data1 = new MiniTemplateData();
@@ -1630,7 +1630,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderInfoDetailVO orderDetails = orderInfoMapper.selectOrderInfoByOrderNo(orderInfo.getOrderNo());
                 String prodTitles = orderDetails.getOrderItemVoList().size() == 1 ? orderDetails.getOrderItemVoList().get(0).getSkuDesc() : orderDetails.getOrderItemVoList().get(0).getSkuDesc() +
                         "...";
-                String orderTotal = "￥" + orderInfo.getOrderTotalMoney().toString();
+                String orderTotal = OrderUtil.genRealPayMoney(orderInfo.getOrderTotalMoney());
                 String openid = getCustomerUserInfoVO(orderInfo.getCustomerId()).getOpenid();
                 String page = null;
                 MiniTemplateData data1 = new MiniTemplateData();

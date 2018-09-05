@@ -68,6 +68,6 @@ public interface PayStatementDownloadRecordMapper {
 	 * @param record
 	 * @return
 	 */
-	PayStatementDownloadRecord selectUnDownloadRecord(
+	List<PayStatementDownloadRecord> selectUnDownloadRecord(
 			PayStatementDownloadRecord record);
 }

@@ -875,7 +875,7 @@ public class CouponServiceImpl implements CouponService {
         Integer count = 0;
         for (int i = 0; i < couponVOList.size(); i++){
             //优惠券是否可领取 0 已领取  1 可领取
-            if(couponVOList.get(i).getReceiveStatus().equals("1")){
+            if("1".equals(couponVOList.get(i).getReceiveStatus())){
                 count++;
             }
         }

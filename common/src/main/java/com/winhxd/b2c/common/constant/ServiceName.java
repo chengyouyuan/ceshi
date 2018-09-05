@@ -29,4 +29,7 @@ public final class ServiceName {
 
     /**支付服务*/
     public static final String PAY_SERVICE = "b2c-pay-service";
+    
+    /**逆向快递物流服务*/
+    public static final String HSC_PAY_SERVICE = "hsc-pay-service";
 }

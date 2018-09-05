@@ -82,7 +82,7 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO, Short status) {
 		String outTradeNo = payPreOrderCallbackDTO.getOutTradeNo();
 		PayBill bill = payBillMapper.selectByOutTradeNo(outTradeNo);
-		BeanUtils.copyProperties(bill, payPreOrderCallbackDTO);
+		BeanUtils.copyProperties(payPreOrderCallbackDTO, bill);
 		bill.setStatus(status);
 		bill.setUpdated(new Date());
 //		bill.setTransactionId(payPreOrderCallbackDTO.getTransactionId());

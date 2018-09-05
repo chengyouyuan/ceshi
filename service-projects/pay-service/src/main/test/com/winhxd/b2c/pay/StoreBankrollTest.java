@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -10,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
+import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.service.VerifyService;
 import com.winhxd.b2c.pay.weixin.base.config.PayConfig;
+import com.winhxd.b2c.pay.weixin.dao.PayBillMapper;
+import com.winhxd.b2c.pay.weixin.model.PayBill;
 
 /**
  * TransfersTest
@@ -40,30 +42,52 @@ public class StoreBankrollTest {
     private VerifyService verifyService;
     
     @Autowired
-	private OrderServiceClient orderServiceClient;
+    private PayBillMapper payBillMapper;
+    
+    @Autowired
+    private PayOrderPaymentMapper payOrderPaymentMapper;
 
     @Test
     public void changeStoreBandroll(){
     	UpdateStoreBankRollCondition condition=new UpdateStoreBankRollCondition();
-//    	condition.setStoreId(999L);
-//    	condition.setMoney(BigDecimal.valueOf(1));
-//    	condition.setType(3);
-//    	condition.setMoneyType((short)1);
-//    	condition.setOrderNo("C18082918971371312");
-//    	condition.setWithdrawalsNo("12345wer12");
-    	try {
-    		ResponseResult<Void> orderResult=orderServiceClient.orderPaySuccessNotify("aa","aa");
-    		System.out.println("111111111"+orderResult.getCode());
-		} catch (BusinessException e) {
-
-			System.out.println(e);
-		}catch (RuntimeException e) {
-			System.out.println("111111111"+((BusinessException)e.getCause()).getErrorCode());
-			System.out.println(e);
-		}catch (Exception e) {
-			e.printStackTrace();
+    	condition.setStoreId(999L);
+    	condition.setMoney(BigDecimal.valueOf(1));
+    	condition.setType(3);
+    	condition.setMoneyType((short)1);
+    	condition.setOrderNo("C18082918971371312");
+    	condition.setWithdrawalsNo("12345wer12");
+    	payService.updateStoreBankroll(condition);
+    }
+    
+    
+    @Test
+    public void updatePayment(){
+    	//测试时需要修改selectByOutOrderNo 的sql  去掉参数
+    	List<PayBill> list=payBillMapper.selectByOutOrderNo("");
+    	for (PayBill condition : list) {
+    		PayOrderPayment payOrderPayment=new PayOrderPayment();
+    		payOrderPayment.setOrderTransactionNo(condition.getOutTradeNo());
+    		payOrderPayment.setCallbackDate(new Date());
+    		payOrderPayment.setUpdated(new Date());
+    		payOrderPayment.setTimeEnd(condition.getTimeEnd());
+    		payOrderPayment.setCallbackStatus(condition.getStatus());
+    		payOrderPayment.setCallbackErrorCode(condition.getErrorCode());
+    		payOrderPayment.setCallbackErrorReason(condition.getErrorMessage());
+    		payOrderPayment.setTransactionId(condition.getTransactionId());
+    		payOrderPayment.setCallbackMoney(condition.getCallbackTotalAmount());
+    		payOrderPayment.setAppid(condition.getAppid());
+    		payOrderPayment.setAttach(condition.getAttach());
+    		payOrderPayment.setBody(condition.getBody());
+    		payOrderPayment.setDetail(condition.getDetail());
+    		payOrderPayment.setDeviceInfo(condition.getDeviceInfo());
+    		payOrderPayment.setMchId(condition.getMchId());
+    		payOrderPayment.setNonceStr(condition.getNonceStr());
+    		payOrderPayment.setTimeStart(condition.getTimeStart());
+    		payOrderPayment.setTimeExpire(condition.getTimeExpire());
+    		int insertResult=payOrderPaymentMapper.updateByOrderTransactionNoSelective(payOrderPayment);
 		}
     }
+    
     @Test
     public void verifyService(){
     	List<Long> ids=new ArrayList<>();

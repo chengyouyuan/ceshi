@@ -1,5 +1,23 @@
 package com.winhxd.b2c.order.service.impl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -8,7 +26,11 @@ import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.enums.CustomerUserEnum;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
-import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderItemCondition;
+import com.winhxd.b2c.common.domain.order.condition.ReadyShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCarCondition;
+import com.winhxd.b2c.common.domain.order.condition.ShopCartProductCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.model.ShopCar;
 import com.winhxd.b2c.common.domain.order.vo.ShopCarProdInfoVO;
@@ -31,18 +53,6 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author: wangbaokuo
@@ -191,7 +201,7 @@ public class ShopCarServiceImpl implements ShopCarService {
                     throw new BusinessException(BusinessCode.CODE_402011);
                 }
                 logger.info(SHOP_CAR + READY_ORDER + "{}-> 校验购物车商品状态执行...");
-                checkReadyShopCarProdInfo(shopCars, customerId);
+                checkReadyShopCarProdInfo(shopCars, customerId, condition.getShopCarts());
 
                 List<OrderItemCondition> items = new ArrayList<>(shopCars.size());
                 shopCars.stream().forEach( shopCar1 ->{
@@ -351,17 +361,42 @@ public class ShopCarServiceImpl implements ShopCarService {
         return skuCodes;
     }
 
-    private void checkReadyShopCarProdInfo(List<ShopCar> shopCars, Long customerId){
+    private void checkReadyShopCarProdInfo(List<ShopCar> shopCars, Long customerId,
+            List<ShopCarProdInfoVO> originalCartProds) {
         Long storeId = shopCars.get(0).getStoreId();
         List<String> skuCodes = getSkuCodeListByShopCar(shopCars);
         List<ShopCartProdVO> list = getShopCarProdVO(skuCodes, storeId, customerId);
         // 程序能走到这的一定是上架中的商品
-        if (shopCars.size() != list.size()) {
-            List<String> collect = list.stream().map(shopCarProd -> shopCarProd.getSkuCode()).collect(Collectors.toList());
-            shopCars.removeAll(collect);
+        if (shopCars.size() != list.size() || originalCartProds.size() != shopCars.size()) {
+            List<String> collect = list.stream().map(shopCarProd -> shopCarProd.getSkuCode())
+                    .collect(Collectors.toList());
+            skuCodes.removeAll(collect);
             shopCarMapper.deleteShopCarts(storeId, customerId, skuCodes);
             logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
             throw new BusinessException(BusinessCode.CODE_402011);
+        }
+        // 检查商品价格是否有变动
+        Map<String, ShopCarProdInfoVO> originalCartProdsMap = originalCartProds.stream()
+                .collect(Collectors.toMap(ShopCarProdInfoVO::getSkuCode, b -> b));
+        Map<String, ShopCartProdVO> newCartProdsMap = list.stream()
+                .collect(Collectors.toMap(ShopCartProdVO::getSkuCode, x -> x));
+        for (String skuCode : newCartProdsMap.keySet()) {
+            ShopCartProdVO newCartProdsTemp = newCartProdsMap.get(skuCode);
+            ShopCarProdInfoVO shopCarProdInfoVOTemp = originalCartProdsMap.get(skuCode);
+            if (newCartProdsTemp == null || shopCarProdInfoVOTemp == null) {
+                logger.error("ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常{} 商品信息不存在或被下架");
+                throw new BusinessException(BusinessCode.CODE_402011);
+            }
+            if ((newCartProdsTemp.getSellMoney() == null && shopCarProdInfoVOTemp.getPrice() != null)
+                    || (newCartProdsTemp.getSellMoney() != null && shopCarProdInfoVOTemp.getPrice() == null)
+                    || (newCartProdsTemp.getSellMoney() != null && shopCarProdInfoVOTemp.getPrice() != null
+                            && shopCarProdInfoVOTemp.getPrice().compareTo(newCartProdsTemp.getSellMoney()) != 0)) {
+                // 如果价格有变化，不允许提交订单，重新刷新后可下单
+                logger.error(
+                        "ShopCarServiceImpl{} -> checkReadyShopCarProdInfo异常 商品价格信息有变化：skuCode={}，newPrice={}，oldPrice={}",
+                        skuCode, newCartProdsTemp.getSellMoney(), shopCarProdInfoVOTemp.getPrice());
+                throw new BusinessException(BusinessCode.CODE_402012);
+            }
         }
     }
 

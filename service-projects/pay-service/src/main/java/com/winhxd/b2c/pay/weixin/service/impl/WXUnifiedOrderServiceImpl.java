@@ -82,25 +82,28 @@ public class WXUnifiedOrderServiceImpl implements WXUnifiedOrderService {
 	public PayBill updatePayBillByOutTradeNo(PayPreOrderCallbackDTO payPreOrderCallbackDTO, Short status) {
 		String outTradeNo = payPreOrderCallbackDTO.getOutTradeNo();
 		PayBill bill = payBillMapper.selectByOutTradeNo(outTradeNo);
+		BeanUtils.copyProperties(bill, payPreOrderCallbackDTO);
 		bill.setStatus(status);
-		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
-		bill.setBankType(payPreOrderCallbackDTO.getBankType());
-		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
+		bill.setUpdated(new Date());
+//		bill.setTransactionId(payPreOrderCallbackDTO.getTransactionId());
+//		bill.setIsSubscribe(payPreOrderCallbackDTO.getIsSubscribe());
+//		bill.setBankType(payPreOrderCallbackDTO.getBankType());
+//		bill.setSettlementTotalFee(payPreOrderCallbackDTO.getSettlementTotalFee());
 		if(payPreOrderCallbackDTO.getSettlementTotalFee() != null) {
 			bill.setSettlementTotalAmount(BigDecimal.valueOf(payPreOrderCallbackDTO.getSettlementTotalFee()).multiply(BigDecimal.valueOf(0.01)));
 		}
-		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
-		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
-		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
-		bill.setCouponFee(payPreOrderCallbackDTO.getCashFee());
-		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
-		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
-		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
+//		bill.setFeeType(payPreOrderCallbackDTO.getFeeType());
+//		bill.setCashFee(payPreOrderCallbackDTO.getCashFee());
+//		bill.setCashFeeType(payPreOrderCallbackDTO.getCashFeeType());
+//		bill.setCouponFee(payPreOrderCallbackDTO.getCouponFee());
+//		bill.setCouponCount(payPreOrderCallbackDTO.getCouponCount());
+//		bill.setTimeEnd(payPreOrderCallbackDTO.getTimeEnd());
+//		bill.setCallbackTotalFee(payPreOrderCallbackDTO.getTotalFee());
 		if(payPreOrderCallbackDTO.getTotalFee() != null) {
 			bill.setCallbackTotalAmount(BigDecimal.valueOf(payPreOrderCallbackDTO.getTotalFee()).multiply(BigDecimal.valueOf(0.01)));
 		}
-		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
-		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
+//		bill.setTradeState(payPreOrderCallbackDTO.getTradeState());
+//		bill.setTradeStateDesc(payPreOrderCallbackDTO.getTradeStateDesc());
 		
 		payBillMapper.updateByPrimaryKeySelective(bill);
 		

@@ -185,6 +185,28 @@ public class PayServiceImpl implements PayService{
 				if (orderResult.getCode()==BusinessCode.ORDER_ALREADY_PAID) {
 					return true;
 				}
+			}catch(BusinessException e){
+				if (BusinessCode.ORDER_ALREADY_PAID==e.getErrorCode()) {
+					return true;
+				}else {
+					logger.error(log+"BusinessException订单更新失败",e);
+					return false;
+				}
+			}catch (RuntimeException e) {
+				Throwable ex=e.getCause();
+				if (ex == null) {
+					logger.error(log+"Throwable订单更新失败",e);
+		            return false;
+		        }
+		        if (ex instanceof BusinessException) {
+		            BusinessException businessException=(BusinessException)ex;
+		            if (BusinessCode.ORDER_ALREADY_PAID==businessException.getErrorCode()) {
+						return true;
+					}else {
+						logger.error(log+"Throwable--BusinessException订单更新失败",e);
+						return false;
+					}
+		        }
 			} catch (Exception e) {
 				logger.error(log+"订单更新失败",e);
 				return false;

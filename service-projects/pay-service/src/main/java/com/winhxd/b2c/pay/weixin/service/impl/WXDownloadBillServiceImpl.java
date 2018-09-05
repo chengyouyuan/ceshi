@@ -613,7 +613,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	@Override
 	public List<Date> findUnDownloadRecord(PayStatementDownloadRecord record) {
 		//获取前X天的时间List
-		List<Date> dateList = this.getBeforeXDateList(new Date(), 7);
+		List<Date> dateList = this.getBeforeXDateList(new Date(), record.getFailedDays());
 		List<Date> list = new ArrayList<Date>();
 		for (int i = 0; i < dateList.size(); i++) {
 			record.setBillDate(dateList.get(i));

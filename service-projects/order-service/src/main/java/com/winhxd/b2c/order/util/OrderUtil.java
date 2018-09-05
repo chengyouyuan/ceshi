@@ -28,9 +28,9 @@ import com.winhxd.b2c.common.util.MessageSendUtils;
 
 /**
  * 订单Util工具类
+ *
  * @author wangbin
- * @date  2018年8月23日 下午12:54:48
- * @version 
+ * @date 2018年8月23日 下午12:54:48
  */
 public class OrderUtil {
 
@@ -43,11 +43,11 @@ public class OrderUtil {
     private OrderUtil() {
 
     }
-    
+
     public static final String getStoreOrderCustomerIdSetField(long storeId) {
         return CacheName.CACHE_KEY_STORE_ORDER_INTRADAY_SALESSUMMARY + storeId + ":customerIds";
     }
-    
+
 
     public static final String getStoreOrderSalesSummaryField(long storeId, Date startDateTime, Date endDateTime) {
         if (startDateTime == null) {
@@ -63,11 +63,12 @@ public class OrderUtil {
 
     /**
      * 获取手机号后四位，如果未空或者小于4位，返回空字符串
-     * @author wangbin
-     * @date  2018年8月21日 下午3:41:04
-     * @Description 
+     *
      * @param mobile
      * @return
+     * @author wangbin
+     * @date 2018年8月21日 下午3:41:04
+     * @Description
      */
     public static String getLast4Mobile(String mobile) {
         String mobileStr = "";
@@ -88,9 +89,9 @@ public class OrderUtil {
      * @param msgType
      * @param pageType
      * @param audioType
+     * @param categoryType
      * @return
      * @author wangbin
-     * @param categoryType 
      * @date 2018年8月16日 下午5:24:49
      * @Description
      */
@@ -124,9 +125,9 @@ public class OrderUtil {
 
     public static String genRealPayMoney(BigDecimal money) {
         if (ObjectUtils.allNotNull(money)) {
-           return "￥"+money.toString();
+            return "￥" + money.toString();
         } else {
-           return "--";
+            return "--";
         }
     }
 
@@ -144,8 +145,8 @@ public class OrderUtil {
                 result += "...";
             }
         }
-        if(StringUtils.isBlank(result)){
-            result="--";
+        if (StringUtils.isBlank(result)) {
+            result = "--";
         }
         return result;
     }
@@ -188,7 +189,8 @@ public class OrderUtil {
      * @author wangbin
      * @date 2018年8月16日 下午6:32:26
      */
-    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, short valuationType, String openid, String prodTitles, String orderTotal, String realPay, String pickupCode) {
+    public static void orderNeedPickupSendMsg2Customer(MessageSendUtils messageServiceClient, short valuationType, String openid, String prodTitles, String orderTotal, String realPay, String
+            pickupCode) {
         try {
             String customerMsg;
             short msgType2C;
@@ -199,7 +201,7 @@ public class OrderUtil {
                 msgType2C = MiniMsgTypeEnum.PAY_SUCCESS.getMsgType();
                 keyword4 = realPay;
                 emphasisKeyword = "keyword4.DATA";
-            }else {
+            } else {
                 customerMsg = MessageFormat.format(OrderNotifyMsg.WAIT_PICKUP_ORDER_NOTIFY_MSG_4_CUSTOMER, pickupCode);
                 msgType2C = MiniMsgTypeEnum.STORE_CONFIRM_ORDER.getMsgType();
                 keyword4 = pickupCode;
@@ -259,9 +261,7 @@ public class OrderUtil {
 
     /**
      * 订单需要门店确认用户信息通知
-     * @author wangbin
-     * @date  2018年8月22日 上午10:31:54
-     * @Description 
+     *
      * @param messageServiceClient
      * @param valuationType
      * @param openid
@@ -270,9 +270,12 @@ public class OrderUtil {
      * @param couponTitles
      * @param couponHxdMoney
      * @param realPay
+     * @author wangbin
+     * @date 2018年8月22日 上午10:31:54
+     * @Description
      */
     public static void orderNeedConfirmSendMsg2Customer(MessageSendUtils messageServiceClient, Short valuationType,
-            String openid, String prodTitles, String orderTotal, String couponTitles, String couponHxdMoney, String realPay) {
+                                                        String openid, String prodTitles, String orderTotal, String couponTitles, String couponHxdMoney, String realPay) {
         try {
             String customerMsg;
             short msgType2C;
@@ -281,7 +284,7 @@ public class OrderUtil {
             if (valuationType == ValuationTypeEnum.OFFLINE_VALUATION.getTypeCode()) {
                 logger.info("线下计价待门店确认无需发送消息给用户");
                 return;
-            }else {
+            } else {
                 customerMsg = OrderNotifyMsg.ONLINE_PRICE_ORDER_PAY_SUCCESS_NOTIFY_MSG_4_CUSTOMER;
                 msgType2C = MiniMsgTypeEnum.PAY_SUCCESS.getMsgType();
                 keyword4 = realPay;
@@ -311,14 +314,12 @@ public class OrderUtil {
             logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);
             logger.error("提醒用户订单待确认发送消息失败：", e);
         }
-        
+
     }
 
     /**
      * 订单待支付发送给门店信息
-     * @author wangbin
-     * @date  2018年8月22日 上午10:49:43
-     * @Description 
+     *
      * @param messageServiceClient
      * @param valuationType
      * @param openid
@@ -326,9 +327,12 @@ public class OrderUtil {
      * @param orderTotal
      * @param realPay
      * @param pickupCode
+     * @author wangbin
+     * @date 2018年8月22日 上午10:49:43
+     * @Description
      */
     public static void orderNeedPayMsg2Customer(MessageSendUtils messageServiceClient, Short valuationType,
-            String openid, String prodTitles, String orderTotal, String realPay, String pickupCode) {
+                                                String openid, String prodTitles, String orderTotal, String realPay, String pickupCode) {
         try {
             String customerMsg;
             short msgType2C;
@@ -354,6 +358,6 @@ public class OrderUtil {
             logger.error("提醒用户:openid={},订单待确认发送消息失败", openid);
             logger.error("提醒用户订单待确认发送消息失败：", e);
         }
-        
+
     }
 }

@@ -617,9 +617,9 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		List<Date> list = new ArrayList<Date>();
 		for (int i = 0; i < dateList.size(); i++) {
 			record.setBillDate(dateList.get(i));
-			PayStatementDownloadRecord selectUnDownloadRecord = payStatementDownloadRecordMapper.selectUnDownloadRecord(record);
-			if (selectUnDownloadRecord != null) {
-				list.add(selectUnDownloadRecord.getBillDate());
+			List<PayStatementDownloadRecord> recordList = payStatementDownloadRecordMapper.selectUnDownloadRecord(record);
+			if (CollectionUtils.isNotEmpty(recordList)) {
+				list.add(recordList.get(0).getBillDate());
 			}
 		}
 		return list;

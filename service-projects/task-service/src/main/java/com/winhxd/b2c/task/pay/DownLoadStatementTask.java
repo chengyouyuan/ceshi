@@ -78,7 +78,7 @@ public class DownLoadStatementTask {
      * @author yuluyuan
      * @date 2018年8月22日 下午4:27:54
      */
-    @Scheduled(cron = "0 0 10-23 * * ?")
+    @Scheduled(cron = "0 0 11-23 * * ?")
     public void reDownLoadStatement() {
 		logger.info("开始检查之前失败的账单，当前时间={}", sdf.format(new Date()));
     	try {

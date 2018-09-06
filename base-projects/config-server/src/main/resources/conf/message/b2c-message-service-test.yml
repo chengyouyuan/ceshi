@@ -3,6 +3,8 @@ wechat:
   share:
     appid: wxdbbbd5e596ab6f4d
     secret: 26a5cdcdf75b393d0fef50e0a4aa43ae
+  config:
+    userName: gh_e497736170ef
   miniProgram:
     msgTemplate:
       storeConfirmOrder: -uMG1WQxIOflPKaCGyRjsWWPP5RwxlKeFzeOGQtP-fg

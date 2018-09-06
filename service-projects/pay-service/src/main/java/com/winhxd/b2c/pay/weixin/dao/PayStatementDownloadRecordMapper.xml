@@ -118,9 +118,6 @@
       <if test="billDate != null">
        AND bill_date = #{billDate,jdbcType=DATE}
       </if>
-      <if test="billDate1 != null">
-       AND bill_date > #{billDate1,jdbcType=DATE}
-      </if>
       <if test="errCode != null">
        AND err_code = #{errCode,jdbcType=VARCHAR}
       </if>

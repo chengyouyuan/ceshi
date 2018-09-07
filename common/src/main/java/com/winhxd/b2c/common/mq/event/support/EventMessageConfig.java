@@ -112,8 +112,8 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
         ReflectionUtils.doWithMethods(targetClass, method -> {
             EventMessageListener annotation = AnnotationUtils.getAnnotation(method, EventMessageListener.class);
             if (annotation != null) {
-                EventType eventType = annotation.value().getEventType();
-                Class<?> eventObjectClass = eventType.getEventObjectClass();
+                EventTypeHandler eventHandler = annotation.value();
+                Class<?> eventObjectClass = eventHandler.getEventType().getEventObjectClass();
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes == null || parameterTypes.length != 2
                         || !String.class.isAssignableFrom(parameterTypes[0])
@@ -121,12 +121,12 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
                     throw new IllegalArgumentException("事件消息监听方法参数错误: " + targetClass.getCanonicalName() + "#" + method.getName());
                 }
                 SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer(connectionFactory);
-                listenerContainer.setQueueNames(annotation.value().toString());
+                listenerContainer.setQueueNames(eventHandler.toString());
                 listenerContainer.setAcknowledgeMode(AcknowledgeMode.AUTO);
                 if (StringUtils.isNotBlank(annotation.concurrency())) {
                     listenerContainer.setConcurrency(annotation.concurrency());
                 }
-                listenerContainer.setMessageListener(new EventChannelAwareMessageListener(bean, method, eventType, eventObjectClass));
+                listenerContainer.setMessageListener(new EventChannelAwareMessageListener(bean, method, eventHandler));
                 beanFactory.registerSingleton(beanName + "#" + method.getName(), listenerContainer);
             }
         }, ReflectionUtils.USER_DECLARED_METHODS);
@@ -136,14 +136,12 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
     private class EventChannelAwareMessageListener implements MessageListener {
         private Object bean;
         private Method method;
-        EventType eventType;
-        Class<?> eventObjectClass;
+        EventTypeHandler eventHandler;
 
-        public EventChannelAwareMessageListener(Object bean, Method method, EventType eventType, Class<?> eventObjectClass) {
+        public EventChannelAwareMessageListener(Object bean, Method method, EventTypeHandler eventHandler) {
             this.bean = bean;
             this.method = method;
-            this.eventType = eventType;
-            this.eventObjectClass = eventObjectClass;
+            this.eventHandler = eventHandler;
         }
 
         @Override
@@ -151,12 +149,12 @@ public class EventMessageConfig implements BeanPostProcessor, BeanFactoryAware {
             String body = new String(message.getBody(), StandardCharsets.UTF_8);
             EventMessageHelper.EventTransferObject<?> transferObject;
             try {
-                transferObject = EventMessageHelper.toTransferObject(body, eventObjectClass);
+                transferObject = EventMessageHelper.toTransferObject(body, eventHandler.getEventType().getEventObjectClass());
             } catch (IOException e) {
                 logger.error("事件消息接收异常: " + e.toString(), e);
                 throw new RuntimeException("事件消息接收异常: " + e.toString(), e);
             }
-            String key = CacheName.EVENT_MESSAGE_HANDLER + eventType.toString() + ":" + transferObject.getEventKey();
+            String key = CacheName.EVENT_MESSAGE_HANDLER + eventHandler.toString() + ":" + transferObject.getEventKey();
             logger.info("事件消息接收同步: {}", key);
             RedisLock redisLock = new RedisLock(cache, key, LOCK_EXPIRES);
             if (!redisLock.tryLock(LOCK_TRY_MS, TimeUnit.MILLISECONDS)) {

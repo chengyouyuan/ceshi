@@ -38,8 +38,6 @@ public class PayController implements PayServiceClient {
 	 */
 	@Override
 	public ResponseResult<OrderPayVO> orderPay(@RequestBody PayPreOrderCondition condition){
-		String ip=IpUtil.getIpAddr();
-		condition.setSpbillCreateIp(ip);
 		OrderPayVO vo = payService.unifiedOrder(condition);
 		ResponseResult<OrderPayVO> result=new ResponseResult<>();
 		result.setData(vo);

@@ -29,6 +29,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     private void initPermissionNodes() {
         permissionNodeList = new ArrayList<>();
         for (PermissionEnum permission : PermissionEnum.values()) {
+
+            // 登录状态不可选择
+            if(permission.equals(PermissionEnum.AUTHENTICATED)){
+                continue;
+            }
+
             SysPermission node = buildPermissionNode(permission);
             if (permission.getParent() == null) {
                 permissionNodeList.add(node);

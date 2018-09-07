@@ -757,8 +757,11 @@
     <update id="updateOrderStatusForApplyRefund">
         update order_info
         set order_status=#{orderStatus,jdbcType=SMALLINT},
-        updated = now(),
-        apply_refund_datetime = now()
+        updated = now()
+        <!--订单状态为待退款时更新申请退款时间，其他状态不更新-->
+        <if test="orderStatus == 33">
+            ,apply_refund_datetime = now()
+        </if>
         <!--订单状态为退款中（门店同意退款）时把提货码置为空-->
         <if test="orderStatus == 66">
             ,pickup_code=null

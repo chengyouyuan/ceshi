@@ -53,6 +53,7 @@ import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.order.dao.ShopCarMapper;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.service.ShopCarService;
+import com.winhxd.b2c.order.util.OrderUtil;
 
 /**
  * @author: wangbaokuo
@@ -306,6 +307,10 @@ public class ShopCarServiceImpl implements ShopCarService {
         if (null != sendId  && result.getOrderTotalMoney().compareTo(BigDecimal.ZERO) != 0) {
             BigDecimal discountAmount = getDiscountAmount(Arrays.asList(sendId), findCouponProduct(storeId, customerId), getStoreUserInfoVO(storeId).getPayType());
             result.setOrderTotalMoney(result.getOrderTotalMoney().subtract(discountAmount == null ? BigDecimal.ZERO : discountAmount));
+            if (result.getOrderTotalMoney().compareTo(BigDecimal.ZERO) == 0) {
+                //如果优惠完价格为0，则最低支付一分钱
+                result.setOrderTotalMoney(new BigDecimal(OrderUtil.ORDER_MINIMUN_PRICE));
+            }
             result.setDiscountAmount(result.getDiscountAmount().add(discountAmount));
         }
         if (result.getOrderTotalMoney().compareTo(BigDecimal.ZERO) == -1) {

@@ -275,13 +275,13 @@ public class CouponServiceImpl implements CouponService {
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))){
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(),couponVO.getTemplateId());
+                //获取某个优惠券用户领取的数量
+                int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
                 if(templateNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null) {
                         couponVO.setReceiveStatus("1");
                     }else{
-                        //获取某个优惠券用户领取的数量
-                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{
@@ -289,21 +289,25 @@ public class CouponServiceImpl implements CouponService {
                         }
                     }
                 }else{
-                    // 优惠券已领完
-                    couponVO.setReceiveStatus("0");
+                    if(userNum>0){
+                        couponVO.setReceiveStatus("0");
+                    }else{
+                        // 优惠券已领完
+                        couponVO.setReceiveStatus("2");
+                    }
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))){
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getId());
+                //获取某个优惠券用户领取的数量
+                int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
                 if(storeNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null){
                         couponVO.setReceiveStatus("1");
                     }else{
-                        //获取某个优惠券用户领取的数量
-                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{
@@ -311,8 +315,12 @@ public class CouponServiceImpl implements CouponService {
                         }
                     }
                 }else{
-                    // 当前门店优惠券已领完
-                    couponVO.setReceiveStatus("0");
+                    if(userNum>0){
+                        couponVO.setReceiveStatus("0");
+                    }else{
+                        // 当前门店优惠券已领完
+                        couponVO.setReceiveStatus("2");
+                    }
                 }
             }
             results.add(couponVO);
@@ -703,14 +711,14 @@ public class CouponServiceImpl implements CouponService {
                 //获取某个优惠券领取总数量
                 int templateNum = couponMapper.getCouponNumByTemplateId(couponVO.getActivityId(),couponVO.getTemplateId());
                 logger.info("findStoreCouponList-优惠券总数{},已领取了{}张",couponVO.getCouponNum(),templateNum);
+                //获取某个优惠券用户领取的数量
+                int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                 if(templateNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null) {
                         couponVO.setReceiveStatus("1");
                     }else{
-                        //获取某个优惠券用户领取的数量
-                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
-                        logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{
@@ -720,7 +728,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 优惠券已领完
-                    couponVO.setReceiveStatus("0");
+                    couponVO.setReceiveStatus("2");
                     continue;
                 }
             }
@@ -729,14 +737,14 @@ public class CouponServiceImpl implements CouponService {
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getId());
                 logger.info("findStoreCouponList-门店{}可领取{}张,已领取了{}张优惠券",storeUserInfo.getId(),couponVO.getCouponNum(),storeNum);
+                //获取某个优惠券用户领取的数量
+                int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
+                logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                 if(storeNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null){
                         couponVO.setReceiveStatus("1");
                     }else{
-                        //获取某个优惠券用户领取的数量
-                        int userNum = couponMapper.getCouponNumByCustomerId(couponVO.getActivityId(),couponVO.getTemplateId(),customerUser.getCustomerId());
-                        logger.info("findStoreCouponList-用户{}可领取{}张,已领取{}",customerUser.getCustomerId(),couponVO.getLimitNum(),userNum);
                         if(userNum < couponVO.getLimitNum()){
                             couponVO.setReceiveStatus("1");
                         }else{
@@ -746,7 +754,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                 }else{
                     // 当前门店优惠券已领完
-                    couponVO.setReceiveStatus("0");
+                    couponVO.setReceiveStatus("2");
                     continue;
                 }
             }

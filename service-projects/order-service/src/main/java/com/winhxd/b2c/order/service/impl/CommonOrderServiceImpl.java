@@ -92,6 +92,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class CommonOrderServiceImpl implements OrderService {
+
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
     private static final int MAX_ORDER_POSTFIX = 999999999;
@@ -1032,6 +1033,10 @@ public class CommonOrderServiceImpl implements OrderService {
         orderInfo.setRealPaymentMoney(orderInfo.getOrderTotalMoney().subtract(orderInfo.getCouponBrandMoney())
                 .subtract(orderInfo.getCouponHxdMoney()).subtract(orderInfo.getRandomReductionMoney())
                 .setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP));
+        if (orderInfo.getRealPaymentMoney().compareTo(BigDecimal.ZERO) == 0) {
+            //如果优惠完价格为0，则最低支付一分钱
+            orderInfo.setRealPaymentMoney(new BigDecimal(OrderUtil.ORDER_MINIMUN_PRICE));
+        }
         // 通知促销系统优惠券使用情况
         notifyPromotionSystem(orderInfo, couponIds);
     }
@@ -1051,7 +1056,6 @@ public class CommonOrderServiceImpl implements OrderService {
             logger.error("订单：{}优惠券优惠金额接口返回数据为空:couponDiscountAmount={}，创建订单异常！~", orderInfo.getOrderNo(), couponDiscountAmount);
             throw new BusinessException(BusinessCode.CODE_401009);
         }
-        couponDiscountAmount = couponDiscountAmount.setScale(ORDER_MONEY_SCALE, RoundingMode.HALF_UP);
         orderInfo.setCouponTitles(ret.getData().getCouponTitle());
         logger.error("订单：{}优惠券优惠金额接口返回数据为:couponDiscountAmount={},couponTitles={}", orderInfo.getOrderNo(), couponDiscountAmount, orderInfo.getCouponTitles());
         return couponDiscountAmount;
@@ -1178,7 +1182,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 OrderItem orderItem = iterator.next();
                 ProductSkuVO skuVO = skuInfoMap.get(orderItem.getSkuCode());
                 if (skuVO != null) {
-                    orderItem.setSkuDesc(skuVO.getSkuName() + "/" + skuVO.getSkuAttributeOption());
+                    orderItem.setSkuDesc(skuVO.getSkuName());
                     orderItem.setSkuUrl(skuVO.getSkuImage());
                 }
             }

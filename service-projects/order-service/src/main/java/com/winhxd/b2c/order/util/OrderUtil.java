@@ -38,6 +38,12 @@ public class OrderUtil {
      * 手机号截取长度
      */
     private static final int MOBILE_SUB_LENGTH = 4;
+    
+    /**
+     * 订单最小付款金额
+     */
+    public static final String ORDER_MINIMUN_PRICE = "0.01";
+    
     private static final Logger logger = LoggerFactory.getLogger(OrderUtil.class);
 
     private OrderUtil() {

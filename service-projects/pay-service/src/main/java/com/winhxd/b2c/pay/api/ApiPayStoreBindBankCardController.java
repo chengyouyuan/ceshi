@@ -145,11 +145,10 @@ public class ApiPayStoreBindBankCardController {
 		//生成验证码
 		if(modileVerifyCode != null){
 			LOGGER.info("验证码已生成");
-    		throw new BusinessException(BusinessCode.CODE_610018);
-		}else{
-			modileVerifyCode = GeneratePwd.generate4MobileCode();
-			LOGGER.info("验证码生成后:------"+modileVerifyCode);
-		} 
+			redisClusterCache.del(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId);
+		}
+		modileVerifyCode = GeneratePwd.generatePwd6Mobile();
+		LOGGER.info("验证码生成后:------"+modileVerifyCode);
 		// 将验证码存放到redis中
 		redisClusterCache.set(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId, modileVerifyCode);
 		redisClusterCache.expire(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId, MOBILEVERIFICATIONCODE);

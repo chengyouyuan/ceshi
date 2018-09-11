@@ -130,23 +130,11 @@ public class ApiPayStoreBindBankCardController {
 		String logTitle = "/api-pay/pay/6106/v1/verificationCode-获取短信验证码";
 		LOGGER.info("{}=--开始--{}", logTitle,condition);
 		ResponseResult<String> result = new ResponseResult<String>();
-		
-		/////////////////////////////// 测试数据
-//		StoreUser currentStoreUser = new StoreUser();
-//		currentStoreUser.setBusinessId(84l);
-//		Long businessId = currentStoreUser.getBusinessId();
-		/////////////////////////////////////////////
 		Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
 		// 验证当前传入的参数是否正确
 		vaildatVerifiCode(condition);
 		short withdrawType = condition.getWithdrawType();
 		String modileVerifyCode = redisClusterCache.get(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId);
-		LOGGER.info("验证码生成前:------"+modileVerifyCode);
-		//生成验证码
-		if(modileVerifyCode != null){
-			LOGGER.info("验证码已生成");
-			redisClusterCache.del(CacheName.PAY_VERIFICATION_CODE+withdrawType+"_"+businessId);
-		}
 		modileVerifyCode = GeneratePwd.generatePwd6Mobile();
 		LOGGER.info("验证码生成后:------"+modileVerifyCode);
 		// 将验证码存放到redis中

@@ -1,24 +1,19 @@
 package com.winhxd.b2c.pay.controller;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.model.OrderInfo;
+import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import com.winhxd.b2c.common.feign.pay.PayServiceClient;
+import com.winhxd.b2c.pay.service.PayService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.feign.pay.PayServiceClient;
-import com.winhxd.b2c.common.util.IpUtil;
-import com.winhxd.b2c.pay.service.PayService;
-
-import io.swagger.annotations.Api;
 
 @Api(tags = "ApiPay")
 @RestController
@@ -43,20 +38,26 @@ public class PayController implements PayServiceClient {
 		result.setData(vo);
 		return result;
 	}
-//	/**
-//	 * @author liuhanning
-//	 * @date  2018年8月20日 上午11:32:47
-//	 * @Description 退款
-//	 * @param condition
-//	 * @return
-//	 */
-//	@Override
-//	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition){
-//		PayRefundVO vo=payService.refundOrder(condition);
-//		ResponseResult<PayRefundVO> result=new ResponseResult<>();
-//		result.setData(vo);
-//		return result;
-//	}
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月20日 上午11:32:47
+	 * @Description 退款
+	 * @param condition
+	 * @return
+	 */
+	@Override
+	public ResponseResult<Void> orderRefund(@RequestBody PayRefundCondition condition){
+		String orderNo = condition.getOrderNo();
+		OrderInfo order = new OrderInfo();
+		order.setPaymentSerialNum(condition.getPaymentSerialNum());
+		order.setUpdatedBy(condition.getUpdatedBy());
+		order.setUpdatedByName(condition.getUpdatedByName());
+		order.setCancelReason(condition.getCancelReason());
+
+		payService.refundOrder(orderNo,order);
+		ResponseResult<Void> result=new ResponseResult<>();
+		return result;
+	}
 	@Override
 	public ResponseResult<Integer> transfersToChange(@RequestBody PayTransfersToWxChangeCondition condition){
 		int data=payService.transfersToChange(condition);

@@ -1,10 +1,10 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author lizhonghua
@@ -36,6 +36,48 @@ public class PayRefundCondition extends ApiCondition implements Serializable {
 
 	@ApiModelProperty("订单号")
 	private String orderNo;
+
+	@ApiModelProperty("支付成功流水号")
+	private String paymentSerialNum;
+
+	private Long updatedBy;
+
+	private String updatedByName;
+
+	@ApiModelProperty("取消原因")
+	private String cancelReason;
+
+	public String getPaymentSerialNum() {
+		return paymentSerialNum;
+	}
+
+	public void setPaymentSerialNum(String paymentSerialNum) {
+		this.paymentSerialNum = paymentSerialNum;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
+
+	public void setUpdatedByName(String updatedByName) {
+		this.updatedByName = updatedByName;
+	}
+
+	public String getCancelReason() {
+		return cancelReason;
+	}
+
+	public void setCancelReason(String cancelReason) {
+		this.cancelReason = cancelReason;
+	}
 
 	public String getOutTradeNo() {
 		return outTradeNo;

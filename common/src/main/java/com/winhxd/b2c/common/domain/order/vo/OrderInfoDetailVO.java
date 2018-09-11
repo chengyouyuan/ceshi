@@ -157,4 +157,6 @@ public class OrderInfoDetailVO implements Serializable {
     private String storeName;
     @ApiModelProperty(value = "用户头像")
     private String headImg;
+    @ApiModelProperty(value = "退款失败原因")
+    private String refundFailReason;
 }

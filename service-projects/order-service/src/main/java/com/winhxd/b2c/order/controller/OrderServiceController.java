@@ -1,12 +1,23 @@
 package com.winhxd.b2c.order.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
+import com.winhxd.b2c.order.service.impl.OrderQueryServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,28 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.order.OrderServiceClient;
-import com.winhxd.b2c.order.service.OrderQueryService;
-import com.winhxd.b2c.order.service.impl.OrderQueryServiceImpl;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @Api(tags = "OrderService")
@@ -220,6 +211,19 @@ public class OrderServiceController implements OrderServiceClient {
         ResponseResult<Void> result = new ResponseResult<>();
         orderService.orderPaySuccessNotify(orderNo, paymentSerialNum);
         logger.info("{} 后台订单支付成功通知回调结束:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
+        return result;
+    }
+
+    /**
+     * 退款失败状态更新
+     *
+     * @param condition 入参
+     * @return 是否成功
+     */
+    @Override
+    public ResponseResult<Boolean> updateOrderRefundFail(OrderRefundFailCondition condition) {
+        String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
+        ResponseResult<Boolean> result = new ResponseResult<>();
         return result;
     }
 }

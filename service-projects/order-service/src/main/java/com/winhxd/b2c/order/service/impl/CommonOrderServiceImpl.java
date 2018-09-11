@@ -324,13 +324,15 @@ public class CommonOrderServiceImpl implements OrderService {
         try {
             lock.lock();
             OrderInfo order = getOrderInfo(orderNo);
-            if (order.getOrderStatus() == OrderStatusEnum.REFUNDED.getStatusCode()) {
+            short orderStatus = order.getOrderStatus();
+            if (orderStatus == OrderStatusEnum.REFUNDED.getStatusCode()) {
                 logger.info("退款回调-订单状态为已退款-orderNo={}", orderNo);
                 callbackResult = true;
             } else {
-                //状态是待退款和已付款的订单才能把状态置为已退款
+                //状态是待退款、已付款、退款失败的订单才能把状态置为已退款
                 boolean isChecked = order.getPayStatus() == PayStatusEnum.PAID.getStatusCode() &&
-                        (order.getOrderStatus() == OrderStatusEnum.WAIT_REFUND.getStatusCode() || order.getOrderStatus() == OrderStatusEnum.REFUNDING.getStatusCode());
+                        (orderStatus == OrderStatusEnum.WAIT_REFUND.getStatusCode() || orderStatus == OrderStatusEnum.REFUNDING.getStatusCode()
+                                || orderStatus == OrderStatusEnum.REFUND_FAIL.getStatusCode());
                 if (isChecked) {
                     int result = this.orderInfoMapper.updateOrderStatusForRefundCallback(orderNo);
                     if (result != 1) {
@@ -788,6 +790,20 @@ public class CommonOrderServiceImpl implements OrderService {
                 orderInfo.getOrderStatus(), orderInfo.getCreatedBy(), orderInfo.getCreatedByName(),
                 "门店修改线下计价订单价格", MainPointEnum.NOT_MAIN);
         logger.info("门店修改订单价格结束：condition={}", condition);
+    }
+
+    /**
+     * 退款失败状态更新
+     *
+     * @param condition {@link OrderRefundFailCondition}
+     */
+    @Override
+    public boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition) {
+        if(condition.getCustomerFail()==null||StringUtils.isBlank(condition.getRefundErrorCode())
+                ||StringUtils.isBlank(condition.getRefundErrorDesc())||StringUtils.isBlank(condition.getOrderNo())){
+
+        }
+        return true;
     }
 
     @Override
@@ -1971,7 +1987,7 @@ public class CommonOrderServiceImpl implements OrderService {
             return;
         }
         logger.info("订单：{} 取消,更新门店：{}订单销售数据开始：", orderNo, order.getStoreId());
-        if (order.getPayStatus() == null || order.getPayStatus().shortValue() != PayStatusEnum.PAID.getStatusCode()) {
+        if (order.getPayStatus() == null || order.getPayStatus() != PayStatusEnum.PAID.getStatusCode()) {
             logger.info("订单：{} 取消,未支付,不更新门店：{}订单销售数据", orderNo, order.getStoreId());
             return;
         }

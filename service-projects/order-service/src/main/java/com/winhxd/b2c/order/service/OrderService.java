@@ -1,13 +1,6 @@
 package com.winhxd.b2c.order.service;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderCancelCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderConfirmCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPayInfoCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderPickupCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundStoreHandleCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
@@ -139,6 +132,7 @@ public interface OrderService {
     /**
      * 订单退款回调（状态置为已退款）
      * @param orderRefundCallbackCondition 入参
+     * @return 是否成功
      */
     boolean updateOrderRefundCallback(OrderRefundCallbackCondition orderRefundCallbackCondition);
 
@@ -150,4 +144,10 @@ public interface OrderService {
      */
     void orderPriceChange4Store(OrderConfirmCondition condition);
 
+    /**
+     * 退款失败状态更新
+     * @param condition {@link OrderRefundFailCondition}
+     * @return 是否成功
+     */
+    boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition);
 }

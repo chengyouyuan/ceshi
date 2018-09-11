@@ -26,30 +26,36 @@ public enum PayRefundErrorEnum {
      XML_FORMAT_ERROR XML格式错误 XML格式错误 请检查XML参数格式是否正确
      FREQUENCY_LIMITED  频率限制 2个月之前的订单申请退款有频率限制  该笔退款未受理，请降低频率后重试
      */
-    SYSTEMERROR("SYSTEMERROR","接口返回错误"),
-    BIZERR_NEED_RETRY("BIZERR_NEED_RETRY","退款业务流程错误，需要商户触发重试来解决"),
-    TRADE_OVERDUE("TRADE_OVERDUE","订单已经超过退款期限"),
-    ERROR("ERROR","业务错误"),
-    USER_ACCOUNT_ABNORMAL("USER_ACCOUNT_ABNORMAL","退款请求失败"),
-    INVALID_REQ_TOO_MUCH("INVALID_REQ_TOO_MUCH","无效请求过多"),
-    NOTENOUGH("NOTENOUGH","余额不足"),
-    INVALID_TRANSACTIONID("INVALID_TRANSACTIONID","无效transaction_id"),
-    PARAM_ERROR("PARAM_ERROR","参数错误"),
-    APPID_NOT_EXISTAPPID("APPID_NOT_EXISTAPPID","不存在"),
-    MCHID_NOT_EXISTMCHID("MCHID_NOT_EXISTMCHID","不存在"),
-    REQUIRE_POST_METHOD("REQUIRE_POST_METHOD","请使用post方法"),
-    SIGNERROR("SIGNERROR","签名错误"),
-    XML_FORMAT_ERROR("XML_FORMAT_ERROR","XML格式错误"),
-    FREQUENCY_LIMITED("FREQUENCY_LIMITED","频率限制");
+    SYSTEMERROR("SYSTEMERROR","接口返回错误",false),
+    BIZERR_NEED_RETRY("BIZERR_NEED_RETRY","退款业务流程错误，需要商户触发重试来解决",false),
+    TRADE_OVERDUE("TRADE_OVERDUE","订单超过退款时效：“您的申请超过退款时效，请联系客服4006870066。”",true),
+    ERROR("ERROR","业务错误",false),
+    USER_ACCOUNT_ABNORMAL("USER_ACCOUNT_ABNORMAL","用户账号注销：“您的微信钱包账户已注销无法退款，请联系客服4006870066。”",true),
+    INVALID_REQ_TOO_MUCH("INVALID_REQ_TOO_MUCH","无效请求过多",false),
+    NOTENOUGH("NOTENOUGH","余额不足",false),
+    INVALID_TRANSACTIONID("INVALID_TRANSACTIONID","无效transaction_id",false),
+    PARAM_ERROR("PARAM_ERROR","参数错误",false),
+    APPID_NOT_EXISTAPPID("APPID_NOT_EXISTAPPID","不存在",false),
+    MCHID_NOT_EXISTMCHID("MCHID_NOT_EXISTMCHID","不存在",false),
+    REQUIRE_POST_METHOD("REQUIRE_POST_METHOD","请使用post方法",false),
+    SIGNERROR("SIGNERROR","签名错误",false),
+    XML_FORMAT_ERROR("XML_FORMAT_ERROR","XML格式错误",false),
+    FREQUENCY_LIMITED("FREQUENCY_LIMITED","频率限制",false);
 
-    private PayRefundErrorEnum(String code, String name){
+    private PayRefundErrorEnum(String code, String name, boolean ableContinue){
         this.code = code;
         this.name = name;
+        this.ableContinue = ableContinue;
     }
 
     private String code;
 
     private String name;
+
+    /**
+     * 是否可以继续, 为true表示该申请为用户操作错误
+     */
+    private boolean ableContinue;
 
     public String getCode() {
         return code;
@@ -57,5 +63,18 @@ public enum PayRefundErrorEnum {
 
     public String getText() {
         return name;
+    }
+
+    public boolean getAbleContinue() {
+        return ableContinue;
+    }
+
+    public static PayRefundErrorEnum getErrorMsgByErrorCode(String code){
+        for (PayRefundErrorEnum oneOfEnum : PayRefundErrorEnum.values()){
+            if(code.equals(oneOfEnum.getCode())){
+                return oneOfEnum;
+            }
+        }
+        return null;
     }
 }

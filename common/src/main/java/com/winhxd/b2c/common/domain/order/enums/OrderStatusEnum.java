@@ -56,7 +56,7 @@ public enum OrderStatusEnum {
     /**
      * 退款失败
      */
-    REFUND_FAIL((short) 66, "退款失败", "退款失败");
+    REFUND_FAIL((short) 88, "退款失败", "退款失败");
 
 
     private short statusCode;

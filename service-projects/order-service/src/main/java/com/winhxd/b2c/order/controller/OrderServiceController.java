@@ -32,7 +32,7 @@ import java.util.List;
 @RestController
 @Api(tags = "OrderService")
 public class OrderServiceController implements OrderServiceClient {
-    
+
     @Autowired
     private OrderQueryService orderQueryService;
     @Resource
@@ -40,7 +40,7 @@ public class OrderServiceController implements OrderServiceClient {
 
 
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
-    
+
     @Override
     public ResponseResult<String> submitOrder(OrderCreateCondition orderCreateCondition) {
         throw new UnsupportedOperationException("订单创建不支持client调用");
@@ -137,10 +137,12 @@ public class OrderServiceController implements OrderServiceClient {
             if (storeOrderSalesSummaryCondition == null) {
                 throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
             }
-            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
+            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition
+                    .INTRADAY_ORDER_SALES_QUERY_TYPE) {
                 result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             } else if (storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.TIME_PERIOD_ORDER_SALES_QUERY_TYPE) {
-                result.setData(orderQueryService.calculateStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), storeOrderSalesSummaryCondition.getStartDateTime(), storeOrderSalesSummaryCondition.getEndDateTime()));
+                result.setData(orderQueryService.calculateStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), storeOrderSalesSummaryCondition.getStartDateTime(),
+                        storeOrderSalesSummaryCondition.getEndDateTime()));
             } else {
                 result.setData(orderQueryService.getStoreMonthOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             }
@@ -223,7 +225,11 @@ public class OrderServiceController implements OrderServiceClient {
     @Override
     public ResponseResult<Boolean> updateOrderRefundFail(OrderRefundFailCondition condition) {
         String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
+        logger.info("{} 退款失败状态更新开始:condition={}", logTitle, condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
+        boolean updateResult = orderService.updateOrderRefundFailStatus(condition);
+        result.setData(updateResult);
+        logger.info("{} 退款失败状态更新结束:orderNo={},result={}", logTitle, updateResult);
         return result;
     }
 }

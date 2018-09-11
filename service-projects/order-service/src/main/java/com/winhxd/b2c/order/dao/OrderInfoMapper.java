@@ -339,4 +339,13 @@ public interface OrderInfoMapper {
      * @return
      */
     StoreOrderSalesSummaryVO getStoreCompletedOrderCustomerNum(@Param("storeId") long storeId, @Param("startDateTime") Date startDateTime, @Param("endDateTime") Date endDateTime);
+
+    /**
+     * 更新订单状态为退款失败
+     * @param orderNo
+     * @param refundErrorCode
+     * @param customerFail 为true时更新订单状态，false时只更新退款失败原因
+     * @return
+     */
+    int updateOrderStatusForRefundFail(@Param("orderNo")String orderNo, @Param("refundErrorDesc")String refundErrorDesc, @Param("customerFail")Boolean customerFail);
 }

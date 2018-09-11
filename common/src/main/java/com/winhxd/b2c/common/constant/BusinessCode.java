@@ -372,6 +372,8 @@ public final class BusinessCode {
     public static final int CODE_4021002 = 4021002;
     /** 用户不存在*/
     public static final int CODE_4010001 = 4010001;
+    @ApiModelProperty("参数错误")
+    public static final int CODE_4061001 = 4061001;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int CODE_3020001 = 3020001;

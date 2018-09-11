@@ -819,6 +819,16 @@
             and store_id = #{storeId,jdbcType=BIGINT}
         </if>
     </update>
+    <update id="updateOrderStatusForRefundFail">
+        update order_info
+        <!--订单状态为退款失败-->
+        set
+        <if test="customerFail">
+            order_status=88,
+        </if>
+        updated = now(),refund_fail_reason = #{refundErrorDesc,jdbcType=VARCHAR}
+        where order_no=#{orderNo,jdbcType=VARCHAR}
+    </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>
         <result column="unreceivedNum" jdbcType="INTEGER" property="unreceivedNum"/>

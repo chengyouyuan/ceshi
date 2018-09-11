@@ -799,11 +799,41 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     public boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition) {
-        if(condition.getCustomerFail()==null||StringUtils.isBlank(condition.getRefundErrorCode())
-                ||StringUtils.isBlank(condition.getRefundErrorDesc())||StringUtils.isBlank(condition.getOrderNo())){
-
+        if (condition.getCustomerFail() == null || StringUtils.isBlank(condition.getRefundErrorCode())
+                || StringUtils.isBlank(condition.getRefundErrorDesc()) || StringUtils.isBlank(condition.getOrderNo())) {
+            throw new BusinessException(BusinessCode.CODE_4061001, MessageFormat.format("参数错误condition={0}", condition));
         }
-        return true;
+        boolean result = true;
+        String orderNo = condition.getOrderNo();
+        String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
+        Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
+        try {
+            lock.lock();
+            OrderInfo order = getOrderInfo(orderNo);
+            Short orderStatus = order.getOrderStatus();
+            if (orderStatus == OrderStatusEnum.REFUNDING.getStatusCode() && order.getPayStatus() == PayStatusEnum.PAID.getStatusCode()) {
+                //更新订单状态为退款失败
+                int num = this.orderInfoMapper.updateOrderStatusForRefundFail(orderNo, condition.getRefundErrorDesc(), condition.getCustomerFail());
+                if (num == 1) {
+                    //添加订单流水
+                    String oldJson = JsonUtil.toJSONString(order);
+                    order.setRefundFailReason(condition.getRefundErrorDesc());
+                    if (condition.getCustomerFail()) {
+                        order.setOrderStatus(OrderStatusEnum.REFUND_FAIL.getStatusCode());
+                    }
+                    String newJson = JsonUtil.toJSONString(order);
+                    orderChangeLogService.orderChange(order.getOrderNo(), oldJson, newJson, orderStatus,
+                            order.getOrderStatus(), order.getCreatedBy(), order.getCreatedByName(),
+                            "订单退款失败修改订单状态", MainPointEnum.MAIN);
+                }
+            } else {
+                result = false;
+                logger.info("退款失败状态更新-订单状态不匹配orderNo={},orderStatus", orderNo, order.getOrderStatus());
+            }
+        } finally {
+            lock.unlock();
+        }
+        return result;
     }
 
     @Override

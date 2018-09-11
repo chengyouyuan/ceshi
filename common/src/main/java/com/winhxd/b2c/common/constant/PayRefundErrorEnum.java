@@ -28,9 +28,9 @@ public enum PayRefundErrorEnum {
      */
     SYSTEMERROR("SYSTEMERROR","接口返回错误",false),
     BIZERR_NEED_RETRY("BIZERR_NEED_RETRY","退款业务流程错误，需要商户触发重试来解决",false),
-    TRADE_OVERDUE("TRADE_OVERDUE","订单超过退款时效：“您的申请超过退款时效，请联系客服4006870066。”",true),
+    TRADE_OVERDUE("TRADE_OVERDUE","订单已经超过退款期限",true),
     ERROR("ERROR","业务错误",false),
-    USER_ACCOUNT_ABNORMAL("USER_ACCOUNT_ABNORMAL","用户账号注销：“您的微信钱包账户已注销无法退款，请联系客服4006870066。”",true),
+    USER_ACCOUNT_ABNORMAL("USER_ACCOUNT_ABNORMAL","退款请求失败",true),
     INVALID_REQ_TOO_MUCH("INVALID_REQ_TOO_MUCH","无效请求过多",false),
     NOTENOUGH("NOTENOUGH","余额不足",false),
     INVALID_TRANSACTIONID("INVALID_TRANSACTIONID","无效transaction_id",false),

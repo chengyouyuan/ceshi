@@ -738,11 +738,12 @@ public class PayServiceImpl implements PayService{
 				payRefundPaymentMapper.insertSelective(payRefundPayment);
 			}
 			if(!vo.isStatus()){
-				PayRefundErrorEnum enum1=PayRefundErrorEnum.getErrorMsgByErrorCode(vo.getErrorCode());
+				logger.info(log+"--退款失败："+vo.getErrorCode()+vo.getErrorCodeDesc());
+				PayRefundErrorEnum payRefundErrorEnum=PayRefundErrorEnum.getErrorMsgByErrorCode(vo.getErrorCode());
 				String errorCodeDesc=vo.getErrorCodeDesc();
 				OrderRefundFailCondition orderRefundFailCondition = new OrderRefundFailCondition();
 				orderRefundFailCondition.setOrderNo(orderNo);
-				orderRefundFailCondition.setCustomerFail(enum1.getAbleContinue());
+				orderRefundFailCondition.setCustomerFail(payRefundErrorEnum.getAbleContinue());
 				orderRefundFailCondition.setRefundErrorCode(vo.getErrorCode());
 				orderRefundFailCondition.setRefundErrorDesc(errorCodeDesc);
 

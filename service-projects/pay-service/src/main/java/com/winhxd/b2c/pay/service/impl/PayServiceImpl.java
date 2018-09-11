@@ -755,18 +755,28 @@ public class PayServiceImpl implements PayService{
 			if (payRefundPayment==null) {
 				logger.info(log+"--插入退款流水");
 				payRefundPayment=new PayRefundPayment();
+				payRefundPayment.setCreated(new Date());
 				payRefundPayment.setOrderNo(orderNo);
 				payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundNo(orderNo);
 				payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
 				payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 				payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
-				payRefundPayment.setCreated(new Date());
-				payRefundPayment.setUpdated(new Date());
 				payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
-				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+			}	
+			payRefundPayment.setCallbackErrorCode(vo.getErrorCode());
+			payRefundPayment.setCallbackErrorMessage(vo.getErrorCodeDesc());
+			payRefundPayment.setUpdated(new Date());
+			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+			if(!vo.isStatus()){
+				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUND_FAIL.getCode());
+			}
+			if(payRefundPayment.getId()!=null){
+				payRefundPaymentMapper.updateByPrimaryKeySelective(payRefundPayment);
+			}else{
 				payRefundPaymentMapper.insertSelective(payRefundPayment);
-			}		
+			}
+					
 		}
 		logger.info(log+"--结束");
 	}

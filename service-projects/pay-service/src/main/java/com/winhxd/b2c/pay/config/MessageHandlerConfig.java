@@ -12,7 +12,7 @@ import com.winhxd.b2c.pay.service.impl.MessageSendMqHandler;
  * @description
  */
 @Configuration
-@Profile({"prod"})
+@Profile({"test","prod"})
 public class MessageHandlerConfig {
     @Bean
     public MessageSendMqHandler messageSendMqHandler(){

@@ -708,17 +708,17 @@ public class PayServiceImpl implements PayService{
 		payRefund.setCreatedByName(order.getUpdatedByName());
 		payRefund.setRefundDesc(order.getCancelReason());
 		PayRefundVO vo=refundService.refundOrder(payRefund);
-		if (vo!=null&&StringUtils.isNotBlank(vo.getOutRefundNo())) {
+		if (vo!=null) {
 			//插入退款流水信息
-			//判断是否有退款流水记录，有就不插入
-			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(vo.getOutRefundNo());
+			//判断是否有退款流水记录，有就不插入（退款流水号用的是交易流水号）
+			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(order.getPaymentSerialNum());
 			if (payRefundPayment==null) {
 				payRefundPayment=new PayRefundPayment();
 				payRefundPayment.setCreated(new Date());
 				payRefundPayment.setOrderNo(orderNo);
 				payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundNo(orderNo);
-				payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
+				payRefundPayment.setRefundTransactionNo(order.getPaymentSerialNum());
 				payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 				payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
 				payRefundPayment.setRefundDesc(payRefund.getRefundDesc());

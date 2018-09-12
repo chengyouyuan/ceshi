@@ -81,7 +81,7 @@
       },
       {
         "name": "timeEnd",
-        "title": "提款时间"
+        "title": "处理完成时间"
       },
       {
         "name": "auditStatusName",

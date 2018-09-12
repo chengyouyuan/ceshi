@@ -23,9 +23,26 @@
           "type": "reset",
           "path": ""
         }
+      },
+      {
+        "name": "手动退款",
+        "event": {
+          "type": "batch",
+          "ajaxType": "post",
+          "params": [ "orderNo"],
+          "path": "/order/artificialRefund/",
+          "confirm": {
+            "title": "提示",
+            "message": "确认重新退款吗"
+          }
+        }
       }
     ],
     "columns": [
+      {
+        "type": "selection",
+        "name": "id"
+      },
       {
         "name": "orderNo",
         "title": "订单编号"
@@ -77,6 +94,10 @@
       {
         "name": "orderStatusDesc",
         "title": "订单状态"
+      },
+      {
+        "name": "refundFailReason",
+        "title": "退款失败原因"
       },
       {
         "name": "",
@@ -211,6 +232,9 @@
         },{
         	"value": "33",
         	"label": "待退款"
+        },{
+          "value": "88",
+          "label": "退款失败"
         }]
       }
     ]

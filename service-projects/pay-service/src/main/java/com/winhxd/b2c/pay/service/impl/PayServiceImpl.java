@@ -657,7 +657,6 @@ public class PayServiceImpl implements PayService{
      * @param order
      * @return
      */
-	@Transactional
 	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
@@ -714,7 +713,6 @@ public class PayServiceImpl implements PayService{
 			//判断是否有退款流水记录，有就不插入
 			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(vo.getOutRefundNo());
 			if (payRefundPayment==null) {
-				logger.info(log+"--插入退款流水");
 				payRefundPayment=new PayRefundPayment();
 				payRefundPayment.setCreated(new Date());
 				payRefundPayment.setOrderNo(orderNo);
@@ -733,8 +731,10 @@ public class PayServiceImpl implements PayService{
 				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUND_FAIL.getCode());
 			}
 			if(payRefundPayment.getId()!=null){
+				logger.info(log+"--更新退款流水");
 				payRefundPaymentMapper.updateByPrimaryKeySelective(payRefundPayment);
 			}else{
+				logger.info(log+"--插入退款流水");
 				payRefundPaymentMapper.insertSelective(payRefundPayment);
 			}
 			if(!vo.isStatus()){

@@ -137,7 +137,7 @@
         "title": "下单用户",
         "placeholder": "请输入下单用户",
         "path": "",
-        "configKey": "/template/module/order/order_customer_list_win.json",
+        "configKey": "/template/module/customer/customer_list_win.json",
         "isHidden": false
       },
       {
@@ -146,7 +146,7 @@
         "title": "下单店铺",
         "placeholder": "请输入下单店铺",
         "path": "",
-        "configKey": "/template/module/order/order_store_list_win.json",
+        "configKey": "/template/module/store/store_list_win.json",
         "isHidden": false
       },
       {

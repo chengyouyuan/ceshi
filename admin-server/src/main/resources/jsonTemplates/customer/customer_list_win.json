@@ -3,8 +3,8 @@
     "ajaxType": "post",
     "path": "/customer/user/1065/v1/findAvabileCustomerPageInfo",
     "type": "report",
-    "id": "order_customer_list_win",
-    "code": "order_customer_list_win",
+    "id": "customer_list_win",
+    "code": "customer_list_win",
     "title": "用户选择",
     "buttons": [
       {

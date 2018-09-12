@@ -4,6 +4,8 @@ import com.winhxd.b2c.common.domain.order.condition.*;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
 
+import java.util.List;
+
 /**
  * 订单操作接口，提供包括下单、修改等操作
  *
@@ -150,4 +152,10 @@ public interface OrderService {
      * @return 是否成功
      */
     boolean updateOrderRefundFailStatus(OrderRefundFailCondition condition);
+    /**
+     * 手工退款
+     * @param orderNo
+     * @return
+     */
+    int artificialRefund(OrderArtificialRefundCondition condition);
 }

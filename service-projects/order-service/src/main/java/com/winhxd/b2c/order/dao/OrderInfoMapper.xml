@@ -566,7 +566,14 @@
             and pay_type = #{condition.payType,jdbcType=SMALLINT}
         </if>
         <if test="condition.orderStatus != null">
-            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+            <choose>
+                <when test="condition.orderStatus == 88">
+                    and (order_status = #{condition.orderStatus,jdbcType=SMALLINT} or refund_fail_reason is not null)
+                </when>
+                <otherwise>
+                    and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+                </otherwise>
+            </choose>
         </if>
         <if test="condition.regionCode != null and condition.regionCode.length > 0">
             and region_code in
@@ -798,7 +805,7 @@
     </update>
     <update id="updateOrderStatusForRefundCallback">
         update order_info
-        set order_status=77,pickup_code=null,refund_datetime = now()
+        set order_status=77,pickup_code=null,refund_datetime = now(),refund_fail_reason=null
         where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
     </update>
     <update id="updateOrderConfirmDate">
@@ -877,5 +884,13 @@
             and store_id=#{storeId,jdbcType=BIGINT}
         </if>
         <include refid="order_info_list_orderBy"></include>
+    </select>
+    <select id="getCheckOrderRefundFail" resultType="java.lang.Boolean">
+        select count(*) from order_info info
+        where (info.refund_fail_reason is null or info.refund_fail_reason='') and info.order_status <![CDATA[!= ]]> 33
+        AND info.order_no in
+        <foreach collection="orderNoList" item="orderNoList" open="(" close=")" separator=",">
+            #{orderNoList}
+        </foreach>
     </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.cache.RedisLock;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.constant.OrderNotifyMsg;
+import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
@@ -27,6 +28,7 @@ import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
@@ -61,6 +63,7 @@ import com.winhxd.b2c.order.service.OrderHandler;
 import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
 import com.winhxd.b2c.order.util.OrderUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -834,6 +837,55 @@ public class CommonOrderServiceImpl implements OrderService {
             lock.unlock();
         }
         return result;
+    }
+
+    /**
+     * 手工退款
+     *
+     * @param orderNo
+     * @return
+     */
+    @Override
+    public int artificialRefund(OrderArtificialRefundCondition condition) {
+        List<OrderArtificialRefundCondition.OrderList> orderNoList = condition.getList();
+        if (CollectionUtils.isEmpty(orderNoList)) {
+            throw new BusinessException(-1, "订单号不能为空");
+        }
+        AdminUser adminUser = UserContext.getCurrentAdminUser();
+        if (adminUser == null) {
+            throw new BusinessException(-1, "登录用户为空");
+        }
+        Set<String> orderNoSet = new HashSet<>(20);
+        for (OrderArtificialRefundCondition.OrderList orderList : orderNoList) {
+            orderNoSet.add(orderList.getOrderNo());
+        }
+        if (this.orderInfoMapper.getCheckOrderRefundFail(orderNoSet)) {
+            throw new BusinessException(-1, "选择的订单号不是退款失败的订单");
+        }
+
+        for (OrderArtificialRefundCondition.OrderList orderList : orderNoList) {
+            String orderNo = orderList.getOrderNo();
+            if (StringUtils.isBlank(orderNo)) {
+                throw new BusinessException(-1, "订单号不能为空");
+            }
+            OrderInfo order = this.getOrderInfo(orderNo);
+            if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || order.getOrderStatus() != OrderStatusEnum.REFUNDING.getStatusCode()) {
+                throw new BusinessException(-1, "订单状态不允许退款");
+            }
+            if (StringUtils.isBlank(order.getRefundFailReason())) {
+                throw new BusinessException(-1, "不是退款失败的订单");
+            }
+            PayRefundCondition refundCondition = new PayRefundCondition();
+            refundCondition.setCancelReason("后台人工退款");
+            refundCondition.setOrderNo(orderNo);
+            refundCondition.setPaymentSerialNum(order.getPaymentSerialNum());
+            refundCondition.setUpdatedBy(adminUser.getId());
+            refundCondition.setUpdatedByName(adminUser.getUsername());
+            logger.info("后台人工退款开始condition={}", condition);
+            this.payServiceClient.orderRefund(refundCondition);
+            logger.info("后台人工退款结束");
+        }
+        return 1;
     }
 
     @Override

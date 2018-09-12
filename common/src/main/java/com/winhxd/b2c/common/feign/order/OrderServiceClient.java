@@ -70,6 +70,14 @@ public interface OrderServiceClient {
      */
     @RequestMapping(value = "/order/4061/v1/updateOrderRefundFail/", method = RequestMethod.POST)
     ResponseResult<Boolean> updateOrderRefundFail(@RequestBody OrderRefundFailCondition condition);
+
+    /**
+     * 手工退款
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "/order/4062/v1/artificialRefund/", method = RequestMethod.POST)
+    ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition);
 }
 
 @Component
@@ -148,6 +156,17 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<Boolean> updateOrderRefundFail(OrderRefundFailCondition condition) {
         logger.error("OrderServiceFallback -> updateOrderRefundFail", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     * 手工退款
+     *
+     * @param orderNo@return
+     */
+    @Override
+    public ResponseResult<Integer> artificialRefund(OrderArtificialRefundCondition condition) {
+        logger.error("OrderServiceFallback -> artificialRefund", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

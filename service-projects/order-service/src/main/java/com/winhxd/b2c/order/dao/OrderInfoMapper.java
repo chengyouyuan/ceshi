@@ -1,14 +1,5 @@
 package com.winhxd.b2c.order.dao;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.ibatis.annotations.Param;
-
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
 import com.winhxd.b2c.common.domain.order.condition.OrderQuery4StoreCondition;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
@@ -16,6 +7,13 @@ import com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.order.support.annotation.OrderInfoConvertAnnotation;
+import org.apache.ibatis.annotations.Param;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 订单主表
@@ -348,4 +346,12 @@ public interface OrderInfoMapper {
      * @return
      */
     int updateOrderStatusForRefundFail(@Param("orderNo")String orderNo, @Param("refundErrorDesc")String refundErrorDesc, @Param("customerFail")Boolean customerFail);
+
+
+    /**
+     * 是否都是退款失败的记录
+     * @param orderNoList
+     * @return true 订单号中有不符合退款的记录 false 反之
+     */
+    boolean getCheckOrderRefundFail(@Param("orderNoList") Set<String> orderNoList);
 }

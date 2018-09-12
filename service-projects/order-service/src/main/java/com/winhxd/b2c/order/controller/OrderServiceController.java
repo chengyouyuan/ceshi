@@ -232,4 +232,21 @@ public class OrderServiceController implements OrderServiceClient {
         logger.info("{} 退款失败状态更新结束:orderNo={},result={}", logTitle, updateResult);
         return result;
     }
+
+    /**
+     * 手工退款
+     *
+     * @param list
+     * @return
+     */
+    @Override
+    public ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition) {
+        String logTitle = "/order/4061/v1/orderPaySuccessNotify/";
+        logger.info("{} 手工退款开始:orderNo={}", logTitle, condition);
+        ResponseResult<Integer> result = new ResponseResult<>();
+        int updateResult = orderService.artificialRefund(condition);
+        result.setData(updateResult);
+        logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
+        return null;
+    }
 }

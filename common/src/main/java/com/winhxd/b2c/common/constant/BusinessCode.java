@@ -374,6 +374,12 @@ public final class BusinessCode {
     public static final int CODE_4010001 = 4010001;
     @ApiModelProperty("参数错误")
     public static final int CODE_4061001 = 4061001;
+    @ApiModelProperty("请至少选择一条记录")
+    public static final int CODE_4062001 = 4062001;
+    @ApiModelProperty("选择的订单号不是退款失败的订单")
+    public static final int CODE_4062002 = 4062002;
+    @ApiModelProperty("订单状态不允许退款")
+    public static final int CODE_4062003 = 4062003;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int CODE_3020001 = 3020001;

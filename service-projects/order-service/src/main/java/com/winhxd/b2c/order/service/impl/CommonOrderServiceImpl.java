@@ -849,31 +849,31 @@ public class CommonOrderServiceImpl implements OrderService {
     public int artificialRefund(OrderArtificialRefundCondition condition) {
         List<OrderArtificialRefundCondition.OrderList> orderNoList = condition.getList();
         if (CollectionUtils.isEmpty(orderNoList)) {
-            throw new BusinessException(-1, "订单号不能为空");
+            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "订单号不能为空");
         }
         AdminUser adminUser = UserContext.getCurrentAdminUser();
         if (adminUser == null) {
-            throw new BusinessException(-1, "登录用户为空");
+            throw new BusinessException(BusinessCode.CODE_1002, "登录用户为空");
         }
-        Set<String> orderNoSet = new HashSet<>(20);
+        Set<String> orderNoSet = new HashSet<>();
         for (OrderArtificialRefundCondition.OrderList orderList : orderNoList) {
             orderNoSet.add(orderList.getOrderNo());
         }
         if (this.orderInfoMapper.getCheckOrderRefundFail(orderNoSet)) {
-            throw new BusinessException(-1, "选择的订单号不是退款失败的订单");
+            throw new BusinessException(BusinessCode.CODE_4062002, MessageFormat.format("选择的订单号不是退款失败的订单orderNoList={0}", orderNoSet));
         }
 
         for (OrderArtificialRefundCondition.OrderList orderList : orderNoList) {
             String orderNo = orderList.getOrderNo();
             if (StringUtils.isBlank(orderNo)) {
-                throw new BusinessException(-1, "订单号不能为空");
+                throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, MessageFormat.format("订单号不能为空orderNo={0}", orderNo));
             }
             OrderInfo order = this.getOrderInfo(orderNo);
             if (order.getPayStatus() != PayStatusEnum.PAID.getStatusCode() || order.getOrderStatus() != OrderStatusEnum.REFUNDING.getStatusCode()) {
-                throw new BusinessException(-1, "订单状态不允许退款");
+                throw new BusinessException(BusinessCode.CODE_4062003, MessageFormat.format("订单状态不允许退款orderNo={0}", orderNo));
             }
             if (StringUtils.isBlank(order.getRefundFailReason())) {
-                throw new BusinessException(-1, "不是退款失败的订单");
+                throw new BusinessException(BusinessCode.CODE_4062003, MessageFormat.format("不是退款失败的订单orderNo={0}", orderNo));
             }
             PayRefundCondition refundCondition = new PayRefundCondition();
             refundCondition.setCancelReason("后台人工退款");

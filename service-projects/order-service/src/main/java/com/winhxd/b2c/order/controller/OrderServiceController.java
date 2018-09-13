@@ -247,6 +247,6 @@ public class OrderServiceController implements OrderServiceClient {
         int updateResult = orderService.artificialRefund(condition);
         result.setData(updateResult);
         logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
-        return null;
+        return result;
     }
 }

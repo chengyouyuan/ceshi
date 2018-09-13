@@ -169,10 +169,13 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 	public void validWithdrawCount(Long storeId){
 		int maxcount = payWithDrawalConfig.getMaxCount();
 		List<PayWithdrawals> withdrawInfo = payWithdrawalsMapper.selectWithdrawCount(storeId);
-		if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
-			LOGGER.info("您本日提现已达3次");
-			throw new BusinessException(BusinessCode.CODE_610902);
+		if (maxcount!=0) {//等于0不限制提现次数
+			if(withdrawInfo != null && withdrawInfo.size() >= maxcount){
+				LOGGER.info("您本日提现已达"+maxcount+"次");
+				throw new BusinessException(BusinessCode.CODE_610902);
+			}
 		}
+		
 	}
 
 	@Override

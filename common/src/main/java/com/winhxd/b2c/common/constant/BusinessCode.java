@@ -261,6 +261,8 @@ public final class BusinessCode {
     public static final int CODE_503001 = 503001;
     /** 优惠券活动添加时时间冲突*/
     public static final int CODE_503002 = 503002;
+    /** 优惠券活动结束时间不能晚于优惠券结束时间*/
+    public static final int CODE_503003 = 503003;
 
     /** 优惠券活动更新失败*/
     public static final int CODE_503201 = 503201;

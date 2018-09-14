@@ -30,13 +30,14 @@
     <result column="fee" jdbcType="DECIMAL" property="fee" />
     <result column="rate" jdbcType="REAL" property="rate" />
     <result column="bill_date" jdbcType="DATE" property="billDate" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
     <result column="statement_count_id" jdbcType="BIGINT" property="statementCountId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, pay_time, appid, mch_id, sub_mch_id, device_id, wx_order_no, out_order_no, user_identity, 
     pay_type, pay_status, bank_type, currency_type, total_amount, discount_amount, refund_start_time, 
     refund_success_time, refund_wx_order_no, refund_out_order_no, refund_amount, refund_discount_amount, 
-    refund_type, refund_status, prod_name, mch_data, fee, rate, bill_date, statement_count_id
+    refund_type, refund_status, prod_name, mch_data, fee, rate, bill_date, updated, statement_count_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -58,7 +59,7 @@
       refund_wx_order_no, refund_out_order_no, refund_amount, 
       refund_discount_amount, refund_type, refund_status, 
       prod_name, mch_data, fee, 
-      rate, bill_date, statement_count_id
+      rate, bill_date, updated, statement_count_id
       )
     values (#{id,jdbcType=BIGINT}, #{payTime,jdbcType=TIMESTAMP}, #{appid,jdbcType=VARCHAR}, 
       #{mchId,jdbcType=VARCHAR}, #{subMchId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, 
@@ -69,7 +70,7 @@
       #{refundWxOrderNo,jdbcType=VARCHAR}, #{refundOutOrderNo,jdbcType=VARCHAR}, #{refundAmount,jdbcType=DECIMAL}, 
       #{refundDiscountAmount,jdbcType=DECIMAL}, #{refundType,jdbcType=VARCHAR}, #{refundStatus,jdbcType=VARCHAR}, 
       #{prodName,jdbcType=VARCHAR}, #{mchData,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, 
-      #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{statementCountId,jdbcType=BIGINT}
+      #{rate,jdbcType=REAL}, #{billDate,jdbcType=DATE}, #{updated,jdbcType=TIMESTAMP}, #{statementCountId,jdbcType=BIGINT}
       )
   </insert>
   
@@ -85,7 +86,7 @@
       refund_wx_order_no, refund_out_order_no, refund_amount, 
       refund_discount_amount, refund_type, refund_status, 
       prod_name, mch_data, fee, 
-      rate, bill_date, statement_count_id
+      rate, bill_date, updated, statement_count_id
       </trim>
     values
     <foreach collection="list" item="item" index="index"  separator=",">
@@ -99,7 +100,7 @@
       #{item.refundWxOrderNo,jdbcType=VARCHAR}, #{item.refundOutOrderNo,jdbcType=VARCHAR}, #{item.refundAmount,jdbcType=DECIMAL}, 
       #{item.refundDiscountAmount,jdbcType=DECIMAL}, #{item.refundType,jdbcType=VARCHAR}, #{item.refundStatus,jdbcType=VARCHAR}, 
       #{item.prodName,jdbcType=VARCHAR}, #{item.mchData,jdbcType=VARCHAR}, #{item.fee,jdbcType=DECIMAL}, 
-      #{item.rate,jdbcType=REAL}, #{item.billDate,jdbcType=DATE}, #{item.statementCountId,jdbcType=BIGINT}
+      #{item.rate,jdbcType=REAL}, #{item.billDate,jdbcType=DATE}, #{item.updated,jdbcType=TIMESTAMP}, #{item.statementCountId,jdbcType=BIGINT}
       </trim>
     </foreach>
   </insert>
@@ -191,6 +192,9 @@
       <if test="billDate != null">
         bill_date,
       </if>
+      <if test="updated != null">
+        updated,
+      </if>
       <if test="statementCountId != null">
         statement_count_id,
       </if>
@@ -279,6 +283,9 @@
       </if>
       <if test="billDate != null">
         #{billDate,jdbcType=DATE},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
       </if>
       <if test="statementCountId != null">
         #{statementCountId,jdbcType=BIGINT},
@@ -369,6 +376,9 @@
       <if test="billDate != null">
         bill_date = #{billDate,jdbcType=DATE},
       </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
       <if test="statementCountId != null">
         statement_count_id = #{statementCountId,jdbcType=BIGINT},
       </if>
@@ -404,6 +414,7 @@
       fee = #{fee,jdbcType=DECIMAL},
       rate = #{rate,jdbcType=REAL},
       bill_date = #{billDate,jdbcType=DATE},
+      updated = #{updated,jdbcType=TIMESTAMP},
       statement_count_id = #{statementCountId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -420,7 +431,7 @@
     from pay_statement
     where 
       out_order_no = #{outOrderNo,jdbcType=VARCHAR}
-	  AND  pay_status = 'SUCCESS'
+	  AND  pay_status = 'SUCCESS' LIMIT 1
   </select>
   
 </mapper>

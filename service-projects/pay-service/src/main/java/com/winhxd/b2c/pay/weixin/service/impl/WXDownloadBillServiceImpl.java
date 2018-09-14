@@ -15,6 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.winhxd.b2c.common.cache.Cache;
+import com.winhxd.b2c.common.cache.Lock;
+import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount;
@@ -62,6 +66,11 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
      * 对账单下载异常
      */
     private static final String ERROR_CODE_6155 = "6155";
+
+    /**
+     * 下载对账单锁过期时间
+     */
+	private static final long DOWNLOAD_LOCK_EXPIRES_TIME = 60 * 1000;
     
     /**
      * 微信入参时间格式
@@ -72,7 +81,10 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
      * 微信返回的时间格式
      */
     private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    
+
+	@Autowired
+    private Cache cache;
+	
     @Autowired
     private WXPayApi wXPayApi;
     
@@ -115,29 +127,33 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	
 	@Override
 	public String downloadStatement(DownloadStatementCondition condition) {
-		
+
 		Date billDate = condition.getBillDate();
 		if (billDate == null) {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
-		logger.info("开始下载对账单====：{}", sdf1.format(billDate));
 
-		//某天资金账单已下载,则不再重复下载
-		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
-		record.setBillDate(billDate);
-		record.setBillType(PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
-		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
-		if (CollectionUtils.isNotEmpty(selectByModel)) {
-			logger.info("{}当天的对账单已下载,不再重复下载！", sdf.format(billDate));
-			return PayStatementDownloadRecord.DOWNLOADED;
-		}
-		
-		PayStatementDTO dto = new PayStatementDTO();
-		dto.setBillDate(sdf.format(billDate));
-		dto.setBillType(condition.getStatementType());
+		String lockKey = CacheName.DOWN_LOAD_STATEMENT + billDate;
+		Lock lock = new RedisLock(cache, lockKey, DOWNLOAD_LOCK_EXPIRES_TIME);
 		
 		try {
+			lock.lock();
+			logger.info("开始下载对账单====：{}", sdf1.format(billDate));
+			//某天资金账单已下载,则不再重复下载
+			PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+			record.setBillDate(billDate);
+			record.setBillType(PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+			List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+			if (CollectionUtils.isNotEmpty(selectByModel)) {
+				logger.info("{}当天的对账单已下载,不再重复下载！", sdf.format(billDate));
+				return PayStatementDownloadRecord.DOWNLOADED;
+			}
+			
+			PayStatementDTO dto = new PayStatementDTO();
+			dto.setBillDate(sdf.format(billDate));
+			dto.setBillType(condition.getStatementType());
+		
 			PayBillDownloadResponseDTO responseDTO = wXPayApi.downloadBill(dto);
 			logger.info("对账单下载返回数据：{}", String.valueOf(responseDTO));
 			
@@ -234,9 +250,13 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			logger.info(responseDTO.toString());
 		} catch (Exception e) {
 			logger.error("内部错误，下载对账单失败");
+			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), "未知异常");
+			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), "未知异常");
 			payStatementMapper.deleteByBillDate(billDate);
 			payStatementCountMapper.deleteByBillDate(billDate);
 			e.printStackTrace();
+		}finally{
+			lock.unlock();
 		}
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
@@ -343,6 +363,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		//把数据放入bean中
 		String[] everyDataArray = everyData.split(SEPARATE, -1);
 		PayStatement statement = new PayStatement();
+		statement.setUpdated(new Date());
+		
 		statement.setPayTime(sdf1.parse(replaceSeparate(everyDataArray[0])));
 		statement.setAppid(everyDataArray[1]);
 		statement.setMchId(everyDataArray[2]);
@@ -417,6 +439,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		//把数据放入bean中
 		String[] totalDataArray = everyData.split(SEPARATE, -1);
 		PayStatementCount statementCount = new PayStatementCount();
+		statementCount.setUpdated(new Date());
 		statementCount.setPayNumCount(Integer.valueOf(replaceSeparate(totalDataArray[0])));
 		statementCount.setPayAmountCount(new BigDecimal(totalDataArray[1]));
 		statementCount.setRefundAmountCount(new BigDecimal(totalDataArray[2]));
@@ -433,23 +456,27 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 
-		logger.info("开始下载资金账单====：{}", sdf1.format(billDate));
-		//某天资金账单已下载,则不再重复下载
-		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
-		record.setBillDate(billDate);
-		record.setBillType(PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
-		record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
-		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
-		if (CollectionUtils.isNotEmpty(selectByModel)) {
-			logger.info("{}当天的资金账单已下载,不再重复下载！", sdf.format(billDate));
-			return PayStatementDownloadRecord.DOWNLOADED;
-		}
-		
-		PayFinancialBillDTO dto = new PayFinancialBillDTO();
-		dto.setBillDate(sdf.format(billDate));
-		dto.setAccountType(condition.getAccountType());
+		String lockKey = CacheName.DOWN_LOAD_BILL + billDate;
+		Lock lock = new RedisLock(cache, lockKey, DOWNLOAD_LOCK_EXPIRES_TIME);
 		
 		try {
+			lock.lock();
+			logger.info("开始下载资金账单====：{}", sdf1.format(billDate));
+			//某天资金账单已下载,则不再重复下载
+			PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+			record.setBillDate(billDate);
+			record.setBillType(PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
+			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+			List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+			if (CollectionUtils.isNotEmpty(selectByModel)) {
+				logger.info("{}当天的资金账单已下载,不再重复下载！", sdf.format(billDate));
+				return PayStatementDownloadRecord.DOWNLOADED;
+			}
+			
+			PayFinancialBillDTO dto = new PayFinancialBillDTO();
+			dto.setBillDate(sdf.format(billDate));
+			dto.setAccountType(condition.getAccountType());
+		
 			PayBillDownloadResponseDTO billMap = wXPayApi.downloadFundFlow(dto);
 
 			logger.info("资金账单下载返回数据：{}", String.valueOf(billMap));
@@ -537,8 +564,12 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			}
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e);
+			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), "未知异常");
+			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), "未知异常");
 			payFinancialBillMapper.deleteByBillDate(billDate);
 			payFinancialBillCountMapper.deleteByBillDate(billDate);
+		}finally{
+			lock.unlock();
 		}
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
@@ -567,6 +598,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		String[] everyDataArray = everyData.split(SEPARATE, -1);
 		
 		PayFinancialBill financialBill = new PayFinancialBill();
+		financialBill.setUpdated(new Date());
+		
 		if (DownloadStatementCondition.SourceType.BASIC.getText().equals(accountType)) {
 			financialBill.setAccountingTime(sdf1.parse(replaceSeparate(everyDataArray[0])));
 			financialBill.setWxPayNo(everyDataArray[1]);
@@ -594,6 +627,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 		//把数据放入bean中
 		String[] totalDataArray = everyData.split(SEPARATE, -1);
 		PayFinancialBillCount financialBillCount = new PayFinancialBillCount();
+		financialBillCount.setUpdated(new Date());
 		financialBillCount.setFinancialSwiftNumCount(new BigDecimal(replaceSeparate(totalDataArray[0])));
 		financialBillCount.setIncomeNumCount(new BigDecimal(totalDataArray[1]));
 		financialBillCount.setIncomeAmountCount(new BigDecimal(totalDataArray[2]));

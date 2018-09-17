@@ -44,6 +44,11 @@ public class PayFinancialBillCount {
 	 * 资金账单日期
 	 */
     private Date billDate;
+    
+    /**
+     * 插入日期
+     */
+    private Date updated;
 
     public Long getId() {
         return id;
@@ -100,4 +105,12 @@ public class PayFinancialBillCount {
     public void setBillDate(Date billDate) {
         this.billDate = billDate;
     }
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
 }

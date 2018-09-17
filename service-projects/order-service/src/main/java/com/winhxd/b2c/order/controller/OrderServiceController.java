@@ -1,12 +1,23 @@
 package com.winhxd.b2c.order.controller;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.StoreUser;
+import com.winhxd.b2c.common.context.UserContext;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.order.condition.*;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
+import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
+import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.order.service.OrderQueryService;
 import com.winhxd.b2c.order.service.OrderService;
+import com.winhxd.b2c.order.service.impl.OrderQueryServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,33 +26,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
-import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
-import com.winhxd.b2c.common.exception.BusinessException;
-import com.winhxd.b2c.common.feign.order.OrderServiceClient;
-import com.winhxd.b2c.order.service.OrderQueryService;
-import com.winhxd.b2c.order.service.impl.OrderQueryServiceImpl;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @Api(tags = "OrderService")
 public class OrderServiceController implements OrderServiceClient {
-    
+
     @Autowired
     private OrderQueryService orderQueryService;
     @Resource
@@ -49,7 +40,7 @@ public class OrderServiceController implements OrderServiceClient {
 
 
     private static final Logger logger = LoggerFactory.getLogger(OrderQueryServiceImpl.class);
-    
+
     @Override
     public ResponseResult<String> submitOrder(OrderCreateCondition orderCreateCondition) {
         throw new UnsupportedOperationException("订单创建不支持client调用");
@@ -146,10 +137,12 @@ public class OrderServiceController implements OrderServiceClient {
             if (storeOrderSalesSummaryCondition == null) {
                 throw new BusinessException(BusinessCode.STORE_ID_EMPTY);
             }
-            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.INTRADAY_ORDER_SALES_QUERY_TYPE) {
+            if (storeOrderSalesSummaryCondition.getQueryPeriodType() == null || storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition
+                    .INTRADAY_ORDER_SALES_QUERY_TYPE) {
                 result.setData(orderQueryService.getStoreIntradayOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             } else if (storeOrderSalesSummaryCondition.getQueryPeriodType() == StoreOrderSalesSummaryCondition.TIME_PERIOD_ORDER_SALES_QUERY_TYPE) {
-                result.setData(orderQueryService.calculateStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), storeOrderSalesSummaryCondition.getStartDateTime(), storeOrderSalesSummaryCondition.getEndDateTime()));
+                result.setData(orderQueryService.calculateStoreOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId(), storeOrderSalesSummaryCondition.getStartDateTime(),
+                        storeOrderSalesSummaryCondition.getEndDateTime()));
             } else {
                 result.setData(orderQueryService.getStoreMonthOrderSalesSummary(storeOrderSalesSummaryCondition.getStoreId()));
             }
@@ -220,6 +213,40 @@ public class OrderServiceController implements OrderServiceClient {
         ResponseResult<Void> result = new ResponseResult<>();
         orderService.orderPaySuccessNotify(orderNo, paymentSerialNum);
         logger.info("{} 后台订单支付成功通知回调结束:orderNo={},paymentSerialNum={}", logTitle, orderNo, paymentSerialNum);
+        return result;
+    }
+
+    /**
+     * 退款失败状态更新
+     *
+     * @param condition 入参
+     * @return 是否成功
+     */
+    @Override
+    public ResponseResult<Boolean> updateOrderRefundFail(@RequestBody OrderRefundFailCondition condition) {
+        String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
+        logger.info("{} 退款失败状态更新开始:condition={}", logTitle, condition);
+        ResponseResult<Boolean> result = new ResponseResult<>();
+        boolean updateResult = orderService.updateOrderRefundFailStatus(condition);
+        result.setData(updateResult);
+        logger.info("{} 退款失败状态更新结束:orderNo={},result={}", logTitle, updateResult);
+        return result;
+    }
+
+    /**
+     * 手工退款
+     *
+     * @param list
+     * @return
+     */
+    @Override
+    public ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition) {
+        String logTitle = "/order/4061/v1/orderPaySuccessNotify/";
+        logger.info("{} 手工退款开始:orderNo={}", logTitle, condition);
+        ResponseResult<Integer> result = new ResponseResult<>();
+        int updateResult = orderService.artificialRefund(condition);
+        result.setData(updateResult);
+        logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
         return result;
     }
 }

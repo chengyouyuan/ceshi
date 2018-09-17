@@ -81,7 +81,7 @@
       },
       {
         "name": "timeEnd",
-        "title": "提款时间"
+        "title": "处理完成时间"
       },
       {
         "name": "auditStatusName",
@@ -105,7 +105,7 @@
         "name": "storeId",
         "inputModel": "inputDia",
         "title": "门店",
-        "configKey": "/template/module/order/order_store_list_win.json"
+        "configKey": "/template/module/store/store_list_win.json"
       },
       {
         "name": "withdrawalsDate",

@@ -39,13 +39,14 @@
         <result column="updated_by" jdbcType="BIGINT" property="updatedBy"/>
         <result column="updated_by_name" jdbcType="VARCHAR" property="updatedByName"/>
         <result column="created_by_name" jdbcType="VARCHAR" property="createdByName"/>
+        <result column="refund_fail_reason" jdbcType="VARCHAR" property="refundFailReason"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, order_no, customer_id, store_id, valuation_type, order_status, pickup_code, random_reduction_money, coupon_titles,
         coupon_hxd_money, coupon_brand_money, order_total_money, real_payment_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, payment_serial_num, created, pay_finish_datetime, pickup_datetime, finish_datetime, cancel_datetime, refund_datetime,apply_refund_datetime, accept_order_datetime,
         pickup_type, inviter_code, updated, cancel_reason, remarks, region_code, imie, created_by,
-        updated_by, updated_by_name, created_by_name
+        updated_by, updated_by_name, created_by_name,refund_fail_reason
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -78,7 +79,7 @@
         finish_datetime, cancel_datetime, refund_datetime, apply_refund_datetime,accept_order_datetime, pickup_type,
         inviter_code, updated, cancel_reason,
         remarks, region_code, imie,
-        created_by, updated_by, updated_by_name,
+        created_by, updated_by, updated_by_name,refund_fail_reason,
         created_by_name)
         values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=CHAR}, #{customerId,jdbcType=BIGINT},
         #{storeId,jdbcType=BIGINT}, #{valuationType,jdbcType=SMALLINT}, #{orderStatus,jdbcType=SMALLINT},
@@ -91,7 +92,7 @@
         #{applyRefundDatetime,jdbcType=TIMESTAMP}, #{acceptOrderDatetime,jdbcType=TIMESTAMP}, #{pickupType,jdbcType=SMALLINT},
         #{inviterCode,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP}, #{cancelReason,jdbcType=VARCHAR},
         #{remarks,jdbcType=VARCHAR}, #{regionCode,jdbcType=VARCHAR}, #{imie,jdbcType=VARCHAR},
-        #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},
+        #{createdBy,jdbcType=BIGINT}, #{updatedBy,jdbcType=BIGINT}, #{updatedByName,jdbcType=VARCHAR},#{refundFailReason,jdbcType=VARCHAR},
         #{createdByName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.order.model.OrderInfo" keyProperty="id"
@@ -209,6 +210,9 @@
             <if test="createdByName != null">
                 created_by_name,
             </if>
+            <if test="refundFailReason != null">
+                refund_fail_reason,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -321,6 +325,9 @@
             </if>
             <if test="createdByName != null">
                 #{createdByName,jdbcType=VARCHAR},
+            </if>
+            <if test="refundFailReason != null">
+                #{refundFailReason,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -435,6 +442,9 @@
             <if test="createdByName != null">
                 created_by_name = #{createdByName,jdbcType=VARCHAR},
             </if>
+            <if test="refundFailReason != null">
+                refund_fail_reason = #{refundFailReason,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -475,7 +485,8 @@
       created_by = #{createdBy,jdbcType=BIGINT},
       updated_by = #{updatedBy,jdbcType=BIGINT},
       updated_by_name = #{updatedByName,jdbcType=VARCHAR},
-      created_by_name = #{createdByName,jdbcType=VARCHAR}
+      created_by_name = #{createdByName,jdbcType=VARCHAR},
+      refund_fail_reason = #{refundFailReason,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -512,7 +523,7 @@
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, pickup_code, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, payment_serial_num, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime,refund_datetime,accept_order_datetime,apply_refund_datetime,
-        pickup_type, cancel_reason, remarks
+        pickup_type, cancel_reason, remarks,refund_fail_reason
     </sql>
     <select id="selectOrderInfoListByCustomerId" resultMap="OrderInfoListResultMap">
         select
@@ -555,7 +566,14 @@
             and pay_type = #{condition.payType,jdbcType=SMALLINT}
         </if>
         <if test="condition.orderStatus != null">
-            and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+            <choose>
+                <when test="condition.orderStatus == 88">
+                    and (order_status = #{condition.orderStatus,jdbcType=SMALLINT} or refund_fail_reason is not null)
+                </when>
+                <otherwise>
+                    and order_status = #{condition.orderStatus,jdbcType=SMALLINT}
+                </otherwise>
+            </choose>
         </if>
         <if test="condition.regionCode != null and condition.regionCode.length > 0">
             and region_code in
@@ -596,7 +614,7 @@
         info.id, info.order_no, customer_id, store_id, valuation_type, order_status, order_total_money, coupon_titles, 
         real_payment_money, order_total_money-real_payment_money discount_money, sku_quantity, sku_category_quantity, pay_type,
         pay_status, info.created, pickup_datetime,pay_finish_datetime, finish_datetime, cancel_datetime, refund_datetime, accept_order_datetime, apply_refund_datetime,
-        pickup_type, cancel_reason, remarks
+        pickup_type, cancel_reason, remarks,refund_fail_reason
     </sql>
     <select id="listOrder4Store" resultMap="orderIdResult">
         select
@@ -787,7 +805,7 @@
     </update>
     <update id="updateOrderStatusForRefundCallback">
         update order_info
-        set order_status=77,pickup_code=null,refund_datetime = now()
+        set order_status=77,pickup_code=null,refund_datetime = now(),refund_fail_reason=null
         where order_no=#{orderNo,jdbcType=VARCHAR} AND pay_status = 1
     </update>
     <update id="updateOrderConfirmDate">
@@ -807,6 +825,16 @@
         <if test="storeId != null">
             and store_id = #{storeId,jdbcType=BIGINT}
         </if>
+    </update>
+    <update id="updateOrderStatusForRefundFail">
+        update order_info
+        <!--订单状态为退款失败-->
+        set
+        <if test="customerFail">
+            order_status=88,
+        </if>
+        updated = now(),refund_fail_reason = #{refundErrorDesc,jdbcType=VARCHAR}
+        where order_no=#{orderNo,jdbcType=VARCHAR}
     </update>
     <resultMap id="OrderCountByStatus4StoreMap" type="com.winhxd.b2c.common.domain.order.vo.OrderCountByStatus4StoreVO">
         <result column="allNum" jdbcType="INTEGER" property="allNum"/>
@@ -856,5 +884,13 @@
             and store_id=#{storeId,jdbcType=BIGINT}
         </if>
         <include refid="order_info_list_orderBy"></include>
+    </select>
+    <select id="getCheckOrderRefundFail" resultType="java.lang.Boolean">
+        select count(*) from order_info info
+        where (info.refund_fail_reason is null or info.refund_fail_reason='') and info.order_status <![CDATA[!= ]]> 33
+        AND info.order_no in
+        <foreach collection="orderNoList" item="orderNoList" open="(" close=")" separator=",">
+            #{orderNoList}
+        </foreach>
     </select>
 </mapper>

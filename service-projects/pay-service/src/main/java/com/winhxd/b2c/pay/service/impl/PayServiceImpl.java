@@ -1,78 +1,28 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.winhxd.b2c.common.constant.*;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
+import com.winhxd.b2c.common.constant.*;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.enums.MsgCategoryEnum;
 import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.OrderRefundFailCondition;
 import com.winhxd.b2c.common.domain.order.enums.PayStatusEnum;
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
-import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayRefundCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayWithdrawalsCondition;
-import com.winhxd.b2c.common.domain.pay.condition.StoreBankrollChangeCondition;
-import com.winhxd.b2c.common.domain.pay.condition.UpdateStoreBankRollCondition;
+import com.winhxd.b2c.common.domain.pay.condition.*;
 import com.winhxd.b2c.common.domain.pay.constant.WXCalculation;
-import com.winhxd.b2c.common.domain.pay.enums.PayOutTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.PayRefundStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.PayStatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
-import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreBankRollOpearateEnums;
-import com.winhxd.b2c.common.domain.pay.enums.StoreTransactionStatusEnum;
-import com.winhxd.b2c.common.domain.pay.enums.WithdrawalsStatusEnum;
-import com.winhxd.b2c.common.domain.pay.model.AccountingDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayAccountingDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayFinanceAccountDetail;
-import com.winhxd.b2c.common.domain.pay.model.PayOrderPayment;
-import com.winhxd.b2c.common.domain.pay.model.PayRefundPayment;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreBankrollLog;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
-import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
-import com.winhxd.b2c.common.domain.pay.model.PayWithdrawals;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayRefundVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersQueryToWxBankVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxBankVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayTransfersToWxChangeVO;
+import com.winhxd.b2c.common.domain.pay.enums.*;
+import com.winhxd.b2c.common.domain.pay.model.*;
+import com.winhxd.b2c.common.domain.pay.vo.*;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.MessageSendUtils;
-import com.winhxd.b2c.pay.dao.AccountingDetailMapper;
-import com.winhxd.b2c.pay.dao.PayAccountingDetailMapper;
-import com.winhxd.b2c.pay.dao.PayOrderPaymentMapper;
-import com.winhxd.b2c.pay.dao.PayRefundPaymentMapper;
-import com.winhxd.b2c.pay.dao.PayStoreBankrollLogMapper;
-import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
-import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
-import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
+import com.winhxd.b2c.pay.dao.*;
 import com.winhxd.b2c.pay.service.PayFinanceAccountDetailService;
 import com.winhxd.b2c.pay.service.PayService;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
@@ -83,6 +33,17 @@ import com.winhxd.b2c.pay.weixin.model.PayRefund;
 import com.winhxd.b2c.pay.weixin.service.WXRefundService;
 import com.winhxd.b2c.pay.weixin.service.WXTransfersService;
 import com.winhxd.b2c.pay.weixin.service.WXUnifiedOrderService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class PayServiceImpl implements PayService{
@@ -696,7 +657,6 @@ public class PayServiceImpl implements PayService{
      * @param order
      * @return
      */
-	@Transactional
 	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
@@ -748,25 +708,48 @@ public class PayServiceImpl implements PayService{
 		payRefund.setCreatedByName(order.getUpdatedByName());
 		payRefund.setRefundDesc(order.getCancelReason());
 		PayRefundVO vo=refundService.refundOrder(payRefund);
-		if (vo!=null&&StringUtils.isNotBlank(vo.getOutRefundNo())) {
+		if (vo!=null) {
 			//插入退款流水信息
-			//判断是否有退款流水记录，有就不插入
-			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(vo.getOutRefundNo());
+			//判断是否有退款流水记录，有就不插入（退款流水号用的是交易流水号）
+			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(payRefund.getOutTradeNo());
 			if (payRefundPayment==null) {
-				logger.info(log+"--插入退款流水");
 				payRefundPayment=new PayRefundPayment();
+				payRefundPayment.setCreated(new Date());
 				payRefundPayment.setOrderNo(orderNo);
 				payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundNo(orderNo);
-				payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
+				payRefundPayment.setRefundTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 				payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
-				payRefundPayment.setCreated(new Date());
-				payRefundPayment.setUpdated(new Date());
 				payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
-				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+			}	
+			payRefundPayment.setCallbackErrorCode(vo.getErrorCode());
+			payRefundPayment.setCallbackErrorMessage(vo.getErrorCodeDesc());
+			payRefundPayment.setUpdated(new Date());
+			payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUNDING.getCode());
+			if(!vo.isStatus()){
+				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUND_FAIL.getCode());
+			}
+			if(payRefundPayment.getId()!=null){
+				logger.info(log+"--更新退款流水");
+				payRefundPaymentMapper.updateByPrimaryKeySelective(payRefundPayment);
+			}else{
+				logger.info(log+"--插入退款流水");
 				payRefundPaymentMapper.insertSelective(payRefundPayment);
-			}		
+			}
+			if(!vo.isStatus()){
+				logger.info(log+"--退款失败："+vo.getErrorCode()+vo.getErrorCodeDesc());
+				PayRefundErrorEnum payRefundErrorEnum=PayRefundErrorEnum.getErrorMsgByErrorCode(vo.getErrorCode());
+				String errorCodeDesc=vo.getErrorCodeDesc();
+				OrderRefundFailCondition orderRefundFailCondition = new OrderRefundFailCondition();
+				orderRefundFailCondition.setOrderNo(orderNo);
+				orderRefundFailCondition.setCustomerFail(payRefundErrorEnum.getAbleContinue());
+				orderRefundFailCondition.setRefundErrorCode(vo.getErrorCode());
+				orderRefundFailCondition.setRefundErrorDesc(errorCodeDesc);
+
+				orderServiceClient.updateOrderRefundFail(orderRefundFailCondition);
+			}
+
 		}
 		logger.info(log+"--结束");
 	}

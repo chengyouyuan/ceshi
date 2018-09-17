@@ -2,7 +2,7 @@ package com.winhxd.b2c.common.feign.order;
 
 import java.util.List;
 
-import com.winhxd.b2c.common.domain.order.condition.OrderRefundCallbackCondition;
+import com.winhxd.b2c.common.domain.order.condition.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,9 +16,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.order.condition.OrderCreateCondition;
-import com.winhxd.b2c.common.domain.order.condition.OrderInfoQuery4ManagementCondition;
-import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO;
 import com.winhxd.b2c.common.domain.order.vo.OrderInfoDetailVO4Management;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
@@ -65,7 +62,22 @@ public interface OrderServiceClient {
     @RequestMapping(value = "/order/4060/v1/orderPaySuccessNotify/{orderNo}/{paymentSerialNum}", method = RequestMethod.POST)
     ResponseResult<Void> orderPaySuccessNotify(@PathVariable(value = "orderNo") String orderNo, @PathVariable(value = "paymentSerialNum") String paymentSerialNum);
 
+    /**
+     * 退款失败状态更新
+     *
+     * @param condition 入参
+     * @return 是否成功
+     */
+    @RequestMapping(value = "/order/4061/v1/updateOrderRefundFail/", method = RequestMethod.POST)
+    ResponseResult<Boolean> updateOrderRefundFail(@RequestBody OrderRefundFailCondition condition);
 
+    /**
+     * 手工退款
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping(value = "/order/4062/v1/artificialRefund/", method = RequestMethod.POST)
+    ResponseResult<Integer> artificialRefund(@RequestBody OrderArtificialRefundCondition condition);
 }
 
 @Component
@@ -138,6 +150,23 @@ class OrderServiceFallback implements OrderServiceClient, FallbackFactory<OrderS
     @Override
     public ResponseResult<Void> orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
         logger.error("OrderServiceFallback -> orderPaySuccessNotify", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Boolean> updateOrderRefundFail(OrderRefundFailCondition condition) {
+        logger.error("OrderServiceFallback -> updateOrderRefundFail", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    /**
+     * 手工退款
+     *
+     * @param orderNo@return
+     */
+    @Override
+    public ResponseResult<Integer> artificialRefund(OrderArtificialRefundCondition condition) {
+        logger.error("OrderServiceFallback -> artificialRefund", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 }

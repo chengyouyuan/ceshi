@@ -115,4 +115,14 @@ public class CacheName {
      * 接口访问次数key
      */
     public static final String LIMIT_INTERFACE_ACCESS = "LIMIT:INTERFACE:ACCESS:";
+    
+    /**
+     * 对账单下载防重复
+     */
+    public static final String DOWN_LOAD_STATEMENT = "DOWN:LOAD:STATEMENT:";
+    
+    /**
+     * 资金账单下载防重复
+     */
+    public static final String DOWN_LOAD_BILL = "DOWN:LOAD:BILL:";
 }

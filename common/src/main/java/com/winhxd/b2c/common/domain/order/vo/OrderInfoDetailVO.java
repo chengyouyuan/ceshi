@@ -43,7 +43,7 @@ public class OrderInfoDetailVO implements Serializable {
      * 订单状态 1:已提交;2:待付款;3:待接单;5:待计价;7:已计价;
      * 9:待自提(已确认);11:待顾客确认;13:已完成;99:已取消;77:已退款;33:待退款;
      */
-    @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;", required = true)
+    @ApiModelProperty(value = "订单状态 2:待付款;3:待接单;9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款;88:退款失败;", required = true)
     private Short orderStatus;
     @ApiModelProperty(value = "订单状态描述", required = true)
     private String orderStatusDesc;
@@ -157,4 +157,6 @@ public class OrderInfoDetailVO implements Serializable {
     private String storeName;
     @ApiModelProperty(value = "用户头像")
     private String headImg;
+    @ApiModelProperty(value = "退款失败原因")
+    private String refundFailReason;
 }

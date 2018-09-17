@@ -52,7 +52,11 @@ public enum OrderStatusEnum {
     /**
      * 待退款
      */
-    REFUNDING((short) 66, "退款中", "退款中");
+    REFUNDING((short) 66, "退款中", "退款中"),
+    /**
+     * 退款失败
+     */
+    REFUND_FAIL((short) 88, "退款失败", "退款失败");
 
 
     private short statusCode;
@@ -87,7 +91,7 @@ public enum OrderStatusEnum {
         }
         return null;
     }
-    
+
     public static Map<Short, String> getMarkMap() {
         Map<Short, String> map = new TreeMap<>();
         for (OrderStatusEnum orderStatusEnum : values()) {
@@ -95,22 +99,22 @@ public enum OrderStatusEnum {
         }
         return map;
     }
-    
-    public static short[] finalStatus(){
+
+    public static short[] finalStatus() {
         short[] status = new short[]{FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode()};
         Arrays.sort(status);
         return status;
     }
-    
+
     public static short[] statusCannotCancel() {
-        short[] status = new short[] { FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode(),
-                WAIT_REFUND.getStatusCode(), REFUNDING.getStatusCode() };
+        short[] status = new short[]{FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode(),
+                WAIT_REFUND.getStatusCode(), REFUNDING.getStatusCode(), REFUND_FAIL.getStatusCode()};
         Arrays.sort(status);
         return status;
     }
 
     public static short[] statusCannotRefund() {
-        short[] status = new short[] { FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode(), REFUNDING.getStatusCode() };
+        short[] status = new short[]{FINISHED.getStatusCode(), CANCELED.getStatusCode(), REFUNDED.getStatusCode(), REFUNDING.getStatusCode(), REFUND_FAIL.getStatusCode()};
         Arrays.sort(status);
         return status;
     }

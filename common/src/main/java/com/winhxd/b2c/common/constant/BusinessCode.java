@@ -261,6 +261,8 @@ public final class BusinessCode {
     public static final int CODE_503001 = 503001;
     /** 优惠券活动添加时时间冲突*/
     public static final int CODE_503002 = 503002;
+    /** 优惠券活动结束时间不能晚于优惠券结束时间*/
+    public static final int CODE_503003 = 503003;
 
     /** 优惠券活动更新失败*/
     public static final int CODE_503201 = 503201;
@@ -372,6 +374,14 @@ public final class BusinessCode {
     public static final int CODE_4021002 = 4021002;
     /** 用户不存在*/
     public static final int CODE_4010001 = 4010001;
+    @ApiModelProperty("参数错误")
+    public static final int CODE_4061001 = 4061001;
+    @ApiModelProperty("请至少选择一条记录")
+    public static final int CODE_4062001 = 4062001;
+    @ApiModelProperty("选择的订单号不是退款失败的订单")
+    public static final int CODE_4062002 = 4062002;
+    @ApiModelProperty("订单状态不允许退款")
+    public static final int CODE_4062003 = 4062003;
 
     @ApiModelProperty("查询的地理区域不存在")
     public static final int CODE_3020001 = 3020001;

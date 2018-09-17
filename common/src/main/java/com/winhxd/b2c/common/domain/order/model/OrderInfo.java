@@ -37,7 +37,7 @@ public class OrderInfo {
     private Short valuationType;
     /**
      * 订单状态 1:已提交;2:待付款；3:待接单;7:已计价;
-     * 9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；
+     * 9:待自提(已确认);22:已完成;99:已取消;77:已退款;33:待退款；66:退款中；88:退款失败；
      */
     private Short orderStatus;
     /**
@@ -68,12 +68,12 @@ public class OrderInfo {
      * 实付金额
      */
     private BigDecimal realPaymentMoney;
-    
+
     /**
      * 订单商品总数量
      */
     private Integer skuQuantity;
-    
+
     /**
      * 订单商品种类数量
      */
@@ -86,7 +86,7 @@ public class OrderInfo {
      * 支付状态:0为未支付;1为已支付;
      */
     private Short payStatus;
-    
+
     /**
      * 支付成功流水号
      */
@@ -147,12 +147,16 @@ public class OrderInfo {
      * 下单门店区域编码
      */
     private String regionCode;
+    /**
+     * 退款失败原因
+     */
+    private String refundFailReason;
     private Date updated;
     private Long createdBy;
     private Long updatedBy;
     private String updatedByName;
     private String createdByName;
-    
+
     /**
      * 订单商品项
      */

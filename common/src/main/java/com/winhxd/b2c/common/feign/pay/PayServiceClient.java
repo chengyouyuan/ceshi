@@ -1,5 +1,11 @@
 package com.winhxd.b2c.common.feign.pay;
 
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.*;
+import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,30 +14,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.OrderIsPayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayPreOrderCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
-import com.winhxd.b2c.common.domain.pay.vo.OrderPayVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayPreOrderVO;
-
-import feign.hystrix.FallbackFactory;
-
 @FeignClient(value = ServiceName.PAY_SERVICE, fallbackFactory = PayServiceClientFallback.class)
 public interface PayServiceClient {
 	
-//	/**
-//	 * @author liuhanning
-//	 * @date  2018年8月20日 下午1:19:20
-//	 * @Description 退款
-//	 * @param condition
-//	 * @return
-//	 */
-//	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//	public ResponseResult<PayRefundVO> orderRefund(@RequestBody PayRefundCondition condition);
+	/**
+	 * @author liuhanning
+	 * @date  2018年8月20日 下午1:19:20
+	 * @Description 退款
+	 * @param condition
+	 * @return
+	 */
+	@PostMapping(value = "/pay/6002/v1/orderRefund", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseResult<Void> orderRefund(@RequestBody PayRefundCondition condition);
 	
 	/**
 	 * @author liuhanning
@@ -87,11 +81,11 @@ class PayServiceClientFallback implements PayServiceClient, FallbackFactory<PayS
 		return new PayServiceClientFallback(throwable);
 	}
 
-//	@Override
-//	public ResponseResult<PayRefundVO> orderRefund(PayRefundCondition condition) {
-//		logger.error("PayServiceClientFallback -> orderRefund{}", throwable);
-//        return new ResponseResult<>(BusinessCode.CODE_1001);
-//	}
+	@Override
+	public ResponseResult<Void> orderRefund(PayRefundCondition condition) {
+		logger.error("PayServiceClientFallback -> orderRefund{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+	}
 
 	@Override
 	public ResponseResult<OrderPayVO> orderPay(PayPreOrderCondition condition) {

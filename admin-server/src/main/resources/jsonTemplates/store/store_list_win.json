@@ -3,8 +3,8 @@
     "ajaxType": "post",
     "path": "/store/1058/v1/findStorePageInfo",
     "type": "report",
-    "id": "order_store_list_win",
-    "code": "order_store_list_win",
+    "id": "store_list_win",
+    "code": "store_list_win",
     "title": "门店选择",
     "buttons": [
       {

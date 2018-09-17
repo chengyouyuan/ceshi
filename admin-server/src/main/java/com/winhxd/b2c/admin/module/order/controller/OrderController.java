@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(value = "后台小程序订单管理", tags = "后台小程序订单管理")
 @RequestMapping("/order")
-@CheckPermission(PermissionEnum.SYSTEM_MANAGEMENT)
+@CheckPermission(PermissionEnum.ORDER_MANAGEMENT)
 public class OrderController {
     
     @Autowired

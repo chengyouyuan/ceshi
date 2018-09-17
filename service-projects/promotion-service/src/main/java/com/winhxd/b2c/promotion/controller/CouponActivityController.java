@@ -224,6 +224,9 @@ public class CouponActivityController implements CouponActivityServiceClient {
                     || condition.getCouponActivityTemplateList().get(0).getTemplateId() == null ){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
+            if(condition.getActivityEnd().after(condition.getCouponActivityTemplateList().get(0).getEndTime())){
+                throw new BusinessException(BusinessCode.CODE_503003);
+            }
             if(condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()
                     && condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
@@ -250,6 +253,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         }
 
     }
+
 
     /**
      *

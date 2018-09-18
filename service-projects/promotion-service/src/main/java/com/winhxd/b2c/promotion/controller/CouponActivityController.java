@@ -107,7 +107,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
      *
      *@Deccription 添加优惠券活动
      *@Params  condition
-     *@Return  ResponseResult
+     *@Return  ResponseResult 
      *@User  sjx
      *@Date   2018/8/6
      */

@@ -663,6 +663,6 @@
     <include refid="Base_Column_List" />
     from pay_withdrawals
     where to_days(created)=to_days(now())
-     and store_id = #{storeId,jdbcType=BIGINT} and callback_status in (0,2,4)
+     and store_id = #{storeId,jdbcType=BIGINT} and callback_status in (0,1,2,4)
   </select>
 </mapper>

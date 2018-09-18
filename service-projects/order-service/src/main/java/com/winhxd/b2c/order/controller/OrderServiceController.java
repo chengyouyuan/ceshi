@@ -223,7 +223,7 @@ public class OrderServiceController implements OrderServiceClient {
      * @return 是否成功
      */
     @Override
-    public ResponseResult<Boolean> updateOrderRefundFail(OrderRefundFailCondition condition) {
+    public ResponseResult<Boolean> updateOrderRefundFail(@RequestBody OrderRefundFailCondition condition) {
         String logTitle = "/order/4060/v1/orderPaySuccessNotify/";
         logger.info("{} 退款失败状态更新开始:condition={}", logTitle, condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
@@ -247,6 +247,6 @@ public class OrderServiceController implements OrderServiceClient {
         int updateResult = orderService.artificialRefund(condition);
         result.setData(updateResult);
         logger.info("{} 手工退款结束:orderNo={},result={}", logTitle, updateResult);
-        return null;
+        return result;
     }
 }

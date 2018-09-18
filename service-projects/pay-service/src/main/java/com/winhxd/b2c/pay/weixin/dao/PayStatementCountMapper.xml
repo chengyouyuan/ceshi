@@ -9,10 +9,11 @@
     <result column="refund_discount_count" jdbcType="DECIMAL" property="refundDiscountCount" />
     <result column="fee_count" jdbcType="DECIMAL" property="feeCount" />
     <result column="bill_date" jdbcType="DATE" property="billDate" />
+    <result column="updated" jdbcType="TIMESTAMP" property="updated" />
   </resultMap>
   <sql id="Base_Column_List">
     id, pay_num_count, pay_amount_count, refund_amount_count, refund_discount_count, 
-    fee_count, bill_date
+    fee_count, bill_date, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -27,10 +28,10 @@
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatementCount">
     insert into pay_statement_count (id, pay_num_count, pay_amount_count, 
       refund_amount_count, refund_discount_count, 
-      fee_count, bill_date)
+      fee_count, bill_date, updated)
     values (#{id,jdbcType=BIGINT}, #{payNumCount,jdbcType=INTEGER}, #{payAmountCount,jdbcType=DECIMAL}, 
       #{refundAmountCount,jdbcType=DECIMAL}, #{refundDiscountCount,jdbcType=DECIMAL}, 
-      #{feeCount,jdbcType=DECIMAL}, #{billDate,jdbcType=DATE})
+      #{feeCount,jdbcType=DECIMAL}, #{billDate,jdbcType=DATE}), #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatementCount">
     insert into pay_statement_count
@@ -56,6 +57,9 @@
       <if test="billDate != null">
         bill_date,
       </if>
+      <if test="updated != null">
+        updated,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -78,6 +82,9 @@
       </if>
       <if test="billDate != null">
         #{billDate,jdbcType=DATE},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -102,6 +109,9 @@
       <if test="billDate != null">
         bill_date = #{billDate,jdbcType=DATE},
       </if>
+      <if test="updated != null">
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -112,7 +122,8 @@
       refund_amount_count = #{refundAmountCount,jdbcType=DECIMAL},
       refund_discount_count = #{refundDiscountCount,jdbcType=DECIMAL},
       fee_count = #{feeCount,jdbcType=DECIMAL},
-      bill_date = #{billDate,jdbcType=DATE}
+      bill_date = #{billDate,jdbcType=DATE},
+      updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
   

@@ -657,7 +657,6 @@ public class PayServiceImpl implements PayService{
      * @param order
      * @return
      */
-	@Transactional
 	@Override
 	public void refundOrder(String orderNo, OrderInfo order)  {
 		
@@ -709,18 +708,17 @@ public class PayServiceImpl implements PayService{
 		payRefund.setCreatedByName(order.getUpdatedByName());
 		payRefund.setRefundDesc(order.getCancelReason());
 		PayRefundVO vo=refundService.refundOrder(payRefund);
-		if (vo!=null&&StringUtils.isNotBlank(vo.getOutRefundNo())) {
+		if (vo!=null) {
 			//插入退款流水信息
-			//判断是否有退款流水记录，有就不插入
-			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(vo.getOutRefundNo());
+			//判断是否有退款流水记录，有就不插入（退款流水号用的是交易流水号）
+			PayRefundPayment payRefundPayment=payRefundPaymentMapper.selectByRefundTransactionNo(payRefund.getOutTradeNo());
 			if (payRefundPayment==null) {
-				logger.info(log+"--插入退款流水");
 				payRefundPayment=new PayRefundPayment();
 				payRefundPayment.setCreated(new Date());
 				payRefundPayment.setOrderNo(orderNo);
 				payRefundPayment.setOrderTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundNo(orderNo);
-				payRefundPayment.setRefundTransactionNo(vo.getOutRefundNo());
+				payRefundPayment.setRefundTransactionNo(payRefund.getOutTradeNo());
 				payRefundPayment.setRefundFee(payRefund.getRefundAmount());
 				payRefundPayment.setTotalAmount(payRefund.getTotalAmount());
 				payRefundPayment.setRefundDesc(payRefund.getRefundDesc());
@@ -733,8 +731,10 @@ public class PayServiceImpl implements PayService{
 				payRefundPayment.setCallbackStatus(PayRefundStatusEnums.REFUND_FAIL.getCode());
 			}
 			if(payRefundPayment.getId()!=null){
+				logger.info(log+"--更新退款流水");
 				payRefundPaymentMapper.updateByPrimaryKeySelective(payRefundPayment);
 			}else{
+				logger.info(log+"--插入退款流水");
 				payRefundPaymentMapper.insertSelective(payRefundPayment);
 			}
 			if(!vo.isStatus()){

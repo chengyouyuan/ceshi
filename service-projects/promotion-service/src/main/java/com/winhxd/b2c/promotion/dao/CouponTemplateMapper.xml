@@ -471,34 +471,36 @@
 
  <!-- 获取门店优惠券使用情况 领取情况统计列表 -->
   <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.lang.Long" resultMap="couponGetedAndUsedResultMap">
-      SELECT
-        a.store_id as storeId,
-        b.template_id as templeteId,
-        b.coupon_activity_id as couponActivityId,
-        d.apply_rule_type as applyRuleType,
-        f.reduced_type as reduceType,
-        d.id as applyId,
-          (case WHEN b.end_time <![CDATA[ < ]]> NOW() THEN 0 ELSE 1 end) expire,
-          (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
-          (case WHEN f.cost is null then 0 else f.cost end) as cost,
-          (case WHEN f.discounted is null then 0 else TRUNCATE((100-f.discounted)/10,2) end) as discounted,
-          (case WHEN f.discounted_max_amt is null then 0 else f.discounted_max_amt end) as maxAmt,
-          f.discounted_amt as discountedAmt,
-          DATE_FORMAT(b.start_time,'%Y-%m-%d') as startTime,
-          DATE_FORMAT(b.end_time,'%Y-%m-%d') as endTime
-      FROM
-      coupon_activity_store_customer a
-      LEFT JOIN coupon_activity_template b ON a.coupon_activity_template_id = b.id
-      LEFT JOIN coupon_template c on b.template_id = c.id AND c.`status` = 1
-      LEFT JOIN coupon_activity h on h.id = b.coupon_activity_id
-      LEFT JOIN coupon_apply d ON c.apply_rule_id = d.id AND d.`status` = 1
-      LEFT JOIN coupon_grade e on e.id = c.grade_id
-      LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
-      WHERE
-          a.store_id = #{storeId}
-          and h.activity_status= 1
-      GROUP BY b.coupon_activity_id,b.template_id
-      ORDER BY expire DESC,startTime DESC
+
+    SELECT
+    a.store_id as storeId,
+    b.template_id as templeteId,
+    b.coupon_activity_id as couponActivityId,
+    d.apply_rule_type as applyRuleType,
+    f.reduced_type as reduceType,
+    d.id as applyId,
+    (case WHEN b.end_time  <![CDATA[ < ]]>  NOW() THEN 0 ELSE 1 end) expire,
+    (case WHEN f.reduced_amt is null then 0 else f.reduced_amt end) as reduceAmt,
+    (case WHEN f.cost is null then 0 else f.cost end) as cost,
+    (case WHEN f.discounted is null then 0 else TRUNCATE((100-f.discounted)/10,2) end) as discounted,
+    (case WHEN f.discounted_max_amt is null then 0 else f.discounted_max_amt end) as maxAmt,
+    f.discounted_amt as discountedAmt,
+    DATE_FORMAT(b.start_time,'%Y-%m-%d') as startTime,
+    DATE_FORMAT(b.end_time,'%Y-%m-%d') as endTime
+    FROM
+    coupon_activity_store_customer a
+    LEFT JOIN coupon_activity_template b ON a.coupon_activity_template_id = b.id
+    LEFT JOIN coupon_template c on b.template_id = c.id AND c.`status` = 1
+    LEFT JOIN coupon_activity h on h.id = b.coupon_activity_id
+    LEFT JOIN coupon_activity_record p on p.coupon_activity_id = b.coupon_activity_id
+    LEFT JOIN coupon_apply d ON c.apply_rule_id = d.id AND d.`status` = 1
+    LEFT JOIN coupon_grade e on e.id = c.grade_id
+    LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
+    WHERE
+    a.store_id = #{storeId}
+    and h.activity_status= 1
+    GROUP BY b.coupon_activity_id
+    ORDER BY expire DESC,startTime DESC
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
@@ -518,12 +520,12 @@
     FROM
     coupon_activity_store_customer d
     LEFT JOIN coupon_activity_template e on e.id = d.coupon_activity_template_id
-    LEFT JOIN coupon_template a ON a.id = e.template_id
-    LEFT JOIN  coupon_template_send c ON c.template_id = a.id
+    LEFT JOIN coupon_activity_record a on a.coupon_activity_id = e.coupon_activity_id
     LEFT JOIN coupon_activity h on h.id = e.coupon_activity_id
+    LEFT JOIN  coupon_template_send c ON c.id = a.send_id
     WHERE d.store_id = #{storeId}
           and h.activity_status= 1
-    group by e.coupon_activity_id,e.template_id
+    group by e.coupon_activity_id
   </select>
 
 

@@ -507,6 +507,7 @@ public class ApiStoreProductManageController {
                         if (psList.get(j).getSkuCode().equals(simpleVOList.get(i).getSkuCode())) {
                             simpleVOList.get(i).setSkuName(psList.get(j).getSkuName());
                             simpleVOList.get(i).setSkuImage(psList.get(j).getSkuImage());
+                            simpleVOList.get(i).setSkuAttributeOption(psList.get(j).getSkuAttributeOption());
                         }
                     }
                     // 门店商品表里面存在该商品但是基础商品信息表里没有该商品移除

@@ -181,7 +181,7 @@ public class ApiOrderController {
             @ApiResponse(code = BusinessCode.ORDER_IS_BEING_MODIFIED, message = "订单修改中"),
             @ApiResponse(code = BusinessCode.CODE_4021002, message = "订单状态不允许退款")
     })
-    @RequestMapping(value = "/4021/v1/orderCancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/4021/v1/orderRefundByCustomer", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Void> orderRefundByCustomer(@RequestBody OrderRefundCondition orderRefundCondition) {
         String logTitle = "=/api-order/order/4021/v1/orderRefundByCustomer-C端订单退款接口=";
         LOGGER.info("{}--开始--{}", logTitle, orderRefundCondition);

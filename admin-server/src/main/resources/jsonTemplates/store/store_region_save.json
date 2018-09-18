@@ -35,7 +35,10 @@
         "placeholder": "请选择门店所属区域",
         "path": "",
         "configKey": "/template/module/system/system_region_list_radio_win.json",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "required": true
+        }
       }
     ]
   }

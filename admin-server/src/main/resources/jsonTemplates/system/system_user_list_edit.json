@@ -29,19 +29,23 @@
     ],
     "items": [
       {
-        "name": "id",
-        "inputModel": "input",
-        "title": "",
-        "value": "",
-        "placeholder": "",
-        "isHidden": true
-      },{
         "name": "username",
         "inputModel": "input",
         "title": "姓名",
         "value": "",
         "placeholder": "请输入姓名",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "required": true,
+          "maxLength": {
+            "value": 25,
+            "message": "允许最大长度为25个字符"
+          },
+          "minLength": {
+            "value": 2,
+            "message": "最短长度为2个字符"
+          }
+        }
       },
       {
         "name": "account",
@@ -49,7 +53,19 @@
         "title": "账号",
         "value": "",
         "placeholder": "请输入账号",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "required": true,
+          "maxLength": {
+            "value": 50,
+            "message": "允许最大长度为50个字符"
+          },
+          "minLength": {
+            "value": 3,
+            "message": "最短长度为3个字符"
+          },
+          "alphaNum": true
+        }
       },
       {
         "name": "mobile",
@@ -57,7 +73,13 @@
         "title": "手机号",
         "value": "",
         "placeholder": "请输入手机号",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "regex": {
+            "value": "/^((1[358][0-9])|(14[57])|(17[0678])|(19[7]))\\d{8}$/",
+            "message": "手机号码格式错误"
+          }
+        }
       },
       {
         "name": "roleId",
@@ -70,7 +92,10 @@
         "placeholder": "请选择权限组",
         "isHidden": false,
         "path": "",
-        "configKey": "/template/module/system/system_role_list_win.json"
+        "configKey": "/template/module/system/system_role_list_win.json",
+        "validate": {
+          "required": true
+        }
       },
       {
         "name": "regionCode",

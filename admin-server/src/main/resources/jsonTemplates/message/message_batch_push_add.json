@@ -34,7 +34,14 @@
         "title": "消息内容",
         "value": "",
         "placeholder": "请输入消息内容",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "required": true,
+          "maxLength": {
+            "value": 1024,
+            "message": "允许最大长度为1024个字符"
+          }
+        }
       },
       {
         "name": "timingPush",

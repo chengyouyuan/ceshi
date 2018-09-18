@@ -103,6 +103,7 @@
           {
             "name": "禁用",
             "icon": null,
+            "isShow":"function(index,row,button){return row.status==1}",
             "event": {
               "ajaxType": "get",
               "type": "ajax",
@@ -115,6 +116,7 @@
           {
             "name": "启用",
             "icon": null,
+            "isShow":"function(index,row,button){return row.status==0}",
             "event": {
               "ajaxType": "get",
               "type": "ajax",
@@ -154,7 +156,13 @@
         "title": "手机号",
         "placeholder": "请输入成员手机号",
         "value": "",
-        "isHidden": false
+        "isHidden": false,
+        "validate": {
+          "regex": {
+            "value": "/^\\d{1,11}$/",
+            "message": "手机号码格式错误"
+          }
+        }
       },
       {
         "name": "roleId",

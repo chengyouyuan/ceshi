@@ -149,6 +149,11 @@ public class PayStatement {
 	 * 对账单日期
 	 */
     private Date billDate;
+    
+    /**
+     * 插入时间
+     */
+    private Date updated;
 
 	/**
 	 * 对账单统计表id
@@ -386,4 +391,12 @@ public class PayStatement {
     public void setStatementCountId(Long statementCountId) {
         this.statementCountId = statementCountId;
     }
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
 }

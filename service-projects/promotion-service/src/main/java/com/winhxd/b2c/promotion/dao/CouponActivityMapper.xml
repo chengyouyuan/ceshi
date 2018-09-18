@@ -389,6 +389,62 @@
     </if>
   </select>
 
+  <select id="selectCouponListGroup" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
+    SELECT
+    cts.id sendId,
+    ct.STATUS,
+    ct.reason,
+    ct.pay_type payType,
+    ct.cal_type calType,
+    cg.type type,
+    cgd.reduced_type reducedType,
+    cgd.reduced_amt reducedAmt,
+    cgd.discounted_amt discountedAmt,
+    (100-cgd.discounted)/10 discounted,
+    cgd.discounted_max_amt discountedMaxAmt,
+    cap.apply_rule_type applyRuleType,
+    cap.id applyId,
+    ca.coupon_type couponType,
+    DATE(cts.start_time) activityStart,
+    DATE(cts.end_time) activityEnd,
+    CASE
+    WHEN cts.status = 2 THEN
+    '未使用'
+    WHEN cts.STATUS = 1 THEN
+    '已使用'
+    WHEN cts.STATUS = 4 THEN
+    '退回'
+    WHEN cts.STATUS = 0 THEN
+    '无效'
+    WHEN cts.STATUS = 3 THEN
+    '已过期'
+    END AS useStatus
+    FROM
+    coupon_template_send cts
+    JOIN coupon_template ct ON cts.template_id = ct.id
+    JOIN coupon_activity_record car ON cts.id = car.send_id
+    JOIN coupon_activity ca ON car.coupon_activity_id = ca.id
+    JOIN coupon_grade cg ON ct.grade_id = cg.id
+    JOIN coupon_grade_detail cgd ON cgd.grade_id = cg.id
+    JOIN coupon_apply cap ON ct.apply_rule_id = cap.id
+    WHERE
+    cts.customer_id = #{customerId}
+    <if test="couponType != null">
+      AND ca.coupon_type = #{couponType}
+    </if>
+    <if test="status == 1">
+      AND cts.status = #{status}
+    </if>
+    <if test="status == 3">
+      AND cts.end_time &lt; now()
+    </if>
+    <if test="status == null">
+      AND cts.start_time &lt;= NOW() AND cts.end_time >= NOW()
+      AND (cts.STATUS = 2 OR cts.STATUS = 4)
+    </if>
+     GROUP BY cts.template_id
+  </select>
+
   <select id="selectNewUserCouponList" parameterType="java.util.Map" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
     cts.id sendId,

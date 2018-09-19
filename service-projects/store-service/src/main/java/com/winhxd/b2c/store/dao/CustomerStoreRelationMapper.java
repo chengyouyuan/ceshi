@@ -1,6 +1,8 @@
 package com.winhxd.b2c.store.dao;
 
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,5 +26,5 @@ public interface CustomerStoreRelationMapper{
      * @param record 查询条件对象
      * @return 查询到的结果数据
      */
-    List<CustomerStoreRelation> selectByCondition(CustomerStoreRelation record);
+    List<CustomerStoreRelation> selectByCondition(@Param("condition") CustomerStoreRelation record);
 }

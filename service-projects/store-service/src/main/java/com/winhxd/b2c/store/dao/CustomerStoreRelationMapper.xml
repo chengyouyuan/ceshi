@@ -14,13 +14,13 @@
     id, customer_id, store_user_id, binding_time, status,unbinding_time
   </sql>
 
-  <select id="selectByCondition" resultType="com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation">
+  <select id="selectByCondition" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from customer_store_relation where status = 0
-      <if test="customerId != null">
-        and customer_id = #{customerId}
-      </if>
-    <if test="storeUserId != null">
-      and store_user_id = #{storeUserId}
+    <if test="condition.customerId != null">
+      and customer_id = #{condition.customerId,jdbcType=BIGINT}
+    </if>
+    <if test="condition.storeUserId != null">
+      and store_user_id = #{condition.storeUserId,jdbcType=BIGINT}
     </if>
   </select>
 

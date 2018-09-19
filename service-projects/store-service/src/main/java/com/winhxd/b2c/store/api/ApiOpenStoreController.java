@@ -423,9 +423,7 @@ public class ApiOpenStoreController {
 
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
 
-        if(null == bindingCondition.getStoreId()){
-            throw new BusinessException(BusinessCode.CODE_102901);
-        }else {
+        if(null != bindingCondition.getStoreId()){
             bindingStatus = storeService.bindCustomer(customerUser.getCustomerId(),bindingCondition.getStoreId());
             logger.info("用户customerId=" + customerUser.getCustomerId() + ",尝试绑定门店Id=" + bindingCondition.getStoreId() + ",绑定结果：" + bindingStatus.getDesc());
         }

@@ -113,10 +113,7 @@ public class OnlinePayPickUpInStoreOrderHandlerImpl implements OrderHandler {
             throw new NullPointerException(ORDER_INFO_EMPTY);
         }
         logger.info("{} 成功提交后处理逻辑开始", ORDER_TYPE_DESC);
-        ResponseResult<Integer> result = storeServiceClient.bindCustomer(orderInfo.getCustomerId(), orderInfo.getStoreId());
-        if (result == null || result.getData() != 1) {
-            logger.error("门店storeId={}，客户customerId={} 绑定关系失败", orderInfo.getStoreId(), orderInfo.getCustomerId());
-        }
+
         // 发送延时MQ信息，处理超时未付款 取消操作
         logger.info("{},orderNo={} 发送延时MQ信息，处理超时未付款 取消操作 开始", ORDER_TYPE_DESC, orderInfo.getOrderNo());
         int delayMilliseconds = OrderOperateTime.ORDER_NEED_PAY_TIME_BY_MILLISECONDS;

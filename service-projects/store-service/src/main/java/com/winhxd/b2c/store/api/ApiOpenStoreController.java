@@ -11,8 +11,10 @@ import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondit
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreBusinessInfoCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreCheckBindingCondition;
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
+import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -31,6 +33,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.ibatis.type.ShortTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -406,25 +409,33 @@ public class ApiOpenStoreController {
      * @return 门店信息
      * @author chengyy
      * @date 2018/8/10 15:17
-     * @Description 根据token查询用户绑定的门店信息
+     * @Description 根据token查询用户绑定的门店信息，若无绑定门店，则自动绑定
      */
-    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则不返回[C端在登录的情况下有token时调用]")
-    @PostMapping(value = "/1029/v1/findBindingStoreInfo")
+    @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则绑定后返回[C端在登录的情况下有token时调用]")
+    @PostMapping(value = "/1029/v1/checkOrBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
-    public ResponseResult<StoreUserInfoVO> findBindingStoreInfo(ApiCondition apiCondition) {
+    public ResponseResult<StoreUserInfoVO> checkOrBindingStoreInfo(StoreCheckBindingCondition bindingCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
+
+        StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
+
+        if(bindingCondition.getStoreId() != null){
+            bindingStatus = storeService.bindCustomer(customerUser.getCustomerId(),bindingCondition.getStoreId());
+        }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
             //设置月销售量
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
+            storeUserInfoVO.setBindingStatus(bindingStatus.getStatus());
             result.setData(storeUserInfoVO);
         }
-        return result;
+        //else 没有绑定成功的门店，不返回数据；如需修改，请注意bindingStatus默认值问题；
 
+        return result;
     }
 
     /**

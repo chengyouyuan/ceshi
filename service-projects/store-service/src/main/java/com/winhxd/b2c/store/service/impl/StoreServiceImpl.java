@@ -10,6 +10,7 @@ import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCond
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
+import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -55,23 +56,29 @@ public class StoreServiceImpl implements StoreService {
     private MessageServiceClient messageServiceClient;
 
     @Override
-    public int bindCustomer(Long customerId, Long storeUserId) {
+    public StoreBindingStatus bindCustomer(Long customerId, Long storeUserId) {
         CustomerStoreRelation record = new CustomerStoreRelation();
         record.setCustomerId(customerId);
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
         if (relations != null && relations.size() > 0) {
             //当前用户已经存在绑定关系
+            //todo,此处需要优化，没有必要再读库；
             record.setStoreUserId(storeUserId);
             List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
             if (list != null && list.size() > 0) {
-                return -1;
+                //已绑定当前门店
+                return StoreBindingStatus.AdreadyBinding;
             }
-            return -2;
+            //绑定了其他门店
+            return StoreBindingStatus.DifferenceBinding;
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
         record.setStatus(0);
-        return customerStoreRelationMapper.insert(record);
+        //todo,需要判断storeUserId是否有效,以免产生脏数据；
+        customerStoreRelationMapper.insert(record);
+
+        return StoreBindingStatus.NewBinding;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
+import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
@@ -23,12 +24,12 @@ public interface StoreService {
     /**
      * @param customerId  用户id
      * @param storeUserId 门店id
-     * @return 0绑定失败, 1绑定成功, - 1用户已经和当前门店存在绑定关系 ， - 2用户已经和其他门店存在绑定关系
+     * @return 0绑定失败, 1绑定成功, - 2用户已经和当前门店存在绑定关系 ， - 3用户已经和其他门店存在绑定关系
      * @author chengyy
      * @date 2018/8/3 13:23
      * @Description 门店用户绑定
      */
-    int bindCustomer(Long customerId, Long storeUserId);
+    StoreBindingStatus bindCustomer(Long customerId, Long storeUserId);
 
     /**
      * @param storeUserId 门店id

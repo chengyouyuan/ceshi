@@ -117,7 +117,7 @@ public class ApiCustomerProductController {
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_200002,message = "请求缺少参数门店id")})
-    @PostMapping(value = "product/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "product/security/2003/v1/hotProductList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<PagedList<ProductSkuVO>> hotProductList(@RequestBody CustomerSearchProductCondition condition) {
         logger.info("{} - 店铺热销商品接口 入参：{}", MODULE_NAME, JsonUtil.toJSONString(condition));
         if (condition.getStoreId() == null){

@@ -88,7 +88,7 @@ public class StoreServiceController implements StoreServiceClient {
 		if(!checkCustomerExist(customerId)){
         	throw new BusinessException(BusinessCode.CODE_200010);
 		}
-        int status = storeService.bindCustomer(customerId,storeUserId);
+        int status = storeService.bindCustomer(customerId,storeUserId).getStatus();
 		result.setData(status);
         return result;
     }

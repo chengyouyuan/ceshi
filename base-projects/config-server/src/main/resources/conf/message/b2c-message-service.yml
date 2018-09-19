@@ -10,13 +10,13 @@ wechat:
     tokenUrl: https://api.weixin.qq.com/cgi-bin/token
     grantType: client_credential
     codeUrl: https://api.weixin.qq.com/wxa/getwxacodeunlimit
-    pageUrl: pages/index/store
+    pageUrl: pages/index/index
     width: 430
     autoColor: false
     isHyaline: true
   config:
     webpageUrl: https://xxxxx
-    path: pages/index/store
+    path: pages/index/index
     title: 进店领券享优惠！欢迎光临
     description: 进店领券享优惠！欢迎光临
     transaction: transaction

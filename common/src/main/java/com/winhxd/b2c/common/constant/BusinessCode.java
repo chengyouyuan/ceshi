@@ -268,6 +268,8 @@ public final class BusinessCode {
     public static final int CODE_503002 = 503002;
     /** 优惠券有效期结束时间需要大于优惠券活动结束时间*/
     public static final int CODE_503003 = 503003;
+    /** 限制极限值为100张*/
+    public static final int CODE_503004 = 503004;
 
     /** 优惠券活动更新失败*/
     public static final int CODE_503201 = 503201;

@@ -427,6 +427,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_102901);
         }else {
             bindingStatus = storeService.bindCustomer(customerUser.getCustomerId(),bindingCondition.getStoreId());
+            logger.info("用户customerId=" + customerUser.getCustomerId() + ",尝试绑定门店Id=" + bindingCondition.getStoreId() + ",绑定结果：" + bindingStatus.getDesc());
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
@@ -434,8 +435,12 @@ public class ApiOpenStoreController {
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             storeUserInfoVO.setBindingStatus(bindingStatus.getStatus());
             result.setData(storeUserInfoVO);
+        } else {
+            //前端目前不判断bindingStatus，通过请求的id和返回的绑定门店id进行简单验证，以后可以改成这样；
+            StoreUserInfoVO emptyStoreUserInfoVO = new StoreUserInfoVO();
+            emptyStoreUserInfoVO.setBindingStatus(StoreBindingStatus.NoneBinding.getStatus());
+            result.setData(emptyStoreUserInfoVO);
         }
-        //else 没有绑定成功的门店，不返回数据；如需修改，请注意bindingStatus默认值问题；
 
         return result;
     }

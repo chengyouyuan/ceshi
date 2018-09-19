@@ -16,7 +16,7 @@ public interface CouponService {
     /**
      * 新人专享优惠列表
      *
-     * @author wangxiaoshun
+     * @author wangxiaoshun。
      * @return
      */
     List<CouponVO> getNewUserCouponList();

@@ -81,7 +81,7 @@ public interface CouponActivityMapper {
     List<CouponVO> selectStoreCouponList(Long storeId);
 
     /**
-     * 判断活动时间是否冲突
+     * 判断活动时间是否冲突。
      * @param condition
      * @return
      */

@@ -3,6 +3,7 @@ package com.winhxd.b2c.store.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
@@ -19,6 +20,7 @@ import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
 import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
@@ -60,14 +62,13 @@ public class StoreServiceImpl implements StoreService {
         CustomerStoreRelation record = new CustomerStoreRelation();
         record.setCustomerId(customerId);
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
-        if (relations != null && relations.size() > 0) {
+        if (null != relations && relations.size() > 0) {
             //当前用户已经存在绑定关系
-            //todo,此处需要优化，没有必要再读库；
-            record.setStoreUserId(storeUserId);
-            List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
-            if (list != null && list.size() > 0) {
-                //已绑定当前门店
-                return StoreBindingStatus.AdreadyBinding;
+            for (CustomerStoreRelation relation : relations) {
+                if(relation.getStoreUserId().equals(storeUserId)){
+                    //已绑定当前门店
+                    return StoreBindingStatus.AdreadyBinding;
+                }
             }
             //绑定了其他门店
             return StoreBindingStatus.DifferenceBinding;
@@ -76,6 +77,10 @@ public class StoreServiceImpl implements StoreService {
         record.setBindingTime(new Date());
         record.setStatus(0);
         //todo,需要判断storeUserId是否有效,以免产生脏数据；
+        StoreUserInfo store = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
+        if(null == store){
+            throw new BusinessException(BusinessCode.CODE_102902);
+        }
         customerStoreRelationMapper.insert(record);
 
         return StoreBindingStatus.NewBinding;

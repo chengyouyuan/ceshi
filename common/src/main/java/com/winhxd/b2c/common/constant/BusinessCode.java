@@ -112,7 +112,12 @@ public final class BusinessCode {
 
     /**1028接口参数无效*/
     public static final int CODE_102801 = 102801;
-    
+
+    /**1029接口门店ID参数为空*/
+    public static final int CODE_102901 = 102901;
+    /**1029接口门店ID参数无效*/
+    public static final int CODE_102902 = 102902;
+
     /**1031接口参数无效*/
     public static final int CODE_103101 = 103101;
     /**门店商品skuCode无效*/

@@ -417,13 +417,15 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreUserInfoVO> checkOrBindingStoreInfo(@RequestBody StoreCheckBindingCondition bindingCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
+        if (null == customerUser) {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
 
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
 
-        if(bindingCondition.getStoreId() != null){
+        if(null == bindingCondition.getStoreId()){
+            throw new BusinessException(BusinessCode.CODE_102901);
+        }else {
             bindingStatus = storeService.bindCustomer(customerUser.getCustomerId(),bindingCondition.getStoreId());
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());

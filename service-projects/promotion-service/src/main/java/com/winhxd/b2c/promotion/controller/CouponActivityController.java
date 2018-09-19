@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  *
- * @author sjx
+ * @author sjx.
  * @date 2018/8/6
  * @Description 优惠券活动相关入口
  */

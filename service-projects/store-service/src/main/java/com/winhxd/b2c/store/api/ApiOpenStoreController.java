@@ -414,7 +414,7 @@ public class ApiOpenStoreController {
     @ApiOperation(value = "根据用户token查询绑定门店信息，有则返回，没有则绑定后返回[C端在登录的情况下有token时调用]")
     @PostMapping(value = "/1029/v1/checkOrBindingStoreInfo")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功，如果有绑定的门店则返回门店信息否则不返回")})
-    public ResponseResult<StoreUserInfoVO> checkOrBindingStoreInfo(StoreCheckBindingCondition bindingCondition) {
+    public ResponseResult<StoreUserInfoVO> checkOrBindingStoreInfo(@RequestBody StoreCheckBindingCondition bindingCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {

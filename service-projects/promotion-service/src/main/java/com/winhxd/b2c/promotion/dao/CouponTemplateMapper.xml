@@ -499,7 +499,7 @@
     WHERE
     a.store_id = #{storeId}
     and h.activity_status= 1
-    GROUP BY b.coupon_activity_id
+    GROUP BY b.coupon_activity_id,templeteId
     ORDER BY expire DESC,startTime DESC
   </select>
 
@@ -513,19 +513,34 @@
 
   <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
     SELECT
-    count(1) as totalCount,
-    sum(case WHEN c.`status` = 1 then 1 else 0 end ) as usedCount,
-    e.coupon_activity_id as couponActivityId,
-    e.template_id as templeteId
+        (
+            SELECT
+                COUNT(car.id)
+            FROM
+                coupon_activity_record car
+            WHERE
+                car.coupon_activity_id = ca.id
+        ) AS  totalCount,
+        (
+            SELECT
+                COUNT(cts.id)
+            FROM
+                coupon_activity_record car
+            LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+            WHERE
+                cts. STATUS = '1'
+            AND car.coupon_activity_id = ca.id
+        ) as usedCount,
+        ca.id AS couponActivityId,
+        cat.template_id as templeteId
     FROM
-    coupon_activity_store_customer d
-    LEFT JOIN coupon_activity_template e on e.id = d.coupon_activity_template_id
-    LEFT JOIN coupon_activity_record a on a.coupon_activity_id = e.coupon_activity_id
-    LEFT JOIN coupon_activity h on h.id = e.coupon_activity_id
-    LEFT JOIN  coupon_template_send c ON c.id = a.send_id
-    WHERE d.store_id = #{storeId}
-          and h.activity_status= 1
-    group by e.coupon_activity_id
+        coupon_activity ca
+    LEFT JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id and cat.`status`= 1
+    LEFT JOIN coupon_activity_store_customer d on d.coupon_activity_template_id = cat.id AND d.store_id = #{storeId}
+    WHERE 1=1
+    AND ca.`status` = 1
+    AND ca.activity_status = 1
+    GROUP BY cat.coupon_activity_id,templeteId
   </select>
 
 

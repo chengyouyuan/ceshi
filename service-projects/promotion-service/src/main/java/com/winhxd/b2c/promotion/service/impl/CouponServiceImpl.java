@@ -1216,7 +1216,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     /**
-     * 订单可用优惠券分组
+     * 订单可用优惠券分组  
      * @param couponCondition
      * @return
      */

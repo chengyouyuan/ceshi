@@ -209,6 +209,16 @@ public class CouponActivityController implements CouponActivityServiceClient {
         if(null == condition.getType()){
             throw new BusinessException(BusinessCode.CODE_1007);
         }
+        //判断推券和领券活动的每类券，最多给门店推送100张或让门店可领100张。
+        Integer maxNum = 100;
+        if(condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()) {
+            if (condition.getCouponActivityTemplateList().get(0).getCustomerVoucherLimitNum()>maxNum){
+                throw new BusinessException(BusinessCode.CODE_503004);
+            }
+        }
+        if (condition.getCouponActivityTemplateList().get(0).getSendNum()>maxNum){
+            throw new BusinessException(BusinessCode.CODE_503004);
+        }
         //领券
         if(condition.getType() == CouponActivityEnum.PULL_COUPON.getCode()){
             if (StringUtils.isBlank(condition.getName()) || condition.getCouponActivityTemplateList() == null

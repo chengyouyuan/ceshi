@@ -173,6 +173,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
                     couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
                 }
+                //如果不限制则最大张数限定100张
+                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.UNLIMITED.getCode()){
+                    couponActivityTemplate.setCustomerVoucherLimitNum(100);
+                }
             }
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
@@ -346,6 +350,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
                 if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
                     couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                }
+                //如果不限制则最大张数限定100张
+                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.UNLIMITED.getCode()){
+                    couponActivityTemplate.setCustomerVoucherLimitNum(100);
                 }
             }
             //推券

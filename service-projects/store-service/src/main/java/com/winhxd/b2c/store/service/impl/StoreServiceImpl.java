@@ -65,6 +65,9 @@ public class StoreServiceImpl implements StoreService {
         if (null != relations && relations.size() > 0) {
             //当前用户已经存在绑定关系
             for (CustomerStoreRelation relation : relations) {
+                if (relation == null) {
+                    continue;
+                }
                 if(relation.getStoreUserId().equals(storeUserId)){
                     //已绑定当前门店
                     return StoreBindingStatus.AdreadyBinding;

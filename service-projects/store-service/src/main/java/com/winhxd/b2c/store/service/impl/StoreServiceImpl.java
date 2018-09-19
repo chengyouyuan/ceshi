@@ -64,11 +64,11 @@ public class StoreServiceImpl implements StoreService {
         List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
         if (null != relations && relations.size() > 0) {
             //当前用户已经存在绑定关系
-            for (CustomerStoreRelation relation : relations) {
-                if(relation.getStoreUserId().equals(storeUserId)){
-                    //已绑定当前门店
-                    return StoreBindingStatus.AdreadyBinding;
-                }
+            record.setStoreUserId(storeUserId);
+            List<CustomerStoreRelation> list = customerStoreRelationMapper.selectByCondition(record);
+            if (list != null && list.size() > 0) {
+                //已绑定当前门店
+                return StoreBindingStatus.AdreadyBinding;
             }
             //绑定了其他门店
             return StoreBindingStatus.DifferenceBinding;

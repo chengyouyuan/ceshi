@@ -226,6 +226,8 @@
     <if test="condition.dateInterval != null and condition.dateInterval.end != null">
       AND ca.created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
     </if>
+    GROUP BY
+    ca.id
     ORDER BY ca.created DESC
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

@@ -823,37 +823,39 @@ public class CouponServiceImpl implements CouponService {
                     //商品券
                     List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
                     if(!couponApplyProducts.isEmpty()) {
+                        //满足优惠券使用条件的商品金额
+                        BigDecimal amountPrice = new BigDecimal(0);
                         //优惠券适用的商品规则
                         List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
                         for (CouponApplyProductList couponApplyProduct : couponApplyProductLists) {
                             //循环购物车商品信息
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 logger.info("availableCouponListByOrder-商品券-优惠ID:{},优惠券适用商品SKU:{},购物车商品SKU:{}",couponVO.getTemplateId(),couponApplyProduct.getSkuCode(),shopCarProdInfoVO.getSkuCode());
-                                BigDecimal amountPrice = new BigDecimal(0);
                                 if (couponApplyProduct.getSkuCode().equals(shopCarProdInfoVO.getSkuCode())) {
                                     if(shopCarProdInfoVO.getPrice()!=null&&shopCarProdInfoVO.getAmount()!=null){
                                         BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
                                         amountPrice = amountPrice.add(brandProductPrice);
                                     }
-                                    //商品金额大于等于满减金额优惠券可用
-                                    logger.info("availableCouponListByOrder-商品券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
-                                    if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
-                                        couponVO.setAvailableStatus(1);
-                                        results.add(couponVO);
-                                    }
                                 }
                             }
+                        }
+                        //商品金额大于等于满减金额优惠券可用
+                        logger.info("availableCouponListByOrder-商品券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
+                        if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
+                            couponVO.setAvailableStatus(1);
+                            results.add(couponVO);
                         }
                     }
                 }else if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()))){
                     //品牌券
                     List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
                     if(!couponApplyBrands.isEmpty()) {
+                        //满足优惠券使用条件的商品金额
+                        BigDecimal amountPrice = new BigDecimal(0);
                         //优惠券适用的品牌规则
                         List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
                         for (CouponApplyBrandList couponApplyBrand : couponApplyBrandLists) {
                             //循环购物车商品信息
-                            BigDecimal amountPrice = new BigDecimal(0);
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 logger.info("availableCouponListByOrder-品牌券-优惠ID:{},优惠券适用品牌编码:{},优惠券适用品牌商编码:{},购物车商品品牌编码:{},购物车商品品牌商编码:{}",couponVO.getTemplateId(),couponApplyBrand.getBrandCode(),couponApplyBrand.getCompanyCode(),shopCarProdInfoVO.getBrandCode(),shopCarProdInfoVO.getCompanyCode());
                                 if (couponApplyBrand.getBrandCode().equals(shopCarProdInfoVO.getBrandCode()) && couponApplyBrand.getCompanyCode().equals(shopCarProdInfoVO.getCompanyCode())) {
@@ -863,12 +865,12 @@ public class CouponServiceImpl implements CouponService {
                                     }
                                 }
                             }
-                            //品牌商品金额大于等于满减金额优惠券可用
-                            logger.info("availableCouponListByOrder-品牌券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
-                            if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
-                                couponVO.setAvailableStatus(1);
-                                results.add(couponVO);
-                            }
+                        }
+                        //品牌商品金额大于等于满减金额优惠券可用
+                        logger.info("availableCouponListByOrder-品牌券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
+                        if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
+                            couponVO.setAvailableStatus(1);
+                            results.add(couponVO);
                         }
                     }
                 }
@@ -1274,37 +1276,39 @@ public class CouponServiceImpl implements CouponService {
                     //商品券
                     List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
                     if(!couponApplyProducts.isEmpty()) {
+                        //满足优惠券使用条件的商品金额
+                        BigDecimal amountPrice = new BigDecimal(0);
                         //优惠券适用的商品规则
                         List<CouponApplyProductList> couponApplyProductLists = couponApplyProductListMapper.selectByApplyProductId(couponApplyProducts.get(0).getId());
                         for (CouponApplyProductList couponApplyProduct : couponApplyProductLists) {
                             //循环购物车商品信息
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 logger.info("availableCouponListByOrder-商品券-优惠ID:{},优惠券适用商品SKU:{},购物车商品SKU:{}",couponVO.getTemplateId(),couponApplyProduct.getSkuCode(),shopCarProdInfoVO.getSkuCode());
-                                BigDecimal amountPrice = new BigDecimal(0);
                                 if (couponApplyProduct.getSkuCode().equals(shopCarProdInfoVO.getSkuCode())) {
                                     if(shopCarProdInfoVO.getPrice()!=null&&shopCarProdInfoVO.getAmount()!=null){
                                         BigDecimal brandProductPrice = shopCarProdInfoVO.getPrice().multiply(BigDecimal.valueOf(shopCarProdInfoVO.getAmount()));
                                         amountPrice = amountPrice.add(brandProductPrice);
                                     }
-                                    //商品金额大于等于满减金额优惠券可用
-                                    logger.info("availableCouponListByOrder-商品券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
-                                    if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
-                                        couponVO.setAvailableStatus(1);
-                                        results.add(couponVO);
-                                    }
                                 }
                             }
+                        }
+                        //商品金额大于等于满减金额优惠券可用
+                        logger.info("availableCouponListByOrder-商品券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
+                        if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
+                            couponVO.setAvailableStatus(1);
+                            results.add(couponVO);
                         }
                     }
                 }else if(couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()))){
                     //品牌券
                     List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
                     if(!couponApplyBrands.isEmpty()) {
+                        //满足优惠券使用条件的商品金额
+                        BigDecimal amountPrice = new BigDecimal(0);
                         //优惠券适用的品牌规则
                         List<CouponApplyBrandList> couponApplyBrandLists = couponApplyBrandListMapper.selectByApplyBrandId(couponApplyBrands.get(0).getId());
                         for (CouponApplyBrandList couponApplyBrand : couponApplyBrandLists) {
                             //循环购物车商品信息
-                            BigDecimal amountPrice = new BigDecimal(0);
                             for (ShopCarProdInfoVO shopCarProdInfoVO : shopCarProdInfoVOS) {
                                 logger.info("availableCouponListByOrder-品牌券-优惠ID:{},优惠券适用品牌编码:{},优惠券适用品牌商编码:{},购物车商品品牌编码:{},购物车商品品牌商编码:{}",couponVO.getTemplateId(),couponApplyBrand.getBrandCode(),couponApplyBrand.getCompanyCode(),shopCarProdInfoVO.getBrandCode(),shopCarProdInfoVO.getCompanyCode());
                                 if (couponApplyBrand.getBrandCode().equals(shopCarProdInfoVO.getBrandCode()) && couponApplyBrand.getCompanyCode().equals(shopCarProdInfoVO.getCompanyCode())) {
@@ -1314,12 +1318,12 @@ public class CouponServiceImpl implements CouponService {
                                     }
                                 }
                             }
-                            //品牌商品金额大于等于满减金额优惠券可用
-                            logger.info("availableCouponListByOrder-品牌券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
-                            if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
-                                couponVO.setAvailableStatus(1);
-                                results.add(couponVO);
-                            }
+                        }
+                        //品牌商品金额大于等于满减金额优惠券可用
+                        logger.info("availableCouponListByOrder-品牌券-优惠ID:{},商品总额:{},满减金额:{}",couponVO.getTemplateId(),amountPrice,couponVO.getReducedAmt());
+                        if (amountPrice.compareTo(couponVO.getReducedAmt()) >= 0) {
+                            couponVO.setAvailableStatus(1);
+                            results.add(couponVO);
                         }
                     }
                 }

@@ -21,6 +21,9 @@ public class StoreBusinessInfoVO {
     @ApiModelProperty(value = "店铺名称", required = true)
     private String storeName;
 
+    @ApiModelProperty(value = "店铺简称", required = true)
+    private String storeShortName;
+
     @ApiModelProperty(value = "店主姓名", required = true)
     private String shopkeeper;
 

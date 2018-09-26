@@ -334,6 +334,10 @@ public class ApiOpenStoreController {
         if (!storeNameMatcher) {
             throw new BusinessException(BusinessCode.CODE_102501, "店铺名称不能有特殊字符且长度不能超过15");
         }
+        boolean storeShortNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreShortName()).matches();
+        if (!storeShortNameMatcher) {
+            throw new BusinessException(BusinessCode.CODE_102505, "店铺简称称不能有特殊字符且长度不能超过15");
+        }
         boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(storeBusinessInfoCondition.getShopkeeper()).matches();
         if (!shopkeeperMatcher) {
             throw new BusinessException(BusinessCode.CODE_102502, "联系人不能有特殊字符且长度不能超过10");

@@ -23,6 +23,9 @@ public class StoreManageInfoVO {
     @ApiModelProperty(value = "门店名称（首页展示用）")
     private String storeName;
 
+    @ApiModelProperty(value = "门店别名（首页展示用取姓名第一个字加上老板）")
+    private String storeBoss;
+
     @ApiModelProperty(value = "今日营业额", required = true)
     private BigDecimal turnover;
 
@@ -46,5 +49,8 @@ public class StoreManageInfoVO {
 
     @ApiModelProperty(value = "对比昨日订单数")
     private String completeNumCompare;
+
+    @ApiModelProperty(value = "未读消息数(今日未读+历史未读)")
+    private Integer neteaseMessageNum;
 
 }

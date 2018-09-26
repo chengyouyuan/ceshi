@@ -12,6 +12,9 @@ public class BrandVO {
 	@ApiModelProperty(value = "品牌商名称")
 	private String companyName;
 	
+	@ApiModelProperty(value = "品牌商logo")
+	private String companyLogo;
+	
 	@ApiModelProperty(value = "品牌编码")
 	private String brandCode;
 	

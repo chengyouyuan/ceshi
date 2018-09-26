@@ -149,6 +149,10 @@ public class ApiStoreProductManageController {
             if (hxdBuyedProdSkuList != null && hxdBuyedProdSkuList.size() > 0) {
                 // 设置惠下单下过单的商品
                 prodConditionByPage.setHxdProductSkus(hxdBuyedProdSkuList);
+                // 由于一键上架惠下单商品不做分页处理，此处设置分页pageNo=1
+                prodConditionByPage.setPageNo(1);
+                // 由于一键上架惠下单商品不做分页处理，此处设置分页pageSize=9999 
+                prodConditionByPage.setPageSize(9999);
             } else {
                 // 没有下过单
                 responseResult= new ResponseResult<>(BusinessCode.CODE_101202);

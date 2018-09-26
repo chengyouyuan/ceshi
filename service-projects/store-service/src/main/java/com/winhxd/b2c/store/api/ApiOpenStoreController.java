@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
@@ -22,6 +23,7 @@ import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
@@ -74,6 +76,9 @@ public class ApiOpenStoreController {
     @Autowired
     private StoreRegionService storeRegionService;
 
+    @Autowired
+    private MessageServiceClient messageServiceClient;
+    
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
@@ -385,6 +390,19 @@ public class ApiOpenStoreController {
         StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate, false);
         storeManageInfoVO.setBusinessId(businessId);
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
+        //增加门店别名，首页展示用取姓名第一个字加上老板
+        String storeBoss = "老板";
+        if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
+            storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
+        }
+        storeManageInfoVO.setStoreBoss(storeBoss);
+        //增加查询未读消息(今日未读+历史未读)数量
+        MessageNeteaseCondition msgCondition = new MessageNeteaseCondition();
+        msgCondition.setStoreId(businessId);
+        msgCondition.setReadStatus((short) 0);
+        Integer neteaseMessageNum = messageServiceClient.getNeteaseMessageCount(msgCondition).getData();
+        storeManageInfoVO.setNeteaseMessageNum(neteaseMessageNum==null ? 0 : neteaseMessageNum);
+
         responseResult.setData(storeManageInfoVO);
         logger.info("惠小店管理首页获取数据接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;

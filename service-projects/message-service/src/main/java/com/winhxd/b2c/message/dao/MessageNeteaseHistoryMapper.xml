@@ -60,6 +60,24 @@
         </if>
         order by msg_time desc
     </select>
+    <select id="getNeteaseMessageCount"
+            parameterType="com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition"
+            resultType="java.lang.Integer">
+        select
+          count (id)
+        from message_netease_history
+        where 1=1
+        <if test="accid != null">
+            and to_accid=#{accid,jdbcType=VARCHAR}
+        </if>
+        <if test="readStatus != null and readStatus == 1">
+            and read_status = 1
+        </if>
+        <if test="readStatus != null and readStatus == 0">
+            and (read_status is null or read_status = 0)
+        </if>
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from message_netease_history
     where id = #{id,jdbcType=BIGINT}

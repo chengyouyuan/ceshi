@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.message.condition.MessageBatchPushCondition;
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
 import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
@@ -77,6 +78,22 @@ public class MessageServiceController implements MessageServiceClient {
 		}
 		return result;
 	}
+
+    @Override
+    public ResponseResult<Integer> getNeteaseMessageCount(@RequestBody MessageNeteaseCondition messageNeteaseCondition) {
+        ResponseResult<Integer> result = new ResponseResult<>();
+        try {
+            Integer neteaseCount = neteaseService.getNeteaseMessageCount(messageNeteaseCondition);
+            result.setData(neteaseCount==null?0:neteaseCount);
+        } catch (BusinessException be) {
+            LOGGER.error("/message/7014/v1/getNeteaseMessageCount,查询云信消息数量出错，异常信息为={}", be);
+            result.setCode(be.getErrorCode());
+        } catch (Exception e) {
+            LOGGER.error("/message/7014/v1/getNeteaseMessageCount,查询云信消息数量出错，异常信息为={}", e);
+            result.setCode(BusinessCode.CODE_1001);
+        }
+        return result;
+    }
 
 	@Override
 	public ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code") String code) {

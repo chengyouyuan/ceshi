@@ -9,6 +9,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CouponActivityMapper {
     int deleteByPrimaryKey(Long id);
@@ -88,4 +89,6 @@ public interface CouponActivityMapper {
     Integer getActivityDateClash(@Param("condition") CouponActivityAddCondition condition);
 
     List<CouponVO> selectCouponListGroup(@Param("customerId")Long customerId,@Param("couponType")Integer couponType,@Param("status")String status);
+    
+    List<Map<String, Object>> selectNums(@Param("status")String status,@Param("activityIds")List<Long> activityIds);
 }

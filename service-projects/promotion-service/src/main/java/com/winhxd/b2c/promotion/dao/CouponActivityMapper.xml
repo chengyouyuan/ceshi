@@ -134,139 +134,59 @@
     </if>
   </select>
   <select id="selectCouponActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryResultMap">
-    SELECT DISTINCT
-    ca.id,
-    ca.`code`,
-    ca.`name`,
-    ca.`activity_status`,
-    (
-    CASE
-    WHEN ca.`activity_status` = 1 THEN
-    '开启'
-    WHEN ca.`activity_status` = 2 THEN
-    '停用'
-    END
-    ) AS activity_status_name,
-    (
-    SELECT
-    count(DISTINCT template_id)
-    FROM
-    coupon_activity_template
-    WHERE
-    coupon_activity_id = ca.id
-    AND STATUS = 1
-    ) AS citeNum,
-    (
-    SELECT
-    count(DISTINCT casc.store_id)
-    FROM
-    coupon_activity_store_customer casc
-    LEFT JOIN coupon_activity_template cat ON casc.coupon_activity_template_id = cat.id
-    WHERE
-    casc.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS storeNum,
-    (
-    SELECT
-    MAX(cat.coupon_num_type)
-    FROM
-    coupon_activity_template cat
-    WHERE
-    cat.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS coupon_num_type,
-    (
-    SELECT
-    (
-    CASE
-    WHEN MAX(cat.coupon_num_type) = 1 THEN
-    '优惠券总数'
-    WHEN MAX(cat.coupon_num_type) = 2 THEN
-    '每个门店优惠券数'
-    END
-    ) AS coupon_num_type_name
-    FROM
-    coupon_activity_template cat
-    WHERE
-    cat.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS coupon_num_type_name,
-    (
-    SELECT
-    MAX(cat.coupon_num)
-    FROM
-    coupon_activity_template cat
-    WHERE
-    cat.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS coupon_num,
-    (
-    SELECT
-    COUNT(car.id)
-    FROM
-    coupon_activity_record car
-    WHERE
-    car.coupon_activity_id = ca.id
-    ) AS getNum,
-    (
-    SELECT
-    COUNT(cts.id)
-    FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    WHERE
-    cts. STATUS = '1'
-    AND car.coupon_activity_id = ca.id
-    ) AS useNum,
-    (
-    SELECT
-    COUNT(cts.id)
-    FROM
-    coupon_activity_record car
-    LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-    WHERE
-    cts. STATUS = '0'
-    AND car.coupon_activity_id = ca.id
-    ) AS revocationNum,
-    ca.activity_start,
-    ca.activity_end,
-    (
-    SELECT
-    MAX(cat.start_time)
-    FROM
-    coupon_activity_template cat
-    WHERE
-    cat.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS coupon_start_time,
-    (
-    SELECT
-    MAX(cat.end_time)
-    FROM
-    coupon_activity_template cat
-    WHERE
-    cat.`status` = 1
-    AND cat.coupon_activity_id = ca.id
-    ) AS coupon_end_time,
-    ca.created_by_name,
-    ca.created,
-    ca.updated_by_name,
-    ca.updated
-    FROM
-    coupon_activity ca
-    LEFT JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id
-    AND cat.`status` = 1
-    LEFT JOIN coupon_template ct ON ct.id = cat.template_id
-    AND ct.`status` = 1
-    LEFT JOIN coupon_activity_store_customer casc ON casc.coupon_activity_template_id = cat.id
-    AND casc.`status` = 1
-    LEFT JOIN customer_user_info cui ON cui.customer_id = casc.customer_id
-    AND cui.`status` = 1
-    LEFT JOIN store_user_info sui ON sui.id = casc.store_id
-    AND sui.store_status = 1
-    WHERE
-    1 = 1
-    AND ca.`status` = 1
+	SELECT DISTINCT
+	ca.id,
+	ca.`code`,
+	ca.`name`,
+	ca.`activity_status`,
+	(
+	CASE
+	WHEN ca.`activity_status` = 1 THEN
+	'开启'
+	WHEN ca.`activity_status` = 2 THEN
+	'停用'
+	END
+	) AS activity_status_name,
+	cat.coupon_num_type,
+	CASE
+	WHEN
+	cat.coupon_num_type = 1 THEN
+	'优惠券总数'
+	WHEN cat.coupon_num_type = 2 THEN
+	'每个门店优惠券数'
+	END AS coupon_num_type_name,
+	cat.coupon_num,
+	ca.activity_start,
+	ca.activity_end,
+	cat.start_time AS coupon_start_time,
+	cat.end_time AS coupon_end_time,
+	ca.created_by_name,
+	ca.created,
+	ca.updated_by_name AS numVALUE,
+	ca.updated,
+	count(DISTINCT casc.store_id) as storeNum,
+ 	count(DISTINCT cat.template_id) as citeNum
+	FROM
+	coupon_activity ca
+	LEFT JOIN coupon_activity_template cat ON
+	cat.coupon_activity_id = ca.id
+	AND cat.`status` = 1
+	LEFT JOIN
+	coupon_template ct ON ct.id = cat.template_id
+	AND ct.`status` = 1
+	LEFT
+	JOIN coupon_activity_store_customer casc ON
+	casc.coupon_activity_template_id = cat.id
+	AND casc.`status` = 1
+	LEFT JOIN
+	customer_user_info cui ON cui.customer_id = casc.customer_id
+	AND
+	cui.`status` = 1
+	LEFT JOIN store_user_info sui ON sui.id = casc.store_id
+	AND sui.store_status = 1
+	WHERE
+	1 = 1
+	AND ca.`status` = 1
     <if test="condition.type == 1">
       AND ca.`type` = '1'
     </if>
@@ -306,6 +226,8 @@
     <if test="condition.dateInterval != null and condition.dateInterval.end != null">
       AND ca.created &lt;= #{condition.dateInterval.end,jdbcType=TIMESTAMP}
     </if>
+    GROUP BY
+    ca.id
     ORDER BY ca.created DESC
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -768,4 +690,21 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectNums"  resultType="java.util.Map">
+	SELECT
+		COUNT(cts.id) as numValue,
+		car.coupon_activity_id as activityId
+	FROM
+		coupon_activity_record car
+	LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+	WHERE 1=1
+	<if test="status!=null and status!=''">
+	  and	cts.STATUS = #{status}
+	</if>
+	 AND car.coupon_activity_id in
+	 <foreach collection="activityIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}       
+     </foreach>    
+     GROUP BY car.coupon_activity_id
+  </select>
 </mapper>

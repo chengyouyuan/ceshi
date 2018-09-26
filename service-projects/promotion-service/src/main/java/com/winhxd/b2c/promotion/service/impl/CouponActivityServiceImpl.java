@@ -16,6 +16,9 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
+
+import io.swagger.annotations.ApiModelProperty;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,9 +78,56 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
 
         List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
+        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(activity)) {
+        	List<Long> activityIds=new ArrayList<>();
+        	for (CouponActivityVO couponActivityVO : activity) {
+				activityIds.add(couponActivityVO.getId());
+			}
+        	//查询门店数量
+        	//获取领取、使用、撤销数量
+        	List<Map<String, Object>> getNumList=couponActivityMapper.selectNums("",activityIds);
+        	Map<Long, Object> getNumMap=getActivityMap(getNumList);
+        	List<Map<String, Object>> userNumList=couponActivityMapper.selectNums("1",activityIds);
+        	Map<Long, Object> userNumMap=getActivityMap(userNumList);
+        	List<Map<String, Object>> revocationNumList=couponActivityMapper.selectNums("0",activityIds);
+        	Map<Long, Object> revocationNumMap=getActivityMap(revocationNumList);
+
+        	//重新组装list数据
+        	for (CouponActivityVO couponActivityVO : activity) {
+        		Long getNum=0L;
+        		Long useNum=0L;
+        		Long revocationNum=0L;
+        		Long activityId=couponActivityVO.getId();
+        		if (getNumMap.containsKey(activityId)) {
+        			getNum=(Long) getNumMap.get(activityId);
+				}
+        		if (userNumMap.containsKey(activityId)) {
+        			useNum=(Long) userNumMap.get(activityId);
+        		}
+        		if (revocationNumMap.containsKey(activityId)) {
+        			revocationNum=(Long) revocationNumMap.get(activityId);
+        		}
+    		     couponActivityVO.setGetNum(getNum.intValue());
+    		     couponActivityVO.setUseNum(useNum.intValue());
+    		     couponActivityVO.setRevocationNum(revocationNum.intValue());
+			}
+		}
+        
+        
         return activity;
     }
 
+	public Map<Long, Object> getActivityMap(List<Map<String, Object>> list) {
+		Map<Long, Object> activityMap = new HashMap<>();
+		if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(list)) {
+			for (Map<String, Object> map : list) {
+				Long activityId=(Long) map.get("activityId");
+				Long value=(Long) map.get("numValue");
+				activityMap.put(activityId, value);
+			}
+		}
+		return activityMap;
+	}
 
     /**
      * 新增活动

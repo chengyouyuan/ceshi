@@ -19,9 +19,9 @@ public enum StoreBindingStatus {
     NewBinding((short) 1, "初次绑定门店成功"),
 
     /**
-     * 二次扫码或进店时返回此绑定状态
+     * 二次扫码或进同一家店时返回此绑定状态
      */
-    AdreadyBinding((short) 2, "已经绑定其它门店"),
+    AdreadyBinding((short) 2, "已经绑定过该门店"),
 
     /**
      * 扫码其它门店（已存在绑定门店）时返回此状态

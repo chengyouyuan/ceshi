@@ -405,7 +405,7 @@ public class ApiOpenStoreController {
         msgCondition.setStoreId(businessId);
         msgCondition.setReadStatus((short) 0);
         Integer neteaseMessageNum = messageServiceClient.getNeteaseMessageCount(msgCondition).getData();
-        storeManageInfoVO.setNeteaseMessageNum(neteaseMessageNum==null ? 0 : neteaseMessageNum);
+        storeManageInfoVO.setUnReadNeteaseMsgNum(neteaseMessageNum==null ? 0 : neteaseMessageNum);
 
         responseResult.setData(storeManageInfoVO);
         logger.info("惠小店管理首页获取数据接口 返参为：{}", JsonUtil.toJSONString(responseResult));

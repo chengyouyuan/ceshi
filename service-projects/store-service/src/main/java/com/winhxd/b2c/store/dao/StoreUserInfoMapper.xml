@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreUserInfo">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="store_name" property="storeName" jdbcType="VARCHAR"/>
+        <result column="store_short_name" property="storeShortName" jdbcType="VARCHAR"/>
         <result column="store_customer_id" property="storeCustomerId" jdbcType="BIGINT"/>
         <result column="store_mobile" property="storeMobile" jdbcType="CHAR"/>
         <result column="store_address" property="storeAddress" jdbcType="VARCHAR"/>
@@ -31,7 +32,7 @@
         <result column="store_pic_img" property="storePicImg" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, store_name, store_customer_id, store_mobile, store_address, store_region_code, store_password, 
+    id, store_name, store_short_name,store_customer_id, store_mobile, store_address, store_region_code, store_password,
     shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status,token, mini_program_code_url, app_login_status, store_pic_img
@@ -90,7 +91,7 @@
         <include refid="Base_Column_List"/>
         FROM
         store_user_info
-        where store_status &lt;&gt; 0
+        where store_status &lt;&gt;
         <if test="id != null">
             AND id = #{id}
         </if>
@@ -320,6 +321,9 @@
         <set>
             <if test="storeName != null">
                 store_name = #{storeName,jdbcType=VARCHAR},
+            </if>
+            <if test="storeShortName != null">
+                store_short_name = #{storeShortName,jdbcType=VARCHAR},
             </if>
             <if test="storeCustomerId != null">
                 store_customer_id = #{storeCustomerId,jdbcType=BIGINT},

@@ -19,6 +19,10 @@ public class StoreUserInfo implements Serializable {
      */
     private String storeName;
     /**
+     * 门店简称称
+     */
+    private String storeShortName;
+    /**
      * 惠下单门店用户id(云平台crm_ws_customer表的customer_id)
      */
     private Long storeCustomerId;
@@ -114,6 +118,14 @@ public class StoreUserInfo implements Serializable {
 
     public void setStoreName(String storeName) {
         this.storeName = storeName == null ? null : storeName.trim();
+    }
+
+    public String getStoreShortName() {
+        return storeShortName;
+    }
+
+    public void setStoreShortName(String storeShortName) {
+        this.storeShortName = storeShortName == null ? null : storeShortName.trim();
     }
 
     public Long getStoreCustomerId() {

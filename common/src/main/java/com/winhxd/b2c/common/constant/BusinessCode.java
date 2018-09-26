@@ -109,6 +109,8 @@ public final class BusinessCode {
     public static final int CODE_102503 = 102503;
     /**1025接口 联系方式格式不正确*/
     public static final int CODE_102504 = 102504;
+    /**1025接口 店铺简称不能有特殊字符且长度不能超过15*/
+    public static final int CODE_102505 = 102505;
 
     /**1028接口参数无效*/
     public static final int CODE_102801 = 102801;

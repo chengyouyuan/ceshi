@@ -1,4 +1,4 @@
-package com.winhxd.b2c.pay;
+package com.winhxd.b2c.pay.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

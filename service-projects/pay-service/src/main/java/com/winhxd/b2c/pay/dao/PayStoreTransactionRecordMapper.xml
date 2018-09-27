@@ -21,7 +21,7 @@
     transaction_date, created, updated
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from pay_store_transaction_record
     where id = #{id,jdbcType=BIGINT}
@@ -217,6 +217,13 @@
     <include refid="Base_Column_List" />
     from pay_store_transaction_record
     where  order_no = #{orderNo,jdbcType=CHAR}
+  </select>
+
+  <select id="getTotalPayRecordToday" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+    select sum(money) from pay_store_transaction_record
+    where store_id = #{id,jdbcType=BIGINT}
+    and type = 1
+    and TO_DAYS(created) = TO_DAYS(NOW())
   </select>
 
 </mapper>

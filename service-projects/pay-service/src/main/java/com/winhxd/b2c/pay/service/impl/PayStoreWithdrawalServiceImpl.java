@@ -140,6 +140,11 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			}
 			
 		}else if(weixType == condition.getWithdrawType()){
+			String openId = UserContext.getCurrentStoreUser().getOpenId();
+			if(StringUtils.isBlank(openId)){
+				LOGGER.error("缓存中的微信的openid为空");
+				throw new BusinessException(BusinessCode.CODE_611109);
+			}
 			//获取绑定微信钱包数据
 			List<PayStoreWallet> payStoreWalletList = payStoreWalletMapper.selectByStoreId(businessId);
 			if(CollectionUtils.isNotEmpty(payStoreWalletList)){

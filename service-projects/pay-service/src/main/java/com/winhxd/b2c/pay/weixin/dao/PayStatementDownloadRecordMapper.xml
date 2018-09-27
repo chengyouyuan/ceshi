@@ -30,7 +30,7 @@
       #{errCode,jdbcType=VARCHAR}, #{errCodeDes,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord">
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord" useGeneratedKeys="true" keyProperty="id">
     insert into pay_statement_download_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -126,6 +126,9 @@
       </if>
       <if test="status != null">
        AND status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="notStatus != null">
+       AND status != #{notStatus,jdbcType=INTEGER}
       </if>
     </where>
       <if test="billDate != null">

@@ -57,6 +57,9 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         StoreUser storeUser = UserContext.getCurrentStoreUser();
         Long storeId = storeUser.getBusinessId();
         LOGGER.info("当前门店id"+storeId);
+        //获取今日的收入总和
+        BigDecimal totalPayRecordToday = payStoreTransactionRecordMapper.getTotalPayRecordToday(storeId);
+        vo.setTotalMoneyToday(totalPayRecordToday==null?BigDecimal.valueOf(0.00):totalPayRecordToday);
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll!=null){
             vo.setId(storeBankroll.getId()==null?null:storeBankroll.getId());
@@ -65,11 +68,13 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
             vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedFrozenMoney());
             vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getSettlementSettledMoney());
             vo.setPresentedMoney(storeBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedMoney());
+            vo.setAlreadyPresentedMoney(storeBankroll.getAlreadyPresentedMoney()==null?null:storeBankroll.getAlreadyPresentedMoney());
         }else{
             vo.setTotalMoeny( BigDecimal.valueOf(0.00));
             vo.setPresentedFrozenMoney(BigDecimal.valueOf(0.00));
             vo.setSettlementSettledMoney(BigDecimal.valueOf(0.00));
             vo.setPresentedMoney(BigDecimal.valueOf(0.00));
+            vo.setAlreadyPresentedMoney(BigDecimal.valueOf(0.00));
         }
 
         LOGGER.info("门店金额提现首页信息"+vo.toString());

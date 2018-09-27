@@ -15,10 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.winhxd.b2c.common.cache.Cache;
-import com.winhxd.b2c.common.cache.Lock;
-import com.winhxd.b2c.common.cache.RedisLock;
-import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
 import com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount;
@@ -66,11 +62,6 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
      * 对账单下载异常
      */
     private static final String ERROR_CODE_6155 = "6155";
-
-    /**
-     * 下载对账单锁过期时间
-     */
-	private static final long DOWNLOAD_LOCK_EXPIRES_TIME = 60 * 1000;
     
     /**
      * 微信入参时间格式
@@ -81,9 +72,6 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
      * 微信返回的时间格式
      */
     private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-	@Autowired
-    private Cache cache;
 	
     @Autowired
     private WXPayApi wXPayApi;
@@ -133,23 +121,22 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 
-		String lockKey = CacheName.DOWN_LOAD_STATEMENT + billDate;
-		Lock lock = new RedisLock(cache, lockKey, DOWNLOAD_LOCK_EXPIRES_TIME);
+		logger.info("开始下载对账单====：{}", sdf1.format(billDate));
+		//某天资金账单已下载,则不再重复下载
+		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+		record.setBillDate(billDate);
+		record.setBillType(PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
+		record.setNotStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+		if (CollectionUtils.isNotEmpty(selectByModel)) {
+			logger.info("{}当天的对账单已下载,不再重复下载！", sdf.format(billDate));
+			return PayStatementDownloadRecord.DOWNLOADED;
+		}
 		
+		//开始下载后添加下载中记录
+		PayStatementDownloadRecord statementRecord = this.dealLoading(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode());
+		PayStatementDownloadRecord statementCountRecord = this.dealLoading(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
 		try {
-			lock.lock();
-			logger.info("开始下载对账单====：{}", sdf1.format(billDate));
-			//某天资金账单已下载,则不再重复下载
-			PayStatementDownloadRecord record = new PayStatementDownloadRecord();
-			record.setBillDate(billDate);
-			record.setBillType(PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode());
-			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
-			List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
-			if (CollectionUtils.isNotEmpty(selectByModel)) {
-				logger.info("{}当天的对账单已下载,不再重复下载！", sdf.format(billDate));
-				return PayStatementDownloadRecord.DOWNLOADED;
-			}
-			
 			PayStatementDTO dto = new PayStatementDTO();
 			dto.setBillDate(sdf.format(billDate));
 			dto.setBillType(condition.getStatementType());
@@ -160,8 +147,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			//通信失败，则记录失败原因到记录表
 			if (WXPayConstants.FAIL.equals(responseDTO.getReturnCode())) {
 				
-				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getReturnMsg());
-				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getReturnMsg());
+				this.dealRequestFail(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getReturnMsg());
+				this.dealRequestFail(statementCountRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getReturnMsg());
 				logger.info("对账单下载失败，返回信息：{}", responseDTO.getReturnCode());
 				if (PayBillDownloadResponseDTO.SYSTEMERROR.equals(responseDTO.getReturnMsg())) {
 					logger.info("下载失败，请尝试再次查询。");
@@ -186,8 +173,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 				//业务失败，记录失败原因到记录表
 				if (WXPayConstants.FAIL.equals(responseDTO.getResultCode())) {
 					
-					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
-					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
+					this.dealBusiFail(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
+					this.dealBusiFail(statementCountRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), responseDTO.getErrCode(), responseDTO.getErrCodeDes());
 					logger.info("对账单下载失败，错误码：{}；错误信息：{}", responseDTO.getErrCode(), responseDTO.getErrCodeDes());
 					
 				//成功则开始插入数据
@@ -229,19 +216,19 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 								arrayList.clear();
 							}
 						} catch (Exception e) {
-							this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+							this.dealSuccess(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 							logger.error("{},保存对账单失败：{}", sdf.format(billDate), e);
 							logger.error("保存对账单失败：" + JsonUtil.toJSONString(arrayList));
 							throw new Exception(e);
 						}
 					}
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+					this.dealSuccess(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 					logger.info("对账单插入成功");
 					
 //					=====================处理统计数据=================================================================================
 
-					this.dealStatementCountData(billDate, payStatementCount);
+					this.dealStatementCountData(statementCountRecord, billDate, payStatementCount);
 
 					return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 				}
@@ -250,33 +237,50 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			logger.info(responseDTO.toString());
 		} catch (Exception e) {
 			logger.error("内部错误，下载对账单失败");
-			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), "未知异常");
-			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), "未知异常");
+			this.dealRequestFail(statementRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT.getCode(), "未知异常");
+			this.dealRequestFail(statementCountRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), "未知异常");
 			payStatementMapper.deleteByBillDate(billDate);
 			payStatementCountMapper.deleteByBillDate(billDate);
 			e.printStackTrace();
-		}finally{
-			lock.unlock();
 		}
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
-	private void dealStatementCountData(Date billDate, PayStatementCount payStatementCount) throws Exception{
+	private void dealStatementCountData(PayStatementDownloadRecord statementCountRecord, Date billDate, PayStatementCount payStatementCount) throws Exception{
 
 		try {
 			payStatementCountMapper.insertSelective(payStatementCount);
 		} catch (Exception e) {
 			//插入数据失败，记录到记录表
-			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+			this.dealSuccess(statementCountRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 			logger.error("内部错误，插入对账单统计数据失败", e);
 			throw new Exception(e);
 		}
 
 		//业务成功，记录到记录表
-		this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		this.dealSuccess(statementCountRecord, billDate, PayStatementDownloadRecord.BillType.STATEMENT_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 		logger.info("对账单统计数据插入成功");
 	}
 
+	/**
+	 * @Description 开始下载后添加下载中记录
+	 * @author yuluyuan
+	 * @date 2018年9月26日 下午4:52:21
+	 * @param billDate
+	 * @param code
+	 * @param code2
+	 */
+	private PayStatementDownloadRecord dealLoading(Date billDate, int billType) {
+
+		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+		record.setBillDate(billDate);
+		record.setBillType(billType);
+		record.setStatus(PayStatementDownloadRecord.RecordStatus.LOADING.getCode());
+		//保存记录表
+		payStatementDownloadRecordMapper.insertSelective(record);
+		return record;
+	}
+	
 	/**
 	 * @Description 通信失败后，记录到记录表
 	 * @author yuluyuan
@@ -286,9 +290,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 * @param returnMsg
 	 * @return
 	 */
-	private void dealRequestFail(Date billDate, int billType,
+	private void dealRequestFail(PayStatementDownloadRecord record, Date billDate, int billType,
 			String returnMsg) {
-		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);
 		record.setBillType(billType);
 		record.setErrCode(WXPayConstants.FAIL);
@@ -300,7 +303,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 		}
 		//保存记录表
-		payStatementDownloadRecordMapper.insertSelective(record);
+		payStatementDownloadRecordMapper.updateByPrimaryKeySelective(record);
 	}
 
 	/**
@@ -313,9 +316,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 	 * @param errCodeDes
 	 * @return
 	 */
-	private void dealBusiFail(Date billDate, int billType,
+	private void dealBusiFail(PayStatementDownloadRecord record, Date billDate, int billType,
 			String errCode, String errCodeDes) {
-		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);
 		record.setBillType(billType);
 		record.setErrCode(errCode);
@@ -327,20 +329,19 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			record.setStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 		}
 		//保存记录表
-		payStatementDownloadRecordMapper.insertSelective(record);
+		payStatementDownloadRecordMapper.updateByPrimaryKeySelective(record);
 	}
 
 	/**
-	 * @Description 数据插入后，记录到记录表;  SUCCESS or FAIL
+	 * @Description 数据插入后，记录到记录表
 	 * @author yuluyuan
 	 * @date 2018年8月18日 上午11:03:50
 	 * @param billDate
 	 * @param billType
 	 * @return
 	 */
-	private void dealSuccess(Date billDate, int billType, int recordStatus) {
-		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
-		record .setBillDate(billDate);
+	private void dealSuccess(PayStatementDownloadRecord record, Date billDate, int billType, int recordStatus) {
+		record.setBillDate(billDate);
 		record.setBillType(billType);
 		record.setStatus(recordStatus);
 		if (PayStatementDownloadRecord.RecordStatus.FAIL.getCode() == recordStatus) {
@@ -348,7 +349,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			record.setErrCodeDes("服务器内部错误");
 		}
 		//保存记录表
-		payStatementDownloadRecordMapper.insertSelective(record);
+		payStatementDownloadRecordMapper.updateByPrimaryKeySelective(record);
 	}
 
 	/**
@@ -456,23 +457,23 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 
-		String lockKey = CacheName.DOWN_LOAD_BILL + billDate;
-		Lock lock = new RedisLock(cache, lockKey, DOWNLOAD_LOCK_EXPIRES_TIME);
+		logger.info("开始下载对账单====：{}", sdf1.format(billDate));
+		//某天资金账单已下载,则不再重复下载
+		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
+		record.setBillDate(billDate);
+		record.setBillType(PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
+		record.setNotStatus(PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+		List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
+		if (CollectionUtils.isNotEmpty(selectByModel)) {
+			logger.info("{}当天的资金账单已下载,不再重复下载！", sdf.format(billDate));
+			return PayStatementDownloadRecord.DOWNLOADED;
+		}
+		
+		//开始下载后添加下载中记录
+		PayStatementDownloadRecord billRecord = this.dealLoading(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode());
+		PayStatementDownloadRecord billCountRecord = this.dealLoading(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
 		
 		try {
-			lock.lock();
-			logger.info("开始下载资金账单====：{}", sdf1.format(billDate));
-			//某天资金账单已下载,则不再重复下载
-			PayStatementDownloadRecord record = new PayStatementDownloadRecord();
-			record.setBillDate(billDate);
-			record.setBillType(PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode());
-			record.setStatus(PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
-			List<PayStatementDownloadRecord> selectByModel = payStatementDownloadRecordMapper.selectByModel(record);
-			if (CollectionUtils.isNotEmpty(selectByModel)) {
-				logger.info("{}当天的资金账单已下载,不再重复下载！", sdf.format(billDate));
-				return PayStatementDownloadRecord.DOWNLOADED;
-			}
-			
 			PayFinancialBillDTO dto = new PayFinancialBillDTO();
 			dto.setBillDate(sdf.format(billDate));
 			dto.setAccountType(condition.getAccountType());
@@ -483,8 +484,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			//通信失败，则记录失败原因到记录表
 			if (WXPayConstants.FAIL.equals(billMap.getReturnCode())) {
 				
-				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getReturnMsg());
-				this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getReturnMsg());
+				this.dealRequestFail(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getReturnMsg());
+				this.dealRequestFail(billCountRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getReturnMsg());
 				logger.info("资金账单下载失败，返回信息：{}", billMap.getReturnCode());
 				if (PayBillDownloadResponseDTO.SYSTEMERROR.equals(billMap.getReturnMsg())) {
 					logger.info("下载失败，请尝试再次查询。");
@@ -503,8 +504,8 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 				//业务失败，记录失败原因到记录表
 				if (WXPayConstants.FAIL.equals(billMap.getResultCode())) {
 					
-					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
-					this.dealBusiFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
+					this.dealBusiFail(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
+					this.dealBusiFail(billCountRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), billMap.getErrCode(), billMap.getErrCodeDes());
 					logger.info("资金账单下载失败，错误码：{}；错误信息：{}", billMap.getErrCode(), billMap.getErrCodeDes());
 					
 				//成功则开始插入数据
@@ -546,47 +547,45 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 								arrayList.clear();
 							}
 						} catch (Exception e) {
-							this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+							this.dealSuccess(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 							logger.error("{},保存资金账单失败：{}", sdf.format(billDate), e);
 							logger.error("保存资金账单失败：" + JsonUtil.toJSONString(arrayList));
 							throw new Exception(e);
 						}
 					}
 					//业务成功，记录到记录表
-					this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+					this.dealSuccess(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 					logger.info("资金账单插入成功");
 					
 //					=====================处理统计数据=================================================================================
-					this.dealFinancialBillCountData(billDate, payFinancialBillCount);
+					this.dealFinancialBillCountData(billCountRecord, billDate, payFinancialBillCount);
 
 					return PayStatementDownloadRecord.DOWNLOAD_SUCCESS;
 				}
 			}
 		} catch (Exception e) {
 			logger.error("内部错误，下载资金账单失败{}", e);
-			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), "未知异常");
-			this.dealRequestFail(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), "未知异常");
+			this.dealRequestFail(billRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL.getCode(), "未知异常");
+			this.dealRequestFail(billCountRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), "未知异常");
 			payFinancialBillMapper.deleteByBillDate(billDate);
 			payFinancialBillCountMapper.deleteByBillDate(billDate);
-		}finally{
-			lock.unlock();
 		}
 		return PayStatementDownloadRecord.DOWNLOAD_FAIL;
 	}
 
-	private void dealFinancialBillCountData(Date billDate,PayFinancialBillCount payFinancialBillCount) throws Exception{
+	private void dealFinancialBillCountData(PayStatementDownloadRecord billCountRecord, Date billDate,PayFinancialBillCount payFinancialBillCount) throws Exception{
 
 		try {
 			payFinancialBillCountMapper.insertSelective(payFinancialBillCount);
 		} catch (Exception e) {
-			this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
+			this.dealSuccess(billCountRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.FAIL.getCode());
 
 			logger.error("资金账单统计数据插入失败", e);
 			throw new Exception(e);
 		}
 
 		//业务成功，记录到记录表
-		this.dealSuccess(billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
+		this.dealSuccess(billCountRecord, billDate, PayStatementDownloadRecord.BillType.FINANCIAL_BILL_COUNT.getCode(), PayStatementDownloadRecord.RecordStatus.SUCCESS.getCode());
 		logger.info("资金账单统计数据插入成功");
 		
 	}

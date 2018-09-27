@@ -16,6 +16,10 @@ public class StoreUser {
      * 用于指定微服务版本
      */
     private String msVer;
+    /**
+     * 门店用户绑定的微信id
+     */
+    private String openId;
 
     public Long getBusinessId() {
         return businessId;
@@ -39,5 +43,13 @@ public class StoreUser {
 
     public void setMsVer(String msVer) {
         this.msVer = msVer;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

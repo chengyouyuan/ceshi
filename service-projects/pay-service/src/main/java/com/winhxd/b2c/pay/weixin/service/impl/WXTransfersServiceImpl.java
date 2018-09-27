@@ -2,6 +2,7 @@ package com.winhxd.b2c.pay.weixin.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.TransfersChannelCodeTypeEnum;
+import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxBankCondition;
 import com.winhxd.b2c.common.domain.pay.condition.PayTransfersToWxChangeCondition;
 import com.winhxd.b2c.common.domain.pay.vo.PayTransfersQueryToWxBankVO;
@@ -82,6 +83,13 @@ public class WXTransfersServiceImpl implements WXTransfersService {
     @Override
     public PayTransfersToWxChangeVO transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
         PayTransfersToWxChangeVO toWxChangeVO = new PayTransfersToWxChangeVO();
+        //从全局变量中获取openid,默认为是登录时的openid;
+        String openId = UserContext.getCurrentStoreUser().getOpenId();
+        if(StringUtils.isBlank(openId)){
+            logger.error("缓存中的微信的openid为空");
+            throw new BusinessException(BusinessCode.CODE_611109);
+        }
+        toWxBalanceCondition.setAccountId(openId);
         try {
             //必填验证
             checkNecessaryFieldForChange(toWxBalanceCondition);

@@ -47,9 +47,31 @@ public class CouponInStoreGetedAndUsedVO {
     private List<BrandVO> brands;
     @ApiModelProperty(value = "适用商品信息")
     private List<ProductSkuVO> products;
-    @ApiModelProperty(value = "是否过期  0已过期  1未过期")
+    @ApiModelProperty(value = "是否过期  0已过期  1未过期 2快过期")
     private Short expire;
 
+
+    @ApiModelProperty(value = "logo地址")
+    private String logoUrl;
+    @ApiModelProperty(value = "已推给数量")
+    private Integer pushCount;
+
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public Integer getPushCount() {
+        return pushCount;
+    }
+
+    public void setPushCount(Integer pushCount) {
+        this.pushCount = pushCount;
+    }
 
     public Long getTempleteId() {
         return templeteId;

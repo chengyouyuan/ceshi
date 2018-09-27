@@ -394,8 +394,8 @@ public class ApiOpenStoreController {
         StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate, false);
         storeManageInfoVO.setBusinessId(businessId);
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
-        //增加门店别名，首页展示用取姓名第一个字加上老板
-        String storeBoss = "老板";
+        //增加门店别名，首页展示用取姓名第一个字
+        String storeBoss = "";
         if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
             storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
         }

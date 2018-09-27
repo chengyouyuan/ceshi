@@ -19,8 +19,8 @@ public class CouponPushCustomer {
     @ApiModelProperty(value = "活动ID")
     private Long couponActivityId;
 
-    @ApiModelProperty(value = "是否参与过0:未参与1参与过")
-    private Short isJoin;
+    @ApiModelProperty(value = "是否领取 0:未领取1已领取")
+    private Boolean receive;
 
     @ApiModelProperty(value = "扩展字段")
     private String temp;

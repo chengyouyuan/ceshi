@@ -327,7 +327,12 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！"),
-            @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！")})
+            @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！"),
+            @ApiResponse(code = BusinessCode.CODE_102501, message = "店铺名称不能有特殊字符且长度不能超过15"),
+            @ApiResponse(code = BusinessCode.CODE_102505, message = "店铺简称称不能有特殊字符且长度不能超过15"),
+            @ApiResponse(code = BusinessCode.CODE_102502, message = "联系人不能有特殊字符且长度不能超过10"),
+            @ApiResponse(code = BusinessCode.CODE_102503, message = "联系方式格式不正确"),
+            @ApiResponse(code = BusinessCode.CODE_102504, message = "提货地址不能有特殊字符且长度不能超过50")})
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());

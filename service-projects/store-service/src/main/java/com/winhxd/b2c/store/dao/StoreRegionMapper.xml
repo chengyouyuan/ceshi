@@ -180,4 +180,18 @@
       and level &gt; #{level}
     </if>
   </select>
+
+  <!--根据店铺ID，店铺状态查询绑定的用户ID-->
+  <select id="selectCustomerIds" resultType="java.lang.Long">
+    SELECT sr.id FROM customer_store_relation sr
+    LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
+    WHERE 1 = 1
+    <if test="storeUserInfoId != null and storeUserInfoId != 0">
+      and ui.id = #{storeUserInfoId}
+    </if>
+    <if test="storeStatus != null and storeStatus != 0">
+      and ui.store_status = #{storeStatus}
+    </if>
+  </select>
+
 </mapper>

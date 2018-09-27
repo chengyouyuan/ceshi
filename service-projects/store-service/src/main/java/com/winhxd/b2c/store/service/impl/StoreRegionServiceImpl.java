@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreRegionEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
@@ -165,6 +166,11 @@ public class StoreRegionServiceImpl implements StoreRegionService{
             }
         }
         return storeRegionMapper.selectByRegionCode(regionCodeList);
+    }
+
+    @Override
+    public List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition) {
+        return storeRegionMapper.selectCustomerIds(storeCustomerRegionCondition);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreRegion;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import org.apache.ibatis.annotations.Param;
@@ -50,4 +51,11 @@ public interface StoreRegionMapper {
      * @return:
      */
     List<StoreRegionVO> selectSonRegion(@Param("areaCode") String areaCode, @Param("level") Integer level);
+
+    /**
+     * 根据店铺ID，店铺状态查询绑定的用户ID
+     * @param storeCustomerRegionCondition
+     * @return
+     */
+    List<Long> selectCustomerIds(StoreCustomerRegionCondition storeCustomerRegionCondition);
 }

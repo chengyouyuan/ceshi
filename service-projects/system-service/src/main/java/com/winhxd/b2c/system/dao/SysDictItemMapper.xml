@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.system.dao.SysDictItemMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.system.dict.model.SysDictItem">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dict_id" jdbcType="BIGINT" property="dictId" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, dict_id, value, name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dict_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_dict_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.system.dict.model.SysDictItem">
+    insert into sys_dict_item (id, dict_id, value, 
+      name)
+    values (#{id,jdbcType=BIGINT}, #{dictId,jdbcType=BIGINT}, #{value,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.system.dict.model.SysDictItem">
+    insert into sys_dict_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dictId != null">
+        dict_id,
+      </if>
+      <if test="value != null">
+        value,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dictId != null">
+        #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.system.dict.model.SysDictItem">
+    update sys_dict_item
+    <set>
+      <if test="dictId != null">
+        dict_id = #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.system.dict.model.SysDictItem">
+    update sys_dict_item
+    set dict_id = #{dictId,jdbcType=BIGINT},
+      value = #{value,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByDictCode" resultMap="BaseResultMap">
+    select
+    item.id, item.value, item.name
+    from sys_dict_item item
+    inner join sys_dict dict on item.dict_id=dict.id
+    where dict.code = #{dictCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByDictCode">
+    delete
+    from sys_dict_item item
+    inner join sys_dict dict on item.dict_id=dict.id
+    where dict.code = #{dictCode,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into sys_dict_item (dict_id, value, name)
+    <foreach collection="list" item="item" separator="union all" index="index">
+      select #{item.dictId,jdbcType=BIGINT}, #{item.value,jdbcType=VARCHAR}, #{item.itemName,jdbcType=VARCHAR}
+    </foreach>
+  </insert>
+</mapper>

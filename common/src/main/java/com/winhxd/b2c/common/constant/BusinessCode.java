@@ -175,6 +175,8 @@ public final class BusinessCode {
     public static final int CODE_301000 = 301000;
     /** 新密码与原密码相同 */
     public static final int CODE_302002 = 302002;
+    /** 字典编码已被使用 */
+    public static final int CODE_303001 = 303001;
 
     /** 购物车:门店ID为空*/
     public static final int CODE_402001 = 402001;

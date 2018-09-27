@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
@@ -51,7 +52,7 @@ public class NeteaseServiceImpl implements NeteaseService {
 	@Autowired
 	MessageNeteaseAccountMapper neteaseAccountMapper;
 	@Autowired
-	MessageNeteaseHistoryMapper neteaseHistoryMapper;
+    MessageNeteaseHistoryMapper neteaseHistoryMapper;
 	@Autowired
 	NeteaseUtils neteaseUtils;
 
@@ -193,6 +194,23 @@ public class NeteaseServiceImpl implements NeteaseService {
 			result = true;
 		}
 		return result;
+	}
+
+	/**
+     * 根据条件查询云信消息数量
+	 * @param messageNeteaseCondition
+     * @return
+     */
+	@Override
+	public Integer getNeteaseMessageCount(MessageNeteaseCondition messageNeteaseCondition) {
+		MessageNeteaseAccount neteaseAccount = neteaseAccountMapper.getNeteaseAccountByCustomerId(messageNeteaseCondition.getStoreId());
+		if (null == neteaseAccount || StringUtils.isBlank(neteaseAccount.getAccid())) {
+			throw new BusinessException(BusinessCode.CODE_701101);
+		}
+		String accid = neteaseAccount.getAccid();
+		messageNeteaseCondition.setAccid(accid);
+		Integer msgCount = neteaseHistoryMapper.getNeteaseMessageCount(messageNeteaseCondition);
+		return msgCount;
 	}
 
 

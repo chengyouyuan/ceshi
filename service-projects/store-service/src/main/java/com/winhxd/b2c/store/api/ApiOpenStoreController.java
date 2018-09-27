@@ -7,6 +7,7 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
 import com.winhxd.b2c.common.domain.order.condition.StoreOrderSalesSummaryCondition;
 import com.winhxd.b2c.common.domain.order.vo.StoreOrderSalesSummaryVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreBaseInfoCondition;
@@ -22,6 +23,7 @@ import com.winhxd.b2c.common.domain.store.vo.*;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
+import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
@@ -74,6 +76,9 @@ public class ApiOpenStoreController {
     @Autowired
     private StoreRegionService storeRegionService;
 
+    @Autowired
+    private MessageServiceClient messageServiceClient;
+    
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
@@ -322,7 +327,12 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！"),
-            @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！")})
+            @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！"),
+            @ApiResponse(code = BusinessCode.CODE_102501, message = "店铺名称不能有特殊字符且长度不能超过15"),
+            @ApiResponse(code = BusinessCode.CODE_102505, message = "店铺简称称不能有特殊字符且长度不能超过15"),
+            @ApiResponse(code = BusinessCode.CODE_102502, message = "联系人不能有特殊字符且长度不能超过10"),
+            @ApiResponse(code = BusinessCode.CODE_102503, message = "联系方式格式不正确"),
+            @ApiResponse(code = BusinessCode.CODE_102504, message = "提货地址不能有特殊字符且长度不能超过50")})
     @PostMapping(value = "/1025/v1/modifyStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreMessageAccountVO> modifyStoreBusinessInfo(@RequestBody StoreBusinessInfoCondition storeBusinessInfoCondition) {
         logger.info("惠小店开店店铺信息保存接口入参为：{}", storeBusinessInfoCondition.toString());
@@ -389,6 +399,19 @@ public class ApiOpenStoreController {
         StoreManageInfoVO storeManageInfoVO = this.getStoreSummaryInfo(businessId, storeCustomerId, DateUtils.truncate(currentDate, Calendar.DATE), currentDate, false);
         storeManageInfoVO.setBusinessId(businessId);
         storeManageInfoVO.setStoreName(storeUserInfo.getStoreName());
+        //增加门店别名，首页展示用取姓名第一个字
+        String storeBoss = "";
+        if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
+            storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
+        }
+        storeManageInfoVO.setStoreBoss(storeBoss);
+        //增加查询未读消息(今日未读+历史未读)数量
+        MessageNeteaseCondition msgCondition = new MessageNeteaseCondition();
+        msgCondition.setStoreId(businessId);
+        msgCondition.setReadStatus((short) 0);
+        Integer neteaseMessageNum = messageServiceClient.getNeteaseMessageCount(msgCondition).getData();
+        storeManageInfoVO.setUnReadNeteaseMsgNum(neteaseMessageNum==null ? 0 : neteaseMessageNum);
+
         responseResult.setData(storeManageInfoVO);
         logger.info("惠小店管理首页获取数据接口 返参为：{}", JsonUtil.toJSONString(responseResult));
         return responseResult;

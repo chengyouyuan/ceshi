@@ -51,6 +51,6 @@ public class StoreManageInfoVO {
     private String completeNumCompare;
 
     @ApiModelProperty(value = "未读消息数(今日未读+历史未读)")
-    private Integer neteaseMessageNum;
+    private Integer unReadNeteaseMsgNum;
 
 }

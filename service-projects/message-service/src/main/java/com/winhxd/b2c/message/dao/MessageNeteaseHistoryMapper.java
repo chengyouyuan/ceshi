@@ -1,5 +1,6 @@
 package com.winhxd.b2c.message.dao;
 
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgBoxCondition;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseMsgReadStatusCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageNeteaseHistory;
@@ -38,4 +39,11 @@ public interface MessageNeteaseHistoryMapper {
 	List<NeteaseMsgVO> selectVoByCondition(@Param("condition") NeteaseMsgBoxCondition condition);
 
 	int insertHistories(List<MessageNeteaseHistory> list);
+
+	/**
+     * 根据条件查询云信消息数量
+	 * @param messageNeteaseCondition
+     * @return
+     */
+    Integer getNeteaseMessageCount(MessageNeteaseCondition messageNeteaseCondition);
 }

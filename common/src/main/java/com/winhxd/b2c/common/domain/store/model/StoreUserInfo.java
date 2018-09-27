@@ -74,6 +74,10 @@ public class StoreUserInfo implements Serializable {
      * 微信openid
      */
     private String openid;
+    /**
+     * 微信昵称
+     */
+    private String wechatName;
     private Date created;
     private Long createdBy;
     private String createdByName;
@@ -231,6 +235,15 @@ public class StoreUserInfo implements Serializable {
     public void setOpenid(String openid) {
         this.openid = openid == null ? null : openid.trim();
     }
+
+    public String getWechatName() {
+        return wechatName;
+    }
+
+    public void setWechatName(String wechatName) {
+        this.wechatName = wechatName == null ? null : wechatName.trim();
+    }
+
     public Date getCreated() {
         return created;
     }

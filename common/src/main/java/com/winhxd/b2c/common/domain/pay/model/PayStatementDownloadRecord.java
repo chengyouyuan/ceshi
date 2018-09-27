@@ -46,9 +46,14 @@ public class PayStatementDownloadRecord {
     private String errCodeDes;
     
 	/**
-	 * 账单状态：0，失败；1成功
+	 * 账单状态：0，失败；1成功；2下载中
 	 */
     private Integer status;
+    
+    /**
+     * 不等于账单状态，例：!= 1,账单状态不为成功
+     */
+    private Integer notStatus;
 
     public Long getId() {
         return id;
@@ -106,6 +111,14 @@ public class PayStatementDownloadRecord {
 		this.status = status;
 	}
 
+	public Integer getNotStatus() {
+		return notStatus;
+	}
+
+	public void setNotStatus(Integer notStatus) {
+		this.notStatus = notStatus;
+	}
+
 	/**
 	 * 账单类型枚举
 	 * 
@@ -154,7 +167,7 @@ public class PayStatementDownloadRecord {
 
 	public enum RecordStatus {
 
-		FAIL(0, "失败"), SUCCESS(1, "成功");
+		FAIL(0, "失败"), SUCCESS(1, "成功"), LOADING(2, "下载中");
 		
 		int code;
 		String desc;

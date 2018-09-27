@@ -4,7 +4,10 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.message.condition.*;
+import com.winhxd.b2c.common.domain.message.condition.MessageBatchPushCondition;
+import com.winhxd.b2c.common.domain.message.condition.MessageNeteaseCondition;
+import com.winhxd.b2c.common.domain.message.condition.MiniFormIdCondition;
+import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.message.model.MessageBatchPush;
 import com.winhxd.b2c.common.domain.message.model.MiniOpenId;
 import com.winhxd.b2c.common.domain.message.vo.MessageBatchPushVO;
@@ -40,12 +43,20 @@ public interface MessageServiceClient {
     ResponseResult<Void> updateNeteaseAccount(@RequestBody NeteaseAccountCondition neteaseAccountCondition);
 
     /**
+     * @Description 根据条件查询消息数量
+     * @param messageNeteaseCondition
+     * @return
+     */
+    @RequestMapping(value = "/message/7014/v1/getNeteaseMessageCount",method = RequestMethod.POST)
+    ResponseResult<Integer> getNeteaseMessageCount(@RequestBody MessageNeteaseCondition messageNeteaseCondition);
+
+    /**
      * @Description: 小程序登录相关，根据code返回openid和sessionKey
      * @param code
      * @return
      */
     @RequestMapping(value = "/message/7021/v1/getMiniOpenId",method = RequestMethod.POST)
-    ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code")String code);
+    ResponseResult<MiniOpenId> getMiniOpenId(@RequestParam("code") String code);
 
     /**
      * 保存用户formid
@@ -128,6 +139,12 @@ class MessageServiceClientFallBack implements MessageServiceClient, FallbackFact
     public ResponseResult<Void> updateNeteaseAccount(NeteaseAccountCondition neteaseAccountCondition) {
         logger.error("MessageServiceClientFallBack -> updateNeteaseAccount，错误信息为{}",throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<Integer> getNeteaseMessageCount(MessageNeteaseCondition messageNeteaseCondition) {
+        logger.error("MessageServiceClientFallBack -> getNeteaseMessageCount，错误信息为{}",throwable);
+        return new ResponseResult<Integer>(BusinessCode.CODE_1001);
     }
 
     @Override

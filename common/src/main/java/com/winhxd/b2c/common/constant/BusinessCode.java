@@ -458,13 +458,15 @@ public final class BusinessCode {
     
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610801 = 610801;
-   
+
+    @ApiModelProperty("门店提现到微信钱包失败")
+    public static final int CODE_610802 = 610802;
+
     @ApiModelProperty("未获取到门店信息")
     public static final int CODE_610901 = 610901;
     @ApiModelProperty("您本日提现已达3次")
     public static final int CODE_610902 = 610902;
-    
-    
+
     @ApiModelProperty("订单支付  参数为空")
     public static final int CODE_600101 = 600101;
      
@@ -540,9 +542,7 @@ public final class BusinessCode {
 
     @ApiModelProperty("门店资金变化 金额有误")
     public static final int CODE_600010 = 600010;
-    
-    
-    
+
     @ApiModelProperty("获取门店绑定钱包  未获取到门店信息")
     public static final int CODE_600601 = 600601;
 

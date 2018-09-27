@@ -92,4 +92,12 @@ public class StoreUserInfoVO {
     @ApiModelProperty(value = "处理绑定状态(0:未绑定门店 1:初次绑定该门店，2.已经绑定过该门店，3.已绑过其它门店)")
     private Short bindingStatus;
 
+    /**微信openID*/
+    @ApiModelProperty("微信openid")
+    private String openid;
+
+    /**微信昵称*/
+    @ApiModelProperty("微信昵称")
+    private String wechatName;
+
 }

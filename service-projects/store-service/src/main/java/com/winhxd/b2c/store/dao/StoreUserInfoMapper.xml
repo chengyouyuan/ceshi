@@ -18,6 +18,7 @@
         <result column="lat" property="lat" jdbcType="DOUBLE"/>
         <result column="lon" property="lon" jdbcType="DOUBLE"/>
         <result column="openid" property="openid" jdbcType="VARCHAR"/>
+        <result column="wechat_name" property="wechatName" jdbcType="VARCHAR"/>
         <result column="created" property="created" jdbcType="TIMESTAMP"/>
         <result column="created_by" property="createdBy" jdbcType="BIGINT"/>
         <result column="created_by_name" property="createdByName" jdbcType="VARCHAR"/>
@@ -33,7 +34,7 @@
     </resultMap>
     <sql id="Base_Column_List">
     id, store_name, store_short_name,store_customer_id, store_mobile, store_address, store_region_code, store_password,
-    shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,
+    shopkeeper, shop_owner_img, pickup_type, pay_type, contact_mobile, lat, lon, openid,wechat_name,
     created, created_by, created_by_name, updated, updated_by, updated_by_name, source, 
     store_status,token, mini_program_code_url, app_login_status, store_pic_img
   </sql>
@@ -84,6 +85,8 @@
         <result column="pickup_type" property="pickupType"/>
         <result column="store_region_code" property="storeRegionCode"/>
         <result column="store_mobile" property="storeMobile"/>
+        <result column="openid" property="openid"/>
+        <result column="wechat_name" property="wechatName"/>
         <result column="mini_program_code_url" property="miniProgramCodeUrl"/>
     </resultMap>
     <select id="selectStoreByCondition" resultMap="storeUserInfoVO">
@@ -363,6 +366,9 @@
             </if>
             <if test="openid != null">
                 openid = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="wechatName != null">
+                wechat_name = #{wechatName,jdbcType=VARCHAR},
             </if>
             <if test="created != null">
                 created = #{created,jdbcType=TIMESTAMP},

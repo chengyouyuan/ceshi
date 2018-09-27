@@ -181,6 +181,7 @@ public class ApiStoreLoginController {
 		else if (LOGIN_LAG.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+			storeUserInfo.setWechatName(storeUserInfoCondition.getWechatName());
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			if (db == null) {
 				logger.info("{} - , 您还没有绑定惠下单账号");

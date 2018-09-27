@@ -66,6 +66,8 @@ public class CouponServiceImpl implements CouponService {
 
     // 优惠券快过期
     private static final short COUPON_FAST_OVERDUE = 2;
+    // 优惠券已过期
+    private static final short COUPON_EXPIRED = 0;
 
     @Autowired
     CouponActivityMapper couponActivityMapper;
@@ -1170,7 +1172,9 @@ public class CouponServiceImpl implements CouponService {
         try {
             Date endDate = df.parse(vo.getEndTime());
             long endTime = endDate.getTime();
-            if (System.currentTimeMillis() - endTime <= 1000 * 60 * 60 * 24 * 3) {
+            // 快过期时间为活动结束前三天
+            if (COUPON_EXPIRED != vo.getExpire()
+                    && endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
                 vo.setExpire(COUPON_FAST_OVERDUE);
             }
         } catch (ParseException e) {

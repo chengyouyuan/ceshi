@@ -1,4 +1,4 @@
-package test;
+package com.winhxd.b2c.order.service;
 
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.order.condition.AllOrderQueryByCustomerCondition;

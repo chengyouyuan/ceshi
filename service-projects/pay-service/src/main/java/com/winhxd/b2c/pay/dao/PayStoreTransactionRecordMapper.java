@@ -22,5 +22,7 @@ public interface PayStoreTransactionRecordMapper {
     List<PayStoreTransactionRecordVO> getPayStoreTransRecordByStoreId(@Param("storeId") Long storeId);
     
     List<PayStoreTransactionRecord> getPayStoreTransRecordByOrderNo(@Param("orderNo") String orderNo);
+
+    int getTotalPayRecordToday(Long id);
     
 }

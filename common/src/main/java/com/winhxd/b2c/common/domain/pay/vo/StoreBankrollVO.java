@@ -25,6 +25,10 @@ public class StoreBankrollVO {
     private BigDecimal presentedFrozenMoney;
     @ApiModelProperty("待结算金额")
     private BigDecimal settlementSettledMoney;
+    @ApiModelProperty("已提现金额")
+    private BigDecimal alreadyPresentedMoney;
+    @ApiModelProperty("今日收入合计")
+    private BigDecimal totalMoneyToday;
     @ApiModelProperty("创建人id")
     private Long createdBy;
     @ApiModelProperty("创建人名称")
@@ -133,5 +137,21 @@ public class StoreBankrollVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public BigDecimal getAlreadyPresentedMoney() {
+        return alreadyPresentedMoney;
+    }
+
+    public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
+        this.alreadyPresentedMoney = alreadyPresentedMoney;
+    }
+
+    public BigDecimal getTotalMoneyToday() {
+        return totalMoneyToday;
+    }
+
+    public void setTotalMoneyToday(BigDecimal totalMoneyToday) {
+        this.totalMoneyToday = totalMoneyToday;
     }
 }

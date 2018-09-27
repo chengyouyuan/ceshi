@@ -58,8 +58,8 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         Long storeId = storeUser.getBusinessId();
         LOGGER.info("当前门店id"+storeId);
         //获取今日的收入总和
-        int totalPayRecordToday = payStoreTransactionRecordMapper.getTotalPayRecordToday(storeId);
-        vo.setTotalMoneyToday(totalPayRecordToday==0?BigDecimal.valueOf(0.00):BigDecimal.valueOf(totalPayRecordToday));
+        BigDecimal totalPayRecordToday = payStoreTransactionRecordMapper.getTotalPayRecordToday(storeId);
+        vo.setTotalMoneyToday(totalPayRecordToday==null?BigDecimal.valueOf(0.00):totalPayRecordToday);
         StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if(storeBankroll!=null){
             vo.setId(storeBankroll.getId()==null?null:storeBankroll.getId());

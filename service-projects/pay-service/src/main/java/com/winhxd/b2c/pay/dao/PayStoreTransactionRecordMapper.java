@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PayStoreTransactionRecordMapper {
@@ -23,6 +24,6 @@ public interface PayStoreTransactionRecordMapper {
     
     List<PayStoreTransactionRecord> getPayStoreTransRecordByOrderNo(@Param("orderNo") String orderNo);
 
-    int getTotalPayRecordToday(Long id);
+    BigDecimal getTotalPayRecordToday(Long id);
     
 }

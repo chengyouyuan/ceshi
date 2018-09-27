@@ -57,5 +57,5 @@ public interface StoreRegionMapper {
      * @param storeCustomerRegionCondition
      * @return
      */
-    List<String> selectCustomerIds(StoreCustomerRegionCondition storeCustomerRegionCondition);
+    List<Long> selectCustomerIds(StoreCustomerRegionCondition storeCustomerRegionCondition);
 }

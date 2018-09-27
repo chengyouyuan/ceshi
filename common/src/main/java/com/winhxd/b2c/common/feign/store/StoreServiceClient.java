@@ -168,7 +168,7 @@ public interface StoreServiceClient {
      * @return
      */
     @RequestMapping(value = "/store/1069/v1/findStoreRegions", method = RequestMethod.POST)
-    ResponseResult<List<String>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions);
+    ResponseResult<List<Long>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions);
 }
 
 /**
@@ -262,7 +262,7 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
 	}
 
     @Override
-    public ResponseResult<List<String>> findStoreCustomerRegions(StoreCustomerRegionCondition conditions) {
+    public ResponseResult<List<Long>> findStoreCustomerRegions(StoreCustomerRegionCondition conditions) {
         logger.error("StoreServiceClientFallBack -> findStoreCustomerRegions，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }

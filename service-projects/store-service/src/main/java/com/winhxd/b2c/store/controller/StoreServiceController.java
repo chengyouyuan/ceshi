@@ -294,10 +294,10 @@ public class StoreServiceController implements StoreServiceClient {
 	}
 
 	@Override
-	public ResponseResult<List<String>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions) {
+	public ResponseResult<List<Long>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions) {
 		logger.info("StoreServiceClient-->findStoreCustomerRegions 入参：conditions="+conditions);
-    	ResponseResult<List<String>> responseResult = new ResponseResult<>();
-    	List<String> result = storeRegionService.findStoreCustomerRegions(conditions);
+    	ResponseResult<List<Long>> responseResult = new ResponseResult<>();
+    	List<Long> result = storeRegionService.findStoreCustomerRegions(conditions);
     	responseResult.setData(result);
 		logger.info("StoreServiceClient-->findStoreCustomerRegions 返参：result="+result);
 		return responseResult;

@@ -53,5 +53,5 @@ public interface StoreRegionService {
      * @param storeCustomerRegionCondition
      * @return
      */
-    List<String> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition);
+    List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition);
 }

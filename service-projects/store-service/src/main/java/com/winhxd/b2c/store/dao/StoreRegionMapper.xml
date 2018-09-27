@@ -182,7 +182,7 @@
   </select>
 
   <!--根据店铺ID，店铺状态查询绑定的用户ID-->
-  <select id="selectCustomerIds" resultType="java.lang.String">
+  <select id="selectCustomerIds" resultType="java.lang.Long">
     SELECT sr.id FROM customer_store_relation sr
     LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
     WHERE 1 = 1

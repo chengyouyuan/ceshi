@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.store.condition.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,10 +24,6 @@ import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.product.condition.ProductCondition;
 import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.StoreProductManage;
 import com.winhxd.b2c.common.domain.store.model.StoreProductStatistics;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
@@ -295,8 +292,16 @@ public class StoreServiceController implements StoreServiceClient {
 		responseResult.setData(result);
 		return responseResult;
 	}
-	
-	
+
+	@Override
+	public ResponseResult<List<String>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions) {
+		logger.info("StoreServiceClient-->findStoreCustomerRegions 入参：conditions="+conditions);
+    	ResponseResult<List<String>> responseResult = new ResponseResult<>();
+    	List<String> result = storeRegionService.findStoreCustomerRegions(conditions);
+    	responseResult.setData(result);
+		logger.info("StoreServiceClient-->findStoreCustomerRegions 返参：result="+result);
+		return responseResult;
+	}
 
 
 }

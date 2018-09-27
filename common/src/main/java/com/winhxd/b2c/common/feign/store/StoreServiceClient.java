@@ -3,6 +3,7 @@ package com.winhxd.b2c.common.feign.store;
 import java.util.List;
 import java.util.Set;
 
+import com.winhxd.b2c.common.domain.store.condition.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,10 +17,6 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreProductStatisticsCondition;
-import com.winhxd.b2c.common.domain.store.condition.StoreRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
@@ -164,6 +161,14 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1066/v1/getStoreListByKeywords", method = RequestMethod.POST)
     public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(@RequestBody StoreListByKeywordsCondition condition);
+
+    /**
+     * 根据门店ID，门店状态查询绑定的用户ID
+     * @param conditions
+     * @return
+     */
+    @RequestMapping(value = "/store/1069/v1/findStoreRegions", method = RequestMethod.POST)
+    ResponseResult<List<String>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions);
 }
 
 /**
@@ -255,6 +260,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
 		 logger.error("StoreServiceClientFallBack -> getStoreListByKeywords，错误信息为{}", throwable);
 	        return new ResponseResult<>(BusinessCode.CODE_1001);
 	}
+
+    @Override
+    public ResponseResult<List<String>> findStoreCustomerRegions(StoreCustomerRegionCondition conditions) {
+        logger.error("StoreServiceClientFallBack -> findStoreCustomerRegions，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
 
 
 }

@@ -38,4 +38,14 @@ public interface CouponPushCustomerMapper {
      * @return
      */
     List<CouponPushVO> selectCouponPushStore(Long storeId);
+
+
+    /**
+     * 通过活动ID和模板ID查询优惠券已使用数量
+     * @param couponPushVO
+     * @return
+     */
+    Long countUsedCouponNum(CouponPushVO couponPushVO);
+
+
 }

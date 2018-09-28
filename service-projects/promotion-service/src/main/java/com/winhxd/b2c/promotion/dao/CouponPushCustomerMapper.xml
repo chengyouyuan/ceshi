@@ -167,5 +167,10 @@
       AND a.`status`=1 and a.activity_status=1 AND a.type=2
   </select>
 
+  <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">
+      select count(1) from coupon_activity_record car where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
+       and car.template_id=#{templateId,jdbcType=BIGINT}
+  </select>
+
 
 </mapper>

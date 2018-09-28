@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorAmountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
+import com.winhxd.b2c.promotion.service.CouponPushService;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +28,8 @@ public class CouponController implements CouponServiceClient{
 
 	@Autowired
 	private CouponService couponService;
+	@Autowired
+	private CouponPushService couponPushService;
 	
 	@Override
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
@@ -178,6 +181,21 @@ public class CouponController implements CouponServiceClient{
 		CouponVO couponVO = couponService.findDefaultCouponByOrder(condition);
 		result.setData(couponVO);
 		LOGGER.info("=/promotion/5058/v1/findDefaultCoupon-最优惠的优惠券=--结束 result={}", result);
+		return result;
+	}
+
+	@Override
+	@ApiOperation(value = "检测用户是否有可推送的优惠券", notes = "检测用户是否有可推送的优惠券")
+	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+	})
+	public ResponseResult<Boolean> checkCouponsAvailable(Long customerId) {
+		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券=--开始--{}", customerId);
+		ResponseResult<Boolean> result = new ResponseResult<>();
+		boolean availableCoupon = couponPushService.getAvailableCoupon(customerId);
+		result.setData(availableCoupon);
+		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券 result={}", result);
+
 		return result;
 	}
 

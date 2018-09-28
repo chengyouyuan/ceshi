@@ -220,7 +220,8 @@
   </select>
 
   <select id="getTotalPayRecordToday" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
-    select sum(money) from pay_store_transaction_record
+    select sum(money)
+    from pay_store_transaction_record
     where store_id = #{id,jdbcType=BIGINT}
     and type = 1
     and TO_DAYS(created) = TO_DAYS(NOW())

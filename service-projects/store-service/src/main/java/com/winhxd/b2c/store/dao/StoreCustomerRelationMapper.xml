@@ -23,7 +23,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
-    insert into store_customer_relation (id, customer_id, store_user_id, 
+    insert into store_customer_relation (id, customer_id, store_user_id,
       binding_time, status, unbinding_time
       )
     values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeUserId,jdbcType=BIGINT}, 

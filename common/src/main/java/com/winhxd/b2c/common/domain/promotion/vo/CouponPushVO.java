@@ -11,7 +11,6 @@ import java.util.List;
  *
  */
 public class CouponPushVO {
-
     @ApiModelProperty(value = "活动id", required=true)
     private Long activityId;
     @ApiModelProperty(value = "优惠券id", required=true)
@@ -44,26 +43,23 @@ public class CouponPushVO {
     private String activityStart;
     @ApiModelProperty(value = "结束时间", required=true)
     private String activityEnd;
-    @ApiModelProperty(value = "优惠券状态状态(0-无效,1-已使用，2-未使用， 3-已过期,4-退回 5-快过期", required=true)
+    @ApiModelProperty(value = "优惠券状态状态(0-无效,1-已使用，2-未使用， 3-已过期,4-退回", required=true)
     private String useStatus;
     @ApiModelProperty(value = "优惠券是否可领取 0 已领取,1 可领取,2已领完", required=true)
     private String receiveStatus;
-    @ApiModelProperty(value = "适用品牌信息")
-    private List<BrandVO> brands;
-//    @ApiModelProperty(value = "适用商品信息")
-//    private List<ProductSkuVO> products;
     @ApiModelProperty(value = "优惠券数量", required=true)
-    private Integer couponNum;
+    private Integer sendNum;
     @ApiModelProperty(value = "（品牌、品牌商）logo")
     private String logoImg;
+    @ApiModelProperty(value = "每种优惠券总数量")
+    private Integer couponNum;
 
-
-    public List<BrandVO> getBrands() {
-        return brands;
+    public Integer getCouponNum() {
+        return couponNum;
     }
 
-    public void setBrands(List<BrandVO> brands) {
-        this.brands = brands;
+    public void setCouponNum(Integer couponNum) {
+        this.couponNum = couponNum;
     }
 
     public Long getActivityId() {
@@ -210,12 +206,12 @@ public class CouponPushVO {
         this.receiveStatus = receiveStatus;
     }
 
-    public Integer getCouponNum() {
-        return couponNum;
+    public Integer getSendNum() {
+        return sendNum;
     }
 
-    public void setCouponNum(Integer couponNum) {
-        this.couponNum = couponNum;
+    public void setSendNum(Integer sendNum) {
+        this.sendNum = sendNum;
     }
 
     public String getLogoImg() {

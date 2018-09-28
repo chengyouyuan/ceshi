@@ -122,7 +122,8 @@
       DATE_FORMAT(t.start_time,'%Y.%m.%d') activityStart,
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
-      t.send_num couponNum
+      t.send_num sendNum,
+      t.coupon_num couponNum
     FROM coupon_push_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
@@ -154,7 +155,8 @@
       DATE_FORMAT(t.start_time,'%Y.%m.%d') activityStart,
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
-      t.send_num couponNum
+      t.send_num sendNum,
+      t.coupon_num couponNum
     FROM coupon_activity_store_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_template_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id

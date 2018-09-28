@@ -33,7 +33,7 @@ public interface CouponPushCustomerMapper {
     List<CouponPushVO> selectCouponPushCustomer(Long customerId);
 
     /**
-     * 查询优惠券推送给门店-
+     * 查询优惠券推送给门店
      * @param storeId
      * @return
      */

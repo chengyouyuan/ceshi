@@ -64,11 +64,6 @@ public class CouponServiceImpl implements CouponService {
     // 单商品优惠券
     private static final int SINGLE_BRAND = 1;
 
-    // 优惠券快过期
-    private static final short COUPON_FAST_OVERDUE = 2;
-    // 优惠券已过期
-    private static final short COUPON_EXPIRED = 0;
-
     @Autowired
     CouponActivityMapper couponActivityMapper;
 
@@ -255,7 +250,9 @@ public class CouponServiceImpl implements CouponService {
                     }
                     couponVO.setBrands(result.getData());
 
+                    getCouponDetailLogo(couponVO,result.getData(),couponApplyBrandLists);
 
+                    couponIsFastOverdue(couponVO);
                 }
             }
         }
@@ -263,6 +260,56 @@ public class CouponServiceImpl implements CouponService {
         return couponVOS;
     }
 
+    /**
+     * 获取品牌logo或者品牌商logo
+     * @param vo
+     * @param result
+     * @param couponApplyBrandLists
+     */
+    private void getCouponDetailLogo(CouponVO vo, List<BrandVO> result, List<CouponApplyBrandList> couponApplyBrandLists) {
+        // 优惠券是单品牌商就显示单品牌商logo
+        Optional<String> logoUrl = null;
+        if (result.size() == SINGLE_BRAND) {
+            logoUrl = result.stream().filter(brand -> StringUtils.isNotBlank(brand.getBrandImg()))
+                    .map(brand -> brand.getBrandImg()).findAny();
+        }
+
+        if (result.size() > SINGLE_BRAND) {
+            BrandCondition condition = new BrandCondition();
+            condition.setBrandCode(couponApplyBrandLists.get(0).getBrandCode());
+            condition.setCompanyCode(couponApplyBrandLists.get(0).getCompanyCode());
+
+            ResponseResult<PagedList<BrandVO>> brandInfo = productServiceClient.getBrandInfoByPage(condition);
+            if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getData().getData())) {
+                logoUrl = brandInfo.getData().getData().stream()
+                        .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo())).map(brand -> brand.getCompanyLogo()).findAny();
+            }
+        }
+
+        if (logoUrl.isPresent()) {
+            vo.setLogoImg(logoUrl.get());
+        }
+    }
+
+    /**
+     * 优惠券是否快过期
+     * @param vo
+     */
+    private void couponIsFastOverdue(CouponVO vo) {
+        DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+        try {
+            Date endDate = df.parse(vo.getActivityEnd());
+            long endTime = endDate.getTime();
+            // 快过期时间为活动结束前三天
+            if (!String.valueOf(CouponActivityEnum.ALREADY_USE.getCode()).equals(vo.getUseStatus())
+                    && !String.valueOf(CouponActivityEnum.UNTREAD.getCode()).equals(vo.getUseStatus())
+                    && endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
+                vo.setUseStatus(String.valueOf(CouponActivityEnum.FAST_EXPIRED.getCode()));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Integer getCouponNumsByCustomerForStore(Long customerId) {
@@ -1163,19 +1210,14 @@ public class CouponServiceImpl implements CouponService {
                     }
                     vo.setBrands(result.getData());
 
-                    couponInStoreList(vo,result.getData(),couponApplyBrandLists);
+                    // 获取品牌logo或者品牌商logo
+                    getLogo(vo,result.getData(),couponApplyBrandLists);
                 }
             }
         }
         return couponVOS;
     }
 
-
-    private void couponInStoreList(CouponInStoreGetedAndUsedVO vo, List<BrandVO> result, List<CouponApplyBrandList> couponApplyBrandLists) {
-
-        // 获取品牌logo或者品牌商logo
-        getLogo(vo, result, couponApplyBrandLists);
-    }
 
     /**
      * 获取品牌logo或者品牌商logo

@@ -7,10 +7,8 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponDiscountVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponKindsVo;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponVO;
+import com.winhxd.b2c.common.domain.promotion.vo.*;
+import com.winhxd.b2c.promotion.service.CouponPushService;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +16,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +39,9 @@ public class ApiCouponController{
 
     @Resource
     private CouponService couponService;
+
+    @Autowired
+    private CouponPushService couponPushService;
 
     private String logTitle=""; 
     @ApiOperation(value = "C端新人专享优惠列表", notes = "C端新人专享优惠列表")
@@ -227,5 +229,19 @@ public class ApiCouponController{
         return result;
     }
 
+
+    @ApiOperation(value = "C端用户获新取指定推送优惠券", notes = "C端用户获新指定推送取优惠券")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
+    })
+    @RequestMapping(value = "/security/5061/v1/getSpecifiedPushCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseResult<List<CouponPushVO>> getSpecifiedPushCoupon(@RequestBody ApiCondition condition){
+        LOGGER.info("=/api-promotion/coupon/security/5059/v1/verifyNewUserActivity");
+
+        ResponseResult<List<CouponPushVO>> result = new ResponseResult<>();
+        result.setData(couponPushService.getSpecifiedPushCoupon());
+        LOGGER.info("/api-promotion/coupon/5061/v1/getSpecifiedPushCoupon结果:"+result);
+        return result;
+    }
 
 }

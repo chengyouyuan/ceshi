@@ -15,7 +15,7 @@
   </sql>
 
   <select id="selectByCondition" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/> from customer_store_relation where status = 0
+    select <include refid="Base_Column_List"/> from customer_store_relation where status = 1
     <if test="condition.customerId != null">
       and customer_id = #{condition.customerId,jdbcType=BIGINT}
     </if>
@@ -113,4 +113,24 @@
       unbinding_time = #{unbindingTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!--根据店铺ID，店铺状态查询绑定的用户ID-->
+  <select id="selectCustomerIds" resultType="java.lang.Long">
+    SELECT sr.id FROM customer_store_relation sr
+    LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
+    WHERE sr.status = 1
+    <if test="storeUserInfoIds!=null and storeUserInfoIds.size > 0 ">
+      and ui.id in
+      <foreach item="storeUserInfoId" collection="storeUserInfoIds" separator="," open="(" close=")" index="">
+        '${storeUserInfoId}'
+      </foreach>
+    </if>
+    <!--<if test="storeUserInfoId != null and storeUserInfoId != 0">
+      and ui.id = #{storeUserInfoId}
+    </if>-->
+    <if test="storeStatus != null and storeStatus != ''">
+      and ui.store_status = #{storeStatus}
+    </if>
+  </select>
+
 </mapper>

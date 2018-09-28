@@ -1,5 +1,6 @@
 package com.winhxd.b2c.store.dao;
 
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
 
 import org.apache.ibatis.annotations.Param;
@@ -27,4 +28,12 @@ public interface CustomerStoreRelationMapper{
      * @return 查询到的结果数据
      */
     List<CustomerStoreRelation> selectByCondition(@Param("condition") CustomerStoreRelation record);
+
+    /**
+     * 根据店铺ID，店铺状态查询绑定的用户ID
+     * @param storeCustomerRegionCondition
+     * @return
+     */
+    List<Long> selectCustomerIds(StoreCustomerRegionCondition storeCustomerRegionCondition);
+
 }

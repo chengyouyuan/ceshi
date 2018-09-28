@@ -8,6 +8,7 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.message.condition.NeteaseAccountCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
@@ -75,7 +76,6 @@ public class StoreServiceImpl implements StoreService {
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
-        record.setStatus(0);
         //todo,需要判断storeUserId是否有效,以免产生脏数据；
         StoreUserInfo store = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         if(null == store){
@@ -317,5 +317,10 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfo findByPrimaryKey(Long id) {
         return storeUserInfoMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition) {
+        return customerStoreRelationMapper.selectCustomerIds(storeCustomerRegionCondition);
     }
 }

@@ -25,15 +25,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from store_bankroll
+    from pay_bankroll
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from store_bankroll
+    delete from pay_bankroll
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
-    insert into store_bankroll (id, store_id, total_moeny, 
+    insert into pay_bankroll (id, store_id, total_moeny,
       presented_money, presented_frozen_money, settlement_settled_money, 
       already_presented_money, status, created_by, 
       created_by_name, created, updated_by, 
@@ -45,7 +45,7 @@
       #{updatedByName,jdbcType=VARCHAR}, #{updated,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
-    insert into store_bankroll
+    insert into pay_bankroll
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -136,7 +136,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
-    update store_bankroll
+    update pay_bankroll
     <set>
       <if test="storeId != null">
         store_id = #{storeId,jdbcType=BIGINT},
@@ -181,7 +181,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.pay.model.StoreBankroll">
-    update store_bankroll
+    update pay_bankroll
     set store_id = #{storeId,jdbcType=BIGINT},
       total_moeny = #{totalMoeny,jdbcType=DECIMAL},
       presented_money = #{presentedMoney,jdbcType=DECIMAL},
@@ -203,7 +203,7 @@
   <select id="selectStoreBankrollByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from store_bankroll
+    from pay_bankroll
     where store_id = #{storeId}
     and status =1
     ORDER BY updated DESC,created DESC

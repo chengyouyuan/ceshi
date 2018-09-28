@@ -13,7 +13,7 @@ import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition
 import com.winhxd.b2c.common.domain.store.enums.PayTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.PickupTypeEnum;
 import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
-import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
+import com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
@@ -24,7 +24,7 @@ import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.system.RegionServiceClient;
-import com.winhxd.b2c.store.dao.CustomerStoreRelationMapper;
+import com.winhxd.b2c.store.dao.StoreCustomerRelationMapper;
 import com.winhxd.b2c.store.dao.StoreUserInfoMapper;
 import com.winhxd.b2c.store.service.StoreService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -49,7 +49,7 @@ public class StoreServiceImpl implements StoreService {
     private Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
 
     @Autowired
-    private CustomerStoreRelationMapper customerStoreRelationMapper;
+    private StoreCustomerRelationMapper storeCustomerRelationMapper;
     @Autowired
     private StoreUserInfoMapper storeUserInfoMapper;
     @Autowired
@@ -60,12 +60,12 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreBindingStatus bindCustomer(Long customerId, Long storeUserId) {
-        CustomerStoreRelation record = new CustomerStoreRelation();
+        StoreCustomerRelation record = new StoreCustomerRelation();
         record.setCustomerId(customerId);
-        List<CustomerStoreRelation> relations = customerStoreRelationMapper.selectByCondition(record);
+        List<StoreCustomerRelation> relations = storeCustomerRelationMapper.selectByCondition(record);
         if (null != relations && relations.size() > 0) {
             //当前用户已经存在绑定关系
-            for (CustomerStoreRelation relation : relations) {
+            for (StoreCustomerRelation relation : relations) {
                 if(relation.getStoreUserId() != null && storeUserId !=null && relation.getStoreUserId().longValue() == storeUserId.longValue()){
                     //已绑定当前门店
                     return StoreBindingStatus.AdreadyBinding;
@@ -81,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
         if(null == store){
             throw new BusinessException(BusinessCode.CODE_102902);
         }
-        customerStoreRelationMapper.insert(record);
+        storeCustomerRelationMapper.insert(record);
 
         return StoreBindingStatus.NewBinding;
     }
@@ -321,6 +321,6 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition) {
-        return customerStoreRelationMapper.selectCustomerIds(storeCustomerRegionCondition);
+        return storeCustomerRelationMapper.selectCustomerIds(storeCustomerRegionCondition);
     }
 }

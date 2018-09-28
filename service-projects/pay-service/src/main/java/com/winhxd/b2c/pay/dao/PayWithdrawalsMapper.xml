@@ -506,7 +506,7 @@
   <select id="getPayStoreUserInfo" parameterType="java.lang.Long" resultMap="storeUserinfoVo">
     select
     <include refid="common_storeUser"/>,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
-    from store_user_info sui left join store_bankroll sbk on sui.store_id = sbk.store_id
+    from store_user_info sui left join pay_bankroll sbk on sui.store_id = sbk.store_id
     where sui.id = #{storeId,jdbcType=BIGINT} and sui.store_status = 1
   </select>
 
@@ -514,7 +514,7 @@
   <select id="getStorBankCardInfo" parameterType="java.lang.Long" resultMap="storeUserinfoVo">
     select
     <include refid="common_statusBank"/>,sui.store_name as storeName,sbk.total_moeny as totalMoney,sbk.presented_money as totalFee
-    from store_bank_card sbc left join store_bankroll sbk on sbc.store_id = sbk.store_id
+    from pay_bank_card sbc left join pay_bankroll sbk on sbc.store_id = sbk.store_id
     left join store_user_info sui on sbc.store_id = sui.id
     where sbc.store_id = #{storeId,jdbcType=BIGINT} and sbc.status = 1 order by sbc.created DESC,sbc.updated desc
   </select>

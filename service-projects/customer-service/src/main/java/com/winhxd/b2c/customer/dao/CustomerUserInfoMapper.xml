@@ -61,6 +61,15 @@
         #{id}
     </foreach>
   </select>
+
+  <select id="selectCustomerUserByPhones" resultMap="customerUserInfoVO1">
+    select *
+    from customer_user_info
+    where customer_mobile in
+    <foreach collection="phones" item="phone" open="(" close=")" separator=",">
+        #{phone}
+    </foreach>
+  </select>
   <select id="selectBindingCustomer" resultMap="customerUserInfoVO1">
       select cui.*  from store_customer_relation csr  inner join customer_user_info cui on cui.customer_id = csr.customer_id
     <where>

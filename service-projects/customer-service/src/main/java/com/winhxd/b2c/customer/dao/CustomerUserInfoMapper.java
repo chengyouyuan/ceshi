@@ -41,6 +41,15 @@ public interface CustomerUserInfoMapper {
     List<CustomerUserInfoVO> selectCustomerUserByIds(@Param("ids") List<Long> ids);
 
     /**
+     * @param phones 用户phones
+     * @return 用户信息
+     * @author sunwenwu
+     * @date 2018/9/27
+     * @Description 根据用户手机号批量查询用户信息
+     */
+    List<CustomerUserInfoVO> selectCustomerUserByPhones(@Param("phones") List<String> phones);
+
+    /**
      * @param customerUserInfo
      * @return
      * @author wufuyun

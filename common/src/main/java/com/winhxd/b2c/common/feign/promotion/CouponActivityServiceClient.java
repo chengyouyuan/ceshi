@@ -4,8 +4,10 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportCustomerVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
@@ -50,6 +52,16 @@ public interface CouponActivityServiceClient {
      */
     @RequestMapping(value = "/promotion/5050/v1/couponActivityStoreImportExcel", method = RequestMethod.POST)
     ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(@RequestBody List<CouponActivityImportStoreVO> list);
+    /**
+     *
+     *@Deccription 优惠券活动导入用户信息
+     *@Params  list
+     *@Return  ResponseResult
+     *@User  sunwenwu
+     *@Date   2018/9/26
+     */
+    @RequestMapping(value = "/promotion/5060/v1/couponActivityCustomerImportExcel", method = RequestMethod.POST)
+    ResponseResult<List<CustomerUserInfoVO>> couponActivityCustomerUserImportExcel(@RequestBody List<CouponActivityImportCustomerVO> list);
 
     /**
      *
@@ -155,6 +167,12 @@ class CouponActivityServiceFallback implements FallbackFactory<CouponActivitySer
             public ResponseResult<List<StoreUserInfoVO>> couponActivityStoreImportExcel(List<CouponActivityImportStoreVO> list) {
                 logger.error("CouponActivityServiceFallback -> couponActivityStoreImportExcel", throwable);
                 return new ResponseResult<List<StoreUserInfoVO>>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<List<CustomerUserInfoVO>> couponActivityCustomerUserImportExcel(List<CouponActivityImportCustomerVO> list) {
+                logger.error("CouponActivityServiceFallback -> couponActivityCustomerImportExcel", throwable);
+                return new ResponseResult<List<CustomerUserInfoVO>>(BusinessCode.CODE_1001);
             }
 
             @Override

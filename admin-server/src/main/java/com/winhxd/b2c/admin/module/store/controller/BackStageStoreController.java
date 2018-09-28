@@ -8,7 +8,9 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.BackStageModifyStoreCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
+import com.winhxd.b2c.common.domain.store.vo.BackStoreCustomerCountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.region.condition.SysRegionCondition;
 import com.winhxd.b2c.common.domain.system.region.model.SysRegion;
@@ -23,9 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -155,6 +160,34 @@ public class BackStageStoreController {
         }
         responseResult = backStageStoreServiceClient.findStoreIdListByRegionCodes(condition);
         logger.info("{} - 根据区域集合查询门店, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
+        return responseResult;
+    }
+
+    @ApiOperation(value = "根据区域集合查询门店数以及用户数", notes = "根据区域集合查询门店数以及用户数")
+    @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
+            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！")})
+    @PostMapping(value = "/1080/v1/findStoreAndUserCountList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CheckPermission(PermissionEnum.STORE_MANAGEMENT_STORE)
+    public ResponseResult<BackStoreCustomerCountVO> findStoreAndUserCountList(@RequestBody BackStageStoreInfoCondition condition) {
+        logger.info("{} - 根据区域集合查询门店下用户数, 参数：condition={}", MODULE_NAME, JsonUtil.toJSONString(condition));
+        ResponseResult<BackStoreCustomerCountVO> responseResult = new ResponseResult<>();
+        BackStoreCustomerCountVO bscc = new BackStoreCustomerCountVO();
+        responseResult.setData(bscc);
+        if (condition.getRegionCodeList() == null || condition.getRegionCodeList().isEmpty()) {
+            return responseResult;
+        }
+        ResponseResult<List<String>> responseStoreResult = backStageStoreServiceClient.findStoreIdListByRegionCodes(condition);
+        logger.info("{} - 根据区域集合查询门店, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseStoreResult));
+        List<String> list = responseStoreResult.getData();
+        if(!CollectionUtils.isEmpty(list)){
+            bscc.setStores(list);
+            StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
+            scrc.setStoreUserInfoIds(list);
+            ResponseResult<List<Long>> storeCustomerRegions = storeServiceClient.findStoreCustomerRegions(scrc);
+            bscc.setStoreCustomerNum(storeCustomerRegions.getData() == null ?0:(long)storeCustomerRegions.getData().size());
+        }
+
+        logger.info("{} - 根据区域集合查询门店下用户数, 返参：{}", MODULE_NAME, JsonUtil.toJSONString(responseResult));
         return responseResult;
     }
 

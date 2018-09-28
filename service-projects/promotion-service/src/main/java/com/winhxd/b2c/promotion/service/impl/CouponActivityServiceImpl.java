@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
@@ -13,6 +14,7 @@ import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.DateDealUtils;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
@@ -46,6 +48,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponService couponService;
     @Autowired
     private CouponActivityRecordMapper couponActivityRecordMapper;
+    @Autowired
+    private CouponPushCustomerMapper couponPushCustomerMapper;
 
     /**
      * 查询活动列表
@@ -136,21 +140,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     @Transactional
     public void saveCouponActivity(CouponActivityAddCondition condition) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(condition.getActivityStart());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(condition.getActivityEnd());
-        c.set(Calendar.HOUR_OF_DAY, 23);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
-        c.set(Calendar.MILLISECOND, 59);
-        Date activityStart = calendar.getTime();
-        Date activityEnd  =c.getTime();
+        Date activityStart = DateDealUtils.getStartDate(condition.getActivityStart());
+        Date activityEnd = DateDealUtils.getEndDate(condition.getActivityEnd());
+
         //CouponActivity
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setName(condition.getName());
@@ -171,7 +164,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         //推券
         if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
             couponActivity.setType(CouponActivityEnum.PUSH_COUPON.getCode());
-            couponActivity.setCouponType(CouponActivityEnum.NEW_USER.getCode());
+            couponActivity.setCouponType(condition.getCouponType());//注意前端 传过来的值是否有效，以前都是默认写死成新用户
         }
         int n = couponActivityMapper.insertSelective(couponActivity);
         if(n==0){
@@ -200,21 +193,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                Calendar couponS = Calendar.getInstance();
-                couponS.setTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                couponS.set(Calendar.HOUR_OF_DAY, 0);
-                couponS.set(Calendar.MINUTE, 0);
-                couponS.set(Calendar.SECOND, 0);
-                couponS.set(Calendar.MILLISECOND, 0);
 
-                Calendar couponE = Calendar.getInstance();
-                couponE.setTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
-                couponE.set(Calendar.HOUR_OF_DAY, 23);
-                couponE.set(Calendar.MINUTE, 59);
-                couponE.set(Calendar.SECOND, 59);
-                couponE.set(Calendar.MILLISECOND, 59);
-                Date couponStart = couponS.getTime();
-                Date couponEnd  =couponE.getTime();
+                Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                Date couponEnd  =DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
+
                 couponActivityTemplate.setStartTime(couponStart);
                 couponActivityTemplate.setEndTime(couponEnd);
                 couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
@@ -230,7 +212,18 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             }
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                couponActivityTemplate.setEffectiveDays(condition.getCouponActivityTemplateList().get(i).getEffectiveDays());
+                Integer effectiveDays = condition.getCouponActivityTemplateList().get(i).getEffectiveDays();
+                if( effectiveDays!= null && effectiveDays>0){
+                    couponActivityTemplate.setEffectiveDays(effectiveDays);
+                }else{
+                    Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                    Date couponEnd  =DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                    couponActivityTemplate.setStartTime(couponStart);
+                    couponActivityTemplate.setEndTime(couponEnd);
+                }
+
+                couponActivityTemplate.setCouponNumType((short)1);
+                couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
                 couponActivityTemplate.setSendNum(condition.getCouponActivityTemplateList().get(i).getSendNum());
             }
             int n2 = couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
@@ -238,7 +231,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
             }
 
-            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
+            List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
+            //推券新增区域划分
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType() || (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
+                    && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode() && CollectionUtils.isEmpty(couponActivityCustomerList))){
                 //coupon_activity_store_customer
                 for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
                     CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
@@ -252,6 +248,23 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     }
                 }
             }
+            //指定具体人进行推券
+            if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
+                //coupon_push_customer
+                if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
+                    for(CustomerUser customerUser:couponActivityCustomerList){
+                        CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+                        couponPushCustomer.setCouponActivityId(couponActivity.getId());
+                        couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+                        couponPushCustomer.setReceive(false);
+                        int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
+                        if(effLine==0){
+                            throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+                        }
+                    }
+                }
+            }
+
         }
     }
 

@@ -1,5 +1,6 @@
 package com.winhxd.b2c.common.domain.promotion.condition;
 
+import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.domain.common.inputmodel.DateInterval;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
@@ -16,7 +17,7 @@ import java.util.List;
  * @date 2018/8/7
  */
 @Data
-@ApiModel(value = "用户请求参数",description = "新增、编辑请求参数")
+@ApiModel(value = "优惠券活动请求参数",description = "新增、编辑请求参数")
 public class CouponActivityAddCondition {
 
     @ApiModelProperty(value = "优惠券活动ID")
@@ -63,4 +64,7 @@ public class CouponActivityAddCondition {
 
     @ApiModelProperty(value = "活动区域信息")
     private List<CouponActivityArea> couponActivityAreaList;
+
+    @ApiModelProperty(value = "推券活动指定的C端用户")
+    private List<CustomerUser> couponActivityCustomerList;
 }

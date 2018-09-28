@@ -33,6 +33,8 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CouponPushServiceImpl implements CouponPushService {
@@ -207,4 +209,41 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         return couponPushResult;
     }
+
+    @Override
+    public boolean getAvailableCoupon(Long customerId) {
+        List<CouponPushVO> couponPushVOS = couponPushCustomerMapper.selectCouponPushCustomer(customerId);
+
+        boolean falg = false;
+        falg = isAvailable(couponPushVOS);
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
+
+        List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(result.getData().getId());
+        if(!falg){
+            falg = isAvailable(couponPushCustomers);
+        }
+
+        return falg;
+    }
+
+    private boolean isAvailable(List<CouponPushVO> couponPushVOS) {
+        boolean falg = false;
+        //不可领取活动ID集合
+        List<Long> unActiveIds = new ArrayList<>();
+        for(CouponPushVO cpv : couponPushVOS){
+            if(unActiveIds.contains(cpv.getActivityId())){
+                continue;
+            }
+            Long usedNum = couponPushCustomerMapper.countUsedCouponNum(cpv);
+            if(cpv.getCouponNum() > usedNum){
+                //优惠券数量大于 已使用数量
+                falg =  true;
+                break;
+            }else {
+                unActiveIds.add(cpv.getActivityId());
+            }
+        }
+        return falg;
+    }
+
 }

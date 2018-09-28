@@ -5,15 +5,19 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerListByPhoneCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportCustomerVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
@@ -44,6 +48,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private CouponActivityService couponActivityService;
     @Autowired
     private StoreServiceClient storeServiceClient;
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
 
     /**
      *
@@ -100,6 +106,30 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result.setData(storeUserInfoVOList);
         result.setCode(BusinessCode.CODE_OK);
         result.setMessage("返回小店导入信息成功");
+        return result;
+    }
+
+    @Override
+    public ResponseResult<List<CustomerUserInfoVO>> couponActivityCustomerUserImportExcel(@RequestBody List<CouponActivityImportCustomerVO> list) {
+        if(CollectionUtils.isEmpty(list)){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        ResponseResult<List<CustomerUserInfoVO>> result = new ResponseResult<List<CustomerUserInfoVO>>();
+        List<String> userPhoneList = new ArrayList<>();
+        for (int j=0;j<list.size();j++){
+            userPhoneList.add(list.get(j).getPhone());
+        }
+        //list去重
+        HashSet h = new HashSet<>(userPhoneList);
+        userPhoneList.clear();
+        userPhoneList.addAll(h);
+        //调接口判断数据有效性
+        ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<List<CustomerUserInfoVO>>();
+        responseResult = customerServiceClient.findCustomerUserByPhones(userPhoneList);
+        List<CustomerUserInfoVO> customerUserInfoVOList= responseResult.getData();
+        result.setData(customerUserInfoVOList);
+        result.setCode(BusinessCode.CODE_OK);
+        result.setMessage("返回用户导入信息成功");
         return result;
     }
 
@@ -253,7 +283,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if(condition.getCouponActivityTemplateList().get(0).getTemplateId() == null
-                    || condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
+                    || (condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null && condition.getCouponActivityTemplateList().get(0).getStartTime() == null)
                     || condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }

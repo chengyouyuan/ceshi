@@ -56,6 +56,16 @@ public interface CustomerServiceClient {
     ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody List<Long> ids);
 
     /**
+     * @param phones 用户手机号
+     * @return 用户信息
+     * @author sunwenwu
+     * @date 2018/9/27
+     * @Description 批量查询用户信息
+     */
+    @RequestMapping(value = "/customer/2010/v1/findCustomerUserByPhones", method = RequestMethod.POST)
+    ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByPhones(@RequestBody List<String> phones);
+
+    /**
      * @param token
      * @return 用户信息
      * @author chengyy
@@ -102,6 +112,12 @@ class CustomerServiceClientFallBack implements CustomerServiceClient, FallbackFa
     @Override
     public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(List<Long> ids) {
         logger.error("CustomerServiceClientFallBack -> findCustomerUserByIds错误信息{}", throwable.getMessage());
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByPhones(List<String> phones) {
+        logger.error("CustomerServiceClientFallBack -> findCustomerUserByPhones错误信息{}", throwable.getMessage());
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

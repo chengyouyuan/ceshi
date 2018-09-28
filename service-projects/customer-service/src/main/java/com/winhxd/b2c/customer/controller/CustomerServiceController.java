@@ -65,6 +65,14 @@ public class CustomerServiceController implements CustomerServiceClient {
     }
 
     @Override
+    public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByPhones(@RequestBody List<String> phones) {
+        ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<>();
+        List<CustomerUserInfoVO> customers = customerService.findCustomerUserByPhones(phones);
+        responseResult.setData(customers);
+        return responseResult;
+    }
+
+    @Override
     public ResponseResult<CustomerUserInfoVO> findCustomerByToken(@RequestParam("token") String token) {
         ResponseResult<CustomerUserInfoVO> responseResult = new ResponseResult<>();
         if (StringUtils.isEmpty(token)) {

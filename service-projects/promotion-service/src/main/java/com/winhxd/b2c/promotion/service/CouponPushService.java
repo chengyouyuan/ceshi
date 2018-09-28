@@ -11,4 +11,11 @@ public interface CouponPushService {
      * @return@Autowired
      */
     List<CouponPushVO> getSpecifiedPushCoupon();
+
+    /**
+     * 判断是否有可领取优惠券
+     * @param customerId
+     * @return
+     */
+    boolean getAvailableCoupon(Long customerId);
 }

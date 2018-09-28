@@ -2,7 +2,7 @@ package com.winhxd.b2c.promotion.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.google.common.collect.Lists;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -28,7 +28,7 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
-import com.winhxd.b2c.common.domain.store.model.CustomerStoreRelation;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
@@ -39,6 +39,7 @@ import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Auther wangxiaoshun
@@ -114,6 +114,8 @@ public class CouponServiceImpl implements CouponService {
     private Cache cache;
     private static final int BACKROLL_LOCK_EXPIRES_TIME = 3000;
 
+    @Autowired
+    CouponPushCustomerMapper couponPushCustomerMapper;
 
     @Override
     public List<CouponVO> getNewUserCouponList() {
@@ -252,12 +254,15 @@ public class CouponServiceImpl implements CouponService {
                         throw new BusinessException(result.getCode());
                     }
                     couponVO.setBrands(result.getData());
+
+
                 }
             }
         }
 
         return couponVOS;
     }
+
 
     @Override
     public Integer getCouponNumsByCustomerForStore(Long customerId) {
@@ -963,6 +968,9 @@ public class CouponServiceImpl implements CouponService {
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
         //查询使用每张优惠券的使用数量和领取数量
         List<CouponInStoreGetedAndUsedVO> countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId);
+        // 获取优惠券推给用户总数
+        int pushCount = getPushCount(storeId);
+
 
         //将数量拼接到列表
         if(list!=null){
@@ -979,10 +987,12 @@ public class CouponServiceImpl implements CouponService {
                     vo.setTotalCount(0);
                     vo.setUsedCount(0);
                 }
+
+                vo.setPushCount(pushCount);
             }
         }
-
         List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
+
         pagedList.setData(finalList);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
@@ -990,6 +1000,27 @@ public class CouponServiceImpl implements CouponService {
         return pagedList;
     }
 
+    /**
+     *  获取优惠券推给用户总数
+     * @param storeId
+     * @return
+     */
+    private int getPushCount(Long storeId) {
+        StoreCustomerRegionCondition regionCondition = new StoreCustomerRegionCondition();
+        ArrayList<String> storeUserInfoIds = Lists.newArrayList();
+        storeUserInfoIds.add(String.valueOf(storeId));
+        regionCondition.setStoreUserInfoIds(storeUserInfoIds);
+
+        ResponseResult<List<Long>> customerIdData = storeServiceClient.findStoreCustomerRegions(regionCondition);
+
+        int pushCount = 0;
+        if (!CollectionUtils.isEmpty(customerIdData.getData())) {
+            int storeBindingUserCount = customerIdData.getData().size();
+            int couponPushCustomerCount = couponPushCustomerMapper.selectCouponStoreUser(customerIdData.getData());
+            pushCount = storeBindingUserCount + couponPushCustomerCount;
+        }
+        return pushCount;
+    }
 
 
     /**
@@ -1132,7 +1163,7 @@ public class CouponServiceImpl implements CouponService {
                     }
                     vo.setBrands(result.getData());
 
-                    packageData(vo,result.getData(),couponApplyBrandLists);
+                    couponInStoreList(vo,result.getData(),couponApplyBrandLists);
                 }
             }
         }
@@ -1140,11 +1171,24 @@ public class CouponServiceImpl implements CouponService {
     }
 
 
-    private void packageData(CouponInStoreGetedAndUsedVO vo, List<BrandVO> result,List<CouponApplyBrandList> couponApplyBrandLists) {
+    private void couponInStoreList(CouponInStoreGetedAndUsedVO vo, List<BrandVO> result, List<CouponApplyBrandList> couponApplyBrandLists) {
+
+        // 获取品牌logo或者品牌商logo
+        getLogo(vo, result, couponApplyBrandLists);
+    }
+
+    /**
+     * 获取品牌logo或者品牌商logo
+     * @param vo
+     * @param result
+     * @param couponApplyBrandLists
+     */
+    private void getLogo(CouponInStoreGetedAndUsedVO vo, List<BrandVO> result, List<CouponApplyBrandList> couponApplyBrandLists) {
         // 优惠券是单品牌商就显示单品牌商logo
+        Optional<String> logoUrl = null;
         if (result.size() == SINGLE_BRAND) {
-            Optional<String> brandImg = result.stream().map(brand -> brand.getBrandImg()).findAny();
-            vo.setLogoUrl(brandImg.get());
+            logoUrl = result.stream().filter(brand -> StringUtils.isNotBlank(brand.getBrandImg()))
+                    .map(brand -> brand.getBrandImg()).findAny();
         }
 
         if (result.size() > SINGLE_BRAND) {
@@ -1154,33 +1198,16 @@ public class CouponServiceImpl implements CouponService {
 
             ResponseResult<PagedList<BrandVO>> brandInfo = productServiceClient.getBrandInfoByPage(condition);
             if (brandInfo != null && !CollectionUtils.isEmpty(brandInfo.getData().getData())) {
-                Optional<String> companyLogo = brandInfo.getData().getData().stream().map(brand -> brand.getCompanyLogo()).findAny();
-                vo.setLogoUrl(companyLogo.get());
+                logoUrl = brandInfo.getData().getData().stream()
+                        .filter(brand -> StringUtils.isNotBlank(brand.getCompanyLogo())).map(brand -> brand.getCompanyLogo()).findAny();
             }
         }
 
-        // 优惠券是否快过期
-        couponIsFastOverdue(vo);
-    }
-
-    /**
-     * 优惠券是否快过期
-     * @param vo
-     */
-    private void couponIsFastOverdue(CouponInStoreGetedAndUsedVO vo) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date endDate = df.parse(vo.getEndTime());
-            long endTime = endDate.getTime();
-            // 快过期时间为活动结束前三天
-            if (COUPON_EXPIRED != vo.getExpire()
-                    && endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
-                vo.setExpire(COUPON_FAST_OVERDUE);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (logoUrl.isPresent()) {
+            vo.setLogoUrl(logoUrl.get());
         }
     }
+
 
     @Override
     public Boolean verifyNewUserActivity() {

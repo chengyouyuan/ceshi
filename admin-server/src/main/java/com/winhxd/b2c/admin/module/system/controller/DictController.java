@@ -40,10 +40,6 @@ public class DictController {
 
     @ApiOperation("新增字典")
     @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限"),
             @ApiResponse(code = BusinessCode.CODE_303001, message = "字典编码已被使用")
     })
     @PostMapping(value = "/dict/add")
@@ -74,12 +70,6 @@ public class DictController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "字典编号", required = true)
     })
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
-    })
     @PostMapping(value = "/dict/edit")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT_EDIT})
     public ResponseResult edit(@RequestBody SysDict sysDict) {
@@ -96,12 +86,6 @@ public class DictController {
     }
 
     @ApiOperation(value = "查询字典列表")
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
-    })
     @PostMapping(value = "/dict/list")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})
     public ResponseResult<PagedList<SysDict>> list(@RequestBody SysDictCondition condition){
@@ -112,12 +96,6 @@ public class DictController {
     @ApiOperation(value = "根据主键获取字典信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "字典编号", required = true)
-    })
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
     @GetMapping("/dict/get/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})
@@ -130,12 +108,6 @@ public class DictController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "字典编号", required = true)
     })
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
-    })
     @GetMapping("/dict/remove/{id}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT_DELETE})
     public ResponseResult<Void> remove(@PathVariable("id") Long id){
@@ -146,12 +118,6 @@ public class DictController {
     @ApiOperation(value = "根据字典编码获取字典信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", value = "字典编码", required = true)
-    })
-    @ApiResponses({
-            @ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
-            @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
-            @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效"),
-            @ApiResponse(code = BusinessCode.CODE_1003, message = "没有权限")
     })
     @GetMapping(value = "/dict/findByDictCode/{code}")
     @CheckPermission({PermissionEnum.SYSTEM_MANAGEMENT_DICT})

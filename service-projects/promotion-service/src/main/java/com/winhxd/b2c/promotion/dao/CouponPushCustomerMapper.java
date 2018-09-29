@@ -47,5 +47,12 @@ public interface CouponPushCustomerMapper {
      */
     Long countUsedCouponNum(CouponPushVO couponPushVO);
 
+    /**
+     * 通过活动id和用户id更新 couponPushCustomer
+     * @param couponPushCustomer
+     */
+    void updateByActivityIdAndCustomerId(CouponPushCustomer couponPushCustomer);
+
+    List<CouponPushCustomer> getCouponPushCustomerByActiveId(Long activeId);
 
 }

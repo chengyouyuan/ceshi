@@ -45,4 +45,21 @@ public class DateDealUtils {
         }
         return date;
     }
+
+    public static Date getEndDate(Date endDate,Integer effectiveDays){
+        Date date = null;
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(endDate);
+            calendar.add(Calendar.DATE, effectiveDays);
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 59);
+            date = calendar.getTime();
+        }catch (Exception e){
+            LOGGER.info("---结束日期转换异常："+e);
+        }
+        return date;
+    }
 }

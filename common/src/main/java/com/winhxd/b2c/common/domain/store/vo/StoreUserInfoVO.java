@@ -100,4 +100,7 @@ public class StoreUserInfoVO {
     @ApiModelProperty("微信昵称")
     private String wechatName;
 
+    @ApiModelProperty(value = "推送优惠券状态 0 不可推送  1 可推送")
+    private Short pushCouponStatus;
+
 }

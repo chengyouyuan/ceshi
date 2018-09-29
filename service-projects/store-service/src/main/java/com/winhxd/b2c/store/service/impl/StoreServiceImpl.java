@@ -76,6 +76,7 @@ public class StoreServiceImpl implements StoreService {
         }
         record.setStoreUserId(storeUserId);
         record.setBindingTime(new Date());
+        record.setStatus(1);
         //todo,需要判断storeUserId是否有效,以免产生脏数据；
         StoreUserInfo store = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
         if(null == store){

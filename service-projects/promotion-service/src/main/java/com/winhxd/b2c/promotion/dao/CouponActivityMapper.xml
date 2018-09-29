@@ -272,8 +272,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
-    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
+    DATE_FORMAT(cts.start_time,'%Y.%m.%d') activityStart,
+    DATE_FORMAT(cts.end_time,'%Y.%m.%d') activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -467,8 +467,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(cat.start_time) activityStart,
-    DATE(cat.end_time) activityEnd,
+    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
+    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,

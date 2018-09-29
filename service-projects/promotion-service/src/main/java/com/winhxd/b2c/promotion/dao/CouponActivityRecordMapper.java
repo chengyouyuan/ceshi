@@ -1,6 +1,7 @@
 package com.winhxd.b2c.promotion.dao;
 
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,4 +31,20 @@ public interface CouponActivityRecordMapper {
      * @return
      */
     List<CouponActivityRecord> selectRecordByActivityId(Long activityId);
+
+    /**
+     * 验证门店下的用户是否推券
+     * @param customerId
+     * @param storeId
+     * @param activityId
+     * @return
+     */
+    CouponActivityRecord checkStoreUserIsPushCoupon(@Param("customerId") Long customerId, @Param("storeId") Long storeId,@Param("activityId") Long activityId);
+
+    /**
+     * 检查用户是否参加过活动
+     * @param record
+     * @return
+     */
+    Integer checkCustomerJoinActive(CouponActivityRecord record);
 }

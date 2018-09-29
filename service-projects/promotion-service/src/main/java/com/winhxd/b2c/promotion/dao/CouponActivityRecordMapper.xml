@@ -190,4 +190,34 @@
       updated = #{updated,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="checkStoreUserIsPushCoupon" resultType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord">
+    select <include refid="Base_Column_List"/>
+    from coupon_activity_record
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="{customerId != null}">
+        and customer_id=#{customerId,jdbcType=BIGINT}
+      </if>
+      <if test="{storeId != null}">
+        and store_id=#{storeId,jdbcType=BIGINT}
+      </if>
+      <if test="{activityId != null}">
+        and coupon_activity_id=#{activityId,jdbcType=BIGINT}
+      </if>
+    </trim>
+  </select>
+
+
+  <select id="checkCustomerJoinActive" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord" resultMap="java.lang.Integer">
+    select
+    count(1)
+    from coupon_activity_record
+    where 1 = 1
+    <if test="customerId != null">
+      AND customer_id = #{customerId,jdbcType=BIGINT}
+    </if>
+    <if test="couponActivityId != null">
+      AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+    </if>
+  </select>
 </mapper>

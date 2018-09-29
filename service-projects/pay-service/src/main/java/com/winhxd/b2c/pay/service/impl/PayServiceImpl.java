@@ -56,7 +56,7 @@ public class PayServiceImpl implements PayService{
 	private PayOrderPaymentMapper payOrderPaymentMapper;
 	
 	@Autowired
-	private StoreBankrollMapper storeBankrollMapper;
+	private PayBankrollMapper payBankrollMapper;
 	@Autowired
 	private PayStoreBankrollLogMapper payStoreBankrollLogMapper;
 	@Autowired
@@ -453,7 +453,7 @@ public class PayServiceImpl implements PayService{
 		Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
 		try{
 			lock.lock();
-			StoreBankroll storeBankroll=storeBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
+			PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(condition.getStoreId());
 			BigDecimal presentedFrozenMoney=condition.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0):condition.getPresentedFrozenMoney();
 			BigDecimal presentedMoney=condition.getPresentedMoney()==null?BigDecimal.valueOf(0):condition.getPresentedMoney();
 			BigDecimal settlementSettledMoney=condition.getSettlementSettledMoney()==null?BigDecimal.valueOf(0):condition.getSettlementSettledMoney();
@@ -465,28 +465,28 @@ public class PayServiceImpl implements PayService{
 //			settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 			
 			BigDecimal totalMoney=settlementSettledMoney;
-			if (storeBankroll==null) {
-				storeBankroll=new StoreBankroll();
-				storeBankroll.setStoreId(condition.getStoreId());
-				storeBankroll.setTotalMoeny(totalMoney);
-				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-				storeBankroll.setPresentedMoney(presentedMoney);
-				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
-				storeBankroll.setCreated(new Date());
-				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
-				storeBankroll.setStatus(StatusEnums.EFFECTIVE.getCode());
-				storeBankrollMapper.insertSelective(storeBankroll);
+			if (payBankroll ==null) {
+				payBankroll =new PayBankroll();
+				payBankroll.setStoreId(condition.getStoreId());
+				payBankroll.setTotalMoeny(totalMoney);
+				payBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+				payBankroll.setPresentedMoney(presentedMoney);
+				payBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
+				payBankroll.setCreated(new Date());
+				payBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				payBankroll.setStatus(StatusEnums.EFFECTIVE.getCode());
+				payBankrollMapper.insertSelective(payBankroll);
 			}else {
 				if (StoreBankRollOpearateEnums.ORDER_FINISH.getCode().equals(condition.getType())) {
 					//只有订单闭环才增加总的收入
 					totalMoney=totalMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):totalMoney;
-					totalMoney=storeBankroll.getTotalMoeny().add(totalMoney);
-					storeBankroll.setTotalMoeny(totalMoney);
+					totalMoney= payBankroll.getTotalMoeny().add(totalMoney);
+					payBankroll.setTotalMoeny(totalMoney);
 				}
-				presentedFrozenMoney=storeBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
-				presentedMoney=storeBankroll.getPresentedMoney().add(presentedMoney);
-				alreadyPresentedMoney=storeBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
-				settlementSettledMoney=storeBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
+				presentedFrozenMoney= payBankroll.getPresentedFrozenMoney().add(presentedFrozenMoney);
+				presentedMoney= payBankroll.getPresentedMoney().add(presentedMoney);
+				alreadyPresentedMoney= payBankroll.getAlreadyPresentedMoney().add(alreadyPresentedMoney);
+				settlementSettledMoney= payBankroll.getSettlementSettledMoney().add(settlementSettledMoney);
 				
 				
 				presentedFrozenMoney=presentedFrozenMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):presentedFrozenMoney;
@@ -494,15 +494,15 @@ public class PayServiceImpl implements PayService{
 				alreadyPresentedMoney=alreadyPresentedMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):alreadyPresentedMoney;
 				settlementSettledMoney=settlementSettledMoney.compareTo(BigDecimal.valueOf(0))<0?BigDecimal.valueOf(0):settlementSettledMoney;
 				
-				storeBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
-				storeBankroll.setPresentedMoney(presentedMoney);
-				storeBankroll.setSettlementSettledMoney(settlementSettledMoney);
-				storeBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
-				storeBankroll.setUpdated(new Date());
-				storeBankrollMapper.updateByPrimaryKeySelective(storeBankroll);
+				payBankroll.setPresentedFrozenMoney(presentedFrozenMoney);
+				payBankroll.setPresentedMoney(presentedMoney);
+				payBankroll.setSettlementSettledMoney(settlementSettledMoney);
+				payBankroll.setAlreadyPresentedMoney(alreadyPresentedMoney);
+				payBankroll.setUpdated(new Date());
+				payBankrollMapper.updateByPrimaryKeySelective(payBankroll);
 			}
 			//加入资金流转日志
-			condition.setTotalMoeny(storeBankroll.getTotalMoeny());
+			condition.setTotalMoeny(payBankroll.getTotalMoeny());
 			condition.setPresentedFrozenMoney(presentedFrozenMoney);
 			condition.setPresentedMoney(presentedMoney);
 			condition.setSettlementSettledMoney(settlementSettledMoney);

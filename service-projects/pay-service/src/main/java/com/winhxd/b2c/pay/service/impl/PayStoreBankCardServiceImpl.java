@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.winhxd.b2c.common.domain.pay.model.PayBankCard;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,11 +22,11 @@ import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.pay.condition.StoreBankCardCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankCard;
+
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankCardVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.api.ApiPayStoreBindBankCardController;
-import com.winhxd.b2c.pay.dao.StoreBankCardMapper;
+import com.winhxd.b2c.pay.dao.PayBankCardMapper;
 import com.winhxd.b2c.pay.service.PayStoreBankCardService;
 
 @Service
@@ -33,7 +34,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApiPayStoreBindBankCardController.class);
 	
 	@Resource
-	private StoreBankCardMapper storeBankCardMapper;
+	private PayBankCardMapper payBankCardMapper;
 	
 	@Resource
 	private Cache redisClusterCache;
@@ -41,7 +42,7 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
 	@Override
 	public StoreBankCardVO findStoreBankCardInfo(StoreBankCardCondition condition) {
 		StoreBankCardVO storeBankCard = new StoreBankCardVO();
-		storeBankCard = storeBankCardMapper.selectStorBankCardInfo(condition);
+		storeBankCard = payBankCardMapper.selectStorBankCardInfo(condition);
 		return storeBankCard;
 	}
 	
@@ -115,30 +116,30 @@ public class PayStoreBankCardServiceImpl implements PayStoreBankCardService {
     		// 判断当前门店是否绑定过当前要绑定的银行卡信息
     		LOGGER.info("当前门店即将要绑定的银行卡信息----："+ condition);
     		//绑定新的银行卡
-    		StoreBankCard storeBankCard = new StoreBankCard();
-        	BeanUtils.copyProperties(condition, storeBankCard);
-        	
-        	storeBankCard.setStoreId(currentStoreUser.getBusinessId());
-        	storeBankCard.setStatus(StatusEnums.EFFECTIVE.getCode()); 
-        	storeBankCard.setCreated(new Date());
-        	storeBankCard.setUpdated(new Date());
-        	storeBankCard.setCreatedBy(currentStoreUser.getBusinessId());
-        	storeBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
-        	storeBankCard.setCreatedByName(condition.getBankUserName());
-        	storeBankCard.setUpdatedByName(condition.getBankUserName());
+    		PayBankCard payBankCard = new PayBankCard();
+        	BeanUtils.copyProperties(condition, payBankCard);
+
+			payBankCard.setStoreId(currentStoreUser.getBusinessId());
+			payBankCard.setStatus(StatusEnums.EFFECTIVE.getCode());
+			payBankCard.setCreated(new Date());
+			payBankCard.setUpdated(new Date());
+			payBankCard.setCreatedBy(currentStoreUser.getBusinessId());
+			payBankCard.setUpdatedBy(currentStoreUser.getBusinessId());
+			payBankCard.setCreatedByName(condition.getBankUserName());
+			payBankCard.setUpdatedByName(condition.getBankUserName());
         	
         	Map<String, Object> map=new HashMap<>();
 			map.put("storeId", currentStoreUser.getBusinessId());
 			map.put("cardNumber", condition.getCardNumber());
 			map.put("swiftCode", condition.getSwiftCode());
-			List<StoreBankCard> bankCards = storeBankCardMapper.selectByStoreIdAndCardNumber(map);
+			List<PayBankCard> bankCards = payBankCardMapper.selectByStoreIdAndCardNumber(map);
     		if(CollectionUtils.isNotEmpty(bankCards)){
 				Long id = bankCards.get(0).getId();
-				storeBankCard.setId(id);
-				storeBankCard.setUpdated(new Date());
-				storeBankCardMapper.updateByPrimaryKeySelective(storeBankCard);
+				payBankCard.setId(id);
+				payBankCard.setUpdated(new Date());
+				payBankCardMapper.updateByPrimaryKeySelective(payBankCard);
     		}else{
-    			storeBankCardMapper.insertStoreBankCardinfo(storeBankCard);
+    			payBankCardMapper.insertStoreBankCardinfo(payBankCard);
     		}
     	}
 		return res;

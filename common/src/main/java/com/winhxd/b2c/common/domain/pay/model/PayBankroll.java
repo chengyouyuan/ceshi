@@ -1,47 +1,36 @@
-package com.winhxd.b2c.common.domain.pay.vo;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+package com.winhxd.b2c.common.domain.pay.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * @Author wl
- * @Date 2018/8/14 15:21
- * @Description 门店资金前端展示类
- **/
-@ApiModel("门店资金信息")
-public class StoreBankrollVO {
-    @ApiModelProperty("主键")
+public class PayBankroll {
     private Long id;
-    @ApiModelProperty("门店id")
-    private Long storeId;
-    @ApiModelProperty("总收入")
-    private BigDecimal totalMoeny;
-    @ApiModelProperty("可提现金额")
-    private BigDecimal presentedMoney;
-    @ApiModelProperty("提现冻结金额")
-    private BigDecimal presentedFrozenMoney;
-    @ApiModelProperty("待结算金额")
-    private BigDecimal settlementSettledMoney;
-    @ApiModelProperty("已提现金额（包含提现中的金额）")
-    private BigDecimal alreadyPresentedMoney;
-    @ApiModelProperty("今日收入合计")
-    private BigDecimal totalMoneyToday;
-    @ApiModelProperty("创建人id")
-    private Long createdBy;
-    @ApiModelProperty("创建人名称")
-    private String createdByName;
-    @ApiModelProperty("创建时间")
-    private Date created;
-    @ApiModelProperty("修改人id")
-    private Long updatedBy;
-    @ApiModelProperty("修改人名称")
-    private String updatedByName;
-    @ApiModelProperty("修改时间")
-    private Date updated;
 
+    private Long storeId;
+
+    private BigDecimal totalMoeny;
+
+    private BigDecimal presentedMoney;
+
+    private BigDecimal presentedFrozenMoney;
+
+    private BigDecimal settlementSettledMoney;
+
+    private BigDecimal alreadyPresentedMoney;
+
+    private Short status;
+
+    private Long createdBy;
+
+    private String createdByName;
+
+    private Date created;
+
+    private Long updatedBy;
+
+    private String updatedByName;
+
+    private Date updated;
 
     public Long getId() {
         return id;
@@ -91,6 +80,22 @@ public class StoreBankrollVO {
         this.settlementSettledMoney = settlementSettledMoney;
     }
 
+    public BigDecimal getAlreadyPresentedMoney() {
+        return alreadyPresentedMoney;
+    }
+
+    public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
+        this.alreadyPresentedMoney = alreadyPresentedMoney;
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
+    }
+
     public Long getCreatedBy() {
         return createdBy;
     }
@@ -137,21 +142,5 @@ public class StoreBankrollVO {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
-    }
-
-    public BigDecimal getAlreadyPresentedMoney() {
-        return alreadyPresentedMoney;
-    }
-
-    public void setAlreadyPresentedMoney(BigDecimal alreadyPresentedMoney) {
-        this.alreadyPresentedMoney = alreadyPresentedMoney;
-    }
-
-    public BigDecimal getTotalMoneyToday() {
-        return totalMoneyToday;
-    }
-
-    public void setTotalMoneyToday(BigDecimal totalMoneyToday) {
-        this.totalMoneyToday = totalMoneyToday;
     }
 }

@@ -133,11 +133,13 @@ public class CouponPushServiceImpl implements CouponPushService {
 
 
     private void sendCoupon(CustomerUser customerUser, boolean flag, CouponPushVO couponPushVO) {
-        String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId()+couponPushVO.getTemplateId();
-        Lock lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
+        Lock lock = null;
         try {
-            lock.lock();
             if (flag) {
+                String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId()+couponPushVO.getTemplateId();
+                lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
+                lock.lock();
+
                 CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
                 saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
                 couponPushVO.setReceiveStatus("1");
@@ -159,7 +161,9 @@ public class CouponPushServiceImpl implements CouponPushService {
                 }
             }
         } finally {
-            lock.unlock();
+            if (lock != null) {
+                lock.unlock();
+            }
         }
     }
 

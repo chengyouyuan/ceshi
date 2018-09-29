@@ -92,8 +92,6 @@ public final class BusinessCode {
     public static final int CODE_102205 = 102205;
     @ApiModelProperty("1024接口参数无效")
     public static final int CODE_102401 = 102401;
-    @ApiModelProperty("1025接口 店铺名称不能有特殊字符且长度不能超过15")
-    public static final int CODE_102501 = 102501;
     @ApiModelProperty("1025接口 提货地址不能有特殊字符且长度不能超过50")
     public static final int CODE_102502 = 102502;
     @ApiModelProperty("1025接口 联系人不能有特殊字符且长度不能超过10")

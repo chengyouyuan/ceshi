@@ -30,4 +30,11 @@ public interface CouponActivityRecordMapper {
      * @return
      */
     List<CouponActivityRecord> selectRecordByActivityId(Long activityId);
+
+    /**
+     * 检查用户是否参加过活动
+     * @param record
+     * @return
+     */
+    Integer checkCustomerJoinActive(CouponActivityRecord record);
 }

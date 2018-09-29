@@ -48,4 +48,6 @@ public interface CouponPushCustomerMapper {
     Long countUsedCouponNum(CouponPushVO couponPushVO);
 
 
+    List<CouponPushCustomer> getCouponPushCustomerByActiveId(Long activeId);
+
 }

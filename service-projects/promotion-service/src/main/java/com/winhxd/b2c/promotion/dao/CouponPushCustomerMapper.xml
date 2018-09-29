@@ -174,5 +174,11 @@
        and car.template_id=#{templateId,jdbcType=BIGINT}
   </select>
 
+  <select id="getCouponPushCustomerByActiveId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_push_customer
+    where coupon_activity_id = #{activeId,jdbcType=BIGINT}
+  </select>
 
 </mapper>

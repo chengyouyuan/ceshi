@@ -212,17 +212,20 @@ public class CouponPushServiceImpl implements CouponPushService {
 
     @Override
     public boolean getAvailableCoupon(Long customerId) {
+        //指定具体人
         List<CouponPushVO> couponPushVOS = couponPushCustomerMapper.selectCouponPushCustomer(customerId);
 
         boolean falg = false;
         falg = isAvailable(couponPushVOS);
-        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
-
-        List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(result.getData().getId());
-        if(!falg){
-            falg = isAvailable(couponPushCustomers);
+        if(falg){
+            return falg;
         }
 
+        //指定门店
+        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
+        List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(result.getData().getId());
+        falg = isAvailable(couponPushCustomers);
+        
         return falg;
     }
 
@@ -230,17 +233,28 @@ public class CouponPushServiceImpl implements CouponPushService {
         boolean falg = false;
         //不可领取活动ID集合
         List<Long> unActiveIds = new ArrayList<>();
+        CouponActivityRecord car = new CouponActivityRecord();
         for(CouponPushVO cpv : couponPushVOS){
             if(unActiveIds.contains(cpv.getActivityId())){
                 continue;
-            }
-            Long usedNum = couponPushCustomerMapper.countUsedCouponNum(cpv);
-            if(cpv.getCouponNum() > usedNum){
-                //优惠券数量大于 已使用数量
-                falg =  true;
-                break;
-            }else {
-                unActiveIds.add(cpv.getActivityId());
+            }else{
+                car.setCouponActivityId(cpv.getActivityId());
+                car.setCustomerId(UserContext.getCurrentCustomerUser().getCustomerId());
+                Integer count = couponActivityRecordMapper.checkCustomerJoinActive(car);
+                if(count>0){
+                    //已参加过此活动
+                    unActiveIds.add(cpv.getActivityId());
+                    continue;
+                }else {
+                    Long usedNum = couponPushCustomerMapper.countUsedCouponNum(cpv);
+                    if((cpv.getCouponNum() == null ? 0:cpv.getCouponNum()) > usedNum){
+                        //优惠券数量大于 已使用数量
+                        falg =  true;
+                        break;
+                    }else {
+                        unActiveIds.add(cpv.getActivityId());
+                    }
+                }
             }
         }
         return falg;

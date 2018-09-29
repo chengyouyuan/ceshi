@@ -169,7 +169,7 @@
     LEFT JOIN coupon_apply p ON e.apply_rule_id=p.id
     WHERE c.store_id=#{storeId,jdbcType=BIGINT}
     <!-- status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
-      AND a.`status`=1 and a.activity_status=1 AND a.type=2 and coupon_type=2
+      AND a.`status`=1 and a.activity_status=1 AND a.type=2 and a.coupon_type=2
   </select>
 
   <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">

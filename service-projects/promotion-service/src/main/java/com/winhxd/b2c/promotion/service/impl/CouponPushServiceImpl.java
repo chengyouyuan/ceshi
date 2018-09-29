@@ -126,6 +126,13 @@ public class CouponPushServiceImpl implements CouponPushService {
                         flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
                     }
 
+                    // 优惠券设定有效期，没有设定开始时间和结束时间。
+                    if (couponPushVO.getEffectiveDays() != null) {
+                        DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
+                        couponPushVO.setActivityStart(df.format(new Date()));
+                        couponPushVO.setActivityEnd(df.format(DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
+                    }
+
                     sendCoupon(customerUser, flag, couponPushVO);
                 }
 
@@ -156,12 +163,7 @@ public class CouponPushServiceImpl implements CouponPushService {
                     couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
                 }
 
-                // 优惠券设定有效期，没有设定开始时间和结束时间。
-                if (couponPushVO.getEffectiveDays() != null) {
-                    DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-                    couponPushVO.setActivityStart(df.format(new Date()));
-                    couponPushVO.setActivityEnd(df.format(DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
-                }
+
             }
         } finally {
             if (lock != null) {
@@ -357,9 +359,9 @@ public class CouponPushServiceImpl implements CouponPushService {
      * @return
      */
     private List<CouponPushVO> getCouponPush(CustomerUser customerUser, StoreUserInfoVO storeUserInfo) {
-        // 查询优惠券推送给用户
+        // 优惠券指定门店
         List<CouponPushVO> couponPushStores = couponPushCustomerMapper.selectCouponPushStore(storeUserInfo.getId());
-        // 查询优惠券推送给门店
+        // 优惠券指定用户
         List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(customerUser.getCustomerId());
 
         List<CouponPushVO> couponPushResult = new ArrayList<>();

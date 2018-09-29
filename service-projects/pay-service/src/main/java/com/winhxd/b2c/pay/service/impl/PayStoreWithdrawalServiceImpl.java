@@ -140,7 +140,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				LOGGER.info("缓存中的微信的openid为空");
 				throw new BusinessException(BusinessCode.CODE_610802);
 			}
-			//获取绑定微信钱包数据
+			//获取登录微信钱包数据
 			if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
 				StoreUserInfoVO data = findStoreUserInfo.getData();
 				if(!openId.equals(data.getOpenid())){

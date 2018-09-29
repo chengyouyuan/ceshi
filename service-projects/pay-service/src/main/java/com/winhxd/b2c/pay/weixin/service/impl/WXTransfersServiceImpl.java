@@ -82,31 +82,10 @@ public class WXTransfersServiceImpl implements WXTransfersService {
 
     @Autowired
     private PayTransfersMapper payTransfersMapper;
-    @Autowired
-    private StoreServiceClient storeServiceClient;
 
     @Override
     public PayTransfersToWxChangeVO transfersToChange(PayTransfersToWxChangeCondition toWxBalanceCondition) {
         PayTransfersToWxChangeVO toWxChangeVO = new PayTransfersToWxChangeVO();
-        Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
-        //从全局变量中获取openid,默认为是登录时的openid;
-        String openId = UserContext.getCurrentStoreUser().getOpenId();
-        if(StringUtils.isBlank(openId)){
-            logger.info("缓存中的微信的openid为空");
-            throw new BusinessException(BusinessCode.CODE_610802);
-        }
-
-        ResponseResult<StoreUserInfoVO> storeUserInfo = storeServiceClient.findStoreUserInfo(businessId);
-        if (storeUserInfo!=null && storeUserInfo.getData()!=null){
-            if (!storeUserInfo.getData().getOpenid().equals(openId)){
-                logger.info("缓存中的openid:{}和门店表中的openid:{}不对应",openId,storeUserInfo.getData().getOpenid());
-                throw new BusinessException(BusinessCode.CODE_610802);
-            }
-        } else {
-            logger.info("门店表中的openid为空");
-            throw new BusinessException(BusinessCode.CODE_610802);
-        }
-        toWxBalanceCondition.setAccountId(openId);
         try {
             //必填验证
             checkNecessaryFieldForChange(toWxBalanceCondition);

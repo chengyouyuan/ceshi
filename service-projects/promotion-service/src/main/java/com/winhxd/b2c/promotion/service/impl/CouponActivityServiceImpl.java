@@ -184,6 +184,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 }
             }
         }
+        List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
 
         //CouponActivityTemplate
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
@@ -231,7 +232,6 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
             }
 
-            List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
             //推券新增区域划分
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType() || (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
                     && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode() && CollectionUtils.isEmpty(couponActivityCustomerList))){
@@ -248,23 +248,22 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     }
                 }
             }
-            //指定具体人进行推券
-            if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
-                //coupon_push_customer
-                if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
-                    for(CustomerUser customerUser:couponActivityCustomerList){
-                        CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
-                        couponPushCustomer.setCouponActivityId(couponActivity.getId());
-                        couponPushCustomer.setCustomerId(customerUser.getCustomerId());
-                        couponPushCustomer.setReceive(false);
-                        int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
-                        if(effLine==0){
-                            throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
-                        }
+        }
+        //指定具体人进行推券
+        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
+            //coupon_push_customer
+            if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
+                for(CustomerUser customerUser:couponActivityCustomerList){
+                    CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+                    couponPushCustomer.setCouponActivityId(couponActivity.getId());
+                    couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+                    couponPushCustomer.setReceive(false);
+                    int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
+                    if(effLine==0){
+                        throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
                     }
                 }
             }
-
         }
     }
 

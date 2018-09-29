@@ -121,7 +121,10 @@ public class CouponPushServiceImpl implements CouponPushService {
                         }
                     }
 
-                    flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
+                    // 是否领取只有推券给用户才会有值  0 :未领取 1：已领取
+                    if (couponPushVO.getReceive() == null) {
+                        flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
+                    }
 
                     sendCoupon(customerUser, flag, couponPushVO);
                 }

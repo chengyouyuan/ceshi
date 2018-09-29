@@ -13,7 +13,9 @@ import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.DateDealUtils;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
@@ -50,6 +52,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     private CouponActivityRecordMapper couponActivityRecordMapper;
     @Autowired
     private CouponPushCustomerMapper couponPushCustomerMapper;
+
+    @Autowired
+    private StoreServiceClient storeServiceClient;
 
     /**
      * 查询活动列表
@@ -184,6 +189,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 }
             }
         }
+        List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
 
         //CouponActivityTemplate
         for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
@@ -231,7 +237,6 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                 throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
             }
 
-            List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
             //推券新增区域划分
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType() || (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
                     && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode() && CollectionUtils.isEmpty(couponActivityCustomerList))){
@@ -248,23 +253,22 @@ public class CouponActivityServiceImpl implements CouponActivityService {
                     }
                 }
             }
-            //指定具体人进行推券
-            if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
-                //coupon_push_customer
-                if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
-                    for(CustomerUser customerUser:couponActivityCustomerList){
-                        CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
-                        couponPushCustomer.setCouponActivityId(couponActivity.getId());
-                        couponPushCustomer.setCustomerId(customerUser.getCustomerId());
-                        couponPushCustomer.setReceive(false);
-                        int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
-                        if(effLine==0){
-                            throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
-                        }
+        }
+        //指定具体人进行推券
+        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
+            //coupon_push_customer
+            if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
+                for(CustomerUser customerUser:couponActivityCustomerList){
+                    CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+                    couponPushCustomer.setCouponActivityId(couponActivity.getId());
+                    couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+                    couponPushCustomer.setReceive(false);
+                    int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
+                    if(effLine==0){
+                        throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
                     }
                 }
             }
-
         }
     }
 
@@ -279,7 +283,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     public CouponActivityVO getCouponActivityById(String id) {
         CouponActivityVO couponActivityVO = new CouponActivityVO();
-        List<CouponActivityStoreCustomer> couponActivityStoreCustomerList;
+        List<CouponActivityStoreCustomer> couponActivityStoreCustomerList = null;
 
         CouponActivity couponActivity = couponActivityMapper.selectByPrimaryKey(Long.valueOf(id));
         couponActivityVO.setId(couponActivity.getId());
@@ -291,9 +295,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         couponActivityVO.setActivityStart(couponActivity.getActivityStart());
         couponActivityVO.setActivityEnd(couponActivity.getActivityEnd());
         couponActivityVO.setActivityStatus(couponActivity.getActivityStatus());
-        if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
-            couponActivityVO.setCouponType(couponActivity.getCouponType());
-        }
+
         //优惠券信息
         List<CouponActivityTemplate> couponActivityTemplateList = couponActivityTemplateMapper.selectTemplateByActivityId(couponActivity.getId());
         if (!CollectionUtils.isEmpty(couponActivityTemplateList)){
@@ -309,6 +311,27 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivityStoreCustomerList = couponActivityStoreCustomerMapper.selectByTemplateId(couponActivityTemplateList.get(i).getId());
             if (!CollectionUtils.isEmpty(couponActivityStoreCustomerList)){
                 couponActivityVO.getCouponActivityTemplateList().get(i).setCouponActivityStoreCustomerList(couponActivityStoreCustomerList);
+            }
+        }
+
+        if(couponActivity.getType() == CouponActivityEnum.PUSH_COUPON.getCode()){
+            couponActivityVO.setCouponType(couponActivity.getCouponType());
+            if(couponActivity.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){//老用户
+                List<CouponPushCustomer> couponPushCustomers = couponPushCustomerMapper.getCouponPushCustomerByActiveId(Long.valueOf(id));
+                couponActivityVO.setCouponPushCustomerList(couponPushCustomers);
+
+                List<String> list = new ArrayList<>();
+                if(!CollectionUtils.isEmpty(couponActivityStoreCustomerList)){
+                    for(CouponActivityStoreCustomer casc :couponActivityStoreCustomerList){
+                        list.add(String.valueOf(casc.getStoreId()));
+                    }
+                }
+                if(!CollectionUtils.isEmpty(list)){
+                    StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
+                    scrc.setStoreUserInfoIds(list);
+                    ResponseResult<List<Long>> storeCustomerRegions = storeServiceClient.findStoreCustomerRegions(scrc);
+                    couponActivityVO.setStoreCustomerNum(storeCustomerRegions.getData() == null ?0:(long)storeCustomerRegions.getData().size());
+                }
             }
         }
         return couponActivityVO;

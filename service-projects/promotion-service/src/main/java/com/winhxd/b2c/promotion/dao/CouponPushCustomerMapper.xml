@@ -123,7 +123,9 @@
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
       t.send_num sendNum,
-      t.coupon_num couponNum
+      t.coupon_num couponNum,
+      c.receive,
+      t.effective_days  effectiveDays
     FROM coupon_push_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
@@ -156,7 +158,8 @@
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
       t.send_num sendNum,
-      t.coupon_num couponNum
+      t.coupon_num couponNum,
+      t.effective_days  effectiveDays
     FROM coupon_activity_store_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_template_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
@@ -166,13 +169,27 @@
     LEFT JOIN coupon_apply p ON e.apply_rule_id=p.id
     WHERE c.store_id=#{storeId,jdbcType=BIGINT}
     <!-- status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
-      AND a.`status`=1 and a.activity_status=1 AND a.type=2
+      AND a.`status`=1 and a.activity_status=1 AND a.type=2 and a.coupon_type=2
   </select>
 
   <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">
-      select count(1) from coupon_activity_record car where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
+      select count(1)
+      from coupon_activity_record car
+      where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
        and car.template_id=#{templateId,jdbcType=BIGINT}
   </select>
+  
+  <update id="updateByActivityIdAndCustomerId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponPushCustomer">
+    update coupon_push_customer
+    set receive = #{receive,jdbcType=BIT}
+    where customer_id = #{customerId,jdbcType=BIGINT} and  coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </update>
 
+  <select id="getCouponPushCustomerByActiveId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_push_customer
+    where coupon_activity_id = #{activeId,jdbcType=BIGINT}
+  </select>
 
 </mapper>

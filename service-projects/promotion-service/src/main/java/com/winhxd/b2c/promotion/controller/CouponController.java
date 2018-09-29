@@ -30,7 +30,7 @@ public class CouponController implements CouponServiceClient{
 	private CouponService couponService;
 	@Autowired
 	private CouponPushService couponPushService;
-	
+
 	@Override
 	@ApiOperation(value = "获取门店用户领取优惠券数量", notes = "获取门店用户领取优惠券数量")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),

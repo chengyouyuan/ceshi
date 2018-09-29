@@ -251,10 +251,10 @@ public class CouponServiceImpl implements CouponService {
                     couponVO.setBrands(result.getData());
 
                     getCouponDetailLogo(couponVO,result.getData(),couponApplyBrandLists);
-
-                    couponIsFastOverdue(couponVO);
                 }
             }
+
+            couponIsFastOverdue(couponVO);
         }
 
         return couponVOS;

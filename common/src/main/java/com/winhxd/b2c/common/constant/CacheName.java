@@ -115,5 +115,10 @@ public class CacheName {
      * 接口访问次数key
      */
     public static final String LIMIT_INTERFACE_ACCESS = "LIMIT:INTERFACE:ACCESS:";
+
+    /**
+     * 推送优惠券
+     */
+    public static final String PUSH_COUPON = "PUSH:COUPON";
     
 }

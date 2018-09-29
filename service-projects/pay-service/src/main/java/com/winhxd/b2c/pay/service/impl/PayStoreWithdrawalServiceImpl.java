@@ -140,7 +140,7 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 				LOGGER.info("缓存中的微信的openid为空");
 				throw new BusinessException(BusinessCode.CODE_610802);
 			}
-			//获取绑定微信钱包数据
+			//获取登录微信钱包数据
 			if(findStoreUserInfo != null && findStoreUserInfo.getData() != null){
 				StoreUserInfoVO data = findStoreUserInfo.getData();
 				if(!openId.equals(data.getOpenid())){
@@ -195,8 +195,8 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			LOGGER.info("未获取到门店数据");
 			throw new BusinessException(BusinessCode.CODE_610901);
 		}
-		Long businessId = storeUser.getBusinessId();		
-		
+		Long businessId = storeUser.getBusinessId();
+		String openId = storeUser.getOpenId();
 		// 加入redis控制访问频率
 		String limitTimeKey = CacheName.LIMIT_INTERFACE_ACCESS + businessId;
 		if (cache.exists(limitTimeKey)) {
@@ -250,11 +250,15 @@ public class PayStoreWithdrawalServiceImpl implements PayStoreWithdrawalService 
 			payWithdrawal.setCreatedByName(condition.getStroeName());
 			payWithdrawal.setUpdatedByName(condition.getStroeName());
 		}else if(weixType == condition.getWithdrawType()){
-			Map<String, Object> map=new HashMap<>();
-			map.put("storeId", businessId);
-			map.put("openid", condition.getBuyerId());
-			List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreIdAndOpenid(map);
-			if(CollectionUtils.isEmpty(payStoreWallet)){
+//			Map<String, Object> map=new HashMap<>();
+//			map.put("storeId", businessId);
+//			map.put("openid", condition.getBuyerId());
+//			List<PayStoreWallet> payStoreWallet = payStoreWalletMapper.selectByStoreIdAndOpenid(map);
+//			if(CollectionUtils.isEmpty(payStoreWallet)){
+//				result.setMessage("参数错误：门店和微信钱包不匹配");
+//				throw new BusinessException(BusinessCode.CODE_610026);
+//			}
+			if(!StringUtils.equals(condition.getBuyerId(),openId)){
 				result.setMessage("参数错误：门店和微信钱包不匹配");
 				throw new BusinessException(BusinessCode.CODE_610026);
 			}

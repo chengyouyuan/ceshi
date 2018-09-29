@@ -3,13 +3,12 @@ package com.winhxd.b2c.common.domain.promotion.vo;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- *
- */
+@Data
 public class CouponPushVO {
     @ApiModelProperty(value = "活动id", required=true)
     private Long activityId;
@@ -53,172 +52,12 @@ public class CouponPushVO {
     private String logoImg;
     @ApiModelProperty(value = "每种优惠券总数量")
     private Integer couponNum;
-
-    public Integer getCouponNum() {
-        return couponNum;
-    }
-
-    public void setCouponNum(Integer couponNum) {
-        this.couponNum = couponNum;
-    }
-
-    public Long getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(Long activityId) {
-        this.activityId = activityId;
-    }
-
-    public Long getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(Long templateId) {
-        this.templateId = templateId;
-    }
-
-    public Long getSendId() {
-        return sendId;
-    }
-
-    public void setSendId(Long sendId) {
-        this.sendId = sendId;
-    }
-
-    public Long getApplyId() {
-        return applyId;
-    }
-
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getPayType() {
-        return payType;
-    }
-
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getReducedType() {
-        return reducedType;
-    }
-
-    public void setReducedType(String reducedType) {
-        this.reducedType = reducedType;
-    }
-
-    public BigDecimal getReducedAmt() {
-        return reducedAmt;
-    }
-
-    public void setReducedAmt(BigDecimal reducedAmt) {
-        this.reducedAmt = reducedAmt;
-    }
-
-    public BigDecimal getDiscountedAmt() {
-        return discountedAmt;
-    }
-
-    public void setDiscountedAmt(BigDecimal discountedAmt) {
-        this.discountedAmt = discountedAmt;
-    }
-
-    public BigDecimal getDiscounted() {
-        return discounted;
-    }
-
-    public void setDiscounted(BigDecimal discounted) {
-        this.discounted = discounted;
-    }
-
-    public BigDecimal getDiscountedMaxAmt() {
-        return discountedMaxAmt;
-    }
-
-    public void setDiscountedMaxAmt(BigDecimal discountedMaxAmt) {
-        this.discountedMaxAmt = discountedMaxAmt;
-    }
-
-    public String getApplyRuleType() {
-        return applyRuleType;
-    }
-
-    public void setApplyRuleType(String applyRuleType) {
-        this.applyRuleType = applyRuleType;
-    }
-
-    public String getCouponType() {
-        return couponType;
-    }
-
-    public void setCouponType(String couponType) {
-        this.couponType = couponType;
-    }
-
-    public String getActivityStart() {
-        return activityStart;
-    }
-
-    public void setActivityStart(String activityStart) {
-        this.activityStart = activityStart;
-    }
-
-    public String getActivityEnd() {
-        return activityEnd;
-    }
-
-    public void setActivityEnd(String activityEnd) {
-        this.activityEnd = activityEnd;
-    }
-
-    public String getUseStatus() {
-        return useStatus;
-    }
-
-    public void setUseStatus(String useStatus) {
-        this.useStatus = useStatus;
-    }
-
-    public String getReceiveStatus() {
-        return receiveStatus;
-    }
-
-    public void setReceiveStatus(String receiveStatus) {
-        this.receiveStatus = receiveStatus;
-    }
-
-    public Integer getSendNum() {
-        return sendNum;
-    }
-
-    public void setSendNum(Integer sendNum) {
-        this.sendNum = sendNum;
-    }
-
-    public String getLogoImg() {
-        return logoImg;
-    }
-
-    public void setLogoImg(String logoImg) {
-        this.logoImg = logoImg;
-    }
+    @ApiModelProperty(value = "是否领取 0 :未领取 1：已领取")
+    private Integer receive;
+    @ApiModelProperty(value = "优惠券有效期")
+    private Integer effectiveDays;
+    @ApiModelProperty(value = "适用品牌信息")
+    private List<BrandVO> brands;
+    @ApiModelProperty(value = "适用商品信息")
+    private List<ProductSkuVO> products;
 }

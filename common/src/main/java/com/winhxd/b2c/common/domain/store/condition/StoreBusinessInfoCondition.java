@@ -17,10 +17,10 @@ import lombok.Data;
 @Data
 public class StoreBusinessInfoCondition extends ApiCondition {
 
-    @ApiModelProperty(value = "店铺名称", required = true)
+    @ApiModelProperty(value = "店铺名称")
     private String storeName;
 
-    @ApiModelProperty(value = "店铺简称", required = true)
+    @ApiModelProperty(value = "店铺简称")
     private String storeShortName;
 
     @ApiModelProperty(value = "取货方式（1、自提，多个用逗号分隔）", required = true)

@@ -123,7 +123,9 @@
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
       t.send_num sendNum,
-      t.coupon_num couponNum
+      t.coupon_num couponNum,
+      c.receive,
+      t.effective_days  effectiveDays
     FROM coupon_push_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
@@ -156,7 +158,8 @@
       DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
       t.coupon_num_type couponNumType,
       t.send_num sendNum,
-      t.coupon_num couponNum
+      t.coupon_num couponNum,
+      t.effective_days  effectiveDays
     FROM coupon_activity_store_customer c
     LEFT JOIN coupon_activity a ON c.coupon_activity_template_id=a.id
     LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
@@ -170,9 +173,17 @@
   </select>
 
   <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">
-      select count(1) from coupon_activity_record car where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
+      select count(1)
+      from coupon_activity_record car
+      where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
        and car.template_id=#{templateId,jdbcType=BIGINT}
   </select>
+  
+  <update id="updateByActivityIdAndCustomerId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponPushCustomer">
+    update coupon_push_customer
+    set receive = #{receive,jdbcType=BIT}
+    where customer_id = #{customerId,jdbcType=BIGINT} and  coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </update>
 
   <select id="getCouponPushCustomerByActiveId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select

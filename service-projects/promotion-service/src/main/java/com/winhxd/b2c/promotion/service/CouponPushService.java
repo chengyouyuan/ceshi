@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion.service;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO;
 
 import java.util.List;

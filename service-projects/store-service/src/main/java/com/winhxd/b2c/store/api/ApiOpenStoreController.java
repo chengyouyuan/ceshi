@@ -25,6 +25,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import com.winhxd.b2c.store.service.StoreRegionService;
@@ -77,7 +78,11 @@ public class ApiOpenStoreController {
 
     @Autowired
     private MessageServiceClient messageServiceClient;
-    
+
+    @Autowired
+    private CouponServiceClient couponServiceClient;
+
+
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
@@ -451,6 +456,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
 
+
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
 
         if(null != bindingCondition.getStoreId()){
@@ -469,6 +475,9 @@ public class ApiOpenStoreController {
             emptyStoreUserInfoVO.setBindingStatus(StoreBindingStatus.NoneBinding.getStatus());
             result.setData(emptyStoreUserInfoVO);
         }
+
+        ResponseResult<Boolean> isCouponsAvailable = couponServiceClient.checkCouponsAvailable(customerUser.getCustomerId());
+        storeUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
 
         return result;
     }

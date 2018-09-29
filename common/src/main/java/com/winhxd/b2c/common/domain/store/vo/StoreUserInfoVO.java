@@ -24,6 +24,9 @@ public class StoreUserInfoVO {
     @ApiModelProperty("门店名称")
     private String storeName;
 
+    @ApiModelProperty("门店简称")
+    private String storeShortName;
+
     /**
      * 店主头像
      */

@@ -24,6 +24,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.DateDealUtils;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponPushService;
 import org.apache.commons.lang3.StringUtils;
@@ -126,13 +127,6 @@ public class CouponPushServiceImpl implements CouponPushService {
                         flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
                     }
 
-                    // 优惠券设定有效期，没有设定开始时间和结束时间。
-                    if (couponPushVO.getEffectiveDays() != null) {
-                        DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-                        couponPushVO.setActivityStart(df.format(new Date()));
-                        couponPushVO.setActivityEnd(df.format(DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
-                    }
-
                     sendCoupon(customerUser, flag, couponPushVO);
                 }
 
@@ -162,8 +156,6 @@ public class CouponPushServiceImpl implements CouponPushService {
                     couponPushCustomer.setReceive(true);
                     couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
                 }
-
-
             }
         } finally {
             if (lock != null) {
@@ -201,6 +193,12 @@ public class CouponPushServiceImpl implements CouponPushService {
         for (CouponPushVO couponPushVO:couponPushResult) {
             getBrandList(couponPushVO);
             getproductList(couponPushVO);
+
+            // 优惠券设定有效期，没有设定开始时间和结束时间。
+            if (couponPushVO.getEffectiveDays() != null) {
+                couponPushVO.setActivityStart(DateUtil.format(new Date(),"yyyy.MM.dd"));
+                couponPushVO.setActivityEnd(DateUtil.format((DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())),"yyyy.MM.dd"));
+            }
         }
         return couponPushResult;
     }

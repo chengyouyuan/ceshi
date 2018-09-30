@@ -208,7 +208,7 @@
   </select>
 
 
-  <select id="checkCustomerJoinActive" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord" resultMap="java.lang.Integer">
+  <select id="checkCustomerJoinActive" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponActivityRecord" resultType="java.lang.Integer">
     select
     count(1)
     from coupon_activity_record

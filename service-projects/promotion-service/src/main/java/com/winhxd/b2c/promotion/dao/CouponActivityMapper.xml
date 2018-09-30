@@ -449,7 +449,6 @@
     AND ca.activity_start &lt;=  NOW()
     AND ca.activity_end &gt;= NOW()
     AND cas.store_id = #{storeId}
-    AND cat.start_time &lt;= NOW()
     AND cat.end_time &gt;= NOW()
   </select>
   <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
@@ -489,7 +488,7 @@
     AND ca. STATUS = 1
     AND ca.activity_start &lt;=  NOW()
     AND ca.activity_end &gt;= NOW()
-    AND cat.start_time &lt;=  NOW() AND cat.end_time >= NOW()
+    AND cat.end_time >= NOW()
     AND cas.store_id = #{storeId}
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>

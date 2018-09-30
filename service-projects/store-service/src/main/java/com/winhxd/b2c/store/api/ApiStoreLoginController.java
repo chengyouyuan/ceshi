@@ -102,6 +102,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_100821, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
+			@ApiResponse(code = BusinessCode.CODE_100811, message = "此手机号已被其他微信绑定，不能再次绑定"),
 			@ApiResponse(code = BusinessCode.CODE_100819, message = "您还没有绑定惠下单账号"),
 			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧"),
 			@ApiResponse(code = BusinessCode.CODE_100809, message = "您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。") })
@@ -138,6 +139,14 @@ public class ApiStoreLoginController {
 			if (db != null) {
 				logger.info("{} - , 该微信号已绑定过其它账号 ");
 				result = new ResponseResult<>(BusinessCode.CODE_100810);
+				return result;
+			}
+			open.setOpenid(null);
+			open.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+			db = storeLoginService.getStoreUserInfo(open);
+			if(db != null){
+				logger.info("{} - , 此手机号已被其他微信绑定，不能再次绑定 ");
+				result = new ResponseResult<>(BusinessCode.CODE_100811);
 				return result;
 			}
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
@@ -178,10 +187,10 @@ public class ApiStoreLoginController {
 				&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			storeUserInfo.setWechatName(storeUserInfoCondition.getWechatName());
-			db = storeLoginService.getStoreUserInfo(storeUserInfo);
-			if (db == null) {
-				logger.info("{} - , 您还没有绑定惠下单账号");
-				throw new BusinessException(BusinessCode.CODE_100819);
+				db = storeLoginService.getStoreUserInfo(storeUserInfo);
+				if (db == null) {
+					logger.info("{} - , 您还没有绑定惠下单账号");
+					throw new BusinessException(BusinessCode.CODE_100819);
 			}
 			if (HXD_STATUS2.equals(db.getStoreStatus())) {
 				logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");

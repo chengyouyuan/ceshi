@@ -23,6 +23,9 @@ public class StoreManageInfoVO {
     @ApiModelProperty(value = "门店名称（首页展示用）")
     private String storeName;
 
+    @ApiModelProperty(value = "门店简称（首页展示用）")
+    private String storeShortName;
+
     @ApiModelProperty(value = "门店别名（首页展示用取姓名第一个字加上老板）")
     private String storeBoss;
 

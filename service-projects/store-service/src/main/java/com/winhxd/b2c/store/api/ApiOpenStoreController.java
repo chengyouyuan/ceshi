@@ -412,6 +412,11 @@ public class ApiOpenStoreController {
         if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
             storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
         }
+        if(StringUtils.isBlank(storeUserInfo.getStoreShortName())){
+            storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreName());
+        }else{
+            storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreShortName());
+        }
         storeManageInfoVO.setStoreBoss(storeBoss);
         //增加查询未读消息(今日未读+历史未读)数量
         MessageNeteaseCondition msgCondition = new MessageNeteaseCondition();
@@ -528,6 +533,11 @@ public class ApiOpenStoreController {
         StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());
         if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
+        }
+        if(StringUtils.isBlank(data.getStoreShortName())){
+            data.setStoreShortName(data.getStoreName());
+        }else{
+            data.setStoreShortName(data.getStoreShortName());
         }
         result.setData(data);
         return result;

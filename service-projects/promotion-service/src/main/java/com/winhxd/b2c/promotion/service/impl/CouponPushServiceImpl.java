@@ -299,8 +299,8 @@ public class CouponPushServiceImpl implements CouponPushService {
             couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
             couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
         }else {
-            couponTemplateSend.setStartTime(getStringTurnDate(couponPushVO.getActivityStart()));
-            couponTemplateSend.setEndTime(getStringTurnDate(couponPushVO.getActivityEnd()));
+            couponTemplateSend.setStartTime(DateUtil.toDate(couponPushVO.getActivityStart(),"yyyy.MM.dd"));
+            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd(),"yyyy.MM.dd"));
         }
 
         couponTemplateSendMapper.insertSelective(couponTemplateSend);
@@ -336,18 +336,6 @@ public class CouponPushServiceImpl implements CouponPushService {
         if (logoUrl.isPresent()) {
             vo.setLogoImg(logoUrl.get());
         }
-    }
-
-    private Date getStringTurnDate(String time) {
-        Date date = null;
-        try {
-            if(StringUtils.isNotBlank(time)) {
-                date = DateUtils.parseDate(time, "yyyy.MM.dd");
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return date;
     }
 
     /**

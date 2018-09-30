@@ -150,6 +150,29 @@ public class ApiStoreLoginController {
 				return result;
 			}
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+
+			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
+					.getStoreUserInfo(storeUserInfoCondition.getStoreMobile(), "");
+			StoreUserSimpleInfo map = object.getData();
+			if (map == null) {
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				throw new BusinessException(BusinessCode.CODE_100822);
+			}
+
+			storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
+			storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+			storeUserInfo.setStorePicImg(map.getStorePicImg());
+			storeUserInfo.setCreated(new Date());
+			storeUserInfo.setStoreMobile(map.getStoreMobile());
+			storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
+			storeUserInfo.setStoreStatus((short) 0);
+			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+			storeUserInfo.setWechatName(storeUserInfoCondition.getWechatName());
+			storeUserInfo.setAppLoginStatus((short) 0);
+			storeLoginService.saveStoreInfo(storeUserInfo);
+
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
@@ -421,9 +444,9 @@ public class ApiStoreLoginController {
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
 					/*
-					 * 插入数据库
+					 * 插入数据库(暂时注解)
 					 */
-					info.setStoreCustomerId(map.getStoreCustomerId());
+					/*info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
@@ -433,7 +456,7 @@ public class ApiStoreLoginController {
 					info.setStoreStatus((short) 0);
 					info.setAppLoginStatus((short) 0);
 					info.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.saveStoreInfo(info);
+					storeLoginService.saveStoreInfo(info);*/
 					result = sendVerificationCode(map.getStoreMobile());
 				}
 			}

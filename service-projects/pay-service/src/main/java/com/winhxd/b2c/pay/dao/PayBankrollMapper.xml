@@ -202,9 +202,7 @@
   <!--  根据门店id 获取门店资金信息 -->
   <select id="selectStoreBankrollByStoreId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
-    id, store_id, total_moeny, presented_money, presented_frozen_money, settlement_settled_money,
-    (already_presented_money+presented_frozen_money) already_presented_money, status, created_by, created_by_name, created, updated_by,
-    updated_by_name, updated
+    <include refid="Base_Column_List" />
     from pay_bankroll
     where store_id = #{storeId}
     and status =1

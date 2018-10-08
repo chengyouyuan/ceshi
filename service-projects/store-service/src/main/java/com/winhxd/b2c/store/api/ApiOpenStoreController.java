@@ -469,21 +469,21 @@ public class ApiOpenStoreController {
             logger.info("用户customerId=" + customerUser.getCustomerId() + ",尝试绑定门店Id=" + bindingCondition.getStoreId() + ",绑定结果：" + bindingStatus.getDesc());
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+
+        ResponseResult<Boolean> isCouponsAvailable = couponServiceClient.checkCouponsAvailable(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
             //设置月销售量
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             storeUserInfoVO.setBindingStatus(bindingStatus.getStatus());
+            storeUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
             result.setData(storeUserInfoVO);
         } else {
             //前端目前不判断bindingStatus，通过请求的id和返回的绑定门店id进行简单验证，以后可以改成这样；
             StoreUserInfoVO emptyStoreUserInfoVO = new StoreUserInfoVO();
             emptyStoreUserInfoVO.setBindingStatus(StoreBindingStatus.NoneBinding.getStatus());
+            emptyStoreUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
             result.setData(emptyStoreUserInfoVO);
         }
-
-        ResponseResult<Boolean> isCouponsAvailable = couponServiceClient.checkCouponsAvailable(customerUser.getCustomerId());
-        storeUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
-
         return result;
     }
 

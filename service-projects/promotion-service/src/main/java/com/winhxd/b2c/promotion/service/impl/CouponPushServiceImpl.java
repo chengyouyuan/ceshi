@@ -366,7 +366,7 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         //指定门店
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
-        List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(result.getData().getId());
+        List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushStore(result.getData().getId());
         falg = isAvailable(couponPushCustomers);
 
         return falg;

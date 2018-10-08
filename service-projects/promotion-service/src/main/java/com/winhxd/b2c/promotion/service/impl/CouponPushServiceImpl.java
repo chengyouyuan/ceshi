@@ -97,34 +97,40 @@ public class CouponPushServiceImpl implements CouponPushService {
             resultList = new ArrayList<>();
             boolean flag = false;
             for (CouponPushVO couponPushVO:couponPushResult) {
-                for (int x=0;x<couponPushVO.getSendNum();x++) {
+                if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
+                    flag = true;
+                }else if (unActivityIds.contains(couponPushVO.getActivityId())) {
+                    continue;
+                }else {
+                    receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
 
-                    if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
+                    CouponActivityRecord car = new CouponActivityRecord();
+                    car.setCouponActivityId(couponPushVO.getActivityId());
+                    car.setCustomerId(customerUser.getCustomerId());
+                    // 校验用户是否领取过优惠券
+                    int count = couponActivityRecordMapper.checkCustomerJoinActive(car);
+                    if (receiveCouponCount < couponPushVO.getCouponNum() && count == 0) {
+                        activityIds.add(couponPushVO.getActivityId());
                         flag = true;
-                    }else if (unActivityIds.contains(couponPushVO.getActivityId())) {
-                        continue;
-                    }else {
-                        receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
-                        if (receiveCouponCount < couponPushVO.getCouponNum()) {
-                            activityIds.add(couponPushVO.getActivityId());
-                            flag = true;
-                        }else{
-                            // 优惠券是否可领取 0 已领取,1 可领取,2已领完
-                            flag = false;
-                            couponPushVO.setReceiveStatus("2");
-                            unActivityIds.add(couponPushVO.getActivityId());
-                        }
+                    }else{
+                        // 优惠券是否可领取 0 已领取,1 可领取,2已领完
+                        flag = false;
+                        couponPushVO.setReceiveStatus("2");
+                        unActivityIds.add(couponPushVO.getActivityId());
                     }
-
-                    // 是否领取只有推券给用户才会有值  0 :未领取 1：已领取
-                    if (couponPushVO.getReceive() == null) {
-                        flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
-                    }
-
-                    sendCoupon(customerUser, flag, couponPushVO);
                 }
 
-                resultList.add(couponPushVO);
+                // 是否领取只有推券给用户才会有值
+                if ("1".equals(couponPushVO.getReceiveStatus()) && couponPushVO.getReceive() == null) {
+                    flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
+                }
+
+                if (flag) {
+                    for (int x=0;x<couponPushVO.getSendNum();x++) {
+                        sendCoupon(customerUser, flag, couponPushVO);
+                    }
+                    resultList.add(couponPushVO);
+                }
             }
         return this.getCouponPushDetail(resultList);
     }
@@ -346,7 +352,7 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         List<CouponPushVO> couponPushResult = new ArrayList<>();
         couponPushResult.addAll(couponPushCustomers);
-        couponPushCustomers.addAll(couponPushStores);
+        couponPushResult.addAll(couponPushStores);
 
         return couponPushResult;
     }

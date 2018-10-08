@@ -217,7 +217,7 @@
       AND customer_id = #{customerId,jdbcType=BIGINT}
     </if>
     <if test="couponActivityId != null">
-      AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT},
+      AND coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
     </if>
   </select>
 </mapper>

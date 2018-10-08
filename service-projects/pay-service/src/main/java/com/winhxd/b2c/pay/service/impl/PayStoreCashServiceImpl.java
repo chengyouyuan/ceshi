@@ -67,7 +67,7 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
             vo.setPresentedFrozenMoney(payBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getPresentedFrozenMoney());
             vo.setSettlementSettledMoney(payBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getSettlementSettledMoney());
             vo.setPresentedMoney(payBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getPresentedMoney());
-            vo.setAlreadyPresentedMoney(payBankroll.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getAlreadyPresentedMoney());
+            vo.setAlreadyPresentedMoney(vo.getPresentedFrozenMoney().add(payBankroll.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getAlreadyPresentedMoney()));
         }else{
             vo.setTotalMoeny( BigDecimal.valueOf(0.00));
             vo.setPresentedFrozenMoney(BigDecimal.valueOf(0.00));

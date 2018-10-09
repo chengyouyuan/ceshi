@@ -375,6 +375,11 @@ public class CouponPushServiceImpl implements CouponPushService {
         return falg;
     }
 
+    @Override
+    public List<Long> getCustomerIdByActiveId(Long activeId) {
+        return couponPushCustomerMapper.getCustomerIdByActiveId(activeId);
+    }
+
     private boolean isAvailable(List<CouponPushVO> couponPushVOS) {
         boolean falg = false;
         //不可领取活动ID集合

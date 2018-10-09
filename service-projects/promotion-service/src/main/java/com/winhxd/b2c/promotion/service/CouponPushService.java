@@ -19,4 +19,11 @@ public interface CouponPushService {
      * @return
      */
     boolean getAvailableCoupon(Long customerId);
+
+    /**
+     * 通过活动ID获取指定的用户的ID
+     * @param activeId
+     * @return
+     */
+    List<Long> getCustomerIdByActiveId(Long activeId);
 }

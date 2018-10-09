@@ -190,11 +190,11 @@ public class CouponController implements CouponServiceClient{
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
 	})
 	public ResponseResult<Boolean> checkCouponsAvailable(Long customerId) {
-		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券=--开始--{}", customerId);
+		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券=--开始用户ID--{}", customerId);
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		boolean availableCoupon = couponPushService.getAvailableCoupon(customerId);
 		result.setData(availableCoupon);
-		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券 result={}", result);
+		LOGGER.info("=/promotion/5062/v1/checkCouponsAvailable-检测用户是否有可推送的优惠券=--结束-- result={}", result.getData());
 
 		return result;
 	}

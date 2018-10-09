@@ -193,5 +193,11 @@
     from coupon_push_customer
     where coupon_activity_id = #{activeId,jdbcType=BIGINT}
   </select>
+  <select id="getCustomerIdByActiveId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select
+    customer_id
+    from coupon_push_customer
+    where coupon_activity_id = #{activeId,jdbcType=BIGINT}
+  </select>
 
 </mapper>

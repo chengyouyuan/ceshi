@@ -8,6 +8,7 @@ import com.winhxd.b2c.admin.utils.ImportResult;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
@@ -198,6 +199,15 @@ public class CouponController {
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
         return ExcelUtils.exp(list, "惠小店信息");
     }
+
+    @ApiOperation("优惠券活动导出指定用户信息")
+    @GetMapping(value = "/5063/v1/couponActivityExportCustomerExcel")
+    public ResponseEntity<byte[]> couponActivityExportCustomerExcel(CouponActivityCondition condition){
+        ResponseResult<List<CustomerUserInfoExportVO>> listResponseResult = couponActivityServiceClient.queryCustomerByActivity(condition);
+        List<CustomerUserInfoExportVO> list = listResponseResult.getData();
+        return ExcelUtils.exp(list, "活动指定用户信息");
+    }
+
 	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
 		ImportResult<CouponActivityImportStoreVO> importResult = null;
 		try {

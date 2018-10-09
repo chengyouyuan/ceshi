@@ -53,6 +53,19 @@ public interface CouponPushCustomerMapper {
      */
     void updateByActivityIdAndCustomerId(CouponPushCustomer couponPushCustomer);
 
+
+    /**
+     * 通过活动ID获取指定的用户
+     * @param activeId
+     * @return
+     */
     List<CouponPushCustomer> getCouponPushCustomerByActiveId(Long activeId);
+
+    /**
+     * 通过活动ID获取指定的用户的ID
+     * @param activeId
+     * @return
+     */
+    List<Long> getCustomerIdByActiveId(Long activeId);
 
 }

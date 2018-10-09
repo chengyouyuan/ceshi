@@ -4,6 +4,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
@@ -146,6 +147,9 @@ public interface CouponActivityServiceClient {
     @RequestMapping(value = "/promotion/5037/v1/queryStoreByActivity", method = RequestMethod.POST)
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition);
 
+    @RequestMapping(value = "/promotion/5063/v1/queryCustomerByActivity", method = RequestMethod.POST)
+    public ResponseResult<List<CustomerUserInfoExportVO>> queryCustomerByActivity(@RequestBody CouponActivityCondition condition);
+
 
 }
 
@@ -220,6 +224,12 @@ class CouponActivityServiceFallback implements FallbackFactory<CouponActivitySer
             @Override
             public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(CouponActivityCondition condition) {
                 logger.error("CouponActivityServiceFallback -> queryStoreByActivity", throwable);
+                return new ResponseResult<>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<List<CustomerUserInfoExportVO>> queryCustomerByActivity(CouponActivityCondition condition) {
+                logger.error("CouponActivityServiceFallback -> queryCustomerByActivity", throwable);
                 return new ResponseResult<>(BusinessCode.CODE_1001);
             }
         };

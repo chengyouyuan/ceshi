@@ -6,6 +6,7 @@ import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.condition.CustomerListByPhoneCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
@@ -21,9 +22,11 @@ import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
+import com.winhxd.b2c.promotion.service.CouponPushService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +53,8 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private StoreServiceClient storeServiceClient;
     @Autowired
     private CustomerServiceClient customerServiceClient;
+    @Autowired
+    private CouponPushService couponPushService;
 
     /**
      *
@@ -424,6 +429,32 @@ public class CouponActivityController implements CouponActivityServiceClient {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         result.setData(pagedList);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<List<CustomerUserInfoExportVO>> queryCustomerByActivity(@RequestBody CouponActivityCondition condition) {
+        if(condition == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(condition.getId() == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        logger.info("queryCustomerByActivity--Id:" + condition.getId());
+        ResponseResult<List<CustomerUserInfoExportVO>> result = new ResponseResult<List<CustomerUserInfoExportVO>>();
+        List<CustomerUserInfoExportVO> list = new ArrayList<>();
+
+        List<Long> customerIds = couponPushService.getCustomerIdByActiveId(condition.getId());
+        ResponseResult<List<CustomerUserInfoVO>> customerUserResult = customerServiceClient.findCustomerUserByIds(customerIds);
+        List<CustomerUserInfoVO> datas = customerUserResult.getData();
+        if(!CollectionUtils.isEmpty(datas)){
+            for(CustomerUserInfoVO customerUserInfoVO : datas){
+                CustomerUserInfoExportVO cuie = new CustomerUserInfoExportVO();
+                BeanUtils.copyProperties(customerUserInfoVO,cuie);
+                list.add(cuie);
+            }
+        }
+        result.setData(list);
         return result;
     }
 }

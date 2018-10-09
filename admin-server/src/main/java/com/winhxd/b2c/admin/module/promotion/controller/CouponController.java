@@ -201,7 +201,7 @@ public class CouponController {
     }
 
     @ApiOperation("优惠券活动导出指定用户信息")
-    @GetMapping(value = "/5063/v1/couponActivityExportCustomerExcel")
+    @GetMapping(value = "/5064/v1/couponActivityExportCustomerExcel")
     public ResponseEntity<byte[]> couponActivityExportCustomerExcel(CouponActivityCondition condition){
         ResponseResult<List<CustomerUserInfoExportVO>> listResponseResult = couponActivityServiceClient.queryCustomerByActivity(condition);
         List<CustomerUserInfoExportVO> list = listResponseResult.getData();

@@ -147,7 +147,7 @@ public interface CouponActivityServiceClient {
     @RequestMapping(value = "/promotion/5037/v1/queryStoreByActivity", method = RequestMethod.POST)
     public ResponseResult<PagedList<CouponActivityStoreVO>> queryStoreByActivity(@RequestBody CouponActivityCondition condition);
 
-    @RequestMapping(value = "/promotion/5063/v1/queryCustomerByActivity", method = RequestMethod.POST)
+    @RequestMapping(value = "/promotion/5064/v1/queryCustomerByActivity", method = RequestMethod.POST)
     public ResponseResult<List<CustomerUserInfoExportVO>> queryCustomerByActivity(@RequestBody CouponActivityCondition condition);
 
 

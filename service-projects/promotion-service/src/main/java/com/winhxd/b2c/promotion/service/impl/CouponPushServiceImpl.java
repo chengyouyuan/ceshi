@@ -126,7 +126,7 @@ public class CouponPushServiceImpl implements CouponPushService {
 
             if (flag) {
                 for (int x=0;x<couponPushVO.getSendNum();x++) {
-                    sendCoupon(customerUser, flag, couponPushVO);
+                    sendCoupon(customerUser, couponPushVO);
                 }
                 resultList.add(couponPushVO);
             }
@@ -135,26 +135,24 @@ public class CouponPushServiceImpl implements CouponPushService {
     }
 
 
-    private void sendCoupon(CustomerUser customerUser, boolean flag, CouponPushVO couponPushVO) {
+    private void sendCoupon(CustomerUser customerUser, CouponPushVO couponPushVO) {
         Lock lock = null;
         try {
-            if (flag) {
-                String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId()+couponPushVO.getTemplateId();
-                lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
-                lock.lock();
+            String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId()+couponPushVO.getTemplateId();
+            lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
+            lock.lock();
 
-                CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
-                saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
-                couponPushVO.setReceiveStatus("1");
+            CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
+            saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
+            couponPushVO.setReceiveStatus("1");
 
-                // 用户渠道领取优惠券修改状态
-                if (couponPushVO.getReceive() != null) {
-                    CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
-                    couponPushCustomer.setCouponActivityId(couponPushVO.getActivityId());
-                    couponPushCustomer.setCustomerId(customerUser.getCustomerId());
-                    couponPushCustomer.setReceive(true);
-                    couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
-                }
+            // 用户渠道领取优惠券修改状态
+            if (couponPushVO.getReceive() != null) {
+                CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+                couponPushCustomer.setCouponActivityId(couponPushVO.getActivityId());
+                couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+                couponPushCustomer.setReceive(true);
+                couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
             }
         } finally {
             if (lock != null) {

@@ -234,13 +234,13 @@ public class ApiCouponController{
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常")
     })
-    @RequestMapping(value = "/security/5061/v1/getSpecifiedPushCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/5063/v1/getSpecifiedPushCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<List<CouponPushVO>> getSpecifiedPushCoupon(@RequestBody ApiCondition condition){
-        LOGGER.info("=/api-promotion/coupon/security/5061/v1/getSpecifiedPushCoupon");
+        LOGGER.info("=/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon");
 
         ResponseResult<List<CouponPushVO>> result = new ResponseResult<>();
         result.setData(couponPushService.getSpecifiedPushCoupon());
-        LOGGER.info("/api-promotion/coupon/5061/v1/getSpecifiedPushCoupon结果:"+result);
+        LOGGER.info("/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon结果:"+result);
         return result;
     }
 

@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "",
+    "id": "detection_dbsource_list_add",
+    "title": "成员添加",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/detection/service/addDbSource",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "alias",
+        "inputModel": "input",
+        "title": "别名",
+        "value": "",
+        "placeholder": "请输入别名",
+        "isHidden": false
+      },
+      {
+        "name": "userName",
+        "inputModel": "input",
+        "title": "账号",
+        "value": "",
+        "placeholder": "请输入账号",
+        "isHidden": false
+      },
+      {
+        "name": "password",
+        "inputModel": "input",
+        "title": "密码",
+        "value": "",
+        "placeholder": "请输入密码",
+        "isHidden": false
+      },
+      {
+        "name": "uri",
+        "inputModel": "input",
+        "title": "uri",
+        "value": "",
+        "placeholder": "请输入uri",
+        "isHidden": false
+      }
+    ]
+  }
+}

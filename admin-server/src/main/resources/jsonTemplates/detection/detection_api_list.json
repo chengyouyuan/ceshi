@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/detection/service/findErrorApiPageList",
+    "type": "report",
+    "id": "detection_api_list",
+    "code": "detection_api_list",
+    "title": "API接口监控",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/detection/service/findErrorApiPageList"
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "width": "80",
+        "name": "apiCode",
+        "title": "api"
+      },
+      {
+        "width": "80",
+        "name": "apiResult",
+        "title": "apiResult"
+      },
+      {
+        "width": "100",
+        "name": "dateTime",
+        "title": "api调用时间"
+      },
+      {
+        "width": "80",
+        "name": "duration",
+        "title": "api调用时长"
+      },
+      {
+        "width": "80",
+        "name": "error",
+        "title": "错误码"
+      },
+      {
+        "width": "50",
+        "name": "httpMethod",
+        "title": "http方法类型"
+      },
+      {
+        "name": "httpPath",
+        "title": "接口URL"
+      },
+      {
+        "name": "controllerClass",
+        "title": "controllerClass"
+      },
+      {
+        "name": "controllerMethod",
+        "title": "controllerMethod"
+      },
+      {
+        "name": "clientAddress",
+        "title": "clientAddress"
+      },
+      {
+        "name": "traceId",
+        "title": "traceId"
+      },
+      {
+        "name": "spanId",
+        "title": "spanId"
+      },
+      {
+        "name": "parentId",
+        "title": "parentId"
+      }
+    ],
+    "params": []
+  }
+}

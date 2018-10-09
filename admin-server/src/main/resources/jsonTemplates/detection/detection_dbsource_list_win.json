@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/detection/service/findDbSourcePageList",
+    "type": "report",
+    "id": "detection_dbsource_list_win",
+    "code": "detection_dbsource_list_win",
+    "title": "数据源选择",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/detection/service/findDbSourcePageList"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "id",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "id",
+        "title": "数据源ID"
+      },
+      {
+        "name": "alias",
+        "title": "数据源名称"
+      }
+    ],
+    "params": [],
+    "returnDisplay": "alias",
+    "returnValue": "id"
+  }
+}

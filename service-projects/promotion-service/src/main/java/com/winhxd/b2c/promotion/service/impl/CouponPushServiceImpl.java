@@ -96,28 +96,9 @@ public class CouponPushServiceImpl implements CouponPushService {
         Long receiveCouponCount = 0L;
         boolean flag = false;
         for (CouponPushVO couponPushVO:couponPushResult) {
-            if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
-                flag = true;
-            }else if (unActivityIds.contains(couponPushVO.getActivityId())) {
-                continue;
-            }else {
-                receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
 
-                CouponActivityRecord car = new CouponActivityRecord();
-                car.setCouponActivityId(couponPushVO.getActivityId());
-                car.setCustomerId(customerUser.getCustomerId());
-                // 校验用户是否领取过优惠券
-                int count = couponActivityRecordMapper.checkCustomerJoinActive(car);
-                if (receiveCouponCount < couponPushVO.getCouponNum() && count == 0) {
-                    activityIds.add(couponPushVO.getActivityId());
-                    flag = true;
-                }else{
-                    // 优惠券是否可领取 0 已领取,1 可领取,2已领完
-                    flag = false;
-                    couponPushVO.setReceiveStatus("2");
-                    unActivityIds.add(couponPushVO.getActivityId());
-                }
-            }
+            flag = checkCouponCollar(couponPushVO,activityIds,unActivityIds,
+                    receiveCouponCount,customerUser);
 
             // 是否领取只有推券给用户才会有值
             if ("1".equals(couponPushVO.getReceiveStatus()) && couponPushVO.getReceive() == null) {
@@ -132,6 +113,45 @@ public class CouponPushServiceImpl implements CouponPushService {
             }
         }
         return this.getCouponPushDetail(resultList);
+    }
+
+    /**
+     * 校验优惠券是否可领取
+     * @param couponPushVO
+     * @param activityIds
+     * @param unActivityIds
+     * @param receiveCouponCount
+     * @param customerUser
+     * @return
+     */
+    private boolean checkCouponCollar(CouponPushVO couponPushVO,List<Long> activityIds,List<Long> unActivityIds,
+                                Long receiveCouponCount,CustomerUser customerUser) {
+        if (activityIds.contains(couponPushVO.getActivityId()) && receiveCouponCount < couponPushVO.getCouponNum()) {
+            return true;
+        }else if (unActivityIds.contains(couponPushVO.getActivityId())) {
+            return false;
+        }else {
+            receiveCouponCount = couponPushCustomerMapper.countUsedCouponNum(couponPushVO);
+
+            int count = checkCustomerJoinActive(customerUser, couponPushVO);
+            if (receiveCouponCount < couponPushVO.getCouponNum() && count == 0) {
+                activityIds.add(couponPushVO.getActivityId());
+                return true;
+            }else{
+                // 优惠券是否可领取 0 已领取,1 可领取,2已领完
+                couponPushVO.setReceiveStatus("2");
+                unActivityIds.add(couponPushVO.getActivityId());
+                return false;
+            }
+        }
+    }
+
+    private int checkCustomerJoinActive(CustomerUser customerUser, CouponPushVO couponPushVO) {
+        CouponActivityRecord car = new CouponActivityRecord();
+        car.setCouponActivityId(couponPushVO.getActivityId());
+        car.setCustomerId(customerUser.getCustomerId());
+        // 校验用户是否领取过优惠券
+        return couponActivityRecordMapper.checkCustomerJoinActive(car);
     }
 
 

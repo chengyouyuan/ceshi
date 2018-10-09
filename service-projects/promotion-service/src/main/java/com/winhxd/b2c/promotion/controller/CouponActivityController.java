@@ -295,6 +295,11 @@ public class CouponActivityController implements CouponActivityServiceClient {
             if (condition.getCouponActivityTemplateList().get(0).getSendNum()>maxNum){
                 throw new BusinessException(BusinessCode.CODE_503004);
             }
+            Integer sendNum = condition.getCouponActivityTemplateList().get(0).getSendNum();
+            Integer couponNum = condition.getCouponActivityTemplateList().get(0).getCouponNum();
+            if(sendNum<=0 || couponNum<=0 || (couponNum%sendNum != 0) || couponNum<sendNum){
+                throw new BusinessException(BusinessCode.CODE_503601);
+            }
         }
 
     }

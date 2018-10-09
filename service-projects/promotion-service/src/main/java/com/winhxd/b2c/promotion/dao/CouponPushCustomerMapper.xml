@@ -136,7 +136,7 @@
     WHERE c.customer_id=#{customerId,jdbcType=BIGINT}
     <!-- receive 0 :未领取 1：已领取 status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
       AND c.receive=0 AND a.`status`=1 AND a.activity_status=1
-        AND a.type=2 AND a.activity_end >= NOW() AND t.end_time &gt;= NOW()
+      AND a.type=2 AND a.activity_end >= NOW() AND (t.end_time &gt;= NOW() or t.effective_days > 0)
   </select>
 
   <!--查询优惠券推送给门店-->
@@ -171,7 +171,7 @@
     WHERE c.store_id=#{storeId,jdbcType=BIGINT}
     <!-- status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
       AND a.`status`=1 and a.activity_status=1 AND a.type=2 and a.coupon_type=2
-      AND a.activity_end >= NOW() AND t.end_time &gt;= NOW()
+      AND a.activity_end >= NOW() AND (t.end_time &gt;= NOW() or t.effective_days > 0)
   </select>
 
   <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">

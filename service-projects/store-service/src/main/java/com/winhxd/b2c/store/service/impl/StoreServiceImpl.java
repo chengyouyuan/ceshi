@@ -93,6 +93,9 @@ public class StoreServiceImpl implements StoreService {
         StoreUserInfoVO infoVO1 = new StoreUserInfoVO();
         if (info != null) {
             BeanUtils.copyProperties(info, infoVO1);
+            if(StringUtils.isBlank(infoVO1.getStoreShortName())){
+                infoVO1.setStoreShortName(infoVO1.getStoreName());
+            }
             return infoVO1;
         }
         return null;

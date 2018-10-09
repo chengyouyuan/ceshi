@@ -397,13 +397,10 @@ public class ApiStoreLoginController {
 		//先更新门店信息，再返回给前端展示
 		storeUserInfo.setId(storeUserInfo.getId());
 		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
-		storeUserInfo.setShopkeeper(Objects.toString(map.get("shopkeeper"), ""));
 		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
 		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
 		storeUserInfo.setLon(Double.parseDouble(Objects.toString(map.get("longitude"), "0")));
 		storeUserInfo.setLat(Double.parseDouble(Objects.toString(map.get("latitude"), "0")));
-		storeUserInfo.setContactMobile(storeUserInfo.getStoreMobile());
-
 	}
 	/**
 	 * @author wufuyun

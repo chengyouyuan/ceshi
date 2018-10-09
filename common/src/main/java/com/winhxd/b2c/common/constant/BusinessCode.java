@@ -362,6 +362,8 @@ public final class BusinessCode {
     public static final int CODE_503401 = 503401;
     @ApiModelProperty("停止活动失败")
     public static final int CODE_503501 = 503501;
+    @ApiModelProperty("库总总数需大于等于推送张数且符合倍数关系")
+    public static final int CODE_503601 = 503601;
 
 
     @ApiModelProperty("门店资金变化  参数为空")

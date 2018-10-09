@@ -39,6 +39,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author wufuyun
@@ -240,6 +242,10 @@ public class ApiStoreLoginController {
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setAppLoginStatus((short) 0);
 			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+			/**
+			 * 每次登陆都更新店铺信息
+			 */
+			updateStoreInfo(storeUserInfo,db.getStoreCustomerId());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
 			vo.setCustomerId(db.getStoreCustomerId());
@@ -385,6 +391,20 @@ public class ApiStoreLoginController {
 		cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 	}
 
+	private void updateStoreInfo(StoreUserInfo storeUserInfo,Long storeCustomerId){
+		ResponseResult<Map<String, Object>> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
+		Map<String, Object> map = result.getData();
+		//先更新门店信息，再返回给前端展示
+		storeUserInfo.setId(storeUserInfo.getId());
+		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
+		storeUserInfo.setShopkeeper(Objects.toString(map.get("shopkeeper"), ""));
+		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
+		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
+		storeUserInfo.setLon(Double.parseDouble(Objects.toString(map.get("longitude"), "0")));
+		storeUserInfo.setLat(Double.parseDouble(Objects.toString(map.get("latitude"), "0")));
+		storeUserInfo.setContactMobile(storeUserInfo.getStoreMobile());
+
+	}
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:10:34

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.metrics.amqp.RabbitMetricsAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
@@ -16,7 +15,7 @@ import com.winhxd.b2c.common.config.MicroServiceConfig;
 import com.winhxd.b2c.common.mq.event.support.EnableEventMessage;
 
 @EnableAsync
-@SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@SpringBootApplication(exclude = {RabbitMetricsAutoConfiguration.class})
 @EnableEventMessage
 @EnableScheduling
 @ComponentScan(basePackages = "com.winhxd.b2c")

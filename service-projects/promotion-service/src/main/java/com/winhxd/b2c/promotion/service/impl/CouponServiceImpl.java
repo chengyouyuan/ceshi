@@ -1057,12 +1057,7 @@ public class CouponServiceImpl implements CouponService {
      * @return
      */
     private int getPushCount(Long storeId) {
-        StoreCustomerRegionCondition regionCondition = new StoreCustomerRegionCondition();
-        ArrayList<String> storeUserInfoIds = Lists.newArrayList();
-        storeUserInfoIds.add(String.valueOf(storeId));
-        regionCondition.setStoreUserInfoIds(storeUserInfoIds);
-
-        ResponseResult<List<Long>> customerIdData = storeServiceClient.findStoreCustomerRegions(regionCondition);
+        ResponseResult<List<Long>> customerIdData = getCustomerListByStoreId(storeId);
 
         int pushCount = 0;
         if (!CollectionUtils.isEmpty(customerIdData.getData())) {
@@ -1071,6 +1066,15 @@ public class CouponServiceImpl implements CouponService {
 //            pushCount = storeBindingUserCount + couponPushCustomerCount;
         }
         return pushCount;
+    }
+
+    private ResponseResult<List<Long>> getCustomerListByStoreId(Long storeId) {
+        StoreCustomerRegionCondition regionCondition = new StoreCustomerRegionCondition();
+        ArrayList<String> storeUserInfoIds = Lists.newArrayList();
+        storeUserInfoIds.add(String.valueOf(storeId));
+        regionCondition.setStoreUserInfoIds(storeUserInfoIds);
+
+        return storeServiceClient.findStoreCustomerRegions(regionCondition);
     }
 
 

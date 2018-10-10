@@ -88,6 +88,7 @@
   </select>
   <select id="selectStoreByActivity" parameterType="com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition" resultMap="queryCouponResultMap">
     SELECT
+    DISTINCT(sui.id) AS fiter,
     ca.id,
     sui.id AS store_id,
     sui.`store_name`,

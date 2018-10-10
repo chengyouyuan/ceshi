@@ -56,4 +56,13 @@ public interface CustomerService {
      * @Description 根据查询条件查询有绑定关系用户分页数据
      */
     PagedList<CustomerUserInfoVO> findAvabileCustomerPageInfo(BackStageCustomerInfoCondition condition);
+
+    /**
+     * @param phones 用户id
+     * @return 用户信息
+     * @author sunwenwu
+     * @date 2018/9/27
+     * @Description 根据手机号批量查询用户信息
+     */
+    List<CustomerUserInfoVO> findCustomerUserByPhones(List<String> phones);
 }

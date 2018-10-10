@@ -51,6 +51,7 @@ public enum CouponActivityEnum {
     INVALYD((short) 0, "无效"),
     EXPIRED((short) 3, "已过期"),
     UNTREAD((short) 4, "退回"),
+    FAST_EXPIRED((short)5,"快过期"),
 
     /**
      * 优惠券来源 1-系统发放

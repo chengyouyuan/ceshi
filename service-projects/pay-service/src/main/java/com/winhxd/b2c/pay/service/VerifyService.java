@@ -62,7 +62,7 @@ public class VerifyService {
      * @param orderNo
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int saveAccountingDetailsByOrderNo(String orderNo) {
         int count = 0;
         // 调用订单服务，获取订单实付款
@@ -140,7 +140,7 @@ public class VerifyService {
      * @param orderNo
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int completeAccounting(String orderNo) {
         String timeFormat = "yyyy-MM-dd HH:mm:ss,SSS";
         int count;
@@ -194,7 +194,7 @@ public class VerifyService {
      * @param orderNo
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int thirdPartyVerifyAccounting(String orderNo) {
         int updateCount = 0;
         ResponseResult<OrderInfoDetailVO4Management> responseResult = orderServiceClient.getOrderDetail4Management(orderNo);
@@ -345,7 +345,7 @@ public class VerifyService {
      * @param operatedBy
      * @param operatedByName
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int verifyByStoreSummary(List<VerifySummaryCondition.StoreAndDateVO> list, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
@@ -375,7 +375,7 @@ public class VerifyService {
      * @param operatedBy
      * @param operatedByName
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int verifyByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
@@ -401,7 +401,7 @@ public class VerifyService {
      * @param verifyCode
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     private int notifyStoreMoneyVerify(String verifyCode) {
         int updatedCount = 0;
         List<OrderVerifyMoneyVO> orderVerifyMoneyVOList = accountingDetailMapper.selectOrderVerifyMoneyListByVerifyCode(verifyCode);
@@ -438,7 +438,7 @@ public class VerifyService {
      * @param operatedByName
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int pauseByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
@@ -462,7 +462,7 @@ public class VerifyService {
      * @param operatedByName
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int restoreByAccountingDetail(List<Long> ids, String verifyRemark, Long operatedBy, String operatedByName) {
         String uuid = UUID.randomUUID().toString();
         String verifyCode = Base64.getEncoder().encodeToString(uuid.getBytes());
@@ -517,7 +517,7 @@ public class VerifyService {
      * @param condition
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int approveWithdrawals(ApproveStoreWithdrawalsCondition condition) {
         int count = 0;
         String auditDesc = condition.getAuditDesc();

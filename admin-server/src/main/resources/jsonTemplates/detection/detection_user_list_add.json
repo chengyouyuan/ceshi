@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "",
+    "id": "detection_user_list_add",
+    "title": "用户添加",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/detection/service/addUser",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "用户姓名",
+        "value": "",
+        "placeholder": "请输入用户姓名",
+        "isHidden": false
+      },
+      {
+        "name": "phone",
+        "inputModel": "input",
+        "title": "手机号",
+        "value": "",
+        "placeholder": "请输入手机号",
+        "isHidden": false
+      },
+      {
+        "name": "email",
+        "inputModel": "input",
+        "title": "邮箱",
+        "value": "",
+        "placeholder": "请输入邮箱",
+        "isHidden": false
+      }
+    ]
+  }
+}

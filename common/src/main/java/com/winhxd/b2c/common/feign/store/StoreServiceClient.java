@@ -1,9 +1,15 @@
 package com.winhxd.b2c.common.feign.store;
 
-import java.util.List;
-import java.util.Set;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.store.condition.*;
+import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
+import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
+import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
+import feign.hystrix.FallbackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,16 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.constant.ServiceName;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.store.vo.ShopCartProdVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreRegionVO;
-import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
-import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
-
-import feign.hystrix.FallbackFactory;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengyy
@@ -163,7 +161,7 @@ public interface StoreServiceClient {
     public ResponseResult<List<StoreUserInfoVO>> getStoreListByKeywords(@RequestBody StoreListByKeywordsCondition condition);
 
     /**
-     * 根据门店ID，门店状态查询绑定的用户ID
+     * 根据门店id集合，门店状态查询绑定的用户ID
      * @param conditions
      * @return
      */

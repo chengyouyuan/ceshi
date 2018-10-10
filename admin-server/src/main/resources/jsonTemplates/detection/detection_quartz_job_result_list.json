@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/detection/service/findQuartzJobResultPageList",
+    "type": "report",
+    "id": "detection_quartzjob_list",
+    "code": "detection_quartzjob_list",
+    "title": "定时任务管理",
+    "buttons": [],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "resultValue",
+        "title": "执行结果"
+      },
+      {
+        "name": "duration",
+        "title": "执行时长"
+      },
+      {
+        "name": "isSuccess",
+        "title": "是否成功"
+      },
+      {
+        "name": "error_msg",
+        "title": "错误信息"
+      },
+      {
+        "name": "resultTime",
+        "title": "执行时间"
+      }
+    ],
+    "params": []
+  }
+}

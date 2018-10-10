@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/detection/service/findQuartzJobPageList",
+    "type": "report",
+    "id": "detection_quartzjob_list",
+    "code": "detection_quartzjob_list",
+    "title": "定时任务管理",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/detection/service/findQuartzJobPageList"
+        }
+      },
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/detection/detection_quartz_job_list_add.json",
+          "callBack": {
+          }
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "width": "80",
+        "name": "userName",
+        "title": "用户名"
+      },
+      {
+        "width": "90",
+        "name": "dbAlias",
+        "title": "数据源名称"
+      },
+      {
+        "width": "90",
+        "name": "jobName",
+        "title": "任务名称"
+      },
+      {
+        "width": "80",
+        "name": "jobStatusStr",
+        "title": "任务状态"
+      },
+      {
+        "width": "140",
+        "name": "previousTime",
+        "title": "上次执行时间"
+      },
+      {
+        "width": "140",
+        "name": "nextTime",
+        "title": "下次执行时间"
+      },
+      {
+        "width": "60",
+        "name": "operate",
+        "title": "比较符"
+      },
+      {
+        "width": "60",
+        "name": "optValue",
+        "title": "比较值"
+      },
+      {
+        "width": "70",
+        "name": "resultValue",
+        "title": "执行结果"
+      },
+      {
+        "width": "80",
+        "name": "duration",
+        "title": "执行时长"
+      },
+      {
+        "width": "80",
+        "name": "warningStatusStr",
+        "title": "警告状态"
+      },
+      {
+        "width": "70",
+        "name": "warningLevel",
+        "title": "警告级别"
+      },
+      {
+        "width": "150",
+        "name": "warningMsg",
+        "title": "警告描述"
+      },
+      {
+        "width": "80",
+        "name": "isSuccessStr",
+        "title": "是否成功"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/detection/detection_quartz_job_list_view.json"
+            }
+          },
+          {
+            "name": "启用",
+            "icon": null,
+            "event": {
+              "ajaxType": "get",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/detection/service/resumeQuartzJob"
+            }
+          },
+          {
+            "name": "暂停",
+            "icon": null,
+            "event": {
+              "ajaxType": "get",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/detection/service/pauseQuartzJob"
+            }
+          },
+          {
+            "name": "删除",
+            "icon": null,
+            "event": {
+              "ajaxType": "get",
+              "type": "ajax",
+              "params": [
+                "id"
+              ],
+              "path": "/detection/service/deleteQuartzJob"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "jobName",
+        "inputModel": "input",
+        "title": "任务名称",
+        "value": "",
+        "placeholder": "请输入任务名称",
+        "isHidden": false
+      },
+      {
+        "name": "userId",
+        "inputModel": "inputDia",
+        "title": "用户名",
+        "placeholder": "请选择用户",
+        "path": "",
+        "configKey": "/template/module/detection/detection_user_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "dbId",
+        "inputModel": "inputDia",
+        "title": "数据源",
+        "placeholder": "请选择数据源",
+        "path": "",
+        "configKey": "/template/module/detection/detection_dbsource_list_win.json",
+        "isHidden": false
+      }
+    ]
+  }
+}

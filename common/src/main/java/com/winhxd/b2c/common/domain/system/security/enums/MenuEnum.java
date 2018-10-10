@@ -84,7 +84,16 @@ public enum MenuEnum {
     SYSTEM_MANAGEMENT("系统管理", PermissionEnum.SYSTEM_MANAGEMENT),
     SYSTEM_MANAGEMENT_ROLE("权限管理", SYSTEM_MANAGEMENT, "/template/module/system/system_role_list.json", PermissionEnum.SYSTEM_MANAGEMENT_ROLE),
     SYSTEM_MANAGEMENT_USER("成员管理", SYSTEM_MANAGEMENT, "/template/module/system/system_user_list.json", PermissionEnum.SYSTEM_MANAGEMENT_USER),
-    SYSTEM_MANAGEMENT_DICT("字典管理", SYSTEM_MANAGEMENT, "/template/module/system/system_dict_list.json", PermissionEnum.SYSTEM_MANAGEMENT_DICT);
+    SYSTEM_MANAGEMENT_DICT("字典管理", SYSTEM_MANAGEMENT, "/template/module/system/system_dict_list.json", PermissionEnum.SYSTEM_MANAGEMENT_DICT),
+    SYSTEM_MANAGEMENT_USER("成员管理", SYSTEM_MANAGEMENT, "/template/module/system/system_user_list.json", PermissionEnum.SYSTEM_MANAGEMENT_USER),
+
+    /**
+     * 监测监控管理
+     */
+    DETECTION_MANAGEMENT("监控管理", PermissionEnum.SYSTEM_MANAGEMENT),
+    DETECTION_MANAGEMENT_QUARTZ_JOB("任务管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_quartz_job_list.json", PermissionEnum.DETECTION_MANAGEMENT_QUARTZ_JOB),
+    DETECTION_MANAGEMENT_USER("用户管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_user_list.json", PermissionEnum.DETECTION_MANAGEMENT_USER),
+    DETECTION_MANAGEMENT_DBSOURCE("数据源管理", DETECTION_MANAGEMENT, "/template/module/detection/detection_dbsource_list.json", PermissionEnum.DETECTION_MANAGEMENT_DBSOURCE);
 
 
     private String name;

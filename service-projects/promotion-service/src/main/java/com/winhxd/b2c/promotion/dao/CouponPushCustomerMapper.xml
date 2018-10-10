@@ -90,4 +90,114 @@
       temp = #{temp,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!--查询优惠券发放给多少用户-->
+  <select id="selectCouponStoreUser" parameterType="java.util.List" resultType="java.lang.Integer">
+    SELECT
+    COUNT(p.customer_id) AS count
+    FROM coupon_push_customer p
+    LEFT JOIN coupon_activity a ON a.id = p.coupon_activity_id AND a.`status` = 1
+    WHERE p.customer_id IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+<!--查询优惠券推送给用户-->
+  <select id="selectCouponPushCustomer" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO">
+    SELECT
+      t.coupon_activity_id activityId,
+      t.template_id templateId,
+      e.STATUS,
+      e.pay_type payType,
+      g.type type,
+      d.reduced_type reducedType,
+      d.reduced_amt reducedAmt,
+      d.discounted_amt discountedAmt,
+      (100-d.discounted)/10 discounted,
+      d.discounted_max_amt discountedMaxAmt,
+      p.apply_rule_type applyRuleType,
+      p.id applyId,
+      a.coupon_type couponType,
+      DATE_FORMAT(t.start_time,'%Y.%m.%d') activityStart,
+      DATE_FORMAT(t.end_time,'%Y.%m.%d') activityEnd,
+      t.coupon_num_type couponNumType,
+      t.send_num sendNum,
+      t.coupon_num couponNum,
+      c.receive,
+      t.effective_days  effectiveDays
+    FROM coupon_push_customer c
+    LEFT JOIN coupon_activity a ON c.coupon_activity_id=a.id
+    LEFT JOIN coupon_activity_template t ON a.id=t.coupon_activity_id
+    LEFT JOIN coupon_template e ON t.template_id=e.id
+    LEFT JOIN coupon_grade g ON g.id=e.grade_id
+    LEFT JOIN coupon_grade_detail d ON g.id=d.grade_id
+    LEFT JOIN coupon_apply p ON e.apply_rule_id=p.id
+    WHERE c.customer_id=#{customerId,jdbcType=BIGINT}
+    <!-- receive 0 :未领取 1：已领取 status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
+      AND c.receive=0 AND a.`status`=1 AND a.activity_status=1
+      AND a.type=2 AND a.activity_end >= NOW() AND (t.end_time &gt;= NOW() or t.effective_days > 0)
+  </select>
+
+  <!--查询优惠券推送给门店-->
+  <select id="selectCouponPushStore" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO">
+    SELECT
+      t.coupon_activity_id activityId,
+      t.template_id templateId,
+      e. STATUS,
+      e.pay_type payType,
+      g.type type,
+      d.reduced_type reducedType,
+      d.reduced_amt reducedAmt,
+      d.discounted_amt discountedAmt,
+      (100 - d.discounted) / 10 discounted,
+      d.discounted_max_amt discountedMaxAmt,
+      p.apply_rule_type applyRuleType,
+      p.id applyId,
+      a.coupon_type couponType,
+      DATE_FORMAT(t.start_time, '%Y.%m.%d') activityStart,
+      DATE_FORMAT(t.end_time, '%Y.%m.%d') activityEnd,
+      t.coupon_num_type couponNumType,
+      t.send_num sendNum,
+      t.coupon_num couponNum,
+      t.effective_days effectiveDays
+    FROM coupon_activity_store_customer c
+    LEFT JOIN coupon_activity_template t ON c.coupon_activity_template_id=t.id AND t.`status` = 1
+    LEFT JOIN coupon_activity a ON t.coupon_activity_id=a.id
+    LEFT JOIN coupon_template e ON t.template_id = e.id AND e.`status`=1
+    LEFT JOIN coupon_grade g ON g.id = e.grade_id
+    LEFT JOIN coupon_grade_detail d ON g.id = d.grade_id
+    LEFT JOIN coupon_apply p ON e.apply_rule_id = p.id
+    WHERE c.store_id=#{storeId,jdbcType=BIGINT}
+    <!-- status 是否有效0无效1有效  activity_status 活动状态 1开启 2停止  type 1领券 2推券-->
+      AND a.`status`=1 and a.activity_status=1 AND a.type=2 and a.coupon_type=2
+      AND a.activity_end >= NOW() AND (t.end_time &gt;= NOW() or t.effective_days > 0)
+  </select>
+
+  <select id="countUsedCouponNum" parameterType="com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO" resultType="java.lang.Long">
+      select count(1)
+      from coupon_activity_record car
+      where car.coupon_activity_id=#{activityId,jdbcType=BIGINT}
+       and car.template_id=#{templateId,jdbcType=BIGINT}
+  </select>
+  
+  <update id="updateByActivityIdAndCustomerId" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponPushCustomer">
+    update coupon_push_customer
+    set receive = #{receive,jdbcType=BIT}
+    where customer_id = #{customerId,jdbcType=BIGINT} and  coupon_activity_id = #{couponActivityId,jdbcType=BIGINT}
+  </update>
+
+  <select id="getCouponPushCustomerByActiveId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from coupon_push_customer
+    where coupon_activity_id = #{activeId,jdbcType=BIGINT}
+  </select>
+  <select id="getCustomerIdByActiveId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    select
+    customer_id
+    from coupon_push_customer
+    where coupon_activity_id = #{activeId,jdbcType=BIGINT}
+  </select>
+
 </mapper>

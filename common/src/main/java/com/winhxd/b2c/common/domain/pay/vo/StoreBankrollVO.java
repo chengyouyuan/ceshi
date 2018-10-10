@@ -25,7 +25,7 @@ public class StoreBankrollVO {
     private BigDecimal presentedFrozenMoney;
     @ApiModelProperty("待结算金额")
     private BigDecimal settlementSettledMoney;
-    @ApiModelProperty("已提现金额")
+    @ApiModelProperty("已提现金额（包含提现中的金额）")
     private BigDecimal alreadyPresentedMoney;
     @ApiModelProperty("今日收入合计")
     private BigDecimal totalMoneyToday;

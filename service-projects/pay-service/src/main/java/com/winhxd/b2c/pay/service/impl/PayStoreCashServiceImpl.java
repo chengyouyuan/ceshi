@@ -5,17 +5,16 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.context.StoreUser;
 import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.pay.condition.PayStoreCashCondition;
 import com.winhxd.b2c.common.domain.pay.enums.StatusEnums;
 import com.winhxd.b2c.common.domain.pay.model.PayStoreTransactionRecord;
-import com.winhxd.b2c.common.domain.pay.model.StoreBankroll;
+import com.winhxd.b2c.common.domain.pay.model.PayBankroll;
 import com.winhxd.b2c.common.domain.pay.vo.PayStoreTransactionRecordVO;
 import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsVO;
 import com.winhxd.b2c.common.domain.pay.vo.StoreBankrollVO;
 import com.winhxd.b2c.pay.dao.PayStoreTransactionRecordMapper;
 import com.winhxd.b2c.pay.dao.PayWithdrawalsMapper;
-import com.winhxd.b2c.pay.dao.StoreBankrollMapper;
+import com.winhxd.b2c.pay.dao.PayBankrollMapper;
 import com.winhxd.b2c.pay.service.PayStoreCashService;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -37,7 +36,7 @@ import java.util.List;
 public class PayStoreCashServiceImpl implements PayStoreCashService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PayStoreCashServiceImpl.class);
       @Autowired
-      private StoreBankrollMapper storeBankrollMapper;
+      private PayBankrollMapper payBankrollMapper;
       @Autowired
       private PayStoreTransactionRecordMapper payStoreTransactionRecordMapper;
       @Autowired
@@ -60,15 +59,15 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         //获取今日的收入总和
         BigDecimal totalPayRecordToday = payStoreTransactionRecordMapper.getTotalPayRecordToday(storeId);
         vo.setTotalMoneyToday(totalPayRecordToday==null?BigDecimal.valueOf(0.00):totalPayRecordToday);
-        StoreBankroll storeBankroll = storeBankrollMapper.selectStoreBankrollByStoreId(storeId);
-        if(storeBankroll!=null){
-            vo.setId(storeBankroll.getId()==null?null:storeBankroll.getId());
-            vo.setStoreId(storeBankroll.getStoreId()==null?null:storeBankroll.getStoreId());
-            vo.setTotalMoeny(storeBankroll.getTotalMoeny()==null? BigDecimal.valueOf(0.00):storeBankroll.getTotalMoeny());
-            vo.setPresentedFrozenMoney(storeBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedFrozenMoney());
-            vo.setSettlementSettledMoney(storeBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getSettlementSettledMoney());
-            vo.setPresentedMoney(storeBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00):storeBankroll.getPresentedMoney());
-            vo.setAlreadyPresentedMoney(storeBankroll.getAlreadyPresentedMoney()==null?null:storeBankroll.getAlreadyPresentedMoney());
+        PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(storeId);
+        if(payBankroll !=null){
+            vo.setId(payBankroll.getId()==null?null: payBankroll.getId());
+            vo.setStoreId(payBankroll.getStoreId()==null?null: payBankroll.getStoreId());
+            vo.setTotalMoeny(payBankroll.getTotalMoeny()==null? BigDecimal.valueOf(0.00): payBankroll.getTotalMoeny());
+            vo.setPresentedFrozenMoney(payBankroll.getPresentedFrozenMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getPresentedFrozenMoney());
+            vo.setSettlementSettledMoney(payBankroll.getSettlementSettledMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getSettlementSettledMoney());
+            vo.setPresentedMoney(payBankroll.getPresentedMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getPresentedMoney());
+            vo.setAlreadyPresentedMoney(vo.getPresentedFrozenMoney().add(payBankroll.getAlreadyPresentedMoney()==null?BigDecimal.valueOf(0.00): payBankroll.getAlreadyPresentedMoney()));
         }else{
             vo.setTotalMoeny( BigDecimal.valueOf(0.00));
             vo.setPresentedFrozenMoney(BigDecimal.valueOf(0.00));

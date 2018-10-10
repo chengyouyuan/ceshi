@@ -69,6 +69,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public List<CustomerUserInfoVO> findCustomerUserByPhones(List<String> phones) {
+        if (phones == null || phones.size() == 0) {
+            return null;
+        }
+        return customerUserInfoMapper.selectCustomerUserByPhones(phones);
+    }
+
+    @Override
     public CustomerUserInfoVO findCustomerByToken(String token) {
         if (StringUtils.isEmpty(token)) {
             return null;

@@ -8,16 +8,21 @@ import com.winhxd.b2c.admin.utils.ImportResult;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
+import com.winhxd.b2c.common.domain.store.vo.BackStoreCustomerCountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.security.enums.PermissionEnum;
 import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.*;
+import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -55,6 +60,8 @@ public class CouponController {
 	private CouponGradeServiceClient couponGradeServiceClient;
 	@Autowired
 	private CouponApplyServiceClient couponApplyServiceClient;
+	@Autowired
+	private StoreServiceClient storeServiceClient;
 
 
 	//=====================================优惠券活动开始=============================================================
@@ -114,6 +121,77 @@ public class CouponController {
         }
 		return couponActivityServiceClient.couponActivityStoreImportExcel(list);
 	}
+
+    @ApiOperation("优惠券活动导入小店信息并统计门店下总用户数")
+    @PostMapping(value = "/5061/v1/couponActivityStoreUserCountImportExcel")
+    public ResponseResult<BackStoreCustomerCountVO> couponActivityStoreUserCountImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+        ResponseResult<BackStoreCustomerCountVO> result = new ResponseResult<BackStoreCustomerCountVO>();
+		BackStoreCustomerCountVO bscc = new BackStoreCustomerCountVO();
+		result.setData(bscc);
+        if (!inputfile.getOriginalFilename().endsWith(".xls")
+                && !inputfile.getOriginalFilename().endsWith(".xlsx")){
+            result.setMessage("文件扩展名错误！");
+            result.setCode(BusinessCode.CODE_1001);
+            return result;
+        }
+        List<CouponActivityImportStoreVO> list = null;
+        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+        List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
+        if (invalidList.isEmpty()) {
+            list = importResult.getList();
+        }
+        if(CollectionUtils.isEmpty(list)){
+            result.setCode(BusinessCode.CODE_1007);
+            result.setMessage("导入数据为空");
+            return result;
+        }
+		ResponseResult<List<StoreUserInfoVO>> resultStore = couponActivityServiceClient.couponActivityStoreImportExcel(list);
+
+		StoreCustomerRegionCondition scrc = new StoreCustomerRegionCondition();
+		scrc.setStoreUserInfoIds(getStrings(list));
+		ResponseResult<List<Long>> storeCustomerRegions = storeServiceClient.findStoreCustomerRegions(scrc);
+		bscc.setStoreCustomerNum(storeCustomerRegions.getData() == null ?0:(long)storeCustomerRegions.getData().size());
+		bscc.setStoresInfos(resultStore.getData());
+
+		return result;
+    }
+
+	private List<String> getStrings(List<CouponActivityImportStoreVO> list) {
+		List<String> storeIdList = new ArrayList<>();
+		for (int j=0;j<list.size();j++){
+			storeIdList.add(list.get(j).getStoreId());
+		}
+		//list去重
+		HashSet h = new HashSet<>(storeIdList);
+		storeIdList.clear();
+		storeIdList.addAll(h);
+		return storeIdList;
+	}
+
+	@ApiOperation("优惠券活动导入用戶信息")
+	@PostMapping(value = "/5060/v1/couponActivityCustomerImportExcel")
+	public ResponseResult<List<CustomerUserInfoVO>> couponActivityUserImportExcel(@RequestParam("inputfile") MultipartFile inputfile){
+		ResponseResult<List<CustomerUserInfoVO>> result = new ResponseResult<List<CustomerUserInfoVO>>();
+		if (!inputfile.getOriginalFilename().endsWith(".xls")
+				&& !inputfile.getOriginalFilename().endsWith(".xlsx")){
+			result.setMessage("文件扩展名错误！");
+			result.setCode(BusinessCode.CODE_1001);
+			return result;
+		}
+		List<CouponActivityImportCustomerVO> list = null;
+		ImportResult<CouponActivityImportCustomerVO> importResult = this.parseExcelCustomer(inputfile);
+		List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
+		if (invalidList.isEmpty()) {
+			list = importResult.getList();
+		}
+		if(CollectionUtils.isEmpty(list)){
+			result.setCode(BusinessCode.CODE_1007);
+			result.setMessage("导入数据为空");
+			return result;
+		}
+		return couponActivityServiceClient.couponActivityCustomerUserImportExcel(list);
+	}
+
     @ApiOperation("优惠券活动导出小店信息")
     @GetMapping(value = "/5051/v1/couponActivityExportStoreExcel")
     public ResponseEntity<byte[]> couponActivityExportStoreExcel(CouponActivityCondition condition){
@@ -121,10 +199,29 @@ public class CouponController {
         List<CouponActivityStoreVO> list = responseResult.getData().getData();
         return ExcelUtils.exp(list, "惠小店信息");
     }
+
+    @ApiOperation("优惠券活动导出指定用户信息")
+    @GetMapping(value = "/5064/v1/couponActivityExportCustomerExcel")
+    public ResponseEntity<byte[]> couponActivityExportCustomerExcel(CouponActivityCondition condition){
+        ResponseResult<List<CustomerUserInfoExportVO>> listResponseResult = couponActivityServiceClient.queryCustomerByActivity(condition);
+        List<CustomerUserInfoExportVO> list = listResponseResult.getData();
+        return ExcelUtils.exp(list, "活动指定用户信息");
+    }
+
 	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
 		ImportResult<CouponActivityImportStoreVO> importResult = null;
 		try {
 			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
+		} catch (Exception e) {
+			throw new BusinessException(BusinessCode.CODE_1001, e);
+		}
+		return importResult;
+	}
+
+	private ImportResult<CouponActivityImportCustomerVO> parseExcelCustomer(MultipartFile excel) {
+		ImportResult<CouponActivityImportCustomerVO> importResult = null;
+		try {
+			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportCustomerVO.class);
 		} catch (Exception e) {
 			throw new BusinessException(BusinessCode.CODE_1001, e);
 		}
@@ -138,7 +235,7 @@ public class CouponController {
 	 *@User  sjx
 	 *@Date   2018/8/7
 	 */
-	@ApiOperation("添加优惠券活动")
+	@ApiOperation("添加优惠券活动-领券")
 	@PostMapping(value = "/5030/v1/addCouponActivityPull")
 	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PULL_ADD)
 	public ResponseResult<Integer> addCouponActivityPull(@RequestBody CouponActivityAddCondition condition){
@@ -159,7 +256,7 @@ public class CouponController {
 	 *@User  sjx
 	 *@Date   2018/8/7
 	 */
-	@ApiOperation("添加优惠券活动")
+	@ApiOperation("添加优惠券活动-推券")
 	@PostMapping(value = "/5052/v1/addCouponActivityPush")
 	@CheckPermission(PermissionEnum.PROMOTION_ACTIVITY_PUSH_ADD)
 	public ResponseResult<Integer> addCouponActivityPush(@RequestBody CouponActivityAddCondition condition){

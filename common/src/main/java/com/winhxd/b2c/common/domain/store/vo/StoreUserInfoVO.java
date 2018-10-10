@@ -24,6 +24,9 @@ public class StoreUserInfoVO {
     @ApiModelProperty("门店名称")
     private String storeName;
 
+    @ApiModelProperty("门店简称")
+    private String storeShortName;
+
     /**
      * 店主头像
      */
@@ -99,5 +102,8 @@ public class StoreUserInfoVO {
     /**微信昵称*/
     @ApiModelProperty("微信昵称")
     private String wechatName;
+
+    @ApiModelProperty(value = "推送优惠券状态 0 不可推送  1 可推送")
+    private Short pushCouponStatus;
 
 }

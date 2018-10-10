@@ -1,17 +1,5 @@
 package com.winhxd.b2c.store.api;
 
-import java.util.Date;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.AppConstant;
 import com.winhxd.b2c.common.constant.BusinessCode;
@@ -32,16 +20,27 @@ import com.winhxd.b2c.common.domain.system.login.model.StoreUserSimpleInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
-import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.store.service.StoreLoginService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author wufuyun
@@ -83,8 +82,7 @@ public class ApiStoreLoginController {
 	private StoreLoginService storeLoginService;
 	@Autowired
 	private Cache cache;
-	@Autowired
-	StoreServiceClient storeServiceClient;
+
 	@Autowired
 	MessageSendUtils messageSendUtils;
 	@Autowired
@@ -106,6 +104,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_100821, message = "您的账号或者密码错误"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100810, message = "该微信号已绑定过账号"),
+			@ApiResponse(code = BusinessCode.CODE_100811, message = "此手机号已被其他微信绑定，不能再次绑定"),
 			@ApiResponse(code = BusinessCode.CODE_100819, message = "您还没有绑定惠下单账号"),
 			@ApiResponse(code = BusinessCode.CODE_100822, message = "您还不是惠下单用户快去注册吧"),
 			@ApiResponse(code = BusinessCode.CODE_100809, message = "您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。") })
@@ -144,7 +143,38 @@ public class ApiStoreLoginController {
 				result = new ResponseResult<>(BusinessCode.CODE_100810);
 				return result;
 			}
+			open.setOpenid(null);
+			open.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+			db = storeLoginService.getStoreUserInfo(open);
+			if(db != null){
+				logger.info("{} - , 此手机号已被其他微信绑定，不能再次绑定 ");
+				result = new ResponseResult<>(BusinessCode.CODE_100811);
+				return result;
+			}
 			storeUserInfo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+
+			ResponseResult<StoreUserSimpleInfo> object = storeHxdServiceClient
+					.getStoreUserInfo(storeUserInfoCondition.getStoreMobile(), "");
+			StoreUserSimpleInfo map = object.getData();
+			if (map == null) {
+				logger.info("{} - , 您还不是惠下单用户快去注册吧");
+				throw new BusinessException(BusinessCode.CODE_100822);
+			}
+
+			storeUserInfo.setStoreCustomerId(map.getStoreCustomerId());
+			storeUserInfo.setStoreRegionCode(map.getStoreRegionCode());
+			storeUserInfo.setStorePicImg(map.getStorePicImg());
+			storeUserInfo.setCreated(new Date());
+			storeUserInfo.setStoreMobile(map.getStoreMobile());
+			storeUserInfo.setSource(storeUserInfoCondition.getMobileInfo().getPlatform());
+			storeUserInfo.setStoreStatus((short) 0);
+			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
+			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
+			storeUserInfo.setWechatName(storeUserInfoCondition.getWechatName());
+			storeUserInfo.setAppLoginStatus((short) 0);
+			storeLoginService.saveStoreInfo(storeUserInfo);
+
 			db = storeLoginService.getStoreUserInfo(storeUserInfo);
 			/**
 			 * 查库
@@ -182,10 +212,10 @@ public class ApiStoreLoginController {
 				&& LOGIN_PASSWORD_LAG_3.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
 			storeUserInfo.setOpenid(storeUserInfoCondition.getOpenid());
 			storeUserInfo.setWechatName(storeUserInfoCondition.getWechatName());
-			db = storeLoginService.getStoreUserInfo(storeUserInfo);
-			if (db == null) {
-				logger.info("{} - , 您还没有绑定惠下单账号");
-				throw new BusinessException(BusinessCode.CODE_100819);
+				db = storeLoginService.getStoreUserInfo(storeUserInfo);
+				if (db == null) {
+					logger.info("{} - , 您还没有绑定惠下单账号");
+					throw new BusinessException(BusinessCode.CODE_100819);
 			}
 			if (HXD_STATUS2.equals(db.getStoreStatus())) {
 				logger.info("{} - , 您的账号存在异常行为，已被锁定，如有疑问请联系客服4006870066。");
@@ -212,6 +242,10 @@ public class ApiStoreLoginController {
 			storeUserInfo.setShopOwnerImg(storeUserInfoCondition.getShopOwnerImg());
 			storeUserInfo.setAppLoginStatus((short) 0);
 			storeUserInfo.setToken(GeneratePwd.getRandomUUID());
+			/**
+			 * 每次登陆都更新店铺信息
+			 */
+			updateStoreInfo(storeUserInfo,db.getStoreCustomerId());
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
 			vo.setCustomerId(db.getStoreCustomerId());
@@ -357,6 +391,17 @@ public class ApiStoreLoginController {
 		cache.expire(CacheName.STORE_USER_INFO_TOKEN + db.getToken(), AppConstant.LOGIN_APP_TOKEN_EXPIRE_SECOND);
 	}
 
+	private void updateStoreInfo(StoreUserInfo storeUserInfo,Long storeCustomerId){
+		ResponseResult<Map<String, Object>> result = storeHxdServiceClient.getStoreBaseInfo(storeCustomerId.toString());
+		Map<String, Object> map = result.getData();
+		//先更新门店信息，再返回给前端展示
+		storeUserInfo.setId(storeUserInfo.getId());
+		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
+		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
+		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
+		storeUserInfo.setLon(Double.parseDouble(Objects.toString(map.get("longitude"), "0")));
+		storeUserInfo.setLat(Double.parseDouble(Objects.toString(map.get("latitude"), "0")));
+	}
 	/**
 	 * @author wufuyun
 	 * @date 2018年8月4日 上午11:10:34
@@ -416,9 +461,9 @@ public class ApiStoreLoginController {
 					result = sendVerificationCode(map.getStoreMobile());
 				} else {
 					/*
-					 * 插入数据库
+					 * 插入数据库(暂时注解)
 					 */
-					info.setStoreCustomerId(map.getStoreCustomerId());
+					/*info.setStoreCustomerId(map.getStoreCustomerId());
 					info.setStoreRegionCode(map.getStoreRegionCode());
 					info.setStorePicImg(map.getStorePicImg());
 					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
@@ -428,7 +473,7 @@ public class ApiStoreLoginController {
 					info.setStoreStatus((short) 0);
 					info.setAppLoginStatus((short) 0);
 					info.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.saveStoreInfo(info);
+					storeLoginService.saveStoreInfo(info);*/
 					result = sendVerificationCode(map.getStoreMobile());
 				}
 			}

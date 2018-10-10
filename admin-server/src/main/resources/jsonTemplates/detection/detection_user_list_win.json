@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "ajaxType": "post",
+    "path": "/detection/service/findUserPageList",
+    "type": "report",
+    "id": "detection_user_list_win",
+    "code": "detection_user_list_win",
+    "title": "用户选择",
+    "buttons": [
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "post",
+          "path": "/detection/service/findUserPageList"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "radio",
+        "name": "customerId",
+        "title": "选择",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "id",
+        "title": "用户编码"
+      },
+      {
+        "name": "name",
+        "title": "用户姓名"
+      },
+      {
+        "name": "phone",
+        "title": "手机"
+      }
+    ],
+    "params": [],
+    "returnDisplay": "name",
+    "returnValue": "id"
+  }
+}

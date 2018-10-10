@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.winhxd.b2c.store.dao.StoreCustomerRelationMapper">
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="store_user_id" jdbcType="BIGINT" property="storeUserId" />
+    <result column="binding_time" jdbcType="TIMESTAMP" property="bindingTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="unbinding_time" jdbcType="TIMESTAMP" property="unbindingTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, store_user_id, binding_time, status, unbinding_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from store_customer_relation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from store_customer_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
+    insert into store_customer_relation (id, customer_id, store_user_id,
+      binding_time, status, unbinding_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT}, #{storeUserId,jdbcType=BIGINT}, 
+      #{bindingTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{unbindingTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
+    insert into store_customer_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="customerId != null">
+        customer_id,
+      </if>
+      <if test="storeUserId != null">
+        store_user_id,
+      </if>
+      <if test="bindingTime != null">
+        binding_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="unbindingTime != null">
+        unbinding_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="customerId != null">
+        #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeUserId != null">
+        #{storeUserId,jdbcType=BIGINT},
+      </if>
+      <if test="bindingTime != null">
+        #{bindingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unbindingTime != null">
+        #{unbindingTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
+    update store_customer_relation
+    <set>
+      <if test="customerId != null">
+        customer_id = #{customerId,jdbcType=BIGINT},
+      </if>
+      <if test="storeUserId != null">
+        store_user_id = #{storeUserId,jdbcType=BIGINT},
+      </if>
+      <if test="bindingTime != null">
+        binding_time = #{bindingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="unbindingTime != null">
+        unbinding_time = #{unbindingTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.winhxd.b2c.common.domain.store.model.StoreCustomerRelation">
+    update store_customer_relation
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      store_user_id = #{storeUserId,jdbcType=BIGINT},
+      binding_time = #{bindingTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      unbinding_time = #{unbindingTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByCondition" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from store_customer_relation where status = 1
+    <if test="condition.customerId != null">
+      and customer_id = #{condition.customerId,jdbcType=BIGINT}
+    </if>
+    <if test="condition.storeUserId != null">
+      and store_user_id = #{condition.storeUserId,jdbcType=BIGINT}
+    </if>
+  </select>
+
+  <!--根据店铺ID，店铺状态查询绑定的用户ID-->
+  <select id="selectCustomerIds" resultType="java.lang.Long">
+    SELECT sr.id FROM store_customer_relation sr
+    LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
+    WHERE sr.status = 1
+    <if test="storeUserInfoIds!=null and storeUserInfoIds.size > 0 ">
+      and ui.id in
+      <foreach item="storeUserInfoId" collection="storeUserInfoIds" separator="," open="(" close=")" index="">
+        '${storeUserInfoId}'
+      </foreach>
+    </if>
+    <if test="storeStatus != null and storeStatus != ''">
+      and ui.store_status = #{storeStatus}
+    </if>
+  </select>
+</mapper>

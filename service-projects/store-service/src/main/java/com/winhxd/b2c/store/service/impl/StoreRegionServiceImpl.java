@@ -168,11 +168,6 @@ public class StoreRegionServiceImpl implements StoreRegionService{
         return storeRegionMapper.selectByRegionCode(regionCodeList);
     }
 
-    @Override
-    public List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition) {
-        return storeRegionMapper.selectCustomerIds(storeCustomerRegionCondition);
-    }
-
     /**
      *
      * @author: wangbaokuo

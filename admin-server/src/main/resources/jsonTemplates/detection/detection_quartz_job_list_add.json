@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "",
+    "id": "detection_quartz_job_list_add",
+    "title": "成员添加",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/detection/service/addQuartzJob",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "userId",
+        "inputModel": "inputDia",
+        "title": "用户姓名",
+        "placeholder": "请选择用户",
+        "path": "",
+        "configKey": "/template/module/detection/detection_user_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "dbId",
+        "inputModel": "inputDia",
+        "title": "数据源",
+        "placeholder": "请选择数据源",
+        "path": "",
+        "configKey": "/template/module/detection/detection_dbsource_list_win.json",
+        "isHidden": false
+      },
+      {
+        "name": "jobSql",
+        "inputModel": "input",
+        "title": "执行SQL",
+        "value": "",
+        "placeholder": "请输入执行SQL",
+        "isHidden": false
+      },
+      {
+        "name": "operate",
+        "inputModel": "select",
+        "title": "比较符号",
+        "options": [ {
+          "label": ">",
+          "value": ">"
+        }, {
+          "label": "<",
+          "value": "<"
+        }, {
+          "label": "=",
+          "value": "="
+        }]
+      },
+      {
+        "name": "optValue",
+        "inputModel": "input",
+        "title": "比较值",
+        "isHidden": false
+      },
+      {
+        "name": "warningLevel",
+        "inputModel": "select",
+        "title": "警告级别",
+        "options": [ {
+          "label": "1",
+          "value": "1"
+        }, {
+          "label": "2",
+          "value": "2"
+        }, {
+          "label": "3",
+          "value": "3"
+        }]
+      },
+      {
+        "name": "warningMsg",
+        "inputModel": "input",
+        "title": "警告描述",
+        "isHidden": false
+      },
+      {
+        "name": "jobName",
+        "inputModel": "input",
+        "title": "任务名称",
+        "isHidden": false
+      },
+      {
+        "name": "description",
+        "inputModel": "input",
+        "title": "任务描述",
+        "isHidden": false
+      },
+      {
+        "name": "cronExpression",
+        "inputModel": "input",
+        "title": "时间表达式",
+        "isHidden": false
+      }
+    ]
+  }
+}

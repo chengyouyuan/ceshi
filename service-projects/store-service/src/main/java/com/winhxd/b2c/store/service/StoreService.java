@@ -1,12 +1,10 @@
 package com.winhxd.b2c.store.service;
 
 
-import java.util.List;
-import java.util.Set;
-
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoCondition;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreInfoSimpleCondition;
+import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.enums.StoreBindingStatus;
 import com.winhxd.b2c.common.domain.store.model.StoreUserInfo;
@@ -14,6 +12,9 @@ import com.winhxd.b2c.common.domain.store.vo.BackStageStoreVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreMessageAccountVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.domain.system.login.condition.StoreUserInfoCondition;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author chengyy
@@ -147,4 +148,11 @@ public interface StoreService {
      * @date 2018/8/27 14:09
      */
     StoreUserInfo findByPrimaryKey(Long id);
+
+    /**
+     * 根据店铺ID，店铺状态查询绑定的用户ID
+     * @param storeCustomerRegionCondition
+     * @return
+     */
+    List<Long> findStoreCustomerRegions(StoreCustomerRegionCondition storeCustomerRegionCondition);
 }

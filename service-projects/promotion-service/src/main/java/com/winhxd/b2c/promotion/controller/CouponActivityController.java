@@ -5,21 +5,28 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.customer.condition.CustomerListByPhoneCondition;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
+import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportCustomerVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
 import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.feign.customer.CustomerServiceClient;
 import com.winhxd.b2c.common.feign.promotion.CouponActivityServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
+import com.winhxd.b2c.promotion.service.CouponPushService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +51,10 @@ public class CouponActivityController implements CouponActivityServiceClient {
     private CouponActivityService couponActivityService;
     @Autowired
     private StoreServiceClient storeServiceClient;
+    @Autowired
+    private CustomerServiceClient customerServiceClient;
+    @Autowired
+    private CouponPushService couponPushService;
 
     /**
      *
@@ -100,6 +111,30 @@ public class CouponActivityController implements CouponActivityServiceClient {
         result.setData(storeUserInfoVOList);
         result.setCode(BusinessCode.CODE_OK);
         result.setMessage("返回小店导入信息成功");
+        return result;
+    }
+
+    @Override
+    public ResponseResult<List<CustomerUserInfoVO>> couponActivityCustomerUserImportExcel(@RequestBody List<CouponActivityImportCustomerVO> list) {
+        if(CollectionUtils.isEmpty(list)){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        ResponseResult<List<CustomerUserInfoVO>> result = new ResponseResult<List<CustomerUserInfoVO>>();
+        List<String> userPhoneList = new ArrayList<>();
+        for (int j=0;j<list.size();j++){
+            userPhoneList.add(list.get(j).getPhone());
+        }
+        //list去重
+        HashSet h = new HashSet<>(userPhoneList);
+        userPhoneList.clear();
+        userPhoneList.addAll(h);
+        //调接口判断数据有效性
+        ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<List<CustomerUserInfoVO>>();
+        responseResult = customerServiceClient.findCustomerUserByPhones(userPhoneList);
+        List<CustomerUserInfoVO> customerUserInfoVOList= responseResult.getData();
+        result.setData(customerUserInfoVOList);
+        result.setCode(BusinessCode.CODE_OK);
+        result.setMessage("返回用户导入信息成功");
         return result;
     }
 
@@ -253,12 +288,17 @@ public class CouponActivityController implements CouponActivityServiceClient {
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if(condition.getCouponActivityTemplateList().get(0).getTemplateId() == null
-                    || condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null
+                    || (condition.getCouponActivityTemplateList().get(0).getEffectiveDays() == null && condition.getCouponActivityTemplateList().get(0).getStartTime() == null)
                     || condition.getCouponActivityTemplateList().get(0).getSendNum() == null){
                 throw new BusinessException(BusinessCode.CODE_1007);
             }
             if (condition.getCouponActivityTemplateList().get(0).getSendNum()>maxNum){
                 throw new BusinessException(BusinessCode.CODE_503004);
+            }
+            Integer sendNum = condition.getCouponActivityTemplateList().get(0).getSendNum();
+            Integer couponNum = condition.getCouponActivityTemplateList().get(0).getCouponNum();
+            if(sendNum<=0 || couponNum<=0 || (couponNum%sendNum != 0) || couponNum<sendNum){
+                throw new BusinessException(BusinessCode.CODE_503601);
             }
         }
 
@@ -394,6 +434,32 @@ public class CouponActivityController implements CouponActivityServiceClient {
         pagedList.setPageSize(pageInfo.getPageSize());
         pagedList.setTotalRows(pageInfo.getTotal());
         result.setData(pagedList);
+        return result;
+    }
+
+    @Override
+    public ResponseResult<List<CustomerUserInfoExportVO>> queryCustomerByActivity(@RequestBody CouponActivityCondition condition) {
+        if(condition == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        if(condition.getId() == null){
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
+        logger.info("queryCustomerByActivity--Id:" + condition.getId());
+        ResponseResult<List<CustomerUserInfoExportVO>> result = new ResponseResult<List<CustomerUserInfoExportVO>>();
+        List<CustomerUserInfoExportVO> list = new ArrayList<>();
+
+        List<Long> customerIds = couponPushService.getCustomerIdByActiveId(condition.getId());
+        ResponseResult<List<CustomerUserInfoVO>> customerUserResult = customerServiceClient.findCustomerUserByIds(customerIds);
+        List<CustomerUserInfoVO> datas = customerUserResult.getData();
+        if(!CollectionUtils.isEmpty(datas)){
+            for(CustomerUserInfoVO customerUserInfoVO : datas){
+                CustomerUserInfoExportVO cuie = new CustomerUserInfoExportVO();
+                BeanUtils.copyProperties(customerUserInfoVO,cuie);
+                list.add(cuie);
+            }
+        }
+        result.setData(list);
         return result;
     }
 }

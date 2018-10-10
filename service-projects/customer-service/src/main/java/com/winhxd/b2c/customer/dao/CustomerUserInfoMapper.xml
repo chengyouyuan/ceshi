@@ -61,8 +61,17 @@
         #{id}
     </foreach>
   </select>
+
+  <select id="selectCustomerUserByPhones" resultMap="customerUserInfoVO1">
+    select *
+    from customer_user_info
+    where customer_mobile in
+    <foreach collection="phones" item="phone" open="(" close=")" separator=",">
+        #{phone}
+    </foreach>
+  </select>
   <select id="selectBindingCustomer" resultMap="customerUserInfoVO1">
-      select cui.*  from customer_store_relation csr  inner join customer_user_info cui on cui.customer_id = csr.customer_id
+      select cui.*  from store_customer_relation csr  inner join customer_user_info cui on cui.customer_id = csr.customer_id
     <where>
       <if test="customerId != null">
         and cui.customer_id =  #{customerId,jdbcType=BIGINT}
@@ -77,7 +86,7 @@
   </select>
   <select id="selectCustomer" resultMap="customerUserInfoVO1">
     select cui.customer_id,cui.nick_name,cui.customer_mobile,cui.openid,cui.status,sui.store_name,cui.head_img,cui.created
-    from customer_user_info cui  left join customer_store_relation csr
+    from customer_user_info cui  left join store_customer_relation csr
     on cui.customer_id = csr.customer_id left join store_user_info sui  on csr.store_user_id = sui.id
       <where>
       <if test="customerId != null">

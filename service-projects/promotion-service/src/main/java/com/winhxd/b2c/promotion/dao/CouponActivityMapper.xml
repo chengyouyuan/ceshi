@@ -70,6 +70,7 @@
     1 = 1
     AND ca.type = 2
     AND ca.activity_status = 1
+    AND ca.coupon_type = 1
     AND (
     (
     #{condition.activityStart} &gt;= ca.activity_start
@@ -272,8 +273,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(cts.start_time) activityStart,
-    DATE(cts.end_time) activityEnd,
+    DATE_FORMAT(cts.start_time,'%Y.%m.%d') activityStart,
+    DATE_FORMAT(cts.end_time,'%Y.%m.%d') activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -428,8 +429,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(cat.start_time) activityStart,
-    DATE(cat.end_time) activityEnd,
+    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
+    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,
@@ -449,6 +450,7 @@
     AND ca.activity_start &lt;=  NOW()
     AND ca.activity_end &gt;= NOW()
     AND cas.store_id = #{storeId}
+    AND cat.end_time &gt;= NOW()
   </select>
   <select id="selectStoreCouponList" parameterType="java.lang.Long" resultType="com.winhxd.b2c.common.domain.promotion.vo.CouponVO">
     SELECT
@@ -467,8 +469,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(cat.start_time) activityStart,
-    DATE(cat.end_time) activityEnd,
+    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
+    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,
@@ -486,7 +488,9 @@
     AND ca.activity_status = 1
     AND ca. STATUS = 1
     AND ca.activity_start &lt;=  NOW()
-    AND ca.activity_end &gt;= NOW() AND cas.store_id = #{storeId}
+    AND ca.activity_end &gt;= NOW()
+    AND cat.end_time >= NOW()
+    AND cas.store_id = #{storeId}
     <!-- (cas.store_id = 1 OR cas.customer_id = 1) -->
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

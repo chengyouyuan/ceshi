@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/detection/service/findUserPageList",
+    "type": "report",
+    "id": "detection_user_list",
+    "code": "detection_user_list",
+    "title": "用户管理",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/detection/detection_user_list_add.json",
+          "callBack": {
+          }
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "name",
+        "title": "用户名称"
+      },
+      {
+        "name": "phone",
+        "title": "手机号"
+      },
+      {
+        "name": "email",
+        "title": "邮箱"
+      }
+    ],
+    "params": []
+  }
+}

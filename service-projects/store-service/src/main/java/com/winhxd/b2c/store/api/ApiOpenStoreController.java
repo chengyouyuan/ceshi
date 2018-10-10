@@ -25,6 +25,7 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.hxd.StoreHxdServiceClient;
 import com.winhxd.b2c.common.feign.message.MessageServiceClient;
 import com.winhxd.b2c.common.feign.order.OrderServiceClient;
+import com.winhxd.b2c.common.feign.promotion.CouponServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.store.service.StoreBrowseLogService;
 import com.winhxd.b2c.store.service.StoreRegionService;
@@ -35,7 +36,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.ibatis.type.ShortTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -78,7 +78,11 @@ public class ApiOpenStoreController {
 
     @Autowired
     private MessageServiceClient messageServiceClient;
-    
+
+    @Autowired
+    private CouponServiceClient couponServiceClient;
+
+
     @ApiOperation(value = "惠小店开店条件验证接口", notes = "惠小店开店条件验证接口")
     @ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
             @ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部错误！"),
@@ -292,6 +296,9 @@ public class ApiOpenStoreController {
             break;
         }
         storeBusinessInfoVO.setPayType(payTypeList);
+        if (StringUtils.isBlank(storeBusinessInfoVO.getStoreShortName())){
+            storeBusinessInfoVO.setStoreShortName(storeBusinessInfoVO.getStoreName());
+        }
         logger.info("惠小店开店店铺信息查询接口 返参为：{}", JsonUtil.toJSONString(storeBusinessInfoVO));
         return new ResponseResult<>(storeBusinessInfoVO);
     }
@@ -328,7 +335,6 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！"),
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！"),
             @ApiResponse(code = BusinessCode.CODE_200006, message = "店铺营业信息保存参数错误！"),
-            @ApiResponse(code = BusinessCode.CODE_102501, message = "店铺名称不能有特殊字符且长度不能超过15"),
             @ApiResponse(code = BusinessCode.CODE_102505, message = "店铺简称称不能有特殊字符且长度不能超过15"),
             @ApiResponse(code = BusinessCode.CODE_102502, message = "联系人不能有特殊字符且长度不能超过10"),
             @ApiResponse(code = BusinessCode.CODE_102503, message = "联系方式格式不正确"),
@@ -340,14 +346,16 @@ public class ApiOpenStoreController {
             logger.warn("惠小店开店店铺信息保存接口 saveStoreInfo,参数错误");
             throw new BusinessException(BusinessCode.CODE_200006);
         }
-        boolean storeNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreName()).matches();
-        if (!storeNameMatcher) {
-            throw new BusinessException(BusinessCode.CODE_102501, "店铺名称不能有特殊字符且长度不能超过15");
+        //店铺名称不可修改，设置为null
+        storeBusinessInfoCondition.setStoreName(null);
+
+        if(!StringUtils.isBlank(storeBusinessInfoCondition.getStoreShortName())){
+            boolean storeShortNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreShortName()).matches();
+            if (!storeShortNameMatcher) {
+                throw new BusinessException(BusinessCode.CODE_102505, "店铺简称称不能有特殊字符且长度不能超过15");
+            }
         }
-        boolean storeShortNameMatcher = RegexConstant.STORE_NAME_PATTERN.matcher(storeBusinessInfoCondition.getStoreShortName()).matches();
-        if (!storeShortNameMatcher) {
-            throw new BusinessException(BusinessCode.CODE_102505, "店铺简称称不能有特殊字符且长度不能超过15");
-        }
+
         boolean shopkeeperMatcher = RegexConstant.SHOPKEEPER_PATTERN.matcher(storeBusinessInfoCondition.getShopkeeper()).matches();
         if (!shopkeeperMatcher) {
             throw new BusinessException(BusinessCode.CODE_102502, "联系人不能有特殊字符且长度不能超过10");
@@ -404,6 +412,11 @@ public class ApiOpenStoreController {
         if(StringUtils.isNotBlank(storeUserInfo.getShopkeeper())){
             storeBoss = storeUserInfo.getShopkeeper().substring(0, 1) + storeBoss;
         }
+        if(StringUtils.isBlank(storeUserInfo.getStoreShortName())){
+            storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreName());
+        }else{
+            storeManageInfoVO.setStoreShortName(storeUserInfo.getStoreShortName());
+        }
         storeManageInfoVO.setStoreBoss(storeBoss);
         //增加查询未读消息(今日未读+历史未读)数量
         MessageNeteaseCondition msgCondition = new MessageNeteaseCondition();
@@ -448,6 +461,7 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
 
+
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
 
         if(null != bindingCondition.getStoreId()){
@@ -455,18 +469,21 @@ public class ApiOpenStoreController {
             logger.info("用户customerId=" + customerUser.getCustomerId() + ",尝试绑定门店Id=" + bindingCondition.getStoreId() + ",绑定结果：" + bindingStatus.getDesc());
         }
         StoreUserInfoVO storeUserInfoVO = storeService.findStoreUserInfoByCustomerId(customerUser.getCustomerId());
+
+        ResponseResult<Boolean> isCouponsAvailable = couponServiceClient.checkCouponsAvailable(customerUser.getCustomerId());
         if (storeUserInfoVO != null) {
             //设置月销售量
             storeUserInfoVO.setMonthlySales(queryMonthlySkuQuantity(storeUserInfoVO.getId()));
             storeUserInfoVO.setBindingStatus(bindingStatus.getStatus());
+            storeUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
             result.setData(storeUserInfoVO);
         } else {
             //前端目前不判断bindingStatus，通过请求的id和返回的绑定门店id进行简单验证，以后可以改成这样；
             StoreUserInfoVO emptyStoreUserInfoVO = new StoreUserInfoVO();
             emptyStoreUserInfoVO.setBindingStatus(StoreBindingStatus.NoneBinding.getStatus());
+            emptyStoreUserInfoVO.setPushCouponStatus(isCouponsAvailable.getData() ? (short)1 : (short)0);
             result.setData(emptyStoreUserInfoVO);
         }
-
         return result;
     }
 
@@ -516,6 +533,11 @@ public class ApiOpenStoreController {
         StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());
         if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
+        }
+        if(StringUtils.isBlank(data.getStoreShortName())){
+            data.setStoreShortName(data.getStoreName());
+        }else{
+            data.setStoreShortName(data.getStoreShortName());
         }
         result.setData(data);
         return result;

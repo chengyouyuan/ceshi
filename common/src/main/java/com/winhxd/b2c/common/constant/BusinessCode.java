@@ -52,6 +52,8 @@ public final class BusinessCode {
     public static final int  CODE_100809 = 100809;
     @ApiModelProperty("该微信号已绑定过其它账号")
     public static final int  CODE_100810 = 100810;
+    @ApiModelProperty("此手机号已被其他微信绑定，不能再次绑定")
+    public static final int  CODE_100811 = 100811;
     @ApiModelProperty("请求超时")
     public static final int  CODE_100815 = 100815;
     @ApiModelProperty("您还没有绑定惠下单账号")
@@ -92,8 +94,6 @@ public final class BusinessCode {
     public static final int CODE_102205 = 102205;
     @ApiModelProperty("1024接口参数无效")
     public static final int CODE_102401 = 102401;
-    @ApiModelProperty("1025接口 店铺名称不能有特殊字符且长度不能超过15")
-    public static final int CODE_102501 = 102501;
     @ApiModelProperty("1025接口 提货地址不能有特殊字符且长度不能超过50")
     public static final int CODE_102502 = 102502;
     @ApiModelProperty("1025接口 联系人不能有特殊字符且长度不能超过10")
@@ -340,10 +340,10 @@ public final class BusinessCode {
     public static final int CODE_500012 = 500012;
     @ApiModelProperty("出资方不能重复")
     public static final int CODE_500013 = 500013;
-    @ApiModelProperty("用户不存在")
-    public static final int CODE_500014 = 500014;
     @ApiModelProperty("优惠金额不能大于满减金额")
     public static final int CODE_500015 = 500015;
+    @ApiModelProperty("用户不存在")
+    public static final int CODE_500014 = 500014;
     @ApiModelProperty("必填字段长度太长")
     public static final int CODE_500016 = 500016;
     @ApiModelProperty("优惠券已领完")
@@ -364,6 +364,8 @@ public final class BusinessCode {
     public static final int CODE_503401 = 503401;
     @ApiModelProperty("停止活动失败")
     public static final int CODE_503501 = 503501;
+    @ApiModelProperty("库总总数需大于等于推送张数且符合倍数关系")
+    public static final int CODE_503601 = 503601;
 
 
     @ApiModelProperty("门店资金变化  参数为空")

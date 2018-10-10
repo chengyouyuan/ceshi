@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/detection/service/findDbSourcePageList",
+    "type": "report",
+    "id": "detection_user_list",
+    "code": "detection_user_list",
+    "title": "数据源管理",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/detection/detection_dbsource_list_add.json",
+          "callBack": {
+          }
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "alias",
+        "title": "别名"
+      },
+      {
+        "name": "userName",
+        "title": "账号"
+      },
+      {
+        "name": "password",
+        "title": "密码"
+      },
+      {
+        "name": "uri",
+        "title": "uri"
+      }
+    ],
+    "params": []
+  }
+}

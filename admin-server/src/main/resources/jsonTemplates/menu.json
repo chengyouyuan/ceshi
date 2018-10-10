@@ -296,6 +296,42 @@
           "permission": ""
         }
       ]
+    },
+    {
+      "id": "10",
+      "menuName": "监控管理",
+      "path": "",
+      "permission": "",
+      "children": [
+        {
+          "id": "10_1",
+          "menuName": "定时任务管理",
+          "path": "",
+          "configKey": "/template/module/detection/detection_quartz_job_list.json",
+          "permission": ""
+        },
+        {
+          "id": "10_2",
+          "menuName": "用户管理",
+          "path": "",
+          "configKey": "/template/module/detection/detection_user_list.json",
+          "permission": ""
+        },
+        {
+          "id": "10_3",
+          "menuName": "数据源管理",
+          "path": "",
+          "configKey": "/template/module/detection/detection_dbsource_list.json",
+          "permission": ""
+        },
+        {
+          "id": "10_4",
+          "menuName": "API接口监控",
+          "path": "",
+          "configKey": "/template/module/detection/detection_api_list.json",
+          "permission": ""
+        }
+      ]
     }
 
   ]

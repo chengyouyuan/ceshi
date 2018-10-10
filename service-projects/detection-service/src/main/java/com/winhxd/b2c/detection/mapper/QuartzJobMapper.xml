@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.winhxd.b2c.detection.mapper.QuartzJobMapper" >
+  <resultMap id="BaseResultMap" type="com.winhxd.b2c.common.domain.detection.model.QuartzJob" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="db_id" property="dbId" jdbcType="BIGINT" />
+    <result column="job_sql" property="jobSql" jdbcType="VARCHAR" />
+    <result column="operate" property="operate" jdbcType="VARCHAR" />
+    <result column="opt_value" property="optValue" jdbcType="INTEGER" />
+    <result column="warning_level" property="warningLevel" jdbcType="TINYINT" />
+    <result column="warning_msg" property="warningMsg" jdbcType="VARCHAR" />
+    <result column="warning_status" property="warningStatus" jdbcType="TINYINT" />
+    <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="cron_expression" property="cronExpression" jdbcType="VARCHAR" />
+    <result column="job_status" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="previous_time" property="previousTime" jdbcType="TIMESTAMP" />
+    <result column="next_time" property="nextTime" jdbcType="TIMESTAMP" />
+    <result column="result_value" property="resultValue" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="VARCHAR" />
+    <result column="is_success" property="isSuccess" jdbcType="BIT" />
+    <result column="error_msg" property="errorMsg" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="JobVoMap" type="com.winhxd.b2c.common.domain.detection.vo.QuartzJobVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="userName" />
+    <result column="db_id" jdbcType="BIGINT" property="dbId" />
+    <result column="alias" jdbcType="VARCHAR" property="dbAlias" />
+    <result column="job_sql" jdbcType="VARCHAR" property="jobSql" />
+    <result column="operate" jdbcType="VARCHAR" property="operate" />
+    <result column="opt_value" jdbcType="INTEGER" property="optValue" />
+    <result column="warning_level" jdbcType="TINYINT" property="warningLevel" />
+    <result column="warning_msg" jdbcType="VARCHAR" property="warningMsg" />
+    <result column="warning_status" jdbcType="TINYINT" property="warningStatus" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
+    <result column="job_status" jdbcType="VARCHAR" property="jobStatus" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="previous_time" jdbcType="TIMESTAMP" property="previousTime" />
+    <result column="next_time" jdbcType="TIMESTAMP" property="nextTime" />
+    <result column="result_value" jdbcType="VARCHAR" property="resultValue" />
+    <result column="duration" jdbcType="VARCHAR" property="duration" />
+    <result column="is_success" jdbcType="BIT" property="isSuccess" />
+    <result column="error_msg" jdbcType="VARCHAR" property="errorMsg" />
+  </resultMap>
+
+  <select id="findQuartzJobVoById" parameterType="java.lang.Long" resultMap="JobVoMap">
+    select tqj.id,tqj.user_id,tqj.db_id,tqj.job_sql,tqj.operate,tqj.opt_value,tqj.warning_level,tqj.warning_msg,tqj.warning_status,tqj.job_name,tqj.cron_expression,
+            tqj.description,tqj.job_status,tqj.previous_time,tqj.next_time,tqj.result_value,tqj.duration,tqj.is_success,
+            tqj.error_msg,tu.name,tds.alias
+    from t_quartz_job tqj left join t_detection_user tu on tqj.user_id = tu.id
+          left join t_db_source tds on tqj.db_id = tds.id
+    where tqj.id = #{id}
+  </select>
+
+  <select id="findQuartzJobList" parameterType="com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition" resultMap="JobVoMap">
+    select tqj.id,tqj.user_id,tqj.db_id,tqj.operate,tqj.opt_value,tqj.warning_level,tqj.warning_msg,tqj.warning_status,tqj.job_name,tqj.cron_expression,
+    tqj.job_status,tqj.previous_time,tqj.previous_time,tqj.next_time,tqj.result_value,tqj.duration,tqj.is_success,
+    tu.name,tds.alias
+    from t_quartz_job tqj left join t_detection_user tu on tqj.user_id = tu.id
+    left join t_db_source tds on tqj.db_id = tds.id
+    where tqj.job_status &lt;&gt; 'STATE_DELETED'
+    <if test="jobName != null">
+      and tqj.job_name like  #{jobName}
+    </if>
+    <if test="userId != null">
+      and tqj.user_id =  #{userId}
+    </if>
+    <if test="dbId != null">
+      and tqj.db_id =  #{dbId}
+    </if>
+  </select>
+</mapper>

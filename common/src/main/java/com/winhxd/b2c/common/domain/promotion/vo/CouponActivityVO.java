@@ -2,6 +2,7 @@ package com.winhxd.b2c.common.domain.promotion.vo;
 
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityArea;
 import com.winhxd.b2c.common.domain.promotion.model.CouponActivityTemplate;
+import com.winhxd.b2c.common.domain.promotion.model.CouponPushCustomer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -98,5 +99,11 @@ public class CouponActivityVO {
 
     @ApiModelProperty(value = "区域信息")
     private List<CouponActivityArea> couponActivityAreaList;
+
+    @ApiModelProperty(value = "推券活动指定的C端用户")
+    private List<CouponPushCustomer> couponPushCustomerList;
+
+    @ApiModelProperty(value = "推券活动门店下覆盖的用户总数")
+    private Long storeCustomerNum;
 
 }

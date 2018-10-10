@@ -141,6 +141,7 @@ public class WechatShareServiceImpl implements WechatShareService {
             QRCodeInfoVO codeInfoVO = new QRCodeInfoVO();
             codeInfoVO.setMiniProgramCodeUrl(storeUserInfoVO.getMiniProgramCodeUrl());
             codeInfoVO.setStoreName(storeUserInfoVO.getStoreName());
+            codeInfoVO.setStoreShortName(null==storeUserInfoVO.getStoreShortName() ? storeUserInfoVO.getStoreName() : storeUserInfoVO.getStoreShortName());
             return codeInfoVO;
         }
         //获取token
@@ -200,8 +201,9 @@ public class WechatShareServiceImpl implements WechatShareService {
         miniProgramConfigVO.setPath(path+"?storeId="+storeUserId);
         miniProgramConfigVO.setUserName(userName);
         StoreUserInfoVO storeUserInfoVO = storeServiceClient.findStoreUserInfo(storeUserId).getData();
+        String storeName = null==storeUserInfoVO.getStoreShortName() ? storeUserInfoVO.getStoreName() : storeUserInfoVO.getStoreShortName();
         if(storeUserInfoVO != null){
-            tempTitle = tempTitle+storeUserInfoVO.getStoreName();
+            tempTitle = tempTitle + storeName;
         }
         miniProgramConfigVO.setDescription(description);
         miniProgramConfigVO.setTitle(tempTitle);

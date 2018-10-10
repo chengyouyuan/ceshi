@@ -59,6 +59,9 @@ public interface CouponServiceClient {
     @RequestMapping(value = "/promotion/5058/v1/findDefaultCoupon", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<CouponVO> findDefaultCoupon(@RequestBody OrderAvailableCouponCondition condition);
 
+    @RequestMapping(value = "/promotion/5062/v1/checkCouponsAvailable", method = RequestMethod.GET)
+    ResponseResult<Boolean> checkCouponsAvailable(@RequestParam("customerId") Long customerId);
+
 }
 
 
@@ -126,6 +129,12 @@ class CouponServiceFallback implements FallbackFactory<CouponServiceClient>{
             public ResponseResult findDefaultCoupon(OrderAvailableCouponCondition condition) {
                 logger.error("CouponServiceClient -> findDefaultCoupon", throwable);
                 return new ResponseResult<String>(BusinessCode.CODE_1001);
+            }
+
+            @Override
+            public ResponseResult<Boolean> checkCouponsAvailable(Long customerId) {
+                logger.error("CouponServiceClient -> checkCouponsAvailable", throwable);
+                return new ResponseResult<Boolean>(BusinessCode.CODE_1001);
             }
         };
     }

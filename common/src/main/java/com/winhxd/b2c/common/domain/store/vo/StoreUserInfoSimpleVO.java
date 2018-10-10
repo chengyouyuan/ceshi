@@ -21,5 +21,7 @@ public class StoreUserInfoSimpleVO {
 	private String neteaseToken;
 	@ApiModelProperty(value = "惠下单门店用户id")
     private Long customerId;
+	@ApiModelProperty(value = "用户账号")
+	private String storeMobile;
 
 }

@@ -30,4 +30,11 @@ public interface CouponTemplateUseMapper {
      * @return
      */
     List<CouponTemplateUse> selectByOrderNos(List<String> orderNos);
+
+    /**
+     * 根据订单查询活动状态
+     * @param record
+     * @return
+     */
+    Integer  selectActiveStatusByOrderNo(CouponTemplateUse record);
 }

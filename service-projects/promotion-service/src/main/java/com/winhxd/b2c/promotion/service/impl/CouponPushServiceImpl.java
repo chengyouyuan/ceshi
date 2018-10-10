@@ -322,8 +322,8 @@ public class CouponPushServiceImpl implements CouponPushService {
             couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
             couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
         }else {
-            couponTemplateSend.setStartTime(DateUtil.toDate(couponPushVO.getActivityStart(),"yyyy.MM.dd"));
-            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd(),"yyyy.MM.dd"));
+            couponTemplateSend.setStartTime(DateUtil.toDate(couponPushVO.getActivityStart(),"yyyy.MM.dd HH:mm:ss"));
+            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd(),"yyyy.MM.dd HH:mm:ss"));
         }
 
         couponTemplateSendMapper.insertSelective(couponTemplateSend);
@@ -398,10 +398,14 @@ public class CouponPushServiceImpl implements CouponPushService {
         }
 
         //指定门店
-        ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
-        if(BusinessCode.CODE_200009 != result.getCode()){
-            List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushStore(result.getData().getId());
-            falg = isAvailable(couponPushCustomers);
+        try {
+            ResponseResult<StoreUserInfoVO> result = storeServiceClient.findStoreUserInfoByCustomerId(customerId);
+            if(BusinessCode.CODE_200009 != result.getCode()){
+                List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushStore(result.getData().getId());
+                falg = isAvailable(couponPushCustomers);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return falg;

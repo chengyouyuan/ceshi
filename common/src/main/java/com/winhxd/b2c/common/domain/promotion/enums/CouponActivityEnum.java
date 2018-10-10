@@ -24,6 +24,7 @@ public enum CouponActivityEnum {
      */
     ACTIVITY_OPEN((short) 1,"开启"),
     ACTIVITY_STOP((short) 2,"停止"),
+    ACTIVITY_STOP_UNDO((short) 3,"停止并撤销"),
 
     /**
      * 优惠券类型 1新用户注册 2老用户活动

@@ -496,9 +496,7 @@
     LEFT JOIN coupon_apply d ON c.apply_rule_id = d.id AND d.`status` = 1
     LEFT JOIN coupon_grade e on e.id = c.grade_id
     LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
-    WHERE
-    a.store_id = #{storeId}
-    and h.activity_status= 1
+    WHERE a.store_id = #{storeId} and h.activity_status= 1
     GROUP BY b.coupon_activity_id,templeteId
     ORDER BY expire DESC,startTime DESC
   </select>

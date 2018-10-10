@@ -1063,9 +1063,9 @@ public class CouponServiceImpl implements CouponService {
 
         int pushCount = 0;
         if (!CollectionUtils.isEmpty(customerIdData.getData())) {
-            int storeBindingUserCount = customerIdData.getData().size();
-            int couponPushCustomerCount = couponPushCustomerMapper.selectCouponStoreUser(customerIdData.getData());
-            pushCount = storeBindingUserCount + couponPushCustomerCount;
+            pushCount = customerIdData.getData().size();
+//            int couponPushCustomerCount = couponPushCustomerMapper.selectCouponStoreUser(customerIdData.getData());
+//            pushCount = storeBindingUserCount + couponPushCustomerCount;
         }
         return pushCount;
     }

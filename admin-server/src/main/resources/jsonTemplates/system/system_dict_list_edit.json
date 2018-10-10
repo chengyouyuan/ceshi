@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "/dict/get/{id}",
+    "id": "system_dict_list_edit",
+    "title": "字典编辑",
+    "buttons": [
+      {
+        "name": "保存",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "path": "/dict/edit",
+          "callback": {
+            "refresh": false
+          }
+        }
+      },
+      {
+        "name": "取消",
+        "icon": null,
+        "event": {
+          "type": "cancel",
+          "callback": {
+            "refresh": true
+          }
+        }
+      }
+    ],
+    "items": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "名称",
+        "value": "",
+        "placeholder": "请输入名称",
+        "isHidden": false,
+        "validate": {
+          "required": true,
+          "maxLength": {
+            "value": 30,
+            "message": "允许最大长度为30个字符"
+          }
+        }
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "编码",
+        "value": "",
+        "placeholder": "请输入编码",
+        "isHidden": false,
+        "validate": {
+          "required": true,
+          "maxLength": {
+            "value": 20,
+            "message": "允许最大长度为20个字符"
+          }
+        }
+      },
+      {
+        "name": "description",
+        "inputModel": "text",
+        "title": "描述",
+        "value": "",
+        "placeholder": "请输入描述",
+        "isHidden": false,
+        "validate": {
+          "maxLength": {
+            "value": 200,
+            "message": "允许最大长度为200个字符"
+          }
+        }
+      }
+    ],
+    "subForms": [
+      {
+        "layout": "table",
+        "code": "items",
+        "items": [
+          {
+            "name": "value",
+            "inputModel": "input",
+            "title": "字典项值",
+            "value": "",
+            "placeholder": "请输入字典项值",
+            "isHidden": false,
+            "validate": {
+              "required": true,
+              "maxLength": 20
+            }
+          },
+          {
+            "name": "name",
+            "inputModel": "input",
+            "title": "字典项名称",
+            "value": "",
+            "placeholder": "请输入字典项名称",
+            "isHidden": false,
+            "validate": {
+              "required": true,
+              "maxLength": 30
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -323,7 +323,7 @@ public class CouponPushServiceImpl implements CouponPushService {
             couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
         }else {
             couponTemplateSend.setStartTime(DateUtil.toDate(couponPushVO.getActivityStart(),"yyyy.MM.dd"));
-            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd(),"yyyy.MM.dd"));
+            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd()+" 23:59:59","yyyy.MM.dd HH:mm:ss"));
         }
 
         couponTemplateSendMapper.insertSelective(couponTemplateSend);

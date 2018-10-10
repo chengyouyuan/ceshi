@@ -560,8 +560,7 @@ public class CouponServiceImpl implements CouponService {
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
-            //活动状态为停止并撤销
-            short couponStatus = activeStatus == 3 ?CouponActivityEnum.INVALYD.getCode():CouponActivityEnum.UNTREAD.getCode();
+            short couponStatus = activeStatus == 1 ?CouponActivityEnum.UNTREAD.getCode():CouponActivityEnum.INVALYD.getCode();
 
             couponTemplateUse.setStatus(couponStatus);
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
@@ -1018,8 +1017,14 @@ public class CouponServiceImpl implements CouponService {
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
-        //查询使用每张优惠券的使用数量和领取数量
-        List<CouponInStoreGetedAndUsedVO> countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId);
+
+        ResponseResult<List<Long>> customerList = getCustomerListByStoreId(storeId);
+
+        List<CouponInStoreGetedAndUsedVO> countList = null;
+        if (!CollectionUtils.isEmpty(customerList.getData())) {
+            //查询使用每张优惠券的使用数量和领取数量
+            countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId,customerList.getData());
+        }
         // 获取优惠券推给用户总数
         int pushCount = getPushCount(storeId);
 

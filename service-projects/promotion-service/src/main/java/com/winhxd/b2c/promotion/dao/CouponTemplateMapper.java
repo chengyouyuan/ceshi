@@ -31,6 +31,6 @@ public interface CouponTemplateMapper {
 
     List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId);
 
-    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(@RequestParam("storeId") Long storeId);
+    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(@RequestParam("storeId") Long storeId,@Param("customerList")List<Long>customerList);
 
 }

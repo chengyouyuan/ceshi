@@ -250,7 +250,7 @@ public class ApiStoreLoginController {
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
 			vo.setCustomerId(db.getStoreCustomerId());
-			vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
+			vo.setStoreMobile(map.getStoreMobile());
 			storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
 			getStoreUserInfoToken(storeUserInfo, user);
 			result.setData(vo);
@@ -401,6 +401,7 @@ public class ApiStoreLoginController {
 		Map<String, Object> map = result.getData();
 		//先更新门店信息，再返回给前端展示
 		storeUserInfo.setId(storeUserInfo.getId());
+		logger.info("aaa:"+map.toString());
 		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
 		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
 		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));

@@ -200,6 +200,7 @@ public class ApiStoreLoginController {
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
+				vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 				storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
 				getStoreUserInfoToken(storeUserInfo, user);
 				result.setData(vo);
@@ -249,6 +250,7 @@ public class ApiStoreLoginController {
 			storeLoginService.modifyStoreUserInfo(storeUserInfo);
 			vo.setToken(storeUserInfo.getToken());
 			vo.setCustomerId(db.getStoreCustomerId());
+			vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 			storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
 			getStoreUserInfoToken(storeUserInfo, user);
 			result.setData(vo);
@@ -288,6 +290,7 @@ public class ApiStoreLoginController {
 				storeLoginService.modifyStoreUserInfo(storeUserInfo);
 				vo.setToken(storeUserInfo.getToken());
 				vo.setCustomerId(db.getStoreCustomerId());
+				vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 				storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
 				getStoreUserInfoToken(storeUserInfo, user);
 				result.setData(vo);
@@ -335,6 +338,7 @@ public class ApiStoreLoginController {
 					storeLoginService.modifyStoreUserInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(db.getStoreCustomerId());
+					vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 					storeUserInfo.setStoreCustomerId(db.getStoreCustomerId());
 					getStoreUserInfoToken(storeUserInfo, user);
 					result.setData(vo);
@@ -355,6 +359,7 @@ public class ApiStoreLoginController {
 					storeLoginService.saveStoreInfo(storeUserInfo);
 					vo.setToken(storeUserInfo.getToken());
 					vo.setCustomerId(map.getStoreCustomerId());
+					vo.setStoreMobile(storeUserInfoCondition.getStoreMobile());
 					getStoreUserInfoToken(storeUserInfo, user);
 					result.setData(vo);
 				}

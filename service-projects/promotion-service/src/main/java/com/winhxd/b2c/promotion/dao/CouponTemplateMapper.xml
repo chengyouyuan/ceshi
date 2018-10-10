@@ -509,7 +509,7 @@
     <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
   </resultMap>
 
-  <select id="selectCouponGetedAndUsedCout" parameterType="java.util.List" resultMap="couponGetedAndUsedCoutMap">
+  <select id="selectCouponGetedAndUsedCout" parameterType="java.util.Map" resultMap="couponGetedAndUsedCoutMap">
     SELECT
         (
             SELECT

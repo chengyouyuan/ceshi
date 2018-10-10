@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -1018,12 +1019,15 @@ public class CouponServiceImpl implements CouponService {
         //查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
 
-        ResponseResult<List<Long>> customerList = getCustomerListByStoreId(storeId);
+        ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
 
         List<CouponInStoreGetedAndUsedVO> countList = null;
-        if (!CollectionUtils.isEmpty(customerList.getData())) {
+        if (!CollectionUtils.isEmpty(customers.getData())) {
+            HashMap<String, Object> paraMap = Maps.newHashMap();
+            paraMap.put("storeId",storeId);
+            paraMap.put("customerList",customers.getData());
             //查询使用每张优惠券的使用数量和领取数量
-            countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId,customerList.getData());
+            countList = couponTemplateMapper.selectCouponGetedAndUsedCout(paraMap);
         }
         // 获取优惠券推给用户总数
         int pushCount = getPushCount(storeId);

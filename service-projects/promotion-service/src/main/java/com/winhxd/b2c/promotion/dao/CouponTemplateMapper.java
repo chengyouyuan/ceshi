@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface CouponTemplateMapper {
     int deleteByPrimaryKey(Long id);
@@ -31,6 +32,6 @@ public interface CouponTemplateMapper {
 
     List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId);
 
-    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(@RequestParam("storeId") Long storeId,@Param("customerList")List<Long>customerList);
+    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(Map<String,Object> paraMap);
 
 }

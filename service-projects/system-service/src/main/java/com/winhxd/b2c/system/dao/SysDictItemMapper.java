@@ -20,5 +20,6 @@ public interface SysDictItemMapper {
     int updateByPrimaryKey(SysDictItem record);
 
     List<SysDictItem> selectByDictCode(String dictCode);
-    int deleteByDictCode(String dictCode);
+    
+    int deleteByDictId(Long dictId);
 }

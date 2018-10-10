@@ -87,17 +87,16 @@
     inner join sys_dict dict on item.dict_id=dict.id
     where dict.code = #{dictCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByDictCode">
+  <delete id="deleteByDictId">
     delete
-    from sys_dict_item item
-    inner join sys_dict dict on item.dict_id=dict.id
-    where dict.code = #{dictCode,jdbcType=VARCHAR}
+    from sys_dict_item
+    where dict_id = #{dictId}
   </delete>
 
   <insert id="insertBatch" parameterType="java.util.List">
     insert into sys_dict_item (dict_id, value, name)
     <foreach collection="list" item="item" separator="union all" index="index">
-      select #{item.dictId,jdbcType=BIGINT}, #{item.value,jdbcType=VARCHAR}, #{item.itemName,jdbcType=VARCHAR}
+      select #{item.dictId,jdbcType=BIGINT}, #{item.value,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR}
     </foreach>
   </insert>
 </mapper>

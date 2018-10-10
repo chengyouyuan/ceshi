@@ -85,7 +85,6 @@ public enum MenuEnum {
     SYSTEM_MANAGEMENT_ROLE("权限管理", SYSTEM_MANAGEMENT, "/template/module/system/system_role_list.json", PermissionEnum.SYSTEM_MANAGEMENT_ROLE),
     SYSTEM_MANAGEMENT_USER("成员管理", SYSTEM_MANAGEMENT, "/template/module/system/system_user_list.json", PermissionEnum.SYSTEM_MANAGEMENT_USER),
     SYSTEM_MANAGEMENT_DICT("字典管理", SYSTEM_MANAGEMENT, "/template/module/system/system_dict_list.json", PermissionEnum.SYSTEM_MANAGEMENT_DICT),
-    SYSTEM_MANAGEMENT_USER("成员管理", SYSTEM_MANAGEMENT, "/template/module/system/system_user_list.json", PermissionEnum.SYSTEM_MANAGEMENT_USER),
 
     /**
      * 监测监控管理

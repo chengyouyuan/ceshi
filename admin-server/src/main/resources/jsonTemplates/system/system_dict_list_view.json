@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "type": "base-form",
+    "path": "/dict/get/{id}",
+    "id": "system_dict_list_view",
+    "title": "字典查看",
+    "buttons": [
+    ],
+    "items": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "名称",
+        "value": "",
+        "placeholder": "请输入名称",
+        "isHidden": false
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "编码",
+        "value": "",
+        "placeholder": "请输入编码",
+        "isHidden": false
+      },
+      {
+        "name": "description",
+        "inputModel": "text",
+        "title": "描述",
+        "value": "",
+        "placeholder": "请输入描述",
+        "isHidden": false
+      }
+    ],
+    "subForms": [
+      {
+        "layout": "table",
+        "code": "items",
+        "items": [
+          {
+            "name": "value",
+            "inputModel": "input",
+            "title": "字典项值",
+            "value": "",
+            "placeholder": "请输入字典项值",
+            "isHidden": false
+          },
+          {
+            "name": "name",
+            "inputModel": "input",
+            "title": "字典项名称",
+            "value": "",
+            "placeholder": "请输入字典项名称",
+            "isHidden": false
+          }
+        ]
+      }
+    ]
+  }
+}

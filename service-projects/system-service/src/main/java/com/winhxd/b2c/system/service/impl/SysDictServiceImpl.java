@@ -45,7 +45,7 @@ public class SysDictServiceImpl implements SysDictService {
     public int modify(SysDict sysDict) {
         int result = sysDictMapper.updateByPrimaryKeySelective(sysDict);
 
-        sysDictItemMapper.deleteByDictCode(sysDict.getCode());
+        sysDictItemMapper.deleteByDictId(sysDict.getId());
         List<SysDictItem> items = sysDict.getItems();
         items = items.stream().map(item -> {item.setDictId(sysDict.getId());return item;}).collect(Collectors.toList());
         sysDictItemMapper.insertBatch(items);

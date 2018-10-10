@@ -1,0 +1,117 @@
+{
+  "meta": {
+    "ajaxType": "get",
+    "path": "/dict/list",
+    "type": "report",
+    "id": "system_dict_list",
+    "code": "system_dict_list",
+    "title": "字典管理",
+    "buttons": [
+      {
+        "name": "新增",
+        "icon": null,
+        "event": {
+          "type": "router",
+          "path": "",
+          "configKey": "/template/module/system/system_dict_list_add.json",
+          "callBack": {
+          }
+        }
+      },
+      {
+        "name": "查询",
+        "icon": null,
+        "event": {
+          "type": "submit",
+          "ajaxType": "get",
+          "path": "/dict/list"
+        }
+      },
+      {
+        "name": "重置",
+        "icon": null,
+        "event": {
+          "type": "reset",
+          "path": ""
+        }
+      }
+    ],
+    "columns": [
+      {
+        "type": "index",
+        "name": "id",
+        "title": "序号",
+        "aglign": "center",
+        "width": "50",
+        "fixed": "left"
+      },
+      {
+        "name": "name",
+        "title": "名称"
+      },
+      {
+        "name": "code",
+        "title": "编码"
+      },
+      {
+        "name": "description",
+        "title": "描述"
+      },
+      {
+        "name": "",
+        "title": "操作",
+        "type": "button",
+        "buttons": [
+          {
+            "name": "查看",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "detail"
+              },
+              "path": "",
+              "configKey": "/template/module/system/system_dict_list_view.json"
+            }
+          },
+          {
+            "name": "编辑",
+            "icon": null,
+            "event": {
+              "type": "router",
+              "params": [
+                "id"
+              ],
+              "static": {
+                "method": "update"
+              },
+              "path": "",
+              "configKey": "/template/module/system/system_dict_list_edit.json"
+            }
+          }
+        ]
+      }
+    ],
+    "params": [
+      {
+        "name": "name",
+        "inputModel": "input",
+        "title": "名称",
+        "value": "",
+        "placeholder": "请输入名称",
+        "isHidden": false
+      },
+      {
+        "name": "code",
+        "inputModel": "input",
+        "title": "编码",
+        "value": "",
+        "placeholder": "请输入编码",
+        "isHidden": false
+      }
+    ]
+  }
+}

@@ -86,6 +86,7 @@
             "placeholder":"请输入字典项值",
             "isHidden": false,
             "validate": {
+              "required": true,
               "minLength": 20
             }
           },
@@ -97,6 +98,7 @@
             "placeholder":"请输入字典项名称",
             "isHidden": false,
             "validate": {
+              "required": true,
               "minLength": 30
             }
           }

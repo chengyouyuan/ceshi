@@ -85,8 +85,8 @@
             "value": "",
             "placeholder": "请输入字典项值",
             "isHidden": false,
-            "required": true,
             "validate": {
+              "required": true,
               "maxLength": 20
             }
           },
@@ -97,8 +97,8 @@
             "value": "",
             "placeholder": "请输入字典项名称",
             "isHidden": false,
-            "required": true,
             "validate": {
+              "required": true,
               "maxLength": 30
             }
           }

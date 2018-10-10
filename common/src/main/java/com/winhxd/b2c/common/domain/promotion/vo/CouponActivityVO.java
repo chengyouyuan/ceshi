@@ -43,7 +43,7 @@ public class CouponActivityVO {
     @ApiModelProperty(value = "活动状态1开启2停止")
     private Short activityStatus;
 
-    @ApiModelProperty(value = "活动状态名称1开启2停止")
+    @ApiModelProperty(value = "活动状态名称1开启2停止3停止并撤销")
     private String activityStatusName;
 
     @ApiModelProperty(value = "引用数量")

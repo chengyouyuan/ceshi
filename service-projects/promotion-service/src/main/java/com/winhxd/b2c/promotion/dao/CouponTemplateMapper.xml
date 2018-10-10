@@ -509,15 +509,19 @@
     <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
   </resultMap>
 
-  <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
+  <select id="selectCouponGetedAndUsedCout" parameterType="java.util.Map" resultMap="couponGetedAndUsedCoutMap">
     SELECT
         (
             SELECT
                 COUNT(car.id)
             FROM
                 coupon_activity_record car
+            LEFT JOIN coupon_template_send e ON car.send_id=e.id
             WHERE
-                car.coupon_activity_id = ca.id
+                car.coupon_activity_id = ca.id AND car.customer_id IN
+           <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+                #{item}
+           </foreach>
         ) AS  totalCount,
         (
             SELECT
@@ -527,7 +531,10 @@
             LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
             WHERE
                 cts. STATUS = '1'
-            AND car.coupon_activity_id = ca.id
+            AND car.coupon_activity_id = ca.id AND car.customer_id IN
+          <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+            #{item}
+          </foreach>
         ) as usedCount,
         ca.id AS couponActivityId,
         cat.template_id as templeteId

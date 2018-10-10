@@ -499,7 +499,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         //停止活动
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setId(condition.getId());
-        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP.getCode());
+        couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_STOP_UNDO.getCode());
         couponActivity.setUpdated(new Date());
         couponActivity.setUpdatedBy(condition.getCreatedBy());
         couponActivity.setUpdatedByName(condition.getCreatedByName());

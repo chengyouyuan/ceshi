@@ -561,7 +561,10 @@ public class CouponServiceImpl implements CouponService {
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
+            logger.info("订单号"+condition.getOrderNo()+"退优惠券 活动状态："+activeStatus);
             short couponStatus = activeStatus.intValue() == 3 ?CouponActivityEnum.INVALYD.getCode():CouponActivityEnum.UNTREAD.getCode();
+            logger.info("订单号"+condition.getOrderNo()+"退优惠券 退回状态："+couponStatus);
+
 
             couponTemplateUse.setStatus(couponStatus);
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);

@@ -1025,7 +1025,7 @@ public class CouponServiceImpl implements CouponService {
         if (!CollectionUtils.isEmpty(customers.getData())) {
             HashMap<String, Object> paraMap = Maps.newHashMap();
             paraMap.put("storeId",storeId);
-            paraMap.put("customerList",customers.getData());
+            paraMap.put("list",customers.getData());
             //查询使用每张优惠券的使用数量和领取数量
             countList = couponTemplateMapper.selectCouponGetedAndUsedCout(paraMap);
         }
@@ -1078,6 +1078,11 @@ public class CouponServiceImpl implements CouponService {
         return pushCount;
     }
 
+    /**
+     * 查询门店下所属的用户
+     * @param storeId
+     * @return
+     */
     private ResponseResult<List<Long>> getCustomerListByStoreId(Long storeId) {
         StoreCustomerRegionCondition regionCondition = new StoreCustomerRegionCondition();
         ArrayList<String> storeUserInfoIds = Lists.newArrayList();

@@ -513,10 +513,9 @@
     SELECT
         (
             SELECT
-              COUNT(DISTINCT e.customer_id)
+              COUNT(DISTINCT car.id)
             FROM
                 coupon_activity_record car
-            LEFT JOIN coupon_template_send e ON car.send_id=e.id
             WHERE
                 car.coupon_activity_id = ca.id AND car.customer_id IN
            <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
@@ -525,7 +524,7 @@
         ) AS  totalCount,
         (
             SELECT
-              COUNT(DISTINCT e.customer_id)
+              COUNT(DISTINCT car.id)
             FROM
                 coupon_activity_record car
             LEFT JOIN coupon_template_send cts ON cts.id = car.send_id

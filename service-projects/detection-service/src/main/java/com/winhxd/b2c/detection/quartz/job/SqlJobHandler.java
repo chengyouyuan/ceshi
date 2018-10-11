@@ -79,20 +79,22 @@ public class SqlJobHandler implements IBaseJob {
             if(resultValue!=null){
                 String oprate = job.getOperate();
                 Integer optValue = job.getOptValue();
-                if(oprate.equals(">")){
-                    if(resultValue>optValue){
-                        job.setWarningStatus((byte)1);
-                        sendEmail(job);
-                    }
-                }else if(oprate.equals("<")){
-                    if(resultValue<optValue){
-                        job.setWarningStatus((byte)1);
-                        sendEmail(job);
-                    }
-                }else if(oprate.equals("=")){
-                    if(resultValue==optValue){
-                        job.setWarningStatus((byte)1);
-                        sendEmail(job);
+                if(StringUtils.isNotBlank(oprate)){
+                    if(StringUtils.isNotBlank(oprate) && oprate.equals(">")){
+                        if(resultValue>optValue){
+                            job.setWarningStatus((byte)1);
+                            sendEmail(job);
+                        }
+                    } else if (oprate.equals("<")){
+                        if(resultValue<optValue){
+                            job.setWarningStatus((byte)1);
+                            sendEmail(job);
+                        }
+                    } else if (oprate.equals("=")){
+                        if(resultValue.equals(optValue)){
+                            job.setWarningStatus((byte)1);
+                            sendEmail(job);
+                        }
                     }
                 }
             }

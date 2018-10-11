@@ -17,10 +17,12 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T> {
 	@Autowired
     protected Mapper<T> mapper;
 
+	@Override
     public int insert(T entity){
         return mapper.insert(entity);
     }
 
+	@Override
     public int delete(T entity){
         return mapper.deleteByPrimaryKey(entity);
     }
@@ -32,6 +34,7 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T> {
      * @param pageSize
      * @return
      */
+	@Override
     public List<T> selectPage(int pageNum,int pageSize,T arg0){
         PageHelper.startPage(pageNum, pageSize);
         //Spring4支持泛型注入
@@ -140,6 +143,5 @@ public abstract class BaseServiceImpl<T> implements IBaseService<T> {
 		// TODO Auto-generated method stub
 		return mapper.selectCountByExample(arg0);
 	}
-
 
 }

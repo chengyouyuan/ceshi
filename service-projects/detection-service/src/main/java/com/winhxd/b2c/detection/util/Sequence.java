@@ -37,8 +37,8 @@ public class Sequence {
         }
         finally {
             LOCK.unlock();
-            return Long.parseLong(lastTime+""+String.format("%03d",count)); 
         }
+        return Long.parseLong(lastTime+""+String.format("%03d",count));
     }
     public static void main(String[] args)
     {

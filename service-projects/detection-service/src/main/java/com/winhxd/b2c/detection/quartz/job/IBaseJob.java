@@ -11,5 +11,6 @@ import org.quartz.JobExecutionException;
  */
 public interface IBaseJob extends Job {
 
+    @Override
     void execute(JobExecutionContext context) throws JobExecutionException;
 }

@@ -1040,7 +1040,7 @@ public class CouponServiceImpl implements CouponService {
 
         //将数量拼接到列表
         if(resultList!=null){
-            for(int i=0;i<list.size();i++){
+            for(int i=0;i<resultList.size();i++){
                 CouponInStoreGetedAndUsedVO vo = list.get(i);
                 if(countList!=null){
                     for(int j=0;j<countList.size();j++){

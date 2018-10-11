@@ -1041,7 +1041,7 @@ public class CouponServiceImpl implements CouponService {
         //将数量拼接到列表
         if(resultList!=null){
             for(int i=0;i<resultList.size();i++){
-                CouponInStoreGetedAndUsedVO vo = list.get(i);
+                CouponInStoreGetedAndUsedVO vo = resultList.get(i);
                 if(countList!=null){
                     for(int j=0;j<countList.size();j++){
                         if(vo.getCouponActivityId().equals(countList.get(j).getCouponActivityId()) && vo.getTempleteId().equals(countList.get(j).getTempleteId())){

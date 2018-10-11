@@ -561,7 +561,7 @@ public class CouponServiceImpl implements CouponService {
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
-            short couponStatus = activeStatus == 3 ?CouponActivityEnum.INVALYD.getCode():CouponActivityEnum.UNTREAD.getCode();
+            short couponStatus = activeStatus.intValue() == 3 ?CouponActivityEnum.INVALYD.getCode():CouponActivityEnum.UNTREAD.getCode();
 
             couponTemplateUse.setStatus(couponStatus);
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);

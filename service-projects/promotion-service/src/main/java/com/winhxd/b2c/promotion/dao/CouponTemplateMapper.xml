@@ -513,7 +513,7 @@
     SELECT
         (
             SELECT
-              COUNT(DISTINCT car.customer_id)
+              COUNT(DISTINCT car.id)
             FROM
                 coupon_activity_record car
             WHERE
@@ -524,7 +524,7 @@
         ) AS  totalCount,
         (
             SELECT
-              COUNT(DISTINCT car.customer_id)
+              COUNT(DISTINCT car.id)
             FROM
                 coupon_activity_record car
             LEFT JOIN coupon_template_send cts ON cts.id = car.send_id

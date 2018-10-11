@@ -470,7 +470,7 @@
   </resultMap>
 
  <!-- 获取门店优惠券使用情况 领取情况统计列表 -->
-  <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.util.Map" resultMap="couponGetedAndUsedResultMap">
+  <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.lang.Long" resultMap="couponGetedAndUsedResultMap">
 
     SELECT
     a.store_id as storeId,
@@ -499,7 +499,6 @@
     WHERE a.store_id = #{storeId} and h.activity_status= 1
     GROUP BY b.coupon_activity_id,templeteId
     ORDER BY expire DESC,b.coupon_activity_id DESC,b.template_id DESC
-    limit #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->

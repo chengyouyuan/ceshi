@@ -1019,16 +1019,11 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId,CouponInStoreGetedAndUsedCodition codition) {
-//        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
+        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
 
-        Map<String,Object> map = new HashMap<>();
-        map.put("storeId",storeId);
-        map.put("pageNo",(codition.getPageNo()-1)*codition.getPageSize());
-        map.put("pageSize",codition.getPageSize());
-        logger.info("=============map:"+map.toString());
-        List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(map);
+        List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
 
@@ -1064,14 +1059,13 @@ public class CouponServiceImpl implements CouponService {
                 vo.setPushCount(pushCount);
             }
         }
-        logger.info("==============返回优惠券列表："+resultList.toString());
         this.getCouponApplyDetail(resultList);
 
 
         pagedList.setData(resultList);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
-//        pagedList.setTotalRows(page.getTotal());
+        pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
 

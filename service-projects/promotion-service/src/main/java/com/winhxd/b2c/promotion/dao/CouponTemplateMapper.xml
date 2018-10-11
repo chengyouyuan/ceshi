@@ -470,7 +470,7 @@
   </resultMap>
 
  <!-- 获取门店优惠券使用情况 领取情况统计列表 -->
-  <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.lang.Long" resultMap="couponGetedAndUsedResultMap">
+  <select id="selectCouponInStoreGetedAndUsedPage" parameterType="java.util.Map" resultMap="couponGetedAndUsedResultMap">
 
     SELECT
     a.store_id as storeId,

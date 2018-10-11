@@ -147,6 +147,8 @@
 	'开启'
 	WHEN ca.`activity_status` = 2 THEN
 	'停用'
+	WHEN ca.`activity_status` = 3 THEN
+	'停用并撤销'
 	END
 	) AS activity_status_name,
 	cat.coupon_num_type,

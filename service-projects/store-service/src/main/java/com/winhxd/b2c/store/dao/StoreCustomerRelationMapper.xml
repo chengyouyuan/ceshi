@@ -116,7 +116,7 @@
 
   <!--根据店铺ID，店铺状态查询绑定的用户ID-->
   <select id="selectCustomerIds" resultType="java.lang.Long">
-    SELECT sr.id FROM store_customer_relation sr
+    SELECT sr.customer_id FROM store_customer_relation sr
     LEFT JOIN store_user_info ui ON ui.id = sr.store_user_id
     WHERE sr.status = 1
     <if test="storeUserInfoIds!=null and storeUserInfoIds.size > 0 ">

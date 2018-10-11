@@ -401,7 +401,6 @@ public class ApiStoreLoginController {
 		Map<String, Object> map = result.getData();
 		//先更新门店信息，再返回给前端展示
 		storeUserInfo.setId(storeUserInfo.getId());
-		logger.info("aaa:"+map.toString());
 		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
 		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
 		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));

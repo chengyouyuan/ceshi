@@ -512,7 +512,7 @@
   <select id="selectCouponGetedAndUsedCout" parameterType="java.util.Map" resultMap="couponGetedAndUsedCoutMap">
     SELECT
         IFNULL(c.totalCount,0) AS totalCount,
-        IFNULL(c.usedCount,0) AS usedCount,
+        IFNULL(s.usedCount,0) AS usedCsount,
         ca.id AS couponActivityId,
         cat.template_id as templeteId
     FROM

@@ -458,7 +458,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
                 BeanUtils.copyProperties(customerUserInfoVO,cuie);
                 list.add(cuie);
             }
-        }else{
+        } else {
             throw new BusinessException(BusinessCode.CODE_500014);
         }
         result.setData(list);

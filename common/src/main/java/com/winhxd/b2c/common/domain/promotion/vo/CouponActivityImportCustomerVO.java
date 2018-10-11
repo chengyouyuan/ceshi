@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @ApiModel("优惠券活动导入用戶信息")
 @Data
-public class CouponActivityImportCustomerVO extends BaseExcelDomain {
+public class CouponActivityImportCustomerVO<T> extends BaseExcelDomain {
 	protected String errorMsg;
 
 	@Override

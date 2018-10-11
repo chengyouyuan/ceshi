@@ -184,22 +184,4 @@ public class ExcelUtils {
         res.setWorkbook(result.getWorkbook());
         return res;
     }
-
-    /**
-     * 解析上传Excel数据
-     * @param excel
-     * @param pojoClass
-     * @param <T>
-     * @return
-     */
-    public static <T> ImportResult<T> parseExcel(MultipartFile excel, Class<?> pojoClass) {
-        ImportResult<T> importResult = null;
-        try {
-            importResult = importExcelVerify(excel.getInputStream(),pojoClass);
-        } catch (Exception e) {
-            throw new BusinessException(BusinessCode.CODE_1001, e);
-        }
-        return importResult;
-    }
-
 }

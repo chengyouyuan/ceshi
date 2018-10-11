@@ -5,7 +5,9 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.promotion.util.BaseExcelDomain;
+import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -182,5 +185,21 @@ public class ExcelUtils {
         return res;
     }
 
+    /**
+     * 解析上传Excel数据
+     * @param excel
+     * @param pojoClass
+     * @param <T>
+     * @return
+     */
+    public static <T> ImportResult<T> parseExcel(MultipartFile excel, Class<?> pojoClass) {
+        ImportResult<T> importResult = null;
+        try {
+            importResult = importExcelVerify(excel.getInputStream(),pojoClass);
+        } catch (Exception e) {
+            throw new BusinessException(BusinessCode.CODE_1001, e);
+        }
+        return importResult;
+    }
 
 }

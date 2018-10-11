@@ -109,7 +109,7 @@ public class CouponController {
 			return result;
 		}
         List<CouponActivityImportStoreVO> list = null;
-        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+        ImportResult<CouponActivityImportStoreVO> importResult = ExcelUtils.parseExcel(inputfile,CouponActivityImportStoreVO.class);
         List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
         if (invalidList.isEmpty()) {
             list = importResult.getList();
@@ -135,7 +135,7 @@ public class CouponController {
             return result;
         }
         List<CouponActivityImportStoreVO> list = null;
-        ImportResult<CouponActivityImportStoreVO> importResult = this.parseExcel(inputfile);
+        ImportResult<CouponActivityImportStoreVO> importResult = ExcelUtils.parseExcel(inputfile,CouponActivityImportStoreVO.class);
         List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
         if (invalidList.isEmpty()) {
             list = importResult.getList();
@@ -179,7 +179,7 @@ public class CouponController {
 			return result;
 		}
 		List<CouponActivityImportCustomerVO> list = null;
-		ImportResult<CouponActivityImportCustomerVO> importResult = this.parseExcelCustomer(inputfile);
+		ImportResult<CouponActivityImportCustomerVO> importResult = ExcelUtils.parseExcel(inputfile,CouponActivityImportCustomerVO.class);
 		List<ExcelVerifyResult> invalidList = importResult.getInvalidList(1);
 		if (invalidList.isEmpty()) {
 			list = importResult.getList();
@@ -208,25 +208,7 @@ public class CouponController {
         return ExcelUtils.exp(list, "活动指定用户信息");
     }
 
-	private ImportResult<CouponActivityImportStoreVO> parseExcel(MultipartFile excel) {
-		ImportResult<CouponActivityImportStoreVO> importResult = null;
-		try {
-			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportStoreVO.class);
-		} catch (Exception e) {
-			throw new BusinessException(BusinessCode.CODE_1001, e);
-		}
-		return importResult;
-	}
 
-	private ImportResult<CouponActivityImportCustomerVO> parseExcelCustomer(MultipartFile excel) {
-		ImportResult<CouponActivityImportCustomerVO> importResult = null;
-		try {
-			importResult = ExcelUtils.importExcelVerify(excel.getInputStream(), CouponActivityImportCustomerVO.class);
-		} catch (Exception e) {
-			throw new BusinessException(BusinessCode.CODE_1001, e);
-		}
-		return importResult;
-	}
 	/**
 	 *
 	 *@Deccription 添加优惠券活动（领券）

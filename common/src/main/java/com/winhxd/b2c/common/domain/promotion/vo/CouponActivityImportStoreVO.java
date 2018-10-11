@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @ApiModel("优惠券活动导入小店信息")
 @Data
-public class CouponActivityImportStoreVO extends BaseExcelDomain {
+public class CouponActivityImportStoreVO<T> extends BaseExcelDomain {
 	protected String errorMsg;
 
 	@Override

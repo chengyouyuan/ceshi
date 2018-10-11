@@ -1064,7 +1064,9 @@ public class CouponServiceImpl implements CouponService {
                 vo.setPushCount(pushCount);
             }
         }
+        logger.info("==============返回优惠券列表："+resultList.toString());
         this.getCouponApplyDetail(resultList);
+
 
         pagedList.setData(resultList);
         pagedList.setPageNo(codition.getPageNo());

@@ -512,20 +512,7 @@
   <select id="selectCouponGetedAndUsedCout" parameterType="java.util.Map" resultMap="couponGetedAndUsedCoutMap">
     SELECT
         IFNULL(c.totalCount,0) AS totalCount,
-        IFNULL((
-            SELECT
-              COUNT(DISTINCT car.id)
-            FROM
-                coupon_activity_record car
-            LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-            WHERE
-                cts. STATUS = '1'
-            AND car.coupon_activity_id = ca.id AND car.customer_id IN
-          <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
-            #{item}
-          </foreach>
-          GROUP BY cts.template_id
-        ),0) as usedCount,
+        IFNULL(c.totalCount,0) AS totalCount,
         ca.id AS couponActivityId,
         cat.template_id as templeteId
     FROM
@@ -542,6 +529,17 @@
               </foreach>
               GROUP BY cts.template_id) c
       ON c.couponActivityId=ca.id and c.templeteId=cat.template_id
+    LEFT JOIN (
+            SELECT COUNT(DISTINCT cts.id) usedCount,car.coupon_activity_id
+                couponActivityId,car.template_id templeteId
+            FROM coupon_activity_record car
+            LEFT JOIN coupon_template_use cts ON car.send_id=cts.send_id
+            WHERE cts. STATUS = '1'  AND car.customer_id IN
+            <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+            GROUP BY cts.template_id) s
+      ON s.couponActivityId=ca.id and s.templeteId=cat.template_id
     WHERE 1=1
     AND ca.`status` = 1
     AND ca.activity_status = 1

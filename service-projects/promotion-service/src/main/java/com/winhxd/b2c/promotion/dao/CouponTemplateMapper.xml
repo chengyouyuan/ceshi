@@ -498,7 +498,7 @@
     LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
     WHERE a.store_id = #{storeId} and h.activity_status= 1
     GROUP BY b.coupon_activity_id,templeteId
-    ORDER BY expire DESC,startTime DESC
+    ORDER BY expire DESC,b.coupon_activity_id DESC,b.template_id DESC
     limit #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
   </select>
 

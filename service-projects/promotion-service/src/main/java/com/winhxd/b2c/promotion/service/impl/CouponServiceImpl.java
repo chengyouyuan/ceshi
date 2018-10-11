@@ -1020,7 +1020,7 @@ public class CouponServiceImpl implements CouponService {
         Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
-        List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+        Page<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
 
@@ -1045,6 +1045,7 @@ public class CouponServiceImpl implements CouponService {
                         if(vo.getCouponActivityId().equals(countList.get(j).getCouponActivityId()) && vo.getTempleteId().equals(countList.get(j).getTempleteId())){
                             vo.setTotalCount(countList.get(j).getTotalCount());
                             vo.setUsedCount(countList.get(j).getUsedCount());
+                            break;
                         }
                     }
                 }else{
@@ -1055,9 +1056,9 @@ public class CouponServiceImpl implements CouponService {
                 vo.setPushCount(pushCount);
             }
         }
-        List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
+        this.getCouponApplyDetail(list);
 
-        pagedList.setData(finalList);
+        pagedList.setData(list);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -1195,7 +1196,7 @@ public class CouponServiceImpl implements CouponService {
      * @param couponVOS
      * @return
      */
-    public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
+    public void getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
         for(CouponInStoreGetedAndUsedVO vo : couponVOS){
             if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
@@ -1241,7 +1242,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
         }
-        return couponVOS;
+
     }
 
 

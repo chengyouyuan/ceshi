@@ -52,6 +52,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Auther wangxiaoshun
@@ -1021,6 +1022,7 @@ public class CouponServiceImpl implements CouponService {
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
         Page<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+        List<CouponInStoreGetedAndUsedVO> resultList = list.stream().distinct().collect(Collectors.toList());
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
 
@@ -1037,7 +1039,7 @@ public class CouponServiceImpl implements CouponService {
 
 
         //将数量拼接到列表
-        if(list!=null){
+        if(resultList!=null){
             for(int i=0;i<list.size();i++){
                 CouponInStoreGetedAndUsedVO vo = list.get(i);
                 if(countList!=null){
@@ -1056,9 +1058,9 @@ public class CouponServiceImpl implements CouponService {
                 vo.setPushCount(pushCount);
             }
         }
-        this.getCouponApplyDetail(list);
+        this.getCouponApplyDetail(resultList);
 
-        pagedList.setData(list);
+        pagedList.setData(resultList);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
         pagedList.setTotalRows(page.getTotal());

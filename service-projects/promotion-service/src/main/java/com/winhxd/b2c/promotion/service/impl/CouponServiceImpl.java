@@ -1021,8 +1021,11 @@ public class CouponServiceImpl implements CouponService {
         Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
-        Page<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
-        List<CouponInStoreGetedAndUsedVO> resultList = list.stream().distinct().collect(Collectors.toList());
+        Map<String,Object> map = new HashMap<>();
+        map.put("storeId",storeId);
+        map.put("pageNo",(codition.getPageNo()-1)*codition.getPageSize());
+        map.put("pageSize",codition.getPageSize());
+        List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(map);
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
 

@@ -31,7 +31,7 @@ public interface CouponTemplateMapper {
 
     int updateCouponTemplateToValid(@Param("id") Long id, @Param("updatedBy") Long updateBy, @Param("updated") Date updated, @Param("updatedByName") String updateByName);
 
-    Page<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId);
+    List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(Map<String,Object> map);
 
     List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(Map<String,Object> paraMap);
 

@@ -41,6 +41,7 @@ import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1018,13 +1019,15 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId,CouponInStoreGetedAndUsedCodition codition) {
-        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
+//        Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
+
         Map<String,Object> map = new HashMap<>();
         map.put("storeId",storeId);
         map.put("pageNo",(codition.getPageNo()-1)*codition.getPageSize());
         map.put("pageSize",codition.getPageSize());
+        logger.info("=============map:"+map.toString());
         List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(map);
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
@@ -1066,7 +1069,7 @@ public class CouponServiceImpl implements CouponService {
         pagedList.setData(resultList);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
-        pagedList.setTotalRows(page.getTotal());
+//        pagedList.setTotalRows(page.getTotal());
         return pagedList;
     }
 

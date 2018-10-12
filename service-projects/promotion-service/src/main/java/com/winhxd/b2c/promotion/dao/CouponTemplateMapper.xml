@@ -526,7 +526,7 @@
                 <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
                     #{item}
                 </foreach>
-              GROUP BY cts.template_id) c
+              GROUP BY car.coupon_activity_id,cts.template_id) c
 		ON c.couponActivityId=ca.id and c.templeteId=cat.template_id
 	  LEFT JOIN (SELECT COUNT(DISTINCT cts.id) usedCount,car.coupon_activity_id couponActivityId,car.template_id templeteId
 							 FROM coupon_activity_record car
@@ -535,14 +535,14 @@
                             <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
                                 #{item}
                             </foreach>
-                          GROUP BY cts.template_id) s
+                          GROUP BY car.coupon_activity_id,cts.template_id) s
 
 	  ON s.couponActivityId=ca.id and s.templeteId=cat.template_id
 
     WHERE 1=1
     AND ca.`status` = 1
     AND ca.activity_status = 1
-    GROUP BY cat.coupon_activity_id,template_id
+    GROUP BY cat.coupon_activity_id,cat.template_id
   </select>
 
 

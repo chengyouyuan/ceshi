@@ -217,4 +217,30 @@ public class CouponInStoreGetedAndUsedVO {
     public void setExpire(Short expire) {
         this.expire = expire;
     }
+
+    @Override
+    public String toString() {
+        return "CouponInStoreGetedAndUsedVO{" +
+                "templeteId=" + templeteId +
+                ", storeId=" + storeId +
+                ", couponActivityId=" + couponActivityId +
+                ", totalCount=" + totalCount +
+                ", usedCount=" + usedCount +
+                ", reduceType=" + reduceType +
+                ", reduceAmt=" + reduceAmt +
+                ", cost=" + cost +
+                ", discountedAmt=" + discountedAmt +
+                ", discounted=" + discounted +
+                ", maxAmt=" + maxAmt +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", applyRuleType=" + applyRuleType +
+                ", applyId=" + applyId +
+                ", brands=" + brands +
+                ", products=" + products +
+                ", expire=" + expire +
+                ", logoUrl='" + logoUrl + '\'' +
+                ", pushCount=" + pushCount +
+                '}';
+    }
 }

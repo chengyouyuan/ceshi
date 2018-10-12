@@ -228,10 +228,10 @@
 
   <select id="selectActiveStatusByOrderNo" parameterType="com.winhxd.b2c.common.domain.promotion.model.CouponTemplateUse" resultType="java.lang.Integer">
     select
-    ca.activity_start
+    ca.activity_status
     from coupon_template_use ctu
     inner join coupon_activity_record car on ctu.send_id=car.send_id
     inner join coupon_activity ca on car.coupon_activity_id=ca.id
-    where ctu.order_no = #{orderNo} AND ctu.send_id = #{sendId} AND ctu.status = 1
+    where ctu.order_no = #{orderNo} AND ctu.send_id = #{sendId}
   </select>
 </mapper>

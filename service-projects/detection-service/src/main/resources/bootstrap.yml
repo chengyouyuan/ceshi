@@ -4,7 +4,7 @@ spring:
   profiles:
     active: dev
   application:
-    name: detection-service
+    name: b2c-detection-service
   cloud:
     config:
       label: detection

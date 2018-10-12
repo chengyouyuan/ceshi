@@ -405,7 +405,7 @@ public class CouponPushServiceImpl implements CouponPushService {
                 falg = isAvailable(couponPushCustomers);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("获取门店信息失败",e);
         }
 
         return falg;

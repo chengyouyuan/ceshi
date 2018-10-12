@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.feign.detection;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Date: 2018/8/30 13:58
  * @Description:
  */
-@FeignClient(value = "detection-service", fallbackFactory = detectionServiceClientFallBack.class)
+@FeignClient(value = ServiceName.DETECTION_SERVICE, fallbackFactory = detectionServiceClientFallBack.class)
 public interface DetectionServiceClient {
     /**
      * @param quartzJobCondition 查询条件对象

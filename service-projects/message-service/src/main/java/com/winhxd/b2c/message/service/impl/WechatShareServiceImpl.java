@@ -184,6 +184,7 @@ public class WechatShareServiceImpl implements WechatShareService {
                         QRCodeInfoVO codeInfoVO = new QRCodeInfoVO();
                         codeInfoVO.setMiniProgramCodeUrl(path);
                         codeInfoVO.setStoreName(storeUserInfoVO.getStoreName());
+                        codeInfoVO.setStoreShortName(null==storeUserInfoVO.getStoreShortName() ? storeUserInfoVO.getStoreName() : storeUserInfoVO.getStoreShortName());
                         return codeInfoVO;
                     }
                 }

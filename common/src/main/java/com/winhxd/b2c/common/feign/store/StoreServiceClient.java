@@ -167,6 +167,16 @@ public interface StoreServiceClient {
      */
     @RequestMapping(value = "/store/1069/v1/findStoreRegions", method = RequestMethod.POST)
     ResponseResult<List<Long>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions);
+
+    /**
+     * @Author: zhoufenglong
+     * @Description: 通过用户id查询绑定的门店信息(内部服务接口)
+     * @param: [customerUserId] 用户id
+     * @return： com.winhxd.b2c.common.domain.ResponseResult<com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO>
+     * @Date: 2018/10/12 13:18
+     */
+    @RequestMapping(value = "/store/1070/v1/queryStoreUserInfoByCustomerId", method = RequestMethod.GET)
+    ResponseResult<StoreUserInfoVO> queryStoreUserInfoByCustomerId(@RequestParam("customerUserId") Long customerUserId);
 }
 
 /**
@@ -262,6 +272,12 @@ class StoreServiceClientFallBack implements StoreServiceClient, FallbackFactory<
     @Override
     public ResponseResult<List<Long>> findStoreCustomerRegions(StoreCustomerRegionCondition conditions) {
         logger.error("StoreServiceClientFallBack -> findStoreCustomerRegions，错误信息为{}", throwable);
+        return new ResponseResult<>(BusinessCode.CODE_1001);
+    }
+
+    @Override
+    public ResponseResult<StoreUserInfoVO> queryStoreUserInfoByCustomerId(Long customerUserId) {
+        logger.error("StoreServiceClientFallBack -> queryStoreUserInfoByCustomerId，错误信息为{}", throwable);
         return new ResponseResult<>(BusinessCode.CODE_1001);
     }
 

@@ -68,7 +68,7 @@ public class LoginController {
         ResponseResult<Boolean> result = new ResponseResult<>(BusinessCode.CODE_OK);
 
         if(StringUtils.isBlank(userLoginDTO.getAccount()) || StringUtils.isBlank(userLoginDTO.getPassword())){
-            logger.error("{} - 参数无效，账号：{}", MODULE_NAME, userLoginDTO);
+            logger.info("{} - 参数无效，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1007);
             result.setData(false);
             return result;
@@ -76,7 +76,7 @@ public class LoginController {
 
         ResponseResult<SysUser> responseResult = userServiceClient.getByAccount(userLoginDTO.getAccount());
         if(responseResult.getCode() != BusinessCode.CODE_OK){
-            logger.error("{} - {}，账号：{}", MODULE_NAME, responseResult.getMessage(), userLoginDTO);
+            logger.info("{} - {}，账号：{}", MODULE_NAME, responseResult.getMessage(), userLoginDTO);
             result = new ResponseResult<>(responseResult.getCode());
             result.setData(false);
             return result;
@@ -84,7 +84,7 @@ public class LoginController {
 
         SysUser sysUser = responseResult.getData();
         if(null == sysUser){
-            logger.error("{} - 登录账号无效，账号：{}", MODULE_NAME, userLoginDTO);
+            logger.info("{} - 登录账号无效，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1004);
             result.setData(false);
             return result;
@@ -92,14 +92,14 @@ public class LoginController {
 
 
         if(!sysUser.getPassword().equals(userLoginDTO.getPassword())){
-            logger.error("{} - 登录密码错误，账号：{}", MODULE_NAME, userLoginDTO);
+            logger.info("{} - 登录密码错误，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1005);
             result.setData(false);
             return result;
         }
 
         if(sysUser.getStatus().equals(UserStatusEnum.DISABLED.getCode())){
-            logger.error("{} - 账号未启用，账号：{}", MODULE_NAME, userLoginDTO);
+            logger.info("{} - 账号未启用，账号：{}", MODULE_NAME, userLoginDTO);
             result = new ResponseResult<>(BusinessCode.CODE_1006);
             result.setData(false);
             return result;

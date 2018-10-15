@@ -461,7 +461,6 @@ public class ApiOpenStoreController {
             throw new BusinessException(BusinessCode.CODE_1002);
         }
 
-
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
 
         if(null != bindingCondition.getStoreId()){

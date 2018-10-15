@@ -1,10 +1,7 @@
 package com.winhxd.b2c.promotion.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.context.CustomerUser;
-import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
@@ -20,9 +17,6 @@ import com.winhxd.b2c.common.util.DateDealUtils;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponActivityService;
 import com.winhxd.b2c.promotion.service.CouponService;
-
-import io.swagger.annotations.ApiModelProperty;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

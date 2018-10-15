@@ -5,14 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.customer.condition.CustomerListByPhoneCondition;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoExportVO;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityAddCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponActivityCondition;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportCustomerVO;
+import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityImportStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityStoreVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponActivityVO;
 import com.winhxd.b2c.common.domain.store.condition.StoreListByKeywordsCondition;
@@ -167,6 +166,7 @@ public class CouponActivityController implements CouponActivityServiceClient {
         responseResult.setMessage("添加成功！");
         return responseResult;
     }
+
 
     /**
      *

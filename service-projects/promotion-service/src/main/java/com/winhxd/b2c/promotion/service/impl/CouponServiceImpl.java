@@ -38,10 +38,10 @@ import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
+import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Auther wangxiaoshun
@@ -257,7 +253,14 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
 
-            couponIsFastOverdue(couponVO);
+            // 优惠券是否快过期
+            if (!String.valueOf(CouponActivityEnum.ALREADY_USE.getCode()).equals(couponVO.getUseStatus())
+                    && !String.valueOf(CouponActivityEnum.UNTREAD.getCode()).equals(couponVO.getUseStatus())) {
+
+                if (couponIsFastOverdue(couponVO.getActivityEnd())) {
+                    couponVO.setUseStatus(String.valueOf(CouponActivityEnum.FAST_EXPIRED.getCode()));
+                }
+            }
         }
 
         return couponVOS;
@@ -296,22 +299,17 @@ public class CouponServiceImpl implements CouponService {
 
     /**
      * 优惠券是否快过期
-     * @param vo
+     * @param activityEnd
      */
-    private void couponIsFastOverdue(CouponVO vo) {
-        DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
-        try {
-            Date endDate = df.parse(vo.getActivityEnd());
-            long endTime = endDate.getTime();
+    private boolean couponIsFastOverdue(String activityEnd) {
+        if (StringUtils.isNotBlank(activityEnd)) {
+            long endTime = DateUtil.toDate(activityEnd, "yyyy.MM.dd").getTime();
             // 快过期时间为活动结束前三天
-            if (!String.valueOf(CouponActivityEnum.ALREADY_USE.getCode()).equals(vo.getUseStatus())
-                    && !String.valueOf(CouponActivityEnum.UNTREAD.getCode()).equals(vo.getUseStatus())
-                    && endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
-                vo.setUseStatus(String.valueOf(CouponActivityEnum.FAST_EXPIRED.getCode()));
+            if (endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
+                return true;
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
+        return false;
     }
 
     @Override

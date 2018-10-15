@@ -94,7 +94,7 @@
         <include refid="Base_Column_List"/>
         FROM
         store_user_info
-        where store_status &lt;&gt;
+        where store_status &lt;&gt; 0
         <if test="id != null">
             AND id = #{id}
         </if>

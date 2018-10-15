@@ -373,10 +373,12 @@ public class CouponPushServiceImpl implements CouponPushService {
             // 优惠券指定门店
             couponPushStores  = couponPushCustomerMapper.selectCouponPushStore(storeUserInfo.getId());
             couponPushResult.addAll(couponPushStores);
-            // 优惠券指定用户
         }
+        // 优惠券指定用户
         List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushCustomer(customerUser.getCustomerId());
-        couponPushResult.addAll(couponPushCustomers);
+        if (!CollectionUtils.isEmpty(couponPushCustomers)) {
+            couponPushResult.addAll(couponPushCustomers);
+        }
 
         return couponPushResult;
     }

@@ -302,5 +302,13 @@ public class StoreServiceController implements StoreServiceClient {
 		return responseResult;
 	}
 
+	@Override
+	public ResponseResult<StoreUserInfoVO> queryStoreUserInfoByCustomerId(Long customerUserId) {
+		ResponseResult<StoreUserInfoVO> responseResult = new ResponseResult<>();
+		StoreUserInfoVO storeInfo = storeService.findStoreUserInfoByCustomerId(customerUserId);
+		responseResult.setData(storeInfo);
+		return responseResult;
+	}
+
 
 }

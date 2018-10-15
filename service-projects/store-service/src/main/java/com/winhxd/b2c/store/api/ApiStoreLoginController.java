@@ -257,7 +257,7 @@ public class ApiStoreLoginController {
 
 		}
 		/**
-		 * 账号验证码登录
+		 * 账号验证码登录(暂时不用)
 		 */
 		else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_1.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
@@ -297,7 +297,7 @@ public class ApiStoreLoginController {
 			}
 		}
 		/**
-		 * 账号密码登录
+		 * 账号密码登录(暂时不用)
 		 */
 		else if (LOGIN_LAG_2.equals(storeUserInfoCondition.getLoginFlag())
 				&& LOGIN_PASSWORD_LAG_2.equals(storeUserInfoCondition.getLoginPasswordFlag())) {
@@ -401,7 +401,6 @@ public class ApiStoreLoginController {
 		Map<String, Object> map = result.getData();
 		//先更新门店信息，再返回给前端展示
 		storeUserInfo.setId(storeUserInfo.getId());
-		logger.info("aaa:"+map.toString());
 		storeUserInfo.setStoreName(Objects.toString(map.get("storeName"), ""));
 		storeUserInfo.setStoreAddress(Objects.toString(map.get("storeAddress"), ""));
 		storeUserInfo.setStoreRegionCode(Objects.toString(map.get("storeRegionCode"), ""));
@@ -420,8 +419,7 @@ public class ApiStoreLoginController {
 			@ApiResponse(code = BusinessCode.CODE_1001, message = "服务器内部异常"),
 			@ApiResponse(code = BusinessCode.CODE_1007, message = "参数无效"),
 			@ApiResponse(code = BusinessCode.CODE_100912, message = "验证码请求时长没有超过一分钟"),
-			@ApiResponse(code = BusinessCode.CODE_100922, message = "您还不是惠下单用户快去注册吧"),
-			@ApiResponse(code = BusinessCode.CODE_100910, message = "该微信号已绑定过账号") })
+			@ApiResponse(code = BusinessCode.CODE_100922, message = "您还不是惠下单用户快去注册吧")})
 	@RequestMapping(value = "store/security/1009/v1/sendVerification", method = RequestMethod.POST)
 	public ResponseResult<String> sendVerification(
 			@RequestBody StoreSendVerificationCodeCondition storeSendVerificationCodeCondition) {
@@ -442,85 +440,9 @@ public class ApiStoreLoginController {
 			logger.info("{} - , 您还不是惠下单用户快去注册吧");
 			throw new BusinessException(BusinessCode.CODE_100922);
 		} else {
-			/**
-			 * 用惠下单StoreCustomerId查询惠小店数据库是否已经存在
-			 */
-			StoreUserInfo info = new StoreUserInfo();
-			StoreUserInfo db = new StoreUserInfo();
-			/**
-			 * 如果是微信登录验证OpenId 是否绑定手机号是否与app传过来的一致
-			 */
-			if (LOGIN_LAG.equals(storeSendVerificationCodeCondition.getLoginFlag())) {
-				info.setStoreCustomerId(map.getStoreCustomerId());
-				db = storeLoginService.getStoreUserInfo(info);
-				if (db != null) {
-					/**
-					 * 更新数据库
-					 */
-					info.setId(db.getId());
-					info.setStoreMobile(map.getStoreMobile());
-					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
-					info.setStoreRegionCode(map.getStoreRegionCode());
-					info.setStorePicImg(map.getStorePicImg());
-					info.setUpdated(new Date());
-					storeLoginService.modifyStoreUserInfo(info);
-					result = sendVerificationCode(map.getStoreMobile());
-				} else {
-					/*
-					 * 插入数据库(暂时注解)
-					 */
-					/*info.setStoreCustomerId(map.getStoreCustomerId());
-					info.setStoreRegionCode(map.getStoreRegionCode());
-					info.setStorePicImg(map.getStorePicImg());
-					info.setShopOwnerImg(storeSendVerificationCodeCondition.getShopOwnerImg());
-					info.setCreated(new Date());
-					info.setStoreMobile(map.getStoreMobile());
-					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
-					info.setStoreStatus((short) 0);
-					info.setAppLoginStatus((short) 0);
-					info.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.saveStoreInfo(info);*/
-					result = sendVerificationCode(map.getStoreMobile());
-				}
-			}
-			/**
-			 * 不是微信登录
-			 */
-			else {
-				info.setStoreCustomerId(map.getStoreCustomerId());
-				db = storeLoginService.getStoreUserInfo(info);
-				/*
-				 * 插入数据库
-				 */
-				if (db == null) {
-					info.setCreated(new Date());
-					info.setStoreMobile(map.getStoreMobile());
-					info.setStoreCustomerId(map.getStoreCustomerId());
-					info.setStoreRegionCode(map.getStoreRegionCode());
-					info.setStorePicImg(map.getStorePicImg());
-					info.setSource(storeSendVerificationCodeCondition.getMobileInfo().getPlatform());
-					info.setStoreStatus((short) 0);
-					info.setAppLoginStatus((short) 0);
-					info.setToken(GeneratePwd.getRandomUUID());
-					storeLoginService.saveStoreInfo(info);
-					result = sendVerificationCode(map.getStoreMobile());
-				}
-				/**
-				 * 更新数据库
-				 */
-				else {
-					info.setId(db.getId());
-					info.setStoreMobile(map.getStoreMobile());
-					info.setStoreRegionCode(map.getStoreRegionCode());
-					info.setStorePicImg(map.getStorePicImg());
-					info.setUpdated(new Date());
-					storeLoginService.modifyStoreUserInfo(info);
-					result = sendVerificationCode(map.getStoreMobile());
-				}
-			}
-
+			result = sendVerificationCode(map.getStoreMobile());
+			return result;
 		}
-		return result;
 	}
 
 	/**

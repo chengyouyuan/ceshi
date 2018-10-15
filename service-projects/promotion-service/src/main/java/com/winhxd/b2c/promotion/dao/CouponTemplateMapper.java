@@ -1,5 +1,6 @@
 package com.winhxd.b2c.promotion.dao;
 
+import com.github.pagehelper.Page;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.model.CouponTemplate;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponInStoreGetedAndUsedVO;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface CouponTemplateMapper {
     int deleteByPrimaryKey(Long id);
@@ -29,8 +31,8 @@ public interface CouponTemplateMapper {
 
     int updateCouponTemplateToValid(@Param("id") Long id, @Param("updatedBy") Long updateBy, @Param("updated") Date updated, @Param("updatedByName") String updateByName);
 
-    List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage(@RequestParam("storeId") Long storeId);
+    List<CouponInStoreGetedAndUsedVO> selectCouponInStoreGetedAndUsedPage( Long storeId);
 
-    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(@RequestParam("storeId") Long storeId);
+    List<CouponInStoreGetedAndUsedVO> selectCouponGetedAndUsedCout(Map<String,Object> paraMap);
 
 }

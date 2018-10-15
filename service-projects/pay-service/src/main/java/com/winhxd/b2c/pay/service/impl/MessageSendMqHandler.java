@@ -2,7 +2,6 @@ package com.winhxd.b2c.pay.service.impl;
 
 import com.winhxd.b2c.pay.service.VerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.winhxd.b2c.common.domain.order.model.OrderInfo;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;

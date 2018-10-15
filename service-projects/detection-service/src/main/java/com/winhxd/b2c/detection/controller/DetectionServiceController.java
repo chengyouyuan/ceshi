@@ -97,7 +97,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
+    public ResponseResult<Integer> addQuartzJob(@RequestBody QuartzJobVo quartzJobVo) {
         ResponseResult responseResult = new ResponseResult();
         try {
             Long id = Sequence.uniqId();
@@ -127,7 +127,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult deleteQuartzJob(@RequestBody Long quartzJobId) {
+    public ResponseResult<Void> deleteQuartzJob(@RequestBody Long quartzJobId) {
         ResponseResult responseResult = new ResponseResult<>();
         try {
             QuartzJob job = new QuartzJob();
@@ -144,7 +144,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
+    public ResponseResult<PagedList<QuartzJobResult>> findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition) {
         ResponseResult<PagedList<QuartzJobResult>> responseResult = new ResponseResult<PagedList<QuartzJobResult>>();
         try {
             PagedList<QuartzJobResult> page = quartzJobService.findQuartzJobResultPageList(quartzJobCondition);
@@ -157,7 +157,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult addUser(@RequestBody DetectionUser user) {
+    public ResponseResult<Integer> addUser(@RequestBody DetectionUser user) {
         ResponseResult responseResult = new ResponseResult();
         try {
             Long id = Sequence.uniqId();
@@ -178,7 +178,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult addDbSource(@RequestBody DbSource dbSource) {
+    public ResponseResult<Integer> addDbSource(@RequestBody DbSource dbSource) {
         ResponseResult responseResult = new ResponseResult();
         try {
             Long id = Sequence.uniqId();
@@ -199,7 +199,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult resumeQuartzJob(@RequestBody Long quartzJobId) {
+    public ResponseResult<Void> resumeQuartzJob(@RequestBody Long quartzJobId) {
         ResponseResult responseResult = new ResponseResult<>();
         try {
             QuartzJob job = new QuartzJob();
@@ -216,7 +216,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult pauseQuartzJob(@RequestBody Long quartzJobId) {
+    public ResponseResult<Void> pauseQuartzJob(@RequestBody Long quartzJobId) {
         ResponseResult responseResult = new ResponseResult<>();
         try {
             QuartzJob job = new QuartzJob();
@@ -233,7 +233,7 @@ public class DetectionServiceController implements DetectionServiceClient {
     }
 
     @Override
-    public ResponseResult findErrorApiPageList() {
+    public ResponseResult<Void> findErrorApiPageList() {
         return ZipkinApi.findErrorApiPageList();
     }
 }

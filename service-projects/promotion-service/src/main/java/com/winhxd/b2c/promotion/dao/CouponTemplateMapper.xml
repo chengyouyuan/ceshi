@@ -498,7 +498,7 @@
     LEFT JOIN coupon_grade_detail f on c.grade_id = f.id
     WHERE a.store_id = #{storeId} and h.activity_status= 1
     GROUP BY b.coupon_activity_id,templeteId
-    ORDER BY expire DESC,startTime DESC
+    ORDER BY expire DESC,b.coupon_activity_id DESC,b.template_id DESC
   </select>
 
   <!-- 获取门店优惠券使用情况 领取情况统计数量 -->
@@ -509,36 +509,40 @@
     <result column="usedCount" jdbcType="INTEGER" property="usedCount" />
   </resultMap>
 
-  <select id="selectCouponGetedAndUsedCout" parameterType="java.lang.Long" resultMap="couponGetedAndUsedCoutMap">
+  <select id="selectCouponGetedAndUsedCout" parameterType="java.util.Map" resultMap="couponGetedAndUsedCoutMap">
     SELECT
-        (
-            SELECT
-                COUNT(car.id)
-            FROM
-                coupon_activity_record car
-            WHERE
-                car.coupon_activity_id = ca.id
-        ) AS  totalCount,
-        (
-            SELECT
-                COUNT(cts.id)
-            FROM
-                coupon_activity_record car
-            LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
-            WHERE
-                cts. STATUS = '1'
-            AND car.coupon_activity_id = ca.id
-        ) as usedCount,
+		IFNULL(c.totalCount,0) AS totalCount,
+        IFNULL(s.usedCount,0)AS usedCount,
         ca.id AS couponActivityId,
         cat.template_id as templeteId
     FROM
         coupon_activity ca
     LEFT JOIN coupon_activity_template cat ON cat.coupon_activity_id = ca.id and cat.`status`= 1
-    LEFT JOIN coupon_activity_store_customer d on d.coupon_activity_template_id = cat.id AND d.store_id = #{storeId}
+    LEFT JOIN coupon_activity_store_customer d on d.coupon_activity_template_id = cat.id AND d.store_id =#{storeId}
+		LEFT JOIN (SELECT COUNT(DISTINCT car.id) totalCount,car.coupon_activity_id AS couponActivityId,car.template_id templeteId
+							 FROM coupon_activity_record car
+							 LEFT JOIN coupon_template_send cts ON cts.id = car.send_id
+               WHERE car.customer_id IN
+                <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+              GROUP BY car.coupon_activity_id,cts.template_id) c
+		ON c.couponActivityId=ca.id and c.templeteId=cat.template_id
+	  LEFT JOIN (SELECT COUNT(DISTINCT cts.id) usedCount,car.coupon_activity_id couponActivityId,car.template_id templeteId
+							 FROM coupon_activity_record car
+							 LEFT JOIN coupon_template_use cts ON car.send_id=cts.send_id
+							 WHERE cts. STATUS = '1'  AND car.customer_id IN
+                            <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+                                #{item}
+                            </foreach>
+                          GROUP BY car.coupon_activity_id,cts.template_id) s
+
+	  ON s.couponActivityId=ca.id and s.templeteId=cat.template_id
+
     WHERE 1=1
     AND ca.`status` = 1
     AND ca.activity_status = 1
-    GROUP BY cat.coupon_activity_id,templeteId
+    GROUP BY cat.coupon_activity_id,cat.template_id
   </select>
 
 

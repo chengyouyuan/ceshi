@@ -3,6 +3,7 @@ package com.winhxd.b2c.promotion.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.cache.Lock;
 import com.winhxd.b2c.common.cache.RedisLock;
@@ -40,6 +41,7 @@ import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Auther wangxiaoshun
@@ -560,7 +563,10 @@ public class CouponServiceImpl implements CouponService {
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
-            short couponStatus = activeStatus == 1 ?CouponActivityEnum.UNTREAD.getCode():CouponActivityEnum.INVALYD.getCode();
+            logger.info("订单号"+condition.getOrderNo()+"退优惠券 活动状态："+activeStatus);
+            short couponStatus = activeStatus.intValue() == 3 ?CouponActivityEnum.INVALYD.getCode():CouponActivityEnum.UNTREAD.getCode();
+            logger.info("订单号"+condition.getOrderNo()+"退优惠券 退回状态："+couponStatus);
+
 
             couponTemplateUse.setStatus(couponStatus);
             couponTemplateUseMapper.updateByPrimaryKeySelective(couponTemplateUse);
@@ -1016,22 +1022,33 @@ public class CouponServiceImpl implements CouponService {
         Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
         PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
         //查询优惠券列表
-        List<CouponInStoreGetedAndUsedVO> list = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
-        //查询使用每张优惠券的使用数量和领取数量
-        List<CouponInStoreGetedAndUsedVO> countList = couponTemplateMapper.selectCouponGetedAndUsedCout(storeId);
+
+        List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
+
+        ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
+
+        List<CouponInStoreGetedAndUsedVO> countList = null;
+        if (!CollectionUtils.isEmpty(customers.getData())) {
+            HashMap<String, Object> paraMap = Maps.newHashMap();
+            paraMap.put("storeId",storeId);
+            paraMap.put("list",customers.getData());
+            //查询使用每张优惠券的使用数量和领取数量
+            countList = couponTemplateMapper.selectCouponGetedAndUsedCout(paraMap);
+        }
         // 获取优惠券推给用户总数
         int pushCount = getPushCount(storeId);
 
 
         //将数量拼接到列表
-        if(list!=null){
-            for(int i=0;i<list.size();i++){
-                CouponInStoreGetedAndUsedVO vo = list.get(i);
+        if(resultList!=null){
+            for(int i=0;i<resultList.size();i++){
+                CouponInStoreGetedAndUsedVO vo = resultList.get(i);
                 if(countList!=null){
                     for(int j=0;j<countList.size();j++){
                         if(vo.getCouponActivityId().equals(countList.get(j).getCouponActivityId()) && vo.getTempleteId().equals(countList.get(j).getTempleteId())){
                             vo.setTotalCount(countList.get(j).getTotalCount());
                             vo.setUsedCount(countList.get(j).getUsedCount());
+                            break;
                         }
                     }
                 }else{
@@ -1042,9 +1059,10 @@ public class CouponServiceImpl implements CouponService {
                 vo.setPushCount(pushCount);
             }
         }
-        List<CouponInStoreGetedAndUsedVO> finalList = this.getCouponApplyDetail(list);
+        this.getCouponApplyDetail(resultList);
 
-        pagedList.setData(finalList);
+
+        pagedList.setData(resultList);
         pagedList.setPageNo(codition.getPageNo());
         pagedList.setPageSize(codition.getPageSize());
         pagedList.setTotalRows(page.getTotal());
@@ -1068,6 +1086,11 @@ public class CouponServiceImpl implements CouponService {
         return pushCount;
     }
 
+    /**
+     * 查询门店下所属的用户
+     * @param storeId
+     * @return
+     */
     private ResponseResult<List<Long>> getCustomerListByStoreId(Long storeId) {
         StoreCustomerRegionCondition regionCondition = new StoreCustomerRegionCondition();
         ArrayList<String> storeUserInfoIds = Lists.newArrayList();
@@ -1177,7 +1200,7 @@ public class CouponServiceImpl implements CouponService {
      * @param couponVOS
      * @return
      */
-    public List<CouponInStoreGetedAndUsedVO> getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
+    public void getCouponApplyDetail(List<CouponInStoreGetedAndUsedVO> couponVOS){
         for(CouponInStoreGetedAndUsedVO vo : couponVOS){
             if(vo.getApplyRuleType()!=null && vo.getApplyRuleType().equals(CouponApplyEnum.PRODUCT_COUPON.getCode())){
                 List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(vo.getApplyId());
@@ -1223,7 +1246,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
         }
-        return couponVOS;
+
     }
 
 

@@ -69,7 +69,7 @@ public class ThirdPartyVerifyTask {
                             throw new BusinessException(responseResult.getCode(), responseResult.getMessage());
                         }
                     } catch (Exception e) {
-                        log.error(e.getMessage());
+                        log.error(e.getMessage(),e);
                         errorCount++;
                     }
                 }

@@ -4,29 +4,13 @@ spring:
   profiles:
     active: dev
   application:
-    name: detection-service
+    name: b2c-detection-service
   cloud:
     config:
       label: detection
       discovery:
         enabled: true
         service-id: b2c-config-server
-  datasource:
-    b2c-detection:
-     url: jdbc:mysql://192.168.60.115:3306/b2c_detection?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-     username: b2c_detec_user
-     password: 0f4MI7BVDhIsyhJX
-     driver-class-name: com.mysql.jdbc.Driver
-     type: com.zaxxer.hikari.HikariDataSource
-     # hikari
-     hikari:
-        minimum-idle: 5
-        maximum-pool-size: 30
-        idle-timeout: 180000
-        auto-commit: true
-        max-lifetime: 1800000
-        connection-timeout: 30000
-        connection-test-query: select 1
   http:
     encoding:
      charset:UTF-8

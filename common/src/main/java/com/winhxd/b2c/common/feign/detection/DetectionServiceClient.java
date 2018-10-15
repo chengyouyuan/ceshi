@@ -1,6 +1,7 @@
 package com.winhxd.b2c.common.feign.detection;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.constant.ServiceName;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.detection.condition.QuartzJobCondition;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Date: 2018/8/30 13:58
  * @Description:
  */
-@FeignClient(value = "detection-service", fallbackFactory = detectionServiceClientFallBack.class)
+@FeignClient(value = ServiceName.DETECTION_SERVICE, fallbackFactory = detectionServiceClientFallBack.class)
 public interface DetectionServiceClient {
     /**
      * @param quartzJobCondition 查询条件对象
@@ -30,40 +31,40 @@ public interface DetectionServiceClient {
      * @date 2018/8/30 14:59
      * @Description 根据条件查询定时任务列表页数据，分页查询
      */
-    @RequestMapping(value = "/detection/service/v1/findQuartzJobPageList", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9001/v1/findQuartzJobPageList", method = RequestMethod.POST)
     ResponseResult<PagedList<QuartzJobVo>> findQuartzJobPageList(@RequestBody QuartzJobCondition quartzJobCondition);
 
-    @RequestMapping(value = "/detection/service/v1/findQuartzJobVoById", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9002/v1/findQuartzJobVoById", method = RequestMethod.POST)
     ResponseResult<QuartzJobVo> findQuartzJobVoById(@RequestBody Long quartzJobId);
 
-    @RequestMapping(value = "/detection/service/v1/addQuartzJob", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9003/v1/addQuartzJob", method = RequestMethod.POST)
     ResponseResult addQuartzJob(@RequestBody QuartzJobVo quartzJobVo);
 
-    @RequestMapping(value = "/detection/service/v1/deleteQuartzJob", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9004/v1/deleteQuartzJob", method = RequestMethod.POST)
     ResponseResult deleteQuartzJob(@RequestBody Long quartzJobId);
 
-    @RequestMapping(value = "/detection/service/v1/findQuartzJobResultPageList", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9005/v1/findQuartzJobResultPageList", method = RequestMethod.POST)
     ResponseResult findQuartzJobResultPageList(@RequestBody QuartzJobCondition quartzJobCondition);
 
-    @RequestMapping(value = "/detection/service/v1/findUserPageList", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9006/v1/findUserPageList", method = RequestMethod.POST)
     ResponseResult<PagedList<DetectionUser>> findUserPageList();
 
-    @RequestMapping(value = "/detection/service/v1/findDbSourcePageList", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9007/v1/findDbSourcePageList", method = RequestMethod.POST)
     ResponseResult<PagedList<DbSource>> findDbSourcePageList();
 
-    @RequestMapping(value = "/detection/service/v1/addUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9008/v1/addUser", method = RequestMethod.POST)
     ResponseResult addUser(@RequestBody DetectionUser user);
 
-    @RequestMapping(value = "/detection/service/v1/addDbSource", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9009/v1/addDbSource", method = RequestMethod.POST)
     ResponseResult addDbSource(@RequestBody DbSource dbSource);
 
-    @RequestMapping(value = "/detection/service/v1/resumeQuartzJob", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9010/v1/resumeQuartzJob", method = RequestMethod.POST)
     ResponseResult resumeQuartzJob(@RequestBody Long quartzJobId);
 
-    @RequestMapping(value = "/detection/service/v1/pauseQuartzJob", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9011/v1/pauseQuartzJob", method = RequestMethod.POST)
     ResponseResult pauseQuartzJob(@RequestBody Long quartzJobId);
 
-    @RequestMapping(value = "/detection/service/v1/findErrorApiPageList", method = RequestMethod.POST)
+    @RequestMapping(value = "/detection/9012/v1/findErrorApiPageList", method = RequestMethod.POST)
     ResponseResult findErrorApiPageList();
 }
 

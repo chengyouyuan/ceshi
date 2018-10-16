@@ -8,4 +8,5 @@ public class SysConstant {
 
     public static final String TOKEN_NAME = "token";
 
+    public static final String APP_CHECK_VERSION = "version";
 }

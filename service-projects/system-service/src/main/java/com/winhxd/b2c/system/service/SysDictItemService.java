@@ -13,7 +13,7 @@ public interface SysDictItemService {
     /**
      * 根据字典项的值检查是否存在该字典项
      *
-     * @param sysDictItem
+     * @param appVersionCondition
      * @return int
      * @author chenyanqi
      * @date 2018/10/16

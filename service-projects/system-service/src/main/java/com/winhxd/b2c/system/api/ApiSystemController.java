@@ -3,11 +3,13 @@ package com.winhxd.b2c.system.api;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.system.dict.condition.AppVersionCondition;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.service.SysDictItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,15 @@ public class ApiSystemController {
     public ResponseResult<Integer> appSubmitCheckedVersion(@RequestBody AppVersionCondition appVersionCondition) {
         LOGGER.info("/api-system/3040/v1/appSubmitCheckedVersion接口开始--{}", appVersionCondition);
         ResponseResult<Integer> result = new ResponseResult<Integer>();
+        if (appVersionCondition == null) {
+            LOGGER.info("参数为空");
+            throw new BusinessException(BusinessCode.CODE_610030);
+        }
+        String value = appVersionCondition.getAppVersion();
+        if (StringUtils.isEmpty(value)) {
+            LOGGER.info("app版本号为空");
+            throw new BusinessException(BusinessCode.CODE_3040001);
+        }
         Integer res = sysDictItemService.checkDictItem(appVersionCondition);
         result.setData(res);
         return result;

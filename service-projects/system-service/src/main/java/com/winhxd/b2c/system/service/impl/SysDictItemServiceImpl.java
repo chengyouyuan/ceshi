@@ -1,13 +1,10 @@
 package com.winhxd.b2c.system.service.impl;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.SysConstant;
 import com.winhxd.b2c.common.domain.system.dict.condition.AppVersionCondition;
 import com.winhxd.b2c.common.domain.system.dict.model.SysDictItem;
-import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.dao.SysDictItemMapper;
 import com.winhxd.b2c.system.service.SysDictItemService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +24,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     @Override
     public Integer checkDictItem(AppVersionCondition appVersionCondition) {
         AtomicReference<Integer> result = new AtomicReference<>(1);
-        if (appVersionCondition == null) {
-            LOGGER.info("参数为空");
-            throw new BusinessException(BusinessCode.CODE_610030);
-        }
         String value = appVersionCondition.getAppVersion();
-        if (StringUtils.isEmpty(value)) {
-            LOGGER.info("字典项的值为空");
-            throw new BusinessException(BusinessCode.CODE_3040001);
-        }
         List<SysDictItem> sysDictItems = sysDictItemMapper.selectByDictCode(SysConstant.APP_CHECK_VERSION);
         if (sysDictItems.size() == 0) {
             return 1;

@@ -37,13 +37,13 @@ pagehelper:
     params: count=countSql
 
 mail:
-  username: m17610075813@163.com
-  password: a872473510
-  senderNick: admin
+  username: huistore_warning@winchannel.net
+  password: Winchannel2018
+  senderNick: 惠小店监控中心
   smtp:
-    host: smtp.163.com
+    host: smtp.winchannel.net
     port: 25
     auth: true
-    timeout: 3000
+    timeout: 5000
   transport:
     protocol: smtp

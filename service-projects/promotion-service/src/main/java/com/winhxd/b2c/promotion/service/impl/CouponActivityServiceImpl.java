@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -58,35 +59,18 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     public List<CouponActivityVO> findCouponActivity(CouponActivityCondition condition) {
         if(condition.getDateInterval() != null){
             if(condition.getDateInterval().getStart() != null){
-                Calendar createdS = Calendar.getInstance();
-                createdS.setTime(condition.getDateInterval().getStart());
-                createdS.set(Calendar.HOUR_OF_DAY, 0);
-                createdS.set(Calendar.MINUTE, 0);
-                createdS.set(Calendar.SECOND, 0);
-                createdS.set(Calendar.MILLISECOND, 0);
-                Date createdStart = createdS.getTime();
-                condition.setCreatedStart(createdStart);
+                condition.setCreatedStart(DateDealUtils.getStartDate(condition.getDateInterval().getStart()));
             }
             if(condition.getDateInterval().getEnd() != null){
-                Calendar createdE = Calendar.getInstance();
-                createdE.setTime(condition.getDateInterval().getEnd());
-                createdE.set(Calendar.HOUR_OF_DAY, 23);
-                createdE.set(Calendar.MINUTE, 59);
-                createdE.set(Calendar.SECOND, 59);
-                createdE.set(Calendar.MILLISECOND, 59);
-                Date createdEnd  =createdE.getTime();
-                condition.setCreatedEnd(createdEnd);
-
+                condition.setCreatedEnd(DateDealUtils.getEndDate(condition.getDateInterval().getEnd()));
             }
         }
 
         List<CouponActivityVO> activity = couponActivityMapper.selectCouponActivity(condition);
-        if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(activity)) {
-        	List<Long> activityIds=new ArrayList<>();
-        	for (CouponActivityVO couponActivityVO : activity) {
-				activityIds.add(couponActivityVO.getId());
-			}
-        	//查询门店数量
+        if (!CollectionUtils.isEmpty(activity)) {
+
+            List<Long> activityIds = activity.stream().map(ac -> ac.getId()).collect(Collectors.toList());
+            //查询门店数量
         	//获取领取、使用、撤销数量
         	List<Map<String, Object>> getNumList=couponActivityMapper.selectNums("",activityIds);
         	Map<Long, Object> getNumMap=getActivityMap(getNumList);
@@ -122,7 +106,7 @@ public class CouponActivityServiceImpl implements CouponActivityService {
 
 	public Map<Long, Object> getActivityMap(List<Map<String, Object>> list) {
 		Map<Long, Object> activityMap = new HashMap<>();
-		if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(list)) {
+		if (!CollectionUtils.isEmpty(list)) {
 			for (Map<String, Object> map : list) {
 				Long activityId=(Long) map.get("activityId");
 				Long value=(Long) map.get("numValue");
@@ -338,21 +322,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Override
     @Transactional
     public void updateCouponActivity(CouponActivityAddCondition condition) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(condition.getActivityStart());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+     
+        Date activityStart = DateDealUtils.getStartDate(condition.getActivityStart());
+        Date activityEnd = DateDealUtils.getEndDate(condition.getActivityEnd());
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(condition.getActivityEnd());
-        c.set(Calendar.HOUR_OF_DAY, 23);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
-        c.set(Calendar.MILLISECOND, 59);
-        Date activityStart = calendar.getTime();
-        Date activityEnd  =c.getTime();
         //更新CouponActivity
         CouponActivity couponActivity = new CouponActivity();
         couponActivity.setId(condition.getId());
@@ -408,21 +381,10 @@ public class CouponActivityServiceImpl implements CouponActivityService {
             couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-                Calendar couponS = Calendar.getInstance();
-                couponS.setTime(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                couponS.set(Calendar.HOUR_OF_DAY, 0);
-                couponS.set(Calendar.MINUTE, 0);
-                couponS.set(Calendar.SECOND, 0);
-                couponS.set(Calendar.MILLISECOND, 0);
-
-                Calendar couponE = Calendar.getInstance();
-                couponE.setTime(condition.getCouponActivityTemplateList().get(i).getEndTime());
-                couponE.set(Calendar.HOUR_OF_DAY, 23);
-                couponE.set(Calendar.MINUTE, 59);
-                couponE.set(Calendar.SECOND, 59);
-                couponE.set(Calendar.MILLISECOND, 59);
-                Date couponStart = couponS.getTime();
-                Date couponEnd  =couponE.getTime();
+                
+                Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
+                Date couponEnd = DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
+                
                 couponActivityTemplate.setStartTime(couponStart);
                 couponActivityTemplate.setEndTime(couponEnd);
                 couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());

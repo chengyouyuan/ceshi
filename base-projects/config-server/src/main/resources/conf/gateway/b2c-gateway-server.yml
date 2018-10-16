@@ -59,3 +59,12 @@ spring:
           args:
             name: promotion-fallback
             fallbackUri: forward:/fallback
+      # system-service
+      - uri: lb://b2c-system-service
+        predicates:
+        - Path=/api-system/**
+        filters:
+        - name: Hystrix
+          args:
+            name: system-fallback
+            fallbackUri: forward:/fallback

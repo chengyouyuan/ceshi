@@ -174,6 +174,8 @@ public final class BusinessCode {
     public static final int CODE_3020001 = 3020001;
     @ApiModelProperty("字典编码已被使用")
     public static final int CODE_303001 = 303001;
+    @ApiModelProperty("字典项的值为空")
+    public static final int CODE_3040001 = 3040001;
     @ApiModelProperty("支付中，请勿重复支付")
     public static final int CODE_3400900 = 3400900;
     @ApiModelProperty("生产签名失败")

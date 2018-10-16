@@ -387,23 +387,23 @@ public class CouponPushServiceImpl implements CouponPushService {
 
     @Override
     public boolean getAvailableCoupon(Long customerId) {
+        boolean flag = false;
+
         //指定具体人
         List<CouponPushVO> couponPushVOS = couponPushCustomerMapper.selectCouponPushCustomer(customerId);
-
-        boolean falg = false;
-        falg = isAvailable(couponPushVOS);
-        if(falg){
-            return falg;
+        flag = isAvailable(couponPushVOS,customerId);
+        if(flag){
+            return flag;
         }
 
         //指定门店
         ResponseResult<StoreUserInfoVO> result = storeServiceClient.queryStoreUserInfoByCustomerId(customerId);
         if (result.getData() != null) {
             List<CouponPushVO> couponPushCustomers = couponPushCustomerMapper.selectCouponPushStore(result.getData().getId());
-            falg = isAvailable(couponPushCustomers);
+            flag = isAvailable(couponPushCustomers,customerId);
         }
 
-        return falg;
+        return flag;
     }
 
     @Override
@@ -411,35 +411,34 @@ public class CouponPushServiceImpl implements CouponPushService {
         return couponPushCustomerMapper.getCustomerIdByActiveId(activeId);
     }
 
-    private boolean isAvailable(List<CouponPushVO> couponPushVOS) {
-        boolean falg = false;
+    private boolean isAvailable(List<CouponPushVO> couponPushVOS,Long customerId) {
+        boolean flag = false;
         //不可领取活动ID集合
         List<Long> unActiveIds = new ArrayList<>();
         CouponActivityRecord car = new CouponActivityRecord();
+        car.setCustomerId(customerId);
+
         for(CouponPushVO cpv : couponPushVOS){
             if(unActiveIds.contains(cpv.getActivityId())){
                 continue;
-            }else{
-                car.setCouponActivityId(cpv.getActivityId());
-                car.setCustomerId(UserContext.getCurrentCustomerUser().getCustomerId());
-                Integer count = couponActivityRecordMapper.checkCustomerJoinActive(car);
-                if(count>0){
-                    //已参加过此活动
-                    unActiveIds.add(cpv.getActivityId());
-                    continue;
-                }else {
-                    Long usedNum = couponPushCustomerMapper.countUsedCouponNum(cpv);
-                    if((cpv.getCouponNum() == null ? 0:cpv.getCouponNum()) > usedNum){
-                        //优惠券数量大于 已使用数量
-                        falg =  true;
-                        break;
-                    }else {
-                        unActiveIds.add(cpv.getActivityId());
-                    }
-                }
+            }
+            car.setCouponActivityId(cpv.getActivityId());
+            Integer count = couponActivityRecordMapper.checkCustomerJoinActive(car);
+            if(count>0){
+                //已参加过此活动
+                unActiveIds.add(cpv.getActivityId());
+                continue;
+            }
+            Long usedNum = couponPushCustomerMapper.countUsedCouponNum(cpv);
+            if((cpv.getCouponNum() == null ? 0:cpv.getCouponNum()) > usedNum){
+                //优惠券数量大于 已使用数量
+                flag =  true;
+                break;
+            } else {
+                unActiveIds.add(cpv.getActivityId());
             }
         }
-        return falg;
+        return flag;
     }
 
 }

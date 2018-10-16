@@ -124,17 +124,14 @@ public class CouponActivityServiceImpl implements CouponActivityService {
     @Transactional
     public void saveCouponActivity(CouponActivityAddCondition condition) {
 
-        Date activityStart = DateDealUtils.getStartDate(condition.getActivityStart());
-        Date activityEnd = DateDealUtils.getEndDate(condition.getActivityEnd());
-
-        //CouponActivity
         CouponActivity couponActivity = new CouponActivity();
+
         couponActivity.setName(condition.getName());
         couponActivity.setCode(condition.getCode());
         couponActivity.setExolian(condition.getExolian());
         couponActivity.setRemarks(condition.getRemarks());
-        couponActivity.setActivityStart(activityStart);
-        couponActivity.setActivityEnd(activityEnd);
+        couponActivity.setActivityStart(DateDealUtils.getStartDate(condition.getActivityStart()));
+        couponActivity.setActivityEnd(DateDealUtils.getEndDate(condition.getActivityEnd()));
         couponActivity.setActivityStatus(CouponActivityEnum.ACTIVITY_OPEN.getCode());
         couponActivity.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
         couponActivity.setCreated(new Date());

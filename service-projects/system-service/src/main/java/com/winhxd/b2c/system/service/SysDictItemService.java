@@ -1,6 +1,6 @@
 package com.winhxd.b2c.system.service;
 
-import com.winhxd.b2c.common.domain.system.dict.condition.SysDictItemCondition;
+import com.winhxd.b2c.common.domain.system.dict.condition.AppVersionCondition;
 
 /**
  * 字典项数据管理服务
@@ -18,6 +18,6 @@ public interface SysDictItemService {
      * @author chenyanqi
      * @date 2018/10/16
      */
-    Integer checkDictItem(SysDictItemCondition sysDictItemCondition);
+    Integer checkDictItem(AppVersionCondition appVersionCondition);
 
 }

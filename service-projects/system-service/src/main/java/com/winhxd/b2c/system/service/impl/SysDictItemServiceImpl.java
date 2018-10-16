@@ -2,7 +2,7 @@ package com.winhxd.b2c.system.service.impl;
 
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.SysConstant;
-import com.winhxd.b2c.common.domain.system.dict.condition.SysDictItemCondition;
+import com.winhxd.b2c.common.domain.system.dict.condition.AppVersionCondition;
 import com.winhxd.b2c.common.domain.system.dict.model.SysDictItem;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.dao.SysDictItemMapper;
@@ -25,13 +25,13 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     private SysDictItemMapper sysDictItemMapper;
 
     @Override
-    public Integer checkDictItem(SysDictItemCondition sysDictItemCondition) {
+    public Integer checkDictItem(AppVersionCondition appVersionCondition) {
         AtomicReference<Integer> result = new AtomicReference<>(1);
-        if (sysDictItemCondition == null) {
+        if (appVersionCondition == null) {
             LOGGER.info("参数为空");
             throw new BusinessException(BusinessCode.CODE_610030);
         }
-        String value = sysDictItemCondition.getAppVersion();
+        String value = appVersionCondition.getAppVersion();
         if (StringUtils.isEmpty(value)) {
             LOGGER.info("字典项的值为空");
             throw new BusinessException(BusinessCode.CODE_3040001);

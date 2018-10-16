@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "System Controller", tags = "系统管理")
+@Api(tags = "系统管理")
 @RestController
 @RequestMapping(value = "/api-system/system", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ApiSystemController {

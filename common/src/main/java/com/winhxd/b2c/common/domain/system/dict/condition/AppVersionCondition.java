@@ -5,11 +5,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("字典项")
+@ApiModel("app版本号")
 @Data
-public class SysDictItemCondition extends ApiCondition {
+public class AppVersionCondition extends ApiCondition {
 
-    @ApiModelProperty("值")
+    @ApiModelProperty("app版本号")
     private String appVersion;
 
 }

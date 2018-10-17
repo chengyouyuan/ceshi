@@ -42,8 +42,14 @@ public class SysDictServiceImpl implements SysDictService {
         int result = sysDictMapper.insertSelective(sysDict);
 
         List<SysDictItem> items = sysDict.getItems();
-        items = items.stream().map(item -> {item.setDictId(sysDict.getId());return item;}).collect(Collectors.toList());
-        sysDictItemMapper.insertBatch(items);
+        if (!CollectionUtils.isEmpty(items)) {
+            items = items.stream().map(
+                    item -> {
+                        item.setDictId(sysDict.getId());
+                        return item;
+                    }).collect(Collectors.toList());
+            sysDictItemMapper.insertBatch(items);
+        }
         return result;
     }
 

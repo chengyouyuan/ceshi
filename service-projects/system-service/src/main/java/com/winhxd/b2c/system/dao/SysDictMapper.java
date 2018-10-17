@@ -19,4 +19,7 @@ public interface SysDictMapper {
     int updateByPrimaryKey(SysDict record);
 
     List<SysDict> selectSysDict(SysDictCondition condition);
+
+    List<SysDict> selectSysDictExpectId(SysDict sysDict);
+
 }

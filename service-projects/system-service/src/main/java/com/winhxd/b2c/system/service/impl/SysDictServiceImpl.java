@@ -2,16 +2,21 @@ package com.winhxd.b2c.system.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.system.dict.condition.SysDictCondition;
 import com.winhxd.b2c.common.domain.system.dict.model.SysDict;
 import com.winhxd.b2c.common.domain.system.dict.model.SysDictItem;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.system.dao.SysDictItemMapper;
 import com.winhxd.b2c.system.dao.SysDictMapper;
 import com.winhxd.b2c.system.service.SysDictService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +28,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SysDictServiceImpl implements SysDictService {
+
+    private static final Logger logger = LoggerFactory.getLogger(SysDictServiceImpl.class);
 
     @Autowired
     private SysDictMapper sysDictMapper;
@@ -43,6 +50,13 @@ public class SysDictServiceImpl implements SysDictService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int modify(SysDict sysDict) {
+        //字典组修改前校验编码是否重复
+        List<SysDict> sysDicts = sysDictMapper.selectSysDictExpectId(sysDict);
+        sysDicts = sysDicts.stream().filter(dict -> dict.getCode().equals(sysDict.getCode())).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(sysDicts)) {
+            logger.info("修改字典组时，编码重复");
+            throw new BusinessException(BusinessCode.CODE_303001);
+        }
         int result = sysDictMapper.updateByPrimaryKeySelective(sysDict);
 
         sysDictItemMapper.deleteByDictId(sysDict.getId());

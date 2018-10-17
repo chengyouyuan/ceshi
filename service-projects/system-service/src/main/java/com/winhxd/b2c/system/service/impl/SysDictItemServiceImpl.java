@@ -25,7 +25,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
     public Integer checkDictItem(AppVersionCondition appVersionCondition) {
         AtomicReference<Integer> result = new AtomicReference<>(1);
         String value = appVersionCondition.getAppVersion();
-        List<SysDictItem> sysDictItems = sysDictItemMapper.selectByDictCode(SysConstant.APP_CHECK_VERSION);
+        List<SysDictItem> sysDictItems = sysDictItemMapper.selectByDictCode(SysConstant.IOS_APP_VERSION);
         if (sysDictItems.size() == 0) {
             return 1;
         }

@@ -36,13 +36,8 @@ public class ApiSystemController {
     public ResponseResult<Integer> appSubmitCheckedVersion(@RequestBody AppVersionCondition appVersionCondition) {
         LOGGER.info("/api-system/3040/v1/appSubmitCheckedVersion接口开始--{}", appVersionCondition);
         ResponseResult<Integer> result = new ResponseResult<Integer>();
-        if (appVersionCondition == null) {
-            LOGGER.info("参数为空");
-            throw new BusinessException(BusinessCode.CODE_610030);
-        }
-        String value = appVersionCondition.getAppVersion();
-        if (StringUtils.isEmpty(value)) {
-            LOGGER.info("app版本号为空");
+        if (appVersionCondition == null || StringUtils.isEmpty(appVersionCondition.getAppVersion())) {
+            LOGGER.info("app提交的版本号为空");
             throw new BusinessException(BusinessCode.CODE_3040001);
         }
         Integer res = sysDictItemService.checkDictItem(appVersionCondition);

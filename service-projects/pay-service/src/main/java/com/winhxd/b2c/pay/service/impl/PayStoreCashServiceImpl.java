@@ -60,8 +60,8 @@ public class PayStoreCashServiceImpl implements PayStoreCashService {
         vo.setTotalMoneyToday(totalPayRecordToday == null ? BigDecimal.valueOf(0.00) : totalPayRecordToday);
         PayBankroll payBankroll = payBankrollMapper.selectStoreBankrollByStoreId(storeId);
         if (payBankroll != null) {
-            vo.setId(payBankroll.getId() == null ? null : payBankroll.getId());
-            vo.setStoreId(payBankroll.getStoreId() == null ? null : payBankroll.getStoreId());
+            vo.setId(payBankroll.getId());
+            vo.setStoreId(payBankroll.getStoreId());
             vo.setTotalMoeny(payBankroll.getTotalMoeny() == null ? BigDecimal.valueOf(0.00) : payBankroll.getTotalMoeny());
             vo.setPresentedFrozenMoney(payBankroll.getPresentedFrozenMoney() == null ? BigDecimal.valueOf(0.00) : payBankroll.getPresentedFrozenMoney());
             vo.setSettlementSettledMoney(payBankroll.getSettlementSettledMoney() == null ? BigDecimal.valueOf(0.00) : payBankroll.getSettlementSettledMoney());

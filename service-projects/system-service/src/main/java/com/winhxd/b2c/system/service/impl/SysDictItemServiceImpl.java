@@ -26,6 +26,7 @@ public class SysDictItemServiceImpl implements SysDictItemService {
         AtomicReference<Integer> result = new AtomicReference<>(1);
         String value = appVersionCondition.getAppVersion();
         List<SysDictItem> sysDictItems = sysDictItemMapper.selectByDictCode(SysConstant.IOS_APP_VERSION);
+        //返回1表示目前的版本号审核通过，0表示正在审核中
         if (sysDictItems.size() == 0) {
             return 1;
         }

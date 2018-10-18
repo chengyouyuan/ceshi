@@ -1,11 +1,11 @@
 package com.winhxd.b2c.common.domain.pay.condition;
 
+import com.winhxd.b2c.common.domain.common.ApiCondition;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import com.winhxd.b2c.common.domain.common.ApiCondition;
 
 /**
  * 下载对账单、资金账单 参数
@@ -18,6 +18,7 @@ public class DownloadStatementCondition extends ApiCondition implements Serializ
 	private static final long serialVersionUID = 3641877835985641570L;
 
 	@ApiModelProperty("对账单日期")
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date billDate;
 
     @ApiModelProperty("账单类型ALL，返回当日所有订单信息，默认值; SUCCESS，返回当日成功支付的订单; REFUND，返回当日退款订单; RECHARGE_REFUND，返回当日充值退款订单")

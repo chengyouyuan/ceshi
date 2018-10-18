@@ -29,7 +29,7 @@ public class ThirdPartyVerifyTask {
     @Autowired
     private VerifyServiceClient verifyServiceClient;
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "50 5/10 * * * ?")
     public void thirdPartyVerifyAccounting() {
         String key = "third-party-not-verify-order-set";
         // 预计执行一小时
@@ -64,7 +64,9 @@ public class ThirdPartyVerifyTask {
                     try {
                         ResponseResult<Integer> responseResult = verifyServiceClient.thirdPartyVerifyAccounting(condition);
                         if (responseResult != null && responseResult.getCode() == 0) {
-                            updateCount++;
+                            if (responseResult.getData() == 1) {
+                                updateCount++;
+                            }
                         } else {
                             throw new BusinessException(responseResult.getCode(), responseResult.getMessage());
                         }

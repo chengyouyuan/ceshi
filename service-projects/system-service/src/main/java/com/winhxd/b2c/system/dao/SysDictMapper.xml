@@ -179,4 +179,15 @@
     inner join sys_dict dict on item.dict_id=dict.id
     where dict.code = #{code,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectSysDictExpectId" parameterType="com.winhxd.b2c.common.domain.system.dict.model.SysDict"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from sys_dict
+    where id
+    &lt;&gt;
+    #{id,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

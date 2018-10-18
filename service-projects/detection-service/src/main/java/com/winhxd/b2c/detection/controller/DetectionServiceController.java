@@ -88,6 +88,12 @@ public class DetectionServiceController implements DetectionServiceClient {
         ResponseResult<PagedList<DbSource>> responseResult = new ResponseResult<PagedList<DbSource>>();
         try {
             PagedList<DbSource> page = quartzJobService.findDbSourcePageList();
+            if(page.getData()!=null && page.getData().size()>0){
+                for (DbSource dbSource : page.getData()) {
+                    dbSource.setPassword("******");
+                    dbSource.setUri("******");
+                }
+            }
             responseResult.setData(page);
         } catch (Exception e) {
             e.printStackTrace();

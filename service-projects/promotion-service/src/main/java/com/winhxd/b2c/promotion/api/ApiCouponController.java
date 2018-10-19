@@ -8,16 +8,19 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.common.ApiCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
+import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.service.CouponPushService;
 import com.winhxd.b2c.promotion.service.CouponService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -158,6 +161,11 @@ public class ApiCouponController{
     @RequestMapping(value = "/5045/v1/availableCouponListByOrder", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     ResponseResult<List<CouponVO>> availableCouponListByOrder(@RequestBody OrderAvailableCouponCondition couponCondition){
         LOGGER.info("=/api-promotion/coupon/5045/v1/availableCouponListByOrder-订单可用的优惠券列表=--开始--{}");
+
+        if (null == couponCondition.getStoreId() || StringUtils.isBlank(couponCondition.getPayType())) {
+            LOGGER.error("=/api-promotion/coupon/5045/v1/availableCouponListByOrder 参数错误");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         ResponseResult<List<CouponVO>> result = new ResponseResult<>();
         List<CouponVO> pages = couponService.availableCouponListByOrder(couponCondition);
         result.setData(pages);
@@ -208,6 +216,10 @@ public class ApiCouponController{
     public ResponseResult<CouponDiscountVO> getCouponDiscountAmount(@RequestBody CouponAmountCondition couponCondition){
         LOGGER.info("=/api-promotion/coupon/5057/v1/getCouponDiscountAmount");
 
+        if (null == couponCondition || CollectionUtils.isEmpty(couponCondition.getSendIds())) {
+            LOGGER.error("=/api-promotion/coupon/5057/v1/getCouponDiscountAmount 参数错误");
+            throw new BusinessException(BusinessCode.CODE_1007);
+        }
         ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
         CouponDiscountVO couponDiscountVO  = couponService.getCouponDiscountAmount(couponCondition);
         result.setData(couponDiscountVO);

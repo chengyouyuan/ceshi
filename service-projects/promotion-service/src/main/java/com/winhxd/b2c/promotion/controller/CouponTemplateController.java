@@ -6,25 +6,19 @@ import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponTemplateCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponTemplateVO;
-import com.winhxd.b2c.common.domain.system.user.vo.UserInfo;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponTemplateServiceClient;
 import com.winhxd.b2c.common.util.JsonUtil;
 import com.winhxd.b2c.promotion.service.CouponTemplateService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Author wl  优惠券模板相关 CouponTemplateController
@@ -90,6 +84,12 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @Override
     public ResponseResult<Integer> updateCouponTemplateToValid(@RequestBody CouponSetToValidCondition condition) {
+        logger.info("模板设置无效参数id:{},updatedBy:{},userId:{},userName:{}", condition.getId(), condition.getUserId(), condition.getUserName());
+        if (null == condition.getId() || null == condition.getUserId()
+                || StringUtils.isBlank(condition.getUserName())) {
+            throw new BusinessException(BusinessCode.CODE_500010, "必传参数错误");
+        }
+
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
         Date updated = new Date();
         int count = couponTemplateService.updateCouponTemplateToValid(condition.getId(),condition.getUserId(),updated,condition.getUserName());
@@ -111,6 +111,11 @@ public class CouponTemplateController implements CouponTemplateServiceClient {
      */
     @Override
     public ResponseResult<CouponTemplateVO> viewCouponTemplateDetail(@RequestParam("id") String id) {
+        logger.info("模板详情查看id:{}", id);
+        if (StringUtils.isBlank(id)) {
+            throw new BusinessException(BusinessCode.CODE_500010, "必传参数错误");
+        }
+
         ResponseResult<CouponTemplateVO> responseResult = new ResponseResult<CouponTemplateVO>();
         CouponTemplateVO vo = couponTemplateService.viewCouponTemplateDetailById(id);
         responseResult.setData(vo);

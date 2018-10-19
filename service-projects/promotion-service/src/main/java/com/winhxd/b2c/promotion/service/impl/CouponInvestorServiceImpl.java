@@ -15,7 +15,6 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponInvestorDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponInvestorMapper;
 import com.winhxd.b2c.promotion.service.CouponInvestorService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,9 +120,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
     @Override
     public PagedList<InvertorTempleteCountVO> findInvertorTempleteCountPage(RuleRealationCountCondition condition) {
-        if(condition.getId()==null){
-            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
-        }
         PagedList<InvertorTempleteCountVO> pagedList = new PagedList<>();
         PageHelper.startPage(condition.getPageNo(),condition.getPageSize());
         List<InvertorTempleteCountVO> couponInvestorCountPageList = couponInvestorMapper.getInvertorTempleteCountPage(condition.getId());
@@ -144,10 +140,6 @@ public class CouponInvestorServiceImpl implements CouponInvestorService {
 
     @Override
     public int updateCouponInvestorToValid(Long id,Long userId,String userName) {
-        LOGGER.info("出资方设置无效参数id:"+id+" userId:"+userId+" userName:"+userName);
-        if(id==null || userId==null || StringUtils.isBlank(userName)){
-            throw  new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
-        }
         int count = couponInvestorMapper.updateCouponInvestorToValid(id,userId,userName);
         return count;
     }

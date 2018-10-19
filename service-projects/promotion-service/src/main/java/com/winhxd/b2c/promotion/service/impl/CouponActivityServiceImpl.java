@@ -94,9 +94,9 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         		if (revocationNumMap.containsKey(activityId)) {
         			revocationNum=(Long) revocationNumMap.get(activityId);
         		}
-    		     couponActivityVO.setGetNum(getNum.intValue());
-    		     couponActivityVO.setUseNum(useNum.intValue());
-    		     couponActivityVO.setRevocationNum(revocationNum.intValue());
+        		couponActivityVO.setGetNum(getNum.intValue());
+        		couponActivityVO.setUseNum(useNum.intValue());
+        		couponActivityVO.setRevocationNum(revocationNum.intValue());
 			}
 		}
         
@@ -152,11 +152,8 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         }
         //获取区域信息
         if(!CollectionUtils.isEmpty(condition.getCouponActivityAreaList())){
-            for (int a = 0 ; a < condition.getCouponActivityAreaList().size(); a++){
-                CouponActivityArea couponActivityArea = new CouponActivityArea();
+            for (CouponActivityArea couponActivityArea:condition.getCouponActivityAreaList()){
                 couponActivityArea.setCouponActivityId(couponActivity.getId());
-                couponActivityArea.setRegionCode(condition.getCouponActivityAreaList().get(a).getRegionCode());
-                couponActivityArea.setRegionName(condition.getCouponActivityAreaList().get(a).getRegionName());
                 couponActivityArea.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
                 int n4 = couponActivityAreaMapper.insertSelective(couponActivityArea);
                 if(n4==0){
@@ -167,83 +164,69 @@ public class CouponActivityServiceImpl implements CouponActivityService {
         List<CustomerUser> couponActivityCustomerList = condition.getCouponActivityCustomerList();
 
         //CouponActivityTemplate
-        for (int i=0 ; i < condition.getCouponActivityTemplateList().size(); i++) {
-            CouponActivityTemplate couponActivityTemplate = new CouponActivityTemplate();
-            couponActivityTemplate.setCouponActivityId(couponActivity.getId());
-            couponActivityTemplate.setTemplateId(condition.getCouponActivityTemplateList().get(i).getTemplateId());
-            couponActivityTemplate.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+        for (CouponActivityTemplate cat:condition.getCouponActivityTemplateList()) {
+            cat.setCouponActivityId(couponActivity.getId());
+            cat.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
             //领券
             if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()){
-
-                Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                Date couponEnd  =DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
-
-                couponActivityTemplate.setStartTime(couponStart);
-                couponActivityTemplate.setEndTime(couponEnd);
-                couponActivityTemplate.setCouponNumType(condition.getCouponActivityTemplateList().get(i).getCouponNumType());
-                couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
-                couponActivityTemplate.setCustomerVoucherLimitType(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType());
-                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.STORE_LIMITED.getCode()){
-                    couponActivityTemplate.setCustomerVoucherLimitNum(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitNum());
+                cat.setStartTime(DateDealUtils.getStartDate(cat.getStartTime()));
+                cat.setEndTime(DateDealUtils.getEndDate(cat.getEndTime()));
+                if(cat.getCustomerVoucherLimitType() != CouponActivityEnum.STORE_LIMITED.getCode()){
+                    cat.setCustomerVoucherLimitNum(null);
                 }
                 //如果不限制则最大张数限定100张
-                if(condition.getCouponActivityTemplateList().get(i).getCustomerVoucherLimitType() == CouponActivityEnum.UNLIMITED.getCode()){
-                    couponActivityTemplate.setCustomerVoucherLimitNum(100);
+                if(cat.getCustomerVoucherLimitType() == CouponActivityEnum.UNLIMITED.getCode()){
+                    cat.setCustomerVoucherLimitNum(100);
                 }
             }
             //推券
             if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()){
-                Integer effectiveDays = condition.getCouponActivityTemplateList().get(i).getEffectiveDays();
-                if( effectiveDays!= null && effectiveDays>0){
-                    couponActivityTemplate.setEffectiveDays(effectiveDays);
-                }else{
-                    Date couponStart = DateDealUtils.getStartDate(condition.getCouponActivityTemplateList().get(i).getStartTime());
-                    Date couponEnd  =DateDealUtils.getEndDate(condition.getCouponActivityTemplateList().get(i).getEndTime());
-                    couponActivityTemplate.setStartTime(couponStart);
-                    couponActivityTemplate.setEndTime(couponEnd);
+                Integer effectiveDays = cat.getEffectiveDays();
+                if( effectiveDays == null || effectiveDays<=0){
+                    cat.setStartTime(DateDealUtils.getStartDate(cat.getStartTime()));
+                    cat.setEndTime(DateDealUtils.getEndDate(cat.getEndTime()));
                 }
-
-                couponActivityTemplate.setCouponNumType((short)1);
-                couponActivityTemplate.setCouponNum(condition.getCouponActivityTemplateList().get(i).getCouponNum());
-                couponActivityTemplate.setSendNum(condition.getCouponActivityTemplateList().get(i).getSendNum());
+                cat.setCouponNumType((short)1);
             }
-            int n2 = couponActivityTemplateMapper.insertSelective(couponActivityTemplate);
+            int n2 = couponActivityTemplateMapper.insertSelective(cat);
             if(n2==0){
                 throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
             }
 
-            //推券新增区域划分
-            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType() || (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
-                    && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode() && CollectionUtils.isEmpty(couponActivityCustomerList))){
-                //coupon_activity_store_customer
-                for (int j=0 ; j < condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().size(); j++) {
-                    CouponActivityStoreCustomer couponActivityStoreCustomer  = new CouponActivityStoreCustomer();
-                    couponActivityStoreCustomer.setCouponActivityTemplateId(couponActivityTemplate.getId());
-                    couponActivityStoreCustomer.setStoreId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getStoreId());
-                    couponActivityStoreCustomer.setCustomerId(condition.getCouponActivityTemplateList().get(i).getCouponActivityStoreCustomerList().get(j).getCustomerId());
-                    couponActivityStoreCustomer.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
-                    int n3 = couponActivityStoreCustomerMapper.insertSelective(couponActivityStoreCustomer);
-                    if(n3==0){
-                        throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+            //推券领券区域划分 coupon_activity_store_customer
+            if(CouponActivityEnum.PULL_COUPON.getCode() == condition.getType()
+                    || (CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
+                        && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()
+                        && CollectionUtils.isEmpty(couponActivityCustomerList))){
+
+                if(!CollectionUtils.isEmpty(cat.getCouponActivityStoreCustomerList())){
+                    for (CouponActivityStoreCustomer casc:cat.getCouponActivityStoreCustomerList()) {
+                        casc.setCouponActivityTemplateId(cat.getId());
+                        casc.setStatus(CouponActivityEnum.ACTIVITY_EFFICTIVE.getCode());
+                        int n3 = couponActivityStoreCustomerMapper.insertSelective(casc);
+                        if(n3==0){
+                            throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
+                        }
                     }
                 }
             }
         }
-        //指定具体人进行推券
-        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType() && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()){
-            //coupon_push_customer
-            if(!CollectionUtils.isEmpty(couponActivityCustomerList)){
-                for(CustomerUser customerUser:couponActivityCustomerList){
-                    CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
-                    couponPushCustomer.setCouponActivityId(couponActivity.getId());
-                    couponPushCustomer.setCustomerId(customerUser.getCustomerId());
-                    couponPushCustomer.setReceive(false);
-                    int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
-                    if(effLine==0){
-                        throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
-                    }
+        //指定具体人进行推券 coupon_push_customer
+        if(CouponActivityEnum.PUSH_COUPON.getCode() == condition.getType()
+                && condition.getCouponType() == CouponActivityEnum.OLD_USER.getCode()
+                && !CollectionUtils.isEmpty(couponActivityCustomerList)){
+
+            for(CustomerUser customerUser:couponActivityCustomerList){
+                CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+                couponPushCustomer.setCouponActivityId(couponActivity.getId());
+                couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+                couponPushCustomer.setReceive(false);
+                int effLine = couponPushCustomerMapper.insert(couponPushCustomer);
+                if(effLine==0){
+                    throw new BusinessException(BusinessCode.CODE_503001,"优惠券活动添加失败");
                 }
             }
+
         }
     }
 

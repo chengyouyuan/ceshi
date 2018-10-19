@@ -35,7 +35,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 
 	@Override
 	public void savePayStoreWallet(PayStoreWalletCondition condition) {
-		if(condition == null){
+        if (condition == null) {
 			LOGGER.info("参数为空");
 			throw new BusinessException(BusinessCode.CODE_610030);
 		}
@@ -52,9 +52,9 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
 		payStoreWallet.setUpdated(new Date());
 		//判断当前的微信账户是否存在
 		List<PayStoreWallet> list = payStoreWalletMapper.selectByCondtion(condition);
-		if(CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
 			payStoreWalletMapper.insertSelective(payStoreWallet);
-		}else{
+        } else {
 			PayStoreWallet wallet = list.get(0);
 			Long id = wallet.getId();
 			payStoreWallet.setId(id);

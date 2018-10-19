@@ -103,7 +103,6 @@ public class StoreServiceController implements StoreServiceClient {
 	@Override
 	public ResponseResult<List<ShopCartProdVO>> findShopCarProd(@RequestParam("skuCodes")List<String> skuCodes, @RequestParam("storeId")Long storeId) {
 		ResponseResult<List<ShopCartProdVO>> result = new ResponseResult<>();
-		
 		//参数检验
 		if(storeId==null||CollectionUtils.isEmpty(skuCodes)){
 			 logger.error("StoreServiceController -> findShopCarProd获取的参数异常！");
@@ -114,18 +113,16 @@ public class StoreServiceController implements StoreServiceClient {
 		skuCodeArray=skuCodes.toArray(skuCodeArray);
 		//查询门店下商品信息集合--判断数据权限
 		//查询该用户sku是否上架
-		List<StoreProductManage> storeProds=this.storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
-		
+		List<StoreProductManage> storeProds = storeProductManageService.findPutawayProdBySkuCodes(storeId, skuCodeArray);
 		//查询结果不为空
 		if(CollectionUtils.isNotEmpty(storeProds)){
-			
-			ProductCondition prodCondition=new ProductCondition();
+			ProductCondition prodCondition = new ProductCondition();
 			prodCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
 			prodCondition.setProductSkus(skuCodes);
 			
 			ResponseResult<List<ProductSkuVO>> prodResult=productServiceClient.getProductSkus(prodCondition);
-			if(prodResult==null||prodResult.getCode()!=0){
-			    result= new ResponseResult<>(BusinessCode.CODE_1001);
+			if(prodResult==null || prodResult.getCode()!=0){
+			    result = new ResponseResult<>(BusinessCode.CODE_1001);
 				return result;
 			}
 			//调用商品feigin查询商品基本信息
@@ -134,18 +131,17 @@ public class StoreServiceController implements StoreServiceClient {
 			    result= new ResponseResult<>(BusinessCode.CODE_103102);
 				return result;
 			}
-			
 			//productServiceClient.
 			List<ShopCartProdVO> shopCarProdList=new ArrayList<>();
-			for(int i=0;i<prodList.size();i++){
+			for (int i = 0; i < prodList.size(); i++) {
 				ShopCartProdVO spVO=new ShopCartProdVO();
 				//sku信息
 				ProductSkuVO current=prodList.get(i);
 				//门店与sku关系
-				StoreProductManage spManage=null;
-				for(StoreProductManage spm:storeProds){
+				StoreProductManage spManage = null;
+				for (StoreProductManage spm  :storeProds) {
 				    if(current.getSkuCode().equals(spm.getSkuCode())){
-				        spManage=spm;
+				        spManage = spm;
 				    }
 				}
 				if (spManage == null) {
@@ -161,7 +157,6 @@ public class StoreServiceController implements StoreServiceClient {
 				spVO.setCompanyCode(current.getCompanyCode());
 				shopCarProdList.add(spVO);
 			}
-			
 			result.setData(shopCarProdList);
 		}
 		logger.info("StoreServiceClient-->findShopCarProd 返参：result="+result);
@@ -209,20 +204,15 @@ public class StoreServiceController implements StoreServiceClient {
 
 	@Override
 	public ResponseResult<Void> saveStoreProductStatistics(@RequestBody List<StoreProductStatisticsCondition> conditions) {
-		ResponseResult<Void> result=new ResponseResult<>();
+		ResponseResult<Void> result = new ResponseResult<>();
 		logger.info("StoreServiceClient-->findShopCarProd 入参：conditions="+conditions);
-		if(conditions==null||conditions.size()<=0){
-		    result=new ResponseResult<>(BusinessCode.CODE_102401);
+		if(conditions == null || conditions.size() <= 0){
+		    result = new ResponseResult<>(BusinessCode.CODE_102401);
 		    return result;
 		}
 		List<StoreProductStatistics> beanList=new ArrayList<>();
-		
-		for(StoreProductStatisticsCondition condition:conditions){
-			StoreProductStatistics bean=new StoreProductStatistics();
-			if(condition.getStoreId()==null||StringUtils.isEmpty(condition.getSkuCode())){
-			    result=new ResponseResult<>(BusinessCode.CODE_102401);
-				return result;
-			}
+		for(StoreProductStatisticsCondition condition : conditions){
+			StoreProductStatistics bean = new StoreProductStatistics();
 			BeanUtils.copyProperties(condition, bean);
 			bean.setCreated(new Date());
 			beanList.add(bean);
@@ -261,20 +251,18 @@ public class StoreServiceController implements StoreServiceClient {
 	@Override
 	public ResponseResult<PagedList<StoreUserInfoVO>> queryStorePageInfo(@RequestBody BackStageStoreInfoSimpleCondition condition) {
 		ResponseResult<PagedList<StoreUserInfoVO>> responseResult = new ResponseResult<PagedList<StoreUserInfoVO>>();
-		try {
-			PagedList<StoreUserInfoVO> page = storeService.findStorePageInfo(condition);
-			responseResult.setData(page);
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseResult.setCode(BusinessCode.CODE_1001);
+		if (null == condition) {
+			condition = new BackStageStoreInfoSimpleCondition();
 		}
+		PagedList<StoreUserInfoVO> page = storeService.findStorePageInfo(condition);
+		responseResult.setData(page);
 		return responseResult;
 	}
 
 	@Override
 	public ResponseResult<Boolean> saveStoreCodeUrl(@RequestBody StoreUserInfoCondition condition) {
 		ResponseResult<Boolean> responseResult = new ResponseResult<Boolean>();
-    	if(condition.getId() == null){
+    	if(null == condition || null == condition.getId()){
     		throw new BusinessException(BusinessCode.CODE_200002);
 		}
 		if(StringUtils.isEmpty(condition.getMiniProgramCodeUrl())){
@@ -294,11 +282,11 @@ public class StoreServiceController implements StoreServiceClient {
 
 	@Override
 	public ResponseResult<List<Long>> findStoreCustomerRegions(@RequestBody StoreCustomerRegionCondition conditions) {
-		logger.info("StoreServiceClient-->findStoreCustomerRegions 入参：conditions="+conditions);
+		logger.info("StoreServiceClient-->findStoreCustomerRegions 入参：conditions= {}",conditions);
     	ResponseResult<List<Long>> responseResult = new ResponseResult<>();
     	List<Long> result = storeService.findStoreCustomerRegions(conditions);
     	responseResult.setData(result);
-		logger.info("StoreServiceClient-->findStoreCustomerRegions 返参：result="+result);
+		logger.info("StoreServiceClient-->findStoreCustomerRegions 返参：result={}",result);
 		return responseResult;
 	}
 
@@ -309,6 +297,4 @@ public class StoreServiceController implements StoreServiceClient {
 		responseResult.setData(storeInfo);
 		return responseResult;
 	}
-
-
 }

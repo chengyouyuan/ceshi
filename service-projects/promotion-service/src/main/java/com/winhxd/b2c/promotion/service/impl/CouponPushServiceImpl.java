@@ -23,7 +23,6 @@ import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.util.DateDealUtils;
-import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponPushService;
 import org.apache.commons.lang3.StringUtils;
@@ -99,19 +98,27 @@ public class CouponPushServiceImpl implements CouponPushService {
         boolean flag = false;
         for (CouponPushVO couponPushVO:couponPushResult) {
 
-            flag = checkCouponCollar(couponPushVO,activityIds,unActivityIds,
-                    receiveCouponCount,customerUser);
+            String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId() + couponPushVO.getTemplateId();
+            Lock lock = new RedisLock(cache, lockKey, BACKROLL_LOCK_EXPIRES_TIME);
+            try {
+                lock.lock();
 
-            // 是否领取只有推券给用户才会有值 1 可领取
-            if ("1".equals(couponPushVO.getReceiveStatus()) && couponPushVO.getReceive() == null) {
-                flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(),storeUserInfo.getId(),couponPushVO.getActivityId());
-            }
+                flag = checkCouponCollar(couponPushVO, activityIds, unActivityIds,
+                        receiveCouponCount, customerUser);
 
-            if (flag) {
-                for (int x=0;x<couponPushVO.getSendNum();x++) {
-                    sendCoupon(customerUser, couponPushVO);
+                // 是否领取只有推券给用户才会有值 1 可领取
+                if ("1".equals(couponPushVO.getReceiveStatus()) && couponPushVO.getReceive() == null) {
+                    flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(), storeUserInfo.getId(), couponPushVO.getActivityId());
                 }
-                resultList.add(couponPushVO);
+
+                if (flag) {
+                    for (int x = 0; x < couponPushVO.getSendNum(); x++) {
+                        sendCoupon(customerUser, couponPushVO);
+                    }
+                    resultList.add(couponPushVO);
+                }
+            } finally {
+                lock.unlock();
             }
         }
         return this.getCouponPushDetail(resultList);
@@ -157,30 +164,22 @@ public class CouponPushServiceImpl implements CouponPushService {
 
 
     private void sendCoupon(CustomerUser customerUser, CouponPushVO couponPushVO) {
-        Lock lock = null;
-        try {
-            String lockKey = CacheName.PUSH_COUPON + couponPushVO.getActivityId()+couponPushVO.getTemplateId();
-            lock = new RedisLock(cache, lockKey,BACKROLL_LOCK_EXPIRES_TIME);
-            lock.lock();
 
-            CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
-            saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
-            couponPushVO.setReceiveStatus("1");
+        CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
+        saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
+        couponPushVO.setReceiveStatus("1");
 
-            // 用户渠道领取优惠券修改状态
-            if (couponPushVO.getReceive() != null) {
-                CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
-                couponPushCustomer.setCouponActivityId(couponPushVO.getActivityId());
-                couponPushCustomer.setCustomerId(customerUser.getCustomerId());
-                couponPushCustomer.setReceive(true);
-                couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
-            }
-        } finally {
-            if (lock != null) {
-                lock.unlock();
-            }
+        // 用户渠道领取优惠券修改状态
+        if (couponPushVO.getReceive() != null) {
+            CouponPushCustomer couponPushCustomer = new CouponPushCustomer();
+            couponPushCustomer.setCouponActivityId(couponPushVO.getActivityId());
+            couponPushCustomer.setCustomerId(customerUser.getCustomerId());
+            couponPushCustomer.setReceive(true);
+            couponPushCustomerMapper.updateByActivityIdAndCustomerId(couponPushCustomer);
         }
     }
+
+
 
     /**
      * 验证门店下的用户是否推券
@@ -205,8 +204,8 @@ public class CouponPushServiceImpl implements CouponPushService {
 
             // 优惠券设定有效期，没有设定开始时间和结束时间。
             if (couponPushVO.getEffectiveDays() != null) {
-                couponPushVO.setActivityStart(DateUtil.format(new Date(),"yyyy.MM.dd"));
-                couponPushVO.setActivityEnd(DateUtil.format((DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())),"yyyy.MM.dd"));
+                couponPushVO.setActivityStart(new Date());
+                couponPushVO.setActivityEnd((DateDealUtils.getEndDate(new Date(), couponPushVO.getEffectiveDays())));
             }
         }
         return couponPushResult;
@@ -319,8 +318,8 @@ public class CouponPushServiceImpl implements CouponPushService {
             couponTemplateSend.setStartTime(DateDealUtils.getStartDate(new Date()));
             couponTemplateSend.setEndTime(DateDealUtils.getEndDate(new Date(),couponPushVO.getEffectiveDays()));
         }else {
-            couponTemplateSend.setStartTime(DateUtil.toDate(couponPushVO.getActivityStart(),"yyyy.MM.dd"));
-            couponTemplateSend.setEndTime(DateUtil.toDate(couponPushVO.getActivityEnd()+" 23:59:59","yyyy.MM.dd HH:mm:ss"));
+            couponTemplateSend.setStartTime(couponPushVO.getActivityStart());
+            couponTemplateSend.setEndTime(DateDealUtils.getEndDate(couponPushVO.getActivityEnd()));
         }
 
         couponTemplateSendMapper.insertSelective(couponTemplateSend);
@@ -382,8 +381,6 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         return couponPushResult;
     }
-
-
 
     @Override
     public boolean getAvailableCoupon(Long customerId) {

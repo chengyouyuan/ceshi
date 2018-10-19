@@ -23,10 +23,7 @@ import com.winhxd.b2c.common.domain.product.enums.SearchSkuCodeEnum;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.condition.*;
-import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
-import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
-import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
-import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.*;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.*;
 import com.winhxd.b2c.common.domain.store.condition.StoreCustomerRegionCondition;
@@ -38,7 +35,6 @@ import com.winhxd.b2c.common.feign.product.ProductServiceClient;
 import com.winhxd.b2c.common.feign.store.StoreServiceClient;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
-import com.winhxd.b2c.common.util.DateUtil;
 import com.winhxd.b2c.promotion.dao.*;
 import com.winhxd.b2c.promotion.service.CouponService;
 import org.apache.commons.lang3.StringUtils;
@@ -299,13 +295,11 @@ public class CouponServiceImpl implements CouponService {
 
     /**
      * 优惠券是否快过期
-     * @param activityEnd
      */
-    private boolean couponIsFastOverdue(String activityEnd) {
-        if (StringUtils.isNotBlank(activityEnd)) {
-            long endTime = DateUtil.toDate(activityEnd, "yyyy.MM.dd").getTime();
+    private boolean couponIsFastOverdue(Date activityEnd) {
+        if (null != activityEnd) {
             // 快过期时间为活动结束前三天
-            if (endTime - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
+            if (activityEnd.getTime() - System.currentTimeMillis() <= 1000 * 60 * 60 * 24 * 3) {
                 return true;
             }
         }
@@ -347,20 +341,20 @@ public class CouponServiceImpl implements CouponService {
                 if(templateNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null) {
-                        couponVO.setReceiveStatus("1");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                     }else{
                         if(userNum < couponVO.getLimitNum()){
-                            couponVO.setReceiveStatus("1");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                         }else{
-                            couponVO.setReceiveStatus("0");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                         }
                     }
                 }else{
                     if(userNum>0){
-                        couponVO.setReceiveStatus("0");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                     }else{
                         // 优惠券已领完
-                        couponVO.setReceiveStatus("2");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
                     }
                 }
             }
@@ -373,20 +367,20 @@ public class CouponServiceImpl implements CouponService {
                 if(storeNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null){
-                        couponVO.setReceiveStatus("1");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                     }else{
                         if(userNum < couponVO.getLimitNum()){
-                            couponVO.setReceiveStatus("1");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                         }else{
-                            couponVO.setReceiveStatus("0");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                         }
                     }
                 }else{
                     if(userNum>0){
-                        couponVO.setReceiveStatus("0");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                     }else{
                         // 当前门店优惠券已领完
-                        couponVO.setReceiveStatus("2");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
                     }
                 }
             }
@@ -402,9 +396,9 @@ public class CouponServiceImpl implements CouponService {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
         if (customerUser == null) {
             throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
-        }
 
-        //我的优惠券列表不分页，一页显示全部
+            //我的优惠券列表不分页，一页显示全部
+        }
         if(null == couponCondition.getStatus()){
             List<CouponVO> couponVOS = couponActivityMapper.selectCouponList(customerUser.getCustomerId(),null,couponCondition.getStatus());
             couponCondition.setPageSize(couponVOS.size());
@@ -759,6 +753,7 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
+
     /**
      * 用户查询门店优惠券列表
      * @return
@@ -791,18 +786,18 @@ public class CouponServiceImpl implements CouponService {
                 if(templateNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null) {
-                        couponVO.setReceiveStatus("1");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                     }else{
                         if(userNum < couponVO.getLimitNum()){
-                            couponVO.setReceiveStatus("1");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                         }else{
-                            couponVO.setReceiveStatus("0");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                             continue;
                         }
                     }
                 }else{
                     // 优惠券已领完
-                    couponVO.setReceiveStatus("2");
+                    couponVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
                     continue;
                 }
             }
@@ -817,18 +812,18 @@ public class CouponServiceImpl implements CouponService {
                 if(storeNum < couponVO.getCouponNum()){
                     //limitNum为空代表不限制用户领取数量
                     if(couponVO.getLimitNum()==null){
-                        couponVO.setReceiveStatus("1");
+                        couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                     }else{
                         if(userNum < couponVO.getLimitNum()){
-                            couponVO.setReceiveStatus("1");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
                         }else{
-                            couponVO.setReceiveStatus("0");
+                            couponVO.setReceiveStatus(CouponReceiveStatusEnum.ALREADY_RECEIVED.getCode());
                             continue;
                         }
                     }
                 }else{
                     // 当前门店优惠券已领完
-                    couponVO.setReceiveStatus("2");
+                    couponVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
                     continue;
                 }
             }
@@ -1479,8 +1474,8 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
 
-            couponVO.setActivityStart(couponVO.getActivityStart().replace("-", "."));
-            couponVO.setActivityEnd(couponVO.getActivityEnd().replace("-", "."));
+//            couponVO.setActivityStart(couponVO.getActivityStart().replace("-", "."));
+//            couponVO.setActivityEnd(couponVO.getActivityEnd().replace("-", "."));
         }
         return this.getCouponDetail(results);
     }

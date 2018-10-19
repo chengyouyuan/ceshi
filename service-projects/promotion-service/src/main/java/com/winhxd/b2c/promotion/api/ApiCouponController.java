@@ -102,7 +102,7 @@ public class ApiCouponController{
     public ResponseResult<Boolean> userReceiveCoupon(@RequestBody ReceiveCouponCondition condition) {
         LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--开始--{}", condition);
         ResponseResult<Boolean> result = new ResponseResult<>();
-        Boolean flag =   couponService.userReceiveCoupon(condition);
+        Boolean flag = couponService.userReceiveCoupon(condition);
         result.setData(flag);
         LOGGER.info("=/api-promotion/coupon/5004/v1/userReceiveCoupon-用户领取优惠券=--结束 result={}", result);
         return result;
@@ -243,6 +243,5 @@ public class ApiCouponController{
         LOGGER.info("/api-promotion/coupon/5063/v1/getSpecifiedPushCoupon结果:"+result);
         return result;
     }
-
 
 }

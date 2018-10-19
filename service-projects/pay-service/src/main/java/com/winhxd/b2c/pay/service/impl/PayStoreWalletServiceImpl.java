@@ -1,18 +1,5 @@
 package com.winhxd.b2c.pay.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -24,6 +11,17 @@ import com.winhxd.b2c.common.domain.pay.model.PayStoreWallet;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.pay.dao.PayStoreWalletMapper;
 import com.winhxd.b2c.pay.service.PayStoreWalletService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class PayStoreWalletServiceImpl implements PayStoreWalletService{
@@ -85,7 +83,7 @@ public class PayStoreWalletServiceImpl implements PayStoreWalletService{
    ////////////////////////////////////////////////////
     	
 		Boolean exists = redisClusterCache.exists(CacheName.PAY_VERIFICATION_CODE+1+"_"+currentStoreUser.getBusinessId());
-		System.out.print("微信验证码是否存在-----------"+exists);
+		LOGGER.info("微信验证码是否存在-----------" + exists);
 		if(!exists){
 			LOGGER.info("业务异常："+BusinessCode.CODE_610020);
 			throw new BusinessException(BusinessCode.CODE_610020);

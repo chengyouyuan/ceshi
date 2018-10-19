@@ -1,8 +1,26 @@
 package com.winhxd.b2c.pay.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.winhxd.b2c.common.constant.BusinessCode;
+import com.winhxd.b2c.common.domain.PagedList;
+import com.winhxd.b2c.common.domain.ResponseResult;
+import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayCondition;
+import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
+import com.winhxd.b2c.common.domain.pay.enums.PayWithdrawalTypeEnum;
+import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
+import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
+import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsTypeVO;
+import com.winhxd.b2c.common.exception.BusinessException;
+import com.winhxd.b2c.common.util.IpUtil;
+import com.winhxd.b2c.pay.config.PayWithdrawalConfig;
+import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
+import com.winhxd.b2c.pay.util.NumberUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -13,23 +31,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.winhxd.b2c.common.constant.BusinessCode;
-import com.winhxd.b2c.common.domain.PagedList;
-import com.winhxd.b2c.common.domain.ResponseResult;
-import com.winhxd.b2c.common.domain.pay.condition.CalculationCmmsAmtCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayCondition;
-import com.winhxd.b2c.common.domain.pay.condition.PayStoreApplyWithDrawCondition;
-import com.winhxd.b2c.common.domain.pay.model.PayWithdrawalsType;
-import com.winhxd.b2c.common.domain.pay.vo.CalculationCmmsAmtVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalPageVO;
-import com.winhxd.b2c.common.domain.pay.vo.PayWithdrawalsTypeVO;
-import com.winhxd.b2c.common.util.IpUtil;
-import com.winhxd.b2c.pay.service.PayStoreWithdrawalService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Api(tags = "ApiPay")
@@ -39,6 +44,9 @@ public class ApiPayStoreWithdrawalController {
 	
 	@Autowired
 	private PayStoreWithdrawalService payStoreWithdrawalService;
+
+    @Resource
+    private PayWithdrawalConfig payWithDrawalConfig;
 	
 	@ApiOperation(value = "返回提现类型", notes = "返回提现类型")
 	@ApiResponses({@ApiResponse(code = BusinessCode.CODE_OK, message = "操作成功"),
@@ -76,6 +84,10 @@ public class ApiPayStoreWithdrawalController {
 	private ResponseResult<PayWithdrawalPageVO> toPayStoreWithdrawalPage(@RequestBody PayStoreApplyWithDrawCondition condition){
 		ResponseResult<PayWithdrawalPageVO> result = new ResponseResult<PayWithdrawalPageVO>();
 		LOGGER.info("/6108/v1/toWithdrawalPage-门店进入提现页面入参："+condition);
+        if (condition.getWithdrawType() == 0) {
+            LOGGER.info("请传入提现类型参数");
+            throw new BusinessException(BusinessCode.CODE_610022);
+        }
 		PayWithdrawalPageVO detail = payStoreWithdrawalService.showPayWithdrawalDetail(condition);
 		result.setData(detail);
 		return result;
@@ -108,6 +120,8 @@ public class ApiPayStoreWithdrawalController {
 		ResponseResult<Integer> result=new ResponseResult<>();
 		String ip=IpUtil.getIpAddr();
 		condition.setSpbillCreateIp(ip);
+        // 验证入参是否传入正确
+        valiApplyWithDrawCondition(condition);
 		payStoreWithdrawalService.saveStorWithdrawalInfo(condition);
 		return result;
 	}
@@ -119,11 +133,120 @@ public class ApiPayStoreWithdrawalController {
 	@PostMapping(value = "/6111/v1/calculationCmmsAmt", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	private ResponseResult<CalculationCmmsAmtVO> calculationCmmsAmt(@RequestBody CalculationCmmsAmtCondition condition){
 		LOGGER.info("/6111/v1/withdrawal-计算门店提现手续费："+condition);
-		ResponseResult<CalculationCmmsAmtVO> result = new ResponseResult<CalculationCmmsAmtVO>();
+        ResponseResult<CalculationCmmsAmtVO> result = new ResponseResult<CalculationCmmsAmtVO>();
+        if (condition == null) {
+            LOGGER.info("参数为空");
+            throw new BusinessException(BusinessCode.CODE_611101);
+        }
+        if (condition.getWithdrawType() == null) {
+            LOGGER.info("提现类型为空");
+            throw new BusinessException(BusinessCode.CODE_611102);
+        }
+        BigDecimal totalFee = condition.getTotalFee();
+        if (totalFee == null) {
+            LOGGER.info("提现金额为空");
+            throw new BusinessException(BusinessCode.CODE_611103);
+        }
+        if (!NumberUtil.isPositiveDecimal(totalFee.toString()) && !NumberUtil.isPositiveInteger(totalFee.toString())) {
+            LOGGER.info("提现金额输入有误");
+            throw new BusinessException(BusinessCode.CODE_611106);
+        }
+        String totalFeeStr = totalFee.toString();
+        if (totalFeeStr.indexOf(".") != -1) {
+            //最多支持两位小数
+            String[] totalFeeArr = totalFeeStr.split("\\.");
+            if (totalFeeArr != null && totalFeeArr[1].length() > 2) {
+                LOGGER.info("提现金额超过了两位小数");
+                throw new BusinessException(BusinessCode.CODE_611106);
+            }
+        }
+        BigDecimal min = payWithDrawalConfig.getMinMoney();
+        if (totalFee.compareTo(min) <= 0) {
+            LOGGER.info("提现金额须大于1元");
+            throw new BusinessException(BusinessCode.CODE_611107);
+        }
+        // 最大提现额度
+        BigDecimal max = payWithDrawalConfig.getMaxMoney();
+        if (totalFee.compareTo(max) > 0) {
+            LOGGER.info("单笔提现须小于2万元");
+            throw new BusinessException(BusinessCode.CODE_611108);
+        }
 		CalculationCmmsAmtVO vo = payStoreWithdrawalService.calculationCmmsAmt(condition);
 		result.setData(vo);
 		return result;
 	}
-	
+
+    private void valiApplyWithDrawCondition(PayStoreApplyWithDrawCondition condition) {
+        int res = 0;
+        short withdralType = condition.getWithdrawType();
+        if (withdralType != PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode() && withdralType != PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()) {
+            LOGGER.info("提现类型为空");
+            throw new BusinessException(BusinessCode.CODE_610022);
+        }
+        BigDecimal totalFee = condition.getTotalFee();
+        if (totalFee == null || (!NumberUtil.isPositiveDecimal(totalFee.toString()) && !NumberUtil.isPositiveInteger(totalFee.toString()))) {
+            LOGGER.info("提现金额输入有误");
+            throw new BusinessException(BusinessCode.CODE_610032);
+        }
+        String totalFeeStr = totalFee.toString();
+        if (totalFeeStr.indexOf(".") != -1) {
+            //最多支持两位小数
+            String[] totalFeeArr = totalFeeStr.split("\\.");
+            if (totalFeeArr != null && totalFeeArr[1].length() > 2) {
+                LOGGER.info("提现金额超过了两位小数");
+                throw new BusinessException(BusinessCode.CODE_610032);
+            }
+        }
+        short type = condition.getFlowDirectionType();
+        if (type == 0) {
+            throw new BusinessException(BusinessCode.CODE_610033);
+        }
+
+        String name = condition.getFlowDirectionName();
+        if (StringUtils.isEmpty(name)) {
+            throw new BusinessException(BusinessCode.CODE_610034);
+        }
+        short withdrawType = condition.getWithdrawType();
+        if (withdrawType == PayWithdrawalTypeEnum.WECHART_WITHDRAW.getStatusCode()) {
+            String openId = condition.getBuyerId();
+            if (StringUtils.isEmpty(openId)) {
+                throw new BusinessException(BusinessCode.CODE_610031);
+            }
+            String nick = condition.getNick();
+            if (StringUtils.isEmpty(nick)) {
+                throw new BusinessException(BusinessCode.CODE_610036);
+            }
+        }
+        String paymentAccount = condition.getPaymentAccount();
+        if (StringUtils.isEmpty(paymentAccount)) {
+            throw new BusinessException(BusinessCode.CODE_610012);
+        }
+        String mobile = condition.getMobile();
+        if (StringUtils.isEmpty(mobile)) {
+            throw new BusinessException(BusinessCode.CODE_610015);
+        }
+        if (withdrawType == PayWithdrawalTypeEnum.BANKCARD_WITHDRAW.getStatusCode()) {
+            String swiftCode = condition.getSwiftCode();
+            if (StringUtils.isEmpty(swiftCode)) {
+                throw new BusinessException(BusinessCode.CODE_610029);
+            }
+            String storeName = condition.getStroeName();
+            if (StringUtils.isEmpty(storeName)) {
+                throw new BusinessException(BusinessCode.CODE_610037);
+            }
+        }
+        //最小手续费
+        BigDecimal min = payWithDrawalConfig.getMinMoney();
+        if (totalFee.compareTo(min) <= 0) {
+            LOGGER.info("提现金额须大于1元");
+            throw new BusinessException(BusinessCode.CODE_611107);
+        }
+        // 最大提现额度
+        BigDecimal max = payWithDrawalConfig.getMaxMoney();
+        if (totalFee.compareTo(max) > 0) {
+            LOGGER.info("单笔提现须小于2万元");
+            throw new BusinessException(BusinessCode.CODE_611108);
+        }
+    }
 	
 }

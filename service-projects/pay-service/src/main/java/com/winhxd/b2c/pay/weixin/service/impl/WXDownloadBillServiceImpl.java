@@ -1,26 +1,7 @@
 package com.winhxd.b2c.pay.weixin.service.impl;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.winhxd.b2c.common.domain.pay.condition.DownloadStatementCondition;
-import com.winhxd.b2c.common.domain.pay.model.PayFinancialBill;
-import com.winhxd.b2c.common.domain.pay.model.PayFinancialBillCount;
-import com.winhxd.b2c.common.domain.pay.model.PayStatement;
-import com.winhxd.b2c.common.domain.pay.model.PayStatementCount;
-import com.winhxd.b2c.common.domain.pay.model.PayStatementDownloadRecord;
+import com.winhxd.b2c.common.domain.pay.model.*;
 import com.winhxd.b2c.common.mq.event.EventMessageListener;
 import com.winhxd.b2c.common.mq.event.EventTypeHandler;
 import com.winhxd.b2c.common.util.JsonUtil;
@@ -29,19 +10,29 @@ import com.winhxd.b2c.pay.weixin.base.dto.PayFinancialBillDTO;
 import com.winhxd.b2c.pay.weixin.base.dto.PayStatementDTO;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayApi;
 import com.winhxd.b2c.pay.weixin.base.wxpayapi.WXPayConstants;
-import com.winhxd.b2c.pay.weixin.dao.PayFinancialBillCountMapper;
-import com.winhxd.b2c.pay.weixin.dao.PayFinancialBillMapper;
-import com.winhxd.b2c.pay.weixin.dao.PayStatementCountMapper;
-import com.winhxd.b2c.pay.weixin.dao.PayStatementDownloadRecordMapper;
-import com.winhxd.b2c.pay.weixin.dao.PayStatementMapper;
+import com.winhxd.b2c.pay.weixin.dao.*;
 import com.winhxd.b2c.pay.weixin.service.WXDownloadBillService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
  * @author yuluyuan
  *
  * 2018年8月15日
- * @param <E>
+ * @param <>
  */
 @Service
 public class WXDownloadBillServiceImpl implements WXDownloadBillService {
@@ -457,7 +448,7 @@ public class WXDownloadBillServiceImpl implements WXDownloadBillService {
 			billDate = DateUtils.addDays(new Date(), -1);
 		}
 
-		logger.info("开始下载对账单====：{}", sdf1.format(billDate));
+        logger.info("开始下载资金账单====：{}", sdf1.format(billDate));
 		//某天资金账单已下载,则不再重复下载
 		PayStatementDownloadRecord record = new PayStatementDownloadRecord();
 		record.setBillDate(billDate);

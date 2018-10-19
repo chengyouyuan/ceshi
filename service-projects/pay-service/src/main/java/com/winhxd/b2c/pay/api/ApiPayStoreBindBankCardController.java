@@ -1,17 +1,5 @@
 package com.winhxd.b2c.pay.api;
 
-import javax.annotation.Resource;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.BusinessCode;
 import com.winhxd.b2c.common.constant.CacheName;
@@ -27,11 +15,21 @@ import com.winhxd.b2c.common.util.GeneratePwd;
 import com.winhxd.b2c.common.util.MessageSendUtils;
 import com.winhxd.b2c.pay.service.impl.PayStoreBankCardServiceImpl;
 import com.winhxd.b2c.pay.service.impl.PayStoreWalletServiceImpl;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author zhanghuan
@@ -78,6 +76,43 @@ public class ApiPayStoreBindBankCardController {
         LOGGER.info("{}=--开始--{}", logTitle,condition);
         ResponseResult<Integer> result = new ResponseResult<>();
     	LOGGER.info("B端绑定银行卡参数storeBankCard----"+condition);
+		// 校验用户填入的信息是否完善
+		String bankName = condition.getBankName();
+		if (StringUtils.isEmpty(bankName)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610011);
+			throw new BusinessException(BusinessCode.CODE_610011);
+		}
+		String cardNumber = condition.getCardNumber();
+		if (StringUtils.isEmpty(cardNumber)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610012);
+			throw new BusinessException(BusinessCode.CODE_610012);
+		}
+		String bankUserName = condition.getBankUserName();
+		if (StringUtils.isEmpty(bankUserName)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610013);
+			throw new BusinessException(BusinessCode.CODE_610013);
+		}
+		String bandBranchName = condition.getBandBranchName();
+		if (StringUtils.isEmpty(bandBranchName)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610014);
+			throw new BusinessException(BusinessCode.CODE_610014);
+		}
+		String mobile = condition.getMobile();
+		if (StringUtils.isEmpty(mobile)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610015);
+			throw new BusinessException(BusinessCode.CODE_610015);
+		}
+		String verificationCode = condition.getVerificationCode();
+		if (StringUtils.isEmpty(verificationCode)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610016);
+			throw new BusinessException(BusinessCode.CODE_610016);
+		}
+		String swiftcode = condition.getSwiftCode();
+		if (StringUtils.isEmpty(swiftcode)) {
+			LOGGER.info("业务异常：" + BusinessCode.CODE_610029);
+			throw new BusinessException(BusinessCode.CODE_610029);
+		}
+
     	Integer res = storeBankCardService.saveStoreBankCard(condition);
     	result.setCode(res);
     	LOGGER.info("绑定银行卡返回值：-------"+res);

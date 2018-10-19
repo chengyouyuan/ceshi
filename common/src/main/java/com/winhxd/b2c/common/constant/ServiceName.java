@@ -35,4 +35,7 @@ public final class ServiceName {
     
     /**逆向快递物流服务*/
     public static final String HSC_PAY_SERVICE = "hsc-pay-service";
+
+    /**惠下单短信服务*/
+    public static final String SMS_SERVICE = "sms-service";
 }

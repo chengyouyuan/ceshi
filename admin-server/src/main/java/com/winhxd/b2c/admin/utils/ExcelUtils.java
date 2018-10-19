@@ -56,7 +56,7 @@ public class ExcelUtils {
             try {
                 return new ResponseEntity<byte[]>("导出数据为空！".getBytes("utf-8"), headers, HttpStatus.OK);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LOGGER.error("导出数据错误",e);
             }
         }
         HttpHeaders headers = new HttpHeaders();
@@ -176,7 +176,6 @@ public class ExcelUtils {
                 if (errorCount == 5) {// 显示错误的数量
                     break;
                 }
-
             }
         }
         res.setList(list);

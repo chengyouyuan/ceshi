@@ -62,9 +62,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerUserInfoVO> findCustomerUserByIds(List<Long> ids) {
-        if (ids == null || ids.size() == 0) {
-            return null;
-        }
         return customerUserInfoMapper.selectCustomerUserByIds(ids);
     }
 
@@ -78,9 +75,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerUserInfoVO findCustomerByToken(String token) {
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
         CustomerUserInfo customerUserInfo = customerUserInfoMapper.selectCustomerByToken(token);
         if (customerUserInfo != null) {
             CustomerUserInfoVO customerUserInfoVO = new CustomerUserInfoVO();

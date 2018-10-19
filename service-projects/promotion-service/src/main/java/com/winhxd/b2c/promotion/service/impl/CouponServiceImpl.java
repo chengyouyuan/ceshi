@@ -689,9 +689,8 @@ public class CouponServiceImpl implements CouponService {
         int count = couponTemplateSendMapper.checkCouponStatus(condition);
         if (count > 0) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
 
@@ -931,7 +930,7 @@ public class CouponServiceImpl implements CouponService {
             BigDecimal discountMoney = result.getData().getOrderInfoDetailVO().getDiscountMoney();
 
             for (CouponInvestorDetail couponInvestorDetail : couponInvestorDetails) {
-                if (couponInvestorDetail.getInvestorType().equals(CouponTemplateEnum.INVERTOR_H_TYPE.getCode())) {
+                if (String.valueOf(CouponTemplateEnum.INVERTOR_H_TYPE.getCode()).equals(couponInvestorDetail.getInvestorType())) {
                     couponInvestorAmountVO.setPlatformAmount(discountMoney.multiply(new BigDecimal(couponInvestorDetail.getPercent())));
                 } else {
                     couponInvestorAmountVO.setBrandAmount(discountMoney.multiply(new BigDecimal(couponInvestorDetail.getPercent())));
@@ -1367,7 +1366,7 @@ public class CouponServiceImpl implements CouponService {
                         couponVO.setAvailableStatus((int) CouponAvailableStatusEnum.AVAILABLE.getCode());
                         results.add(couponVO);
                     }
-                } else if (couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.PRODUCT_COUPON.getCode()))) {
+                } else if (String.valueOf(CouponApplyEnum.PRODUCT_COUPON.getCode()).equals(couponVO.getApplyRuleType())) {
                     //商品券
                     List<CouponApplyProduct> couponApplyProducts = couponApplyProductMapper.selectByApplyId(couponVO.getApplyId());
                     if (!couponApplyProducts.isEmpty()) {
@@ -1394,7 +1393,7 @@ public class CouponServiceImpl implements CouponService {
                             results.add(couponVO);
                         }
                     }
-                } else if (couponVO.getApplyRuleType().equals(String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()))) {
+                } else if (String.valueOf(CouponApplyEnum.BRAND_COUPON.getCode()).equals(couponVO.getApplyRuleType())) {
                     //品牌券
                     List<CouponApplyBrand> couponApplyBrands = couponApplyBrandMapper.selectByApplyId(couponVO.getApplyId());
                     if (!couponApplyBrands.isEmpty()) {

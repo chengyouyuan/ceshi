@@ -1,8 +1,10 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * @Date 2018/8/13 11:09
  * @Description  显示门店下优惠券的领取数量和使用数量
  **/
+@Data
 public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "模板id")
     private Long templeteId;
@@ -36,9 +39,11 @@ public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "优惠最大限额")
     private Float maxAmt;
     @ApiModelProperty(value = "有效期开始时间")
-    private String startTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date startTime;
     @ApiModelProperty(value = "有效期结束时间")
-    private String endTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date endTime;
     @ApiModelProperty(value = "适用对象类型")
     private Short applyRuleType;
     @ApiModelProperty(value = "适用对象类型")
@@ -50,197 +55,10 @@ public class CouponInStoreGetedAndUsedVO {
     @ApiModelProperty(value = "是否过期  0已过期  1未过期")
     private Short expire;
 
-
     @ApiModelProperty(value = "logo(品牌或品牌商)地址")
     private String logoUrl;
     @ApiModelProperty(value = "已推给用户数量")
     private Integer pushCount;
 
 
-    public String getLogoUrl() {
-        return logoUrl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
-
-    public Integer getPushCount() {
-        return pushCount;
-    }
-
-    public void setPushCount(Integer pushCount) {
-        this.pushCount = pushCount;
-    }
-
-    public Long getTempleteId() {
-        return templeteId;
-    }
-
-    public void setTempleteId(Long templeteId) {
-        this.templeteId = templeteId;
-    }
-
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
-
-    public Long getCouponActivityId() {
-        return couponActivityId;
-    }
-
-    public void setCouponActivityId(Long couponActivityId) {
-        this.couponActivityId = couponActivityId;
-    }
-
-    public Integer getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(Integer totalCount) {
-        this.totalCount = totalCount;
-    }
-
-
-    public Integer getUsedCount() {
-        return usedCount;
-    }
-
-    public void setUsedCount(Integer usedCount) {
-        this.usedCount = usedCount;
-    }
-
-    public Short getReduceType() {
-        return reduceType;
-    }
-
-    public void setReduceType(Short reduceType) {
-        this.reduceType = reduceType;
-    }
-
-    public Float getReduceAmt() {
-        return reduceAmt;
-    }
-
-    public void setReduceAmt(Float reduceAmt) {
-        this.reduceAmt = reduceAmt;
-    }
-
-    public Float getCost() {
-        return cost;
-    }
-
-    public void setCost(Float cost) {
-        this.cost = cost;
-    }
-
-    public Float getDiscountedAmt() {
-        return discountedAmt;
-    }
-
-    public void setDiscountedAmt(Float discountedAmt) {
-        this.discountedAmt = discountedAmt;
-    }
-
-    public Float getDiscounted() {
-        return discounted;
-    }
-
-    public void setDiscounted(Float discounted) {
-        this.discounted = discounted;
-    }
-
-    public Float getMaxAmt() {
-        return maxAmt;
-    }
-
-    public void setMaxAmt(Float maxAmt) {
-        this.maxAmt = maxAmt;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public Short getApplyRuleType() {
-        return applyRuleType;
-    }
-
-    public void setApplyRuleType(Short applyRuleType) {
-        this.applyRuleType = applyRuleType;
-    }
-
-    public Long getApplyId() {
-        return applyId;
-    }
-
-    public void setApplyId(Long applyId) {
-        this.applyId = applyId;
-    }
-
-    public List<BrandVO> getBrands() {
-        return brands;
-    }
-
-    public void setBrands(List<BrandVO> brands) {
-        this.brands = brands;
-    }
-
-    public List<ProductSkuVO> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ProductSkuVO> products) {
-        this.products = products;
-    }
-
-    public Short getExpire() {
-        return expire;
-    }
-
-    public void setExpire(Short expire) {
-        this.expire = expire;
-    }
-
-    @Override
-    public String toString() {
-        return "CouponInStoreGetedAndUsedVO{" +
-                "templeteId=" + templeteId +
-                ", storeId=" + storeId +
-                ", couponActivityId=" + couponActivityId +
-                ", totalCount=" + totalCount +
-                ", usedCount=" + usedCount +
-                ", reduceType=" + reduceType +
-                ", reduceAmt=" + reduceAmt +
-                ", cost=" + cost +
-                ", discountedAmt=" + discountedAmt +
-                ", discounted=" + discounted +
-                ", maxAmt=" + maxAmt +
-                ", startTime='" + startTime + '\'' +
-                ", endTime='" + endTime + '\'' +
-                ", applyRuleType=" + applyRuleType +
-                ", applyId=" + applyId +
-                ", brands=" + brands +
-                ", products=" + products +
-                ", expire=" + expire +
-                ", logoUrl='" + logoUrl + '\'' +
-                ", pushCount=" + pushCount +
-                '}';
-    }
 }

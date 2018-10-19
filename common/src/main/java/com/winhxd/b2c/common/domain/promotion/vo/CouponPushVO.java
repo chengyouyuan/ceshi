@@ -1,11 +1,13 @@
 package com.winhxd.b2c.common.domain.promotion.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -39,9 +41,11 @@ public class CouponPushVO {
     @ApiModelProperty(value = "优惠券类型 1新用户注册 2老用户活动", required=true)
     private String couponType;
     @ApiModelProperty(value = "开始时间", required=true)
-    private String activityStart;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy.MM.dd")
+    private Date activityStart;
     @ApiModelProperty(value = "结束时间", required=true)
-    private String activityEnd;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy.MM.dd")
+    private Date activityEnd;
     @ApiModelProperty(value = "优惠券状态状态(0-无效,1-已使用，2-未使用， 3-已过期,4-退回", required=true)
     private String useStatus;
     @ApiModelProperty(value = "优惠券是否可领取 0 已领取,1 可领取,2已领完", required=true)

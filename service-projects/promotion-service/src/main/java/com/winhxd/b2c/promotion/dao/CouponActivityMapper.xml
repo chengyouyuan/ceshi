@@ -276,8 +276,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE_FORMAT(cts.start_time,'%Y.%m.%d') activityStart,
-    DATE_FORMAT(cts.end_time,'%Y.%m.%d') activityEnd,
+      cts.start_time activityStart,
+      cts.end_time activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -330,8 +330,8 @@
     cgd.discounted_max_amt discountedMaxAmt,
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
-    DATE(cts.start_time) activityStart,
-    DATE(cts.end_time) activityEnd,
+      cts.start_time activityStart,
+      cts.end_time activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -385,8 +385,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE(cts.start_time) activityStart,
-    DATE(cts.end_time) activityEnd,
+      cts.start_time activityStart,
+      cts.end_time activityEnd,
     CASE
     WHEN cts.status = 2 THEN
     '未使用'
@@ -432,8 +432,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
-    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
+    cat.start_time activityStart,
+    cat.end_time activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,
@@ -472,8 +472,8 @@
     cap.apply_rule_type applyRuleType,
     cap.id applyId,
     ca.coupon_type couponType,
-    DATE_FORMAT(cat.start_time,'%Y.%m.%d') activityStart,
-    DATE_FORMAT(cat.end_time,'%Y.%m.%d') activityEnd,
+      cat.start_time activityStart,
+      cat.end_time activityEnd,
     cat.coupon_num_type couponNumType,
     cat.coupon_num couponNum,
     cat.customer_voucher_limit_type limitType,

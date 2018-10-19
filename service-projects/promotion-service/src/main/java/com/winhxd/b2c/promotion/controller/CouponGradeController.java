@@ -11,8 +11,9 @@ import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponGradeServiceClient;
 import com.winhxd.b2c.promotion.service.CouponGradeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 public class CouponGradeController implements CouponGradeServiceClient {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CouponGradeController.class);
+
      @Autowired
      private CouponGradeService couponGradeService;
 
@@ -39,11 +42,11 @@ public class CouponGradeController implements CouponGradeServiceClient {
     @Override
     public ResponseResult<Integer> addCouponGrade(@RequestBody CouponGradeCondition couponGradeCondition) {
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
-            int flag = couponGradeService.addCouponGrade(couponGradeCondition);
-            if(flag==0){
-                responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("添加成功");
-            }
+        int flag = couponGradeService.addCouponGrade(couponGradeCondition);
+        if (flag == 0) {
+            responseResult.setCode(BusinessCode.CODE_OK);
+            responseResult.setMessage("添加成功");
+        }
         return responseResult;
     }
 
@@ -57,6 +60,11 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<CouponGradeVO> viewCouponGradeDetail(@RequestParam("id") String id) {
+        LOGGER.info("查看详情参数id={}", id);
+        if (StringUtils.isBlank(id)) {
+            throw new BusinessException(BusinessCode.CODE_500010, "必填参数错误");
+        }
+
         ResponseResult<CouponGradeVO> responseResult = new ResponseResult<CouponGradeVO>();
         CouponGradeVO vo = couponGradeService.viewCouponGradeDetail(id);
         responseResult.setData(vo);
@@ -73,12 +81,18 @@ public class CouponGradeController implements CouponGradeServiceClient {
      */
     @Override
     public ResponseResult<Integer> updateCouponGradeValid(@RequestBody CouponSetToValidCondition condition) {
+        LOGGER.info("坎级规则设置无效参数 id:={},userId:={},userName:={}", condition.getId(), condition.getUserId(), condition.getUserName());
+        if (null == condition.getId() || null == condition.getUserId()
+                || StringUtils.isBlank(condition.getUserName())) {
+            throw new BusinessException(BusinessCode.CODE_500010, "必传参数错误");
+        }
+
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
-            int count = couponGradeService.updateCouponGradeValid(condition.getId(),condition.getUserId(),condition.getUserName());
-            if(count>0){
-                responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("设置成功");
-            }
+        int count = couponGradeService.updateCouponGradeValid(condition.getId(), condition.getUserId(), condition.getUserName());
+        if (count > 0) {
+            responseResult.setCode(BusinessCode.CODE_OK);
+            responseResult.setMessage("设置成功");
+        }
         return responseResult;
     }
 

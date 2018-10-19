@@ -14,10 +14,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -53,6 +57,12 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<Boolean> orderUseCoupon(@RequestBody OrderUseCouponCondition condition) {
 		LOGGER.info("=/coupon/orderUseCoupon-订单使用优惠券=--开始--{}--订单号{}", condition,condition.getOrderNo());
+
+		if (CollectionUtils.isEmpty(condition.getSendIds()) || condition.getCouponPrice() == null
+				|| null == condition.getOrderNo() || null == condition.getOrderPrice()) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		Boolean flag =  couponService.orderUseCoupon(condition);
 		result.setData(flag);
@@ -67,6 +77,11 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<Boolean> orderUntreadCoupon(@RequestBody OrderUntreadCouponCondition condition) {
 		LOGGER.info("=/coupon/orderUntreadCoupon-订单退回优惠券=--开始--{}", condition);
+
+		if (StringUtils.isBlank(condition.getOrderNo())) {
+			LOGGER.error("CouponController.orderUntreadCoupon-订单号为空");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		Boolean flag =  couponService.orderUntreadCoupon(condition);
 		result.setData(flag);
@@ -81,6 +96,10 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<Boolean> revokeCoupon(@RequestBody RevokeCouponCodition condition) {
 		LOGGER.info("=/coupon/revokeCoupon-撤回优惠券=--开始--{}", condition);
+		if (CollectionUtils.isEmpty(condition.getSendIds())) {
+			LOGGER.error("CouponController.revokeCoupon 优惠券发放id为空");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
 		ResponseResult<Boolean> result = new ResponseResult<>();
 		Boolean flag =  couponService.revokeCoupon(condition);
 		result.setData(flag);
@@ -97,6 +116,12 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<List<CouponVO>> couponListByOrder(@RequestBody OrderCouponCondition couponCondition) {
 		LOGGER.info("=/coupon/couponListByOrder-查询订单使用的优惠券列表=--开始--{}", couponCondition);
+
+		if (StringUtils.isBlank(couponCondition.getOrderNo())) {
+			LOGGER.error("CouponController.couponCondition-订单号为空");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+
 		ResponseResult<List<CouponVO>> result = new ResponseResult<>();
 		List<CouponVO> pages = couponService.couponListByOrder(couponCondition);
 		result.setData(pages);
@@ -126,6 +151,12 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<CouponDiscountVO> couponDiscountAmount(@RequestBody CouponPreAmountCondition couponCondition) {
 		LOGGER.info("=/coupon/couponDiscountAmount-订单可用的优惠券列表=--开始--{}", couponCondition);
+
+		if (CollectionUtils.isEmpty(couponCondition.getSendIds()) || CollectionUtils.isEmpty(couponCondition.getProducts())) {
+			LOGGER.error("CouponController.couponDiscountAmount 参数错误");
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+
 		ResponseResult<CouponDiscountVO> result = new ResponseResult<>();
 		CouponDiscountVO couponDiscountVO = couponService.couponDiscountAmount(couponCondition);
 		result.setData(couponDiscountVO);
@@ -163,6 +194,11 @@ public class CouponController implements CouponServiceClient{
 	})
 	public ResponseResult<List<CouponInvestorAmountVO>> getCouponInvestorAmount(@RequestBody CouponInvestorAmountCondition condition) {
 		LOGGER.info("=/promotion/5046/v1/getCouponInvestorAmount-根据订单获取优惠券费用承担信息=--开始--{}", condition);
+
+		if (CollectionUtils.isEmpty(condition.getOrderNos())) {
+			throw new BusinessException(BusinessCode.CODE_1007);
+		}
+
 		ResponseResult<List<CouponInvestorAmountVO>> result = new ResponseResult<>();
 		List<CouponInvestorAmountVO>  couponInvestorAmountVOs = couponService.getCouponInvestorAmount(condition);
 		result.setData(couponInvestorAmountVOs);

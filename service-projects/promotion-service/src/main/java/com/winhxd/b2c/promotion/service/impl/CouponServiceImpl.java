@@ -313,7 +313,8 @@ public class CouponServiceImpl implements CouponService {
         StoreUserInfoVO storeUserInfo = result.getData();
 
         List<CouponVO> couponVOS = couponActivityMapper.selectUnclaimedCouponList(storeUserInfo.getId());
-        List<CouponVO> results = new ArrayList<>();
+        int size = CollectionUtils.isEmpty(couponVOS) ? 0 : couponVOS.size();
+        List<CouponVO> results = new ArrayList<>(size);
         for(CouponVO couponVO : couponVOS){
             //根据优惠券总数限制用户领取
             if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.COUPON_SUM.getCode()))){
@@ -342,7 +343,7 @@ public class CouponServiceImpl implements CouponService {
                 }
             }
             //根据每个门店可领取的优惠券数量限制用户领取
-            if(couponVO.getCouponNumType().equals(String.valueOf(CouponActivityEnum.STORE_NUM.getCode()))){
+            if (String.valueOf(CouponActivityEnum.STORE_NUM.getCode()).equals(couponVO.getCouponNumType())) {
                 //获取某个优惠券门店领取的数量
                 int storeNum = couponMapper.getCouponNumByStoreId(couponVO.getActivityId(),couponVO.getTemplateId(),storeUserInfo.getId());
                 //获取某个优惠券用户领取的数量
@@ -474,13 +475,8 @@ public class CouponServiceImpl implements CouponService {
     public Boolean orderUseCoupon(OrderUseCouponCondition condition) {
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
 
-        List<Long> sendIds = condition.getSendIds();
-        if(sendIds.isEmpty() || condition.getCouponPrice() ==null || null ==condition.getOrderNo()||null == condition.getOrderPrice()){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-
-        for(int i =0 ;i<sendIds.size();i++){
-            CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(i));
+        for (int i = 0; i < condition.getSendIds().size(); i++) {
+            CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(condition.getSendIds().get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.ALREADY_USE.getCode());
             couponTemplateSend.setUpdated(new Date());
             couponTemplateSend.setUpdatedBy(customerUser.getCustomerId());
@@ -506,10 +502,6 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean orderUntreadCoupon(OrderUntreadCouponCondition condition) {
-        if(null ==condition.getOrderNo()){
-            logger.error("CouponSerciceImpl.orderUntreadCoupon-订单号为空");
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
         logger.info("根据订单退优惠券,订单号"+condition.getOrderNo());
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNo(condition.getOrderNo());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
@@ -544,15 +536,10 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public Boolean revokeCoupon(RevokeCouponCodition condition) {
-        List<Long> sendIds = condition.getSendIds();
-        if(sendIds.isEmpty()){
-            logger.error("CouponServiceImpl.revokeCoupon 优惠券发放id为空");
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        for(int i =0 ;i<sendIds.size();i++){
+        for (int i = 0; i < condition.getSendIds().size(); i++) {
             logger.info("=撤回优惠券,优惠券发放表ID{}", condition.getSendIds());
             CouponTemplateSend couponTemplateSend = new CouponTemplateSend();
-            couponTemplateSend.setId(sendIds.get(i));
+            couponTemplateSend.setId(condition.getSendIds().get(i));
             couponTemplateSend.setStatus(CouponActivityEnum.INVALYD.getCode());
             couponTemplateSendMapper.updateByPrimaryKeySelective(couponTemplateSend);
         }
@@ -566,32 +553,22 @@ public class CouponServiceImpl implements CouponService {
      */
     @Override
     public List<CouponVO> couponListByOrder(OrderCouponCondition couponCondition) {
-        if(null == couponCondition.getOrderNo()){
-            logger.error("CouponServiceImpl.couponCondition-订单号为空");
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
         List<CouponVO> couponVOS =  couponMapper.couponListByOrder(couponCondition.getOrderNo());
-
         return this.getCouponDetail(couponVOS);
-
     }
 
     @Override
     public CouponDiscountVO couponDiscountAmount(CouponPreAmountCondition couponCondition) {
-        List<Long> sendIds = couponCondition.getSendIds();
         CouponDiscountVO couponDiscountVO = new CouponDiscountVO();
         couponDiscountVO.setDiscountAmount(BigDecimal.valueOf(0));
-        if(sendIds.isEmpty()||null == couponCondition.getProducts()){
-            logger.error("CouponServiceImpl.couponDiscountAmount 参数错误");
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-        CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(sendIds.get(0));
+
+        CouponTemplateSend couponTemplateSend = couponTemplateSendMapper.selectByPrimaryKey(couponCondition.getSendIds().get(0));
         CouponTemplate couponTemplate = couponTemplateMapper.selectByPrimaryKey(couponTemplateSend.getTemplateId());
         CouponApply couponApply = couponApplyMapper.selectByPrimaryKey(couponTemplate.getApplyRuleId());
 
         couponDiscountVO.setCouponTitle(couponTemplate.getTitle());
         //通用券，按订单金额计算优惠金额
-        if(couponApply.getApplyRuleType().equals(CouponApplyEnum.COMMON_COUPON.getCode())){
+        if (String.valueOf(CouponApplyEnum.COMMON_COUPON.getCode()).equals(couponApply.getApplyRuleType())) {
             //计算订单总额
             BigDecimal amountPrice = new BigDecimal(0);
             for(CouponProductCondition couponProductCondition: couponCondition.getProducts()){
@@ -921,15 +898,12 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<CouponInvestorAmountVO> getCouponInvestorAmount(CouponInvestorAmountCondition condition) {
-        List<CouponInvestorAmountVO> couponInvestorAmountVOs= new ArrayList<>();
-        if(null == condition.getOrderNos()){
-            throw new BusinessException(BusinessCode.CODE_1007);
-        }
-
         List<CouponTemplateUse> couponTemplateUses = couponTemplateUseMapper.selectByOrderNos(condition.getOrderNos());
-        if(couponTemplateUses.isEmpty()){
+        if (CollectionUtils.isEmpty(couponTemplateUses)) {
             throw new BusinessException(BusinessCode.CODE_500007);
         }
+        // 初始化list size
+        List<CouponInvestorAmountVO> couponInvestorAmountVOs = new ArrayList<>(couponTemplateUses.size());
         for(CouponTemplateUse couponTemplateUse : couponTemplateUses){
             CouponInvestorAmountVO couponInvestorAmountVO = new CouponInvestorAmountVO();
             CouponTemplate couponTemplate= couponTemplateMapper.selectByPrimaryKey(couponTemplateUse.getTemplateId());
@@ -943,7 +917,7 @@ public class CouponServiceImpl implements CouponService {
             }
 
             List<CouponInvestorDetail> couponInvestorDetails = couponInvestorDetailMapper.selectByInvestorId(couponInvestor.getId());
-            if(couponInvestorDetails.isEmpty()){
+            if (CollectionUtils.isEmpty(couponInvestorDetails)) {
                 throw new BusinessException(BusinessCode.CODE_500009);
             }
             //调用订单系统获取订单信息

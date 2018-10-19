@@ -19,20 +19,18 @@ import com.winhxd.b2c.store.service.StoreProductStatisticsService;
  */
 @Service
 public class StoreProductStatisticsServiceImpl implements StoreProductStatisticsService{
+
     @Autowired
     StoreProductStatisticsMapper storeProductStatisticsMapper;
-
 
 	@Override
 	public void saveStoreProductStatistics(StoreProductStatistics record) {
 		storeProductStatisticsMapper.insertSelective(record);
-		
 	}
 
 	@Override
 	public void modifyStoreProductStatistics(StoreProductStatistics record) {
 		storeProductStatisticsMapper.updateByPrimaryKeySelective(record);
-		
 	}
 
 	@Override

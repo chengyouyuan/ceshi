@@ -30,12 +30,13 @@ public class BusinessDecoder implements Decoder {
     @Override
     public Object decode(Response response, Type type) throws IOException, DecodeException, FeignException {
         Object obj = delegate.decode(response, type);
-        if (obj instanceof ResponseResult) {
-            ResponseResult result = (ResponseResult) obj;
-            if (result.getCode() != 0) {
-                throw new BusinessException(result.getCode(), result.getMessage());
-            }
-        }
+        //feign内部接口出现错误码，需要返回obj对象，所以先注释掉
+//        if (obj instanceof ResponseResult) {
+//            ResponseResult result = (ResponseResult) obj;
+//            if (result.getCode() != 0 && result.getCode() != 200) {
+//                throw new BusinessException(result.getCode(), result.getMessage());
+//            }
+//        }
         return obj;
     }
 }

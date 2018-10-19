@@ -90,10 +90,6 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "服务器内部错误！")})
     @PostMapping(value = "/1000/v1/getStoreRegionStatus", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> getStoreRegionStatus(@RequestBody ApiCondition apiCondition) {
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店条件验证接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店条件验证接口 门店用户编码:{}", storeCustomerId);
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
@@ -143,10 +139,6 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1001/v1/checkStoreInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<OpenStoreVO> checkStoreInfo(@RequestBody ApiCondition apiCondition) {
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店未完善信息接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店未完善信息接口 门店用户编码:{}", storeCustomerId);
         ResponseResult<OpenStoreVO> responseResult = new ResponseResult<>();
@@ -174,10 +166,6 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1002/v1/getStoreBaseInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBaseInfoVO> getStoreBaseInfo(@RequestBody ApiCondition apiCondition) {
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店基础信息查询接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息查询接口 门店用户编码:{}", storeCustomerId);
         ResponseResult<StoreBaseInfoVO> responseResult = new ResponseResult<>();
@@ -235,10 +223,6 @@ public class ApiOpenStoreController {
             logger.warn("惠小店开店基础信息保存接口 modifyStoreBaseInfo,参数错误:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
             throw new BusinessException(BusinessCode.CODE_200005);
         }
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店基础信息保存接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店基础信息保存接口 门店用户编码:{}", storeCustomerId);
         logger.info("惠小店开店基础信息保存接口 入参:{}", JsonUtil.toJSONString(storeBaseInfoCondition));
@@ -259,10 +243,6 @@ public class ApiOpenStoreController {
             @ApiResponse(code = BusinessCode.CODE_200004, message = "门店信息不存在！")})
     @PostMapping(value = "/1004/v1/getStoreBusinessInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreBusinessInfoVO> getStoreBusinessInfo(@RequestBody ApiCondition apiCondition) {
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店开店店铺信息查询接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         logger.info("惠小店开店店铺信息查询接口 门店用户编码:{}", storeCustomerId);
         StoreUserInfo storeUserInfo = storeService.findByStoreCustomerId(storeCustomerId);
@@ -395,10 +375,6 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1048/v1/getStoreManageInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreManageInfoVO> getStoreManageInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
-        if (UserContext.getCurrentStoreUser() == null) {
-            logger.error("惠小店管理首页获取数据接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
         logger.info("惠小店管理首页获取数据接口 门店用户编码:{}", storeCustomerId);
@@ -457,12 +433,8 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreUserInfoVO> checkOrBindingStoreInfo(@RequestBody StoreCheckBindingCondition bindingCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (null == customerUser) {
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
 
         StoreBindingStatus bindingStatus = StoreBindingStatus.AdreadyBinding;
-
         if(null != bindingCondition.getStoreId()){
             bindingStatus = storeService.bindCustomer(customerUser.getCustomerId(),bindingCondition.getStoreId());
             logger.info("用户customerId=" + customerUser.getCustomerId() + ",尝试绑定门店Id=" + bindingCondition.getStoreId() + ",绑定结果：" + bindingStatus.getDesc());
@@ -495,17 +467,17 @@ public class ApiOpenStoreController {
      * @Description 根据门店id查询月销售量
      */
     public Integer queryMonthlySkuQuantity(Long storeId) {
-        if (storeId == null) {
-            return null;
+        Integer skuQuantity = null;
+        if (null != storeId) {
+            StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
+            condition.setStoreId(storeId);
+            condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
+            StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
+            if(storeOrderSalesSummaryVO != null) {
+                skuQuantity = storeOrderSalesSummaryVO.getSkuQuantity();
+            }
         }
-        StoreOrderSalesSummaryCondition condition = new StoreOrderSalesSummaryCondition();
-        condition.setStoreId(storeId);
-        condition.setQueryPeriodType(StoreOrderSalesSummaryCondition.MONTH_ORDER_SALES_QUERY_TYPE);
-        StoreOrderSalesSummaryVO storeOrderSalesSummaryVO = orderServiceClient.queryStoreOrderSalesSummaryByDateTimePeriod(condition).getData();
-        if(storeOrderSalesSummaryVO != null) {
-            return storeOrderSalesSummaryVO.getSkuQuantity();
-        }
-        return null;
+        return skuQuantity;
     }
 
     /**
@@ -521,14 +493,6 @@ public class ApiOpenStoreController {
     public ResponseResult<StoreUserInfoVO> findStoreUserInfo(ApiCondition apiCondition) {
         ResponseResult<StoreUserInfoVO> result = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            logger.error("ApiOpenStoreController -> findStoreUserInfo未获取到门店登录信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
-        if (storeUser.getBusinessId() == null) {
-            logger.error("StoreServiceController -> findStoreUserInfo获取当前登录用户的id为空");
-            throw new BusinessException(BusinessCode.CODE_200002);
-        }
         StoreUserInfoVO data = storeService.findStoreUserInfo(storeUser.getBusinessId());
         if (data == null) {
             result.setCode(BusinessCode.CODE_200004);
@@ -548,11 +512,6 @@ public class ApiOpenStoreController {
     @PostMapping(value = "/1026/v1/getStoreTurnoverInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<StoreManageInfoVO> getStoreTurnoverInfo(@RequestBody ApiCondition apiCondition) {
         ResponseResult<StoreManageInfoVO> responseResult = new ResponseResult<>();
-        if (UserContext.getCurrentStoreUser() == null) {
-            responseResult.setCode(BusinessCode.CODE_1001);
-            logger.error("惠小店获取营业数据查询接口 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1001);
-        }
         Long storeCustomerId = UserContext.getCurrentStoreUser().getStoreCustomerId();
         Long businessId = UserContext.getCurrentStoreUser().getBusinessId();
         logger.info("惠小店获取营业数据查询接口 门店用户编码:{}", storeCustomerId);

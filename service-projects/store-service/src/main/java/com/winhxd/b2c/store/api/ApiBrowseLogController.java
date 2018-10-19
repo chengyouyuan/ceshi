@@ -41,15 +41,10 @@ public class ApiBrowseLogController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！")})
     @PostMapping(value = "/1016/v1/saveBrowseLogLogin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogin(@RequestBody StoreBrowseLogCondition condition) {
-        if (UserContext.getCurrentCustomerUser() == null) {
-            logger.info("C端用户浏览门店进入日志 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         if (condition.getStoreId() == null) {
             logger.error("C端用户浏览门店进入日志 saveBrowseLogLogout, 参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);
         }
-
         Long customerId = UserContext.getCurrentCustomerUser().getCustomerId();
         logger.info("C端用户浏览门店进入日志 入参为 storeId：{}, customerId:{}", condition.getStoreId(), customerId);
         storeBrowseLogService.saveBrowseLogLogin(condition.getStoreId(),customerId);
@@ -62,10 +57,6 @@ public class ApiBrowseLogController {
             @ApiResponse(code = BusinessCode.CODE_1002, message = "登录凭证无效！")})
     @PostMapping(value = "/1017/v1/saveBrowseLogLogout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseResult<Integer> saveBrowseLogLogout(@RequestBody StoreBrowseLogCondition condition) {
-        if (UserContext.getCurrentCustomerUser() == null) {
-            logger.info("C端用户浏览门店退出日志 未获取到当前用户信息");
-            throw new BusinessException(BusinessCode.CODE_1002);
-        }
         if (condition.getStoreId() == null) {
             logger.error("C端用户浏览门店退出日志 saveBrowseLogLogout,storeCustomerId 参数为空");
             throw new BusinessException(BusinessCode.CODE_200002);

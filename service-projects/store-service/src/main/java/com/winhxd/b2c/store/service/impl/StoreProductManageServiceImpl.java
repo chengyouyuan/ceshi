@@ -277,44 +277,32 @@ public class StoreProductManageServiceImpl implements StoreProductManageService 
 	}
 
 	@Override
-	public void modifyStoreProdManageByBackStage(BackStageStoreProdCondition condition) {
-		AdminUser adminUser=UserContext.getCurrentAdminUser();
-		if(adminUser==null){
-			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage用户未登入");
-			throw new BusinessException(BusinessCode.CODE_1002);
+	public void modifyStoreProdManageByBackStage(AdminUser adminUser,BackStageStoreProdCondition condition) {
+		short status=condition.getProdStatus();
+		if(StoreProductStatusEnum.DELETED.getStatusCode().equals(status)){
+			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage删除门店商品信息操作无效！没有权限");
+			throw new BusinessException(BusinessCode.CODE_1003);
 		}
-		if(condition!=null&&condition.getProdStatus()!=null&&condition.getId()!=null){
-			short status=condition.getProdStatus();
-			if(StoreProductStatusEnum.DELETED.getStatusCode().equals(status)){
-				logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage删除门店商品信息操作无效！没有权限");
-				throw new BusinessException(BusinessCode.CODE_1003);
-			}
-			//主键
-			Long id=condition.getId();
-			//查询门店商品信息
-			StoreProductManage spm=this.storeProductManageMapper.selectByPrimaryKey(id);
-			if(spm==null){
-				logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为："+id+"的门店商品信息");
-				throw new BusinessException(BusinessCode.CODE_1001);
-			}
-			//传过来如果状态是下架状态表示：下架--》上架（是个上架操作）与之相反
-			if(StoreProductStatusEnum.UNPUTAWAY.getStatusCode().equals(status)){
-				//上架
-				spm.setPutawayTime(new Date());
-				spm.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
-			}else{
-				spm.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
-			}
-			spm.setUpdated(new Date());
-			spm.setUpdatedBy(adminUser.getId());
-			spm.setUpdatedByName(adminUser.getUsername());
-			
-			this.storeProductManageMapper.updateByPrimaryKeySelective(spm);
+		//主键
+		Long id=condition.getId();
+		//查询门店商品信息
+		StoreProductManage spm=this.storeProductManageMapper.selectByPrimaryKey(id);
+		if(spm==null){
+			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage查询不到id为："+id+"的门店商品信息");
+			throw new BusinessException(BusinessCode.CODE_1001);
+		}
+		//传过来如果状态是下架状态表示：下架--》上架（是个上架操作）与之相反
+		if(StoreProductStatusEnum.UNPUTAWAY.getStatusCode().equals(status)){
+			//上架
+			spm.setPutawayTime(new Date());
+			spm.setProdStatus(StoreProductStatusEnum.PUTAWAY.getStatusCode());
 		}else{
-			logger.error("StoreProductManageService ->modifyStoreProdManageByBackStage参数异常,condition:"+condition);
-			throw new BusinessException(BusinessCode.CODE_1007);
+			spm.setProdStatus(StoreProductStatusEnum.UNPUTAWAY.getStatusCode());
 		}
-		
+		spm.setUpdated(new Date());
+		spm.setUpdatedBy(adminUser.getId());
+		spm.setUpdatedByName(adminUser.getUsername());
+		storeProductManageMapper.updateByPrimaryKeySelective(spm);
 	}
 
 }

@@ -220,10 +220,6 @@ public class ApiStoreProductManageController {
         ResponseResult<Void> responseResult = new ResponseResult<>();
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null || null == storeUser.getBusinessId()) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
         logger.info("B端商品操作接口入参为：{}", condition);
         // 参数校验
         if (!checkParam(condition)) {
@@ -315,10 +311,6 @@ public class ApiStoreProductManageController {
         }
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
         Long storeId = storeUser.getBusinessId();
         StoreSubmitProduct storeSubmitProduct = new StoreSubmitProduct();
         BeanUtils.copyProperties(condition, storeSubmitProduct);
@@ -348,18 +340,13 @@ public class ApiStoreProductManageController {
         }
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_101501);
-            return responseResult;
-        }
         Long storeId = storeUser.getBusinessId();
         condition.setStoreId(storeId);
-
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
 
         PagedList<StoreSubmitProductVO> pageList = storeSubmitProductService.findSimpelVOByCondition(condition);
         
-        if (pageList == null||pageList.getData()==null) {
+        if (pageList == null || pageList.getData() == null) {
             pageList = new PagedList<>();
         }else{
             List<String> skuCodes=new ArrayList<>();
@@ -375,7 +362,7 @@ public class ApiStoreProductManageController {
                     }
                 }
             }
-            if(skuCodes.size()>0){
+            if(skuCodes.size() > 0){
                 ProductCondition pCondition=new ProductCondition();
                 pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
                 pCondition.setProductSkus(skuCodes);
@@ -410,11 +397,6 @@ public class ApiStoreProductManageController {
             @RequestBody StorePutawayProdSearchCondition condition) {
         ResponseResult<PagedList<ProductVO>> responseResult = new ResponseResult<>();
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (null == storeUser || null == storeUser.getBusinessId() || null == storeUser.getStoreCustomerId()) {
-            logger.error("B端搜索商品接口:登录凭证为空");
-            responseResult.setCode(BusinessCode.CODE_102701);
-            return new ResponseResult<>(BusinessCode.CODE_102701);
-        }
         if (!verifyParam(condition)) {
             responseResult.setCode(BusinessCode.CODE_102702);
             return new ResponseResult<>(BusinessCode.CODE_102702);
@@ -484,10 +466,6 @@ public class ApiStoreProductManageController {
         }
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
         Long storeId = storeUser.getBusinessId();
         condition.setStoreId(storeId);
         PageHelper.startPage(condition.getPageNo(), condition.getPageSize());
@@ -531,7 +509,6 @@ public class ApiStoreProductManageController {
 
             }
         }
-
         responseResult.setData(list);
         logger.info("B端我的商品管理接口返参为：{}", responseResult);
         return responseResult;
@@ -557,10 +534,6 @@ public class ApiStoreProductManageController {
         logger.info("B端获取门店未设置价格上架商品数量接口入参为：{}", condition);
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
         Long storeId = storeUser.getBusinessId();
 
         vo.setStoreId(storeId);
@@ -573,19 +546,19 @@ public class ApiStoreProductManageController {
         spmcondition.setProdStatus(Arrays.asList(StoreProductStatusEnum.PUTAWAY.getStatusCode()));
         List<String> skuCodes = storeProductManageService.countSkusByConditon(spmcondition);
         logger.info("门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+skuCodes+",个数："+skuCodes.size());
-        int count=0;
+        int count = 0;
         List<String> validSkuCode=new ArrayList<>();
         //调用商品接口查询商品是否skuCode存在
-        if(skuCodes.size()>0){
+        if(skuCodes.size() > 0){
             ProductCondition pCondition=new ProductCondition();
             pCondition.setSearchSkuCode(SearchSkuCodeEnum.IN_SKU_CODE);
             pCondition.setProductSkus(skuCodes);
             ResponseResult<List<ProductSkuVO>> pResult= productServiceClient.getProductSkus(pCondition);  
             if(pResult!=null&&BusinessCode.CODE_OK==pResult.getCode()&&pResult.getData()!=null){
                 for(String skuCode:skuCodes){
-                    for(ProductSkuVO p:pResult.getData()){
+                    for(ProductSkuVO p : pResult.getData()){
                         if(p.getSkuCode().equals(skuCode)){
-                            count=count+1;
+                            count = count+1;
                             validSkuCode.add(skuCode);
                             break;
                         }
@@ -595,14 +568,13 @@ public class ApiStoreProductManageController {
         }
         logger.info("最终有效门店商品表：storeId:"+storeId+"上架商品未设置价格的skucode："+validSkuCode+",个数："+validSkuCode.size());
         // 设置是否有未设置价格的商品
-        if (count >0) {
+        if (count > 0) {
             vo.setCheckResult(true);
         } else {
             vo.setCheckResult(false);
         }
         // 设置为设置价格商品的数量
         vo.setNoSetPriceCount(count);
-
         responseResult.setData(vo);
         logger.info("B端获取门店未设置价格上架商品数量接口返参为：{}", responseResult);
         return responseResult;
@@ -635,11 +607,7 @@ public class ApiStoreProductManageController {
 
         // 获取当前门店用户
         StoreUser storeUser = UserContext.getCurrentStoreUser();
-        if (storeUser == null) {
-            responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-            return responseResult;
-        }
-        logger.info("提报商品图片上传接口：imageFiles:" + imageFiles);
+        logger.info("提报商品图片上传接口：imageFiles:{}",imageFiles);
         if (imageFiles == null) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_104901);
             return responseResult;
@@ -651,7 +619,6 @@ public class ApiStoreProductManageController {
             for (MultipartFile f : file) {
                 multipartFiles.add(f);
             }
-
         }
 
         List<MultipartFile> file1 = imageFiles.getFiles("file1");
@@ -660,19 +627,16 @@ public class ApiStoreProductManageController {
                 multipartFiles.add(f);
             }
         }
-
         List<MultipartFile> file2 = imageFiles.getFiles("file2");
         if (file2 != null && file2.size() > 0) {
             for (MultipartFile f : file2) {
                 multipartFiles.add(f);
             }
         }
-
         if (multipartFiles.size() > MAX_UPLOAD_IMAGE_COUNT || multipartFiles.size() <= 0) {
             responseResult = new ResponseResult<>(BusinessCode.CODE_100017);
             return responseResult;
         }
-
         List<ProductImageVO> imageVOList = new ArrayList<>();
         for (MultipartFile mFile : multipartFiles) {
             BaseImageFile baseImageFile =imageUploadUtil.uploadImage(mFile.getOriginalFilename(),mFile.getInputStream(),null);
@@ -682,7 +646,6 @@ public class ApiStoreProductManageController {
                 imageVO.setUrl(baseImageFile.getUrl());
                 imageVOList.add(imageVO);
             }
-
         }
         PagedList<ProductImageVO> pagedList=new PagedList<>();
         pagedList.setData(imageVOList);

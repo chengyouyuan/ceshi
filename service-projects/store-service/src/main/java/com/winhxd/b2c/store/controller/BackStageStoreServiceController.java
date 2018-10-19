@@ -6,6 +6,7 @@ import java.util.List;
 import com.winhxd.b2c.common.cache.Cache;
 import com.winhxd.b2c.common.constant.CacheName;
 import com.winhxd.b2c.common.domain.store.model.StoreStatusEnum;
+import com.winhxd.b2c.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,17 +217,11 @@ public class BackStageStoreServiceController implements BackStageStoreServiceCli
 	public ResponseResult<Void> operateStoreProdManage(@RequestBody BackStageStoreProdCondition condition) {
 		ResponseResult<Void> responseResult = new ResponseResult<>();
 		AdminUser adminUser = UserContext.getCurrentAdminUser();
-
-		if (adminUser == null) {
-			responseResult = new ResponseResult<>(BusinessCode.CODE_1002);
-			return responseResult;
-		}
 		if (condition == null || condition.getProdStatus() == null || condition.getId() == null) {
 			responseResult.setCode(BusinessCode.CODE_1007);
 			responseResult.setMessage("参数无效！");
 		}
-
-		storeProductManageService.modifyStoreProdManageByBackStage(condition);
+		storeProductManageService.modifyStoreProdManageByBackStage(adminUser,condition);
 
 		return responseResult;
 	}

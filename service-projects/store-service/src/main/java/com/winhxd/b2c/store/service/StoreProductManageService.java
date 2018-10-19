@@ -3,6 +3,7 @@ package com.winhxd.b2c.store.service;
 import java.util.List;
 import java.util.Map;
 
+import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.store.condition.BackStageStoreProdCondition;
@@ -137,5 +138,5 @@ public interface StoreProductManageService {
 	* @author wuyuanbao
 	* @date 2018年8月13日下午1:47:50
 	 */
-	void modifyStoreProdManageByBackStage(BackStageStoreProdCondition condition);
+	void modifyStoreProdManageByBackStage(AdminUser adminUser,BackStageStoreProdCondition condition);
 }

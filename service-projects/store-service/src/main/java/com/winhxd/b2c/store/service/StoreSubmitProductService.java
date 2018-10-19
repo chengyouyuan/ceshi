@@ -26,16 +26,7 @@ public interface StoreSubmitProductService {
 	* @date 2018年8月8日下午6:15:42
 	 */
 	void saveStoreSubmitProduct(Long storeId,StoreSubmitProduct storeSubmitProduct);
-	/**
-	 * 门店更新
-	* @Title: modifyStoreSubmitProductByStore 
-	* @Description: TODO 
-	* @param storeId
-	* @param storeSubmitProduct void
-	* @author wuyuanbao
-	* @date 2018年8月8日下午6:25:52
-	 */
-	void modifyStoreSubmitProductByStore(Long storeId,StoreSubmitProduct storeSubmitProduct);
+
 	/**
 	 * 后台更新
 	* @Title: modifyStoreSubmitProductByAdmin 

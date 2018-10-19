@@ -90,16 +90,15 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfoVO findStoreUserInfo(Long storeUserId) {
         StoreUserInfo info = storeUserInfoMapper.selectByPrimaryKey(storeUserId);
-        StoreUserInfoVO infoVO1 = new StoreUserInfoVO();
+        StoreUserInfoVO infoVO1 = null;
         if (info != null) {
+            infoVO1 = new StoreUserInfoVO();
             BeanUtils.copyProperties(info, infoVO1);
             if(StringUtils.isBlank(infoVO1.getStoreShortName())){
                 infoVO1.setStoreShortName(infoVO1.getStoreName());
             }
-            return infoVO1;
         }
-        return null;
-
+        return infoVO1;
     }
 
     @Override
@@ -180,9 +179,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreUserInfoVO findStoreUserInfoByCustomerId(Long customerUserId) {
         StoreUserInfo storeUserInfo = storeUserInfoMapper.selectStoreUserInfoByCustomerId(customerUserId);
-        if (storeUserInfo == null) {
-            return null;
-        }
         StoreUserInfoVO infoVo = new StoreUserInfoVO();
         BeanUtils.copyProperties(storeUserInfo, infoVo);
         return infoVo;
@@ -195,9 +191,6 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<StoreUserInfoVO> findStoreUserInfoList(Set<Long> ids) {
-        if (ids == null || ids.size() == 0) {
-            return null;
-        }
         List<StoreUserInfo> userInfos = storeUserInfoMapper.selectStoreUserByIds(ids);
         List<StoreUserInfoVO> list = new ArrayList<>();
         if (userInfos != null && userInfos.size() > 0) {
@@ -208,7 +201,6 @@ public class StoreServiceImpl implements StoreService {
             }
         }
         return list;
-
     }
 
     @Override

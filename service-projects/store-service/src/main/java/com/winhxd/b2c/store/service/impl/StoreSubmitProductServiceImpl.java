@@ -39,107 +39,67 @@ public class StoreSubmitProductServiceImpl implements StoreSubmitProductService 
 	
 	@Override
 	public void saveStoreSubmitProduct(Long storeId, StoreSubmitProduct storeSubmitProduct) {
-		
-		if(storeId!=null&&storeSubmitProduct!=null){
-			//查询门店用户信息
-			StoreUserInfo storeUserInfo=storeUserInfoMapper.selectByPrimaryKey(storeId);
-			if(storeUserInfo==null){
-	            logger.error("StoreSubmitProductService ->saveStoreSubmitProduct查询store用户信息不存在！");
-	            throw new BusinessException(BusinessCode.CODE_200004);
-			}
-			storeSubmitProduct.setCreated(new Date());
-			storeSubmitProduct.setStoreName(storeUserInfo.getStoreName());
-			storeSubmitProductMapper.insertSelective(storeSubmitProduct);
-		}else{
-			logger.error("StoreSubmitProductService ->saveStoreSubmitProduct参数异常,storeId:"+storeId+",StoreSubmitProduct:"+storeSubmitProduct);
-			throw new BusinessException(BusinessCode.CODE_1001);
-		}
-		
-	}
 
-	@Override
-	public void modifyStoreSubmitProductByStore(Long storeId, StoreSubmitProduct storeSubmitProduct) {
-		// TODO Auto-generated method stub
-		
+		//查询门店用户信息
+		StoreUserInfo storeUserInfo = storeUserInfoMapper.selectByPrimaryKey(storeId);
+		storeSubmitProduct.setCreated(new Date());
+		storeSubmitProduct.setStoreName(storeUserInfo.getStoreName());
+		storeSubmitProductMapper.insertSelective(storeSubmitProduct);
 	}
 
 	@Override
 	public void modifyStoreSubmitProductByAdmin(AdminUser adminUser, StoreSubmitProduct storeSubmitProduct) {
-		if(adminUser!=null&&storeSubmitProduct!=null){
-			if(storeSubmitProduct.getId()>0){
-				storeSubmitProduct.setUpdated(new Date());
-				storeSubmitProduct.setUpdatedBy(adminUser.getId());
-				storeSubmitProduct.setUpdatedByName(adminUser.getUsername());
-				storeSubmitProductMapper.updateByPrimaryKeySelective(storeSubmitProduct);
-			}else{
-				logger.error("StoreSubmitProductService ->modifyStoreSubmitProductByAdmin提报商品ID为空");
-				throw new BusinessException(BusinessCode.CODE_1001);
-			}
-		
+		if(storeSubmitProduct.getId()>0){
+			storeSubmitProduct.setUpdated(new Date());
+			storeSubmitProduct.setUpdatedBy(adminUser.getId());
+			storeSubmitProduct.setUpdatedByName(adminUser.getUsername());
+			storeSubmitProductMapper.updateByPrimaryKeySelective(storeSubmitProduct);
 		}else{
-			logger.error("StoreSubmitProductService ->modifyStoreSubmitProductByAdmin参数异常,adminUser:"+adminUser+",storeSubmitProduct:"+storeSubmitProduct);
+			logger.error("StoreSubmitProductService ->modifyStoreSubmitProductByAdmin提报商品ID为空");
 			throw new BusinessException(BusinessCode.CODE_1001);
 		}
-		
 	}
 
 	@Override
 	public PagedList<StoreSubmitProductVO> findSimpelVOByCondition(StoreSubmitProductCondition condition) {
-		if(condition!=null){
-			Page<StoreSubmitProductVO> page=storeSubmitProductMapper.selectVoByCondition(condition);
-			PagedList<StoreSubmitProductVO> list=new PagedList<>();
-			list.setData(page.getResult());
-			list.setTotalRows(page.getTotal());
-			list.setPageNo(condition.getPageNo());
-			list.setPageSize(condition.getPageSize());
-			return list;
-		}else{
-			logger.error("StoreSubmitProductService ->findSimpelVOByCondition参数异常,condition:"+condition);
-			throw new BusinessException(BusinessCode.CODE_1001);
-		}
-		
+		Page<StoreSubmitProductVO> page=storeSubmitProductMapper.selectVoByCondition(condition);
+		PagedList<StoreSubmitProductVO> list=new PagedList<>();
+		list.setData(page.getResult());
+		list.setTotalRows(page.getTotal());
+		list.setPageNo(condition.getPageNo());
+		list.setPageSize(condition.getPageSize());
+		return list;
 	}
 
 	@Override
 	public PagedList<BackStageStoreSubmitProdVO> findBackStageVOByCondition(
 			BackStageStoreSubmitProdCondition condition) {
 		PagedList<BackStageStoreSubmitProdVO> list=null;
-		if(condition!=null){
-	
-			Page<BackStageStoreSubmitProdVO> page=storeSubmitProductMapper.selectBackStageVOByCondition(condition);
-			if(page.getResult()!=null){
-			    for(BackStageStoreSubmitProdVO p:page.getResult()){
-			        short status=p.getProdStatus();
-			        if(StoreSubmitProductStatusEnum.CREATE.getStatusCode()==status){
-			            p.setProdStatusStr(StoreSubmitProductStatusEnum.CREATE.getStatusDes());
-			        }else if(StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
-			            p.setProdStatusStr(StoreSubmitProductStatusEnum.PASS.getStatusDes());
-                    }else if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status){
-                        p.setProdStatusStr(StoreSubmitProductStatusEnum.NOTPASS.getStatusDes());
-                    }else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
-                        p.setProdStatusStr(StoreSubmitProductStatusEnum.ADDPROD.getStatusDes());
-                    }
-			    }
+		Page<BackStageStoreSubmitProdVO> page=storeSubmitProductMapper.selectBackStageVOByCondition(condition);
+		if(page.getResult()!=null){
+			for(BackStageStoreSubmitProdVO p:page.getResult()){
+				short status=p.getProdStatus();
+				if(StoreSubmitProductStatusEnum.CREATE.getStatusCode()==status){
+					p.setProdStatusStr(StoreSubmitProductStatusEnum.CREATE.getStatusDes());
+				}else if(StoreSubmitProductStatusEnum.PASS.getStatusCode()==status){
+					p.setProdStatusStr(StoreSubmitProductStatusEnum.PASS.getStatusDes());
+				}else if(StoreSubmitProductStatusEnum.NOTPASS.getStatusCode()==status){
+					p.setProdStatusStr(StoreSubmitProductStatusEnum.NOTPASS.getStatusDes());
+				}else if(StoreSubmitProductStatusEnum.ADDPROD.getStatusCode()==status){
+					p.setProdStatusStr(StoreSubmitProductStatusEnum.ADDPROD.getStatusDes());
+				}
 			}
-			list=new PagedList<>();
-			list.setPageNo(condition.getPageNo());
-			list.setPageSize(condition.getPageSize());
-			list.setData(page.getResult());
-			list.setTotalRows(page.getTotal());
-			return list;
-		}else{
-			logger.error("StoreSubmitProductService ->findBackStageVOByCondition参数异常,condition:"+condition);
-			throw new BusinessException(BusinessCode.CODE_1007);
 		}
-		
+		list=new PagedList<>();
+		list.setPageNo(condition.getPageNo());
+		list.setPageSize(condition.getPageSize());
+		list.setData(page.getResult());
+		list.setTotalRows(page.getTotal());
+		return list;
 	}
 
     @Override
     public StoreSubmitProduct findById(Long id) {
-       if(id==null){
-           logger.error("StoreSubmitProductService ->findById参数异常,id:"+id);
-           throw new BusinessException(BusinessCode.CODE_1007);  
-       }
         return storeSubmitProductMapper.selectByPrimaryKey(id);
     }
 

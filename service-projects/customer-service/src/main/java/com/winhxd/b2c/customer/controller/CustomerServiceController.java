@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,11 +33,12 @@ public class CustomerServiceController implements CustomerServiceClient {
     @Override
     public ResponseResult<PagedList<CustomerUserInfoVO>> queryCustomerPageInfo(@RequestBody BackStageCustomerInfoCondition condition) {
         ResponseResult<PagedList<CustomerUserInfoVO>> responseResult = new ResponseResult<PagedList<CustomerUserInfoVO>>();
+
         try {
             PagedList<CustomerUserInfoVO> page = customerService.findCustomerPageInfo(condition);
             responseResult.setData(page);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("queryCustomerPageInfo查询用户失败：",e);
             responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;
@@ -59,6 +61,9 @@ public class CustomerServiceController implements CustomerServiceClient {
     @Override
     public ResponseResult<List<CustomerUserInfoVO>> findCustomerUserByIds(@RequestBody List<Long> ids) {
         ResponseResult<List<CustomerUserInfoVO>> responseResult = new ResponseResult<>();
+        if (CollectionUtils.isEmpty(ids)) {
+            return responseResult;
+        }
         List<CustomerUserInfoVO> customers = customerService.findCustomerUserByIds(ids);
         responseResult.setData(customers);
         return responseResult;
@@ -90,7 +95,7 @@ public class CustomerServiceController implements CustomerServiceClient {
             PagedList<CustomerUserInfoVO> page = customerService.findAvabileCustomerPageInfo(condition);
             responseResult.setData(page);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("findAvabileCustomerPageInfo查询用户失败：",e);
             responseResult.setCode(BusinessCode.CODE_1001);
         }
         return responseResult;

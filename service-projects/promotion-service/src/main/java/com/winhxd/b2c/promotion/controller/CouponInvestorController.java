@@ -41,14 +41,14 @@ public class CouponInvestorController implements CouponInvestorServiceClient {
        */
       @Override
       public ResponseResult<Integer> addCouponInvestor(@RequestBody CouponInvestorCondition condition) {
-            ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
-            // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
-            int flag = couponInvestorService.saveCouponInvestor(condition);
-            responseResult.setCode(flag);
-            if(flag==0){
-                  responseResult.setMessage("添加成功");
-            }
-            return responseResult;
+          ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
+          // flag  0 成功  1占比之和不等于100  2 出资方重复  1001失败  3 出资方明细为空
+          int flag = couponInvestorService.saveCouponInvestor(condition);
+          responseResult.setCode(flag);
+          if(flag==0){
+              responseResult.setMessage("添加成功");
+          }
+          return responseResult;
       }
 
 

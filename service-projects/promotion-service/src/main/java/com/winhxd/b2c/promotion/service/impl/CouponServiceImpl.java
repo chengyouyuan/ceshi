@@ -510,7 +510,7 @@ public class CouponServiceImpl implements CouponService {
         for (CouponTemplateUse couponTemplateUse : couponTemplateUses) {
             Integer activeStatus = couponTemplateUseMapper.selectActiveStatusByOrderNo(couponTemplateUse);
             logger.info("订单号" + condition.getOrderNo() + "退优惠券 活动状态：" + activeStatus);
-            short couponStatus = activeStatus.intValue() == 3 ? CouponActivityEnum.INVALYD.getCode() : CouponActivityEnum.UNTREAD.getCode();
+            short couponStatus = activeStatus.intValue() == CouponActivityEnum.ACTIVITY_STOP_UNDO.getCode() ? CouponActivityEnum.INVALYD.getCode() : CouponActivityEnum.UNTREAD.getCode();
             logger.info("订单号" + condition.getOrderNo() + "退优惠券 退回状态：" + couponStatus);
 
 
@@ -945,13 +945,34 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public PagedList<CouponInStoreGetedAndUsedVO> findCouponInStoreGetedAndUsedPage(Long storeId, CouponInStoreGetedAndUsedCodition codition) {
         Page page = PageHelper.startPage(codition.getPageNo(), codition.getPageSize());
-        PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
-        //查询优惠券列表
-
+        // 查询优惠券列表
         List<CouponInStoreGetedAndUsedVO> resultList = couponTemplateMapper.selectCouponInStoreGetedAndUsedPage(storeId);
 
         ResponseResult<List<Long>> customers = getCustomerListByStoreId(storeId);
+        List<CouponInStoreGetedAndUsedVO> countList = getCouponReceiveAndUseNum(storeId, customers);
+        // 获取优惠券推给用户总数
+        int pushCount = getPushCount(storeId);
 
+        //设置优惠券相关数量
+        setCouponReceiveAndUseNum(resultList, countList, pushCount);
+        this.getCouponApplyDetail(resultList);
+
+        PagedList<CouponInStoreGetedAndUsedVO> pagedList = new PagedList();
+        pagedList.setData(resultList);
+        pagedList.setPageNo(codition.getPageNo());
+        pagedList.setPageSize(codition.getPageSize());
+        pagedList.setTotalRows(page.getTotal());
+        return pagedList;
+    }
+
+    /**
+     * 获取优惠券的领取和使用数量
+     *
+     * @param storeId
+     * @param customers
+     * @return
+     */
+    private List<CouponInStoreGetedAndUsedVO> getCouponReceiveAndUseNum(Long storeId, ResponseResult<List<Long>> customers) {
         List<CouponInStoreGetedAndUsedVO> countList = null;
         if (!CollectionUtils.isEmpty(customers.getData())) {
             HashMap<String, Object> paraMap = Maps.newHashMap();
@@ -960,15 +981,21 @@ public class CouponServiceImpl implements CouponService {
             //查询使用每张优惠券的使用数量和领取数量
             countList = couponTemplateMapper.selectCouponGetedAndUsedCout(paraMap);
         }
-        // 获取优惠券推给用户总数
-        int pushCount = getPushCount(storeId);
+        return countList;
+    }
 
-
-        //将数量拼接到列表
-        if (resultList != null) {
+    /**
+     * 设置优惠券相关数量(包括优惠券推给用户的总数量、优惠券领取数量、优惠券使用数量)
+     *
+     * @param resultList
+     * @param countList
+     * @param pushCount
+     */
+    private void setCouponReceiveAndUseNum(List<CouponInStoreGetedAndUsedVO> resultList, List<CouponInStoreGetedAndUsedVO> countList, int pushCount) {
+        if (!CollectionUtils.isEmpty(resultList)) {
             for (int i = 0; i < resultList.size(); i++) {
                 CouponInStoreGetedAndUsedVO vo = resultList.get(i);
-                if (countList != null) {
+                if (!CollectionUtils.isEmpty(countList)) {
                     for (int j = 0; j < countList.size(); j++) {
                         if (vo.getCouponActivityId().equals(countList.get(j).getCouponActivityId()) && vo.getTempleteId().equals(countList.get(j).getTempleteId())) {
                             vo.setTotalCount(countList.get(j).getTotalCount());
@@ -980,18 +1007,9 @@ public class CouponServiceImpl implements CouponService {
                     vo.setTotalCount(0);
                     vo.setUsedCount(0);
                 }
-
                 vo.setPushCount(pushCount);
             }
         }
-        this.getCouponApplyDetail(resultList);
-
-
-        pagedList.setData(resultList);
-        pagedList.setPageNo(codition.getPageNo());
-        pagedList.setPageSize(codition.getPageSize());
-        pagedList.setTotalRows(page.getTotal());
-        return pagedList;
     }
 
     /**

@@ -81,15 +81,13 @@ public class CouponPushServiceImpl implements CouponPushService {
 
     @Override
     public List<CouponPushVO> getSpecifiedPushCoupon() {
-
-        List<CouponPushVO> resultList = new ArrayList<>();
         CustomerUser customerUser = UserContext.getCurrentCustomerUser();
-        if (customerUser == null) {
-            throw new BusinessException(BusinessCode.CODE_500014, "用户信息异常");
-        }
 
         StoreUserInfoVO storeUserInfo = getStoreUserInfoVO(customerUser);
         List<CouponPushVO> couponPushResult = getCouponPush(customerUser, storeUserInfo);
+
+        // 初始化list的size
+        List<CouponPushVO> resultList = new ArrayList<>(couponPushResult.size());
 
         List<Long> activityIds = new ArrayList<>();
         List<Long> unActivityIds = new ArrayList<>();
@@ -365,7 +363,8 @@ public class CouponPushServiceImpl implements CouponPushService {
      * @return
      */
     private List<CouponPushVO> getCouponPush(CustomerUser customerUser, StoreUserInfoVO storeUserInfo) {
-        List<CouponPushVO> couponPushResult = new ArrayList<>();
+        // 初始化list的size
+        List<CouponPushVO> couponPushResult = new ArrayList<>(8);
 
         List<CouponPushVO> couponPushStores = null;
         if (storeUserInfo != null) {

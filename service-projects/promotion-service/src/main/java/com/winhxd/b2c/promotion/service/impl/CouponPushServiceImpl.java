@@ -16,6 +16,7 @@ import com.winhxd.b2c.common.domain.product.vo.BrandVO;
 import com.winhxd.b2c.common.domain.product.vo.ProductSkuVO;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponActivityEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponApplyEnum;
+import com.winhxd.b2c.common.domain.promotion.enums.CouponReceiveStatusEnum;
 import com.winhxd.b2c.common.domain.promotion.model.*;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponPushVO;
 import com.winhxd.b2c.common.domain.store.vo.StoreUserInfoVO;
@@ -105,7 +106,8 @@ public class CouponPushServiceImpl implements CouponPushService {
                         receiveCouponCount, customerUser);
 
                 // 是否领取只有推券给用户才会有值 1 可领取
-                if ("1".equals(couponPushVO.getReceiveStatus()) && couponPushVO.getReceive() == null) {
+                if (CouponReceiveStatusEnum.CAN_RECEIVED.getCode().equals(couponPushVO.getReceiveStatus())
+                        && couponPushVO.getReceive() == null) {
                     flag = checkStoreUserIsPushCoupon(customerUser.getCustomerId(), storeUserInfo.getId(), couponPushVO.getActivityId());
                 }
 
@@ -146,7 +148,7 @@ public class CouponPushServiceImpl implements CouponPushService {
                 return true;
             }else{
                 // 优惠券是否可领取 0 已领取,1 可领取,2已领完
-                couponPushVO.setReceiveStatus("2");
+                couponPushVO.setReceiveStatus(CouponReceiveStatusEnum.HAVE_FINISHED.getCode());
                 unActivityIds.add(couponPushVO.getActivityId());
                 return false;
             }
@@ -165,7 +167,7 @@ public class CouponPushServiceImpl implements CouponPushService {
 
         CouponTemplateSend couponTemplateSend = saveCouponTemplateSend(customerUser, couponPushVO);
         saveActivityRecord(customerUser, couponPushVO, couponTemplateSend);
-        couponPushVO.setReceiveStatus("1");
+        couponPushVO.setReceiveStatus(CouponReceiveStatusEnum.CAN_RECEIVED.getCode());
 
         // 用户渠道领取优惠券修改状态
         if (couponPushVO.getReceive() != null) {

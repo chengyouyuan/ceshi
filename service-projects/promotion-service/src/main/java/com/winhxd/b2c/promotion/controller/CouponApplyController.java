@@ -8,12 +8,9 @@ import com.winhxd.b2c.common.domain.promotion.condition.CouponSetToValidConditio
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
 import com.winhxd.b2c.common.domain.promotion.vo.ApplyTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponApplyVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.common.feign.promotion.CouponApplyServiceClient;
 import com.winhxd.b2c.promotion.service.CouponApplyService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +38,9 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @Override
     public ResponseResult<CouponApplyVO> viewCouponApplyDetail(@RequestParam("id") String id,@RequestParam("type") Short type) {
         ResponseResult<CouponApplyVO> responseResult = new ResponseResult<CouponApplyVO>();
+        if(StringUtils.isBlank(id) ||type==null ){
+            throw new BusinessException(BusinessCode.CODE_500010);
+        }
         CouponApplyVO vo = couponApplyService.viewCouponApplyDetail(id,type);
         responseResult.setData(vo);
         return responseResult;
@@ -58,13 +58,16 @@ public class CouponApplyController implements CouponApplyServiceClient {
     @Override
     public ResponseResult<Integer> updateCouponApplyToValid(@RequestBody CouponSetToValidCondition condition) {
         ResponseResult<Integer> responseResult = new ResponseResult<Integer>();
-            int count = couponApplyService.updateCouponApplyToValid(condition.getId(),condition.getUserId(),condition.getUserName());
-            if(count>0){
-                responseResult.setCode(BusinessCode.CODE_OK);
-                responseResult.setMessage("设置成功");
-            }else {
-                throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
-            }
+        if(condition.getId()==null || condition.getUserId()==null || StringUtils.isBlank(condition.getUserName())){
+            throw new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
+        }
+        int count = couponApplyService.updateCouponApplyToValid(condition.getId(),condition.getUserId(),condition.getUserName());
+        if(count>0){
+            responseResult.setCode(BusinessCode.CODE_OK);
+            responseResult.setMessage("设置成功");
+        }else {
+            throw new BusinessException(BusinessCode.CODE_1001,"设置失败");
+        }
         return responseResult;
     }
 

@@ -7,26 +7,22 @@ import com.winhxd.b2c.common.domain.PagedList;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.promotion.condition.CouponGradeCondition;
 import com.winhxd.b2c.common.domain.promotion.condition.RuleRealationCountCondition;
-import com.winhxd.b2c.common.domain.promotion.enums.CouponGradeEnum;
 import com.winhxd.b2c.common.domain.promotion.enums.CouponTemplateEnum;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGrade;
 import com.winhxd.b2c.common.domain.promotion.model.CouponGradeDetail;
 import com.winhxd.b2c.common.domain.promotion.vo.CouponGradeVO;
-import com.winhxd.b2c.common.domain.promotion.vo.CouponInvestorVO;
 import com.winhxd.b2c.common.domain.promotion.vo.GradeTempleteCountVO;
 import com.winhxd.b2c.common.domain.promotion.vo.TempleteRelationCountVO;
 import com.winhxd.b2c.common.exception.BusinessException;
 import com.winhxd.b2c.promotion.dao.CouponGradeDetailMapper;
 import com.winhxd.b2c.promotion.dao.CouponGradeMapper;
 import com.winhxd.b2c.promotion.service.CouponGradeService;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -45,20 +41,12 @@ public class CouponGradeServiceImpl implements CouponGradeService {
 
     @Override
     public CouponGradeVO viewCouponGradeDetail(String id) {
-        LOGGER.info("查看详情参数id:"+id);
-        if(StringUtils.isBlank(id)){
-            throw new BusinessException(BusinessCode.CODE_500010,"必填参数错误");
-        }
         CouponGradeVO vo = couponGradeMapper.viewCouponGradeDetail(Long.parseLong(id));
         return vo;
     }
 
     @Override
     public int updateCouponGradeValid(Long id,Long userId,String userName) {
-        LOGGER.info("坎级规则设置无效参数 id:"+id+" userId:"+ userId+" userName:"+userName);
-        if(id==null || userId==null || StringUtils.isBlank(userName)){
-            throw  new BusinessException(BusinessCode.CODE_500010,"必传参数错误");
-        }
         int count = couponGradeMapper.updateCouponGradeValid(id,userId,userName);
         if(count<=0){
             throw  new BusinessException(BusinessCode.CODE_1001,"设置失败");
@@ -69,43 +57,43 @@ public class CouponGradeServiceImpl implements CouponGradeService {
     @Override
     @Transactional
     public int addCouponGrade(CouponGradeCondition condition) {
-        LOGGER.info("添加坎级规则参数"+condition.toString());
+        LOGGER.info("添加坎级规则参数" + condition.toString());
         int flag = 0;
-            CouponGrade couponGrade = new CouponGrade();
-            couponGrade.setCode(condition.getCode());
-            couponGrade.setName(condition.getName());
-            couponGrade.setRemarks(condition.getRemarks());
-            couponGrade.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
-            couponGrade.setType(condition.getType());
-            couponGrade.setCreatedBy(Long.parseLong(condition.getUserId()));
-            couponGrade.setCreatedByName(condition.getUserName());
-            couponGrade.setCreated(new Date());
-            //先插入主表
-            long IdKey = couponGradeMapper.insertCouponGrade(couponGrade);
-            if(IdKey==0){
-                throw new BusinessException(BusinessCode.CODE_500005,"坎级规则新建失败");
-            }
+        CouponGrade couponGrade = new CouponGrade();
+        couponGrade.setCode(condition.getCode());
+        couponGrade.setName(condition.getName());
+        couponGrade.setRemarks(condition.getRemarks());
+        couponGrade.setStatus(CouponTemplateEnum.EFFICTIVE.getCode());
+        couponGrade.setType(condition.getType());
+        couponGrade.setCreatedBy(Long.parseLong(condition.getUserId()));
+        couponGrade.setCreatedByName(condition.getUserName());
+        couponGrade.setCreated(new Date());
+        //先插入主表
+        long IdKey = couponGradeMapper.insertCouponGrade(couponGrade);
+        if (IdKey == 0) {
+            throw new BusinessException(BusinessCode.CODE_500005, "坎级规则新建失败");
+        }
 
-            if(IdKey!=0){
-                //根据主表主键插入详情表
-                CouponGradeDetail couponGradeDetail = new CouponGradeDetail();
-                couponGradeDetail.setGradeId(couponGrade.getId());
-                couponGradeDetail.setCost(condition.getCost());
-                couponGradeDetail.setCount(condition.getCount());
-                couponGradeDetail.setDiscounted(condition.getDiscounted());
-                couponGradeDetail.setDiscountedAmt(condition.getDiscountedAmt());
-                couponGradeDetail.setDiscountedMaxAmt(condition.getDiscountedMaxAmt());
-                couponGradeDetail.setReducedAmt(condition.getReducedAmt());
-                couponGradeDetail.setReducedType(condition.getReducedType());
-                couponGradeDetail.setRemarks(condition.getRemarks());
-                couponGradeDetail.setTimes(condition.getTimes());
-                couponGradeDetail.setFullGiveAmt(condition.getFullGiveAmt());
-                couponGradeDetail.setIncreaseAmt(condition.getIncreaseAmt());
-                int n = couponGradeDetailMapper.insert(couponGradeDetail);
-                if(n==0){
-                    throw new BusinessException(BusinessCode.CODE_500005,"坎级规则新建失败");
-                }
+        if (IdKey != 0) {
+            //根据主表主键插入详情表
+            CouponGradeDetail couponGradeDetail = new CouponGradeDetail();
+            couponGradeDetail.setGradeId(couponGrade.getId());
+            couponGradeDetail.setCost(condition.getCost());
+            couponGradeDetail.setCount(condition.getCount());
+            couponGradeDetail.setDiscounted(condition.getDiscounted());
+            couponGradeDetail.setDiscountedAmt(condition.getDiscountedAmt());
+            couponGradeDetail.setDiscountedMaxAmt(condition.getDiscountedMaxAmt());
+            couponGradeDetail.setReducedAmt(condition.getReducedAmt());
+            couponGradeDetail.setReducedType(condition.getReducedType());
+            couponGradeDetail.setRemarks(condition.getRemarks());
+            couponGradeDetail.setTimes(condition.getTimes());
+            couponGradeDetail.setFullGiveAmt(condition.getFullGiveAmt());
+            couponGradeDetail.setIncreaseAmt(condition.getIncreaseAmt());
+            int n = couponGradeDetailMapper.insert(couponGradeDetail);
+            if (n == 0) {
+                throw new BusinessException(BusinessCode.CODE_500005, "坎级规则新建失败");
             }
+        }
         return flag;
     }
 

@@ -10,7 +10,6 @@ import com.winhxd.b2c.common.constant.OrderNotifyMsg;
 import com.winhxd.b2c.common.context.AdminUser;
 import com.winhxd.b2c.common.context.CustomerUser;
 import com.winhxd.b2c.common.context.StoreUser;
-import com.winhxd.b2c.common.context.UserContext;
 import com.winhxd.b2c.common.domain.ResponseResult;
 import com.winhxd.b2c.common.domain.customer.vo.CustomerUserInfoVO;
 import com.winhxd.b2c.common.domain.message.condition.MiniMsgCondition;
@@ -99,8 +98,6 @@ public class CommonOrderServiceImpl implements OrderService {
     private static final Logger logger = LoggerFactory.getLogger(CommonOrderServiceImpl.class);
 
     private static final int MAX_ORDER_POSTFIX = 999999999;
-    private static final String ORDER_BEING_MODIFIED = "订单正在修改中";
-    private static final String ORDER_NO_CANNOT_NULL = "订单号不能为空";
     private static final int QUEUE_CAPACITY = 1000;
     private static final int KEEP_ALIVE_TIME = 50;
     private static final int MAXIMUM_POOL_SIZE = 20;
@@ -170,9 +167,6 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public OrderInfo submitOrder(OrderCreateCondition orderCreateCondition) {
-        if (orderCreateCondition == null) {
-            throw new NullPointerException("orderCreateCondition不能为空");
-        }
         validateOrderCreateCondition(orderCreateCondition);
         logger.info("创建订单开始：orderCreateCondition={}", orderCreateCondition);
         // 生成订单主体信息
@@ -201,12 +195,6 @@ public class CommonOrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void orderPaySuccessNotify(String orderNo, String paymentSerialNum) {
-        if (StringUtils.isBlank(orderNo)) {
-            throw new NullPointerException("订单支付通知orderNo不能为空");
-        }
-        if (StringUtils.isBlank(paymentSerialNum)) {
-            throw new NullPointerException("订单支付流水号paymentSerialNum不能为空");
-        }
         OrderInfo orderInfo = orderInfoMapper.selectByOrderNo(orderNo);
         if (orderInfo == null) {
             throw new BusinessException(BusinessCode.WRONG_ORDERNO);
@@ -318,9 +306,6 @@ public class CommonOrderServiceImpl implements OrderService {
     public boolean updateOrderRefundCallback(OrderRefundCallbackCondition condition) {
         boolean callbackResult = true;
         String orderNo = condition.getOrderNo();
-        if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
-        }
         logger.info("退款回调-开始-orderNo={}", orderNo);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
@@ -434,15 +419,8 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelOrderByStore(OrderCancelCondition orderCancelCondition) {
+    public void cancelOrderByStore(StoreUser store,OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
-        if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
-        }
-        StoreUser store = UserContext.getCurrentStoreUser();
-        if (null == store) {
-            throw new BusinessException(BusinessCode.CODE_1002, "登录凭证无效");
-        }
         ResponseResult<StoreUserInfoVO> storeData = this.storeServiceClient.findStoreUserInfo(store.getBusinessId());
         if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
@@ -468,7 +446,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED);
         }
     }
 
@@ -479,21 +457,14 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelOrderByCustomer(OrderCancelCondition orderCancelCondition) {
-        CustomerUser user = UserContext.getCurrentCustomerUser();
-        if (null == user) {
-            throw new BusinessException(BusinessCode.CODE_1002, "登录用户不存在");
-        }
+    public void cancelOrderByCustomer(CustomerUser customer,OrderCancelCondition orderCancelCondition) {
         String orderNo = orderCancelCondition.getOrderNo();
-        if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, ORDER_NO_CANNOT_NULL);
-        }
-        CustomerUserInfoVO customer = getCustomerUserInfoVO(user.getCustomerId());
+        CustomerUserInfoVO customerVo = getCustomerUserInfoVO(customer.getCustomerId());
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
         Lock lock = new RedisLock(cache, lockKey, ORDER_UPDATE_LOCK_EXPIRES_TIME);
         if (lock.tryLock()) {
             try {
-                orderCancel(orderNo, orderCancelCondition.getCancelReason(), user.getCustomerId(), customer.getNickName());
+                orderCancel(orderNo, orderCancelCondition.getCancelReason(), customer.getCustomerId(), customerVo.getNickName());
             } finally {
                 lock.unlock();
             }
@@ -509,14 +480,7 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void handleOrderRefundByStore(OrderRefundStoreHandleCondition condition) {
-        if (StringUtils.isBlank(condition.getOrderNo()) || null == condition.getAgree()) {
-            throw new BusinessException(BusinessCode.CODE_4022001, "参数异常");
-        }
-        StoreUser store = UserContext.getCurrentStoreUser();
-        if (null == store) {
-            throw new BusinessException(BusinessCode.WRONG_STORE_ID, "门店不存在");
-        }
+    public void handleOrderRefundByStore(StoreUser store,OrderRefundStoreHandleCondition condition) {
         ResponseResult<StoreUserInfoVO> storeData = this.storeServiceClient.findStoreUserInfo(store.getBusinessId());
         if (storeData.getCode() != BusinessCode.CODE_OK || storeData.getData() == null) {
             throw new BusinessException(BusinessCode.WRONG_STORE_ID, "调用门店服务查询不到门店");
@@ -562,7 +526,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED);
         }
     }
 
@@ -574,15 +538,8 @@ public class CommonOrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void orderRefundByCustomer(OrderRefundCondition orderRefundCondition) {
+    public void orderRefundByCustomer(CustomerUser customer,OrderRefundCondition orderRefundCondition) {
         String orderNo = orderRefundCondition.getOrderNo();
-        if (StringUtils.isBlank(orderNo)) {
-            throw new BusinessException(BusinessCode.ORDER_NO_EMPTY, "参数错误");
-        }
-        CustomerUser customer = UserContext.getCurrentCustomerUser();
-        if (null == customer) {
-            throw new BusinessException(BusinessCode.CODE_1002, MessageFormat.format("用户不存在orderNo={0}", orderNo));
-        }
         Long customerId = customer.getCustomerId();
         CustomerUserInfoVO customerUserInfoVO = getCustomerUserInfoVO(customerId);
         String lockKey = CacheName.CACHE_KEY_STORE_PICK_UP_CODE_GENERATE + orderNo;
@@ -628,7 +585,7 @@ public class CommonOrderServiceImpl implements OrderService {
                 lock.unlock();
             }
         } else {
-            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED, ORDER_BEING_MODIFIED);
+            throw new BusinessException(BusinessCode.ORDER_IS_BEING_MODIFIED);
         }
     }
 
